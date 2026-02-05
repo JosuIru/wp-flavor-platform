@@ -1,0 +1,384 @@
+/**
+ * Email Marketing - Frontend Styles
+ */
+
+/* Variables */
+:root {
+    --em-primary: #3b82f6;
+    --em-primary-hover: #2563eb;
+    --em-success: #10b981;
+    --em-danger: #ef4444;
+    --em-text: #374151;
+    --em-text-light: #6b7280;
+    --em-border: #e5e7eb;
+    --em-bg: #f9fafb;
+    --em-radius: 8px;
+}
+
+/* Formulario de suscripción */
+.em-suscripcion-wrapper {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.em-suscripcion-card {
+    background: #fff;
+    border-radius: var(--em-radius);
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.em-suscripcion-titulo {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    color: var(--em-text);
+}
+
+.em-suscripcion-descripcion {
+    margin: 0 0 1.5rem 0;
+    color: var(--em-text-light);
+}
+
+.em-suscripcion-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.em-estilo-inline .em-suscripcion-form {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.em-estilo-inline .em-form-campo {
+    flex: 1;
+    min-width: 150px;
+}
+
+.em-estilo-inline .em-btn-suscribir {
+    flex-shrink: 0;
+}
+
+.em-input,
+.em-select,
+.em-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--em-border);
+    border-radius: var(--em-radius);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.em-input:focus,
+.em-select:focus,
+.em-textarea:focus {
+    outline: none;
+    border-color: var(--em-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.em-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--em-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.em-btn:hover {
+    transform: translateY(-1px);
+}
+
+.em-btn:active {
+    transform: translateY(0);
+}
+
+.em-btn-suscribir,
+.em-btn-primary {
+    background: var(--em-primary);
+    color: #fff;
+}
+
+.em-btn-suscribir:hover,
+.em-btn-primary:hover {
+    background: var(--em-primary-hover);
+}
+
+.em-btn-secondary {
+    background: var(--em-bg);
+    color: var(--em-text);
+    border: 1px solid var(--em-border);
+}
+
+.em-btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+.em-btn-danger {
+    background: var(--em-danger);
+    color: #fff;
+}
+
+.em-btn-danger:hover {
+    background: #dc2626;
+}
+
+.em-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: em-spin 0.8s linear infinite;
+}
+
+@keyframes em-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.em-form-mensaje {
+    padding: 1rem;
+    border-radius: var(--em-radius);
+    text-align: center;
+}
+
+.em-form-mensaje.em-success {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.em-form-mensaje.em-error {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.em-privacidad {
+    margin: 0;
+    text-align: center;
+    color: var(--em-text-light);
+}
+
+.em-privacidad a {
+    color: var(--em-primary);
+}
+
+/* Preferencias */
+.em-preferencias-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.em-preferencias-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.em-preferencias-header h2 {
+    margin: 0 0 0.5rem 0;
+}
+
+.em-preferencias-section {
+    background: #fff;
+    border-radius: var(--em-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.em-preferencias-section h3 {
+    margin: 0 0 0.5rem 0;
+}
+
+.em-descripcion {
+    color: var(--em-text-light);
+    margin-bottom: 1rem;
+}
+
+.em-listas-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.em-lista-opcion {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--em-bg);
+    border-radius: var(--em-radius);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.em-lista-opcion:hover {
+    background: #e5e7eb;
+}
+
+.em-lista-opcion input[type="checkbox"] {
+    margin-top: 3px;
+}
+
+.em-lista-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.em-lista-info strong {
+    color: var(--em-text);
+}
+
+.em-lista-desc {
+    font-size: 0.875rem;
+    color: var(--em-text-light);
+}
+
+.em-preferencias-acciones {
+    text-align: center;
+}
+
+.em-preferencias-baja {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+}
+
+.em-preferencias-baja hr {
+    border: none;
+    border-top: 1px solid var(--em-border);
+    margin-bottom: 1.5rem;
+}
+
+.em-link-baja {
+    color: var(--em-text-light);
+    text-decoration: underline;
+}
+
+.em-link-baja:hover {
+    color: var(--em-danger);
+}
+
+/* Baja */
+.em-baja-wrapper {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.em-baja-content {
+    background: #fff;
+    border-radius: var(--em-radius);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.em-baja-icono {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: var(--em-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.em-baja-icono .dashicons {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: var(--em-text-light);
+}
+
+.em-baja-content h2 {
+    margin: 0 0 1rem 0;
+}
+
+.em-baja-email {
+    background: var(--em-bg);
+    padding: 0.75rem 1rem;
+    border-radius: var(--em-radius);
+    margin-bottom: 1rem;
+}
+
+.em-baja-descripcion {
+    color: var(--em-text-light);
+    margin-bottom: 1.5rem;
+}
+
+.em-baja-form .em-form-campo {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.em-baja-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.em-baja-acciones {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+/* Confirmación exitosa */
+.em-confirmacion-exitosa {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: #fff;
+    border-radius: var(--em-radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.em-confirmacion-exitosa .em-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: #ecfdf5;
+    border-radius: 50%;
+    font-size: 40px;
+    color: var(--em-success);
+    margin-bottom: 1.5rem;
+}
+
+.em-confirmacion-exitosa h3 {
+    margin: 0 0 1rem 0;
+    color: var(--em-success);
+}
+
+.em-error {
+    color: var(--em-danger);
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .em-estilo-inline .em-suscripcion-form {
+        flex-direction: column;
+    }
+
+    .em-baja-acciones {
+        flex-direction: column;
+    }
+}

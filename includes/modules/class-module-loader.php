@@ -224,6 +224,10 @@ class Flavor_Chat_Module_Loader {
                 'file' => $modules_path . 'reservas/class-reservas-module.php',
                 'class' => 'Flavor_Chat_Reservas_Module',
             ],
+            'email_marketing' => [
+                'file' => $modules_path . 'email-marketing/class-email-marketing-module.php',
+                'class' => 'Flavor_Chat_Email_Marketing_Module',
+            ],
         ];
 
         foreach ($builtin_modules as $id => $module) {
