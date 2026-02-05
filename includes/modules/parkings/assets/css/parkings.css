@@ -1,0 +1,1208 @@
+/**
+ * Estilos del Modulo de Parkings Comunitarios
+ * Flavor Chat IA
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+:root {
+    --parking-color-libre: #10b981;
+    --parking-color-ocupada: #ef4444;
+    --parking-color-reservada: #f59e0b;
+    --parking-color-mantenimiento: #6b7280;
+    --parking-color-bloqueada: #1f2937;
+    --parking-color-cargador: #3b82f6;
+    --parking-color-accesible: #8b5cf6;
+    --parking-color-primario: #2563eb;
+    --parking-color-primario-hover: #1d4ed8;
+    --parking-color-fondo: #f9fafb;
+    --parking-color-borde: #e5e7eb;
+    --parking-color-texto: #374151;
+    --parking-color-texto-claro: #6b7280;
+    --parking-sombra-suave: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --parking-sombra-media: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --parking-sombra-fuerte: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --parking-radio-borde: 8px;
+    --parking-transicion: all 0.2s ease;
+}
+
+/* ==========================================================================
+   Contenedor Principal del Mapa
+   ========================================================================== */
+.flavor-parkings-mapa-container {
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    box-shadow: var(--parking-sombra-media);
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.flavor-parkings-mapa-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--parking-color-borde);
+    background: var(--parking-color-fondo);
+}
+
+.flavor-parkings-mapa-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--parking-color-texto);
+}
+
+.flavor-parkings-stats-rapidas {
+    display: flex;
+    gap: 20px;
+}
+
+.flavor-parkings-stats-rapidas .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: var(--parking-radio-borde);
+    background: #fff;
+    box-shadow: var(--parking-sombra-suave);
+}
+
+.flavor-parkings-stats-rapidas .stat .numero {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.flavor-parkings-stats-rapidas .stat .etiqueta {
+    font-size: 0.75rem;
+    color: var(--parking-color-texto-claro);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flavor-parkings-stats-rapidas .stat.libre .numero { color: var(--parking-color-libre); }
+.flavor-parkings-stats-rapidas .stat.ocupada .numero { color: var(--parking-color-ocupada); }
+.flavor-parkings-stats-rapidas .stat.reservada .numero { color: var(--parking-color-reservada); }
+
+/* ==========================================================================
+   Mapa Visual de Plazas
+   ========================================================================== */
+.flavor-parkings-mapa-visual {
+    position: relative;
+    background: #f3f4f6;
+    background-image:
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    overflow: auto;
+}
+
+.flavor-parkings-plano {
+    position: relative;
+    min-width: 100%;
+    min-height: 100%;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+}
+
+/* ==========================================================================
+   Plazas Individuales
+   ========================================================================== */
+.flavor-plaza {
+    position: relative;
+    width: 80px;
+    height: 120px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--parking-transicion);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    background: #fff;
+    box-shadow: var(--parking-sombra-suave);
+}
+
+.flavor-plaza:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--parking-sombra-media);
+}
+
+.flavor-plaza:active {
+    transform: translateY(0);
+}
+
+/* Estados de Plaza */
+.flavor-plaza.estado-libre {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-color: var(--parking-color-libre);
+}
+
+.flavor-plaza.estado-ocupada {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-color: var(--parking-color-ocupada);
+    cursor: not-allowed;
+}
+
+.flavor-plaza.estado-reservada {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-color: var(--parking-color-reservada);
+}
+
+.flavor-plaza.estado-mantenimiento {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border-color: var(--parking-color-mantenimiento);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.flavor-plaza.estado-bloqueada {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    border-color: var(--parking-color-bloqueada);
+    cursor: not-allowed;
+}
+
+.flavor-plaza.estado-bloqueada .numero-plaza {
+    color: #fff;
+}
+
+/* Tipos de Plaza */
+.flavor-plaza.tipo-moto {
+    width: 60px;
+    height: 80px;
+}
+
+.flavor-plaza.tipo-bici {
+    width: 40px;
+    height: 60px;
+}
+
+.flavor-plaza.tipo-grande {
+    width: 100px;
+    height: 140px;
+}
+
+.flavor-plaza.tipo-movilidad_reducida::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 16px;
+    height: 16px;
+    background: var(--parking-color-accesible);
+    border-radius: 50%;
+}
+
+/* Numero de Plaza */
+.numero-plaza {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--parking-color-texto);
+    text-align: center;
+}
+
+/* Iconos en Plaza */
+.icono-cargador,
+.icono-accesible {
+    position: absolute;
+    bottom: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icono-cargador {
+    right: 5px;
+    background: var(--parking-color-cargador);
+}
+
+.icono-cargador::before {
+    content: '';
+    width: 8px;
+    height: 12px;
+    background: #fff;
+    clip-path: polygon(50% 0%, 100% 50%, 60% 50%, 60% 100%, 0% 50%, 40% 50%);
+}
+
+.icono-accesible {
+    left: 5px;
+    background: var(--parking-color-accesible);
+}
+
+.icono-accesible::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+/* Plaza Seleccionada */
+.flavor-plaza.seleccionada {
+    box-shadow: 0 0 0 3px var(--parking-color-primario);
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   Leyenda
+   ========================================================================== */
+.flavor-parkings-leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px 20px;
+    background: var(--parking-color-fondo);
+    border-top: 1px solid var(--parking-color-borde);
+}
+
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    color: var(--parking-color-texto-claro);
+}
+
+.leyenda-item .color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.leyenda-item.libre .color { background: var(--parking-color-libre); }
+.leyenda-item.ocupada .color { background: var(--parking-color-ocupada); }
+.leyenda-item.reservada .color { background: var(--parking-color-reservada); }
+.leyenda-item.mantenimiento .color { background: var(--parking-color-mantenimiento); }
+
+.leyenda-item .icono {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.leyenda-item.cargador .icono { background: var(--parking-color-cargador); }
+.leyenda-item.accesible .icono { background: var(--parking-color-accesible); }
+
+/* ==========================================================================
+   Panel de Detalle de Plaza
+   ========================================================================== */
+.flavor-parkings-detalle-plaza {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    box-shadow: var(--parking-sombra-fuerte);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.detalle-contenido {
+    padding: 20px;
+}
+
+.detalle-contenido .detalle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--parking-color-borde);
+}
+
+.detalle-contenido .plaza-numero-grande {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--parking-color-texto);
+}
+
+.detalle-contenido .estado-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.estado-badge.libre { background: #d1fae5; color: #065f46; }
+.estado-badge.ocupada { background: #fee2e2; color: #991b1b; }
+.estado-badge.reservada { background: #fef3c7; color: #92400e; }
+.estado-badge.mantenimiento { background: #f3f4f6; color: #374151; }
+
+.detalle-contenido .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.detalle-contenido .info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detalle-contenido .info-item .etiqueta {
+    font-size: 0.75rem;
+    color: var(--parking-color-texto-claro);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.detalle-contenido .info-item .valor {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--parking-color-texto);
+}
+
+.detalle-contenido .precios-grid {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.detalle-contenido .precio-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    background: var(--parking-color-fondo);
+    border-radius: var(--parking-radio-borde);
+}
+
+.detalle-contenido .precio-item .cantidad {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--parking-color-primario);
+}
+
+.detalle-contenido .precio-item .periodo {
+    font-size: 0.75rem;
+    color: var(--parking-color-texto-claro);
+}
+
+.detalle-contenido .acciones-detalle {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-cerrar-detalle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: var(--parking-color-fondo);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: var(--parking-color-texto-claro);
+    transition: var(--parking-transicion);
+}
+
+.btn-cerrar-detalle:hover {
+    background: var(--parking-color-borde);
+    color: var(--parking-color-texto);
+}
+
+/* Overlay */
+.flavor-parkings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ==========================================================================
+   Disponibilidad
+   ========================================================================== */
+.flavor-parkings-disponibilidad {
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    box-shadow: var(--parking-sombra-media);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.disponibilidad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.disponibilidad-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--parking-color-texto);
+}
+
+.navegacion-fechas {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navegacion-fechas button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--parking-color-borde);
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--parking-color-texto);
+    transition: var(--parking-transicion);
+}
+
+.navegacion-fechas button:hover {
+    background: var(--parking-color-fondo);
+    border-color: var(--parking-color-primario);
+    color: var(--parking-color-primario);
+}
+
+.navegacion-fechas .fecha-actual {
+    font-weight: 500;
+    color: var(--parking-color-texto);
+    min-width: 150px;
+    text-align: center;
+}
+
+/* Calendario */
+.disponibilidad-calendario {
+    margin-bottom: 20px;
+}
+
+.calendario-dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.dia-calendario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    border-radius: var(--parking-radio-borde);
+    background: var(--parking-color-fondo);
+    cursor: pointer;
+    transition: var(--parking-transicion);
+    border: 2px solid transparent;
+}
+
+.dia-calendario:hover {
+    border-color: var(--parking-color-primario);
+}
+
+.dia-calendario.seleccionado {
+    background: var(--parking-color-primario);
+    color: #fff;
+}
+
+.dia-calendario.seleccionado .dia-semana,
+.dia-calendario.seleccionado .plazas-libres {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.dia-calendario .dia-semana {
+    font-size: 0.75rem;
+    color: var(--parking-color-texto-claro);
+    text-transform: uppercase;
+}
+
+.dia-calendario .dia-numero {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.dia-calendario .plazas-libres {
+    font-size: 0.75rem;
+    color: var(--parking-color-texto-claro);
+}
+
+/* Indicadores de ocupacion */
+.dia-calendario.ocupacion-baja { border-left: 3px solid var(--parking-color-libre); }
+.dia-calendario.ocupacion-media { border-left: 3px solid var(--parking-color-reservada); }
+.dia-calendario.ocupacion-alta { border-left: 3px solid var(--parking-color-ocupada); }
+
+/* Resumen */
+.disponibilidad-resumen {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.resumen-item {
+    text-align: center;
+    padding: 15px;
+    background: var(--parking-color-fondo);
+    border-radius: var(--parking-radio-borde);
+}
+
+.resumen-item .valor {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--parking-color-primario);
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.resumen-item .etiqueta {
+    font-size: 0.875rem;
+    color: var(--parking-color-texto-claro);
+}
+
+/* Acciones */
+.disponibilidad-acciones {
+    text-align: center;
+}
+
+/* ==========================================================================
+   Mis Reservas
+   ========================================================================== */
+.flavor-parkings-mis-reservas {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.flavor-parkings-mis-reservas h3 {
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    color: var(--parking-color-texto);
+}
+
+.reservas-seccion {
+    margin-bottom: 30px;
+}
+
+.reservas-seccion h4 {
+    font-size: 1rem;
+    color: var(--parking-color-texto-claro);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--parking-color-borde);
+}
+
+.lista-reservas {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Tarjeta de Reserva */
+.reserva-tarjeta {
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    box-shadow: var(--parking-sombra-suave);
+    overflow: hidden;
+    transition: var(--parking-transicion);
+    border-left: 4px solid var(--parking-color-borde);
+}
+
+.reserva-tarjeta:hover {
+    box-shadow: var(--parking-sombra-media);
+}
+
+.reserva-tarjeta.estado-pendiente { border-left-color: var(--parking-color-texto-claro); }
+.reserva-tarjeta.estado-confirmada { border-left-color: var(--parking-color-primario); }
+.reserva-tarjeta.estado-activa { border-left-color: var(--parking-color-libre); }
+.reserva-tarjeta.estado-completada { border-left-color: var(--parking-color-mantenimiento); }
+.reserva-tarjeta.estado-cancelada { border-left-color: var(--parking-color-ocupada); }
+
+.reserva-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--parking-color-fondo);
+}
+
+.reserva-header .plaza-numero {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--parking-color-texto);
+}
+
+.reserva-header .reserva-estado {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.estado-pendiente .reserva-estado { background: #f3f4f6; color: #374151; }
+.estado-confirmada .reserva-estado { background: #dbeafe; color: #1e40af; }
+.estado-activa .reserva-estado { background: #d1fae5; color: #065f46; }
+.estado-completada .reserva-estado { background: #e5e7eb; color: #374151; }
+.estado-cancelada .reserva-estado { background: #fee2e2; color: #991b1b; }
+
+.reserva-detalles {
+    padding: 15px 20px;
+}
+
+.reserva-detalles p {
+    margin: 0 0 8px;
+    color: var(--parking-color-texto);
+}
+
+.reserva-detalles .parking-nombre {
+    font-weight: 500;
+}
+
+.reserva-detalles .fechas {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--parking-color-texto-claro);
+    font-size: 0.875rem;
+}
+
+.reserva-detalles .codigo-acceso code {
+    background: #fef3c7;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 1rem;
+    color: #92400e;
+}
+
+.reserva-detalles .precio {
+    font-size: 1.125rem;
+}
+
+.reserva-acciones {
+    display: flex;
+    gap: 10px;
+    padding: 0 20px 15px;
+}
+
+.reserva-acciones button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: var(--parking-radio-borde);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--parking-transicion);
+}
+
+.reserva-acciones .btn-entrada {
+    background: var(--parking-color-libre);
+    color: #fff;
+}
+
+.reserva-acciones .btn-salida {
+    background: var(--parking-color-primario);
+    color: #fff;
+}
+
+.reserva-acciones .btn-cancelar {
+    background: transparent;
+    border: 1px solid var(--parking-color-ocupada);
+    color: var(--parking-color-ocupada);
+}
+
+.reserva-acciones button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Sin reservas */
+.sin-reservas {
+    text-align: center;
+    padding: 40px 20px;
+    background: var(--parking-color-fondo);
+    border-radius: var(--parking-radio-borde);
+}
+
+.sin-reservas p {
+    color: var(--parking-color-texto-claro);
+    margin-bottom: 15px;
+}
+
+/* ==========================================================================
+   Formulario Solicitar Plaza
+   ========================================================================== */
+.flavor-parkings-solicitar-plaza {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.formulario-solicitud {
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    box-shadow: var(--parking-sombra-media);
+    padding: 25px;
+}
+
+.formulario-solicitud h4 {
+    margin: 0 0 20px;
+    font-size: 1.25rem;
+    color: var(--parking-color-texto);
+}
+
+.flavor-form .campo-form {
+    margin-bottom: 20px;
+}
+
+.flavor-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--parking-color-texto);
+    font-size: 0.875rem;
+}
+
+.flavor-form input[type="text"],
+.flavor-form input[type="number"],
+.flavor-form input[type="email"],
+.flavor-form select,
+.flavor-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--parking-color-borde);
+    border-radius: var(--parking-radio-borde);
+    font-size: 1rem;
+    color: var(--parking-color-texto);
+    background: #fff;
+    transition: var(--parking-transicion);
+}
+
+.flavor-form input:focus,
+.flavor-form select:focus,
+.flavor-form textarea:focus {
+    outline: none;
+    border-color: var(--parking-color-primario);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.flavor-form .fila-doble {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.flavor-form .checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.flavor-form .checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.flavor-form .checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--parking-color-primario);
+}
+
+.acciones-form {
+    margin-top: 25px;
+}
+
+/* Solicitud existente */
+.solicitud-existente {
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    box-shadow: var(--parking-sombra-media);
+    padding: 25px;
+    border-left: 4px solid var(--parking-color-primario);
+}
+
+.solicitud-existente h4 {
+    margin: 0 0 15px;
+    color: var(--parking-color-primario);
+}
+
+.info-solicitud p {
+    margin: 0 0 8px;
+    color: var(--parking-color-texto);
+}
+
+.info-lista-espera {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--parking-color-fondo);
+    border-radius: var(--parking-radio-borde);
+    text-align: center;
+    color: var(--parking-color-texto-claro);
+}
+
+/* ==========================================================================
+   Grid de Parkings
+   ========================================================================== */
+.flavor-parkings-grid {
+    display: grid;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.flavor-parkings-grid.columnas-2 { grid-template-columns: repeat(2, 1fr); }
+.flavor-parkings-grid.columnas-3 { grid-template-columns: repeat(3, 1fr); }
+.flavor-parkings-grid.columnas-4 { grid-template-columns: repeat(4, 1fr); }
+
+.parking-card {
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    box-shadow: var(--parking-sombra-suave);
+    overflow: hidden;
+    transition: var(--parking-transicion);
+}
+
+.parking-card:hover {
+    box-shadow: var(--parking-sombra-media);
+    transform: translateY(-2px);
+}
+
+.parking-imagen {
+    height: 150px;
+    overflow: hidden;
+    background: var(--parking-color-fondo);
+}
+
+.parking-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.parking-imagen .sin-imagen {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--parking-color-texto-claro);
+}
+
+.parking-imagen .sin-imagen .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.parking-info {
+    padding: 15px;
+}
+
+.parking-info h4 {
+    margin: 0 0 8px;
+    font-size: 1.125rem;
+    color: var(--parking-color-texto);
+}
+
+.parking-info .direccion {
+    margin: 0 0 10px;
+    font-size: 0.875rem;
+    color: var(--parking-color-texto-claro);
+}
+
+.disponibilidad-rapida {
+    margin-bottom: 10px;
+}
+
+.disponibilidad-rapida .plazas-libres {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #d1fae5;
+    color: #065f46;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.parking-precios {
+    display: flex;
+    gap: 10px;
+}
+
+.parking-precios .precio {
+    font-size: 0.875rem;
+    color: var(--parking-color-primario);
+    font-weight: 600;
+}
+
+.parking-acciones {
+    padding: 0 15px 15px;
+}
+
+/* ==========================================================================
+   Estadisticas
+   ========================================================================== */
+.flavor-parkings-estadisticas {
+    padding: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: var(--parking-radio-borde);
+    box-shadow: var(--parking-sombra-suave);
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-card .stat-valor {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--parking-color-primario);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-card .stat-etiqueta {
+    font-size: 0.875rem;
+    color: var(--parking-color-texto-claro);
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+.btn-reservar-plaza,
+.btn-enviar-solicitud,
+.btn-ver-parking,
+.btn-buscar-parking,
+.btn-login,
+.btn-login-reservar,
+.btn-cancelar-solicitud {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--parking-radio-borde);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--parking-transicion);
+    text-align: center;
+}
+
+.btn-reservar-plaza,
+.btn-enviar-solicitud,
+.btn-ver-parking,
+.btn-buscar-parking,
+.btn-login,
+.btn-login-reservar {
+    background: var(--parking-color-primario);
+    color: #fff;
+}
+
+.btn-reservar-plaza:hover,
+.btn-enviar-solicitud:hover,
+.btn-ver-parking:hover,
+.btn-buscar-parking:hover,
+.btn-login:hover,
+.btn-login-reservar:hover {
+    background: var(--parking-color-primario-hover);
+    transform: translateY(-1px);
+}
+
+.btn-cancelar-solicitud {
+    background: transparent;
+    border: 1px solid var(--parking-color-ocupada);
+    color: var(--parking-color-ocupada);
+}
+
+.btn-cancelar-solicitud:hover {
+    background: var(--parking-color-ocupada);
+    color: #fff;
+}
+
+/* ==========================================================================
+   Login Requerido
+   ========================================================================== */
+.flavor-parkings-login-requerido {
+    text-align: center;
+    padding: 40px 20px;
+    background: var(--parking-color-fondo);
+    border-radius: var(--parking-radio-borde);
+    margin: 20px 0;
+}
+
+.flavor-parkings-login-requerido p {
+    color: var(--parking-color-texto-claro);
+    margin-bottom: 15px;
+}
+
+/* ==========================================================================
+   Mensajes de Error
+   ========================================================================== */
+.flavor-parkings-error {
+    padding: 20px;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: var(--parking-radio-borde);
+    color: #991b1b;
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* ==========================================================================
+   Notificaciones Toast
+   ========================================================================== */
+.flavor-parkings-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: var(--parking-radio-borde);
+    background: #1f2937;
+    color: #fff;
+    box-shadow: var(--parking-sombra-fuerte);
+    z-index: 10000;
+    animation: toastIn 0.3s ease;
+}
+
+.flavor-parkings-toast.success {
+    background: var(--parking-color-libre);
+}
+
+.flavor-parkings-toast.error {
+    background: var(--parking-color-ocupada);
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   Loading Spinner
+   ========================================================================== */
+.flavor-parkings-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.spinner-parking {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--parking-color-borde);
+    border-top-color: var(--parking-color-primario);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .flavor-parkings-mapa-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .flavor-parkings-stats-rapidas {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .calendario-dias {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .disponibilidad-resumen {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flavor-parkings-grid.columnas-3,
+    .flavor-parkings-grid.columnas-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flavor-form .fila-doble {
+        grid-template-columns: 1fr;
+    }
+
+    .reserva-acciones {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .flavor-parkings-grid.columnas-2,
+    .flavor-parkings-grid.columnas-3,
+    .flavor-parkings-grid.columnas-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .calendario-dias {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .disponibilidad-resumen {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flavor-parkings-detalle-plaza {
+        width: 95%;
+    }
+}

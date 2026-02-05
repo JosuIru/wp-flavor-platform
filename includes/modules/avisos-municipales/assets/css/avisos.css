@@ -1,0 +1,885 @@
+/**
+ * Avisos Municipales - Estilos principales
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+:root {
+    --avisos-urgente-bg: #dc2626;
+    --avisos-urgente-text: #ffffff;
+    --avisos-urgente-border: #b91c1c;
+    --avisos-alta-bg: #f97316;
+    --avisos-alta-text: #ffffff;
+    --avisos-alta-border: #ea580c;
+    --avisos-media-bg: #eab308;
+    --avisos-media-text: #1f2937;
+    --avisos-media-border: #ca8a04;
+    --avisos-baja-bg: #22c55e;
+    --avisos-baja-text: #ffffff;
+    --avisos-baja-border: #16a34a;
+    --avisos-primary: #2563eb;
+    --avisos-primary-hover: #1d4ed8;
+    --avisos-gray-50: #f9fafb;
+    --avisos-gray-100: #f3f4f6;
+    --avisos-gray-200: #e5e7eb;
+    --avisos-gray-300: #d1d5db;
+    --avisos-gray-500: #6b7280;
+    --avisos-gray-700: #374151;
+    --avisos-gray-900: #111827;
+    --avisos-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --avisos-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --avisos-radius: 8px;
+    --avisos-radius-lg: 12px;
+    --avisos-transition: all 0.2s ease-in-out;
+}
+
+/* ==========================================================================
+   Contenedor principal
+   ========================================================================== */
+.avisos-municipales-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.avisos-municipales-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.avisos-municipales-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--avisos-gray-900);
+    margin: 0;
+}
+
+.avisos-municipales-subtitle {
+    font-size: 16px;
+    color: var(--avisos-gray-500);
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   Filtros y controles
+   ========================================================================== */
+.avisos-filtros {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--avisos-gray-50);
+    border-radius: var(--avisos-radius-lg);
+}
+
+.avisos-filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.avisos-filtro-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--avisos-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.avisos-filtro-select,
+.avisos-filtro-input {
+    padding: 10px 14px;
+    border: 1px solid var(--avisos-gray-200);
+    border-radius: var(--avisos-radius);
+    font-size: 14px;
+    background: #ffffff;
+    color: var(--avisos-gray-700);
+    min-width: 160px;
+    transition: var(--avisos-transition);
+}
+
+.avisos-filtro-select:focus,
+.avisos-filtro-input:focus {
+    outline: none;
+    border-color: var(--avisos-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.avisos-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--avisos-radius);
+    cursor: pointer;
+    transition: var(--avisos-transition);
+}
+
+.avisos-btn-primary {
+    background: var(--avisos-primary);
+    color: #ffffff;
+}
+
+.avisos-btn-primary:hover {
+    background: var(--avisos-primary-hover);
+}
+
+.avisos-btn-secondary {
+    background: var(--avisos-gray-100);
+    color: var(--avisos-gray-700);
+}
+
+.avisos-btn-secondary:hover {
+    background: var(--avisos-gray-200);
+}
+
+.avisos-btn-urgente {
+    background: var(--avisos-urgente-bg);
+    color: var(--avisos-urgente-text);
+}
+
+.avisos-btn-urgente:hover {
+    background: var(--avisos-urgente-border);
+}
+
+.avisos-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Lista de avisos
+   ========================================================================== */
+.avisos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.aviso-card {
+    background: #ffffff;
+    border-radius: var(--avisos-radius-lg);
+    box-shadow: var(--avisos-shadow);
+    overflow: hidden;
+    transition: var(--avisos-transition);
+    border-left: 4px solid var(--avisos-gray-200);
+}
+
+.aviso-card:hover {
+    box-shadow: var(--avisos-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.aviso-card.prioridad-urgente {
+    border-left-color: var(--avisos-urgente-bg);
+}
+
+.aviso-card.prioridad-alta {
+    border-left-color: var(--avisos-alta-bg);
+}
+
+.aviso-card.prioridad-media {
+    border-left-color: var(--avisos-media-bg);
+}
+
+.aviso-card.prioridad-baja {
+    border-left-color: var(--avisos-baja-bg);
+}
+
+.aviso-card.no-leido {
+    background: linear-gradient(to right, rgba(37, 99, 235, 0.05), transparent);
+}
+
+.aviso-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px 20px 0;
+    gap: 12px;
+}
+
+.aviso-card-body {
+    padding: 12px 20px 16px;
+}
+
+.aviso-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: var(--avisos-gray-50);
+    border-top: 1px solid var(--avisos-gray-100);
+}
+
+.aviso-titulo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--avisos-gray-900);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.aviso-titulo a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.aviso-titulo a:hover {
+    color: var(--avisos-primary);
+}
+
+.aviso-extracto {
+    font-size: 14px;
+    color: var(--avisos-gray-500);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.aviso-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--avisos-gray-500);
+}
+
+.aviso-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.aviso-meta-item svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ==========================================================================
+   Badges y etiquetas
+   ========================================================================== */
+.aviso-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.aviso-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+}
+
+.aviso-badge-urgente {
+    background: var(--avisos-urgente-bg);
+    color: var(--avisos-urgente-text);
+}
+
+.aviso-badge-alta {
+    background: var(--avisos-alta-bg);
+    color: var(--avisos-alta-text);
+}
+
+.aviso-badge-media {
+    background: var(--avisos-media-bg);
+    color: var(--avisos-media-text);
+}
+
+.aviso-badge-baja {
+    background: var(--avisos-baja-bg);
+    color: var(--avisos-baja-text);
+}
+
+.aviso-badge-categoria {
+    background: var(--avisos-gray-100);
+    color: var(--avisos-gray-700);
+}
+
+.aviso-badge-nuevo {
+    background: var(--avisos-primary);
+    color: #ffffff;
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ==========================================================================
+   Vista detalle de aviso
+   ========================================================================== */
+.aviso-detalle {
+    background: #ffffff;
+    border-radius: var(--avisos-radius-lg);
+    box-shadow: var(--avisos-shadow-lg);
+    overflow: hidden;
+}
+
+.aviso-detalle-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--avisos-gray-100);
+}
+
+.aviso-detalle-header.urgente {
+    background: linear-gradient(135deg, var(--avisos-urgente-bg), #ef4444);
+    color: #ffffff;
+}
+
+.aviso-detalle-header.urgente .aviso-detalle-titulo {
+    color: #ffffff;
+}
+
+.aviso-detalle-titulo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--avisos-gray-900);
+    margin: 0 0 12px;
+}
+
+.aviso-detalle-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 14px;
+}
+
+.aviso-detalle-body {
+    padding: 24px;
+}
+
+.aviso-detalle-contenido {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--avisos-gray-700);
+}
+
+.aviso-detalle-contenido p {
+    margin-bottom: 16px;
+}
+
+.aviso-detalle-adjuntos {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--avisos-gray-100);
+}
+
+.aviso-detalle-adjuntos-titulo {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--avisos-gray-700);
+    margin-bottom: 12px;
+}
+
+.aviso-adjunto-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.aviso-adjunto-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--avisos-gray-50);
+    border-radius: var(--avisos-radius);
+    font-size: 13px;
+    color: var(--avisos-gray-700);
+    text-decoration: none;
+    transition: var(--avisos-transition);
+}
+
+.aviso-adjunto-item:hover {
+    background: var(--avisos-gray-100);
+}
+
+/* ==========================================================================
+   Confirmacion de lectura
+   ========================================================================== */
+.aviso-confirmacion {
+    margin-top: 24px;
+    padding: 20px;
+    background: var(--avisos-gray-50);
+    border-radius: var(--avisos-radius);
+    text-align: center;
+}
+
+.aviso-confirmacion-texto {
+    font-size: 14px;
+    color: var(--avisos-gray-500);
+    margin-bottom: 12px;
+}
+
+.aviso-confirmado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--avisos-baja-bg);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Formulario de suscripcion
+   ========================================================================== */
+.avisos-suscripcion {
+    background: linear-gradient(135deg, var(--avisos-primary), #3b82f6);
+    border-radius: var(--avisos-radius-lg);
+    padding: 32px;
+    color: #ffffff;
+}
+
+.avisos-suscripcion-titulo {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 8px;
+}
+
+.avisos-suscripcion-descripcion {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 24px;
+}
+
+.avisos-suscripcion-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.avisos-suscripcion-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.avisos-suscripcion-input {
+    padding: 12px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--avisos-radius);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 14px;
+    transition: var(--avisos-transition);
+}
+
+.avisos-suscripcion-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.avisos-suscripcion-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.avisos-suscripcion-categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.avisos-suscripcion-categoria {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--avisos-radius);
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--avisos-transition);
+}
+
+.avisos-suscripcion-categoria:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.avisos-suscripcion-categoria input {
+    accent-color: #ffffff;
+}
+
+.avisos-suscripcion-submit {
+    padding: 14px 28px;
+    background: #ffffff;
+    color: var(--avisos-primary);
+    border: none;
+    border-radius: var(--avisos-radius);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--avisos-transition);
+    align-self: flex-start;
+}
+
+.avisos-suscripcion-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   Notificaciones push UI
+   ========================================================================== */
+.avisos-push-prompt {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #ffffff;
+    border-radius: var(--avisos-radius-lg);
+    box-shadow: var(--avisos-shadow-lg);
+    padding: 20px;
+    max-width: 360px;
+    z-index: 9999;
+    animation: slide-up 0.3s ease-out;
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.avisos-push-prompt-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.avisos-push-prompt-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--avisos-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.avisos-push-prompt-titulo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--avisos-gray-900);
+}
+
+.avisos-push-prompt-texto {
+    font-size: 14px;
+    color: var(--avisos-gray-500);
+    margin-bottom: 16px;
+}
+
+.avisos-push-prompt-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.avisos-push-prompt-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--avisos-gray-500);
+    padding: 4px;
+}
+
+/* ==========================================================================
+   Zona selector
+   ========================================================================== */
+.avisos-zonas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.avisos-zona-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #ffffff;
+    border: 2px solid var(--avisos-gray-200);
+    border-radius: var(--avisos-radius);
+    cursor: pointer;
+    transition: var(--avisos-transition);
+}
+
+.avisos-zona-item:hover {
+    border-color: var(--avisos-primary);
+}
+
+.avisos-zona-item.active {
+    border-color: var(--avisos-primary);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.avisos-zona-item input {
+    accent-color: var(--avisos-primary);
+}
+
+.avisos-zona-nombre {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--avisos-gray-700);
+}
+
+.avisos-zona-count {
+    font-size: 12px;
+    color: var(--avisos-gray-500);
+    margin-left: auto;
+}
+
+/* ==========================================================================
+   Historial
+   ========================================================================== */
+.avisos-historial {
+    margin-top: 32px;
+}
+
+.avisos-historial-titulo {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--avisos-gray-900);
+    margin-bottom: 16px;
+}
+
+.avisos-historial-timeline {
+    position: relative;
+    padding-left: 24px;
+}
+
+.avisos-historial-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--avisos-gray-200);
+}
+
+.avisos-historial-item {
+    position: relative;
+    padding-bottom: 24px;
+}
+
+.avisos-historial-item::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    background: var(--avisos-primary);
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+}
+
+.avisos-historial-fecha {
+    font-size: 12px;
+    color: var(--avisos-gray-500);
+    margin-bottom: 4px;
+}
+
+.avisos-historial-contenido {
+    background: #ffffff;
+    padding: 16px;
+    border-radius: var(--avisos-radius);
+    box-shadow: var(--avisos-shadow);
+}
+
+/* ==========================================================================
+   Loading y estados
+   ========================================================================== */
+.avisos-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    color: var(--avisos-gray-500);
+}
+
+.avisos-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--avisos-gray-200);
+    border-top-color: var(--avisos-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.avisos-empty {
+    text-align: center;
+    padding: 48px;
+    color: var(--avisos-gray-500);
+}
+
+.avisos-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.avisos-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 16px;
+    border-radius: var(--avisos-radius);
+    margin-bottom: 16px;
+}
+
+.avisos-success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
+    padding: 16px;
+    border-radius: var(--avisos-radius);
+    margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   Paginacion
+   ========================================================================== */
+.avisos-paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+}
+
+.avisos-paginacion-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--avisos-gray-200);
+    border-radius: var(--avisos-radius);
+    background: #ffffff;
+    color: var(--avisos-gray-700);
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--avisos-transition);
+}
+
+.avisos-paginacion-btn:hover {
+    border-color: var(--avisos-primary);
+    color: var(--avisos-primary);
+}
+
+.avisos-paginacion-btn.active {
+    background: var(--avisos-primary);
+    border-color: var(--avisos-primary);
+    color: #ffffff;
+}
+
+.avisos-paginacion-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .avisos-municipales-container {
+        padding: 16px;
+    }
+
+    .avisos-municipales-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .avisos-filtros {
+        flex-direction: column;
+    }
+
+    .avisos-filtro-select,
+    .avisos-filtro-input {
+        width: 100%;
+    }
+
+    .aviso-card-header {
+        flex-direction: column;
+    }
+
+    .aviso-card-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .avisos-suscripcion {
+        padding: 24px;
+    }
+
+    .avisos-suscripcion-submit {
+        width: 100%;
+    }
+
+    .avisos-push-prompt {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        max-width: none;
+    }
+
+    .avisos-zonas {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .avisos-municipales-title {
+        font-size: 22px;
+    }
+
+    .aviso-titulo {
+        font-size: 16px;
+    }
+
+    .aviso-detalle-titulo {
+        font-size: 20px;
+    }
+
+    .aviso-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
