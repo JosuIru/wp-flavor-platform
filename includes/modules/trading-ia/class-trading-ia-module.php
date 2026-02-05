@@ -898,6 +898,1631 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
     }
 
     // =========================================================================
+    // REST API Routes
+    // =========================================================================
+
+    /**
+     * Registra las rutas REST API
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // Rutas publicas (solo lectura)
+        register_rest_route($namespace, '/trading-ia/mercado', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_mercado'),
+            'permission_callback' => '__return_true',
+        ));
+
+        register_rest_route($namespace, '/trading-ia/mercado/(?P<token>[a-zA-Z]+)', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_token'),
+            'permission_callback' => '__return_true',
+        ));
+
+        // Rutas que requieren autenticacion
+        register_rest_route($namespace, '/trading-ia/estado', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_estado'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/portfolio', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_portfolio'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/indicadores/(?P<token>[a-zA-Z]+)', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_indicadores'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/comprar', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'api_ejecutar_compra'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/vender', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'api_ejecutar_venta'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/bot/iniciar', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'api_iniciar_bot'),
+            'permission_callback' => array($this, 'check_user_can_manage'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/bot/detener', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'api_detener_bot'),
+            'permission_callback' => array($this, 'check_user_can_manage'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/historial', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_historial'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/reglas', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_reglas'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/reglas', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'api_crear_regla'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/reglas/(?P<id>\d+)', array(
+            'methods'             => 'DELETE',
+            'callback'            => array($this, 'api_eliminar_regla'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/parametros', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'api_actualizar_parametros'),
+            'permission_callback' => array($this, 'check_user_can_manage'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/reset', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'api_reset_paper_trading'),
+            'permission_callback' => array($this, 'check_user_can_manage'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/riesgo', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_estado_riesgo'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/estadisticas', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_estadisticas'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/alertas', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'api_obtener_alertas'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+
+        register_rest_route($namespace, '/trading-ia/alertas', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'api_crear_alerta'),
+            'permission_callback' => array($this, 'check_user_logged_in'),
+        ));
+    }
+
+    /**
+     * Verifica si el usuario esta logueado
+     *
+     * @return bool
+     */
+    public function check_user_logged_in() {
+        return is_user_logged_in();
+    }
+
+    /**
+     * Verifica si el usuario puede gestionar el trading
+     *
+     * @return bool
+     */
+    public function check_user_can_manage() {
+        return current_user_can('manage_options') || current_user_can('edit_posts');
+    }
+
+    // =========================================================================
+    // REST API Callbacks
+    // =========================================================================
+
+    /**
+     * API: Obtener datos de mercado
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_mercado($request) {
+        $tokens_param = $request->get_param('tokens');
+        $resultado = $this->action_obtener_datos_mercado(array('tokens' => $tokens_param));
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener datos de un token especifico
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_token($request) {
+        $token = $request->get_param('token');
+        $resultado = $this->action_obtener_indicadores(array('token' => $token));
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener estado del bot
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_estado($request) {
+        $resultado = $this->action_obtener_estado(array());
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener portfolio
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_portfolio($request) {
+        $resultado = $this->action_obtener_portfolio(array());
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener indicadores de un token
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_indicadores($request) {
+        $token = $request->get_param('token');
+        $resultado = $this->action_obtener_indicadores(array('token' => $token));
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Ejecutar compra
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_ejecutar_compra($request) {
+        $params = $request->get_json_params();
+        $resultado = $this->action_ejecutar_compra_manual(array(
+            'token'       => $params['token'] ?? '',
+            'cantidad_usd' => $params['cantidad_usd'] ?? 0,
+        ));
+
+        if ($resultado['success']) {
+            $this->integrar_gamificacion_compra($resultado);
+            $this->enviar_notificacion_trade('compra', $resultado);
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Ejecutar venta
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_ejecutar_venta($request) {
+        $params = $request->get_json_params();
+        $resultado = $this->action_ejecutar_venta_manual(array(
+            'token'    => $params['token'] ?? '',
+            'cantidad' => $params['cantidad'] ?? null,
+        ));
+
+        if ($resultado['success']) {
+            $this->integrar_gamificacion_venta($resultado);
+            $this->enviar_notificacion_trade('venta', $resultado);
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Iniciar bot
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_iniciar_bot($request) {
+        $resultado = $this->action_iniciar_bot(array());
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Detener bot
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_detener_bot($request) {
+        $resultado = $this->action_detener_bot(array());
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener historial de trades
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_historial($request) {
+        $limite = $request->get_param('limite') ?: 20;
+        $resultado = $this->action_obtener_historial_trades(array('limite' => $limite));
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener reglas
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_reglas($request) {
+        $resultado = $this->action_obtener_reglas(array());
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Crear regla
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_crear_regla($request) {
+        $params = $request->get_json_params();
+        $resultado = $this->action_crear_regla($params);
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Eliminar regla
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_eliminar_regla($request) {
+        $regla_id = $request->get_param('id');
+        $resultado = $this->action_eliminar_regla(array('regla_id' => $regla_id));
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Actualizar parametros
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_actualizar_parametros($request) {
+        $params = $request->get_json_params();
+        $resultado = $this->action_actualizar_parametros(array('parametros' => $params));
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Reset paper trading
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_reset_paper_trading($request) {
+        $resultado = $this->action_reset_paper_trading(array());
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Estado de riesgo
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_estado_riesgo($request) {
+        $resultado = $this->action_obtener_estado_riesgo(array());
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener estadisticas del usuario
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_estadisticas($request) {
+        $usuario_id = get_current_user_id();
+        $estadisticas = $this->calcular_estadisticas_usuario($usuario_id);
+        return rest_ensure_response(array(
+            'success'      => true,
+            'estadisticas' => $estadisticas,
+        ));
+    }
+
+    /**
+     * API: Obtener alertas de precio
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_obtener_alertas($request) {
+        $usuario_id = get_current_user_id();
+        $alertas = $this->obtener_alertas_usuario($usuario_id);
+        return rest_ensure_response(array(
+            'success' => true,
+            'alertas' => $alertas,
+        ));
+    }
+
+    /**
+     * API: Crear alerta de precio
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function api_crear_alerta($request) {
+        $params = $request->get_json_params();
+        $resultado = $this->crear_alerta_precio(
+            $params['token'] ?? '',
+            $params['tipo'] ?? 'above',
+            $params['precio'] ?? 0
+        );
+        return rest_ensure_response($resultado);
+    }
+
+    // =========================================================================
+    // AJAX Handlers
+    // =========================================================================
+
+    /**
+     * AJAX: Obtener estado
+     */
+    public function ajax_obtener_estado() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+        $resultado = $this->action_obtener_estado(array());
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Obtener portfolio
+     */
+    public function ajax_obtener_portfolio() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+        $resultado = $this->action_obtener_portfolio(array());
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Obtener mercado
+     */
+    public function ajax_obtener_mercado() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+        $tokens = isset($_POST['tokens']) ? sanitize_text_field($_POST['tokens']) : '';
+        $resultado = $this->action_obtener_datos_mercado(array('tokens' => $tokens));
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Obtener indicadores
+     */
+    public function ajax_obtener_indicadores() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+        $token = isset($_POST['token']) ? sanitize_text_field($_POST['token']) : '';
+        $resultado = $this->action_obtener_indicadores(array('token' => $token));
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Ejecutar compra
+     */
+    public function ajax_ejecutar_compra() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        $token = isset($_POST['token']) ? sanitize_text_field($_POST['token']) : '';
+        $cantidad_usd = isset($_POST['cantidad_usd']) ? floatval($_POST['cantidad_usd']) : 0;
+
+        $resultado = $this->action_ejecutar_compra_manual(array(
+            'token'       => $token,
+            'cantidad_usd' => $cantidad_usd,
+        ));
+
+        if ($resultado['success']) {
+            $this->integrar_gamificacion_compra($resultado);
+            $this->enviar_notificacion_trade('compra', $resultado);
+        }
+
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Ejecutar venta
+     */
+    public function ajax_ejecutar_venta() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        $token = isset($_POST['token']) ? sanitize_text_field($_POST['token']) : '';
+        $cantidad = isset($_POST['cantidad']) ? floatval($_POST['cantidad']) : null;
+
+        $resultado = $this->action_ejecutar_venta_manual(array(
+            'token'    => $token,
+            'cantidad' => $cantidad,
+        ));
+
+        if ($resultado['success']) {
+            $this->integrar_gamificacion_venta($resultado);
+            $this->enviar_notificacion_trade('venta', $resultado);
+        }
+
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Iniciar bot
+     */
+    public function ajax_iniciar_bot() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')));
+        }
+
+        $resultado = $this->action_iniciar_bot(array());
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Detener bot
+     */
+    public function ajax_detener_bot() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')));
+        }
+
+        $resultado = $this->action_detener_bot(array());
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Historial de trades
+     */
+    public function ajax_historial_trades() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+        $limite = isset($_POST['limite']) ? absint($_POST['limite']) : 20;
+        $resultado = $this->action_obtener_historial_trades(array('limite' => $limite));
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Obtener reglas
+     */
+    public function ajax_obtener_reglas() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+        $resultado = $this->action_obtener_reglas(array());
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Crear regla
+     */
+    public function ajax_crear_regla() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        $resultado = $this->action_crear_regla(array(
+            'nombre'      => isset($_POST['nombre']) ? sanitize_text_field($_POST['nombre']) : '',
+            'token'       => isset($_POST['token']) ? sanitize_text_field($_POST['token']) : '*',
+            'indicador'   => isset($_POST['indicador']) ? sanitize_text_field($_POST['indicador']) : 'precio',
+            'operador'    => isset($_POST['operador']) ? sanitize_text_field($_POST['operador']) : '>',
+            'valor'       => isset($_POST['valor']) ? floatval($_POST['valor']) : 0,
+            'accion_tipo' => isset($_POST['accion_tipo']) ? sanitize_text_field($_POST['accion_tipo']) : 'alerta',
+            'razon'       => isset($_POST['razon']) ? sanitize_text_field($_POST['razon']) : '',
+        ));
+
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Eliminar regla
+     */
+    public function ajax_eliminar_regla() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+        $regla_id = isset($_POST['regla_id']) ? sanitize_text_field($_POST['regla_id']) : '';
+        $resultado = $this->action_eliminar_regla(array('regla_id' => $regla_id));
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Actualizar parametros
+     */
+    public function ajax_actualizar_parametros() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')));
+        }
+
+        $parametros = isset($_POST['parametros']) ? $_POST['parametros'] : array();
+        $resultado = $this->action_actualizar_parametros(array('parametros' => $parametros));
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Reset paper trading
+     */
+    public function ajax_reset_paper_trading() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')));
+        }
+
+        $resultado = $this->action_reset_paper_trading(array());
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Estado de riesgo
+     */
+    public function ajax_estado_riesgo() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+        $resultado = $this->action_obtener_estado_riesgo(array());
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Agregar token a monitoreo
+     */
+    public function ajax_agregar_token() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        $token_nuevo = isset($_POST['token']) ? strtoupper(sanitize_text_field($_POST['token'])) : '';
+
+        if (empty($token_nuevo)) {
+            wp_send_json(array('success' => false, 'error' => __('Token invalido', 'flavor-chat-ia')));
+        }
+
+        $tokens_actuales = $this->get_setting('tokens_monitoreados', array());
+
+        if (in_array($token_nuevo, $tokens_actuales, true)) {
+            wp_send_json(array('success' => false, 'error' => __('El token ya esta en la lista', 'flavor-chat-ia')));
+        }
+
+        $tokens_actuales[] = $token_nuevo;
+        $this->update_setting('tokens_monitoreados', $tokens_actuales);
+
+        wp_send_json(array(
+            'success' => true,
+            'mensaje' => sprintf(__('Token %s agregado al monitoreo', 'flavor-chat-ia'), $token_nuevo),
+            'tokens'  => $tokens_actuales,
+        ));
+    }
+
+    /**
+     * AJAX: Eliminar token del monitoreo
+     */
+    public function ajax_eliminar_token() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        $token_eliminar = isset($_POST['token']) ? strtoupper(sanitize_text_field($_POST['token'])) : '';
+
+        if (empty($token_eliminar)) {
+            wp_send_json(array('success' => false, 'error' => __('Token invalido', 'flavor-chat-ia')));
+        }
+
+        $tokens_actuales = $this->get_setting('tokens_monitoreados', array());
+        $tokens_filtrados = array_filter($tokens_actuales, function($token) use ($token_eliminar) {
+            return $token !== $token_eliminar;
+        });
+        $tokens_filtrados = array_values($tokens_filtrados);
+
+        $this->update_setting('tokens_monitoreados', $tokens_filtrados);
+
+        wp_send_json(array(
+            'success' => true,
+            'mensaje' => sprintf(__('Token %s eliminado del monitoreo', 'flavor-chat-ia'), $token_eliminar),
+            'tokens'  => $tokens_filtrados,
+        ));
+    }
+
+    /**
+     * AJAX: Exportar historial de trades
+     */
+    public function ajax_exportar_historial() {
+        check_ajax_referer('trading_ia_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+
+        global $wpdb;
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+
+        $trades = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_trades WHERE usuario_id = %d ORDER BY timestamp DESC",
+            $usuario_id
+        ), ARRAY_A);
+
+        if (empty($trades)) {
+            wp_send_json(array('success' => false, 'error' => __('No hay trades para exportar', 'flavor-chat-ia')));
+        }
+
+        $csv_data = "ID,Tipo,Token,Cantidad,Precio,Total USD,Comision,Ganancia/Perdida,Fecha\n";
+        foreach ($trades as $trade) {
+            $csv_data .= sprintf(
+                "%d,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                $trade['id'],
+                $trade['tipo'],
+                $trade['token'],
+                $trade['cantidad'],
+                $trade['precio'],
+                $trade['total_usd'],
+                $trade['comision'],
+                $trade['pnl'] ?? '0',
+                $trade['timestamp']
+            );
+        }
+
+        wp_send_json(array(
+            'success'  => true,
+            'csv'      => $csv_data,
+            'filename' => 'trading-ia-historial-' . date('Y-m-d') . '.csv',
+        ));
+    }
+
+    // =========================================================================
+    // Shortcodes
+    // =========================================================================
+
+    /**
+     * Registra los shortcodes del modulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('trading_ia_dashboard', array($this, 'shortcode_dashboard'));
+        add_shortcode('trading_ia_portfolio', array($this, 'shortcode_portfolio'));
+        add_shortcode('trading_ia_mercado', array($this, 'shortcode_mercado'));
+        add_shortcode('trading_ia_historial', array($this, 'shortcode_historial'));
+        add_shortcode('trading_ia_panel_control', array($this, 'shortcode_panel_control'));
+        add_shortcode('trading_ia_widget_precio', array($this, 'shortcode_widget_precio'));
+    }
+
+    /**
+     * Shortcode: Dashboard completo de trading
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_dashboard($atts) {
+        $atts = shortcode_atts(array(
+            'mostrar_graficos' => 'true',
+            'mostrar_reglas'   => 'true',
+        ), $atts);
+
+        if (!is_user_logged_in()) {
+            return '<div class="trading-ia-login-required">' .
+                   '<p>' . __('Debes iniciar sesion para ver el dashboard de trading.', 'flavor-chat-ia') . '</p>' .
+                   '<a href="' . wp_login_url(get_permalink()) . '" class="button">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
+                   '</div>';
+        }
+
+        $this->enqueue_frontend_assets();
+
+        $estado = $this->action_obtener_estado(array());
+        $portfolio = $this->action_obtener_portfolio(array());
+
+        ob_start();
+        ?>
+        <div class="trading-ia-dashboard" data-mostrar-graficos="<?php echo esc_attr($atts['mostrar_graficos']); ?>">
+            <div class="trading-ia-header">
+                <h2><?php _e('Trading IA - Paper Trading', 'flavor-chat-ia'); ?></h2>
+                <div class="trading-ia-bot-status <?php echo $estado['estado']['bot_activo'] ? 'activo' : 'inactivo'; ?>">
+                    <span class="status-indicator"></span>
+                    <span class="status-text">
+                        <?php echo $estado['estado']['bot_activo'] ? __('Bot Activo', 'flavor-chat-ia') : __('Bot Inactivo', 'flavor-chat-ia'); ?>
+                    </span>
+                </div>
+            </div>
+
+            <div class="trading-ia-grid">
+                <div class="trading-ia-card balance-card">
+                    <h3><?php _e('Balance', 'flavor-chat-ia'); ?></h3>
+                    <div class="balance-total">
+                        $<?php echo number_format($portfolio['portfolio']['balance_total_usd'] ?? 0, 2); ?>
+                    </div>
+                    <div class="balance-details">
+                        <span class="disponible">
+                            <?php _e('Disponible:', 'flavor-chat-ia'); ?>
+                            $<?php echo number_format($portfolio['portfolio']['balance_disponible'] ?? 0, 2); ?>
+                        </span>
+                        <span class="pnl <?php echo ($portfolio['portfolio']['pnl_total'] ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
+                            <?php _e('P&L:', 'flavor-chat-ia'); ?>
+                            <?php echo ($portfolio['portfolio']['pnl_total'] ?? 0) >= 0 ? '+' : ''; ?>$<?php echo number_format($portfolio['portfolio']['pnl_total'] ?? 0, 2); ?>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="trading-ia-card stats-card">
+                    <h3><?php _e('Estadisticas', 'flavor-chat-ia'); ?></h3>
+                    <div class="stats-grid">
+                        <div class="stat">
+                            <span class="label"><?php _e('Posiciones', 'flavor-chat-ia'); ?></span>
+                            <span class="value"><?php echo count($portfolio['portfolio']['posiciones'] ?? array()); ?></span>
+                        </div>
+                        <div class="stat">
+                            <span class="label"><?php _e('Agresividad', 'flavor-chat-ia'); ?></span>
+                            <span class="value"><?php echo $estado['estado']['agresividad']; ?>/10</span>
+                        </div>
+                        <div class="stat">
+                            <span class="label"><?php _e('Confianza min.', 'flavor-chat-ia'); ?></span>
+                            <span class="value"><?php echo $estado['estado']['confianza_minima']; ?>%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trading-ia-card posiciones-card">
+                    <h3><?php _e('Posiciones Abiertas', 'flavor-chat-ia'); ?></h3>
+                    <div class="posiciones-lista">
+                        <?php if (!empty($portfolio['portfolio']['posiciones'])): ?>
+                            <?php foreach ($portfolio['portfolio']['posiciones'] as $posicion): ?>
+                                <div class="posicion-item">
+                                    <span class="token"><?php echo esc_html($posicion['token']); ?></span>
+                                    <span class="cantidad"><?php echo number_format($posicion['cantidad'], 6); ?></span>
+                                    <span class="valor">$<?php echo number_format($posicion['valor_actual'] ?? 0, 2); ?></span>
+                                    <span class="pnl <?php echo ($posicion['pnl'] ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
+                                        <?php echo ($posicion['pnl'] ?? 0) >= 0 ? '+' : ''; ?><?php echo number_format($posicion['pnl_porcentaje'] ?? 0, 2); ?>%
+                                    </span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="sin-posiciones"><?php _e('Sin posiciones abiertas', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="trading-ia-card trading-form-card">
+                    <h3><?php _e('Operar', 'flavor-chat-ia'); ?></h3>
+                    <form class="trading-form" id="trading-ia-form">
+                        <div class="form-row">
+                            <label for="trading-token"><?php _e('Token', 'flavor-chat-ia'); ?></label>
+                            <select id="trading-token" name="token">
+                                <?php foreach ($estado['estado']['tokens_monitoreados'] as $token): ?>
+                                    <option value="<?php echo esc_attr($token); ?>"><?php echo esc_html($token); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <label for="trading-cantidad"><?php _e('Cantidad USD', 'flavor-chat-ia'); ?></label>
+                            <input type="number" id="trading-cantidad" name="cantidad_usd" step="0.01" min="1" placeholder="100.00">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-comprar" data-action="comprar"><?php _e('Comprar', 'flavor-chat-ia'); ?></button>
+                            <button type="button" class="btn-vender" data-action="vender"><?php _e('Vender Todo', 'flavor-chat-ia'); ?></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Portfolio del usuario
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_portfolio($atts) {
+        if (!is_user_logged_in()) {
+            return '<p class="trading-ia-login-required">' . __('Inicia sesion para ver tu portfolio.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $this->enqueue_frontend_assets();
+        $portfolio = $this->action_obtener_portfolio(array());
+
+        ob_start();
+        ?>
+        <div class="trading-ia-portfolio">
+            <h3><?php _e('Mi Portfolio', 'flavor-chat-ia'); ?></h3>
+            <div class="portfolio-resumen">
+                <div class="balance-total">
+                    <span class="label"><?php _e('Balance Total', 'flavor-chat-ia'); ?></span>
+                    <span class="valor">$<?php echo number_format($portfolio['portfolio']['balance_total_usd'] ?? 0, 2); ?></span>
+                </div>
+                <div class="pnl-total">
+                    <span class="label"><?php _e('Ganancia/Perdida', 'flavor-chat-ia'); ?></span>
+                    <span class="valor <?php echo ($portfolio['portfolio']['pnl_total'] ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
+                        <?php echo ($portfolio['portfolio']['pnl_total'] ?? 0) >= 0 ? '+' : ''; ?>$<?php echo number_format($portfolio['portfolio']['pnl_total'] ?? 0, 2); ?>
+                    </span>
+                </div>
+            </div>
+            <table class="portfolio-tabla">
+                <thead>
+                    <tr>
+                        <th><?php _e('Token', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Precio Entrada', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Precio Actual', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Valor', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('P&L', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($portfolio['portfolio']['posiciones'])): ?>
+                        <?php foreach ($portfolio['portfolio']['posiciones'] as $posicion): ?>
+                            <tr>
+                                <td><?php echo esc_html($posicion['token']); ?></td>
+                                <td><?php echo number_format($posicion['cantidad'], 6); ?></td>
+                                <td>$<?php echo number_format($posicion['precio_entrada'] ?? 0, 6); ?></td>
+                                <td>$<?php echo number_format($posicion['precio_actual'] ?? 0, 6); ?></td>
+                                <td>$<?php echo number_format($posicion['valor_actual'] ?? 0, 2); ?></td>
+                                <td class="<?php echo ($posicion['pnl'] ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
+                                    <?php echo ($posicion['pnl'] ?? 0) >= 0 ? '+' : ''; ?><?php echo number_format($posicion['pnl_porcentaje'] ?? 0, 2); ?>%
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" class="sin-datos"><?php _e('No tienes posiciones abiertas', 'flavor-chat-ia'); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Precios de mercado
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_mercado($atts) {
+        $atts = shortcode_atts(array(
+            'tokens' => 'SOL,BONK,JUP,WIF,JTO',
+        ), $atts);
+
+        $this->enqueue_frontend_assets();
+        $mercado = $this->action_obtener_datos_mercado(array('tokens' => $atts['tokens']));
+
+        ob_start();
+        ?>
+        <div class="trading-ia-mercado">
+            <h3><?php _e('Precios de Mercado', 'flavor-chat-ia'); ?></h3>
+            <div class="mercado-grid">
+                <?php if (!empty($mercado['mercado'])): ?>
+                    <?php foreach ($mercado['mercado'] as $token => $datos): ?>
+                        <div class="token-card">
+                            <div class="token-header">
+                                <span class="token-nombre"><?php echo esc_html($token); ?></span>
+                                <span class="token-cambio <?php echo ($datos['cambio_24h'] ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
+                                    <?php echo ($datos['cambio_24h'] ?? 0) >= 0 ? '+' : ''; ?><?php echo number_format($datos['cambio_24h'] ?? 0, 2); ?>%
+                                </span>
+                            </div>
+                            <div class="token-precio">
+                                $<?php echo number_format($datos['precio_usd'] ?? 0, $datos['precio_usd'] < 1 ? 8 : 2); ?>
+                            </div>
+                            <div class="token-volumen">
+                                <?php _e('Vol:', 'flavor-chat-ia'); ?> $<?php echo $this->formatear_numero_grande($datos['volumen_24h'] ?? 0); ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p><?php _e('No se pudieron cargar los datos del mercado', 'flavor-chat-ia'); ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Historial de trades
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_historial($atts) {
+        $atts = shortcode_atts(array(
+            'limite' => 10,
+        ), $atts);
+
+        if (!is_user_logged_in()) {
+            return '<p class="trading-ia-login-required">' . __('Inicia sesion para ver tu historial.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $this->enqueue_frontend_assets();
+        $historial = $this->action_obtener_historial_trades(array('limite' => intval($atts['limite'])));
+
+        ob_start();
+        ?>
+        <div class="trading-ia-historial">
+            <h3><?php _e('Historial de Operaciones', 'flavor-chat-ia'); ?></h3>
+            <table class="historial-tabla">
+                <thead>
+                    <tr>
+                        <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Token', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Precio', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Total', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($historial['trades'])): ?>
+                        <?php foreach ($historial['trades'] as $trade): ?>
+                            <tr class="trade-<?php echo esc_attr($trade['tipo']); ?>">
+                                <td><?php echo esc_html(date('d/m/Y H:i', strtotime($trade['timestamp']))); ?></td>
+                                <td class="tipo-<?php echo esc_attr($trade['tipo']); ?>">
+                                    <?php echo $trade['tipo'] === 'compra' ? __('Compra', 'flavor-chat-ia') : __('Venta', 'flavor-chat-ia'); ?>
+                                </td>
+                                <td><?php echo esc_html($trade['token']); ?></td>
+                                <td><?php echo number_format($trade['cantidad'], 6); ?></td>
+                                <td>$<?php echo number_format($trade['precio'], 6); ?></td>
+                                <td>$<?php echo number_format($trade['total_usd'], 2); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" class="sin-datos"><?php _e('No hay operaciones registradas', 'flavor-chat-ia'); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Panel de control (admin)
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_panel_control($atts) {
+        if (!current_user_can('manage_options')) {
+            return '<p class="trading-ia-no-permisos">' . __('No tienes permisos para acceder al panel de control.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $this->enqueue_frontend_assets();
+        $estado = $this->action_obtener_estado(array());
+
+        ob_start();
+        ?>
+        <div class="trading-ia-panel-control">
+            <h3><?php _e('Panel de Control - Trading IA', 'flavor-chat-ia'); ?></h3>
+
+            <div class="panel-seccion bot-control">
+                <h4><?php _e('Control del Bot', 'flavor-chat-ia'); ?></h4>
+                <div class="bot-status">
+                    <span class="status-indicator <?php echo $estado['estado']['bot_activo'] ? 'activo' : 'inactivo'; ?>"></span>
+                    <span><?php echo $estado['estado']['bot_activo'] ? __('Bot Activo', 'flavor-chat-ia') : __('Bot Inactivo', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="bot-actions">
+                    <button class="btn-iniciar-bot" <?php echo $estado['estado']['bot_activo'] ? 'disabled' : ''; ?>>
+                        <?php _e('Iniciar Bot', 'flavor-chat-ia'); ?>
+                    </button>
+                    <button class="btn-detener-bot" <?php echo !$estado['estado']['bot_activo'] ? 'disabled' : ''; ?>>
+                        <?php _e('Detener Bot', 'flavor-chat-ia'); ?>
+                    </button>
+                    <button class="btn-reset" onclick="return confirm('<?php _e('Estas seguro? Se borrara todo el historial.', 'flavor-chat-ia'); ?>')">
+                        <?php _e('Reset Simulacion', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel-seccion parametros">
+                <h4><?php _e('Parametros de Trading', 'flavor-chat-ia'); ?></h4>
+                <form class="parametros-form" id="trading-ia-parametros-form">
+                    <div class="form-row">
+                        <label><?php _e('Agresividad (1-10)', 'flavor-chat-ia'); ?></label>
+                        <input type="range" name="agresividad" min="1" max="10" value="<?php echo esc_attr($estado['estado']['agresividad']); ?>">
+                        <span class="valor-actual"><?php echo $estado['estado']['agresividad']; ?></span>
+                    </div>
+                    <div class="form-row">
+                        <label><?php _e('Intervalo analisis (seg)', 'flavor-chat-ia'); ?></label>
+                        <input type="number" name="intervalo_analisis" min="30" max="300" value="<?php echo esc_attr($estado['estado']['intervalo_analisis']); ?>">
+                    </div>
+                    <div class="form-row">
+                        <label><?php _e('Confianza minima (%)', 'flavor-chat-ia'); ?></label>
+                        <input type="number" name="confianza_minima_trade" min="30" max="90" value="<?php echo esc_attr($estado['estado']['confianza_minima']); ?>">
+                    </div>
+                    <div class="form-row">
+                        <label><?php _e('Auto-ajuste', 'flavor-chat-ia'); ?></label>
+                        <input type="checkbox" name="auto_ajuste_enabled" <?php checked($estado['estado']['auto_ajuste']['habilitado'] ?? false); ?>>
+                    </div>
+                    <button type="submit" class="btn-guardar-parametros"><?php _e('Guardar Parametros', 'flavor-chat-ia'); ?></button>
+                </form>
+            </div>
+
+            <div class="panel-seccion tokens">
+                <h4><?php _e('Tokens Monitoreados', 'flavor-chat-ia'); ?></h4>
+                <div class="tokens-lista">
+                    <?php foreach ($estado['estado']['tokens_monitoreados'] as $token): ?>
+                        <span class="token-badge">
+                            <?php echo esc_html($token); ?>
+                            <button class="btn-eliminar-token" data-token="<?php echo esc_attr($token); ?>">&times;</button>
+                        </span>
+                    <?php endforeach; ?>
+                </div>
+                <div class="agregar-token">
+                    <input type="text" id="nuevo-token" placeholder="<?php _e('Ej: PYTH', 'flavor-chat-ia'); ?>">
+                    <button class="btn-agregar-token"><?php _e('Agregar', 'flavor-chat-ia'); ?></button>
+                </div>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Widget de precio individual
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_widget_precio($atts) {
+        $atts = shortcode_atts(array(
+            'token' => 'SOL',
+        ), $atts);
+
+        $mercado = $this->action_obtener_datos_mercado(array('tokens' => $atts['token']));
+        $token = strtoupper($atts['token']);
+        $datos = $mercado['mercado'][$token] ?? array();
+
+        ob_start();
+        ?>
+        <div class="trading-ia-widget-precio" data-token="<?php echo esc_attr($token); ?>">
+            <span class="widget-token"><?php echo esc_html($token); ?></span>
+            <span class="widget-precio">$<?php echo number_format($datos['precio_usd'] ?? 0, $datos['precio_usd'] < 1 ? 8 : 2); ?></span>
+            <span class="widget-cambio <?php echo ($datos['cambio_24h'] ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
+                <?php echo ($datos['cambio_24h'] ?? 0) >= 0 ? '+' : ''; ?><?php echo number_format($datos['cambio_24h'] ?? 0, 2); ?>%
+            </span>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Encola assets del frontend
+     */
+    private function enqueue_frontend_assets() {
+        wp_enqueue_script(
+            'trading-ia-frontend',
+            $this->get_module_url() . 'assets/js/trading-ia-frontend.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
+
+        wp_localize_script('trading-ia-frontend', 'tradingIAData', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'rest_url' => rest_url('flavor/v1/trading-ia'),
+            'nonce'    => wp_create_nonce('trading_ia_nonce'),
+            'i18n'     => array(
+                'confirmar_compra'  => __('Confirmar compra?', 'flavor-chat-ia'),
+                'confirmar_venta'   => __('Confirmar venta?', 'flavor-chat-ia'),
+                'operacion_exitosa' => __('Operacion realizada con exito', 'flavor-chat-ia'),
+                'error_operacion'   => __('Error en la operacion', 'flavor-chat-ia'),
+            ),
+        ));
+
+        wp_enqueue_style(
+            'trading-ia-frontend',
+            $this->get_module_url() . 'assets/css/trading-ia-frontend.css',
+            array(),
+            '1.0.0'
+        );
+    }
+
+    // =========================================================================
+    // WP Cron Jobs Adicionales
+    // =========================================================================
+
+    /**
+     * Genera reporte diario de trading
+     */
+    public function generar_reporte_diario() {
+        global $wpdb;
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+
+        $fecha_ayer = date('Y-m-d', strtotime('-1 day'));
+
+        $resumen_diario = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                COUNT(*) as total_trades,
+                SUM(CASE WHEN tipo = 'compra' THEN 1 ELSE 0 END) as compras,
+                SUM(CASE WHEN tipo = 'venta' THEN 1 ELSE 0 END) as ventas,
+                SUM(CASE WHEN tipo = 'venta' THEN COALESCE(pnl, 0) ELSE 0 END) as pnl_total,
+                SUM(total_usd) as volumen_total
+            FROM $tabla_trades
+            WHERE DATE(timestamp) = %s",
+            $fecha_ayer
+        ));
+
+        if ($resumen_diario && $resumen_diario->total_trades > 0) {
+            $mensaje_reporte = sprintf(
+                __("Reporte Trading IA - %s\n\nTrades: %d (Compras: %d, Ventas: %d)\nVolumen: $%s\nP&L: $%s", 'flavor-chat-ia'),
+                $fecha_ayer,
+                $resumen_diario->total_trades,
+                $resumen_diario->compras,
+                $resumen_diario->ventas,
+                number_format($resumen_diario->volumen_total, 2),
+                number_format($resumen_diario->pnl_total, 2)
+            );
+
+            // Enviar notificacion si hay trades
+            do_action('flavor_notificacion_enviar', array(
+                'tipo'      => 'trading_reporte_diario',
+                'titulo'    => __('Reporte Diario Trading IA', 'flavor-chat-ia'),
+                'mensaje'   => $mensaje_reporte,
+                'usuario_id' => $this->obtener_usuario_trading(),
+                'prioridad' => 'normal',
+            ));
+
+            flavor_chat_ia_log('Trading IA Reporte Diario: ' . $mensaje_reporte, 'trading_ia');
+        }
+    }
+
+    /**
+     * Verifica alertas de precio configuradas
+     */
+    public function verificar_alertas_precio() {
+        global $wpdb;
+        $tabla_alertas = $wpdb->prefix . 'flavor_trading_ia_alertas';
+
+        // Verificar si existe la tabla
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_alertas)) {
+            return;
+        }
+
+        $alertas_activas = $wpdb->get_results(
+            "SELECT * FROM $tabla_alertas WHERE estado = 'activa'"
+        );
+
+        if (empty($alertas_activas)) {
+            return;
+        }
+
+        $mercado = new Flavor_Trading_IA_Mercado();
+        $tokens_unicos = array_unique(array_column($alertas_activas, 'token'));
+        $precios_actuales = $mercado->obtener_precios_simples($tokens_unicos);
+
+        foreach ($alertas_activas as $alerta) {
+            $precio_actual = $precios_actuales[$alerta->token] ?? 0;
+
+            if ($precio_actual <= 0) {
+                continue;
+            }
+
+            $activar_alerta = false;
+
+            if ($alerta->tipo === 'above' && $precio_actual >= $alerta->precio_objetivo) {
+                $activar_alerta = true;
+            } elseif ($alerta->tipo === 'below' && $precio_actual <= $alerta->precio_objetivo) {
+                $activar_alerta = true;
+            }
+
+            if ($activar_alerta) {
+                $this->disparar_alerta_precio($alerta, $precio_actual);
+
+                // Marcar alerta como disparada
+                $wpdb->update(
+                    $tabla_alertas,
+                    array('estado' => 'disparada', 'fecha_disparada' => current_time('mysql')),
+                    array('id' => $alerta->id)
+                );
+            }
+        }
+    }
+
+    /**
+     * Dispara una alerta de precio
+     *
+     * @param object $alerta Datos de la alerta
+     * @param float  $precio_actual Precio actual del token
+     */
+    private function disparar_alerta_precio($alerta, $precio_actual) {
+        $tipo_texto = $alerta->tipo === 'above' ? __('supero', 'flavor-chat-ia') : __('bajo de', 'flavor-chat-ia');
+
+        $mensaje_alerta = sprintf(
+            __('Alerta de precio: %s %s $%s (objetivo: $%s)', 'flavor-chat-ia'),
+            $alerta->token,
+            $tipo_texto,
+            number_format($precio_actual, 6),
+            number_format($alerta->precio_objetivo, 6)
+        );
+
+        do_action('flavor_notificacion_enviar', array(
+            'tipo'       => 'trading_alerta_precio',
+            'titulo'     => sprintf(__('Alerta: %s', 'flavor-chat-ia'), $alerta->token),
+            'mensaje'    => $mensaje_alerta,
+            'usuario_id' => $alerta->usuario_id,
+            'prioridad'  => 'alta',
+        ));
+    }
+
+    // =========================================================================
+    // Integracion Gamificacion y Notificaciones
+    // =========================================================================
+
+    /**
+     * Integra gamificacion para compras
+     *
+     * @param array $resultado Resultado de la compra
+     */
+    private function integrar_gamificacion_compra($resultado) {
+        if (!$resultado['success']) {
+            return;
+        }
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            return;
+        }
+
+        // Agregar puntos por realizar trade
+        do_action('flavor_gamificacion_agregar_puntos', array(
+            'usuario_id' => $usuario_id,
+            'puntos'     => 5,
+            'razon'      => 'trading_compra',
+            'descripcion' => sprintf(
+                __('Compra de %s por $%s', 'flavor-chat-ia'),
+                $resultado['resultado']['token'] ?? '',
+                number_format($resultado['resultado']['total_usd'] ?? 0, 2)
+            ),
+        ));
+
+        // Verificar logros
+        $this->verificar_logros_trading($usuario_id);
+    }
+
+    /**
+     * Integra gamificacion para ventas
+     *
+     * @param array $resultado Resultado de la venta
+     */
+    private function integrar_gamificacion_venta($resultado) {
+        if (!$resultado['success']) {
+            return;
+        }
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            return;
+        }
+
+        $puntos_base = 5;
+        $pnl = $resultado['resultado']['pnl'] ?? 0;
+
+        // Bonus por ganancia
+        if ($pnl > 0) {
+            $puntos_base += min(20, floor($pnl)); // Hasta 20 puntos extra por ganancia
+        }
+
+        do_action('flavor_gamificacion_agregar_puntos', array(
+            'usuario_id'  => $usuario_id,
+            'puntos'      => $puntos_base,
+            'razon'       => 'trading_venta',
+            'descripcion' => sprintf(
+                __('Venta de %s - P&L: $%s', 'flavor-chat-ia'),
+                $resultado['resultado']['token'] ?? '',
+                number_format($pnl, 2)
+            ),
+        ));
+
+        // Verificar logros
+        $this->verificar_logros_trading($usuario_id);
+    }
+
+    /**
+     * Verifica logros de trading para un usuario
+     *
+     * @param int $usuario_id ID del usuario
+     */
+    private function verificar_logros_trading($usuario_id) {
+        global $wpdb;
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+
+        $estadisticas = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                COUNT(*) as total_trades,
+                SUM(CASE WHEN tipo = 'venta' AND pnl > 0 THEN 1 ELSE 0 END) as trades_ganadores,
+                SUM(CASE WHEN tipo = 'venta' THEN COALESCE(pnl, 0) ELSE 0 END) as pnl_total
+            FROM $tabla_trades
+            WHERE usuario_id = %d",
+            $usuario_id
+        ));
+
+        if (!$estadisticas) {
+            return;
+        }
+
+        // Logro: Primer trade
+        if ($estadisticas->total_trades === 1) {
+            do_action('flavor_gamificacion_desbloquear_logro', array(
+                'usuario_id' => $usuario_id,
+                'logro_id'   => 'trading_primer_trade',
+                'nombre'     => __('Primer Paso', 'flavor-chat-ia'),
+                'descripcion' => __('Realizaste tu primer trade', 'flavor-chat-ia'),
+            ));
+        }
+
+        // Logro: 10 trades
+        if ($estadisticas->total_trades >= 10) {
+            do_action('flavor_gamificacion_desbloquear_logro', array(
+                'usuario_id' => $usuario_id,
+                'logro_id'   => 'trading_10_trades',
+                'nombre'     => __('Trader Activo', 'flavor-chat-ia'),
+                'descripcion' => __('Realizaste 10 trades', 'flavor-chat-ia'),
+            ));
+        }
+
+        // Logro: Primera ganancia
+        if ($estadisticas->trades_ganadores >= 1) {
+            do_action('flavor_gamificacion_desbloquear_logro', array(
+                'usuario_id' => $usuario_id,
+                'logro_id'   => 'trading_primera_ganancia',
+                'nombre'     => __('En Verde', 'flavor-chat-ia'),
+                'descripcion' => __('Cerraste tu primer trade con ganancias', 'flavor-chat-ia'),
+            ));
+        }
+
+        // Logro: $100 de ganancia total
+        if ($estadisticas->pnl_total >= 100) {
+            do_action('flavor_gamificacion_desbloquear_logro', array(
+                'usuario_id' => $usuario_id,
+                'logro_id'   => 'trading_100_profit',
+                'nombre'     => __('Centenario', 'flavor-chat-ia'),
+                'descripcion' => __('Acumulaste $100 en ganancias', 'flavor-chat-ia'),
+            ));
+        }
+    }
+
+    /**
+     * Envia notificacion de trade
+     *
+     * @param string $tipo Tipo de trade (compra/venta)
+     * @param array  $resultado Resultado del trade
+     */
+    private function enviar_notificacion_trade($tipo, $resultado) {
+        if (!$resultado['success']) {
+            return;
+        }
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            return;
+        }
+
+        $datos_trade = $resultado['resultado'] ?? array();
+        $titulo = $tipo === 'compra'
+            ? sprintf(__('Compra ejecutada: %s', 'flavor-chat-ia'), $datos_trade['token'] ?? '')
+            : sprintf(__('Venta ejecutada: %s', 'flavor-chat-ia'), $datos_trade['token'] ?? '');
+
+        $mensaje = $tipo === 'compra'
+            ? sprintf(
+                __('Compraste %s %s por $%s', 'flavor-chat-ia'),
+                number_format($datos_trade['cantidad'] ?? 0, 6),
+                $datos_trade['token'] ?? '',
+                number_format($datos_trade['total_usd'] ?? 0, 2)
+            )
+            : sprintf(
+                __('Vendiste %s %s por $%s (P&L: $%s)', 'flavor-chat-ia'),
+                number_format($datos_trade['cantidad'] ?? 0, 6),
+                $datos_trade['token'] ?? '',
+                number_format($datos_trade['total_usd'] ?? 0, 2),
+                number_format($datos_trade['pnl'] ?? 0, 2)
+            );
+
+        do_action('flavor_notificacion_enviar', array(
+            'tipo'       => 'trading_trade_ejecutado',
+            'titulo'     => $titulo,
+            'mensaje'    => $mensaje,
+            'usuario_id' => $usuario_id,
+            'prioridad'  => 'normal',
+            'datos'      => $datos_trade,
+        ));
+    }
+
+    // =========================================================================
+    // Helpers Adicionales
+    // =========================================================================
+
+    /**
+     * Calcula estadisticas del usuario
+     *
+     * @param int $usuario_id ID del usuario
+     * @return array
+     */
+    private function calcular_estadisticas_usuario($usuario_id) {
+        global $wpdb;
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+
+        $estadisticas = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                COUNT(*) as total_trades,
+                SUM(CASE WHEN tipo = 'compra' THEN 1 ELSE 0 END) as total_compras,
+                SUM(CASE WHEN tipo = 'venta' THEN 1 ELSE 0 END) as total_ventas,
+                SUM(CASE WHEN tipo = 'venta' AND pnl > 0 THEN 1 ELSE 0 END) as trades_ganadores,
+                SUM(CASE WHEN tipo = 'venta' AND pnl <= 0 THEN 1 ELSE 0 END) as trades_perdedores,
+                SUM(CASE WHEN tipo = 'venta' THEN COALESCE(pnl, 0) ELSE 0 END) as pnl_total,
+                AVG(CASE WHEN tipo = 'venta' THEN COALESCE(pnl, 0) ELSE NULL END) as pnl_promedio,
+                MAX(CASE WHEN tipo = 'venta' THEN pnl ELSE NULL END) as mejor_trade,
+                MIN(CASE WHEN tipo = 'venta' THEN pnl ELSE NULL END) as peor_trade,
+                SUM(total_usd) as volumen_total
+            FROM $tabla_trades
+            WHERE usuario_id = %d",
+            $usuario_id
+        ), ARRAY_A);
+
+        if (!$estadisticas || $estadisticas['total_trades'] == 0) {
+            return array(
+                'total_trades'      => 0,
+                'win_rate'          => 0,
+                'pnl_total'         => 0,
+                'pnl_promedio'      => 0,
+                'mejor_trade'       => 0,
+                'peor_trade'        => 0,
+                'volumen_total'     => 0,
+                'ratio_profit_loss' => 0,
+            );
+        }
+
+        $ventas_totales = $estadisticas['total_ventas'] ?: 1;
+        $win_rate = ($estadisticas['trades_ganadores'] / $ventas_totales) * 100;
+
+        return array(
+            'total_trades'       => intval($estadisticas['total_trades']),
+            'total_compras'      => intval($estadisticas['total_compras']),
+            'total_ventas'       => intval($estadisticas['total_ventas']),
+            'trades_ganadores'   => intval($estadisticas['trades_ganadores']),
+            'trades_perdedores'  => intval($estadisticas['trades_perdedores']),
+            'win_rate'           => round($win_rate, 2),
+            'pnl_total'          => floatval($estadisticas['pnl_total']),
+            'pnl_promedio'       => floatval($estadisticas['pnl_promedio']),
+            'mejor_trade'        => floatval($estadisticas['mejor_trade']),
+            'peor_trade'         => floatval($estadisticas['peor_trade']),
+            'volumen_total'      => floatval($estadisticas['volumen_total']),
+        );
+    }
+
+    /**
+     * Obtiene alertas de precio del usuario
+     *
+     * @param int $usuario_id ID del usuario
+     * @return array
+     */
+    private function obtener_alertas_usuario($usuario_id) {
+        global $wpdb;
+        $tabla_alertas = $wpdb->prefix . 'flavor_trading_ia_alertas';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_alertas)) {
+            return array();
+        }
+
+        $alertas = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_alertas WHERE usuario_id = %d ORDER BY created_at DESC",
+            $usuario_id
+        ), ARRAY_A);
+
+        return $alertas ?: array();
+    }
+
+    /**
+     * Crea una alerta de precio
+     *
+     * @param string $token Token
+     * @param string $tipo Tipo (above/below)
+     * @param float  $precio Precio objetivo
+     * @return array
+     */
+    private function crear_alerta_precio($token, $tipo, $precio) {
+        $usuario_id = get_current_user_id();
+
+        if (!$usuario_id) {
+            return array('success' => false, 'error' => __('Usuario no autenticado', 'flavor-chat-ia'));
+        }
+
+        $token = strtoupper(sanitize_text_field($token));
+        $tipo = in_array($tipo, array('above', 'below'), true) ? $tipo : 'above';
+        $precio = floatval($precio);
+
+        if (empty($token) || $precio <= 0) {
+            return array('success' => false, 'error' => __('Datos invalidos', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_alertas = $wpdb->prefix . 'flavor_trading_ia_alertas';
+
+        $resultado = $wpdb->insert($tabla_alertas, array(
+            'usuario_id'      => $usuario_id,
+            'token'           => $token,
+            'tipo'            => $tipo,
+            'precio_objetivo' => $precio,
+            'estado'          => 'activa',
+            'created_at'      => current_time('mysql'),
+        ));
+
+        if ($resultado === false) {
+            return array('success' => false, 'error' => __('Error al crear la alerta', 'flavor-chat-ia'));
+        }
+
+        return array(
+            'success'  => true,
+            'mensaje'  => sprintf(
+                __('Alerta creada: %s %s $%s', 'flavor-chat-ia'),
+                $token,
+                $tipo === 'above' ? __('supere', 'flavor-chat-ia') : __('baje de', 'flavor-chat-ia'),
+                number_format($precio, 6)
+            ),
+            'alerta_id' => $wpdb->insert_id,
+        );
+    }
+
+    /**
+     * Formatea un numero grande para mostrar
+     *
+     * @param float $numero Numero a formatear
+     * @return string
+     */
+    private function formatear_numero_grande($numero) {
+        if ($numero >= 1000000000) {
+            return number_format($numero / 1000000000, 2) . 'B';
+        } elseif ($numero >= 1000000) {
+            return number_format($numero / 1000000, 2) . 'M';
+        } elseif ($numero >= 1000) {
+            return number_format($numero / 1000, 2) . 'K';
+        }
+        return number_format($numero, 2);
+    }
+
+    /**
+     * Obtiene URL del modulo
+     *
+     * @return string
+     */
+    private function get_module_url() {
+        return plugin_dir_url(__FILE__);
+    }
+
+    /**
+     * Obtiene path del modulo
+     *
+     * @return string
+     */
+    private function get_module_path() {
+        return plugin_dir_path(__FILE__);
+    }
+
+    // =========================================================================
     // Helpers
     // =========================================================================
 
