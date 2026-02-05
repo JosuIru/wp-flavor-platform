@@ -1,0 +1,1322 @@
+/**
+ * Huertos Urbanos - Estilos del Módulo
+ * Sistema completo de huertos comunitarios
+ *
+ * @package FlavorChatIA
+ * @subpackage HuertosUrbanos
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+:root {
+    --huertos-color-primario: #2d5a27;
+    --huertos-color-secundario: #4a7c43;
+    --huertos-color-terciario: #7cb342;
+    --huertos-color-tierra: #8b5a2b;
+    --huertos-color-agua: #42a5f5;
+    --huertos-color-sol: #fdd835;
+    --huertos-color-fondo: #f5f9f3;
+    --huertos-color-fondo-claro: #ffffff;
+    --huertos-color-borde: #c8e6c9;
+    --huertos-color-texto: #2e3d2e;
+    --huertos-color-texto-claro: #5d6d5d;
+    --huertos-color-exito: #43a047;
+    --huertos-color-advertencia: #ff9800;
+    --huertos-color-error: #e53935;
+    --huertos-radio-borde: 12px;
+    --huertos-radio-borde-pequeno: 6px;
+    --huertos-sombra-suave: 0 2px 8px rgba(45, 90, 39, 0.1);
+    --huertos-sombra-media: 0 4px 16px rgba(45, 90, 39, 0.15);
+    --huertos-sombra-fuerte: 0 8px 32px rgba(45, 90, 39, 0.2);
+    --huertos-transicion: all 0.3s ease;
+}
+
+/* ==========================================================================
+   Contenedor Principal
+   ========================================================================== */
+.huertos-contenedor {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--huertos-color-texto);
+    line-height: 1.6;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.huertos-seccion {
+    background: var(--huertos-color-fondo-claro);
+    border-radius: var(--huertos-radio-borde);
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--huertos-sombra-suave);
+    border: 1px solid var(--huertos-color-borde);
+}
+
+.huertos-titulo-seccion {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--huertos-color-primario);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid var(--huertos-color-terciario);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.huertos-titulo-seccion .icono {
+    font-size: 1.5rem;
+}
+
+/* ==========================================================================
+   Mapa de Huertos
+   ========================================================================== */
+.huertos-mapa-contenedor {
+    position: relative;
+    width: 100%;
+    border-radius: var(--huertos-radio-borde);
+    overflow: hidden;
+    box-shadow: var(--huertos-sombra-media);
+}
+
+.huertos-mapa {
+    width: 100%;
+    height: 500px;
+    background: linear-gradient(135deg, var(--huertos-color-fondo) 0%, #e8f5e9 100%);
+}
+
+.huertos-mapa-controles {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.huertos-mapa-filtro {
+    background: var(--huertos-color-fondo-claro);
+    padding: 12px 16px;
+    border-radius: var(--huertos-radio-borde-pequeno);
+    box-shadow: var(--huertos-sombra-suave);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.huertos-mapa-filtro label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--huertos-color-texto);
+}
+
+.huertos-mapa-filtro select {
+    padding: 6px 12px;
+    border: 1px solid var(--huertos-color-borde);
+    border-radius: var(--huertos-radio-borde-pequeno);
+    background: var(--huertos-color-fondo-claro);
+    font-size: 0.875rem;
+}
+
+.huertos-marcador {
+    background: var(--huertos-color-primario);
+    color: white;
+    padding: 8px 12px;
+    border-radius: var(--huertos-radio-borde-pequeno);
+    font-weight: 600;
+    font-size: 0.8rem;
+    box-shadow: var(--huertos-sombra-suave);
+    cursor: pointer;
+    transition: var(--huertos-transicion);
+}
+
+.huertos-marcador:hover {
+    transform: scale(1.05);
+    background: var(--huertos-color-secundario);
+}
+
+.huertos-marcador.disponible {
+    background: var(--huertos-color-exito);
+}
+
+.huertos-marcador.completo {
+    background: var(--huertos-color-advertencia);
+}
+
+.huertos-popup-info {
+    min-width: 280px;
+    padding: 15px;
+}
+
+.huertos-popup-info h4 {
+    margin: 0 0 10px;
+    color: var(--huertos-color-primario);
+    font-size: 1.1rem;
+}
+
+.huertos-popup-info .direccion {
+    color: var(--huertos-color-texto-claro);
+    font-size: 0.875rem;
+    margin-bottom: 10px;
+}
+
+.huertos-popup-info .estadisticas {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+.huertos-popup-info .estadistica {
+    text-align: center;
+}
+
+.huertos-popup-info .estadistica-valor {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--huertos-color-primario);
+}
+
+.huertos-popup-info .estadistica-etiqueta {
+    font-size: 0.75rem;
+    color: var(--huertos-color-texto-claro);
+}
+
+/* ==========================================================================
+   Tarjetas de Huertos
+   ========================================================================== */
+.huertos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.huertos-tarjeta {
+    background: var(--huertos-color-fondo-claro);
+    border-radius: var(--huertos-radio-borde);
+    overflow: hidden;
+    box-shadow: var(--huertos-sombra-suave);
+    border: 1px solid var(--huertos-color-borde);
+    transition: var(--huertos-transicion);
+}
+
+.huertos-tarjeta:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--huertos-sombra-media);
+}
+
+.huertos-tarjeta-imagen {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: linear-gradient(135deg, var(--huertos-color-secundario), var(--huertos-color-terciario));
+}
+
+.huertos-tarjeta-contenido {
+    padding: 20px;
+}
+
+.huertos-tarjeta-nombre {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--huertos-color-primario);
+    margin-bottom: 8px;
+}
+
+.huertos-tarjeta-direccion {
+    color: var(--huertos-color-texto-claro);
+    font-size: 0.875rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.huertos-tarjeta-estadisticas {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-top: 1px solid var(--huertos-color-borde);
+    border-bottom: 1px solid var(--huertos-color-borde);
+    margin-bottom: 15px;
+}
+
+.huertos-tarjeta-estadistica {
+    text-align: center;
+}
+
+.huertos-tarjeta-estadistica-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--huertos-color-primario);
+}
+
+.huertos-tarjeta-estadistica-etiqueta {
+    font-size: 0.75rem;
+    color: var(--huertos-color-texto-claro);
+    text-transform: uppercase;
+}
+
+.huertos-tarjeta-acciones {
+    display: flex;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   Mi Parcela
+   ========================================================================== */
+.mi-parcela-contenedor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.mi-parcela-info {
+    background: linear-gradient(135deg, var(--huertos-color-primario), var(--huertos-color-secundario));
+    color: white;
+    border-radius: var(--huertos-radio-borde);
+    padding: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mi-parcela-info::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+.mi-parcela-numero {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.mi-parcela-huerto {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.mi-parcela-detalles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.mi-parcela-detalle {
+    background: rgba(255,255,255,0.15);
+    padding: 12px;
+    border-radius: var(--huertos-radio-borde-pequeno);
+}
+
+.mi-parcela-detalle-etiqueta {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+}
+
+.mi-parcela-detalle-valor {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.mi-parcela-cultivos {
+    background: var(--huertos-color-fondo-claro);
+    border-radius: var(--huertos-radio-borde);
+    padding: 25px;
+    border: 1px solid var(--huertos-color-borde);
+}
+
+.mi-parcela-cultivos-titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--huertos-color-primario);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ==========================================================================
+   Lista de Cultivos
+   ========================================================================== */
+.cultivos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cultivo-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: var(--huertos-color-fondo);
+    border-radius: var(--huertos-radio-borde-pequeno);
+    border-left: 4px solid var(--huertos-color-terciario);
+    transition: var(--huertos-transicion);
+}
+
+.cultivo-item:hover {
+    background: var(--huertos-color-borde);
+}
+
+.cultivo-icono {
+    width: 50px;
+    height: 50px;
+    background: var(--huertos-color-fondo-claro);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.cultivo-info {
+    flex: 1;
+}
+
+.cultivo-nombre {
+    font-weight: 600;
+    color: var(--huertos-color-texto);
+    margin-bottom: 4px;
+}
+
+.cultivo-variedad {
+    font-size: 0.875rem;
+    color: var(--huertos-color-texto-claro);
+}
+
+.cultivo-fecha {
+    font-size: 0.75rem;
+    color: var(--huertos-color-texto-claro);
+}
+
+.cultivo-estado {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.cultivo-estado.sembrado {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.cultivo-estado.crecimiento {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.cultivo-estado.floracion {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.cultivo-estado.cosecha {
+    background: #fce4ec;
+    color: #c2185b;
+}
+
+.cultivo-estado.finalizado {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+/* ==========================================================================
+   Calendario de Cultivos
+   ========================================================================== */
+.calendario-cultivos-contenedor {
+    background: var(--huertos-color-fondo-claro);
+    border-radius: var(--huertos-radio-borde);
+    padding: 25px;
+    overflow-x: auto;
+}
+
+.calendario-cultivos-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.calendario-cultivos-navegacion {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.calendario-cultivos-navegacion button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: var(--huertos-color-fondo);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--huertos-transicion);
+}
+
+.calendario-cultivos-navegacion button:hover {
+    background: var(--huertos-color-borde);
+}
+
+.calendario-cultivos-mes-actual {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--huertos-color-primario);
+    min-width: 200px;
+    text-align: center;
+}
+
+.calendario-cultivos-grid {
+    display: grid;
+    grid-template-columns: 180px repeat(12, 1fr);
+    gap: 2px;
+    min-width: 1000px;
+}
+
+.calendario-cultivos-celda {
+    padding: 10px 8px;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.calendario-cultivos-cabecera-celda {
+    background: var(--huertos-color-primario);
+    color: white;
+    font-weight: 600;
+    padding: 12px 8px;
+}
+
+.calendario-cultivos-cabecera-celda:first-child {
+    border-radius: var(--huertos-radio-borde-pequeno) 0 0 0;
+}
+
+.calendario-cultivos-cabecera-celda:last-child {
+    border-radius: 0 var(--huertos-radio-borde-pequeno) 0 0;
+}
+
+.calendario-cultivos-fila {
+    display: contents;
+}
+
+.calendario-cultivos-nombre {
+    background: var(--huertos-color-fondo);
+    text-align: left;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+}
+
+.calendario-cultivos-mes {
+    background: var(--huertos-color-fondo);
+    position: relative;
+}
+
+.calendario-cultivos-barra {
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    right: 2px;
+    height: 24px;
+    transform: translateY(-50%);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+.calendario-cultivos-barra.siembra {
+    background: linear-gradient(90deg, var(--huertos-color-tierra), #a0522d);
+}
+
+.calendario-cultivos-barra.cosecha {
+    background: linear-gradient(90deg, var(--huertos-color-terciario), var(--huertos-color-exito));
+}
+
+.calendario-cultivos-barra.siembra-cosecha {
+    background: linear-gradient(90deg, var(--huertos-color-tierra), var(--huertos-color-terciario));
+}
+
+.calendario-cultivos-leyenda {
+    display: flex;
+    gap: 25px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--huertos-color-borde);
+}
+
+.calendario-cultivos-leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+}
+
+.calendario-cultivos-leyenda-color {
+    width: 20px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.calendario-cultivos-leyenda-color.siembra {
+    background: var(--huertos-color-tierra);
+}
+
+.calendario-cultivos-leyenda-color.cosecha {
+    background: var(--huertos-color-terciario);
+}
+
+/* ==========================================================================
+   Tareas del Huerto
+   ========================================================================== */
+.tareas-huerto-contenedor {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+}
+
+.tareas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.tarea-item {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    background: var(--huertos-color-fondo-claro);
+    border-radius: var(--huertos-radio-borde);
+    border: 1px solid var(--huertos-color-borde);
+    transition: var(--huertos-transicion);
+}
+
+.tarea-item:hover {
+    box-shadow: var(--huertos-sombra-suave);
+}
+
+.tarea-fecha {
+    text-align: center;
+    min-width: 60px;
+}
+
+.tarea-fecha-dia {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--huertos-color-primario);
+    line-height: 1;
+}
+
+.tarea-fecha-mes {
+    font-size: 0.75rem;
+    color: var(--huertos-color-texto-claro);
+    text-transform: uppercase;
+}
+
+.tarea-contenido {
+    flex: 1;
+}
+
+.tarea-titulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--huertos-color-texto);
+    margin-bottom: 6px;
+}
+
+.tarea-descripcion {
+    font-size: 0.875rem;
+    color: var(--huertos-color-texto-claro);
+    margin-bottom: 10px;
+}
+
+.tarea-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.75rem;
+    color: var(--huertos-color-texto-claro);
+}
+
+.tarea-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tarea-tipo {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    align-self: flex-start;
+}
+
+.tarea-tipo.riego {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.tarea-tipo.mantenimiento {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.tarea-tipo.taller {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.tarea-tipo.limpieza {
+    background: #e0f2f1;
+    color: #00695c;
+}
+
+.tareas-resumen {
+    background: var(--huertos-color-fondo);
+    border-radius: var(--huertos-radio-borde);
+    padding: 20px;
+}
+
+.tareas-resumen-titulo {
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--huertos-color-primario);
+}
+
+.tareas-resumen-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--huertos-color-borde);
+}
+
+.tareas-resumen-item:last-child {
+    border-bottom: none;
+}
+
+/* ==========================================================================
+   Intercambios
+   ========================================================================== */
+.intercambios-contenedor {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.intercambio-tarjeta {
+    background: var(--huertos-color-fondo-claro);
+    border-radius: var(--huertos-radio-borde);
+    overflow: hidden;
+    border: 1px solid var(--huertos-color-borde);
+    transition: var(--huertos-transicion);
+}
+
+.intercambio-tarjeta:hover {
+    box-shadow: var(--huertos-sombra-media);
+}
+
+.intercambio-imagen {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    background: linear-gradient(135deg, var(--huertos-color-terciario), var(--huertos-color-secundario));
+}
+
+.intercambio-contenido {
+    padding: 18px;
+}
+
+.intercambio-tipo {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.intercambio-tipo.semillas {
+    background: #fff8e1;
+    color: #f57f17;
+}
+
+.intercambio-tipo.cosecha {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.intercambio-tipo.plantulas {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.intercambio-titulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--huertos-color-texto);
+    margin-bottom: 8px;
+}
+
+.intercambio-descripcion {
+    font-size: 0.875rem;
+    color: var(--huertos-color-texto-claro);
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.intercambio-usuario {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--huertos-color-borde);
+}
+
+.intercambio-usuario-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--huertos-color-secundario);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.intercambio-usuario-info {
+    flex: 1;
+}
+
+.intercambio-usuario-nombre {
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.intercambio-usuario-huerto {
+    font-size: 0.75rem;
+    color: var(--huertos-color-texto-claro);
+}
+
+/* ==========================================================================
+   Formularios
+   ========================================================================== */
+.huertos-formulario {
+    max-width: 600px;
+}
+
+.huertos-campo {
+    margin-bottom: 20px;
+}
+
+.huertos-campo label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--huertos-color-texto);
+}
+
+.huertos-campo input,
+.huertos-campo select,
+.huertos-campo textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--huertos-color-borde);
+    border-radius: var(--huertos-radio-borde-pequeno);
+    font-size: 1rem;
+    transition: var(--huertos-transicion);
+    background: var(--huertos-color-fondo-claro);
+}
+
+.huertos-campo input:focus,
+.huertos-campo select:focus,
+.huertos-campo textarea:focus {
+    outline: none;
+    border-color: var(--huertos-color-primario);
+    box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+}
+
+.huertos-campo textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.huertos-campo-ayuda {
+    font-size: 0.8rem;
+    color: var(--huertos-color-texto-claro);
+    margin-top: 6px;
+}
+
+.huertos-campo-error {
+    color: var(--huertos-color-error);
+    font-size: 0.8rem;
+    margin-top: 6px;
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+.huertos-boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--huertos-radio-borde-pequeno);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--huertos-transicion);
+    text-decoration: none;
+}
+
+.huertos-boton-primario {
+    background: linear-gradient(135deg, var(--huertos-color-primario), var(--huertos-color-secundario));
+    color: white;
+}
+
+.huertos-boton-primario:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--huertos-sombra-media);
+}
+
+.huertos-boton-secundario {
+    background: var(--huertos-color-fondo);
+    color: var(--huertos-color-primario);
+    border: 2px solid var(--huertos-color-borde);
+}
+
+.huertos-boton-secundario:hover {
+    background: var(--huertos-color-borde);
+}
+
+.huertos-boton-pequeno {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+}
+
+.huertos-boton-grande {
+    padding: 16px 32px;
+    font-size: 1.1rem;
+}
+
+.huertos-boton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================================
+   Estados y Alertas
+   ========================================================================== */
+.huertos-alerta {
+    padding: 15px 20px;
+    border-radius: var(--huertos-radio-borde-pequeno);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.huertos-alerta-exito {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.huertos-alerta-advertencia {
+    background: #fff3e0;
+    color: #e65100;
+    border: 1px solid #ffcc80;
+}
+
+.huertos-alerta-error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+.huertos-alerta-info {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #90caf9;
+}
+
+/* ==========================================================================
+   Badges y Etiquetas
+   ========================================================================== */
+.huertos-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.huertos-badge-disponible {
+    background: #c8e6c9;
+    color: #2e7d32;
+}
+
+.huertos-badge-ocupada {
+    background: #ffcdd2;
+    color: #c62828;
+}
+
+.huertos-badge-mantenimiento {
+    background: #fff9c4;
+    color: #f57f17;
+}
+
+/* ==========================================================================
+   Estadisticas Dashboard
+   ========================================================================== */
+.huertos-estadisticas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.huertos-estadistica-tarjeta {
+    background: var(--huertos-color-fondo-claro);
+    border-radius: var(--huertos-radio-borde);
+    padding: 25px;
+    text-align: center;
+    border: 1px solid var(--huertos-color-borde);
+    transition: var(--huertos-transicion);
+}
+
+.huertos-estadistica-tarjeta:hover {
+    box-shadow: var(--huertos-sombra-suave);
+}
+
+.huertos-estadistica-icono {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    background: linear-gradient(135deg, var(--huertos-color-primario), var(--huertos-color-secundario));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.huertos-estadistica-valor {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--huertos-color-primario);
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.huertos-estadistica-etiqueta {
+    font-size: 0.875rem;
+    color: var(--huertos-color-texto-claro);
+}
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+.huertos-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--huertos-transicion);
+}
+
+.huertos-modal-overlay.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+.huertos-modal {
+    background: var(--huertos-color-fondo-claro);
+    border-radius: var(--huertos-radio-borde);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: var(--huertos-transicion);
+}
+
+.huertos-modal-overlay.activo .huertos-modal {
+    transform: scale(1);
+}
+
+.huertos-modal-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--huertos-color-borde);
+}
+
+.huertos-modal-titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--huertos-color-primario);
+}
+
+.huertos-modal-cerrar {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--huertos-color-fondo);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--huertos-transicion);
+}
+
+.huertos-modal-cerrar:hover {
+    background: var(--huertos-color-borde);
+}
+
+.huertos-modal-contenido {
+    padding: 25px;
+}
+
+.huertos-modal-pie {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 20px 25px;
+    border-top: 1px solid var(--huertos-color-borde);
+    background: var(--huertos-color-fondo);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .mi-parcela-contenedor {
+        grid-template-columns: 1fr;
+    }
+
+    .tareas-huerto-contenedor {
+        grid-template-columns: 1fr;
+    }
+
+    .calendario-cultivos-grid {
+        grid-template-columns: 150px repeat(12, minmax(60px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .huertos-contenedor {
+        padding: 15px;
+    }
+
+    .huertos-seccion {
+        padding: 20px;
+    }
+
+    .huertos-titulo-seccion {
+        font-size: 1.4rem;
+    }
+
+    .huertos-mapa {
+        height: 350px;
+    }
+
+    .huertos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mi-parcela-numero {
+        font-size: 2.5rem;
+    }
+
+    .mi-parcela-detalles {
+        grid-template-columns: 1fr;
+    }
+
+    .calendario-cultivos-cabecera {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .calendario-cultivos-leyenda {
+        flex-wrap: wrap;
+    }
+
+    .intercambios-contenedor {
+        grid-template-columns: 1fr;
+    }
+
+    .huertos-estadisticas-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .huertos-modal {
+        width: 95%;
+        margin: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .huertos-tarjeta-estadisticas {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .huertos-tarjeta-estadistica {
+        flex: 1 1 45%;
+    }
+
+    .tarea-item {
+        flex-direction: column;
+    }
+
+    .tarea-fecha {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .huertos-estadisticas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .huertos-boton {
+        width: 100%;
+    }
+
+    .huertos-modal-pie {
+        flex-direction: column;
+    }
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+@keyframes huertos-aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes huertos-pulso {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.huertos-animacion-aparecer {
+    animation: huertos-aparecer 0.5s ease forwards;
+}
+
+.huertos-animacion-pulso {
+    animation: huertos-pulso 2s ease infinite;
+}
+
+/* ==========================================================================
+   Loading States
+   ========================================================================== */
+.huertos-cargando {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--huertos-color-texto-claro);
+}
+
+.huertos-cargando-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--huertos-color-borde);
+    border-top-color: var(--huertos-color-primario);
+    border-radius: 50%;
+    animation: huertos-spin 1s linear infinite;
+    margin-right: 15px;
+}
+
+@keyframes huertos-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.huertos-skeleton {
+    background: linear-gradient(90deg, var(--huertos-color-fondo) 25%, var(--huertos-color-borde) 50%, var(--huertos-color-fondo) 75%);
+    background-size: 200% 100%;
+    animation: huertos-skeleton 1.5s ease infinite;
+    border-radius: var(--huertos-radio-borde-pequeno);
+}
+
+@keyframes huertos-skeleton {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+    .huertos-contenedor {
+        max-width: none;
+        padding: 0;
+    }
+
+    .huertos-mapa-contenedor,
+    .huertos-boton,
+    .huertos-modal-overlay {
+        display: none;
+    }
+
+    .huertos-seccion {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        break-inside: avoid;
+    }
+}
