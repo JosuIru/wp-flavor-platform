@@ -1,0 +1,497 @@
+/**
+ * Advertising Frontend CSS
+ * Flavor Chat IA - Publicidad Ética
+ */
+
+:root {
+    --ads-primary: #6366f1;
+    --ads-primary-dark: #4f46e5;
+    --ads-success: #10b981;
+    --ads-warning: #f59e0b;
+    --ads-danger: #ef4444;
+    --ads-gray-50: #f9fafb;
+    --ads-gray-100: #f3f4f6;
+    --ads-gray-200: #e5e7eb;
+    --ads-gray-300: #d1d5db;
+    --ads-gray-400: #9ca3af;
+    --ads-gray-500: #6b7280;
+    --ads-gray-600: #4b5563;
+    --ads-gray-700: #374151;
+    --ads-gray-800: #1f2937;
+    --ads-radius: 12px;
+    --ads-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* ==========================================================================
+   Anuncios Base
+   ========================================================================== */
+
+.flavor-ad {
+    position: relative;
+    margin: 1rem 0;
+    background: #fff;
+    border-radius: var(--ads-radius);
+    overflow: hidden;
+    box-shadow: var(--ads-shadow);
+}
+
+.flavor-ad-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 2px 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 4px;
+    z-index: 10;
+}
+
+.flavor-ad-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.flavor-ad-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Banner Horizontal */
+.flavor-ad-banner_horizontal {
+    max-width: 728px;
+    margin: 1rem auto;
+}
+
+.flavor-ad-banner_horizontal .flavor-ad-image {
+    height: 90px;
+    object-fit: cover;
+}
+
+/* Banner Sidebar */
+.flavor-ad-banner_sidebar {
+    max-width: 300px;
+}
+
+.flavor-ad-banner_sidebar .flavor-ad-image {
+    height: 250px;
+    object-fit: cover;
+}
+
+.flavor-ad-banner_sidebar.sticky {
+    position: sticky;
+    top: 100px;
+}
+
+/* Banner Card */
+.flavor-ad-banner_card {
+    max-width: 350px;
+}
+
+.flavor-ad-banner_card .flavor-ad-link {
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-ad-banner_card .flavor-ad-image {
+    height: 180px;
+    object-fit: cover;
+}
+
+.flavor-ad-banner_card .flavor-ad-content {
+    padding: 1rem;
+}
+
+.flavor-ad-banner_card .flavor-ad-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--ads-gray-800);
+}
+
+.flavor-ad-banner_card .flavor-ad-cta {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--ads-primary);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.flavor-ad-banner_card .flavor-ad-link:hover .flavor-ad-cta {
+    background: var(--ads-primary-dark);
+}
+
+/* Banner Nativo */
+.flavor-ad-banner_nativo {
+    background: var(--ads-gray-50);
+    border: 1px solid var(--ads-gray-200);
+}
+
+.flavor-ad-banner_nativo .flavor-ad-link {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.flavor-ad-banner_nativo .flavor-ad-image {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.flavor-ad-banner_nativo .flavor-ad-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.flavor-ad-banner_nativo .flavor-ad-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0 0 0.25rem 0;
+    color: var(--ads-gray-800);
+}
+
+.flavor-ad-banner_nativo .flavor-ad-cta {
+    color: var(--ads-primary);
+    font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   Dashboard de Anunciante
+   ========================================================================== */
+
+.flavor-ads-dashboard {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.ads-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.ads-dashboard-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Grid de anuncios */
+.ads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.ads-card {
+    background: #fff;
+    border-radius: var(--ads-radius);
+    padding: 1.5rem;
+    box-shadow: var(--ads-shadow);
+}
+
+.ads-card h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.ads-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.ads-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.ads-status.publish {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--ads-success);
+}
+
+.ads-status.pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--ads-warning);
+}
+
+.ads-status.draft {
+    background: var(--ads-gray-100);
+    color: var(--ads-gray-500);
+}
+
+.ads-card-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ads-gray-100);
+}
+
+.ads-card-stats > div {
+    text-align: center;
+}
+
+.ads-card-stats strong {
+    display: block;
+    font-size: 1.25rem;
+    color: var(--ads-gray-800);
+}
+
+.ads-card-stats span {
+    font-size: 0.75rem;
+    color: var(--ads-gray-500);
+}
+
+/* Estado vacío */
+.ads-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--ads-gray-50);
+    border-radius: var(--ads-radius);
+}
+
+.ads-empty p {
+    color: var(--ads-gray-500);
+    margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   Formulario Crear Anuncio
+   ========================================================================== */
+
+.flavor-ads-crear {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.flavor-ads-crear h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+}
+
+.ads-form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: var(--ads-radius);
+    box-shadow: var(--ads-shadow);
+}
+
+.form-grupo {
+    margin-bottom: 1.25rem;
+}
+
+.form-grupo label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--ads-gray-700);
+}
+
+.form-grupo input,
+.form-grupo select,
+.form-grupo textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--ads-gray-200);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-grupo input:focus,
+.form-grupo select:focus,
+.form-grupo textarea:focus {
+    outline: none;
+    border-color: var(--ads-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* ==========================================================================
+   Página de Ingresos
+   ========================================================================== */
+
+.flavor-ads-ingresos {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.flavor-ads-ingresos h2 {
+    margin: 0 0 0.5rem 0;
+}
+
+.ingresos-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.ingreso-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: var(--ads-radius);
+    box-shadow: var(--ads-shadow);
+    text-align: center;
+}
+
+.ingreso-valor {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ads-primary);
+    margin-bottom: 0.5rem;
+}
+
+.ingreso-label {
+    color: var(--ads-gray-500);
+    font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--ads-primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--ads-primary-dark);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--ads-gray-300);
+    color: var(--ads-gray-700);
+}
+
+.btn-outline:hover {
+    border-color: var(--ads-primary);
+    color: var(--ads-primary);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .ads-dashboard-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .ads-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-ad-banner_horizontal {
+        max-width: 100%;
+    }
+
+    .flavor-ad-banner_horizontal .flavor-ad-image {
+        height: auto;
+    }
+
+    .flavor-ad-banner_nativo .flavor-ad-link {
+        flex-direction: column;
+    }
+
+    .flavor-ad-banner_nativo .flavor-ad-image {
+        width: 100%;
+        height: 150px;
+    }
+
+    .ingresos-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+
+.flavor-ad {
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading state */
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
