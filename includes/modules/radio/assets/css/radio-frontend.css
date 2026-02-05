@@ -1,0 +1,942 @@
+/**
+ * Radio Frontend CSS
+ * Flavor Chat IA - Radio Comunitaria
+ */
+
+:root {
+    --radio-primary: #8b5cf6;
+    --radio-primary-dark: #7c3aed;
+    --radio-primary-light: #a78bfa;
+    --radio-success: #10b981;
+    --radio-warning: #f59e0b;
+    --radio-danger: #ef4444;
+    --radio-gray-50: #f9fafb;
+    --radio-gray-100: #f3f4f6;
+    --radio-gray-200: #e5e7eb;
+    --radio-gray-300: #d1d5db;
+    --radio-gray-400: #9ca3af;
+    --radio-gray-500: #6b7280;
+    --radio-gray-600: #4b5563;
+    --radio-gray-700: #374151;
+    --radio-gray-800: #1f2937;
+    --radio-gray-900: #111827;
+    --radio-radius: 12px;
+    --radio-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* ==========================================================================
+   Reproductor
+   ========================================================================== */
+
+.flavor-radio-player {
+    background: linear-gradient(135deg, var(--radio-primary) 0%, var(--radio-primary-dark) 100%);
+    border-radius: var(--radio-radius);
+    padding: 1.5rem;
+    color: #fff;
+    box-shadow: var(--radio-shadow);
+}
+
+.flavor-radio-player.estilo-compacto {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.flavor-radio-player.estilo-completo {
+    text-align: center;
+}
+
+/* Visual */
+.radio-player-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.estilo-compacto .radio-player-visual {
+    flex-direction: row;
+    gap: 1rem;
+    margin-bottom: 0;
+}
+
+.radio-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.estilo-compacto .radio-logo {
+    width: 50px;
+    height: 50px;
+}
+
+.radio-visualizer {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 30px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.radio-visualizer.playing {
+    opacity: 1;
+}
+
+.radio-visualizer span {
+    width: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    animation: visualizer 0.5s ease-in-out infinite;
+}
+
+.radio-visualizer span:nth-child(1) { animation-delay: 0s; height: 10px; }
+.radio-visualizer span:nth-child(2) { animation-delay: 0.1s; height: 20px; }
+.radio-visualizer span:nth-child(3) { animation-delay: 0.2s; height: 15px; }
+.radio-visualizer span:nth-child(4) { animation-delay: 0.3s; height: 25px; }
+.radio-visualizer span:nth-child(5) { animation-delay: 0.4s; height: 12px; }
+
+@keyframes visualizer {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.5); }
+}
+
+/* Info */
+.radio-player-info {
+    margin-bottom: 1rem;
+}
+
+.estilo-compacto .radio-player-info {
+    flex: 1;
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.radio-nombre {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+}
+
+.estilo-compacto .radio-nombre {
+    font-size: 1.1rem;
+}
+
+.radio-slogan {
+    margin: 0 0 0.5rem 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.estilo-compacto .radio-slogan {
+    display: none;
+}
+
+.radio-fm {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.radio-programa-actual {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.estilo-compacto .radio-programa-actual {
+    margin-top: 0.5rem;
+    padding-top: 0;
+    border-top: none;
+}
+
+.radio-badge-vivo {
+    display: inline-block;
+    background: var(--radio-danger);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-right: 0.5rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.radio-programa-nombre {
+    font-weight: 500;
+}
+
+/* Controls */
+.radio-player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.estilo-compacto .radio-player-controls {
+    gap: 0.5rem;
+}
+
+.radio-btn-play {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    color: var(--radio-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.radio-btn-play:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.estilo-compacto .radio-btn-play {
+    width: 44px;
+    height: 44px;
+}
+
+.radio-btn-play .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.estilo-compacto .radio-btn-play .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.radio-btn-play.playing .dashicons-controls-play::before {
+    content: '\f523';
+}
+
+.radio-volume {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.radio-btn-mute {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-btn-mute.muted .dashicons-controls-volumeon::before {
+    content: '\f520';
+}
+
+.radio-volume-slider {
+    width: 80px;
+    height: 4px;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    outline: none;
+}
+
+.radio-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+
+.estilo-compacto .radio-volume-slider {
+    width: 60px;
+}
+
+.radio-btn-hd {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.radio-btn-hd.active {
+    background: #fff;
+    color: var(--radio-primary);
+}
+
+/* Oyentes */
+.radio-oyentes {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.estilo-compacto .radio-oyentes {
+    margin-top: 0;
+    justify-content: flex-start;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   Programación
+   ========================================================================== */
+
+.flavor-radio-programacion {
+    background: #fff;
+    border-radius: var(--radio-radius);
+    padding: 1.5rem;
+    box-shadow: var(--radio-shadow);
+}
+
+.programacion-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.programacion-nav button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--radio-gray-200);
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: var(--radio-gray-600);
+    transition: all 0.2s;
+}
+
+.programacion-nav button:hover {
+    border-color: var(--radio-primary);
+    color: var(--radio-primary);
+}
+
+.programacion-nav-titulo {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.programacion-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.programacion-dia {
+    border-bottom: 1px solid var(--radio-gray-100);
+    padding-bottom: 1rem;
+}
+
+.programacion-dia:last-child {
+    border-bottom: none;
+}
+
+.programacion-dia-header {
+    font-weight: 600;
+    color: var(--radio-primary);
+    margin-bottom: 0.75rem;
+    text-transform: capitalize;
+}
+
+.programacion-emision {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: background 0.2s;
+}
+
+.programacion-emision:hover {
+    background: var(--radio-gray-50);
+}
+
+.programacion-emision.en-vivo {
+    background: rgba(139, 92, 246, 0.1);
+    border-left: 3px solid var(--radio-primary);
+}
+
+.programacion-hora {
+    width: 60px;
+    font-weight: 600;
+    color: var(--radio-gray-700);
+    flex-shrink: 0;
+}
+
+.programacion-imagen {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.programacion-info {
+    flex: 1;
+}
+
+.programacion-titulo {
+    font-weight: 500;
+    color: var(--radio-gray-800);
+    margin-bottom: 0.25rem;
+}
+
+.programacion-meta {
+    font-size: 0.8rem;
+    color: var(--radio-gray-500);
+}
+
+/* ==========================================================================
+   Dedicatorias
+   ========================================================================== */
+
+.flavor-radio-dedicatorias {
+    background: #fff;
+    border-radius: var(--radio-radius);
+    padding: 1.5rem;
+    box-shadow: var(--radio-shadow);
+}
+
+.flavor-radio-dedicatorias h3 {
+    margin: 0 0 0.5rem 0;
+}
+
+.dedicatoria-info {
+    color: var(--radio-gray-500);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-grupo {
+    margin-bottom: 1.25rem;
+}
+
+.form-grupo label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--radio-gray-700);
+}
+
+.form-grupo input,
+.form-grupo select,
+.form-grupo textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--radio-gray-200);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-grupo input:focus,
+.form-grupo select:focus,
+.form-grupo textarea:focus {
+    outline: none;
+    border-color: var(--radio-primary);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.form-grupo-inline {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-grupo-half {
+    flex: 1;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--radio-primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--radio-primary-dark);
+}
+
+.mis-dedicatorias h4 {
+    margin: 0 0 1rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--radio-gray-100);
+}
+
+.dedicatoria-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--radio-gray-50);
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.dedicatoria-icono {
+    width: 40px;
+    height: 40px;
+    background: var(--radio-primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.dedicatoria-content {
+    flex: 1;
+}
+
+.dedicatoria-header {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.dedicatoria-mensaje {
+    font-size: 0.9rem;
+    color: var(--radio-gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.dedicatoria-estado {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.dedicatoria-estado.pendiente {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--radio-warning);
+}
+
+.dedicatoria-estado.aprobada {
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--radio-primary);
+}
+
+.dedicatoria-estado.emitida {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--radio-success);
+}
+
+.dedicatoria-estado.rechazada {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--radio-danger);
+}
+
+/* ==========================================================================
+   Chat
+   ========================================================================== */
+
+.flavor-radio-chat {
+    background: #fff;
+    border-radius: var(--radio-radius);
+    box-shadow: var(--radio-shadow);
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+}
+
+.radio-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--radio-gray-100);
+}
+
+.radio-chat-header h4 {
+    margin: 0;
+}
+
+.radio-chat-status {
+    font-size: 0.8rem;
+    color: var(--radio-gray-400);
+}
+
+.radio-chat-status.conectado {
+    color: var(--radio-success);
+}
+
+.radio-chat-mensajes {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.chat-mensaje {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.chat-mensaje-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.chat-mensaje-content {
+    flex: 1;
+}
+
+.chat-mensaje-autor {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--radio-gray-800);
+}
+
+.chat-mensaje-texto {
+    font-size: 0.9rem;
+    color: var(--radio-gray-600);
+    margin: 0.25rem 0;
+    word-wrap: break-word;
+}
+
+.chat-mensaje-fecha {
+    font-size: 0.7rem;
+    color: var(--radio-gray-400);
+}
+
+.chat-mensaje.destacado {
+    background: rgba(139, 92, 246, 0.1);
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin: 0 -0.5rem 1rem;
+}
+
+.radio-chat-form {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid var(--radio-gray-100);
+}
+
+.radio-chat-form input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--radio-gray-200);
+    border-radius: 20px;
+    outline: none;
+}
+
+.radio-chat-form input:focus {
+    border-color: var(--radio-primary);
+}
+
+.radio-chat-form button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: var(--radio-primary);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-chat-login {
+    text-align: center;
+    padding: 1rem;
+    color: var(--radio-gray-500);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--radio-gray-100);
+}
+
+/* ==========================================================================
+   Proponer Programa
+   ========================================================================== */
+
+.flavor-radio-proponer {
+    background: #fff;
+    border-radius: var(--radio-radius);
+    padding: 1.5rem;
+    box-shadow: var(--radio-shadow);
+}
+
+.flavor-radio-proponer h3 {
+    margin: 0 0 0.5rem 0;
+}
+
+.proponer-info {
+    color: var(--radio-gray-500);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   Podcasts
+   ========================================================================== */
+
+.flavor-radio-podcasts {
+    background: #fff;
+    border-radius: var(--radio-radius);
+    padding: 1.5rem;
+    box-shadow: var(--radio-shadow);
+}
+
+.podcasts-filtros {
+    margin-bottom: 1.5rem;
+}
+
+.podcasts-filtros select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--radio-gray-200);
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.podcast-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.podcast-item:hover {
+    background: var(--radio-gray-50);
+}
+
+.podcast-imagen {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.podcast-imagen-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    background: var(--radio-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.podcast-imagen-placeholder .dashicons {
+    font-size: 32px;
+    color: var(--radio-gray-400);
+}
+
+.podcast-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.podcast-titulo {
+    font-weight: 600;
+    color: var(--radio-gray-800);
+    margin-bottom: 0.25rem;
+}
+
+.podcast-programa {
+    font-size: 0.875rem;
+    color: var(--radio-primary);
+    margin-bottom: 0.25rem;
+}
+
+.podcast-meta {
+    font-size: 0.8rem;
+    color: var(--radio-gray-500);
+    display: flex;
+    gap: 1rem;
+}
+
+.podcast-play {
+    display: flex;
+    align-items: center;
+}
+
+.podcast-play button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: var(--radio-primary);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.podcast-play button:hover {
+    transform: scale(1.1);
+}
+
+/* ==========================================================================
+   Estados
+   ========================================================================== */
+
+.radio-aviso {
+    background: var(--radio-gray-100);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radio-radius);
+    color: var(--radio-gray-600);
+    text-align: center;
+}
+
+.radio-loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--radio-gray-400);
+}
+
+.radio-empty {
+    text-align: center;
+    padding: 3rem;
+    background: var(--radio-gray-50);
+    border-radius: var(--radio-radius);
+}
+
+.radio-empty .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--radio-gray-300);
+    margin-bottom: 1rem;
+}
+
+/* ==========================================================================
+   Toast
+   ========================================================================== */
+
+.radio-toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999999;
+}
+
+.radio-toast {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #fff;
+    animation: radioSlideIn 0.3s ease;
+}
+
+.radio-toast.success { background: var(--radio-success); }
+.radio-toast.error { background: var(--radio-danger); }
+.radio-toast.info { background: var(--radio-primary); }
+
+@keyframes radioSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .flavor-radio-player.estilo-completo {
+        padding: 1rem;
+    }
+
+    .radio-nombre {
+        font-size: 1.25rem;
+    }
+
+    .radio-btn-play {
+        width: 50px;
+        height: 50px;
+    }
+
+    .radio-volume-slider {
+        width: 60px;
+    }
+
+    .form-grupo-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .programacion-emision {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .programacion-imagen {
+        width: 100%;
+        height: 120px;
+    }
+
+    .podcast-item {
+        flex-direction: column;
+    }
+
+    .podcast-imagen,
+    .podcast-imagen-placeholder {
+        width: 100%;
+        height: 150px;
+    }
+}
