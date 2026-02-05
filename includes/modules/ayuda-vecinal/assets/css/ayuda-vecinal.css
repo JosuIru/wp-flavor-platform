@@ -1,0 +1,823 @@
+/**
+ * Estilos del Módulo Ayuda Vecinal
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+:root {
+    --ayuda-primary: #10b981;
+    --ayuda-primary-dark: #059669;
+    --ayuda-secondary: #3b82f6;
+    --ayuda-warning: #f59e0b;
+    --ayuda-danger: #ef4444;
+    --ayuda-urgente: #dc2626;
+    --ayuda-alta: #f97316;
+    --ayuda-media: #eab308;
+    --ayuda-baja: #22c55e;
+    --ayuda-radius: 12px;
+    --ayuda-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --ayuda-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --ayuda-transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   Contenedores Principales
+   ========================================================================== */
+.ayuda-vecinal-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.ayuda-vecinal-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, var(--ayuda-primary) 0%, var(--ayuda-secondary) 100%);
+    border-radius: var(--ayuda-radius);
+    color: white;
+}
+
+.ayuda-vecinal-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.ayuda-vecinal-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* ==========================================================================
+   Grid de Solicitudes
+   ========================================================================== */
+.ayuda-solicitudes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.ayuda-solicitud-card {
+    background: white;
+    border-radius: var(--ayuda-radius);
+    box-shadow: var(--ayuda-shadow);
+    overflow: hidden;
+    transition: var(--ayuda-transition);
+    border: 1px solid #e5e7eb;
+}
+
+.ayuda-solicitud-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ayuda-shadow-lg);
+}
+
+.ayuda-solicitud-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ayuda-categoria-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #f3f4f6;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.ayuda-categoria-badge .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.ayuda-urgencia-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.ayuda-urgencia-urgente { background: var(--ayuda-urgente); color: white; }
+.ayuda-urgencia-alta { background: var(--ayuda-alta); color: white; }
+.ayuda-urgencia-media { background: var(--ayuda-media); color: #1f2937; }
+.ayuda-urgencia-baja { background: var(--ayuda-baja); color: white; }
+
+.ayuda-solicitud-card-body {
+    padding: 20px;
+}
+
+.ayuda-solicitud-titulo {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.ayuda-solicitud-descripcion {
+    color: #6b7280;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.ayuda-solicitud-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.ayuda-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ayuda-meta-item .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: var(--ayuda-primary);
+}
+
+.ayuda-solicitud-card-footer {
+    padding: 16px 20px;
+    background: #f9fafb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ayuda-solicitante {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ayuda-solicitante-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.ayuda-solicitante-info {
+    line-height: 1.3;
+}
+
+.ayuda-solicitante-nombre {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1f2937;
+}
+
+.ayuda-solicitante-rating {
+    font-size: 0.8rem;
+    color: #f59e0b;
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+.ayuda-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--ayuda-transition);
+    border: none;
+    text-decoration: none;
+}
+
+.ayuda-btn-primary {
+    background: var(--ayuda-primary);
+    color: white;
+}
+
+.ayuda-btn-primary:hover {
+    background: var(--ayuda-primary-dark);
+    color: white;
+}
+
+.ayuda-btn-secondary {
+    background: white;
+    color: var(--ayuda-primary);
+    border: 2px solid var(--ayuda-primary);
+}
+
+.ayuda-btn-secondary:hover {
+    background: var(--ayuda-primary);
+    color: white;
+}
+
+.ayuda-btn-sm {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+}
+
+.ayuda-btn-lg {
+    padding: 14px 28px;
+    font-size: 1rem;
+}
+
+.ayuda-btn-block {
+    width: 100%;
+}
+
+.ayuda-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Formularios
+   ========================================================================== */
+.ayuda-form {
+    background: white;
+    padding: 30px;
+    border-radius: var(--ayuda-radius);
+    box-shadow: var(--ayuda-shadow);
+}
+
+.ayuda-form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #1f2937;
+}
+
+.ayuda-form-group {
+    margin-bottom: 20px;
+}
+
+.ayuda-form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.ayuda-form-label .required {
+    color: var(--ayuda-danger);
+}
+
+.ayuda-form-input,
+.ayuda-form-select,
+.ayuda-form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--ayuda-transition);
+    background: white;
+}
+
+.ayuda-form-input:focus,
+.ayuda-form-select:focus,
+.ayuda-form-textarea:focus {
+    outline: none;
+    border-color: var(--ayuda-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.ayuda-form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.ayuda-form-help {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.ayuda-form-error {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--ayuda-danger);
+}
+
+.ayuda-form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 640px) {
+    .ayuda-form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   Categorias Grid
+   ========================================================================== */
+.ayuda-categorias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.ayuda-categoria-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    background: white;
+    border-radius: var(--ayuda-radius);
+    border: 2px solid #e5e7eb;
+    cursor: pointer;
+    transition: var(--ayuda-transition);
+    text-align: center;
+}
+
+.ayuda-categoria-item:hover,
+.ayuda-categoria-item.active {
+    border-color: var(--ayuda-primary);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.ayuda-categoria-item .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--ayuda-primary);
+    margin-bottom: 12px;
+}
+
+.ayuda-categoria-nombre {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.9rem;
+}
+
+.ayuda-categoria-count {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   Mapa de Ayudas
+   ========================================================================== */
+.ayuda-mapa-container {
+    position: relative;
+    border-radius: var(--ayuda-radius);
+    overflow: hidden;
+    box-shadow: var(--ayuda-shadow);
+}
+
+.ayuda-mapa {
+    width: 100%;
+    height: 500px;
+    background: #f3f4f6;
+}
+
+.ayuda-mapa-controles {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+.ayuda-mapa-filtro {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: var(--ayuda-shadow);
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+}
+
+.ayuda-mapa-leyenda {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: white;
+    padding: 16px;
+    border-radius: var(--ayuda-radius);
+    box-shadow: var(--ayuda-shadow);
+    font-size: 0.85rem;
+}
+
+.ayuda-mapa-leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ayuda-mapa-leyenda-item:last-child {
+    margin-bottom: 0;
+}
+
+.ayuda-mapa-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* ==========================================================================
+   Panel Mis Ayudas
+   ========================================================================== */
+.ayuda-mis-ayudas {
+    background: white;
+    border-radius: var(--ayuda-radius);
+    box-shadow: var(--ayuda-shadow);
+    overflow: hidden;
+}
+
+.ayuda-tabs {
+    display: flex;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.ayuda-tab {
+    flex: 1;
+    padding: 16px;
+    text-align: center;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    transition: var(--ayuda-transition);
+    border: none;
+    background: none;
+}
+
+.ayuda-tab:hover {
+    color: var(--ayuda-primary);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.ayuda-tab.active {
+    color: var(--ayuda-primary);
+    border-bottom: 3px solid var(--ayuda-primary);
+    margin-bottom: -2px;
+}
+
+.ayuda-tab-content {
+    padding: 24px;
+}
+
+.ayuda-lista-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: var(--ayuda-transition);
+}
+
+.ayuda-lista-item:last-child {
+    border-bottom: none;
+}
+
+.ayuda-lista-item:hover {
+    background: #f9fafb;
+}
+
+.ayuda-lista-item-info {
+    flex: 1;
+}
+
+.ayuda-lista-item-titulo {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.ayuda-lista-item-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.ayuda-estado-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.ayuda-estado-abierta { background: #dbeafe; color: #1d4ed8; }
+.ayuda-estado-asignada { background: #fef3c7; color: #92400e; }
+.ayuda-estado-en_curso { background: #d1fae5; color: #065f46; }
+.ayuda-estado-completada { background: #10b981; color: white; }
+.ayuda-estado-cancelada { background: #fee2e2; color: #991b1b; }
+
+/* ==========================================================================
+   Valoraciones
+   ========================================================================== */
+.ayuda-valoracion-form {
+    background: #f9fafb;
+    padding: 24px;
+    border-radius: var(--ayuda-radius);
+}
+
+.ayuda-estrellas {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.ayuda-estrella {
+    font-size: 32px;
+    color: #d1d5db;
+    cursor: pointer;
+    transition: var(--ayuda-transition);
+}
+
+.ayuda-estrella:hover,
+.ayuda-estrella.active {
+    color: #f59e0b;
+    transform: scale(1.1);
+}
+
+.ayuda-valoracion-aspectos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.ayuda-aspecto {
+    text-align: center;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+}
+
+.ayuda-aspecto-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.ayuda-aspecto-estrellas {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.ayuda-aspecto-estrellas .ayuda-estrella {
+    font-size: 20px;
+}
+
+/* ==========================================================================
+   Estadisticas
+   ========================================================================== */
+.ayuda-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.ayuda-stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: var(--ayuda-radius);
+    box-shadow: var(--ayuda-shadow);
+    text-align: center;
+}
+
+.ayuda-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+}
+
+.ayuda-stat-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: var(--ayuda-primary);
+}
+
+.ayuda-stat-valor {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.ayuda-stat-label {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+.ayuda-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--ayuda-transition);
+}
+
+.ayuda-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ayuda-modal {
+    background: white;
+    border-radius: var(--ayuda-radius);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: var(--ayuda-transition);
+}
+
+.ayuda-modal-overlay.active .ayuda-modal {
+    transform: scale(1);
+}
+
+.ayuda-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ayuda-modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.ayuda-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 4px;
+}
+
+.ayuda-modal-close:hover {
+    color: #1f2937;
+}
+
+.ayuda-modal-body {
+    padding: 24px;
+}
+
+.ayuda-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* ==========================================================================
+   Notificaciones
+   ========================================================================== */
+.ayuda-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 16px 24px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    box-shadow: var(--ayuda-shadow-lg);
+    z-index: 100000;
+    transform: translateX(120%);
+    transition: var(--ayuda-transition);
+}
+
+.ayuda-toast.active {
+    transform: translateX(0);
+}
+
+.ayuda-toast-success { background: var(--ayuda-primary); }
+.ayuda-toast-error { background: var(--ayuda-danger); }
+.ayuda-toast-warning { background: var(--ayuda-warning); }
+.ayuda-toast-info { background: var(--ayuda-secondary); }
+
+/* ==========================================================================
+   Loading
+   ========================================================================== */
+.ayuda-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.ayuda-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top-color: var(--ayuda-primary);
+    border-radius: 50%;
+    animation: ayuda-spin 1s linear infinite;
+}
+
+@keyframes ayuda-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+.ayuda-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.ayuda-empty-icon {
+    font-size: 64px;
+    color: #d1d5db;
+    margin-bottom: 20px;
+}
+
+.ayuda-empty-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.ayuda-empty-text {
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .ayuda-vecinal-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .ayuda-solicitudes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ayuda-categorias-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ayuda-mapa {
+        height: 350px;
+    }
+
+    .ayuda-valoracion-aspectos {
+        grid-template-columns: 1fr;
+    }
+
+    .ayuda-tabs {
+        flex-wrap: wrap;
+    }
+
+    .ayuda-tab {
+        flex: 1 1 50%;
+    }
+}

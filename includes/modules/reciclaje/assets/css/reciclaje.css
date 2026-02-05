@@ -1,0 +1,1116 @@
+/**
+ * Reciclaje Module Styles
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Variables y Reset
+   ========================================================================== */
+:root {
+    --reciclaje-primary: #2e7d32;
+    --reciclaje-secondary: #4caf50;
+    --reciclaje-accent: #8bc34a;
+    --reciclaje-warning: #ff9800;
+    --reciclaje-danger: #f44336;
+    --reciclaje-info: #2196f3;
+    --reciclaje-dark: #1b5e20;
+    --reciclaje-light: #e8f5e9;
+    --reciclaje-gray: #757575;
+    --reciclaje-border: #e0e0e0;
+    --reciclaje-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    --reciclaje-radius: 12px;
+    --reciclaje-transition: all 0.3s ease;
+
+    /* Colores de contenedores */
+    --color-papel: #2196f3;
+    --color-plastico: #ffeb3b;
+    --color-vidrio: #4caf50;
+    --color-organico: #795548;
+    --color-electronico: #9c27b0;
+    --color-ropa: #e91e63;
+    --color-aceite: #ff5722;
+    --color-pilas: #f44336;
+}
+
+.reciclaje-module * {
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Contenedor Principal
+   ========================================================================== */
+.reciclaje-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.reciclaje-section {
+    background: #fff;
+    border-radius: var(--reciclaje-radius);
+    box-shadow: var(--reciclaje-shadow);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.reciclaje-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--reciclaje-dark);
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--reciclaje-accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.reciclaje-section-title .dashicons {
+    color: var(--reciclaje-primary);
+}
+
+/* ==========================================================================
+   Mapa de Puntos de Reciclaje
+   ========================================================================== */
+.reciclaje-mapa-container {
+    position: relative;
+    border-radius: var(--reciclaje-radius);
+    overflow: hidden;
+}
+
+#reciclaje-mapa {
+    width: 100%;
+    height: 500px;
+    border-radius: var(--reciclaje-radius);
+    z-index: 1;
+}
+
+.reciclaje-mapa-controles {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: var(--reciclaje-shadow);
+    max-width: 300px;
+}
+
+.reciclaje-filtros-mapa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.reciclaje-filtro-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--reciclaje-border);
+    border-radius: 20px;
+    background: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--reciclaje-transition);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.reciclaje-filtro-btn:hover,
+.reciclaje-filtro-btn.active {
+    background: var(--reciclaje-primary);
+    color: #fff;
+    border-color: var(--reciclaje-primary);
+}
+
+.reciclaje-filtro-btn .color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.reciclaje-buscar-ubicacion {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.reciclaje-buscar-ubicacion input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--reciclaje-border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.reciclaje-buscar-ubicacion button {
+    padding: 8px 16px;
+    background: var(--reciclaje-primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-buscar-ubicacion button:hover {
+    background: var(--reciclaje-dark);
+}
+
+/* Popup del mapa */
+.reciclaje-popup {
+    min-width: 250px;
+}
+
+.reciclaje-popup-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--reciclaje-dark);
+    margin-bottom: 8px;
+}
+
+.reciclaje-popup-tipo {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--reciclaje-light);
+    color: var(--reciclaje-primary);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+}
+
+.reciclaje-popup-direccion {
+    color: var(--reciclaje-gray);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.reciclaje-popup-materiales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.reciclaje-popup-material {
+    padding: 2px 6px;
+    background: var(--reciclaje-accent);
+    color: #fff;
+    border-radius: 3px;
+    font-size: 0.75rem;
+}
+
+.reciclaje-popup-horario {
+    font-size: 0.85rem;
+    color: var(--reciclaje-gray);
+}
+
+.reciclaje-popup-btn {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    background: var(--reciclaje-primary);
+    color: #fff;
+    text-align: center;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.reciclaje-popup-btn:hover {
+    background: var(--reciclaje-dark);
+    color: #fff;
+}
+
+/* Lista de puntos */
+.reciclaje-puntos-lista {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.reciclaje-punto-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--reciclaje-border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-punto-item:hover {
+    border-color: var(--reciclaje-primary);
+    box-shadow: var(--reciclaje-shadow);
+}
+
+.reciclaje-punto-icono {
+    width: 50px;
+    height: 50px;
+    background: var(--reciclaje-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.reciclaje-punto-info {
+    flex: 1;
+}
+
+.reciclaje-punto-nombre {
+    font-weight: 600;
+    color: var(--reciclaje-dark);
+    margin-bottom: 4px;
+}
+
+.reciclaje-punto-direccion {
+    font-size: 0.9rem;
+    color: var(--reciclaje-gray);
+    margin-bottom: 6px;
+}
+
+.reciclaje-punto-distancia {
+    font-size: 0.85rem;
+    color: var(--reciclaje-primary);
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Guia de Reciclaje
+   ========================================================================== */
+.reciclaje-guia-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.reciclaje-material-card {
+    background: #fff;
+    border-radius: var(--reciclaje-radius);
+    overflow: hidden;
+    box-shadow: var(--reciclaje-shadow);
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-material-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.reciclaje-material-header {
+    padding: 20px;
+    color: #fff;
+    text-align: center;
+}
+
+.reciclaje-material-header.papel { background: var(--color-papel); }
+.reciclaje-material-header.plastico { background: var(--color-plastico); color: #333; }
+.reciclaje-material-header.vidrio { background: var(--color-vidrio); }
+.reciclaje-material-header.organico { background: var(--color-organico); }
+.reciclaje-material-header.electronico { background: var(--color-electronico); }
+.reciclaje-material-header.ropa { background: var(--color-ropa); }
+.reciclaje-material-header.aceite { background: var(--color-aceite); }
+.reciclaje-material-header.pilas { background: var(--color-pilas); }
+
+.reciclaje-material-icono {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.reciclaje-material-nombre {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.reciclaje-material-body {
+    padding: 20px;
+}
+
+.reciclaje-material-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+}
+
+.reciclaje-material-lista li {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--reciclaje-border);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reciclaje-material-lista li:last-child {
+    border-bottom: none;
+}
+
+.reciclaje-material-lista .si::before {
+    content: "\2713";
+    color: var(--reciclaje-secondary);
+    font-weight: bold;
+}
+
+.reciclaje-material-lista .no::before {
+    content: "\2717";
+    color: var(--reciclaje-danger);
+    font-weight: bold;
+}
+
+.reciclaje-material-tips {
+    background: var(--reciclaje-light);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--reciclaje-dark);
+}
+
+.reciclaje-material-tips strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Acordeon de guia */
+.reciclaje-acordeon {
+    border: 1px solid var(--reciclaje-border);
+    border-radius: var(--reciclaje-radius);
+    overflow: hidden;
+}
+
+.reciclaje-acordeon-item {
+    border-bottom: 1px solid var(--reciclaje-border);
+}
+
+.reciclaje-acordeon-item:last-child {
+    border-bottom: none;
+}
+
+.reciclaje-acordeon-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: #fff;
+    cursor: pointer;
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-acordeon-header:hover {
+    background: var(--reciclaje-light);
+}
+
+.reciclaje-acordeon-header.active {
+    background: var(--reciclaje-light);
+}
+
+.reciclaje-acordeon-color {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.reciclaje-acordeon-titulo {
+    flex: 1;
+    font-weight: 500;
+}
+
+.reciclaje-acordeon-flecha {
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-acordeon-header.active .reciclaje-acordeon-flecha {
+    transform: rotate(180deg);
+}
+
+.reciclaje-acordeon-contenido {
+    display: none;
+    padding: 20px;
+    background: #fafafa;
+}
+
+.reciclaje-acordeon-contenido.active {
+    display: block;
+}
+
+/* ==========================================================================
+   Calendario de Recogidas
+   ========================================================================== */
+.reciclaje-calendario-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .reciclaje-calendario-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.reciclaje-calendario {
+    background: #fff;
+    border-radius: var(--reciclaje-radius);
+    overflow: hidden;
+}
+
+.reciclaje-calendario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--reciclaje-primary);
+    color: #fff;
+}
+
+.reciclaje-calendario-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.reciclaje-calendario-nav button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-calendario-nav button:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.reciclaje-calendario-mes {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.reciclaje-calendario-dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.reciclaje-calendario-dia-nombre {
+    padding: 12px;
+    font-weight: 600;
+    color: var(--reciclaje-gray);
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--reciclaje-border);
+}
+
+.reciclaje-calendario-dia {
+    min-height: 80px;
+    padding: 8px;
+    border: 1px solid var(--reciclaje-border);
+    border-width: 0 1px 1px 0;
+    position: relative;
+}
+
+.reciclaje-calendario-dia:nth-child(7n) {
+    border-right: none;
+}
+
+.reciclaje-calendario-dia.otro-mes {
+    background: #f9f9f9;
+    color: #ccc;
+}
+
+.reciclaje-calendario-dia.hoy {
+    background: var(--reciclaje-light);
+}
+
+.reciclaje-calendario-dia-numero {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.reciclaje-calendario-evento {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reciclaje-calendario-evento.papel { background: var(--color-papel); color: #fff; }
+.reciclaje-calendario-evento.plastico { background: var(--color-plastico); color: #333; }
+.reciclaje-calendario-evento.vidrio { background: var(--color-vidrio); color: #fff; }
+.reciclaje-calendario-evento.organico { background: var(--color-organico); color: #fff; }
+
+/* Panel lateral del calendario */
+.reciclaje-calendario-sidebar {
+    background: #fff;
+    border-radius: var(--reciclaje-radius);
+    padding: 20px;
+    box-shadow: var(--reciclaje-shadow);
+}
+
+.reciclaje-calendario-sidebar h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+    color: var(--reciclaje-dark);
+}
+
+.reciclaje-proximas-recogidas {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.reciclaje-recogida-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--reciclaje-border);
+}
+
+.reciclaje-recogida-item:last-child {
+    border-bottom: none;
+}
+
+.reciclaje-recogida-fecha {
+    width: 50px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.reciclaje-recogida-dia {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--reciclaje-primary);
+    line-height: 1;
+}
+
+.reciclaje-recogida-mes {
+    font-size: 0.75rem;
+    color: var(--reciclaje-gray);
+    text-transform: uppercase;
+}
+
+.reciclaje-recogida-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 0.95rem;
+}
+
+.reciclaje-recogida-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--reciclaje-gray);
+}
+
+.reciclaje-recogida-hora {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--reciclaje-primary);
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   Estadisticas de Usuario
+   ========================================================================== */
+.reciclaje-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.reciclaje-stat-card {
+    background: linear-gradient(135deg, var(--reciclaje-primary), var(--reciclaje-secondary));
+    color: #fff;
+    padding: 24px;
+    border-radius: var(--reciclaje-radius);
+    text-align: center;
+}
+
+.reciclaje-stat-card.secondary {
+    background: linear-gradient(135deg, var(--reciclaje-info), #64b5f6);
+}
+
+.reciclaje-stat-card.warning {
+    background: linear-gradient(135deg, var(--reciclaje-warning), #ffb74d);
+}
+
+.reciclaje-stat-card.accent {
+    background: linear-gradient(135deg, var(--reciclaje-accent), #aed581);
+}
+
+.reciclaje-stat-icono {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.reciclaje-stat-valor {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.reciclaje-stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Grafico de progreso */
+.reciclaje-progreso-container {
+    margin-bottom: 24px;
+}
+
+.reciclaje-progreso-item {
+    margin-bottom: 15px;
+}
+
+.reciclaje-progreso-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.reciclaje-progreso-label {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reciclaje-progreso-valor {
+    color: var(--reciclaje-gray);
+    font-size: 0.9rem;
+}
+
+.reciclaje-progreso-bar {
+    height: 12px;
+    background: var(--reciclaje-border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.reciclaje-progreso-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+}
+
+.reciclaje-progreso-fill.papel { background: var(--color-papel); }
+.reciclaje-progreso-fill.plastico { background: var(--color-plastico); }
+.reciclaje-progreso-fill.vidrio { background: var(--color-vidrio); }
+.reciclaje-progreso-fill.organico { background: var(--color-organico); }
+
+/* Historial de reciclaje */
+.reciclaje-historial {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.reciclaje-historial-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid var(--reciclaje-border);
+}
+
+.reciclaje-historial-icono {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.reciclaje-historial-info {
+    flex: 1;
+}
+
+.reciclaje-historial-tipo {
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.reciclaje-historial-fecha {
+    font-size: 0.85rem;
+    color: var(--reciclaje-gray);
+}
+
+.reciclaje-historial-puntos {
+    font-weight: 600;
+    color: var(--reciclaje-primary);
+}
+
+/* ==========================================================================
+   Retos y Gamificacion
+   ========================================================================== */
+.reciclaje-retos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.reciclaje-reto-card {
+    background: #fff;
+    border-radius: var(--reciclaje-radius);
+    overflow: hidden;
+    box-shadow: var(--reciclaje-shadow);
+    position: relative;
+}
+
+.reciclaje-reto-card.completado {
+    border: 2px solid var(--reciclaje-secondary);
+}
+
+.reciclaje-reto-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--reciclaje-secondary);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.reciclaje-reto-header {
+    padding: 20px;
+    background: linear-gradient(135deg, var(--reciclaje-primary), var(--reciclaje-dark));
+    color: #fff;
+}
+
+.reciclaje-reto-icono {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.reciclaje-reto-titulo {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.reciclaje-reto-body {
+    padding: 20px;
+}
+
+.reciclaje-reto-descripcion {
+    color: var(--reciclaje-gray);
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+}
+
+.reciclaje-reto-progreso {
+    margin-bottom: 15px;
+}
+
+.reciclaje-reto-progreso-texto {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+}
+
+.reciclaje-reto-progreso-bar {
+    height: 8px;
+    background: var(--reciclaje-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.reciclaje-reto-progreso-fill {
+    height: 100%;
+    background: var(--reciclaje-secondary);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.reciclaje-reto-recompensa {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--reciclaje-light);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.reciclaje-reto-recompensa .puntos {
+    font-weight: 700;
+    color: var(--reciclaje-primary);
+}
+
+.reciclaje-reto-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: var(--reciclaje-primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-reto-btn:hover {
+    background: var(--reciclaje-dark);
+}
+
+.reciclaje-reto-btn:disabled {
+    background: var(--reciclaje-gray);
+    cursor: not-allowed;
+}
+
+/* Logros */
+.reciclaje-logros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.reciclaje-logro {
+    text-align: center;
+    padding: 20px 15px;
+    background: #fff;
+    border-radius: var(--reciclaje-radius);
+    box-shadow: var(--reciclaje-shadow);
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-logro.bloqueado {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+
+.reciclaje-logro:not(.bloqueado):hover {
+    transform: scale(1.05);
+}
+
+.reciclaje-logro-icono {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.reciclaje-logro-nombre {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.reciclaje-logro-descripcion {
+    font-size: 0.8rem;
+    color: var(--reciclaje-gray);
+}
+
+/* ==========================================================================
+   Formularios
+   ========================================================================== */
+.reciclaje-form {
+    max-width: 500px;
+}
+
+.reciclaje-form-group {
+    margin-bottom: 20px;
+}
+
+.reciclaje-form-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--reciclaje-dark);
+}
+
+.reciclaje-form-input,
+.reciclaje-form-select,
+.reciclaje-form-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--reciclaje-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-form-input:focus,
+.reciclaje-form-select:focus,
+.reciclaje-form-textarea:focus {
+    outline: none;
+    border-color: var(--reciclaje-primary);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.reciclaje-form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.reciclaje-form-submit {
+    padding: 14px 28px;
+    background: var(--reciclaje-primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--reciclaje-transition);
+}
+
+.reciclaje-form-submit:hover {
+    background: var(--reciclaje-dark);
+}
+
+.reciclaje-form-submit:disabled {
+    background: var(--reciclaje-gray);
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Alertas y Notificaciones
+   ========================================================================== */
+.reciclaje-alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.reciclaje-alert-success {
+    background: #e8f5e9;
+    color: var(--reciclaje-dark);
+    border-left: 4px solid var(--reciclaje-secondary);
+}
+
+.reciclaje-alert-warning {
+    background: #fff3e0;
+    color: #e65100;
+    border-left: 4px solid var(--reciclaje-warning);
+}
+
+.reciclaje-alert-error {
+    background: #ffebee;
+    color: #c62828;
+    border-left: 4px solid var(--reciclaje-danger);
+}
+
+.reciclaje-alert-info {
+    background: #e3f2fd;
+    color: #1565c0;
+    border-left: 4px solid var(--reciclaje-info);
+}
+
+/* ==========================================================================
+   Loading y Spinner
+   ========================================================================== */
+.reciclaje-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.reciclaje-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--reciclaje-border);
+    border-top-color: var(--reciclaje-primary);
+    border-radius: 50%;
+    animation: reciclaje-spin 1s linear infinite;
+}
+
+@keyframes reciclaje-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .reciclaje-container {
+        padding: 15px;
+    }
+
+    .reciclaje-section {
+        padding: 16px;
+    }
+
+    .reciclaje-mapa-controles {
+        position: relative;
+        top: auto;
+        left: auto;
+        max-width: none;
+        margin-bottom: 15px;
+        border-radius: var(--reciclaje-radius);
+    }
+
+    #reciclaje-mapa {
+        height: 350px;
+    }
+
+    .reciclaje-guia-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reciclaje-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .reciclaje-stat-valor {
+        font-size: 1.8rem;
+    }
+
+    .reciclaje-retos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reciclaje-logros-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .reciclaje-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reciclaje-logros-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .reciclaje-calendario-dias {
+        font-size: 0.8rem;
+    }
+
+    .reciclaje-calendario-dia {
+        min-height: 60px;
+        padding: 4px;
+    }
+}

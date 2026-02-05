@@ -96,6 +96,44 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if ($this->get_setting('bot_activo', false)) {
             $this->programar_cron();
         }
+
+        // Registrar REST API routes
+        add_action('rest_api_init', array($this, 'register_rest_routes'));
+
+        // Registrar shortcodes
+        add_action('init', array($this, 'register_shortcodes'));
+
+        // AJAX handlers para usuarios autenticados
+        add_action('wp_ajax_trading_ia_obtener_estado', array($this, 'ajax_obtener_estado'));
+        add_action('wp_ajax_trading_ia_obtener_portfolio', array($this, 'ajax_obtener_portfolio'));
+        add_action('wp_ajax_trading_ia_obtener_mercado', array($this, 'ajax_obtener_mercado'));
+        add_action('wp_ajax_trading_ia_obtener_indicadores', array($this, 'ajax_obtener_indicadores'));
+        add_action('wp_ajax_trading_ia_ejecutar_compra', array($this, 'ajax_ejecutar_compra'));
+        add_action('wp_ajax_trading_ia_ejecutar_venta', array($this, 'ajax_ejecutar_venta'));
+        add_action('wp_ajax_trading_ia_iniciar_bot', array($this, 'ajax_iniciar_bot'));
+        add_action('wp_ajax_trading_ia_detener_bot', array($this, 'ajax_detener_bot'));
+        add_action('wp_ajax_trading_ia_historial_trades', array($this, 'ajax_historial_trades'));
+        add_action('wp_ajax_trading_ia_obtener_reglas', array($this, 'ajax_obtener_reglas'));
+        add_action('wp_ajax_trading_ia_crear_regla', array($this, 'ajax_crear_regla'));
+        add_action('wp_ajax_trading_ia_eliminar_regla', array($this, 'ajax_eliminar_regla'));
+        add_action('wp_ajax_trading_ia_actualizar_parametros', array($this, 'ajax_actualizar_parametros'));
+        add_action('wp_ajax_trading_ia_reset', array($this, 'ajax_reset_paper_trading'));
+        add_action('wp_ajax_trading_ia_estado_riesgo', array($this, 'ajax_estado_riesgo'));
+        add_action('wp_ajax_trading_ia_agregar_token', array($this, 'ajax_agregar_token'));
+        add_action('wp_ajax_trading_ia_eliminar_token', array($this, 'ajax_eliminar_token'));
+        add_action('wp_ajax_trading_ia_exportar_historial', array($this, 'ajax_exportar_historial'));
+
+        // Cron adicional para limpieza y reportes
+        if (!wp_next_scheduled('flavor_trading_ia_reporte_diario')) {
+            wp_schedule_event(time(), 'daily', 'flavor_trading_ia_reporte_diario');
+        }
+        add_action('flavor_trading_ia_reporte_diario', array($this, 'generar_reporte_diario'));
+
+        // Cron para alertas de precios
+        if (!wp_next_scheduled('flavor_trading_ia_verificar_alertas')) {
+            wp_schedule_event(time(), 'hourly', 'flavor_trading_ia_verificar_alertas');
+        }
+        add_action('flavor_trading_ia_verificar_alertas', array($this, 'verificar_alertas_precio'));
     }
 
     /**

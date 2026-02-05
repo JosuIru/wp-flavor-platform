@@ -1,0 +1,1179 @@
+/**
+ * Estilos del Modulo de Compostaje Comunitario
+ * @package FlavorChatIA
+ * @version 2.0.0
+ */
+
+/* ========================================
+   Variables CSS
+   ======================================== */
+:root {
+    --compost-verde: #4CAF50;
+    --compost-verde-claro: #81C784;
+    --compost-verde-oscuro: #388E3C;
+    --compost-marron: #8D6E63;
+    --compost-marron-claro: #A1887F;
+    --compost-marron-oscuro: #5D4037;
+    --compost-tierra: #795548;
+    --compost-dorado: #FFC107;
+    --compost-naranja: #FF9800;
+    --compost-rojo: #F44336;
+    --compost-azul: #2196F3;
+    --compost-gris: #9E9E9E;
+    --compost-gris-claro: #F5F5F5;
+    --compost-blanco: #FFFFFF;
+    --compost-negro: #212121;
+    --compost-sombra: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --compost-sombra-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --compost-radio: 8px;
+    --compost-transicion: all 0.3s ease;
+}
+
+/* ========================================
+   Contenedores Base
+   ======================================== */
+.flavor-compostaje-mapa-container,
+.flavor-compostaje-form-container,
+.flavor-compostaje-perfil,
+.flavor-compostaje-guia,
+.flavor-compostaje-ranking,
+.flavor-compostaje-estadisticas-globales,
+.flavor-compostaje-turnos {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    color: var(--compost-negro);
+    line-height: 1.6;
+}
+
+/* ========================================
+   Formularios
+   ======================================== */
+.flavor-form {
+    background: var(--compost-blanco);
+    padding: 24px;
+    border-radius: var(--compost-radio);
+    box-shadow: var(--compost-sombra);
+}
+
+.flavor-form-group {
+    margin-bottom: 20px;
+}
+
+.flavor-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--compost-negro);
+}
+
+.flavor-input,
+.flavor-select,
+.flavor-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #E0E0E0;
+    border-radius: var(--compost-radio);
+    font-size: 15px;
+    transition: var(--compost-transicion);
+    background: var(--compost-blanco);
+}
+
+.flavor-input:focus,
+.flavor-select:focus,
+.flavor-textarea:focus {
+    outline: none;
+    border-color: var(--compost-verde);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+}
+
+.flavor-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.flavor-form-help {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--compost-gris);
+}
+
+/* ========================================
+   Botones
+   ======================================== */
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--compost-radio);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--compost-transicion);
+    text-decoration: none;
+}
+
+.flavor-btn-primary {
+    background: var(--compost-verde);
+    color: var(--compost-blanco);
+}
+
+.flavor-btn-primary:hover {
+    background: var(--compost-verde-oscuro);
+    transform: translateY(-1px);
+}
+
+.flavor-btn-secondary {
+    background: var(--compost-gris-claro);
+    color: var(--compost-negro);
+    border: 2px solid #E0E0E0;
+}
+
+.flavor-btn-secondary:hover {
+    background: #EEEEEE;
+    border-color: #BDBDBD;
+}
+
+.flavor-btn-block {
+    width: 100%;
+}
+
+.flavor-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   Mapa de Composteras
+   ======================================== */
+.flavor-compostaje-filtros {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.flavor-compostaje-filtros .flavor-select {
+    flex: 1;
+    min-width: 150px;
+}
+
+#mapa-composteras {
+    border-radius: var(--compost-radio);
+    overflow: hidden;
+    box-shadow: var(--compost-sombra);
+}
+
+.flavor-compostaje-lista {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.punto-compostaje-card {
+    background: var(--compost-blanco);
+    border-radius: var(--compost-radio);
+    padding: 20px;
+    box-shadow: var(--compost-sombra);
+    transition: var(--compost-transicion);
+    border-left: 4px solid var(--compost-verde);
+}
+
+.punto-compostaje-card:hover {
+    box-shadow: var(--compost-sombra-hover);
+    transform: translateY(-2px);
+}
+
+.punto-compostaje-card.fase-maduracion {
+    border-left-color: var(--compost-naranja);
+}
+
+.punto-compostaje-card.fase-listo {
+    border-left-color: var(--compost-dorado);
+}
+
+.punto-compostaje-card.fase-mantenimiento {
+    border-left-color: var(--compost-gris);
+}
+
+.punto-nombre {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--compost-negro);
+}
+
+.punto-direccion {
+    font-size: 14px;
+    color: var(--compost-gris);
+    margin-bottom: 12px;
+}
+
+.punto-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.punto-info-item {
+    font-size: 13px;
+}
+
+.punto-info-item span:first-child {
+    color: var(--compost-gris);
+}
+
+.punto-nivel-barra {
+    height: 8px;
+    background: #E0E0E0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.punto-nivel-llenado {
+    height: 100%;
+    background: linear-gradient(90deg, var(--compost-verde-claro), var(--compost-verde));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.punto-nivel-llenado.nivel-alto {
+    background: linear-gradient(90deg, var(--compost-naranja), var(--compost-rojo));
+}
+
+.punto-fase-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.punto-fase-badge.fase-recepcion { background: #E8F5E9; color: var(--compost-verde-oscuro); }
+.punto-fase-badge.fase-activo { background: #E3F2FD; color: var(--compost-azul); }
+.punto-fase-badge.fase-maduracion { background: #FFF3E0; color: var(--compost-naranja); }
+.punto-fase-badge.fase-listo { background: #FFF8E1; color: #F57F17; }
+.punto-fase-badge.fase-mantenimiento { background: #ECEFF1; color: #546E7A; }
+
+/* ========================================
+   Perfil de Usuario / Mis Aportaciones
+   ======================================== */
+.flavor-compostaje-perfil {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.flavor-compostaje-nivel-card {
+    background: linear-gradient(135deg, var(--compost-verde) 0%, var(--compost-verde-oscuro) 100%);
+    color: var(--compost-blanco);
+    border-radius: var(--compost-radio);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--compost-sombra);
+}
+
+.nivel-icono {
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.nivel-icono.nivel-seedling::before { content: "🌱"; }
+.nivel-icono.nivel-leaf::before { content: "🌿"; }
+.nivel-icono.nivel-plant::before { content: "🪴"; }
+.nivel-icono.nivel-tree::before { content: "🌳"; }
+.nivel-icono.nivel-forest::before { content: "🌲"; }
+.nivel-icono.nivel-globe::before { content: "🌍"; }
+
+.nivel-info h3 {
+    font-size: 24px;
+    margin: 0 0 4px 0;
+}
+
+.nivel-numero {
+    opacity: 0.85;
+    font-size: 14px;
+}
+
+.nivel-progreso {
+    flex: 1;
+    max-width: 300px;
+}
+
+.progreso-barra {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.progreso-llenado {
+    height: 100%;
+    background: var(--compost-dorado);
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+.nivel-progreso small {
+    font-size: 12px;
+    opacity: 0.85;
+}
+
+.flavor-compostaje-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--compost-blanco);
+    border-radius: var(--compost-radio);
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--compost-sombra);
+    transition: var(--compost-transicion);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--compost-sombra-hover);
+}
+
+.stat-card .stat-valor {
+    display: block;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--compost-verde);
+    margin-bottom: 4px;
+}
+
+.stat-card .stat-label {
+    font-size: 13px;
+    color: var(--compost-gris);
+}
+
+.stat-card-destacado {
+    background: linear-gradient(135deg, var(--compost-verde-claro) 0%, var(--compost-verde) 100%);
+    color: var(--compost-blanco);
+}
+
+.stat-card-destacado .stat-valor {
+    color: var(--compost-blanco);
+}
+
+.stat-card-destacado .stat-label {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.stat-icono {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+.flavor-compostaje-historial {
+    background: var(--compost-blanco);
+    border-radius: var(--compost-radio);
+    padding: 24px;
+    box-shadow: var(--compost-sombra);
+}
+
+.flavor-compostaje-historial h4 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+}
+
+.flavor-lista-aportaciones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.aportacion-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--compost-gris-claro);
+    border-radius: var(--compost-radio);
+    transition: var(--compost-transicion);
+}
+
+.aportacion-item:hover {
+    background: #EEEEEE;
+}
+
+.aportacion-icono {
+    width: 44px;
+    height: 44px;
+    background: var(--compost-verde-claro);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.aportacion-icono.cat-marron {
+    background: var(--compost-marron-claro);
+}
+
+.aportacion-icono.cat-especial {
+    background: var(--compost-dorado);
+}
+
+.aportacion-info {
+    flex: 1;
+}
+
+.aportacion-material {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.aportacion-punto {
+    font-size: 13px;
+    color: var(--compost-gris);
+}
+
+.aportacion-stats {
+    text-align: right;
+}
+
+.aportacion-kg {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--compost-verde);
+}
+
+.aportacion-puntos {
+    font-size: 13px;
+    color: var(--compost-dorado);
+}
+
+.aportacion-fecha {
+    font-size: 12px;
+    color: var(--compost-gris);
+}
+
+/* ========================================
+   Guia de Compostaje
+   ======================================== */
+.flavor-compostaje-guia {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.guia-seccion {
+    background: var(--compost-blanco);
+    border-radius: var(--compost-radio);
+    padding: 24px;
+    box-shadow: var(--compost-sombra);
+}
+
+.guia-titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    margin: 0 0 16px 0;
+}
+
+.guia-titulo .guia-icono {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.guia-titulo-si .guia-icono {
+    background: #E8F5E9;
+    color: var(--compost-verde);
+}
+
+.guia-titulo-no .guia-icono {
+    background: #FFEBEE;
+    color: var(--compost-rojo);
+}
+
+.guia-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.guia-categoria h4 {
+    font-size: 15px;
+    color: var(--compost-verde-oscuro);
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--compost-verde-claro);
+}
+
+.guia-categoria ul,
+.guia-seccion.guia-no ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.guia-categoria li,
+.guia-seccion.guia-no li {
+    padding: 8px 0;
+    padding-left: 24px;
+    position: relative;
+    font-size: 14px;
+}
+
+.guia-categoria li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--compost-verde);
+    font-weight: bold;
+}
+
+.guia-seccion.guia-no li::before {
+    content: "✕";
+    position: absolute;
+    left: 0;
+    color: var(--compost-rojo);
+    font-weight: bold;
+}
+
+.guia-consejos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.consejo-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background: var(--compost-gris-claro);
+    border-radius: var(--compost-radio);
+}
+
+.consejo-numero {
+    width: 32px;
+    height: 32px;
+    background: var(--compost-verde);
+    color: var(--compost-blanco);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.consejo-card p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Estilo tarjetas */
+.flavor-guia-tarjetas .guia-categoria {
+    background: var(--compost-gris-claro);
+    padding: 16px;
+    border-radius: var(--compost-radio);
+}
+
+/* ========================================
+   Ranking
+   ======================================== */
+.flavor-compostaje-ranking {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.ranking-filtros {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.ranking-filtro {
+    padding: 8px 16px;
+    border: 2px solid #E0E0E0;
+    background: var(--compost-blanco);
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--compost-transicion);
+}
+
+.ranking-filtro:hover {
+    border-color: var(--compost-verde-claro);
+}
+
+.ranking-filtro.activo {
+    background: var(--compost-verde);
+    border-color: var(--compost-verde);
+    color: var(--compost-blanco);
+}
+
+.ranking-lista {
+    background: var(--compost-blanco);
+    border-radius: var(--compost-radio);
+    box-shadow: var(--compost-sombra);
+    overflow: hidden;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #EEEEEE;
+    transition: var(--compost-transicion);
+}
+
+.ranking-item:last-child {
+    border-bottom: none;
+}
+
+.ranking-item:hover {
+    background: var(--compost-gris-claro);
+}
+
+.ranking-posicion-1 {
+    background: linear-gradient(90deg, #FFF8E1 0%, var(--compost-blanco) 100%);
+}
+
+.ranking-posicion-2 {
+    background: linear-gradient(90deg, #ECEFF1 0%, var(--compost-blanco) 100%);
+}
+
+.ranking-posicion-3 {
+    background: linear-gradient(90deg, #FBE9E7 0%, var(--compost-blanco) 100%);
+}
+
+.ranking-pos {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--compost-gris);
+}
+
+.ranking-posicion-1 .ranking-pos { color: #FFC107; font-size: 20px; }
+.ranking-posicion-2 .ranking-pos { color: #90A4AE; font-size: 18px; }
+.ranking-posicion-3 .ranking-pos { color: #FF8A65; font-size: 17px; }
+
+.ranking-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.ranking-info {
+    flex: 1;
+}
+
+.ranking-nombre {
+    font-weight: 600;
+    display: block;
+}
+
+.ranking-nivel {
+    font-size: 13px;
+    color: var(--compost-gris);
+}
+
+.ranking-stats {
+    text-align: right;
+}
+
+.ranking-kg {
+    display: block;
+    font-weight: 700;
+    color: var(--compost-verde);
+}
+
+.ranking-puntos {
+    font-size: 13px;
+    color: var(--compost-dorado);
+}
+
+.ranking-vacio {
+    padding: 40px;
+    text-align: center;
+    color: var(--compost-gris);
+}
+
+/* ========================================
+   Estadisticas Globales
+   ======================================== */
+.flavor-compostaje-estadisticas-globales {
+    text-align: center;
+}
+
+.stats-hero {
+    margin-bottom: 32px;
+}
+
+.stats-hero h2 {
+    font-size: 28px;
+    color: var(--compost-negro);
+    margin: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.stats-mes {
+    background: var(--compost-gris-claro);
+    border-radius: var(--compost-radio);
+    padding: 24px;
+}
+
+.stats-mes h4 {
+    margin: 0 0 16px 0;
+    color: var(--compost-gris);
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.stats-mes-grid {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+}
+
+.stat-mes-valor {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--compost-verde);
+}
+
+.stat-mes-label {
+    font-size: 14px;
+    color: var(--compost-gris);
+}
+
+/* Animacion contador */
+.contador {
+    transition: all 0.5s ease;
+}
+
+/* ========================================
+   Turnos de Mantenimiento
+   ======================================== */
+.flavor-compostaje-turnos {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.turnos-filtros {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.turnos-filtros .flavor-select {
+    flex: 1;
+    min-width: 150px;
+}
+
+.turnos-calendario {
+    background: var(--compost-blanco);
+    border-radius: var(--compost-radio);
+    padding: 20px;
+    box-shadow: var(--compost-sombra);
+    margin-bottom: 20px;
+}
+
+.turnos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.turno-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--compost-blanco);
+    border-radius: var(--compost-radio);
+    padding: 20px;
+    box-shadow: var(--compost-sombra);
+    transition: var(--compost-transicion);
+}
+
+.turno-card:hover {
+    box-shadow: var(--compost-sombra-hover);
+}
+
+.turno-fecha-box {
+    text-align: center;
+    min-width: 70px;
+    padding: 12px;
+    background: var(--compost-verde-claro);
+    border-radius: var(--compost-radio);
+}
+
+.turno-dia {
+    display: block;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--compost-verde-oscuro);
+}
+
+.turno-mes {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--compost-verde-oscuro);
+}
+
+.turno-info {
+    flex: 1;
+}
+
+.turno-tipo {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.turno-punto {
+    font-size: 14px;
+    color: var(--compost-gris);
+    margin-bottom: 4px;
+}
+
+.turno-hora {
+    font-size: 13px;
+    color: var(--compost-gris);
+}
+
+.turno-plazas {
+    text-align: center;
+    padding: 0 16px;
+}
+
+.turno-plazas-numero {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--compost-verde);
+}
+
+.turno-plazas-label {
+    font-size: 12px;
+    color: var(--compost-gris);
+}
+
+.turno-plazas.completo .turno-plazas-numero {
+    color: var(--compost-rojo);
+}
+
+.turno-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.turno-puntos-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: #FFF8E1;
+    color: var(--compost-naranja);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ========================================
+   Preview de Aportacion
+   ======================================== */
+.flavor-compostaje-preview {
+    background: var(--compost-gris-claro);
+    border-radius: var(--compost-radio);
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.preview-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.preview-item:not(:last-child) {
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.preview-label {
+    color: var(--compost-gris);
+}
+
+.preview-value {
+    font-weight: 600;
+    color: var(--compost-verde);
+}
+
+/* ========================================
+   Resultado y Mensajes
+   ======================================== */
+.flavor-resultado {
+    padding: 16px;
+    border-radius: var(--compost-radio);
+    margin-top: 16px;
+}
+
+.flavor-resultado.exito {
+    background: #E8F5E9;
+    border: 1px solid var(--compost-verde);
+    color: var(--compost-verde-oscuro);
+}
+
+.flavor-resultado.error {
+    background: #FFEBEE;
+    border: 1px solid var(--compost-rojo);
+    color: #C62828;
+}
+
+.flavor-aviso {
+    padding: 16px 20px;
+    border-radius: var(--compost-radio);
+    margin-bottom: 20px;
+}
+
+.flavor-aviso-info {
+    background: #E3F2FD;
+    border: 1px solid var(--compost-azul);
+    color: #1565C0;
+}
+
+.flavor-aviso a {
+    color: inherit;
+    font-weight: 600;
+}
+
+.flavor-cargando {
+    text-align: center;
+    padding: 40px;
+    color: var(--compost-gris);
+}
+
+.flavor-cargando::before {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 16px;
+    border: 3px solid #E0E0E0;
+    border-top-color: var(--compost-verde);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   Paginacion
+   ======================================== */
+.flavor-paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.flavor-paginacion button {
+    width: 36px;
+    height: 36px;
+    border: 2px solid #E0E0E0;
+    background: var(--compost-blanco);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--compost-transicion);
+}
+
+.flavor-paginacion button:hover {
+    border-color: var(--compost-verde);
+}
+
+.flavor-paginacion button.activa {
+    background: var(--compost-verde);
+    border-color: var(--compost-verde);
+    color: var(--compost-blanco);
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 768px) {
+    .flavor-compostaje-nivel-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nivel-progreso {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .flavor-compostaje-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-mes-grid {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .turno-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .turno-fecha-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .turno-plazas {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #EEEEEE;
+        padding-top: 12px;
+        margin-top: 12px;
+    }
+
+    .turno-acciones {
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .turno-acciones .flavor-btn {
+        flex: 1;
+    }
+
+    .guia-items {
+        grid-template-columns: 1fr;
+    }
+
+    .ranking-filtros {
+        flex-wrap: wrap;
+    }
+
+    .ranking-item {
+        flex-wrap: wrap;
+    }
+
+    .ranking-stats {
+        width: 100%;
+        text-align: left;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #EEEEEE;
+        display: flex;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .flavor-compostaje-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-form {
+        padding: 16px;
+    }
+
+    .guia-consejos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========================================
+   Animaciones
+   ======================================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.punto-compostaje-card,
+.aportacion-item,
+.turno-card {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Efecto de celebracion para logros */
+@keyframes celebrar {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.logro-nuevo {
+    animation: celebrar 0.5s ease;
+}
+
+/* ========================================
+   Impresion
+   ======================================== */
+@media print {
+    .flavor-compostaje-filtros,
+    .flavor-btn,
+    .ranking-filtros,
+    .turnos-filtros {
+        display: none;
+    }
+
+    .flavor-compostaje-nivel-card,
+    .stat-card,
+    .punto-compostaje-card,
+    .turno-card {
+        box-shadow: none;
+        border: 1px solid #DDD;
+    }
+}

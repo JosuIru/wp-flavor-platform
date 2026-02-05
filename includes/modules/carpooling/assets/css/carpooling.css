@@ -1,0 +1,1101 @@
+/**
+ * Carpooling Module Styles
+ * @package FlavorChatIA
+ */
+
+/* ========================================
+   Variables CSS
+   ======================================== */
+:root {
+    --carpooling-primary: #3b82f6;
+    --carpooling-primary-dark: #2563eb;
+    --carpooling-primary-light: #60a5fa;
+    --carpooling-secondary: #10b981;
+    --carpooling-secondary-dark: #059669;
+    --carpooling-danger: #ef4444;
+    --carpooling-warning: #f59e0b;
+    --carpooling-success: #22c55e;
+    --carpooling-gray-50: #f9fafb;
+    --carpooling-gray-100: #f3f4f6;
+    --carpooling-gray-200: #e5e7eb;
+    --carpooling-gray-300: #d1d5db;
+    --carpooling-gray-400: #9ca3af;
+    --carpooling-gray-500: #6b7280;
+    --carpooling-gray-600: #4b5563;
+    --carpooling-gray-700: #374151;
+    --carpooling-gray-800: #1f2937;
+    --carpooling-gray-900: #111827;
+    --carpooling-radius: 8px;
+    --carpooling-radius-lg: 12px;
+    --carpooling-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --carpooling-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --carpooling-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --carpooling-transition: all 0.2s ease-in-out;
+}
+
+/* ========================================
+   Base Styles
+   ======================================== */
+.carpooling-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.carpooling-container * {
+    box-sizing: border-box;
+}
+
+.carpooling-login-required {
+    background: var(--carpooling-gray-100);
+    border: 1px solid var(--carpooling-gray-200);
+    border-radius: var(--carpooling-radius);
+    padding: 30px;
+    text-align: center;
+    color: var(--carpooling-gray-600);
+}
+
+.carpooling-login-required a {
+    color: var(--carpooling-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.carpooling-login-required a:hover {
+    text-decoration: underline;
+}
+
+/* ========================================
+   Buscador de Viajes
+   ======================================== */
+.carpooling-buscador {
+    background: #fff;
+    border-radius: var(--carpooling-radius-lg);
+    box-shadow: var(--carpooling-shadow-lg);
+    padding: 24px;
+    margin-bottom: 30px;
+}
+
+.carpooling-buscador__titulo {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--carpooling-gray-900);
+    margin: 0 0 20px 0;
+}
+
+.carpooling-buscador__form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto auto;
+    gap: 16px;
+    align-items: end;
+}
+
+@media (max-width: 992px) {
+    .carpooling-buscador__form {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .carpooling-buscador__form {
+        grid-template-columns: 1fr;
+    }
+}
+
+.carpooling-campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.carpooling-campo__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--carpooling-gray-700);
+    margin-bottom: 6px;
+}
+
+.carpooling-campo__input,
+.carpooling-campo__select {
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--carpooling-gray-300);
+    border-radius: var(--carpooling-radius);
+    font-size: 15px;
+    color: var(--carpooling-gray-900);
+    background: #fff;
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-campo__input:focus,
+.carpooling-campo__select:focus {
+    outline: none;
+    border-color: var(--carpooling-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.carpooling-campo__input::placeholder {
+    color: var(--carpooling-gray-400);
+}
+
+.carpooling-campo__input--con-icono {
+    padding-left: 40px;
+    background-repeat: no-repeat;
+    background-position: 12px center;
+    background-size: 18px;
+}
+
+.carpooling-campo__textarea {
+    min-height: 100px;
+    padding: 12px 14px;
+    border: 1px solid var(--carpooling-gray-300);
+    border-radius: var(--carpooling-radius);
+    font-size: 15px;
+    color: var(--carpooling-gray-900);
+    resize: vertical;
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-campo__textarea:focus {
+    outline: none;
+    border-color: var(--carpooling-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Autocompletado */
+.carpooling-autocomplete {
+    position: relative;
+}
+
+.carpooling-autocomplete__lista {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--carpooling-gray-200);
+    border-radius: var(--carpooling-radius);
+    box-shadow: var(--carpooling-shadow-lg);
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.carpooling-autocomplete__lista.activo {
+    display: block;
+}
+
+.carpooling-autocomplete__item {
+    padding: 12px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--carpooling-gray-100);
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-autocomplete__item:last-child {
+    border-bottom: none;
+}
+
+.carpooling-autocomplete__item:hover,
+.carpooling-autocomplete__item.seleccionado {
+    background: var(--carpooling-gray-50);
+}
+
+.carpooling-autocomplete__item-nombre {
+    font-size: 14px;
+    color: var(--carpooling-gray-800);
+}
+
+.carpooling-autocomplete__item-tipo {
+    font-size: 12px;
+    color: var(--carpooling-gray-500);
+    margin-top: 2px;
+}
+
+/* ========================================
+   Botones
+   ======================================== */
+.carpooling-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 24px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--carpooling-radius);
+    cursor: pointer;
+    transition: var(--carpooling-transition);
+    text-decoration: none;
+}
+
+.carpooling-btn--primary {
+    background: var(--carpooling-primary);
+    color: #fff;
+}
+
+.carpooling-btn--primary:hover {
+    background: var(--carpooling-primary-dark);
+}
+
+.carpooling-btn--secondary {
+    background: var(--carpooling-secondary);
+    color: #fff;
+}
+
+.carpooling-btn--secondary:hover {
+    background: var(--carpooling-secondary-dark);
+}
+
+.carpooling-btn--outline {
+    background: transparent;
+    border: 1px solid var(--carpooling-gray-300);
+    color: var(--carpooling-gray-700);
+}
+
+.carpooling-btn--outline:hover {
+    background: var(--carpooling-gray-50);
+    border-color: var(--carpooling-gray-400);
+}
+
+.carpooling-btn--danger {
+    background: var(--carpooling-danger);
+    color: #fff;
+}
+
+.carpooling-btn--danger:hover {
+    background: #dc2626;
+}
+
+.carpooling-btn--sm {
+    height: 36px;
+    padding: 0 16px;
+    font-size: 14px;
+}
+
+.carpooling-btn--lg {
+    height: 52px;
+    padding: 0 32px;
+    font-size: 16px;
+}
+
+.carpooling-btn--full {
+    width: 100%;
+}
+
+.carpooling-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.carpooling-btn__spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: carpooling-spin 0.8s linear infinite;
+}
+
+@keyframes carpooling-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   Tarjetas de Viaje
+   ======================================== */
+.carpooling-viajes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+}
+
+@media (max-width: 576px) {
+    .carpooling-viajes-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.carpooling-viaje-card {
+    background: #fff;
+    border-radius: var(--carpooling-radius-lg);
+    box-shadow: var(--carpooling-shadow);
+    overflow: hidden;
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-viaje-card:hover {
+    box-shadow: var(--carpooling-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.carpooling-viaje-card__header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--carpooling-gray-100);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.carpooling-viaje-card__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.carpooling-viaje-card__conductor {
+    flex: 1;
+}
+
+.carpooling-viaje-card__conductor-nombre {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--carpooling-gray-900);
+}
+
+.carpooling-viaje-card__conductor-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--carpooling-gray-600);
+}
+
+.carpooling-viaje-card__conductor-rating svg {
+    color: var(--carpooling-warning);
+}
+
+.carpooling-viaje-card__precio {
+    text-align: right;
+}
+
+.carpooling-viaje-card__precio-valor {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--carpooling-primary);
+}
+
+.carpooling-viaje-card__precio-label {
+    font-size: 12px;
+    color: var(--carpooling-gray-500);
+}
+
+.carpooling-viaje-card__body {
+    padding: 20px;
+}
+
+.carpooling-viaje-card__ruta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.carpooling-viaje-card__ruta-linea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4px;
+}
+
+.carpooling-viaje-card__ruta-punto {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--carpooling-primary);
+    background: #fff;
+}
+
+.carpooling-viaje-card__ruta-punto--destino {
+    background: var(--carpooling-primary);
+}
+
+.carpooling-viaje-card__ruta-conector {
+    width: 2px;
+    flex: 1;
+    min-height: 30px;
+    background: var(--carpooling-gray-200);
+    margin: 4px 0;
+}
+
+.carpooling-viaje-card__ruta-info {
+    flex: 1;
+}
+
+.carpooling-viaje-card__lugar {
+    margin-bottom: 20px;
+}
+
+.carpooling-viaje-card__lugar:last-child {
+    margin-bottom: 0;
+}
+
+.carpooling-viaje-card__lugar-nombre {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--carpooling-gray-900);
+    margin-bottom: 2px;
+}
+
+.carpooling-viaje-card__lugar-hora {
+    font-size: 13px;
+    color: var(--carpooling-gray-500);
+}
+
+.carpooling-viaje-card__detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--carpooling-gray-100);
+}
+
+.carpooling-viaje-card__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 20px;
+    background: var(--carpooling-gray-100);
+    color: var(--carpooling-gray-600);
+}
+
+.carpooling-viaje-card__tag--plazas {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--carpooling-primary);
+}
+
+.carpooling-viaje-card__tag--fecha {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--carpooling-secondary);
+}
+
+.carpooling-viaje-card__footer {
+    padding: 16px 20px;
+    background: var(--carpooling-gray-50);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ========================================
+   Formulario Publicar Viaje
+   ======================================== */
+.carpooling-publicar {
+    background: #fff;
+    border-radius: var(--carpooling-radius-lg);
+    box-shadow: var(--carpooling-shadow-lg);
+    padding: 32px;
+}
+
+.carpooling-publicar__titulo {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--carpooling-gray-900);
+    margin: 0 0 8px 0;
+}
+
+.carpooling-publicar__subtitulo {
+    font-size: 15px;
+    color: var(--carpooling-gray-500);
+    margin: 0 0 32px 0;
+}
+
+.carpooling-publicar__seccion {
+    margin-bottom: 32px;
+}
+
+.carpooling-publicar__seccion-titulo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--carpooling-gray-800);
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--carpooling-gray-200);
+}
+
+.carpooling-publicar__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 576px) {
+    .carpooling-publicar__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.carpooling-publicar__grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+    .carpooling-publicar__grid--3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Preferencias checkboxes */
+.carpooling-preferencias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.carpooling-preferencia {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.carpooling-preferencia__checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--carpooling-gray-300);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-preferencia__checkbox:checked {
+    background: var(--carpooling-primary);
+    border-color: var(--carpooling-primary);
+}
+
+.carpooling-preferencia__label {
+    font-size: 14px;
+    color: var(--carpooling-gray-700);
+}
+
+/* Selector de vehiculo */
+.carpooling-vehiculos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.carpooling-vehiculo-opcion {
+    border: 2px solid var(--carpooling-gray-200);
+    border-radius: var(--carpooling-radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-vehiculo-opcion:hover {
+    border-color: var(--carpooling-gray-300);
+}
+
+.carpooling-vehiculo-opcion.seleccionado {
+    border-color: var(--carpooling-primary);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.carpooling-vehiculo-opcion__nombre {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--carpooling-gray-900);
+}
+
+.carpooling-vehiculo-opcion__detalle {
+    font-size: 13px;
+    color: var(--carpooling-gray-500);
+    margin-top: 4px;
+}
+
+/* ========================================
+   Mis Viajes / Reservas
+   ======================================== */
+.carpooling-mis-viajes {
+    background: #fff;
+    border-radius: var(--carpooling-radius-lg);
+    box-shadow: var(--carpooling-shadow);
+}
+
+.carpooling-mis-viajes__header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--carpooling-gray-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.carpooling-mis-viajes__titulo {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--carpooling-gray-900);
+    margin: 0;
+}
+
+.carpooling-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--carpooling-gray-200);
+}
+
+.carpooling-tab {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--carpooling-gray-500);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-tab:hover {
+    color: var(--carpooling-gray-700);
+}
+
+.carpooling-tab.activo {
+    color: var(--carpooling-primary);
+    border-bottom-color: var(--carpooling-primary);
+}
+
+.carpooling-lista-viajes {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.carpooling-lista-viajes__item {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--carpooling-gray-100);
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.carpooling-lista-viajes__item:last-child {
+    border-bottom: none;
+}
+
+.carpooling-lista-viajes__fecha {
+    flex-shrink: 0;
+    width: 70px;
+    text-align: center;
+}
+
+.carpooling-lista-viajes__dia {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--carpooling-gray-900);
+    line-height: 1;
+}
+
+.carpooling-lista-viajes__mes {
+    font-size: 13px;
+    color: var(--carpooling-gray-500);
+    text-transform: uppercase;
+}
+
+.carpooling-lista-viajes__info {
+    flex: 1;
+}
+
+.carpooling-lista-viajes__ruta {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--carpooling-gray-900);
+    margin-bottom: 4px;
+}
+
+.carpooling-lista-viajes__hora {
+    font-size: 14px;
+    color: var(--carpooling-gray-600);
+}
+
+.carpooling-lista-viajes__detalles {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--carpooling-gray-500);
+}
+
+.carpooling-lista-viajes__acciones {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+}
+
+/* Estados */
+.carpooling-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 20px;
+}
+
+.carpooling-estado--publicado {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--carpooling-primary);
+}
+
+.carpooling-estado--confirmada {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--carpooling-success);
+}
+
+.carpooling-estado--solicitada {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--carpooling-warning);
+}
+
+.carpooling-estado--cancelado,
+.carpooling-estado--cancelada,
+.carpooling-estado--rechazada {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--carpooling-danger);
+}
+
+.carpooling-estado--completada,
+.carpooling-estado--finalizado {
+    background: var(--carpooling-gray-100);
+    color: var(--carpooling-gray-600);
+}
+
+/* ========================================
+   Valoraciones
+   ======================================== */
+.carpooling-valoraciones {
+    margin-top: 24px;
+}
+
+.carpooling-valoracion {
+    padding: 16px;
+    background: var(--carpooling-gray-50);
+    border-radius: var(--carpooling-radius);
+    margin-bottom: 12px;
+}
+
+.carpooling-valoracion__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.carpooling-valoracion__autor {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--carpooling-gray-800);
+}
+
+.carpooling-valoracion__fecha {
+    font-size: 12px;
+    color: var(--carpooling-gray-500);
+}
+
+.carpooling-valoracion__estrellas {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.carpooling-valoracion__estrella {
+    color: var(--carpooling-gray-300);
+}
+
+.carpooling-valoracion__estrella--activa {
+    color: var(--carpooling-warning);
+}
+
+.carpooling-valoracion__comentario {
+    font-size: 14px;
+    color: var(--carpooling-gray-600);
+    line-height: 1.5;
+}
+
+/* Rating input */
+.carpooling-rating-input {
+    display: flex;
+    gap: 4px;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.carpooling-rating-input input {
+    display: none;
+}
+
+.carpooling-rating-input label {
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--carpooling-gray-300);
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-rating-input label:hover,
+.carpooling-rating-input label:hover ~ label,
+.carpooling-rating-input input:checked ~ label {
+    color: var(--carpooling-warning);
+}
+
+/* ========================================
+   Modal
+   ======================================== */
+.carpooling-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-modal.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+.carpooling-modal__contenido {
+    background: #fff;
+    border-radius: var(--carpooling-radius-lg);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-modal.activo .carpooling-modal__contenido {
+    transform: scale(1);
+}
+
+.carpooling-modal__header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--carpooling-gray-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.carpooling-modal__titulo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--carpooling-gray-900);
+    margin: 0;
+}
+
+.carpooling-modal__cerrar {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--carpooling-gray-400);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--carpooling-transition);
+}
+
+.carpooling-modal__cerrar:hover {
+    background: var(--carpooling-gray-100);
+    color: var(--carpooling-gray-600);
+}
+
+.carpooling-modal__body {
+    padding: 24px;
+}
+
+.carpooling-modal__footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--carpooling-gray-100);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* ========================================
+   Alertas / Mensajes
+   ======================================== */
+.carpooling-alerta {
+    padding: 16px 20px;
+    border-radius: var(--carpooling-radius);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.carpooling-alerta__icono {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.carpooling-alerta__contenido {
+    flex: 1;
+}
+
+.carpooling-alerta__titulo {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.carpooling-alerta--info {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--carpooling-primary-dark);
+}
+
+.carpooling-alerta--success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #15803d;
+}
+
+.carpooling-alerta--warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #b45309;
+}
+
+.carpooling-alerta--error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #b91c1c;
+}
+
+/* ========================================
+   Skeleton Loading
+   ======================================== */
+.carpooling-skeleton {
+    background: linear-gradient(90deg, var(--carpooling-gray-200) 25%, var(--carpooling-gray-100) 50%, var(--carpooling-gray-200) 75%);
+    background-size: 200% 100%;
+    animation: carpooling-skeleton-loading 1.5s infinite;
+    border-radius: var(--carpooling-radius);
+}
+
+@keyframes carpooling-skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.carpooling-skeleton--text {
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.carpooling-skeleton--avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.carpooling-skeleton--card {
+    height: 300px;
+}
+
+/* ========================================
+   Empty State
+   ======================================== */
+.carpooling-empty {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.carpooling-empty__icono {
+    font-size: 64px;
+    color: var(--carpooling-gray-300);
+    margin-bottom: 16px;
+}
+
+.carpooling-empty__titulo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--carpooling-gray-700);
+    margin: 0 0 8px 0;
+}
+
+.carpooling-empty__texto {
+    font-size: 14px;
+    color: var(--carpooling-gray-500);
+    margin: 0 0 20px 0;
+}
+
+/* ========================================
+   Responsive utilities
+   ======================================== */
+@media (max-width: 768px) {
+    .carpooling-container {
+        padding: 12px;
+    }
+
+    .carpooling-buscador,
+    .carpooling-publicar {
+        padding: 20px;
+    }
+
+    .carpooling-lista-viajes__item {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .carpooling-lista-viajes__fecha {
+        width: auto;
+        text-align: left;
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+    }
+
+    .carpooling-lista-viajes__acciones {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+/* ========================================
+   Animaciones
+   ======================================== */
+.carpooling-fade-in {
+    animation: carpooling-fade-in 0.3s ease-out;
+}
+
+@keyframes carpooling-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.carpooling-slide-up {
+    animation: carpooling-slide-up 0.3s ease-out;
+}
+
+@keyframes carpooling-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

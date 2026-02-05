@@ -1,0 +1,851 @@
+/**
+ * Estilos del Modulo de Transparencia
+ * Portal de transparencia y rendicion de cuentas
+ *
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+:root {
+    --transparencia-primary: #1e3a5f;
+    --transparencia-secondary: #2d5a87;
+    --transparencia-accent: #3498db;
+    --transparencia-success: #27ae60;
+    --transparencia-warning: #f39c12;
+    --transparencia-danger: #e74c3c;
+    --transparencia-light: #f8f9fa;
+    --transparencia-dark: #2c3e50;
+    --transparencia-border: #dee2e6;
+    --transparencia-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --transparencia-radius: 8px;
+    --transparencia-transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   Portal Principal
+   ========================================================================== */
+.transparencia-portal {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.transparencia-portal * {
+    box-sizing: border-box;
+}
+
+.transparencia-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--transparencia-primary), var(--transparencia-secondary));
+    border-radius: var(--transparencia-radius);
+    color: #fff;
+}
+
+.transparencia-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 1rem;
+    font-weight: 700;
+}
+
+.transparencia-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Navegacion por Categorias
+   ========================================================================== */
+.transparencia-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--transparencia-light);
+    border-radius: var(--transparencia-radius);
+}
+
+.transparencia-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #fff;
+    border: 2px solid var(--transparencia-border);
+    border-radius: 50px;
+    color: var(--transparencia-dark);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transparencia-transition);
+    cursor: pointer;
+}
+
+.transparencia-nav-item:hover,
+.transparencia-nav-item.active {
+    background: var(--transparencia-primary);
+    border-color: var(--transparencia-primary);
+    color: #fff;
+}
+
+.transparencia-nav-item .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================================================
+   Buscador de Documentos
+   ========================================================================== */
+.transparencia-buscador {
+    background: #fff;
+    padding: 2rem;
+    border-radius: var(--transparencia-radius);
+    box-shadow: var(--transparencia-shadow);
+    margin-bottom: 2rem;
+}
+
+.transparencia-buscador-titulo {
+    font-size: 1.5rem;
+    margin: 0 0 1.5rem;
+    color: var(--transparencia-dark);
+}
+
+.transparencia-buscador-form {
+    display: grid;
+    grid-template-columns: 1fr 200px 200px auto;
+    gap: 1rem;
+    align-items: end;
+}
+
+.transparencia-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.transparencia-campo label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--transparencia-dark);
+}
+
+.transparencia-campo input,
+.transparencia-campo select,
+.transparencia-campo textarea {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--transparencia-border);
+    border-radius: var(--transparencia-radius);
+    font-size: 1rem;
+    transition: var(--transparencia-transition);
+}
+
+.transparencia-campo input:focus,
+.transparencia-campo select:focus,
+.transparencia-campo textarea:focus {
+    outline: none;
+    border-color: var(--transparencia-accent);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.transparencia-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--transparencia-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transparencia-transition);
+    text-decoration: none;
+}
+
+.transparencia-btn-primary {
+    background: var(--transparencia-primary);
+    color: #fff;
+}
+
+.transparencia-btn-primary:hover {
+    background: var(--transparencia-secondary);
+    transform: translateY(-2px);
+}
+
+.transparencia-btn-secondary {
+    background: var(--transparencia-light);
+    color: var(--transparencia-dark);
+    border: 2px solid var(--transparencia-border);
+}
+
+.transparencia-btn-secondary:hover {
+    background: var(--transparencia-border);
+}
+
+.transparencia-btn-success {
+    background: var(--transparencia-success);
+    color: #fff;
+}
+
+.transparencia-btn-success:hover {
+    background: #219a52;
+}
+
+/* ==========================================================================
+   Grid de Documentos
+   ========================================================================== */
+.transparencia-documentos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.transparencia-documento-card {
+    background: #fff;
+    border-radius: var(--transparencia-radius);
+    box-shadow: var(--transparencia-shadow);
+    overflow: hidden;
+    transition: var(--transparencia-transition);
+}
+
+.transparencia-documento-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.transparencia-documento-header {
+    padding: 1.25rem;
+    background: var(--transparencia-light);
+    border-bottom: 1px solid var(--transparencia-border);
+}
+
+.transparencia-documento-categoria {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--transparencia-accent);
+    color: #fff;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.transparencia-documento-titulo {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--transparencia-dark);
+    line-height: 1.4;
+}
+
+.transparencia-documento-body {
+    padding: 1.25rem;
+}
+
+.transparencia-documento-descripcion {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0 0 1rem;
+}
+
+.transparencia-documento-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.transparencia-documento-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.transparencia-documento-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--transparencia-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transparencia-documento-importe {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--transparencia-primary);
+}
+
+/* ==========================================================================
+   Presupuesto Widget
+   ========================================================================== */
+.transparencia-presupuesto {
+    background: #fff;
+    border-radius: var(--transparencia-radius);
+    box-shadow: var(--transparencia-shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.transparencia-presupuesto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.transparencia-presupuesto-titulo {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--transparencia-dark);
+}
+
+.transparencia-presupuesto-periodo {
+    padding: 0.5rem 1rem;
+    background: var(--transparencia-light);
+    border-radius: 50px;
+    font-weight: 600;
+    color: var(--transparencia-secondary);
+}
+
+.transparencia-presupuesto-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.transparencia-presupuesto-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--transparencia-light);
+    border-radius: var(--transparencia-radius);
+}
+
+.transparencia-presupuesto-item-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.transparencia-presupuesto-item-valor {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--transparencia-primary);
+}
+
+.transparencia-presupuesto-item-valor.ingresos {
+    color: var(--transparencia-success);
+}
+
+.transparencia-presupuesto-item-valor.gastos {
+    color: var(--transparencia-danger);
+}
+
+.transparencia-presupuesto-chart {
+    height: 350px;
+    margin-top: 2rem;
+}
+
+/* ==========================================================================
+   Gastos Widget
+   ========================================================================== */
+.transparencia-gastos {
+    background: #fff;
+    border-radius: var(--transparencia-radius);
+    box-shadow: var(--transparencia-shadow);
+    overflow: hidden;
+}
+
+.transparencia-gastos-header {
+    padding: 1.5rem;
+    background: var(--transparencia-primary);
+    color: #fff;
+}
+
+.transparencia-gastos-titulo {
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.transparencia-gastos-lista {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.transparencia-gasto-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--transparencia-border);
+    transition: var(--transparencia-transition);
+}
+
+.transparencia-gasto-item:hover {
+    background: var(--transparencia-light);
+}
+
+.transparencia-gasto-info {
+    flex: 1;
+}
+
+.transparencia-gasto-concepto {
+    font-weight: 600;
+    color: var(--transparencia-dark);
+    margin-bottom: 0.25rem;
+}
+
+.transparencia-gasto-fecha {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.transparencia-gasto-importe {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--transparencia-danger);
+}
+
+/* ==========================================================================
+   Actas Widget
+   ========================================================================== */
+.transparencia-actas {
+    background: #fff;
+    border-radius: var(--transparencia-radius);
+    box-shadow: var(--transparencia-shadow);
+}
+
+.transparencia-actas-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--transparencia-border);
+}
+
+.transparencia-actas-titulo {
+    font-size: 1.25rem;
+    margin: 0;
+    color: var(--transparencia-dark);
+}
+
+.transparencia-acta-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--transparencia-border);
+    transition: var(--transparencia-transition);
+}
+
+.transparencia-acta-item:hover {
+    background: var(--transparencia-light);
+}
+
+.transparencia-acta-icono {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--transparencia-accent);
+    color: #fff;
+    border-radius: var(--transparencia-radius);
+    flex-shrink: 0;
+}
+
+.transparencia-acta-contenido {
+    flex: 1;
+}
+
+.transparencia-acta-titulo-item {
+    font-weight: 600;
+    color: var(--transparencia-dark);
+    margin-bottom: 0.25rem;
+}
+
+.transparencia-acta-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.transparencia-acta-acciones {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* ==========================================================================
+   Formulario de Solicitud
+   ========================================================================== */
+.transparencia-solicitud {
+    background: #fff;
+    border-radius: var(--transparencia-radius);
+    box-shadow: var(--transparencia-shadow);
+    padding: 2rem;
+}
+
+.transparencia-solicitud-header {
+    margin-bottom: 2rem;
+}
+
+.transparencia-solicitud-titulo {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem;
+    color: var(--transparencia-dark);
+}
+
+.transparencia-solicitud-descripcion {
+    color: #6c757d;
+    margin: 0;
+}
+
+.transparencia-solicitud-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.transparencia-solicitud-form textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.transparencia-solicitud-info {
+    padding: 1rem;
+    background: #e3f2fd;
+    border-left: 4px solid var(--transparencia-accent);
+    border-radius: 0 var(--transparencia-radius) var(--transparencia-radius) 0;
+    font-size: 0.9rem;
+    color: var(--transparencia-dark);
+}
+
+.transparencia-solicitud-acciones {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Estados y Badges
+   ========================================================================== */
+.transparencia-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.transparencia-estado-recibida {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.transparencia-estado-en_tramite {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.transparencia-estado-resuelta {
+    background: #d4edda;
+    color: #155724;
+}
+
+.transparencia-estado-denegada {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.transparencia-estado-publicado {
+    background: var(--transparencia-success);
+    color: #fff;
+}
+
+.transparencia-estado-borrador {
+    background: #6c757d;
+    color: #fff;
+}
+
+/* ==========================================================================
+   Tabla de Datos
+   ========================================================================== */
+.transparencia-tabla-container {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+}
+
+.transparencia-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: var(--transparencia-radius);
+    overflow: hidden;
+    box-shadow: var(--transparencia-shadow);
+}
+
+.transparencia-tabla th,
+.transparencia-tabla td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--transparencia-border);
+}
+
+.transparencia-tabla th {
+    background: var(--transparencia-primary);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.transparencia-tabla tbody tr:hover {
+    background: var(--transparencia-light);
+}
+
+.transparencia-tabla td.importe {
+    font-weight: 600;
+    color: var(--transparencia-primary);
+    text-align: right;
+}
+
+/* ==========================================================================
+   Paginacion
+   ========================================================================== */
+.transparencia-paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.transparencia-paginacion-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--transparencia-border);
+    border-radius: var(--transparencia-radius);
+    background: #fff;
+    color: var(--transparencia-dark);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transparencia-transition);
+}
+
+.transparencia-paginacion-btn:hover,
+.transparencia-paginacion-btn.active {
+    background: var(--transparencia-primary);
+    border-color: var(--transparencia-primary);
+    color: #fff;
+}
+
+.transparencia-paginacion-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Loader y Mensajes
+   ========================================================================== */
+.transparencia-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+}
+
+.transparencia-loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--transparencia-light);
+    border-top-color: var(--transparencia-accent);
+    border-radius: 50%;
+    animation: transparencia-spin 1s linear infinite;
+}
+
+@keyframes transparencia-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.transparencia-mensaje {
+    padding: 1rem 1.5rem;
+    border-radius: var(--transparencia-radius);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.transparencia-mensaje-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.transparencia-mensaje-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.transparencia-mensaje-info {
+    background: #cce5ff;
+    color: #004085;
+    border: 1px solid #b8daff;
+}
+
+.transparencia-vacio {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.transparencia-vacio-icono {
+    font-size: 4rem;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 992px) {
+    .transparencia-buscador-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .transparencia-presupuesto-resumen {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .transparencia-portal {
+        padding: 1rem;
+    }
+
+    .transparencia-header {
+        padding: 2rem 1rem;
+    }
+
+    .transparencia-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .transparencia-buscador-form {
+        grid-template-columns: 1fr;
+    }
+
+    .transparencia-nav {
+        flex-direction: column;
+    }
+
+    .transparencia-nav-item {
+        justify-content: center;
+    }
+
+    .transparencia-documentos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .transparencia-documento-footer {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .transparencia-presupuesto-resumen {
+        grid-template-columns: 1fr;
+    }
+
+    .transparencia-presupuesto-chart {
+        height: 250px;
+    }
+
+    .transparencia-acta-item {
+        flex-direction: column;
+    }
+
+    .transparencia-solicitud-acciones {
+        flex-direction: column;
+    }
+
+    .transparencia-solicitud-acciones .transparencia-btn {
+        width: 100%;
+    }
+
+    .transparencia-tabla th,
+    .transparencia-tabla td {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .transparencia-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .transparencia-presupuesto-item-valor {
+        font-size: 1.25rem;
+    }
+
+    .transparencia-paginacion-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.875rem;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+    .transparencia-portal {
+        padding: 0;
+    }
+
+    .transparencia-header {
+        background: none;
+        color: #000;
+        border-bottom: 2px solid #000;
+    }
+
+    .transparencia-nav,
+    .transparencia-buscador,
+    .transparencia-btn,
+    .transparencia-paginacion {
+        display: none;
+    }
+
+    .transparencia-documento-card,
+    .transparencia-presupuesto,
+    .transparencia-gastos,
+    .transparencia-actas {
+        box-shadow: none;
+        border: 1px solid #000;
+        page-break-inside: avoid;
+    }
+}

@@ -1,0 +1,1169 @@
+/**
+ * Flavor Chat IA - Modulo Tramites
+ * Estilos del sistema de tramites online
+ * @version 2.0.0
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+
+:root {
+    --flavor-tramites-primary: #0073aa;
+    --flavor-tramites-primary-dark: #005a87;
+    --flavor-tramites-secondary: #23282d;
+    --flavor-tramites-success: #4caf50;
+    --flavor-tramites-warning: #ff9800;
+    --flavor-tramites-danger: #f44336;
+    --flavor-tramites-info: #2196f3;
+    --flavor-tramites-light: #f5f5f5;
+    --flavor-tramites-dark: #333333;
+    --flavor-tramites-border: #ddd;
+    --flavor-tramites-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --flavor-tramites-radius: 8px;
+    --flavor-tramites-transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   Base y Reset
+   ========================================================================== */
+
+.flavor-tramites-catalogo,
+.flavor-tramites-formulario,
+.flavor-mis-expedientes,
+.flavor-estado-expediente {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--flavor-tramites-dark);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.flavor-tramites-catalogo *,
+.flavor-tramites-formulario *,
+.flavor-mis-expedientes *,
+.flavor-estado-expediente * {
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--flavor-tramites-radius);
+    cursor: pointer;
+    transition: var(--flavor-tramites-transition);
+}
+
+.flavor-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.flavor-btn-primary {
+    background-color: var(--flavor-tramites-primary);
+    color: #fff;
+}
+
+.flavor-btn-primary:hover {
+    background-color: var(--flavor-tramites-primary-dark);
+    color: #fff;
+}
+
+.flavor-btn-secondary {
+    background-color: var(--flavor-tramites-light);
+    color: var(--flavor-tramites-dark);
+    border: 1px solid var(--flavor-tramites-border);
+}
+
+.flavor-btn-secondary:hover {
+    background-color: #e0e0e0;
+}
+
+.flavor-btn-small {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+.flavor-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Catalogo de Tramites
+   ========================================================================== */
+
+.flavor-tramites-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--flavor-tramites-light);
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-tramites-buscador {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.flavor-tramites-buscador input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    font-size: 15px;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    outline: none;
+    transition: var(--flavor-tramites-transition);
+}
+
+.flavor-tramites-buscador input:focus {
+    border-color: var(--flavor-tramites-primary);
+    box-shadow: 0 0 0 3px rgba(0, 115, 170, 0.15);
+}
+
+.flavor-tramites-buscador .dashicons {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.flavor-tramites-categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.flavor-categoria-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    background: #fff;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--flavor-tramites-transition);
+}
+
+.flavor-categoria-btn:hover,
+.flavor-categoria-btn.active {
+    background: var(--flavor-tramites-primary);
+    border-color: var(--flavor-tramites-primary);
+    color: #fff;
+}
+
+/* Grid de Tramites */
+.flavor-tramites-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.flavor-tramites-catalogo[data-columnas="2"] .flavor-tramites-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.flavor-tramites-catalogo[data-columnas="4"] .flavor-tramites-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 992px) {
+    .flavor-tramites-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .flavor-tramites-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card de Tramite */
+.flavor-tramite-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    overflow: hidden;
+    transition: var(--flavor-tramites-transition);
+}
+
+.flavor-tramite-card:hover {
+    box-shadow: var(--flavor-tramites-shadow);
+    transform: translateY(-2px);
+}
+
+.flavor-tramite-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    background: var(--flavor-tramites-primary);
+}
+
+.flavor-tramite-icono .dashicons {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #fff;
+}
+
+.flavor-tramite-contenido {
+    flex: 1;
+    padding: 20px;
+}
+
+.flavor-tramite-titulo {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--flavor-tramites-dark);
+}
+
+.flavor-tramite-descripcion {
+    margin: 0 0 15px;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.flavor-tramite-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: #888;
+}
+
+.flavor-tramite-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flavor-tramite-meta .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-tramite-enlace {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: var(--flavor-tramites-light);
+    color: var(--flavor-tramites-primary);
+    font-weight: 500;
+    text-decoration: none;
+    border-top: 1px solid var(--flavor-tramites-border);
+    transition: var(--flavor-tramites-transition);
+}
+
+.flavor-tramite-enlace:hover {
+    background: var(--flavor-tramites-primary);
+    color: #fff;
+}
+
+.flavor-tramites-vacio {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+    font-size: 16px;
+}
+
+/* ==========================================================================
+   Formulario de Tramite
+   ========================================================================== */
+
+.flavor-tramite-cabecera {
+    display: flex;
+    gap: 24px;
+    padding: 30px;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-tramite-icono-grande {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: var(--flavor-tramites-radius);
+    flex-shrink: 0;
+}
+
+.flavor-tramite-icono-grande .dashicons {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+}
+
+.flavor-tramite-info h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+    color: var(--flavor-tramites-dark);
+}
+
+.flavor-tramite-info p {
+    margin: 0;
+    color: #666;
+    font-size: 15px;
+}
+
+/* Requisitos */
+.flavor-tramite-requisitos {
+    padding: 20px;
+    margin-bottom: 30px;
+    background: #fff8e1;
+    border: 1px solid #ffecb3;
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-tramite-requisitos h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 15px;
+    font-size: 16px;
+    color: #e65100;
+}
+
+.flavor-tramite-requisitos ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.flavor-tramite-requisitos li {
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Formulario */
+.flavor-form {
+    background: #fff;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    overflow: hidden;
+}
+
+.flavor-form-seccion {
+    padding: 30px;
+    border-bottom: 1px solid var(--flavor-tramites-border);
+}
+
+.flavor-form-seccion:last-of-type {
+    border-bottom: none;
+}
+
+.flavor-form-seccion h3 {
+    margin: 0 0 20px;
+    padding-bottom: 10px;
+    font-size: 18px;
+    color: var(--flavor-tramites-dark);
+    border-bottom: 2px solid var(--flavor-tramites-primary);
+}
+
+.flavor-form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.flavor-form-row:last-child {
+    margin-bottom: 0;
+}
+
+.flavor-form-field {
+    margin-bottom: 20px;
+}
+
+.flavor-form-field:last-child {
+    margin-bottom: 0;
+}
+
+.flavor-field-full {
+    width: 100%;
+}
+
+.flavor-field-half {
+    flex: 1;
+    min-width: 200px;
+}
+
+.flavor-field-third {
+    flex: 0 0 calc(33.333% - 14px);
+    min-width: 150px;
+}
+
+.flavor-field-quarter {
+    flex: 0 0 calc(25% - 15px);
+    min-width: 120px;
+}
+
+@media (max-width: 768px) {
+    .flavor-form-row {
+        flex-direction: column;
+    }
+
+    .flavor-field-half,
+    .flavor-field-third,
+    .flavor-field-quarter {
+        flex: none;
+        width: 100%;
+    }
+}
+
+.flavor-form-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--flavor-tramites-dark);
+}
+
+.flavor-obligatorio {
+    color: var(--flavor-tramites-danger);
+    margin-left: 2px;
+}
+
+.flavor-form-field input[type="text"],
+.flavor-form-field input[type="email"],
+.flavor-form-field input[type="tel"],
+.flavor-form-field input[type="number"],
+.flavor-form-field input[type="date"],
+.flavor-form-field input[type="datetime-local"],
+.flavor-form-field input[type="url"],
+.flavor-form-field select,
+.flavor-form-field textarea {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    outline: none;
+    transition: var(--flavor-tramites-transition);
+}
+
+.flavor-form-field input:focus,
+.flavor-form-field select:focus,
+.flavor-form-field textarea:focus {
+    border-color: var(--flavor-tramites-primary);
+    box-shadow: 0 0 0 3px rgba(0, 115, 170, 0.15);
+}
+
+.flavor-form-field input:invalid:not(:placeholder-shown),
+.flavor-form-field input.error {
+    border-color: var(--flavor-tramites-danger);
+}
+
+.flavor-form-field textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.flavor-field-ayuda {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #888;
+}
+
+/* Grupos de formulario */
+.flavor-form-grupo {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--flavor-tramites-light);
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-form-grupo h4 {
+    margin: 0 0 20px;
+    font-size: 16px;
+    color: var(--flavor-tramites-secondary);
+}
+
+/* Radio y Checkbox */
+.flavor-radio-group,
+.flavor-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.flavor-radio-label,
+.flavor-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: normal !important;
+}
+
+.flavor-radio-label input,
+.flavor-checkbox-label input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Documentos */
+.flavor-documentos-requeridos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.flavor-documento-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px;
+    background: var(--flavor-tramites-light);
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-documento-info {
+    flex: 1;
+}
+
+.flavor-documento-nombre {
+    display: block;
+    font-weight: 500;
+    color: var(--flavor-tramites-dark);
+}
+
+.flavor-documento-desc {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: #888;
+}
+
+.flavor-documento-upload {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.flavor-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.flavor-file-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: #fff;
+    border: 1px dashed var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--flavor-tramites-primary);
+    transition: var(--flavor-tramites-transition);
+}
+
+.flavor-file-label:hover {
+    border-color: var(--flavor-tramites-primary);
+    background: rgba(0, 115, 170, 0.05);
+}
+
+.flavor-file-name {
+    font-size: 13px;
+    color: var(--flavor-tramites-success);
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.flavor-form-ayuda {
+    margin: 0 0 20px;
+    padding: 12px 16px;
+    background: #e3f2fd;
+    border-radius: var(--flavor-tramites-radius);
+    font-size: 14px;
+    color: #1565c0;
+}
+
+/* Tasa */
+.flavor-tramite-tasa-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 30px;
+    background: #fff3e0;
+    color: #e65100;
+    font-size: 15px;
+}
+
+/* Acciones del formulario */
+.flavor-form-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 20px 30px;
+    background: var(--flavor-tramites-light);
+}
+
+@media (max-width: 600px) {
+    .flavor-form-acciones {
+        flex-direction: column;
+    }
+
+    .flavor-form-acciones .flavor-btn {
+        width: 100%;
+    }
+}
+
+/* Resultado */
+.flavor-tramite-resultado {
+    text-align: center;
+    padding: 60px 30px;
+    background: #fff;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-resultado-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    background: #e8f5e9;
+    border-radius: 50%;
+}
+
+.flavor-resultado-icono .dashicons {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: var(--flavor-tramites-success);
+}
+
+.flavor-tramite-resultado h3 {
+    margin: 0 0 10px;
+    font-size: 24px;
+    color: var(--flavor-tramites-success);
+}
+
+.flavor-resultado-numero {
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--flavor-tramites-dark);
+}
+
+.flavor-resultado-mensaje {
+    margin: 0 0 30px;
+    color: #666;
+}
+
+.flavor-resultado-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* Login requerido */
+.flavor-tramites-login-required {
+    text-align: center;
+    padding: 60px 30px;
+    background: var(--flavor-tramites-light);
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-tramites-login-required p {
+    margin: 0 0 20px;
+    font-size: 16px;
+    color: #666;
+}
+
+/* ==========================================================================
+   Mis Expedientes
+   ========================================================================== */
+
+.flavor-expedientes-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.flavor-expedientes-cabecera h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.flavor-expedientes-filtros select {
+    padding: 10px 16px;
+    font-size: 14px;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    outline: none;
+}
+
+.flavor-expedientes-vacio {
+    text-align: center;
+    padding: 80px 30px;
+    background: var(--flavor-tramites-light);
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-expedientes-vacio .dashicons {
+    font-size: 60px;
+    width: 60px;
+    height: 60px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.flavor-expedientes-vacio p {
+    margin: 0;
+    font-size: 16px;
+    color: #888;
+}
+
+.flavor-expedientes-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.flavor-expediente-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    transition: var(--flavor-tramites-transition);
+}
+
+.flavor-expediente-item:hover {
+    box-shadow: var(--flavor-tramites-shadow);
+}
+
+.flavor-expediente-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: var(--flavor-tramites-radius);
+    flex-shrink: 0;
+}
+
+.flavor-expediente-icono .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.flavor-expediente-info {
+    flex: 1;
+}
+
+.flavor-expediente-numero {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--flavor-tramites-dark);
+}
+
+.flavor-expediente-tipo {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.flavor-expediente-fecha {
+    font-size: 13px;
+    color: #999;
+    margin-top: 4px;
+}
+
+.flavor-expediente-estado {
+    flex-shrink: 0;
+}
+
+.flavor-estado-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.flavor-estado-badge .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-expediente-acciones {
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .flavor-expediente-item {
+        flex-wrap: wrap;
+    }
+
+    .flavor-expediente-estado,
+    .flavor-expediente-acciones {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* ==========================================================================
+   Consulta de Estado
+   ========================================================================== */
+
+.flavor-consulta-estado {
+    text-align: center;
+    padding: 40px;
+    background: var(--flavor-tramites-light);
+    border-radius: var(--flavor-tramites-radius);
+    margin-bottom: 30px;
+}
+
+.flavor-consulta-estado h2 {
+    margin: 0 0 20px;
+    font-size: 24px;
+}
+
+.flavor-form-inline {
+    display: flex;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.flavor-form-inline input {
+    flex: 1;
+    padding: 14px 20px;
+    font-size: 16px;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    outline: none;
+}
+
+.flavor-form-inline input:focus {
+    border-color: var(--flavor-tramites-primary);
+}
+
+@media (max-width: 600px) {
+    .flavor-form-inline {
+        flex-direction: column;
+    }
+}
+
+/* Detalle del expediente */
+.flavor-expediente-detalle {
+    background: #fff;
+    border: 1px solid var(--flavor-tramites-border);
+    border-radius: var(--flavor-tramites-radius);
+    overflow: hidden;
+}
+
+.flavor-detalle-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 30px;
+    background: var(--flavor-tramites-light);
+    border-bottom: 1px solid var(--flavor-tramites-border);
+}
+
+.flavor-detalle-numero {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--flavor-tramites-dark);
+}
+
+.flavor-detalle-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 24px 30px;
+    border-bottom: 1px solid var(--flavor-tramites-border);
+}
+
+@media (max-width: 768px) {
+    .flavor-detalle-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+.flavor-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flavor-info-label {
+    font-size: 13px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flavor-info-valor {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--flavor-tramites-dark);
+}
+
+/* Timeline */
+.flavor-timeline-container {
+    padding: 24px 30px;
+}
+
+.flavor-timeline-container h3 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    color: var(--flavor-tramites-dark);
+}
+
+.flavor-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.flavor-timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--flavor-tramites-border);
+}
+
+.flavor-timeline-item {
+    position: relative;
+    padding-bottom: 24px;
+}
+
+.flavor-timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.flavor-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    background: var(--flavor-tramites-primary);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--flavor-tramites-primary);
+}
+
+.flavor-timeline-item.evento-creacion::before {
+    background: var(--flavor-tramites-success);
+    box-shadow: 0 0 0 2px var(--flavor-tramites-success);
+}
+
+.flavor-timeline-item.evento-cambio_estado::before {
+    background: var(--flavor-tramites-info);
+    box-shadow: 0 0 0 2px var(--flavor-tramites-info);
+}
+
+.flavor-timeline-item.evento-documento_subido::before {
+    background: var(--flavor-tramites-warning);
+    box-shadow: 0 0 0 2px var(--flavor-tramites-warning);
+}
+
+.flavor-timeline-fecha {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 4px;
+}
+
+.flavor-timeline-descripcion {
+    font-size: 15px;
+    color: var(--flavor-tramites-dark);
+}
+
+/* No encontrado */
+.flavor-expediente-no-encontrado {
+    text-align: center;
+    padding: 60px 30px;
+    background: #ffebee;
+    border-radius: var(--flavor-tramites-radius);
+}
+
+.flavor-expediente-no-encontrado .dashicons {
+    font-size: 50px;
+    width: 50px;
+    height: 50px;
+    color: var(--flavor-tramites-danger);
+    margin-bottom: 16px;
+}
+
+.flavor-expediente-no-encontrado p {
+    margin: 0;
+    font-size: 16px;
+    color: #c62828;
+}
+
+/* ==========================================================================
+   Estados de carga y errores
+   ========================================================================== */
+
+.flavor-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px;
+    color: #888;
+}
+
+.flavor-loading::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--flavor-tramites-border);
+    border-top-color: var(--flavor-tramites-primary);
+    border-radius: 50%;
+    animation: flavor-spin 0.8s linear infinite;
+}
+
+@keyframes flavor-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.flavor-error {
+    padding: 16px 20px;
+    background: #ffebee;
+    border: 1px solid #ffcdd2;
+    border-radius: var(--flavor-tramites-radius);
+    color: #c62828;
+    font-size: 14px;
+}
+
+.flavor-success {
+    padding: 16px 20px;
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    border-radius: var(--flavor-tramites-radius);
+    color: #2e7d32;
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+
+.flavor-fade-in {
+    animation: flavorFadeIn 0.3s ease;
+}
+
+@keyframes flavorFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.flavor-tramite-card {
+    animation: flavorFadeIn 0.3s ease;
+    animation-fill-mode: both;
+}
+
+.flavor-tramite-card:nth-child(1) { animation-delay: 0.05s; }
+.flavor-tramite-card:nth-child(2) { animation-delay: 0.1s; }
+.flavor-tramite-card:nth-child(3) { animation-delay: 0.15s; }
+.flavor-tramite-card:nth-child(4) { animation-delay: 0.2s; }
+.flavor-tramite-card:nth-child(5) { animation-delay: 0.25s; }
+.flavor-tramite-card:nth-child(6) { animation-delay: 0.3s; }
+
+/* ==========================================================================
+   Utilidades
+   ========================================================================== */
+
+.flavor-hidden {
+    display: none !important;
+}
+
+.flavor-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Print styles */
+@media print {
+    .flavor-tramites-filtros,
+    .flavor-form-acciones,
+    .flavor-expediente-acciones {
+        display: none !important;
+    }
+
+    .flavor-tramites-grid {
+        display: block;
+    }
+
+    .flavor-tramite-card {
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
