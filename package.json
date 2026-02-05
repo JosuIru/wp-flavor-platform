@@ -1,0 +1,14 @@
+{
+  "name": "flavor-chat-ia",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "build": "bash build.sh",
+    "build:js": "bash build.sh js",
+    "build:css": "bash build.sh css"
+  },
+  "devDependencies": {
+    "terser": "^5.31.0",
+    "cssnano-cli": "^1.0.5"
+  }
+}

@@ -1,0 +1,8 @@
+# Configuración de firma para release
+# Copia este archivo a key.properties y completa los valores
+# IMPORTANTE: No subas key.properties a git (está en .gitignore)
+
+storePassword=TU_PASSWORD_AQUI
+keyPassword=TU_PASSWORD_AQUI
+keyAlias=upload
+storeFile=../keystore/upload-keystore.jks

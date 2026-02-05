@@ -1,0 +1,785 @@
+/**
+ * Estilos Frontend de Grupos de Consumo
+ *
+ * @package FlavorChatIA
+ */
+
+/* === Variables === */
+:root {
+    --gc-primary: #2e7d32;
+    --gc-primary-dark: #1b5e20;
+    --gc-primary-light: #4caf50;
+    --gc-secondary: #ff9800;
+    --gc-danger: #d32f2f;
+    --gc-success: #388e3c;
+    --gc-warning: #f57c00;
+    --gc-gray-100: #f8f9fa;
+    --gc-gray-200: #e9ecef;
+    --gc-gray-300: #dee2e6;
+    --gc-gray-500: #6c757d;
+    --gc-gray-700: #495057;
+    --gc-gray-900: #212529;
+    --gc-border-radius: 12px;
+    --gc-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    --gc-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* === Base === */
+.gc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    text-decoration: none;
+}
+
+.gc-btn-primary {
+    background: var(--gc-primary);
+    color: #fff;
+}
+
+.gc-btn-primary:hover {
+    background: var(--gc-primary-dark);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: var(--gc-shadow);
+}
+
+.gc-btn-outline {
+    background: transparent;
+    border: 2px solid var(--gc-gray-300);
+    color: var(--gc-gray-700);
+}
+
+.gc-btn-outline:hover {
+    background: var(--gc-gray-100);
+    border-color: var(--gc-primary);
+    color: var(--gc-primary);
+}
+
+.gc-btn-danger {
+    background: var(--gc-danger);
+    color: #fff;
+}
+
+.gc-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.gc-aviso {
+    padding: 16px 20px;
+    border-radius: var(--gc-border-radius);
+    margin-bottom: 20px;
+    background: #fff3cd;
+    border-left: 4px solid var(--gc-warning);
+    color: #856404;
+}
+
+.gc-aviso-info {
+    background: #e3f2fd;
+    border-left-color: #2196f3;
+    color: #1565c0;
+}
+
+/* === Catálogo === */
+.gc-catalogo {
+    margin: 30px 0;
+}
+
+.gc-catalogo-filtros {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.gc-catalogo-filtros select {
+    padding: 12px 16px;
+    border: 2px solid var(--gc-gray-200);
+    border-radius: 8px;
+    font-size: 14px;
+    min-width: 200px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.gc-catalogo-filtros select:focus {
+    outline: none;
+    border-color: var(--gc-primary);
+}
+
+.gc-productos-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.gc-columnas-2 { grid-template-columns: repeat(2, 1fr); }
+.gc-columnas-3 { grid-template-columns: repeat(3, 1fr); }
+.gc-columnas-4 { grid-template-columns: repeat(4, 1fr); }
+
+.gc-producto-card {
+    background: #fff;
+    border-radius: var(--gc-border-radius);
+    overflow: hidden;
+    box-shadow: var(--gc-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.gc-producto-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--gc-shadow-lg);
+}
+
+.gc-producto-imagen {
+    height: 200px;
+    background: var(--gc-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.gc-producto-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gc-producto-card:hover .gc-producto-imagen img {
+    transform: scale(1.05);
+}
+
+.gc-placeholder {
+    font-size: 64px;
+    color: var(--gc-gray-300);
+}
+
+.gc-producto-info {
+    padding: 20px;
+    flex: 1;
+}
+
+.gc-producto-info h4 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: var(--gc-gray-900);
+}
+
+.gc-productor {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: var(--gc-primary);
+    font-weight: 500;
+}
+
+.gc-descripcion {
+    margin: 0;
+    font-size: 14px;
+    color: var(--gc-gray-500);
+    line-height: 1.5;
+}
+
+.gc-producto-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--gc-gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--gc-gray-100);
+}
+
+.gc-precio {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gc-primary);
+}
+
+.gc-agregar-lista {
+    padding: 10px 16px;
+    font-size: 13px;
+}
+
+.gc-sin-resultados {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gc-gray-500);
+}
+
+/* === Mini Carrito === */
+.gc-mini-carrito {
+    background: #fff;
+    border-radius: var(--gc-border-radius);
+    box-shadow: var(--gc-shadow);
+    padding: 20px;
+    max-width: 320px;
+}
+
+.gc-carrito-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gc-gray-200);
+}
+
+.gc-carrito-header .dashicons {
+    font-size: 24px;
+    color: var(--gc-primary);
+}
+
+.gc-carrito-titulo {
+    flex: 1;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.gc-carrito-count {
+    background: var(--gc-primary);
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gc-carrito-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--gc-gray-200);
+}
+
+.gc-item-nombre {
+    font-size: 14px;
+    color: var(--gc-gray-700);
+}
+
+.gc-item-cantidad {
+    font-size: 14px;
+    color: var(--gc-gray-500);
+}
+
+.gc-carrito-mas {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gc-gray-500);
+    margin: 10px 0;
+}
+
+.gc-carrito-footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gc-gray-200);
+}
+
+.gc-carrito-total {
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gc-gray-900);
+    margin-bottom: 15px;
+}
+
+.gc-ver-lista {
+    width: 100%;
+}
+
+.gc-carrito-vacio {
+    text-align: center;
+    color: var(--gc-gray-500);
+    font-size: 14px;
+}
+
+/* === Calendario === */
+.gc-calendario {
+    background: #fff;
+    border-radius: var(--gc-border-radius);
+    box-shadow: var(--gc-shadow);
+    overflow: hidden;
+}
+
+.gc-calendario-header {
+    padding: 20px 24px;
+    background: var(--gc-primary);
+    color: #fff;
+}
+
+.gc-calendario-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.gc-calendario-lista {
+    padding: 0;
+}
+
+.gc-calendario-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--gc-gray-200);
+    transition: background 0.2s ease;
+}
+
+.gc-calendario-item:last-child {
+    border-bottom: none;
+}
+
+.gc-calendario-item:hover {
+    background: var(--gc-gray-100);
+}
+
+.gc-fecha-box {
+    width: 70px;
+    height: 70px;
+    background: var(--gc-gray-100);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.gc-estado-gc_abierto .gc-fecha-box {
+    background: #e8f5e9;
+}
+
+.gc-dia {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gc-gray-900);
+    line-height: 1;
+}
+
+.gc-estado-gc_abierto .gc-dia {
+    color: var(--gc-primary);
+}
+
+.gc-mes {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--gc-gray-500);
+    font-weight: 600;
+}
+
+.gc-ciclo-info {
+    flex: 1;
+}
+
+.gc-ciclo-info h4 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: var(--gc-gray-900);
+}
+
+.gc-lugar {
+    margin: 0 0 4px;
+    font-size: 14px;
+    color: var(--gc-gray-500);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.gc-lugar .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.gc-cierre {
+    margin: 0;
+    font-size: 13px;
+    color: var(--gc-warning);
+    font-weight: 500;
+}
+
+.gc-calendario .gc-estado-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.gc-estado-gc_abierto {
+    background: #e8f5e9;
+    color: var(--gc-success);
+}
+
+.gc-estado-gc_cerrado {
+    background: #fff3e0;
+    color: var(--gc-warning);
+}
+
+.gc-estado-gc_entregado {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.gc-sin-ciclos {
+    padding: 40px;
+    text-align: center;
+    color: var(--gc-gray-500);
+}
+
+/* === Historial === */
+.gc-historial {
+    background: #fff;
+    border-radius: var(--gc-border-radius);
+    box-shadow: var(--gc-shadow);
+    padding: 24px;
+}
+
+.gc-historial h3 {
+    margin: 0 0 20px;
+    font-size: 20px;
+    color: var(--gc-gray-900);
+}
+
+.gc-historial-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.gc-historial-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: var(--gc-gray-100);
+    border-radius: 8px;
+}
+
+.gc-historial-fecha {
+    font-size: 13px;
+    color: var(--gc-gray-500);
+    min-width: 100px;
+}
+
+.gc-historial-info {
+    flex: 1;
+}
+
+.gc-historial-info strong {
+    display: block;
+    color: var(--gc-gray-900);
+    margin-bottom: 4px;
+}
+
+.gc-historial-info span {
+    font-size: 13px;
+    color: var(--gc-gray-500);
+}
+
+.gc-historial-total {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gc-primary);
+}
+
+.gc-sin-historial {
+    text-align: center;
+    color: var(--gc-gray-500);
+    padding: 40px;
+}
+
+/* === Cestas Disponibles === */
+.gc-cestas-disponibles {
+    margin: 30px 0;
+}
+
+.gc-cestas-disponibles h3 {
+    margin: 0 0 10px;
+    font-size: 24px;
+    color: var(--gc-gray-900);
+}
+
+.gc-cestas-intro {
+    margin: 0 0 30px;
+    font-size: 16px;
+    color: var(--gc-gray-500);
+}
+
+.gc-cestas-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.gc-cesta-card {
+    background: #fff;
+    border-radius: var(--gc-border-radius);
+    overflow: hidden;
+    box-shadow: var(--gc-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gc-cesta-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--gc-shadow-lg);
+}
+
+.gc-cesta-imagen {
+    height: 180px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.gc-cesta-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gc-cesta-info {
+    padding: 24px;
+}
+
+.gc-cesta-info h4 {
+    margin: 0 0 12px;
+    font-size: 20px;
+    color: var(--gc-gray-900);
+}
+
+.gc-cesta-descripcion {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: var(--gc-gray-500);
+    line-height: 1.6;
+}
+
+.gc-cesta-precio {
+    margin: 0;
+}
+
+.gc-cesta-precio strong {
+    font-size: 24px;
+    color: var(--gc-primary);
+}
+
+.gc-cesta-precio span {
+    font-size: 14px;
+    color: var(--gc-gray-500);
+}
+
+.gc-cesta-card .gc-btn {
+    margin: 0 24px 24px;
+    width: calc(100% - 48px);
+}
+
+/* === Mi Cesta === */
+.gc-mi-cesta {
+    margin: 30px 0;
+}
+
+.gc-sin-suscripcion {
+    text-align: center;
+    padding: 60px 30px;
+    background: var(--gc-gray-100);
+    border-radius: var(--gc-border-radius);
+}
+
+.gc-sin-suscripcion .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: var(--gc-gray-300);
+    margin-bottom: 20px;
+}
+
+.gc-sin-suscripcion p {
+    font-size: 16px;
+    color: var(--gc-gray-500);
+    margin-bottom: 20px;
+}
+
+.gc-suscripcion-activa {
+    background: #fff;
+    border-radius: var(--gc-border-radius);
+    box-shadow: var(--gc-shadow);
+    overflow: hidden;
+    border-left: 4px solid var(--gc-success);
+}
+
+.gc-suscripcion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: var(--gc-gray-100);
+}
+
+.gc-suscripcion-header h4 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.gc-estado-activa {
+    background: #e8f5e9;
+    color: var(--gc-success);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gc-suscripcion-detalles {
+    padding: 24px;
+}
+
+.gc-suscripcion-detalles p {
+    margin: 0 0 12px;
+    font-size: 15px;
+    color: var(--gc-gray-700);
+}
+
+.gc-suscripcion-detalles p:last-child {
+    margin-bottom: 0;
+}
+
+.gc-suscripcion-acciones {
+    padding: 20px 24px;
+    border-top: 1px solid var(--gc-gray-200);
+    display: flex;
+    gap: 12px;
+}
+
+/* === Ciclo Actual === */
+.gc-ciclo-actual {
+    background: linear-gradient(135deg, var(--gc-primary) 0%, var(--gc-primary-dark) 100%);
+    color: #fff;
+    border-radius: var(--gc-border-radius);
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gc-ciclo-actual::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.gc-ciclo-actual h3 {
+    margin: 0 0 20px;
+    font-size: 24px;
+}
+
+.gc-ciclo-actual p {
+    margin: 0 0 10px;
+    font-size: 15px;
+    opacity: 0.9;
+}
+
+.gc-ciclo-actual p strong {
+    opacity: 1;
+}
+
+.gc-tiempo-restante {
+    margin-top: 20px !important;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 600;
+}
+
+/* === Responsive === */
+@media (max-width: 992px) {
+    .gc-columnas-4 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .gc-columnas-3,
+    .gc-columnas-4 { grid-template-columns: repeat(2, 1fr); }
+
+    .gc-catalogo-filtros {
+        flex-direction: column;
+    }
+
+    .gc-catalogo-filtros select {
+        width: 100%;
+    }
+
+    .gc-calendario-item {
+        flex-wrap: wrap;
+    }
+
+    .gc-calendario .gc-estado-badge {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gc-columnas-2,
+    .gc-columnas-3,
+    .gc-columnas-4 { grid-template-columns: 1fr; }
+
+    .gc-producto-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .gc-precio {
+        align-self: flex-start;
+    }
+
+    .gc-agregar-lista {
+        width: 100%;
+    }
+
+    .gc-suscripcion-acciones {
+        flex-direction: column;
+    }
+
+    .gc-suscripcion-acciones .gc-btn {
+        width: 100%;
+    }
+
+    .gc-historial-item {
+        flex-wrap: wrap;
+    }
+
+    .gc-historial-fecha {
+        width: 100%;
+    }
+
+    .gc-historial-total {
+        width: 100%;
+        text-align: left;
+        margin-top: 10px;
+    }
+}

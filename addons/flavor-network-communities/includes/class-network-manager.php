@@ -1,0 +1,542 @@
+<?php
+/**
+ * Gestor principal de la Red de Comunidades
+ *
+ * Singleton que orquesta todo el sistema de red:
+ * nodos, conexiones, contenido compartido, colaboraciones,
+ * mensajería, mapa, directorio y sellos de calidad.
+ *
+ * @package FlavorChatIA\Network
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class Flavor_Network_Manager {
+
+    /**
+     * Instancia singleton
+     */
+    private static $instance = null;
+
+    /**
+     * Versión del sistema de red
+     */
+    const VERSION = '1.0.0';
+
+    /**
+     * Módulos registrados
+     */
+    private $modulos_registrados = [];
+
+    /**
+     * Obtiene la instancia singleton
+     */
+    public static function get_instance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * Constructor privado
+     */
+    private function __construct() {
+        $this->registrar_modulos();
+        $this->init_hooks();
+    }
+
+    /**
+     * Inicializa hooks
+     */
+    private function init_hooks() {
+        // Verificar/actualizar BD al cargar
+        add_action('admin_init', [$this, 'check_db_version']);
+
+        // Shortcodes públicos
+        add_shortcode('flavor_network_directory', [$this, 'shortcode_directory']);
+        add_shortcode('flavor_network_map', [$this, 'shortcode_map']);
+        add_shortcode('flavor_network_board', [$this, 'shortcode_board']);
+        add_shortcode('flavor_network_events', [$this, 'shortcode_events']);
+        add_shortcode('flavor_network_alerts', [$this, 'shortcode_alerts']);
+        add_shortcode('flavor_network_catalog', [$this, 'shortcode_catalog']);
+        add_shortcode('flavor_network_collaborations', [$this, 'shortcode_collaborations']);
+        add_shortcode('flavor_network_time_offers', [$this, 'shortcode_time_offers']);
+        add_shortcode('flavor_network_node_profile', [$this, 'shortcode_node_profile']);
+        add_shortcode('flavor_network_questions', [$this, 'shortcode_network_questions']);
+
+        // Assets frontend
+        add_action('wp_enqueue_scripts', [$this, 'maybe_enqueue_frontend_assets']);
+    }
+
+    /**
+     * Registra los módulos disponibles de la red
+     */
+    private function registrar_modulos() {
+        $this->modulos_registrados = [
+            // Conexión Básica
+            'perfil_publico'     => [
+                'nombre'      => __('Perfil público en red', 'flavor-chat-ia'),
+                'descripcion' => __('Tu ficha visible para otras entidades', 'flavor-chat-ia'),
+                'categoria'   => 'conexion',
+                'icono'       => 'dashicons-id-alt',
+            ],
+            'qr_entidad'         => [
+                'nombre'      => __('QR de entidad', 'flavor-chat-ia'),
+                'descripcion' => __('Código para escanear y ver perfil', 'flavor-chat-ia'),
+                'categoria'   => 'conexion',
+                'icono'       => 'dashicons-smartphone',
+            ],
+            'geolocalizacion'    => [
+                'nombre'      => __('Geolocalización', 'flavor-chat-ia'),
+                'descripcion' => __('Aparecer en mapa de la red', 'flavor-chat-ia'),
+                'categoria'   => 'conexion',
+                'icono'       => 'dashicons-location-alt',
+            ],
+            'categorizacion'     => [
+                'nombre'      => __('Categorización', 'flavor-chat-ia'),
+                'descripcion' => __('Tipo de entidad, sector, tags', 'flavor-chat-ia'),
+                'categoria'   => 'conexion',
+                'icono'       => 'dashicons-tag',
+            ],
+            'nivel_consciencia'  => [
+                'nombre'      => __('Nivel de consciencia', 'flavor-chat-ia'),
+                'descripcion' => __('Básico / Transición / Consciente / Referente', 'flavor-chat-ia'),
+                'categoria'   => 'conexion',
+                'icono'       => 'dashicons-star-filled',
+            ],
+
+            // Interconexión
+            'conexiones'         => [
+                'nombre'      => __('Conexiones', 'flavor-chat-ia'),
+                'descripcion' => __('Solicitar, gestionar y nivelar conexiones', 'flavor-chat-ia'),
+                'categoria'   => 'interconexion',
+                'icono'       => 'dashicons-networking',
+            ],
+            'favoritos'          => [
+                'nombre'      => __('Favoritos', 'flavor-chat-ia'),
+                'descripcion' => __('Marcar entidades de interés', 'flavor-chat-ia'),
+                'categoria'   => 'interconexion',
+                'icono'       => 'dashicons-heart',
+            ],
+            'recomendaciones'    => [
+                'nombre'      => __('Recomendaciones', 'flavor-chat-ia'),
+                'descripcion' => __('Sugerir entidades a otros', 'flavor-chat-ia'),
+                'categoria'   => 'interconexion',
+                'icono'       => 'dashicons-megaphone',
+            ],
+
+            // Compartir Contenido
+            'catalogo_publico'   => [
+                'nombre'      => __('Catálogo público', 'flavor-chat-ia'),
+                'descripcion' => __('Productos visibles a la red', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-cart',
+            ],
+            'servicios_publicos' => [
+                'nombre'      => __('Servicios públicos', 'flavor-chat-ia'),
+                'descripcion' => __('Directorio de profesionales', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-businessman',
+            ],
+            'espacios'           => [
+                'nombre'      => __('Espacios compartibles', 'flavor-chat-ia'),
+                'descripcion' => __('Banco de espacios', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-building',
+            ],
+            'recursos'           => [
+                'nombre'      => __('Recursos compartibles', 'flavor-chat-ia'),
+                'descripcion' => __('Herramientas, vehículos...', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-hammer',
+            ],
+            'eventos'            => [
+                'nombre'      => __('Eventos públicos', 'flavor-chat-ia'),
+                'descripcion' => __('Agenda de la red', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-calendar-alt',
+            ],
+            'banco_tiempo'       => [
+                'nombre'      => __('Ofertas de tiempo', 'flavor-chat-ia'),
+                'descripcion' => __('Banco de tiempo inter-nodos', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-clock',
+            ],
+            'saberes'            => [
+                'nombre'      => __('Saberes públicos', 'flavor-chat-ia'),
+                'descripcion' => __('Formaciones disponibles', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-book',
+            ],
+            'excedentes'         => [
+                'nombre'      => __('Excedentes', 'flavor-chat-ia'),
+                'descripcion' => __('Economía circular', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-update',
+            ],
+            'necesidades'        => [
+                'nombre'      => __('Necesidades', 'flavor-chat-ia'),
+                'descripcion' => __('Pedir ayuda a la red', 'flavor-chat-ia'),
+                'categoria'   => 'contenido',
+                'icono'       => 'dashicons-sos',
+            ],
+
+            // Colaboración
+            'compras_colectivas' => [
+                'nombre'      => __('Compras colectivas', 'flavor-chat-ia'),
+                'descripcion' => __('Unir pedidos para mejor precio', 'flavor-chat-ia'),
+                'categoria'   => 'colaboracion',
+                'icono'       => 'dashicons-groups',
+            ],
+            'logistica'          => [
+                'nombre'      => __('Logística compartida', 'flavor-chat-ia'),
+                'descripcion' => __('Coordinar transportes', 'flavor-chat-ia'),
+                'categoria'   => 'colaboracion',
+                'icono'       => 'dashicons-car',
+            ],
+            'proyectos'          => [
+                'nombre'      => __('Proyectos conjuntos', 'flavor-chat-ia'),
+                'descripcion' => __('Colaborar en iniciativas', 'flavor-chat-ia'),
+                'categoria'   => 'colaboracion',
+                'icono'       => 'dashicons-lightbulb',
+            ],
+            'alianzas'           => [
+                'nombre'      => __('Alianzas temáticas', 'flavor-chat-ia'),
+                'descripcion' => __('Grupos por afinidad', 'flavor-chat-ia'),
+                'categoria'   => 'colaboracion',
+                'icono'       => 'dashicons-admin-links',
+            ],
+            'hermanamientos'     => [
+                'nombre'      => __('Hermanamientos', 'flavor-chat-ia'),
+                'descripcion' => __('Vínculo estable con otra entidad', 'flavor-chat-ia'),
+                'categoria'   => 'colaboracion',
+                'icono'       => 'dashicons-admin-users',
+            ],
+            'mentoria'           => [
+                'nombre'      => __('Mentoría cruzada', 'flavor-chat-ia'),
+                'descripcion' => __('Acompañamiento mutuo', 'flavor-chat-ia'),
+                'categoria'   => 'colaboracion',
+                'icono'       => 'dashicons-welcome-learn-more',
+            ],
+
+            // Comunicación
+            'tablon_red'         => [
+                'nombre'      => __('Tablón de la red', 'flavor-chat-ia'),
+                'descripcion' => __('Ver/publicar anuncios', 'flavor-chat-ia'),
+                'categoria'   => 'comunicacion',
+                'icono'       => 'dashicons-clipboard',
+            ],
+            'preguntas_red'      => [
+                'nombre'      => __('Preguntas a la red', 'flavor-chat-ia'),
+                'descripcion' => __('Inteligencia colectiva', 'flavor-chat-ia'),
+                'categoria'   => 'comunicacion',
+                'icono'       => 'dashicons-editor-help',
+            ],
+            'alertas_solidarias' => [
+                'nombre'      => __('Alertas solidarias', 'flavor-chat-ia'),
+                'descripcion' => __('Necesidades urgentes', 'flavor-chat-ia'),
+                'categoria'   => 'comunicacion',
+                'icono'       => 'dashicons-warning',
+            ],
+            'newsletter_red'     => [
+                'nombre'      => __('Newsletter de red', 'flavor-chat-ia'),
+                'descripcion' => __('Resumen periódico', 'flavor-chat-ia'),
+                'categoria'   => 'comunicacion',
+                'icono'       => 'dashicons-email-alt',
+            ],
+            'mensajeria'         => [
+                'nombre'      => __('Mensajería inter-nodos', 'flavor-chat-ia'),
+                'descripcion' => __('Chat entre entidades', 'flavor-chat-ia'),
+                'categoria'   => 'comunicacion',
+                'icono'       => 'dashicons-format-chat',
+            ],
+
+            // Calidad y Mapa
+            'sello_calidad'      => [
+                'nombre'      => __('Sello App Consciente', 'flavor-chat-ia'),
+                'descripcion' => __('Certificación y niveles', 'flavor-chat-ia'),
+                'categoria'   => 'calidad',
+                'icono'       => 'dashicons-awards',
+            ],
+            'mapa_apps'          => [
+                'nombre'      => __('Mapa de Apps', 'flavor-chat-ia'),
+                'descripcion' => __('Mapa público con filtros y buscador', 'flavor-chat-ia'),
+                'categoria'   => 'calidad',
+                'icono'       => 'dashicons-admin-site-alt3',
+            ],
+        ];
+    }
+
+    /**
+     * Comprueba y actualiza la versión de BD si es necesario
+     */
+    public function check_db_version() {
+        Flavor_Network_Installer::maybe_upgrade();
+    }
+
+    /**
+     * Obtiene los módulos registrados
+     */
+    public function get_modulos() {
+        return $this->modulos_registrados;
+    }
+
+    /**
+     * Obtiene módulos por categoría
+     */
+    public function get_modulos_por_categoria($categoria) {
+        return array_filter($this->modulos_registrados, function($modulo) use ($categoria) {
+            return $modulo['categoria'] === $categoria;
+        });
+    }
+
+    /**
+     * Obtiene las categorías de módulos
+     */
+    public function get_categorias() {
+        return [
+            'conexion'       => __('Conexión Básica', 'flavor-chat-ia'),
+            'interconexion'  => __('Interconexión', 'flavor-chat-ia'),
+            'contenido'      => __('Compartir Contenido', 'flavor-chat-ia'),
+            'colaboracion'   => __('Colaboración', 'flavor-chat-ia'),
+            'comunicacion'   => __('Comunicación de Red', 'flavor-chat-ia'),
+            'calidad'        => __('Calidad y Mapa', 'flavor-chat-ia'),
+        ];
+    }
+
+    /**
+     * Obtiene los módulos activos del nodo local
+     */
+    public function get_modulos_activos() {
+        $nodo_local = Flavor_Network_Node::get_local_node();
+        if (!$nodo_local) {
+            return [];
+        }
+        return $nodo_local->get_modulos_activos();
+    }
+
+    /**
+     * Comprueba si un módulo está activo
+     */
+    public function is_modulo_activo($modulo_id) {
+        $activos = $this->get_modulos_activos();
+        return in_array($modulo_id, $activos);
+    }
+
+    // ─── Shortcodes ───
+
+    public function shortcode_directory($atts) {
+        $atts = shortcode_atts([
+            'tipo'   => '',
+            'pais'   => '',
+            'limite' => 20,
+        ], $atts);
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-directory.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_map($atts) {
+        $atts = shortcode_atts([
+            'altura' => '500px',
+            'tipo'   => '',
+            'zoom'   => 6,
+        ], $atts);
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        $this->enqueue_map_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-map.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_board($atts) {
+        $atts = shortcode_atts([
+            'tipo'   => '',
+            'limite' => 15,
+        ], $atts);
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-board.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_events($atts) {
+        $atts = shortcode_atts([
+            'limite' => 10,
+        ], $atts);
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-events.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_alerts($atts) {
+        $atts = shortcode_atts([
+            'limite' => 10,
+        ], $atts);
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-alerts.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_catalog($atts) {
+        $atts = shortcode_atts([
+            'nodo' => '',
+            'tipo' => '',
+        ], $atts);
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-catalog.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_collaborations($atts) {
+        $atts = shortcode_atts([
+            'tipo'   => '',
+            'limite' => 10,
+        ], $atts);
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-collaborations.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_time_offers($atts) {
+        $atts = shortcode_atts([
+            'tipo'   => '',
+            'limite' => 10,
+        ], $atts);
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-time-offers.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_node_profile($atts) {
+        $atts = shortcode_atts([
+            'slug' => '',
+        ], $atts);
+
+        if (empty($atts['slug']) && isset($_GET['nodo'])) {
+            $atts['slug'] = sanitize_text_field($_GET['nodo']);
+        }
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-node-profile.php';
+        return ob_get_clean();
+    }
+
+    public function shortcode_network_questions($atts) {
+        $atts = shortcode_atts([
+            'categoria' => '',
+            'limite'    => 10,
+        ], $atts, 'flavor_network_questions');
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        include FLAVOR_NETWORK_PATH . 'includes/templates/network-questions.php';
+        return ob_get_clean();
+    }
+
+    // ─── Assets ───
+
+    public function maybe_enqueue_frontend_assets() {
+        // Solo cargar si hay shortcodes en el contenido
+        global $post;
+        if (!$post) {
+            return;
+        }
+
+        $shortcodes_red = ['flavor_network_directory', 'flavor_network_map', 'flavor_network_board',
+                           'flavor_network_events', 'flavor_network_alerts', 'flavor_network_catalog',
+                           'flavor_network_collaborations', 'flavor_network_time_offers', 'flavor_network_node_profile',
+                           'flavor_network_questions'];
+
+        foreach ($shortcodes_red as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                $this->enqueue_frontend_assets();
+                if ($shortcode === 'flavor_network_map') {
+                    $this->enqueue_map_assets();
+                }
+                break;
+            }
+        }
+    }
+
+    private function enqueue_frontend_assets() {
+        if (wp_style_is('flavor-network-frontend', 'enqueued')) {
+            return;
+        }
+
+        $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
+
+        wp_enqueue_style(
+            'flavor-network-frontend',
+            FLAVOR_NETWORK_URL . "assets/css/network-frontend{$sufijo_asset}.css",
+            [],
+            self::VERSION
+        );
+
+        wp_enqueue_script(
+            'flavor-network-frontend',
+            FLAVOR_NETWORK_URL . "assets/js/network-frontend{$sufijo_asset}.js",
+            ['jquery'],
+            self::VERSION,
+            true
+        );
+
+        wp_localize_script('flavor-network-frontend', 'flavorNetwork', [
+            'apiUrl' => rest_url(Flavor_Network_API::API_NAMESPACE),
+            'nonce'  => wp_create_nonce('wp_rest'),
+            'i18n'   => [
+                'cargando'       => __('Cargando...', 'flavor-chat-ia'),
+                'sin_resultados' => __('No se encontraron resultados', 'flavor-chat-ia'),
+                'error'          => __('Error al cargar datos', 'flavor-chat-ia'),
+                'ver_mas'        => __('Ver más', 'flavor-chat-ia'),
+                'buscar'         => __('Buscar...', 'flavor-chat-ia'),
+            ],
+        ]);
+    }
+
+    private function enqueue_map_assets() {
+        // Leaflet CSS y JS desde CDN
+        wp_enqueue_style(
+            'leaflet',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+            [],
+            '1.9.4'
+        );
+
+        wp_enqueue_script(
+            'leaflet',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+            [],
+            '1.9.4',
+            true
+        );
+
+        $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
+
+        wp_enqueue_script(
+            'flavor-network-map',
+            FLAVOR_NETWORK_URL . "assets/js/network-map{$sufijo_asset}.js",
+            ['jquery', 'leaflet', 'flavor-network-frontend'],
+            self::VERSION,
+            true
+        );
+    }
+}

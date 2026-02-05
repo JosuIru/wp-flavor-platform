@@ -1,0 +1,228 @@
+<?php
+/**
+ * Template: Grid Espacios Comunes
+ *
+ * @var string $titulo
+ * @var string $subtitulo
+ * @var bool $mostrar_calendario
+ * @var string $component_classes
+ */
+
+if (!defined('ABSPATH')) exit;
+?>
+
+<section class="py-16 bg-gradient-to-b from-blue-50 to-white <?php echo esc_attr($component_classes); ?>">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                    <?php echo esc_html($titulo); ?>
+                </h2>
+                <?php if (!empty($subtitulo)): ?>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        <?php echo esc_html($subtitulo); ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Spaces Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Space Card 1 -->
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <div class="relative h-64 bg-gradient-to-br from-yellow-400 to-orange-500 overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg class="w-32 h-32 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <!-- Badge -->
+                        <div class="absolute top-4 left-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-orange-600 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
+                            </svg>
+                            Disponible Hoy
+                        </div>
+                        <!-- Capacity -->
+                        <div class="absolute bottom-4 right-4 px-3 py-2 bg-black/50 backdrop-blur-sm rounded-lg text-white text-sm font-bold">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                </svg>
+                                Hasta 100 personas
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                            Salón de Eventos
+                        </h3>
+                        <p class="text-gray-600 text-sm mb-4">
+                            Espacio multiusos ideal para celebraciones, reuniones y eventos comunitarios.
+                        </p>
+
+                        <!-- Amenities -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                                Sistema de Sonido
+                            </span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                                Proyector
+                            </span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                                Cocina
+                            </span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                                WiFi
+                            </span>
+                        </div>
+
+                        <!-- Price & Action -->
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">€25</span>
+                                <span class="text-gray-500 text-sm">/hora</span>
+                            </div>
+                            <a href="#reservar" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                                Reservar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Space Card 2 -->
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <div class="relative h-64 bg-gradient-to-br from-green-400 to-emerald-500 overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg class="w-32 h-32 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </div>
+                        <div class="absolute top-4 left-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-green-600 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            Aire Libre
+                        </div>
+                        <div class="absolute bottom-4 right-4 px-3 py-2 bg-black/50 backdrop-blur-sm rounded-lg text-white text-sm font-bold">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                </svg>
+                                Hasta 60 personas
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
+                            Terraza Jardín
+                        </h3>
+                        <p class="text-gray-600 text-sm mb-4">
+                            Espacio exterior con zona verde, perfecto para eventos al aire libre y barbacoas.
+                        </p>
+
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                Barbacoa
+                            </span>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                Mesas
+                            </span>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                Sombra
+                            </span>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                Juegos
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div>
+                                <span class="text-2xl font-bold text-green-600">€15</span>
+                                <span class="text-gray-500 text-sm">/hora</span>
+                            </div>
+                            <a href="#reservar" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors">
+                                Reservar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Space Card 3 -->
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <div class="relative h-64 bg-gradient-to-br from-pink-400 to-rose-500 overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg class="w-32 h-32 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="absolute top-4 left-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-pink-600 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            Para Niños
+                        </div>
+                        <div class="absolute bottom-4 right-4 px-3 py-2 bg-black/50 backdrop-blur-sm rounded-lg text-white text-sm font-bold">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                </svg>
+                                Hasta 30 niños
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">
+                            Ludoteca
+                        </h3>
+                        <p class="text-gray-600 text-sm mb-4">
+                            Sala equipada para fiestas infantiles con juegos, decoración y zona de merienda.
+                        </p>
+
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-medium rounded-full">
+                                Juguetes
+                            </span>
+                            <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-medium rounded-full">
+                                Decoración
+                            </span>
+                            <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-medium rounded-full">
+                                Seguro
+                            </span>
+                            <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-medium rounded-full">
+                                Zona Merienda
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div>
+                                <span class="text-2xl font-bold text-pink-600">€20</span>
+                                <span class="text-gray-500 text-sm">/hora</span>
+                            </div>
+                            <a href="#reservar" class="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg transition-colors">
+                                Reservar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="mt-12 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-8 text-center">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">💡 Información Importante</h3>
+                <p class="text-gray-700 mb-4 max-w-2xl mx-auto">
+                    Reserva con al menos 24h de antelación. Los vecinos tienen prioridad y descuentos especiales.
+                </p>
+                <a href="#normas" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                    Ver Normas y Condiciones
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

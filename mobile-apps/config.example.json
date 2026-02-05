@@ -1,0 +1,30 @@
+{
+  "business_name": "Zoo de Mallorca",
+  "app_id": "com.zoodemallorca.app",
+  "client_app_name": "Zoo Mallorca",
+  "admin_app_name": "Zoo Admin",
+  "deep_link_scheme": "zoomallorca",
+  "server_url": "https://zoodemallorca.com",
+  "logo_url": "https://zoodemallorca.com/wp-content/uploads/logo.png",
+  "colors": {
+    "primary": "#4CAF50",
+    "secondary": "#8BC34A",
+    "accent": "#FF9800"
+  },
+  "developer": {
+    "name": "Zoo de Mallorca S.L.",
+    "email": "info@zoodemallorca.com",
+    "phone": "+34 971 123 456"
+  },
+  "_comentarios": {
+    "business_name": "Nombre del negocio (aparece en la app)",
+    "app_id": "ID único para Google Play (com.tudominio.app)",
+    "client_app_name": "Nombre de la app cliente en el dispositivo",
+    "admin_app_name": "Nombre de la app admin en el dispositivo",
+    "deep_link_scheme": "Esquema para links entre apps (sin ://)",
+    "server_url": "URL del sitio WordPress (opcional, vacío = pedir al usuario)",
+    "logo_url": "URL del logo (PNG o SVG)",
+    "colors": "Colores en formato hexadecimal",
+    "developer": "Información del desarrollador para la tienda"
+  }
+}

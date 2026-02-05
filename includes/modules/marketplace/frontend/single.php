@@ -1,0 +1,9 @@
+<?php if (!defined('ABSPATH')) exit; get_header(); while (have_posts()) : the_post(); $precio = get_post_meta(get_the_ID(), '_precio', true); $condicion = get_post_meta(get_the_ID(), '_condicion', true); $vendedor_id = get_the_author_meta('ID'); ?>
+<div class="flavor-container py-8">
+    <nav class="flex mb-6 text-sm"><ol class="inline-flex items-center space-x-2"><li><a href="<?php echo home_url('/'); ?>">Inicio</a></li><li><span class="mx-2">/</span></li><li><a href="<?php echo get_post_type_archive_link('marketplace'); ?>">Marketplace</a></li><li><span class="mx-2">/</span></li><li><?php the_title(); ?></li></ol></nav>
+    <div class="grid lg:grid-cols-2 gap-8">
+        <div><?php if (has_post_thumbnail()) the_post_thumbnail('large', array('class' => 'w-full rounded-xl shadow-lg')); ?></div>
+        <div><h1 class="text-4xl font-bold mb-4"><?php the_title(); ?></h1><div class="text-5xl font-bold text-primary mb-6"><?php echo esc_html($precio); ?>€</div><?php if ($condicion) : ?><span class="inline-block px-4 py-2 bg-gray-100 rounded-lg mb-4">Estado: <?php echo esc_html($condicion); ?></span><?php endif; ?><div class="prose mb-6"><?php the_content(); ?></div><div class="flex items-center gap-3 mb-6"><?php echo get_avatar($vendedor_id, 48); ?><div><p class="font-semibold"><?php echo get_the_author(); ?></p><p class="text-sm text-gray-600">Vendedor</p></div></div><?php if (is_user_logged_in()) : ?><a href="mailto:<?php echo get_the_author_meta('user_email'); ?>" class="block text-center px-6 py-4 bg-primary text-white rounded-lg hover:bg-primary-dark font-bold">Contactar Vendedor</a><?php else : ?><a href="<?php echo wp_login_url(get_permalink()); ?>" class="block text-center px-6 py-4 bg-primary text-white rounded-lg">Inicia sesión para contactar</a><?php endif; ?></div>
+    </div>
+</div>
+<?php endwhile; get_footer(); ?>

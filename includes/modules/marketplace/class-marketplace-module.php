@@ -1,0 +1,723 @@
+<?php
+/**
+ * Módulo Marketplace para Chat IA
+ *
+ * Marketplace comunitario: Regalo, Venta, Cambio, Alquiler
+ *
+ * @package FlavorChatIA
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Módulo de Marketplace - Anuncios de regalo, venta, cambio y alquiler
+ */
+class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->id = 'marketplace';
+        $this->name = __('Marketplace', 'flavor-chat-ia');
+        $this->description = __('Plataforma para publicar anuncios de regalo, venta, cambio y alquiler entre usuarios.', 'flavor-chat-ia');
+
+        parent::__construct();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function can_activate() {
+        return true; // No tiene dependencias externas
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function get_default_settings() {
+        return [
+            'permitir_regalo' => true,
+            'permitir_venta' => true,
+            'permitir_cambio' => true,
+            'permitir_alquiler' => true,
+            'requiere_moderacion' => false,
+            'dias_expiracion_anuncio' => 30,
+            'maximo_imagenes_por_anuncio' => 5,
+            'permitir_mensajeria_directa' => true,
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init() {
+        // Registrar Custom Post Type
+        add_action('init', [$this, 'registrar_custom_post_type']);
+
+        // Registrar Taxonomías
+        add_action('init', [$this, 'registrar_taxonomias']);
+
+        // Registrar Custom Fields (Meta Boxes)
+        add_action('add_meta_boxes', [$this, 'registrar_meta_boxes']);
+        add_action('save_post_marketplace_item', [$this, 'guardar_meta_boxes']);
+
+        // Modificar columnas en el listado del admin
+        add_filter('manage_marketplace_item_posts_columns', [$this, 'personalizar_columnas_admin']);
+        add_action('manage_marketplace_item_posts_custom_column', [$this, 'contenido_columnas_admin'], 10, 2);
+
+        // Shortcodes
+        add_shortcode('marketplace_listado', [$this, 'shortcode_listado']);
+        add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario']);
+
+        // AJAX para frontend
+        add_action('wp_ajax_marketplace_crear_anuncio', [$this, 'ajax_crear_anuncio']);
+        add_action('wp_ajax_nopriv_marketplace_crear_anuncio', [$this, 'ajax_crear_anuncio']);
+    }
+
+    /**
+     * Registra el Custom Post Type para anuncios
+     */
+    public function registrar_custom_post_type() {
+        $etiquetas = [
+            'name' => __('Anuncios Marketplace', 'flavor-chat-ia'),
+            'singular_name' => __('Anuncio', 'flavor-chat-ia'),
+            'add_new' => __('Añadir Anuncio', 'flavor-chat-ia'),
+            'add_new_item' => __('Añadir Nuevo Anuncio', 'flavor-chat-ia'),
+            'edit_item' => __('Editar Anuncio', 'flavor-chat-ia'),
+            'new_item' => __('Nuevo Anuncio', 'flavor-chat-ia'),
+            'view_item' => __('Ver Anuncio', 'flavor-chat-ia'),
+            'search_items' => __('Buscar Anuncios', 'flavor-chat-ia'),
+            'not_found' => __('No se encontraron anuncios', 'flavor-chat-ia'),
+            'not_found_in_trash' => __('No hay anuncios en la papelera', 'flavor-chat-ia'),
+        ];
+
+        $argumentos = [
+            'labels' => $etiquetas,
+            'public' => true,
+            'has_archive' => true,
+            'publicly_queryable' => true,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'show_in_nav_menus' => true,
+            'show_in_rest' => true,
+            'menu_icon' => 'dashicons-megaphone',
+            'supports' => ['title', 'editor', 'thumbnail', 'author', 'comments'],
+            'rewrite' => ['slug' => 'marketplace', 'with_front' => false],
+            'capability_type' => 'post',
+            'map_meta_cap' => true,
+        ];
+
+        register_post_type('marketplace_item', $argumentos);
+    }
+
+    /**
+     * Registra las taxonomías
+     */
+    public function registrar_taxonomias() {
+        // Taxonomía: Tipo de transacción (regalo, venta, cambio, alquiler)
+        register_taxonomy('marketplace_tipo', 'marketplace_item', [
+            'labels' => [
+                'name' => __('Tipo de Transacción', 'flavor-chat-ia'),
+                'singular_name' => __('Tipo', 'flavor-chat-ia'),
+            ],
+            'public' => true,
+            'hierarchical' => false,
+            'show_ui' => true,
+            'show_in_rest' => true,
+            'rewrite' => ['slug' => 'marketplace-tipo'],
+        ]);
+
+        // Taxonomía: Categoría del producto
+        register_taxonomy('marketplace_categoria', 'marketplace_item', [
+            'labels' => [
+                'name' => __('Categorías', 'flavor-chat-ia'),
+                'singular_name' => __('Categoría', 'flavor-chat-ia'),
+            ],
+            'public' => true,
+            'hierarchical' => true,
+            'show_ui' => true,
+            'show_in_rest' => true,
+            'rewrite' => ['slug' => 'marketplace-categoria'],
+        ]);
+
+        // Insertar términos por defecto para tipo de transacción
+        $tipos_defecto = ['regalo', 'venta', 'cambio', 'alquiler'];
+        foreach ($tipos_defecto as $tipo) {
+            if (!term_exists($tipo, 'marketplace_tipo')) {
+                wp_insert_term(ucfirst($tipo), 'marketplace_tipo', ['slug' => $tipo]);
+            }
+        }
+
+        // Insertar categorías por defecto
+        $categorias_defecto = [
+            'Electrónica', 'Muebles', 'Ropa', 'Libros', 'Deportes',
+            'Hogar', 'Juguetes', 'Herramientas', 'Otros'
+        ];
+        foreach ($categorias_defecto as $categoria) {
+            if (!term_exists($categoria, 'marketplace_categoria')) {
+                wp_insert_term($categoria, 'marketplace_categoria');
+            }
+        }
+    }
+
+    /**
+     * Registra los Meta Boxes (Custom Fields)
+     */
+    public function registrar_meta_boxes() {
+        add_meta_box(
+            'marketplace_detalles',
+            __('Detalles del Anuncio', 'flavor-chat-ia'),
+            [$this, 'renderizar_meta_box_detalles'],
+            'marketplace_item',
+            'normal',
+            'high'
+        );
+    }
+
+    /**
+     * Renderiza el contenido del Meta Box
+     */
+    public function renderizar_meta_box_detalles($post) {
+        wp_nonce_field('marketplace_guardar_meta', 'marketplace_meta_nonce');
+
+        $precio = get_post_meta($post->ID, '_marketplace_precio', true);
+        $estado_conservacion = get_post_meta($post->ID, '_marketplace_estado', true);
+        $ubicacion = get_post_meta($post->ID, '_marketplace_ubicacion', true);
+        $contacto_preferido = get_post_meta($post->ID, '_marketplace_contacto', true);
+        $fecha_expiracion = get_post_meta($post->ID, '_marketplace_fecha_expiracion', true);
+        $intercambio_preferencias = get_post_meta($post->ID, '_marketplace_intercambio_prefs', true);
+
+        ?>
+        <table class="form-table">
+            <tr>
+                <th><label for="marketplace_precio"><?php _e('Precio', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <input type="number" step="0.01" id="marketplace_precio" name="marketplace_precio"
+                           value="<?php echo esc_attr($precio); ?>" class="regular-text" />
+                    <p class="description"><?php _e('Deja en blanco si es regalo o cambio', 'flavor-chat-ia'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="marketplace_estado"><?php _e('Estado de Conservación', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <select id="marketplace_estado" name="marketplace_estado">
+                        <option value=""><?php _e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                        <option value="nuevo" <?php selected($estado_conservacion, 'nuevo'); ?>><?php _e('Nuevo', 'flavor-chat-ia'); ?></option>
+                        <option value="como_nuevo" <?php selected($estado_conservacion, 'como_nuevo'); ?>><?php _e('Como nuevo', 'flavor-chat-ia'); ?></option>
+                        <option value="buen_estado" <?php selected($estado_conservacion, 'buen_estado'); ?>><?php _e('Buen estado', 'flavor-chat-ia'); ?></option>
+                        <option value="usado" <?php selected($estado_conservacion, 'usado'); ?>><?php _e('Usado', 'flavor-chat-ia'); ?></option>
+                        <option value="reparar" <?php selected($estado_conservacion, 'reparar'); ?>><?php _e('Necesita reparación', 'flavor-chat-ia'); ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="marketplace_ubicacion"><?php _e('Ubicación', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <input type="text" id="marketplace_ubicacion" name="marketplace_ubicacion"
+                           value="<?php echo esc_attr($ubicacion); ?>" class="regular-text"
+                           placeholder="<?php _e('Ciudad o barrio', 'flavor-chat-ia'); ?>" />
+                </td>
+            </tr>
+            <tr>
+                <th><label for="marketplace_contacto"><?php _e('Contacto Preferido', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <select id="marketplace_contacto" name="marketplace_contacto">
+                        <option value="chat" <?php selected($contacto_preferido, 'chat'); ?>><?php _e('Chat interno', 'flavor-chat-ia'); ?></option>
+                        <option value="email" <?php selected($contacto_preferido, 'email'); ?>><?php _e('Email', 'flavor-chat-ia'); ?></option>
+                        <option value="whatsapp" <?php selected($contacto_preferido, 'whatsapp'); ?>><?php _e('WhatsApp', 'flavor-chat-ia'); ?></option>
+                        <option value="telefono" <?php selected($contacto_preferido, 'telefono'); ?>><?php _e('Teléfono', 'flavor-chat-ia'); ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="marketplace_intercambio_prefs"><?php _e('Preferencias de Intercambio', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <textarea id="marketplace_intercambio_prefs" name="marketplace_intercambio_prefs"
+                              rows="3" class="large-text"><?php echo esc_textarea($intercambio_preferencias); ?></textarea>
+                    <p class="description"><?php _e('Si es cambio, indica qué te interesaría a cambio', 'flavor-chat-ia'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="marketplace_fecha_expiracion"><?php _e('Fecha de Expiración', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <input type="date" id="marketplace_fecha_expiracion" name="marketplace_fecha_expiracion"
+                           value="<?php echo esc_attr($fecha_expiracion); ?>" />
+                    <p class="description"><?php _e('Fecha hasta la que estará disponible el anuncio', 'flavor-chat-ia'); ?></p>
+                </td>
+            </tr>
+        </table>
+        <?php
+    }
+
+    /**
+     * Guarda los datos del Meta Box
+     */
+    public function guardar_meta_boxes($post_id) {
+        // Verificaciones de seguridad
+        if (!isset($_POST['marketplace_meta_nonce']) ||
+            !wp_verify_nonce($_POST['marketplace_meta_nonce'], 'marketplace_guardar_meta')) {
+            return;
+        }
+
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        if (!current_user_can('edit_post', $post_id)) {
+            return;
+        }
+
+        // Guardar campos
+        $campos_a_guardar = [
+            '_marketplace_precio' => 'sanitize_text_field',
+            '_marketplace_estado' => 'sanitize_text_field',
+            '_marketplace_ubicacion' => 'sanitize_text_field',
+            '_marketplace_contacto' => 'sanitize_text_field',
+            '_marketplace_fecha_expiracion' => 'sanitize_text_field',
+            '_marketplace_intercambio_prefs' => 'sanitize_textarea_field',
+        ];
+
+        foreach ($campos_a_guardar as $campo => $funcion_sanitize) {
+            $campo_form = str_replace('_marketplace_', 'marketplace_', $campo);
+            if (isset($_POST[$campo_form])) {
+                update_post_meta($post_id, $campo, $funcion_sanitize($_POST[$campo_form]));
+            }
+        }
+    }
+
+    /**
+     * Personaliza las columnas del admin
+     */
+    public function personalizar_columnas_admin($columnas) {
+        $nuevas_columnas = [
+            'cb' => $columnas['cb'],
+            'title' => $columnas['title'],
+            'marketplace_tipo' => __('Tipo', 'flavor-chat-ia'),
+            'marketplace_precio' => __('Precio', 'flavor-chat-ia'),
+            'marketplace_estado' => __('Estado', 'flavor-chat-ia'),
+            'marketplace_ubicacion' => __('Ubicación', 'flavor-chat-ia'),
+            'author' => $columnas['author'],
+            'date' => $columnas['date'],
+        ];
+        return $nuevas_columnas;
+    }
+
+    /**
+     * Muestra el contenido de las columnas personalizadas
+     */
+    public function contenido_columnas_admin($columna, $post_id) {
+        switch ($columna) {
+            case 'marketplace_tipo':
+                $tipos = wp_get_post_terms($post_id, 'marketplace_tipo');
+                if (!empty($tipos)) {
+                    echo esc_html($tipos[0]->name);
+                }
+                break;
+
+            case 'marketplace_precio':
+                $precio = get_post_meta($post_id, '_marketplace_precio', true);
+                echo $precio ? esc_html($precio) . ' €' : '—';
+                break;
+
+            case 'marketplace_estado':
+                $estado = get_post_meta($post_id, '_marketplace_estado', true);
+                if ($estado) {
+                    $estados_etiquetas = [
+                        'nuevo' => __('Nuevo', 'flavor-chat-ia'),
+                        'como_nuevo' => __('Como nuevo', 'flavor-chat-ia'),
+                        'buen_estado' => __('Buen estado', 'flavor-chat-ia'),
+                        'usado' => __('Usado', 'flavor-chat-ia'),
+                        'reparar' => __('A reparar', 'flavor-chat-ia'),
+                    ];
+                    echo esc_html($estados_etiquetas[$estado] ?? $estado);
+                }
+                break;
+
+            case 'marketplace_ubicacion':
+                $ubicacion = get_post_meta($post_id, '_marketplace_ubicacion', true);
+                echo $ubicacion ? esc_html($ubicacion) : '—';
+                break;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_actions() {
+        return [
+            'buscar_anuncios' => [
+                'description' => 'Buscar anuncios en el marketplace',
+                'params' => ['busqueda', 'tipo', 'categoria', 'precio_max', 'ubicacion', 'limite'],
+            ],
+            'ver_anuncio' => [
+                'description' => 'Ver detalles de un anuncio específico',
+                'params' => ['anuncio_id'],
+            ],
+            'publicar_anuncio' => [
+                'description' => 'Publicar un nuevo anuncio',
+                'params' => ['titulo', 'descripcion', 'tipo', 'categoria', 'precio', 'estado', 'ubicacion'],
+            ],
+            'mis_anuncios' => [
+                'description' => 'Ver mis anuncios publicados',
+                'params' => ['estado'],
+            ],
+            'contactar_vendedor' => [
+                'description' => 'Iniciar contacto con el vendedor de un anuncio',
+                'params' => ['anuncio_id', 'mensaje'],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        $metodo_accion = 'action_' . $action_name;
+
+        if (method_exists($this, $metodo_accion)) {
+            return $this->$metodo_accion($params);
+        }
+
+        return [
+            'success' => false,
+            'error' => "Acción no implementada: {$action_name}",
+        ];
+    }
+
+    /**
+     * Acción: Buscar anuncios
+     */
+    private function action_buscar_anuncios($params) {
+        $argumentos_query = [
+            'post_type' => 'marketplace_item',
+            'post_status' => 'publish',
+            'posts_per_page' => absint($params['limite'] ?? 10),
+        ];
+
+        // Búsqueda por texto
+        if (!empty($params['busqueda'])) {
+            $argumentos_query['s'] = sanitize_text_field($params['busqueda']);
+        }
+
+        // Filtrar por taxonomías
+        $tax_query = [];
+        if (!empty($params['tipo'])) {
+            $tax_query[] = [
+                'taxonomy' => 'marketplace_tipo',
+                'field' => 'slug',
+                'terms' => sanitize_text_field($params['tipo']),
+            ];
+        }
+        if (!empty($params['categoria'])) {
+            $tax_query[] = [
+                'taxonomy' => 'marketplace_categoria',
+                'field' => 'slug',
+                'terms' => sanitize_text_field($params['categoria']),
+            ];
+        }
+        if (!empty($tax_query)) {
+            $argumentos_query['tax_query'] = $tax_query;
+        }
+
+        // Filtrar por precio máximo
+        if (isset($params['precio_max'])) {
+            $argumentos_query['meta_query'] = [
+                [
+                    'key' => '_marketplace_precio',
+                    'value' => floatval($params['precio_max']),
+                    'type' => 'NUMERIC',
+                    'compare' => '<=',
+                ],
+            ];
+        }
+
+        $query = new WP_Query($argumentos_query);
+        $anuncios_formateados = [];
+
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                $post_id = get_the_ID();
+
+                $tipos = wp_get_post_terms($post_id, 'marketplace_tipo');
+                $categorias = wp_get_post_terms($post_id, 'marketplace_categoria');
+
+                $anuncios_formateados[] = [
+                    'id' => $post_id,
+                    'titulo' => get_the_title(),
+                    'descripcion' => wp_trim_words(get_the_content(), 30),
+                    'tipo' => !empty($tipos) ? $tipos[0]->name : '',
+                    'categoria' => !empty($categorias) ? $categorias[0]->name : '',
+                    'precio' => get_post_meta($post_id, '_marketplace_precio', true),
+                    'estado' => get_post_meta($post_id, '_marketplace_estado', true),
+                    'ubicacion' => get_post_meta($post_id, '_marketplace_ubicacion', true),
+                    'imagen' => get_the_post_thumbnail_url($post_id, 'medium'),
+                    'url' => get_permalink($post_id),
+                    'fecha_publicacion' => get_the_date('Y-m-d'),
+                    'autor' => get_the_author(),
+                ];
+            }
+            wp_reset_postdata();
+        }
+
+        return [
+            'success' => true,
+            'total' => count($anuncios_formateados),
+            'anuncios' => $anuncios_formateados,
+            'mensaje' => sprintf('Se encontraron %d anuncios.', count($anuncios_formateados)),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [
+            [
+                'name' => 'marketplace_buscar',
+                'description' => 'Busca anuncios en el marketplace (regalo, venta, cambio, alquiler)',
+                'input_schema' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'busqueda' => [
+                            'type' => 'string',
+                            'description' => 'Término de búsqueda',
+                        ],
+                        'tipo' => [
+                            'type' => 'string',
+                            'description' => 'Tipo de transacción',
+                            'enum' => ['regalo', 'venta', 'cambio', 'alquiler'],
+                        ],
+                        'categoria' => [
+                            'type' => 'string',
+                            'description' => 'Categoría del producto',
+                        ],
+                        'precio_max' => [
+                            'type' => 'number',
+                            'description' => 'Precio máximo',
+                        ],
+                        'ubicacion' => [
+                            'type' => 'string',
+                            'description' => 'Ubicación',
+                        ],
+                        'limite' => [
+                            'type' => 'integer',
+                            'description' => 'Número máximo de resultados',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_knowledge_base() {
+        return <<<KNOWLEDGE
+**Marketplace Comunitario**
+
+Plataforma donde los miembros pueden publicar anuncios de:
+- **Regalo**: Dar cosas gratis a otros miembros
+- **Venta**: Vender artículos a precio justo
+- **Cambio**: Intercambiar objetos con otros miembros
+- **Alquiler**: Alquilar temporalmente artículos
+
+Categorías disponibles: Electrónica, Muebles, Ropa, Libros, Deportes, Hogar, Juguetes, Herramientas, etc.
+
+Cada anuncio incluye: título, descripción, fotos, estado de conservación, ubicación y forma de contacto preferida.
+KNOWLEDGE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_faqs() {
+        return [
+            [
+                'pregunta' => '¿Cómo puedo publicar un anuncio?',
+                'respuesta' => 'Puedes publicar un anuncio desde tu panel de usuario. Incluye fotos, descripción detallada y el precio si es venta.',
+            ],
+            [
+                'pregunta' => '¿Es seguro el marketplace?',
+                'respuesta' => 'Recomendamos encontrarse en lugares públicos y verificar el estado de los artículos antes de realizar cualquier transacción.',
+            ],
+        ];
+    }
+
+    /**
+     * Shortcode para mostrar el listado
+     */
+    public function shortcode_listado($atributos) {
+        $atributos = shortcode_atts([
+            'tipo' => '',
+            'limite' => 12,
+        ], $atributos);
+
+        $resultado = $this->action_buscar_anuncios($atributos);
+
+        if (!$resultado['success']) {
+            return '<p>' . esc_html($resultado['error']) . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="marketplace-grid">
+            <?php foreach ($resultado['anuncios'] as $anuncio): ?>
+                <div class="marketplace-item">
+                    <?php if ($anuncio['imagen']): ?>
+                        <img src="<?php echo esc_url($anuncio['imagen']); ?>" alt="<?php echo esc_attr($anuncio['titulo']); ?>" />
+                    <?php endif; ?>
+                    <h3><?php echo esc_html($anuncio['titulo']); ?></h3>
+                    <p class="tipo"><?php echo esc_html($anuncio['tipo']); ?></p>
+                    <?php if ($anuncio['precio']): ?>
+                        <p class="precio"><?php echo esc_html($anuncio['precio']); ?> €</p>
+                    <?php endif; ?>
+                    <p><?php echo esc_html($anuncio['descripcion']); ?></p>
+                    <a href="<?php echo esc_url($anuncio['url']); ?>" class="button"><?php _e('Ver detalles', 'flavor-chat-ia'); ?></a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode para el formulario de crear anuncio
+     */
+    public function shortcode_formulario() {
+        if (!is_user_logged_in()) {
+            return '<p>' . __('Debes iniciar sesión para publicar un anuncio.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        // Aquí iría el formulario HTML
+        echo '<form id="marketplace-form" class="marketplace-form">';
+        echo '<!-- Formulario de publicación -->';
+        echo '</form>';
+        return ob_get_clean();
+    }
+
+    /**
+     * Handler AJAX para crear anuncio desde frontend
+     */
+    public function ajax_crear_anuncio() {
+        check_ajax_referer('marketplace_crear', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+        }
+
+        // Lógica para crear anuncio...
+        wp_send_json_success(['mensaje' => __('Anuncio creado correctamente.', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * Componentes web del módulo
+     */
+    public function get_web_components() {
+        return [
+            'hero' => [
+                'label' => __('Hero Marketplace', 'flavor-chat-ia'),
+                'description' => __('Sección hero con buscador de anuncios', 'flavor-chat-ia'),
+                'category' => 'hero',
+                'icon' => 'dashicons-store',
+                'fields' => [
+                    'titulo' => [
+                        'type' => 'text',
+                        'label' => __('Título', 'flavor-chat-ia'),
+                        'default' => __('Mercadillo Vecinal', 'flavor-chat-ia'),
+                    ],
+                    'subtitulo' => [
+                        'type' => 'textarea',
+                        'label' => __('Subtítulo', 'flavor-chat-ia'),
+                        'default' => __('Compra, vende e intercambia con tus vecinos', 'flavor-chat-ia'),
+                    ],
+                    'mostrar_buscador' => [
+                        'type' => 'toggle',
+                        'label' => __('Mostrar buscador', 'flavor-chat-ia'),
+                        'default' => true,
+                    ],
+                ],
+                'template' => 'marketplace/hero',
+            ],
+            'anuncios_grid' => [
+                'label' => __('Grid de Anuncios', 'flavor-chat-ia'),
+                'description' => __('Listado de anuncios en formato tarjeta', 'flavor-chat-ia'),
+                'category' => 'listings',
+                'icon' => 'dashicons-grid-view',
+                'fields' => [
+                    'titulo' => [
+                        'type' => 'text',
+                        'label' => __('Título', 'flavor-chat-ia'),
+                        'default' => __('Anuncios Recientes', 'flavor-chat-ia'),
+                    ],
+                    'tipo' => [
+                        'type' => 'select',
+                        'label' => __('Tipo de anuncio', 'flavor-chat-ia'),
+                        'options' => ['todos', 'venta', 'regalo', 'intercambio', 'alquiler'],
+                        'default' => 'todos',
+                    ],
+                    'columnas' => [
+                        'type' => 'select',
+                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'options' => [2, 3, 4],
+                        'default' => 4,
+                    ],
+                    'limite' => [
+                        'type' => 'number',
+                        'label' => __('Número máximo', 'flavor-chat-ia'),
+                        'default' => 12,
+                    ],
+                ],
+                'template' => 'marketplace/anuncios-grid',
+            ],
+            'categorias' => [
+                'label' => __('Categorías Marketplace', 'flavor-chat-ia'),
+                'description' => __('Navegación por categorías de productos', 'flavor-chat-ia'),
+                'category' => 'navigation',
+                'icon' => 'dashicons-category',
+                'fields' => [
+                    'titulo' => [
+                        'type' => 'text',
+                        'label' => __('Título', 'flavor-chat-ia'),
+                        'default' => __('Categorías', 'flavor-chat-ia'),
+                    ],
+                    'mostrar_contador' => [
+                        'type' => 'toggle',
+                        'label' => __('Mostrar contador', 'flavor-chat-ia'),
+                        'default' => true,
+                    ],
+                ],
+                'template' => 'marketplace/categorias',
+            ],
+            'cta_publicar' => [
+                'label' => __('CTA Publicar Anuncio', 'flavor-chat-ia'),
+                'description' => __('Llamada a acción para publicar', 'flavor-chat-ia'),
+                'category' => 'cta',
+                'icon' => 'dashicons-plus-alt',
+                'fields' => [
+                    'titulo' => [
+                        'type' => 'text',
+                        'label' => __('Título', 'flavor-chat-ia'),
+                        'default' => __('¿Tienes algo que ofrecer?', 'flavor-chat-ia'),
+                    ],
+                    'descripcion' => [
+                        'type' => 'textarea',
+                        'label' => __('Descripción', 'flavor-chat-ia'),
+                        'default' => __('Publica tu anuncio gratis y llega a toda la comunidad', 'flavor-chat-ia'),
+                    ],
+                    'boton_texto' => [
+                        'type' => 'text',
+                        'label' => __('Texto del botón', 'flavor-chat-ia'),
+                        'default' => __('Publicar Anuncio', 'flavor-chat-ia'),
+                    ],
+                ],
+                'template' => 'marketplace/cta-publicar',
+            ],
+        ];
+    }
+}

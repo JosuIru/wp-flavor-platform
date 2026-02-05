@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Fondo circular -->
+  <circle cx="100" cy="100" r="90" fill="#2E7D32"/>
+
+  <!-- Montana estilizada -->
+  <path d="M30 150 L100 50 L170 150 Z" fill="#4CAF50"/>
+  <path d="M60 150 L100 90 L140 150 Z" fill="#81C784"/>
+
+  <!-- Sol -->
+  <circle cx="150" cy="60" r="20" fill="#FFD54F"/>
+
+  <!-- Arbol pequeno -->
+  <path d="M45 150 L55 120 L65 150 Z" fill="#1B5E20"/>
+  <rect x="52" y="150" width="6" height="10" fill="#5D4037"/>
+</svg>

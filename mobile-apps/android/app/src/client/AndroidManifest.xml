@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <!-- Deep link para abrir la app cliente -->
+            <!-- PERSONALIZAR: Cambiar "chatiaapp" por tu propio scheme -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="chatiaapp" android:host="client"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+    <!-- Permite consultar si la app admin está instalada -->
+    <!-- PERSONALIZAR: Cambiar al package name de tu app admin -->
+    <queries>
+        <package android:name="com.basabere.chatia.admin"/>
+    </queries>
+</manifest>

@@ -1,0 +1,278 @@
+/**
+ * Flavor Animations CSS
+ *
+ * @package FlavorChatIA
+ */
+
+/* Fade Animations */
+@keyframes flavor-fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes flavor-fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flavor-fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flavor-fadeInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes flavor-fadeInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Zoom Animations */
+@keyframes flavor-zoomIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes flavor-zoomOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.5); }
+}
+
+/* Slide Animations */
+@keyframes flavor-slideInUp {
+    from { transform: translateY(100%); visibility: visible; }
+    to { transform: translateY(0); }
+}
+
+@keyframes flavor-slideInDown {
+    from { transform: translateY(-100%); visibility: visible; }
+    to { transform: translateY(0); }
+}
+
+@keyframes flavor-slideInLeft {
+    from { transform: translateX(-100%); visibility: visible; }
+    to { transform: translateX(0); }
+}
+
+@keyframes flavor-slideInRight {
+    from { transform: translateX(100%); visibility: visible; }
+    to { transform: translateX(0); }
+}
+
+/* Bounce Animations */
+@keyframes flavor-bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    60% { transform: translateY(-10px); }
+}
+
+@keyframes flavor-bounceIn {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Attention Animations */
+@keyframes flavor-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes flavor-shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+@keyframes flavor-swing {
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-10deg); }
+    60% { transform: rotate(5deg); }
+    80% { transform: rotate(-5deg); }
+    100% { transform: rotate(0); }
+}
+
+@keyframes flavor-heartbeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.3); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.3); }
+    70% { transform: scale(1); }
+}
+
+/* Rotate Animations */
+@keyframes flavor-rotateIn {
+    from { transform: rotate(-200deg); opacity: 0; }
+    to { transform: rotate(0); opacity: 1; }
+}
+
+@keyframes flavor-flip {
+    0% { transform: perspective(400px) rotateY(0); }
+    100% { transform: perspective(400px) rotateY(360deg); }
+}
+
+/* Special Animations */
+@keyframes flavor-rubberBand {
+    0% { transform: scaleX(1); }
+    30% { transform: scaleX(1.25) scaleY(0.75); }
+    40% { transform: scaleX(0.75) scaleY(1.25); }
+    50% { transform: scaleX(1.15) scaleY(0.85); }
+    65% { transform: scaleX(0.95) scaleY(1.05); }
+    75% { transform: scaleX(1.05) scaleY(0.95); }
+    100% { transform: scaleX(1) scaleY(1); }
+}
+
+@keyframes flavor-jello {
+    0%, 100% { transform: skewX(0) skewY(0); }
+    11.1% { transform: skewX(-12.5deg) skewY(-12.5deg); }
+    22.2% { transform: skewX(6.25deg) skewY(6.25deg); }
+    33.3% { transform: skewX(-3.125deg) skewY(-3.125deg); }
+    44.4% { transform: skewX(1.5625deg) skewY(1.5625deg); }
+    55.5% { transform: skewX(-0.78125deg) skewY(-0.78125deg); }
+    66.6% { transform: skewX(0.390625deg) skewY(0.390625deg); }
+    77.7% { transform: skewX(-0.1953125deg) skewY(-0.1953125deg); }
+}
+
+/* Animation Classes */
+.flavor-animate-fadeIn { animation: flavor-fadeIn var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-fadeInUp { animation: flavor-fadeInUp var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-fadeInDown { animation: flavor-fadeInDown var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-fadeInLeft { animation: flavor-fadeInLeft var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-fadeInRight { animation: flavor-fadeInRight var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-zoomIn { animation: flavor-zoomIn var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-zoomOut { animation: flavor-zoomOut var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-slideInUp { animation: flavor-slideInUp var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-slideInDown { animation: flavor-slideInDown var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-slideInLeft { animation: flavor-slideInLeft var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-slideInRight { animation: flavor-slideInRight var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-bounce { animation: flavor-bounce var(--flavor-animation-duration, 1s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-bounceIn { animation: flavor-bounceIn var(--flavor-animation-duration, 0.75s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-pulse { animation: flavor-pulse var(--flavor-animation-duration, 1s) var(--flavor-animation-timing, ease) infinite; }
+.flavor-animate-shake { animation: flavor-shake var(--flavor-animation-duration, 0.82s) var(--flavor-animation-timing, cubic-bezier(.36,.07,.19,.97)) both; }
+.flavor-animate-swing { animation: flavor-swing var(--flavor-animation-duration, 1s) var(--flavor-animation-timing, ease-in-out) both; transform-origin: top center; }
+.flavor-animate-heartbeat { animation: flavor-heartbeat var(--flavor-animation-duration, 1.5s) var(--flavor-animation-timing, ease-in-out) infinite; }
+.flavor-animate-rotateIn { animation: flavor-rotateIn var(--flavor-animation-duration, 0.6s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-flip { animation: flavor-flip var(--flavor-animation-duration, 1s) var(--flavor-animation-timing, ease-in-out) both; }
+.flavor-animate-rubberBand { animation: flavor-rubberBand var(--flavor-animation-duration, 1s) var(--flavor-animation-timing, ease) both; }
+.flavor-animate-jello { animation: flavor-jello var(--flavor-animation-duration, 1s) var(--flavor-animation-timing, ease) both; transform-origin: center; }
+
+/* Duration Utilities */
+.flavor-duration-fast { --flavor-animation-duration: 0.3s; }
+.flavor-duration-normal { --flavor-animation-duration: 0.6s; }
+.flavor-duration-slow { --flavor-animation-duration: 1s; }
+.flavor-duration-slower { --flavor-animation-duration: 1.5s; }
+
+/* Delay Utilities */
+.flavor-delay-100 { animation-delay: 0.1s; }
+.flavor-delay-200 { animation-delay: 0.2s; }
+.flavor-delay-300 { animation-delay: 0.3s; }
+.flavor-delay-400 { animation-delay: 0.4s; }
+.flavor-delay-500 { animation-delay: 0.5s; }
+.flavor-delay-600 { animation-delay: 0.6s; }
+.flavor-delay-700 { animation-delay: 0.7s; }
+.flavor-delay-800 { animation-delay: 0.8s; }
+.flavor-delay-900 { animation-delay: 0.9s; }
+.flavor-delay-1000 { animation-delay: 1s; }
+
+/* Timing Functions */
+.flavor-ease-linear { --flavor-animation-timing: linear; }
+.flavor-ease-in { --flavor-animation-timing: ease-in; }
+.flavor-ease-out { --flavor-animation-timing: ease-out; }
+.flavor-ease-in-out { --flavor-animation-timing: ease-in-out; }
+.flavor-ease-bounce { --flavor-animation-timing: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+.flavor-ease-elastic { --flavor-animation-timing: cubic-bezier(0.5, 1.5, 0.5, 1.5); }
+
+/* Iteration */
+.flavor-repeat-1 { animation-iteration-count: 1; }
+.flavor-repeat-2 { animation-iteration-count: 2; }
+.flavor-repeat-3 { animation-iteration-count: 3; }
+.flavor-repeat-infinite { animation-iteration-count: infinite; }
+
+/* Initial State for Scroll Animations */
+[data-flavor-animation] {
+    opacity: 0;
+}
+
+[data-flavor-animation].flavor-animated {
+    opacity: 1;
+}
+
+/* Hover Animations */
+.flavor-hover-grow:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.flavor-hover-shrink:hover {
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.flavor-hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.flavor-hover-glow:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Transitions */
+.flavor-transition-all {
+    transition: all 0.3s ease;
+}
+
+.flavor-transition-colors {
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.flavor-transition-transform {
+    transition: transform 0.3s ease;
+}
+
+.flavor-transition-opacity {
+    transition: opacity 0.3s ease;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    [data-flavor-animation] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* Stagger Animation for Lists */
+.flavor-stagger > * {
+    opacity: 0;
+}
+
+.flavor-stagger.flavor-animated > *:nth-child(1) { animation-delay: 0.1s; }
+.flavor-stagger.flavor-animated > *:nth-child(2) { animation-delay: 0.2s; }
+.flavor-stagger.flavor-animated > *:nth-child(3) { animation-delay: 0.3s; }
+.flavor-stagger.flavor-animated > *:nth-child(4) { animation-delay: 0.4s; }
+.flavor-stagger.flavor-animated > *:nth-child(5) { animation-delay: 0.5s; }
+.flavor-stagger.flavor-animated > *:nth-child(6) { animation-delay: 0.6s; }
+.flavor-stagger.flavor-animated > *:nth-child(7) { animation-delay: 0.7s; }
+.flavor-stagger.flavor-animated > *:nth-child(8) { animation-delay: 0.8s; }
+.flavor-stagger.flavor-animated > *:nth-child(9) { animation-delay: 0.9s; }
+.flavor-stagger.flavor-animated > *:nth-child(10) { animation-delay: 1s; }
+
+.flavor-stagger.flavor-animated > * {
+    animation: flavor-fadeInUp 0.6s ease both;
+}
