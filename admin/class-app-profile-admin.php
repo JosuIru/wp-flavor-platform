@@ -1073,6 +1073,7 @@ class Flavor_App_Profile_Admin {
      * AJAX: Ejecuta un paso de instalacion
      */
     public function ajax_ejecutar_paso_instalacion() {
+        error_log('[AJAX] Inicio ajax_ejecutar_paso_instalacion');
         check_ajax_referer('flavor_activar_plantilla', '_wpnonce');
 
         if (!current_user_can('manage_options')) {
@@ -1084,6 +1085,8 @@ class Flavor_App_Profile_Admin {
         $plantilla_id = sanitize_text_field($_POST['plantilla_id'] ?? '');
         $modulos_opcionales = json_decode(stripslashes($_POST['modulos_opcionales'] ?? '[]'), true);
         $cargar_demo = isset($_POST['cargar_demo']) && $_POST['cargar_demo'] === '1';
+
+        error_log('[AJAX] Paso: ' . $paso . ', Plantilla: ' . $plantilla_id);
 
         if (empty($paso) || empty($plantilla_id)) {
             wp_send_json_error(['mensaje' => __('Parametros invalidos', 'flavor-chat-ia')]);
@@ -1098,9 +1101,12 @@ class Flavor_App_Profile_Admin {
         // Ejecutar el paso correspondiente
         $resultado = $this->ejecutar_paso_instalacion($paso, $plantilla_id, $opciones);
 
+        error_log('[AJAX] Resultado del paso ' . $paso . ': ' . ($resultado['success'] ? 'SUCCESS' : 'ERROR'));
+
         if ($resultado['success']) {
             wp_send_json_success($resultado);
         } else {
+            error_log('[AJAX] Error: ' . json_encode($resultado));
             wp_send_json_error($resultado);
         }
     }

@@ -255,6 +255,9 @@ class Flavor_App_Profiles {
 
         update_option('flavor_chat_ia_settings', $configuracion);
 
+        // Limpiar cache de opciones para asegurar que se lee el valor actualizado
+        wp_cache_delete('alloptions', 'options');
+
         return true;
     }
 
