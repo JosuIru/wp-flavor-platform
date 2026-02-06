@@ -1194,6 +1194,8 @@ class Flavor_App_Profile_Admin {
                     _n('%d modulo activado', '%d modulos activados', $total_modulos, 'flavor-chat-ia'),
                     $total_modulos
                 ),
+                'debug_app_profile_set' => $plantilla_id, // MARCADOR PARA VERIFICAR CODIGO NUEVO
+                'debug_update_result' => $resultado_update,
             ];
         } catch (Exception $excepcion) {
             return [
