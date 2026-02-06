@@ -1167,10 +1167,18 @@ class Flavor_App_Profile_Admin {
             $configuracion = get_option('flavor_chat_ia_settings', []);
             $configuracion['active_modules'] = array_unique($modulos_a_activar);
             $configuracion['app_profile'] = $plantilla_id;
-            update_option('flavor_chat_ia_settings', $configuracion);
+
+            error_log('[Instalación] Guardando app_profile: ' . $plantilla_id);
+            $resultado_update = update_option('flavor_chat_ia_settings', $configuracion);
+            error_log('[Instalación] update_option resultado: ' . ($resultado_update ? 'true' : 'false'));
 
             // Limpiar cache de opciones para asegurar que se lee el valor actualizado
-            wp_cache_delete('flavor_chat_ia_settings', 'options');
+            // WordPress cachea todas las opciones en 'alloptions', no individualmente
+            wp_cache_delete('alloptions', 'options');
+
+            // Verificar que se guardó correctamente
+            $verificacion = get_option('flavor_chat_ia_settings', []);
+            error_log('[Instalación] Verificación app_profile guardado: ' . ($verificacion['app_profile'] ?? 'NO EXISTE'));
 
             $total_modulos = count($modulos_a_activar);
 
