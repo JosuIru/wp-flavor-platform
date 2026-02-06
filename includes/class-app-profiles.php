@@ -160,6 +160,14 @@ class Flavor_App_Profiles {
                 'modulos_opcionales' => ['huertos_urbanos', 'bicicletas_compartidas', 'incidencias', 'espacios_comunes', 'eventos', 'chat_grupos', 'carpooling'],
                 'color' => '#16a34a',
             ],
+            'reciclaje_comunitario' => [
+                'nombre' => __('Reciclaje Comunitario', 'flavor-chat-ia'),
+                'descripcion' => __('Sistema completo de reciclaje con puntos limpios, gamificación, recompensas y economía circular.', 'flavor-chat-ia'),
+                'icono' => 'dashicons-admin-site',
+                'modulos_requeridos' => ['reciclaje'],
+                'modulos_opcionales' => ['socios', 'eventos', 'compostaje', 'huertos_urbanos', 'marketplace', 'chat_grupos', 'talleres', 'transparencia'],
+                'color' => '#10b981',
+            ],
             'club_deportivo' => [
                 'nombre' => __('Club Deportivo', 'flavor-chat-ia'),
                 'descripcion' => __('Gestión de un club deportivo con socios, eventos, cuotas y comunicación.', 'flavor-chat-ia'),
