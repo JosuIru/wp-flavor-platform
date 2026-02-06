@@ -386,11 +386,10 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             true
         );
 
-        $settings = $this->get_settings();
         wp_localize_script('flavor-avisos-municipales', 'flavorAvisosConfig', [
             'ajaxUrl'  => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('flavor_avisos_nonce'),
-            'vapidKey' => $settings['vapid_public_key'] ?? '',
+            'vapidKey' => '',
             'i18n'     => [
                 'cargando'        => __('Cargando...', 'flavor-chat-ia'),
                 'error'           => __('Error al cargar', 'flavor-chat-ia'),
