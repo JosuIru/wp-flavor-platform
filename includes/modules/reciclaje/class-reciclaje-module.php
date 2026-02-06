@@ -647,7 +647,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
      * Enqueue frontend assets
      */
     public function enqueue_frontend_assets() {
-        if (!$this->is_active()) {
+        if (!$this->can_activate()) {
             return;
         }
 
