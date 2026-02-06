@@ -207,7 +207,7 @@ $secciones_landing = $landing['secciones'] ?? [];
             </button>
             <button type="button"
                     class="button button-primary button-hero"
-                    @click="activarPlantilla('<?php echo esc_js($plantilla_id); ?>')"
+                    @click="activarPlantilla(plantillaSeleccionadaId)"
                     :disabled="activandoPlantilla">
                 <span x-show="!activandoPlantilla">
                     <span class="dashicons dashicons-yes-alt"></span>
