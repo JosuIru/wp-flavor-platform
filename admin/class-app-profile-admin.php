@@ -195,7 +195,7 @@ class Flavor_App_Profile_Admin {
         // Mostrar mensajes de resultado
         $mensaje = isset($_GET['mensaje']) ? sanitize_text_field($_GET['mensaje']) : '';
         ?>
-        <div class="wrap flavor-composer-wrapper" x-data="flavorComposer">
+        <div class="wrap flavor-composer-wrapper" x-data="flavorComposerWithOrchestrator()">
             <h1><?php _e('Compositor & Modulos', 'flavor-chat-ia'); ?></h1>
             <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los modulos de tu aplicacion.', 'flavor-chat-ia'); ?></p>
 

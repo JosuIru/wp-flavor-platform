@@ -12,6 +12,373 @@
  * Inicializa el componente de orquestador cuando Alpine esta listo
  */
 document.addEventListener('alpine:init', () => {
+    // Componente combinado que incluye tanto Composer como Orchestrator
+    Alpine.data('flavorComposerWithOrchestrator', () => {
+        // Obtener datos de flavorComposer si existe
+        const composerData = window.Alpine && window.Alpine.raw ?
+            (Alpine.store('flavorComposer') || {}) : {};
+
+        // Datos del composer (desde app-composer.js)
+        const composerDefaults = {
+            pasoActual: 'plantillas',
+            perfilSeleccionado: window.flavorComposerData?.perfilActivo || 'personalizado',
+            modulosActivos: window.flavorComposerData?.modulosActivos || [],
+
+            irAPaso(paso) {
+                this.pasoActual = paso;
+            },
+
+            esPerfilActivo(perfilId) {
+                return this.perfilSeleccionado === perfilId;
+            },
+
+            cambiarPerfil(perfilId) {
+                this.perfilSeleccionado = perfilId;
+                window.location.href = window.flavorComposerData?.cambiarPerfilUrl + '&perfil=' + perfilId;
+            },
+
+            toggleModulo(moduloId) {
+                const index = this.modulosActivos.indexOf(moduloId);
+                if (index > -1) {
+                    this.modulosActivos.splice(index, 1);
+                } else {
+                    this.modulosActivos.push(moduloId);
+                }
+            },
+
+            filtrarCategoria(categoria) {
+                // Implementar filtrado si es necesario
+            }
+        };
+
+        // Datos del orchestrator
+        const orchestratorData = {
+            // Estado del modal de preview
+            mostrarPreviewModal: false,
+            plantillaSeleccionadaId: null,
+            plantillaSeleccionadaData: null,
+
+            // Estado de modulos seleccionados para instalar
+            modulosSeleccionados: [],
+
+            // Opcion de cargar datos demo
+            cargarDatosDemo: false,
+
+            // Estado de activacion
+            activandoPlantilla: false,
+
+            // Estado del progreso
+            mostrarProgreso: false,
+            pasosInstalacion: [],
+            pasoActualIndice: 0,
+            instalacionCompletada: false,
+            hayError: false,
+            mensajeError: '',
+
+            // Datos inyectados desde PHP
+            datosOrquestador: window.flavorOrchestratorData || {},
+        };
+
+        // Combinar ambos objetos y añadir todos los métodos del orchestrator
+        return {
+            ...composerDefaults,
+            ...orchestratorData,
+
+            // Sobreescribir init para inicializar ambos
+            init() {
+                this.inicializarPasosInstalacion();
+            },
+
+            /**
+             * Inicializa la lista de pasos de instalacion
+             */
+            inicializarPasosInstalacion() {
+                this.pasosInstalacion = [
+                    {
+                        id: 'modulos',
+                        nombre: this.datosOrquestador.i18n?.pasoModulos || 'Instalando modulos',
+                        estado: 'pendiente',
+                        descripcion: ''
+                    },
+                    {
+                        id: 'tablas',
+                        nombre: this.datosOrquestador.i18n?.pasoTablas || 'Creando tablas de base de datos',
+                        estado: 'pendiente',
+                        descripcion: ''
+                    },
+                    {
+                        id: 'paginas',
+                        nombre: this.datosOrquestador.i18n?.pasoPaginas || 'Creando paginas',
+                        estado: 'pendiente',
+                        descripcion: ''
+                    },
+                    {
+                        id: 'landing',
+                        nombre: this.datosOrquestador.i18n?.pasoLanding || 'Configurando landing page',
+                        estado: 'pendiente',
+                        descripcion: ''
+                    },
+                    {
+                        id: 'configuracion',
+                        nombre: this.datosOrquestador.i18n?.pasoConfiguracion || 'Aplicando configuracion',
+                        estado: 'pendiente',
+                        descripcion: ''
+                    },
+                    {
+                        id: 'demo',
+                        nombre: this.datosOrquestador.i18n?.pasoDemo || 'Cargando datos de demostracion',
+                        estado: 'pendiente',
+                        descripcion: ''
+                    }
+                ];
+            },
+
+            /**
+             * Calcula el porcentaje de progreso
+             */
+            get porcentajeProgreso() {
+                if (this.hayError) {
+                    const completados = this.pasosInstalacion.filter(paso => paso.estado === 'completado').length;
+                    return Math.round((completados / this.pasosInstalacion.length) * 100);
+                }
+
+                const totalPasos = this.pasosInstalacion.length;
+                const completados = this.pasosInstalacion.filter(paso =>
+                    paso.estado === 'completado' || paso.estado === 'omitido'
+                ).length;
+
+                return Math.round((completados / totalPasos) * 100);
+            },
+
+            /**
+             * Obtiene el titulo del progreso segun el estado
+             */
+            get tituloProgreso() {
+                if (this.hayError) {
+                    return this.datosOrquestador.i18n?.tituloError || 'Error en la instalacion';
+                }
+                if (this.instalacionCompletada) {
+                    return this.datosOrquestador.i18n?.tituloCompletado || 'Instalacion completada';
+                }
+                return this.datosOrquestador.i18n?.tituloInstalando || 'Instalando plantilla...';
+            },
+
+            /**
+             * Abre el modal de preview para una plantilla
+             */
+            abrirPreviewPlantilla(plantillaId) {
+                this.plantillaSeleccionadaId = plantillaId;
+                this.modulosSeleccionados = [];
+                this.cargarDatosDemo = false;
+                this.cargarDatosPlantilla(plantillaId);
+            },
+
+            /**
+             * Carga los datos de la plantilla via AJAX
+             */
+            async cargarDatosPlantilla(plantillaId) {
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'flavor_template_preview');
+                    formData.append('plantilla_id', plantillaId);
+                    formData.append('_wpnonce', this.datosOrquestador.nonces?.preview || '');
+
+                    const respuesta = await fetch(this.datosOrquestador.ajaxUrl || ajaxurl, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const datos = await respuesta.json();
+
+                    if (datos.success) {
+                        this.plantillaSeleccionadaData = datos.data;
+                        this.mostrarPreviewModal = true;
+                    } else {
+                        this.mostrarNotificacion(
+                            datos.data?.mensaje || 'Error al cargar la plantilla',
+                            'error'
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error cargando plantilla:', error);
+                    this.mostrarNotificacion(
+                        this.datosOrquestador.i18n?.errorCarga || 'Error de conexion al cargar la plantilla',
+                        'error'
+                    );
+                }
+            },
+
+            /**
+             * Cierra el modal de preview
+             */
+            cerrarPreviewModal() {
+                this.mostrarPreviewModal = false;
+                this.plantillaSeleccionadaId = null;
+                this.plantillaSeleccionadaData = null;
+            },
+
+            /**
+             * Activa la plantilla seleccionada
+             */
+            async activarPlantilla(plantillaId) {
+                if (this.activandoPlantilla) return;
+
+                this.activandoPlantilla = true;
+                this.inicializarPasosInstalacion();
+                this.instalacionCompletada = false;
+                this.hayError = false;
+                this.mensajeError = '';
+                this.pasoActualIndice = 0;
+
+                this.mostrarPreviewModal = false;
+                this.mostrarProgreso = true;
+
+                const opciones = {
+                    plantilla_id: plantillaId,
+                    modulos_opcionales: this.modulosSeleccionados,
+                    cargar_demo: this.cargarDatosDemo,
+                    _wpnonce: this.datosOrquestador.nonces?.activar || ''
+                };
+
+                await this.ejecutarInstalacionPorPasos(opciones);
+            },
+
+            /**
+             * Ejecuta la instalacion paso a paso
+             */
+            async ejecutarInstalacionPorPasos(opciones) {
+                const pasosIds = ['modulos', 'tablas', 'paginas', 'landing', 'configuracion'];
+
+                if (opciones.cargar_demo) {
+                    pasosIds.push('demo');
+                } else {
+                    this.actualizarProgreso('demo', 'omitido');
+                }
+
+                for (let indice = 0; indice < pasosIds.length; indice++) {
+                    const pasoId = pasosIds[indice];
+                    this.pasoActualIndice = indice;
+
+                    this.actualizarProgreso(pasoId, 'en_proceso');
+
+                    try {
+                        const resultado = await this.ejecutarPasoInstalacion(pasoId, opciones);
+
+                        if (resultado.success) {
+                            this.actualizarProgreso(pasoId, 'completado', resultado.data?.descripcion || '');
+                            await this.esperar(300);
+                        } else {
+                            this.actualizarProgreso(pasoId, 'error', resultado.data?.mensaje || '');
+                            this.hayError = true;
+                            this.mensajeError = resultado.data?.mensaje || 'Error desconocido';
+                            break;
+                        }
+                    } catch (error) {
+                        console.error(`Error en paso ${pasoId}:`, error);
+                        this.actualizarProgreso(pasoId, 'error');
+                        this.hayError = true;
+                        this.mensajeError = this.datosOrquestador.i18n?.errorGeneral || 'Error de conexion durante la instalacion';
+                        break;
+                    }
+                }
+
+                this.activandoPlantilla = false;
+
+                if (!this.hayError) {
+                    this.instalacionCompletada = true;
+                }
+            },
+
+            /**
+             * Ejecuta un paso de instalacion individual via AJAX
+             */
+            async ejecutarPasoInstalacion(pasoId, opciones) {
+                const formData = new FormData();
+                formData.append('action', 'flavor_template_install_step');
+                formData.append('paso', pasoId);
+                formData.append('plantilla_id', opciones.plantilla_id);
+                formData.append('modulos_opcionales', JSON.stringify(opciones.modulos_opcionales));
+                formData.append('cargar_demo', opciones.cargar_demo ? '1' : '0');
+                formData.append('_wpnonce', opciones._wpnonce);
+
+                const respuesta = await fetch(this.datosOrquestador.ajaxUrl || ajaxurl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                return await respuesta.json();
+            },
+
+            /**
+             * Actualiza el estado de un paso de progreso
+             */
+            actualizarProgreso(pasoId, estado, descripcion = '') {
+                const pasoIndice = this.pasosInstalacion.findIndex(paso => paso.id === pasoId);
+
+                if (pasoIndice !== -1) {
+                    this.pasosInstalacion[pasoIndice].estado = estado;
+                    if (descripcion) {
+                        this.pasosInstalacion[pasoIndice].descripcion = descripcion;
+                    }
+                }
+            },
+
+            /**
+             * Cierra el modal de progreso
+             */
+            cerrarProgreso() {
+                this.mostrarProgreso = false;
+
+                if (this.instalacionCompletada && !this.hayError) {
+                    window.location.reload();
+                }
+            },
+
+            /**
+             * Reintenta la instalacion desde el principio
+             */
+            reiniciarInstalacion() {
+                this.mostrarProgreso = false;
+                this.hayError = false;
+                this.mensajeError = '';
+
+                if (this.plantillaSeleccionadaId) {
+                    this.abrirPreviewPlantilla(this.plantillaSeleccionadaId);
+                }
+            },
+
+            /**
+             * Muestra una notificacion al usuario
+             */
+            mostrarNotificacion(mensaje, tipo = 'info') {
+                if (typeof wp !== 'undefined' && wp.data && wp.data.dispatch) {
+                    const tiposWP = {
+                        'success': 'success',
+                        'error': 'error',
+                        'warning': 'warning',
+                        'info': 'info'
+                    };
+
+                    wp.data.dispatch('core/notices').createNotice(
+                        tiposWP[tipo] || 'info',
+                        mensaje,
+                        { isDismissible: true }
+                    );
+                } else {
+                    alert(mensaje);
+                }
+            },
+
+            /**
+             * Utilidad para esperar un tiempo
+             */
+            esperar(milisegundos) {
+                return new Promise(resolve => setTimeout(resolve, milisegundos));
+            }
+        };
+    });
+
+    // Mantener el componente original por compatibilidad
     Alpine.data('flavorTemplateOrchestrator', () => ({
         // Estado del modal de preview
         mostrarPreviewModal: false,
