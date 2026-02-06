@@ -1171,6 +1171,7 @@ class Flavor_App_Profile_Admin {
 
             // Actualizar configuracion
             $configuracion = get_option('flavor_chat_ia_settings', []);
+            $valor_previo = $configuracion['app_profile'] ?? 'NO_EXISTE';
             $configuracion['active_modules'] = array_unique($modulos_a_activar);
             $configuracion['app_profile'] = $plantilla_id;
 
@@ -1208,8 +1209,10 @@ class Flavor_App_Profile_Admin {
                     _n('%d modulo activado', '%d modulos activados', $total_modulos, 'flavor-chat-ia'),
                     $total_modulos
                 ),
-                'debug_app_profile_set' => $plantilla_id, // MARCADOR PARA VERIFICAR CODIGO NUEVO
+                'debug_app_profile_set' => $plantilla_id,
                 'debug_update_result' => $resultado_update,
+                'debug_valor_previo' => $valor_previo,
+                'debug_valor_nuevo' => $plantilla_id,
             ];
         } catch (Exception $excepcion) {
             return [
@@ -1350,9 +1353,14 @@ class Flavor_App_Profile_Admin {
             update_option('flavor_plantilla_activa', $plantilla_id);
             update_option('flavor_plantilla_activada_en', current_time('mysql'));
 
+            // Verificar app_profile ANTES de terminar este paso
+            $config_check = get_option('flavor_chat_ia_settings', []);
+            $app_profile_actual = $config_check['app_profile'] ?? 'NO_EXISTE';
+
             return [
                 'success' => true,
                 'descripcion' => __('Configuracion aplicada', 'flavor-chat-ia'),
+                'debug_app_profile_final' => $app_profile_actual,
             ];
         } catch (Exception $excepcion) {
             return [
