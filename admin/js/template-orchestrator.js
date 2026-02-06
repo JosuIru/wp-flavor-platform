@@ -379,7 +379,7 @@ document.addEventListener('alpine:init', () => {
  */
 window.abrirPreviewPlantilla = function(plantillaId) {
     // Buscar la instancia de Alpine en el wrapper
-    const wrapper = document.querySelector('[x-data*="flavorTemplateOrchestrator"]');
+    const wrapper = document.querySelector('.flavor-composer-wrapper');
 
     if (wrapper && wrapper.__x) {
         wrapper.__x.$data.abrirPreviewPlantilla(plantillaId);
@@ -399,7 +399,7 @@ window.abrirPreviewPlantilla = function(plantillaId) {
  * @param {Object} opciones - Opciones de activacion
  */
 window.activarPlantilla = function(plantillaId, opciones = {}) {
-    const wrapper = document.querySelector('[x-data*="flavorTemplateOrchestrator"]');
+    const wrapper = document.querySelector('.flavor-composer-wrapper');
 
     if (wrapper) {
         const componente = Alpine.$data(wrapper);
@@ -416,7 +416,7 @@ window.activarPlantilla = function(plantillaId, opciones = {}) {
  * @param {string} estado - Estado del paso
  */
 window.actualizarProgresoPlantilla = function(paso, estado) {
-    const wrapper = document.querySelector('[x-data*="flavorTemplateOrchestrator"]');
+    const wrapper = document.querySelector('.flavor-composer-wrapper');
 
     if (wrapper) {
         const componente = Alpine.$data(wrapper);

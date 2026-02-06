@@ -195,7 +195,7 @@ class Flavor_App_Profile_Admin {
         // Mostrar mensajes de resultado
         $mensaje = isset($_GET['mensaje']) ? sanitize_text_field($_GET['mensaje']) : '';
         ?>
-        <div class="wrap flavor-composer-wrapper" x-data="{ ...flavorComposer(), ...flavorTemplateOrchestrator() }">
+        <div class="wrap flavor-composer-wrapper" x-data="flavorComposer">
             <h1><?php _e('Compositor & Modulos', 'flavor-chat-ia'); ?></h1>
             <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los modulos de tu aplicacion.', 'flavor-chat-ia'); ?></p>
 
@@ -225,7 +225,7 @@ class Flavor_App_Profile_Admin {
                     <?php foreach ($perfiles as $id_perfil => $datos_perfil): ?>
                         <div class="flavor-template-card"
                              :class="{ 'seleccionado': esPerfilActivo('<?php echo esc_js($id_perfil); ?>') }"
-                             @click="<?php echo ($id_perfil !== 'personalizado') ? "abrirPreviewPlantilla('" . esc_js($id_perfil) . "')" : "cambiarPerfil('" . esc_js($id_perfil) . "')"; ?>">
+                             @click="<?php echo ($id_perfil !== 'personalizado') ? "window.abrirPreviewPlantilla('" . esc_js($id_perfil) . "')" : "cambiarPerfil('" . esc_js($id_perfil) . "')"; ?>">
 
                             <div class="flavor-template-header">
                                 <div class="flavor-template-icon" style="background: <?php echo esc_attr($datos_perfil['color']); ?>15;">
