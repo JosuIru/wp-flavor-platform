@@ -1437,11 +1437,14 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     public function enqueue_scripts() {
         if (is_admin()) return;
 
+        $base_url = plugins_url('assets/', __FILE__);
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
         wp_enqueue_script(
             'flavor-ads-tracking',
-            FLAVOR_CHAT_URL . 'includes/modules/advertising/assets/js/tracking.js',
+            $base_url . 'js/tracking.js',
             ['jquery'],
-            FLAVOR_CHAT_VERSION,
+            $version,
             true
         );
 
