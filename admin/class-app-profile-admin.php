@@ -523,6 +523,13 @@ class Flavor_App_Profile_Admin {
     }
 
     /**
+     * Renderiza el modal de preview de plantilla
+     */
+    private function renderizar_modal_preview_plantilla() {
+        include FLAVOR_CHAT_IA_PATH . 'admin/views/template-preview-modal.php';
+    }
+
+    /**
      * Renderiza la vista de progreso de instalacion
      */
     private function renderizar_vista_progreso() {
