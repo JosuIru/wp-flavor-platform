@@ -1169,18 +1169,26 @@ class Flavor_App_Profile_Admin {
                 $modulos_a_activar = array_merge($modulos_a_activar, $opciones['modulos_opcionales']);
             }
 
-            // Actualizar modulos activos
+            // PASO 1: Actualizar modulos activos
             $configuracion = get_option('flavor_chat_ia_settings', []);
+            $valor_previo = $configuracion['app_profile'] ?? 'NO_EXISTE';
             $modulos_actuales = $configuracion['active_modules'] ?? [];
+
+            // Agregar los módulos de la plantilla a los existentes (no reemplazar)
             $modulos_combinados = array_unique(array_merge($modulos_actuales, $modulos_a_activar));
             $configuracion['active_modules'] = $modulos_combinados;
             update_option('flavor_chat_ia_settings', $configuracion);
+            wp_cache_delete('alloptions', 'options');
 
-            // Cargar el helper para guardar el perfil directamente en BD
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-profile-saver.php';
+            // PASO 2: Actualizar app_profile por separado (para evitar race conditions)
+            $configuracion2 = get_option('flavor_chat_ia_settings', []);
+            $configuracion2['app_profile'] = $plantilla_id;
+            $resultado_update = update_option('flavor_chat_ia_settings', $configuracion2);
+            wp_cache_delete('alloptions', 'options');
 
-            // Guardar app_profile directamente en BD (bypass WordPress cache/hooks)
-            $resultado_perfil = Flavor_Profile_Saver::guardar_perfil($plantilla_id);
+            // Verificación
+            $verificacion = get_option('flavor_chat_ia_settings', []);
+            $app_profile_guardado = $verificacion['app_profile'] ?? 'NO_EXISTE';
 
             $total_modulos = count($modulos_a_activar);
 
@@ -1190,11 +1198,10 @@ class Flavor_App_Profile_Admin {
                     _n('%d modulo activado', '%d modulos activados', $total_modulos, 'flavor-chat-ia'),
                     $total_modulos
                 ),
-                'debug_metodo' => 'WPDB_DIRECTO_V2',
-                'debug_valor_previo' => $resultado_perfil['valor_previo'],
-                'debug_wpdb_result' => $resultado_perfil['wpdb_result'],
-                'debug_valor_guardado' => $resultado_perfil['valor_guardado'],
-                'debug_exito' => $resultado_perfil['exito'],
+                'debug_app_profile_set' => $plantilla_id,
+                'debug_update_result' => $resultado_update,
+                'debug_valor_previo' => $valor_previo,
+                'debug_valor_guardado' => $app_profile_guardado,
             ];
         } catch (Exception $excepcion) {
             return [
@@ -1625,4 +1632,3 @@ class Flavor_App_Profile_Admin {
         return $landings_por_plantilla[$plantilla_id] ?? [];
     }
 }
-
