@@ -1178,13 +1178,27 @@ class Flavor_App_Profile_Admin {
             $resultado_update = update_option('flavor_chat_ia_settings', $configuracion);
             error_log('[Instalación] update_option resultado: ' . ($resultado_update ? 'true' : 'false'));
 
-            // Limpiar cache de opciones para asegurar que se lee el valor actualizado
-            // WordPress cachea todas las opciones en 'alloptions', no individualmente
+            // IMPORTANTE: Limpiar cache y volver a leer para detectar si algo lo sobrescribió
             wp_cache_delete('alloptions', 'options');
 
-            // Verificar que se guardó correctamente
+            // Esperar un momento para que otros hooks terminen
+            usleep(100000); // 100ms
+
+            // Re-leer y verificar
             $verificacion = get_option('flavor_chat_ia_settings', []);
-            error_log('[Instalación] Verificación app_profile guardado: ' . ($verificacion['app_profile'] ?? 'NO EXISTE'));
+            error_log('[Instalación] Primera verificación app_profile: ' . ($verificacion['app_profile'] ?? 'NO EXISTE'));
+
+            // Si se perdió, volver a guardarlo
+            if (($verificacion['app_profile'] ?? '') !== $plantilla_id) {
+                error_log('[Instalación] ¡app_profile fue sobrescrito! Guardando de nuevo...');
+                $verificacion['app_profile'] = $plantilla_id;
+                update_option('flavor_chat_ia_settings', $verificacion);
+                wp_cache_delete('alloptions', 'options');
+
+                // Verificación final
+                $verificacion_final = get_option('flavor_chat_ia_settings', []);
+                error_log('[Instalación] Verificación FINAL app_profile: ' . ($verificacion_final['app_profile'] ?? 'NO EXISTE'));
+            }
 
             $total_modulos = count($modulos_a_activar);
 
