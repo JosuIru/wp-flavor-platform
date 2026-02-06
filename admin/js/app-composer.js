@@ -26,6 +26,14 @@ document.addEventListener('alpine:init', () => {
         cargando: false,
 
         /**
+         * Inicialización
+         */
+        init() {
+            console.log('[App Composer] Perfil activo desde PHP:', flavorComposerData.perfilActivo);
+            console.log('[App Composer] perfilSeleccionado inicializado:', this.perfilSeleccionado);
+        },
+
+        /**
          * Navega a un paso
          */
         irAPaso(paso) {

@@ -170,6 +170,9 @@ class Flavor_App_Profile_Admin {
         $configuracion = get_option('flavor_chat_ia_settings', []);
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
+        // Debug: verificar qué perfil está activo
+        error_log('Perfil activo: ' . $id_perfil_actual);
+
         $loader = Flavor_Chat_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
 
@@ -1165,6 +1168,9 @@ class Flavor_App_Profile_Admin {
             $configuracion['active_modules'] = array_unique($modulos_a_activar);
             $configuracion['app_profile'] = $plantilla_id;
             update_option('flavor_chat_ia_settings', $configuracion);
+
+            // Limpiar cache de opciones para asegurar que se lee el valor actualizado
+            wp_cache_delete('flavor_chat_ia_settings', 'options');
 
             $total_modulos = count($modulos_a_activar);
 
