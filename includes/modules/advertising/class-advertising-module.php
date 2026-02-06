@@ -1401,20 +1401,21 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         static $enqueued = false;
         if ($enqueued) return;
 
-        $base_url = FLAVOR_CHAT_URL . 'includes/modules/advertising/assets/';
+        $base_url = plugins_url('assets/', __FILE__);
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'flavor-ads-frontend',
             $base_url . 'css/advertising-frontend.css',
             [],
-            FLAVOR_CHAT_VERSION
+            $version
         );
 
         wp_enqueue_script(
             'flavor-ads-frontend',
             $base_url . 'js/advertising-frontend.js',
             ['jquery'],
-            FLAVOR_CHAT_VERSION,
+            $version,
             true
         );
 

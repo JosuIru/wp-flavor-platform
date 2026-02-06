@@ -1686,8 +1686,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             'columnas' => 4,
         ], $atts);
 
-        wp_enqueue_style('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/css/biblioteca-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/js/biblioteca-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        $base_url = plugins_url('assets/', __FILE__);
+        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
+        wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
+        wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1696,7 +1699,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/biblioteca/templates/catalogo.php';
+        include dirname(__FILE__) . '/templates/catalogo.php';
         return ob_get_clean();
     }
 
@@ -1714,8 +1717,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return '<p>' . __('Libro no especificado.', 'flavor-chat-ia') . '</p>';
         }
 
-        wp_enqueue_style('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/css/biblioteca-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/js/biblioteca-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        $base_url = plugins_url('assets/', __FILE__);
+        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
+        wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
+        wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1724,7 +1730,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/biblioteca/templates/detalle.php';
+        include dirname(__FILE__) . '/templates/detalle.php';
         return ob_get_clean();
     }
 
@@ -1736,8 +1742,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return '<p>' . __('Debes iniciar sesión para ver tus libros.', 'flavor-chat-ia') . '</p>';
         }
 
-        wp_enqueue_style('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/css/biblioteca-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/js/biblioteca-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        $base_url = plugins_url('assets/', __FILE__);
+        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
+        wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
+        wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1746,7 +1755,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/biblioteca/templates/mis-libros.php';
+        include dirname(__FILE__) . '/templates/mis-libros.php';
         return ob_get_clean();
     }
 
@@ -1758,8 +1767,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return '<p>' . __('Debes iniciar sesión para ver tus préstamos.', 'flavor-chat-ia') . '</p>';
         }
 
-        wp_enqueue_style('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/css/biblioteca-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/js/biblioteca-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        $base_url = plugins_url('assets/', __FILE__);
+        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
+        wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
+        wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1768,7 +1780,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/biblioteca/templates/mis-prestamos.php';
+        include dirname(__FILE__) . '/templates/mis-prestamos.php';
         return ob_get_clean();
     }
 
@@ -1780,8 +1792,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return '<p>' . __('Debes iniciar sesión para agregar libros.', 'flavor-chat-ia') . '</p>';
         }
 
-        wp_enqueue_style('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/css/biblioteca-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('biblioteca-frontend', FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/js/biblioteca-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        $base_url = plugins_url('assets/', __FILE__);
+        $version_modulo = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
+        wp_enqueue_style('biblioteca-frontend', $base_url . 'css/biblioteca-frontend.css', [], $version_modulo);
+        wp_enqueue_script('biblioteca-frontend', $base_url . 'js/biblioteca-frontend.js', ['jquery'], $version_modulo, true);
         wp_enqueue_media();
 
         wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
@@ -1791,7 +1806,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/biblioteca/templates/agregar-libro.php';
+        include dirname(__FILE__) . '/templates/agregar-libro.php';
         return ob_get_clean();
     }
 
@@ -1885,6 +1900,8 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      */
     private function formatear_libro($libro) {
         $propietario = get_userdata($libro->propietario_id);
+        $base_url = plugins_url('assets/', __FILE__);
+        $imagen_placeholder = $base_url . 'img/libro-placeholder.png';
 
         return [
             'id' => intval($libro->id),
@@ -1897,7 +1914,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             'genero' => $libro->genero,
             'paginas' => $libro->num_paginas,
             'descripcion' => wp_trim_words($libro->descripcion, 30),
-            'portada' => $libro->portada_url ?: FLAVOR_CHAT_URL . 'includes/modules/biblioteca/assets/img/libro-placeholder.png',
+            'portada' => $libro->portada_url ?: $imagen_placeholder,
             'estado_fisico' => $libro->estado_fisico,
             'disponibilidad' => $libro->disponibilidad,
             'tipo' => $libro->tipo,

@@ -1144,13 +1144,16 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     // =========================================================================
 
     public function shortcode_listado($atts) {
+        $base_url = plugins_url('assets/', __FILE__);
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
         $atts = shortcode_atts([
             'tipo' => '',
             'columnas' => 3,
         ], $atts);
 
-        wp_enqueue_style('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/css/espacios-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/js/espacios-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
+        wp_enqueue_script('espacios-frontend', $base_url . 'js/espacios-frontend.js', ['jquery'], $version, true);
 
         wp_localize_script('espacios-frontend', 'espaciosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1164,6 +1167,9 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     }
 
     public function shortcode_detalle($atts) {
+        $base_url = plugins_url('assets/', __FILE__);
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
         $atts = shortcode_atts(['id' => 0], $atts);
         $espacio_id = $atts['id'] ?: (isset($_GET['espacio_id']) ? intval($_GET['espacio_id']) : 0);
 
@@ -1171,8 +1177,8 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
             return '<p>' . __('Espacio no especificado.', 'flavor-chat-ia') . '</p>';
         }
 
-        wp_enqueue_style('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/css/espacios-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/js/espacios-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
+        wp_enqueue_script('espacios-frontend', $base_url . 'js/espacios-frontend.js', ['jquery'], $version, true);
 
         wp_localize_script('espacios-frontend', 'espaciosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1187,12 +1193,15 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     }
 
     public function shortcode_mis_reservas($atts) {
+        $base_url = plugins_url('assets/', __FILE__);
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
         if (!is_user_logged_in()) {
             return '<p>' . __('Debes iniciar sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
         }
 
-        wp_enqueue_style('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/css/espacios-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/js/espacios-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
+        wp_enqueue_script('espacios-frontend', $base_url . 'js/espacios-frontend.js', ['jquery'], $version, true);
 
         wp_localize_script('espacios-frontend', 'espaciosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1206,10 +1215,13 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     }
 
     public function shortcode_calendario($atts) {
+        $base_url = plugins_url('assets/', __FILE__);
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
         $atts = shortcode_atts(['espacio_id' => 0], $atts);
 
-        wp_enqueue_style('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/css/espacios-frontend.css', [], FLAVOR_CHAT_VERSION);
-        wp_enqueue_script('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/js/espacios-frontend.js', ['jquery'], FLAVOR_CHAT_VERSION, true);
+        wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
+        wp_enqueue_script('espacios-frontend', $base_url . 'js/espacios-frontend.js', ['jquery'], $version, true);
 
         wp_localize_script('espacios-frontend', 'espaciosData', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -1223,9 +1235,12 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     }
 
     public function shortcode_equipamiento($atts) {
+        $base_url = plugins_url('assets/', __FILE__);
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
         $atts = shortcode_atts(['categoria' => ''], $atts);
 
-        wp_enqueue_style('espacios-frontend', FLAVOR_CHAT_URL . 'includes/modules/espacios-comunes/assets/css/espacios-frontend.css', [], FLAVOR_CHAT_VERSION);
+        wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
 
         ob_start();
         include FLAVOR_CHAT_PATH . 'includes/modules/espacios-comunes/templates/equipamiento.php';
