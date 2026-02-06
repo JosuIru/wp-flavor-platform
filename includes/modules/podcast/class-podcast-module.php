@@ -903,3 +903,1387 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         <?php
         return ob_get_clean();
     }
+
+    /**
+     * Manejador AJAX principal
+     */
+    public function handle_ajax_request() {
+        check_ajax_referer('flavor_podcast_nonce', 'nonce');
+
+        $accion = sanitize_text_field($_POST['podcast_action'] ?? '');
+        $metodo_handler = 'ajax_' . $accion;
+
+        if (method_exists($this, $metodo_handler)) {
+            $resultado = $this->$metodo_handler($_POST);
+            wp_send_json($resultado);
+        }
+
+        wp_send_json_error(['message' => __('Acción no válida', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * AJAX: Registrar reproducción
+     */
+    private function ajax_registrar_reproduccion($datos) {
+        global $wpdb;
+
+        $episodio_id = absint($datos['episodio_id'] ?? 0);
+        if ($episodio_id === 0) {
+            return ['success' => false, 'message' => __('ID de episodio requerido', 'flavor-chat-ia')];
+        }
+
+        $usuario_id = get_current_user_id();
+        $sesion_id = sanitize_text_field($datos['sesion_id'] ?? $this->generar_sesion_id());
+        $posicion = absint($datos['posicion'] ?? 0);
+
+        $reproduccion_existente = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, posicion_actual, duracion_escuchada FROM {$this->tabla_reproducciones}
+             WHERE episodio_id = %d AND (usuario_id = %d OR sesion_id = %s)
+             AND fecha_fin IS NULL
+             ORDER BY fecha_inicio DESC LIMIT 1",
+            $episodio_id,
+            $usuario_id,
+            $sesion_id
+        ));
+
+        if ($reproduccion_existente) {
+            $wpdb->update(
+                $this->tabla_reproducciones,
+                [
+                    'posicion_actual' => $posicion,
+                    'duracion_escuchada' => $reproduccion_existente->duracion_escuchada + max(0, $posicion - $reproduccion_existente->posicion_actual),
+                ],
+                ['id' => $reproduccion_existente->id]
+            );
+            $reproduccion_id = $reproduccion_existente->id;
+        } else {
+            $episodio = $this->obtener_episodio($episodio_id);
+            $es_unica = !$this->tiene_reproduccion_previa($episodio_id, $usuario_id, $sesion_id);
+
+            $wpdb->insert($this->tabla_reproducciones, [
+                'episodio_id' => $episodio_id,
+                'usuario_id' => $usuario_id ?: null,
+                'sesion_id' => $sesion_id,
+                'ip_address' => $this->obtener_ip_cliente(),
+                'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500),
+                'dispositivo' => $this->detectar_dispositivo(),
+                'posicion_actual' => $posicion,
+                'fuente' => sanitize_text_field($datos['fuente'] ?? 'web'),
+            ]);
+            $reproduccion_id = $wpdb->insert_id;
+
+            $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->tabla_episodios} SET reproducciones = reproducciones + 1 WHERE id = %d",
+                $episodio_id
+            ));
+
+            if ($es_unica) {
+                $wpdb->query($wpdb->prepare(
+                    "UPDATE {$this->tabla_episodios} SET reproducciones_unicas = reproducciones_unicas + 1 WHERE id = %d",
+                    $episodio_id
+                ));
+            }
+        }
+
+        return [
+            'success' => true,
+            'reproduccion_id' => $reproduccion_id,
+            'sesion_id' => $sesion_id,
+        ];
+    }
+
+    /**
+     * AJAX: Actualizar progreso de reproducción
+     */
+    private function ajax_actualizar_progreso($datos) {
+        global $wpdb;
+
+        $reproduccion_id = absint($datos['reproduccion_id'] ?? 0);
+        $posicion = absint($datos['posicion'] ?? 0);
+        $duracion_total = absint($datos['duracion_total'] ?? 0);
+
+        if ($reproduccion_id === 0) {
+            return ['success' => false];
+        }
+
+        $porcentaje_completado = $duracion_total > 0 ? min(100, ($posicion / $duracion_total) * 100) : 0;
+        $completado = $porcentaje_completado >= 90 ? 1 : 0;
+
+        $wpdb->update(
+            $this->tabla_reproducciones,
+            [
+                'posicion_actual' => $posicion,
+                'porcentaje_completado' => $porcentaje_completado,
+                'completado' => $completado,
+                'velocidad_reproduccion' => floatval($datos['velocidad'] ?? 1),
+            ],
+            ['id' => $reproduccion_id]
+        );
+
+        if ($completado) {
+            $reproduccion = $wpdb->get_row($wpdb->prepare(
+                "SELECT episodio_id FROM {$this->tabla_reproducciones} WHERE id = %d",
+                $reproduccion_id
+            ));
+
+            if ($reproduccion) {
+                $wpdb->query($wpdb->prepare(
+                    "UPDATE {$this->tabla_episodios}
+                     SET tiempo_escucha_total = tiempo_escucha_total + %d
+                     WHERE id = %d",
+                    $posicion,
+                    $reproduccion->episodio_id
+                ));
+            }
+        }
+
+        return ['success' => true, 'completado' => $completado];
+    }
+
+    /**
+     * AJAX: Finalizar reproducción
+     */
+    private function ajax_finalizar_reproduccion($datos) {
+        global $wpdb;
+
+        $reproduccion_id = absint($datos['reproduccion_id'] ?? 0);
+        if ($reproduccion_id === 0) {
+            return ['success' => false];
+        }
+
+        $wpdb->update(
+            $this->tabla_reproducciones,
+            ['fecha_fin' => current_time('mysql')],
+            ['id' => $reproduccion_id]
+        );
+
+        return ['success' => true];
+    }
+
+    /**
+     * AJAX: Toggle suscripción
+     */
+    private function ajax_toggle_suscripcion($datos) {
+        global $wpdb;
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id === 0) {
+            return ['success' => false, 'message' => __('Debes iniciar sesión', 'flavor-chat-ia'), 'requiere_login' => true];
+        }
+
+        $serie_id = absint($datos['serie_id'] ?? 0);
+        if ($serie_id === 0) {
+            return ['success' => false, 'message' => __('Serie no especificada', 'flavor-chat-ia')];
+        }
+
+        $suscripcion_existente = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$this->tabla_suscripciones} WHERE serie_id = %d AND usuario_id = %d",
+            $serie_id,
+            $usuario_id
+        ));
+
+        if ($suscripcion_existente) {
+            $wpdb->delete($this->tabla_suscripciones, ['id' => $suscripcion_existente]);
+            $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->tabla_series} SET suscriptores = GREATEST(0, suscriptores - 1) WHERE id = %d",
+                $serie_id
+            ));
+            $esta_suscrito = false;
+        } else {
+            $wpdb->insert($this->tabla_suscripciones, [
+                'serie_id' => $serie_id,
+                'usuario_id' => $usuario_id,
+            ]);
+            $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->tabla_series} SET suscriptores = suscriptores + 1 WHERE id = %d",
+                $serie_id
+            ));
+            $esta_suscrito = true;
+        }
+
+        $serie = $this->obtener_serie($serie_id);
+
+        return [
+            'success' => true,
+            'suscrito' => $esta_suscrito,
+            'total_suscriptores' => $serie ? $serie->suscriptores : 0,
+        ];
+    }
+
+    /**
+     * AJAX: Dar me gusta a episodio
+     */
+    private function ajax_toggle_me_gusta($datos) {
+        global $wpdb;
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id === 0) {
+            return ['success' => false, 'requiere_login' => true];
+        }
+
+        $episodio_id = absint($datos['episodio_id'] ?? 0);
+        if ($episodio_id === 0) {
+            return ['success' => false];
+        }
+
+        $clave_meta = '_flavor_podcast_like_' . $episodio_id;
+        $tiene_like = get_user_meta($usuario_id, $clave_meta, true);
+
+        if ($tiene_like) {
+            delete_user_meta($usuario_id, $clave_meta);
+            $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->tabla_episodios} SET me_gusta = GREATEST(0, me_gusta - 1) WHERE id = %d",
+                $episodio_id
+            ));
+            $me_gusta = false;
+        } else {
+            update_user_meta($usuario_id, $clave_meta, 1);
+            $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->tabla_episodios} SET me_gusta = me_gusta + 1 WHERE id = %d",
+                $episodio_id
+            ));
+            $me_gusta = true;
+        }
+
+        $episodio = $this->obtener_episodio($episodio_id);
+
+        return [
+            'success' => true,
+            'me_gusta' => $me_gusta,
+            'total_me_gusta' => $episodio ? $episodio->me_gusta : 0,
+        ];
+    }
+
+    /**
+     * AJAX: Buscar podcasts y episodios
+     */
+    private function ajax_buscar($datos) {
+        $termino_busqueda = sanitize_text_field($datos['termino'] ?? '');
+        $categoria = sanitize_text_field($datos['categoria'] ?? '');
+        $tipo = sanitize_text_field($datos['tipo'] ?? '');
+        $limite = min(50, absint($datos['limite'] ?? 10));
+
+        $resultados = ['series' => [], 'episodios' => []];
+
+        if ($tipo !== 'episodios') {
+            $resultados['series'] = $this->buscar_series($termino_busqueda, $categoria, $limite);
+        }
+
+        if ($tipo !== 'series') {
+            $resultados['episodios'] = $this->buscar_episodios($termino_busqueda, $categoria, $limite);
+        }
+
+        return [
+            'success' => true,
+            'resultados' => $resultados,
+            'total' => count($resultados['series']) + count($resultados['episodios']),
+        ];
+    }
+
+    /**
+     * Registra rutas REST API
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor-podcast/v1';
+
+        register_rest_route($namespace, '/series', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_obtener_series'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route($namespace, '/series/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_obtener_serie'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route($namespace, '/series/(?P<id>\d+)/episodios', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_obtener_episodios_serie'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route($namespace, '/episodios/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_obtener_episodio'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route($namespace, '/series', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_crear_serie'],
+            'permission_callback' => [$this, 'verificar_permiso_crear'],
+        ]);
+
+        register_rest_route($namespace, '/episodios', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_crear_episodio'],
+            'permission_callback' => [$this, 'verificar_permiso_crear'],
+        ]);
+
+        register_rest_route($namespace, '/estadisticas/serie/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_obtener_estadisticas'],
+            'permission_callback' => [$this, 'verificar_permiso_estadisticas'],
+        ]);
+
+        register_rest_route($namespace, '/buscar', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_buscar'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    /**
+     * REST: Obtener series
+     */
+    public function rest_obtener_series($request) {
+        $series = $this->obtener_series([
+            'limite' => $request->get_param('limite') ?: 10,
+            'offset' => (($request->get_param('pagina') ?: 1) - 1) * ($request->get_param('limite') ?: 10),
+            'categoria' => $request->get_param('categoria') ?: '',
+            'orden' => $request->get_param('orden') ?: 'recientes',
+        ]);
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => array_map([$this, 'formatear_serie_respuesta'], $series),
+        ]);
+    }
+
+    /**
+     * REST: Obtener serie individual
+     */
+    public function rest_obtener_serie($request) {
+        $serie = $this->obtener_serie($request->get_param('id'));
+        if (!$serie) {
+            return new WP_Error('not_found', __('Serie no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => $this->formatear_serie_respuesta($serie, true),
+        ]);
+    }
+
+    /**
+     * REST: Obtener episodios de serie
+     */
+    public function rest_obtener_episodios_serie($request) {
+        $serie_id = $request->get_param('id');
+        $limite = $request->get_param('limite') ?: 20;
+        $offset = (($request->get_param('pagina') ?: 1) - 1) * $limite;
+
+        $episodios = $this->obtener_episodios_serie($serie_id, $limite, $offset);
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => array_map([$this, 'formatear_episodio_respuesta'], $episodios),
+            'total' => $this->contar_episodios_serie($serie_id),
+        ]);
+    }
+
+    /**
+     * REST: Obtener episodio individual
+     */
+    public function rest_obtener_episodio($request) {
+        $episodio = $this->obtener_episodio($request->get_param('id'));
+        if (!$episodio) {
+            return new WP_Error('not_found', __('Episodio no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => $this->formatear_episodio_respuesta($episodio, true),
+        ]);
+    }
+
+    /**
+     * REST: Crear serie
+     */
+    public function rest_crear_serie($request) {
+        global $wpdb;
+
+        $usuario_id = get_current_user_id();
+        $datos = $request->get_json_params();
+
+        $titulo = sanitize_text_field($datos['titulo'] ?? '');
+        $descripcion = wp_kses_post($datos['descripcion'] ?? '');
+
+        if (empty($titulo) || empty($descripcion)) {
+            return new WP_Error('missing_data', __('Título y descripción son requeridos', 'flavor-chat-ia'), ['status' => 400]);
+        }
+
+        $series_usuario = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$this->tabla_series} WHERE autor_id = %d",
+            $usuario_id
+        ));
+
+        $limite_series = $this->get_setting('limite_series_por_usuario');
+        if ($series_usuario >= $limite_series) {
+            return new WP_Error('limit_reached', sprintf(__('Has alcanzado el límite de %d series', 'flavor-chat-ia'), $limite_series), ['status' => 403]);
+        }
+
+        $slug = wp_unique_post_slug(sanitize_title($titulo), 0, 'publish', 'podcast_serie', 0);
+
+        $resultado_insercion = $wpdb->insert($this->tabla_series, [
+            'titulo' => $titulo,
+            'slug' => $slug,
+            'descripcion' => $descripcion,
+            'descripcion_corta' => sanitize_text_field($datos['descripcion_corta'] ?? ''),
+            'autor_id' => $usuario_id,
+            'imagen_url' => esc_url_raw($datos['imagen_url'] ?? ''),
+            'categoria' => sanitize_text_field($datos['categoria'] ?? ''),
+            'idioma' => sanitize_text_field($datos['idioma'] ?? 'es'),
+            'estado' => $this->get_setting('requiere_moderacion') ? 'borrador' : 'publicado',
+        ]);
+
+        if (!$resultado_insercion) {
+            return new WP_Error('db_error', __('Error al crear la serie', 'flavor-chat-ia'), ['status' => 500]);
+        }
+
+        $serie = $this->obtener_serie($wpdb->insert_id);
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => $this->formatear_serie_respuesta($serie),
+            'message' => __('Serie creada correctamente', 'flavor-chat-ia'),
+        ]);
+    }
+
+    /**
+     * REST: Crear episodio
+     */
+    public function rest_crear_episodio($request) {
+        global $wpdb;
+
+        $usuario_id = get_current_user_id();
+        $datos = $request->get_json_params();
+
+        $serie_id = absint($datos['serie_id'] ?? 0);
+        $serie = $this->obtener_serie($serie_id);
+
+        if (!$serie || $serie->autor_id != $usuario_id) {
+            return new WP_Error('forbidden', __('No tienes permiso para añadir episodios', 'flavor-chat-ia'), ['status' => 403]);
+        }
+
+        $titulo = sanitize_text_field($datos['titulo'] ?? '');
+        $archivo_url = esc_url_raw($datos['archivo_url'] ?? '');
+
+        if (empty($titulo) || empty($archivo_url)) {
+            return new WP_Error('missing_data', __('Título y archivo son requeridos', 'flavor-chat-ia'), ['status' => 400]);
+        }
+
+        $ultimo_numero_episodio = $wpdb->get_var($wpdb->prepare(
+            "SELECT MAX(numero_episodio) FROM {$this->tabla_episodios} WHERE serie_id = %d AND temporada = %d",
+            $serie_id,
+            absint($datos['temporada'] ?? 1)
+        ));
+
+        $numero_episodio = ($ultimo_numero_episodio ?: 0) + 1;
+        $guid = $this->generar_guid_episodio($serie_id, $numero_episodio);
+        $slug = wp_unique_post_slug(sanitize_title($titulo), 0, 'publish', 'podcast_episodio', 0);
+
+        $resultado_insercion = $wpdb->insert($this->tabla_episodios, [
+            'serie_id' => $serie_id,
+            'temporada' => absint($datos['temporada'] ?? 1),
+            'numero_episodio' => $numero_episodio,
+            'guid' => $guid,
+            'titulo' => $titulo,
+            'slug' => $slug,
+            'descripcion' => wp_kses_post($datos['descripcion'] ?? ''),
+            'archivo_url' => $archivo_url,
+            'tipo_archivo' => sanitize_text_field($datos['tipo_archivo'] ?? 'audio/mpeg'),
+            'duracion_segundos' => absint($datos['duracion_segundos'] ?? 0),
+            'tamano_bytes' => absint($datos['tamano_bytes'] ?? 0),
+            'imagen_url' => esc_url_raw($datos['imagen_url'] ?? ''),
+            'estado' => $this->get_setting('requiere_moderacion') ? 'borrador' : 'publicado',
+            'fecha_publicacion' => current_time('mysql'),
+        ]);
+
+        if (!$resultado_insercion) {
+            return new WP_Error('db_error', __('Error al crear el episodio', 'flavor-chat-ia'), ['status' => 500]);
+        }
+
+        $wpdb->query($wpdb->prepare(
+            "UPDATE {$this->tabla_series}
+             SET total_episodios = total_episodios + 1,
+                 duracion_total_segundos = duracion_total_segundos + %d,
+                 fecha_ultimo_episodio = %s
+             WHERE id = %d",
+            absint($datos['duracion_segundos'] ?? 0),
+            current_time('mysql'),
+            $serie_id
+        ));
+
+        $episodio = $this->obtener_episodio($wpdb->insert_id);
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => $this->formatear_episodio_respuesta($episodio),
+        ]);
+    }
+
+    /**
+     * REST: Obtener estadísticas
+     */
+    public function rest_obtener_estadisticas($request) {
+        $serie_id = $request->get_param('id');
+        $periodo = $request->get_param('periodo') ?: 30;
+
+        $estadisticas = $this->obtener_estadisticas_serie($serie_id, $periodo);
+
+        return rest_ensure_response(['success' => true, 'data' => $estadisticas]);
+    }
+
+    /**
+     * REST: Buscar
+     */
+    public function rest_buscar($request) {
+        $termino_busqueda = sanitize_text_field($request->get_param('q') ?? '');
+        $categoria = sanitize_text_field($request->get_param('categoria') ?? '');
+        $tipo = sanitize_text_field($request->get_param('tipo') ?? '');
+        $limite = min(50, absint($request->get_param('limite') ?? 10));
+
+        $resultados = ['series' => [], 'episodios' => []];
+
+        if ($tipo !== 'episodios') {
+            $resultados['series'] = array_map(
+                [$this, 'formatear_serie_respuesta'],
+                $this->buscar_series($termino_busqueda, $categoria, $limite)
+            );
+        }
+
+        if ($tipo !== 'series') {
+            $resultados['episodios'] = array_map(
+                [$this, 'formatear_episodio_respuesta'],
+                $this->buscar_episodios($termino_busqueda, $categoria, $limite)
+            );
+        }
+
+        return rest_ensure_response(['success' => true, 'data' => $resultados]);
+    }
+
+    /**
+     * Verificar permiso para crear contenido
+     */
+    public function verificar_permiso_crear($request) {
+        return is_user_logged_in() && current_user_can('publish_posts');
+    }
+
+    /**
+     * Verificar permiso para ver estadísticas
+     */
+    public function verificar_permiso_estadisticas($request) {
+        if (!is_user_logged_in()) {
+            return false;
+        }
+        $serie = $this->obtener_serie($request->get_param('id'));
+        return $serie && ($serie->autor_id == get_current_user_id() || current_user_can('manage_options'));
+    }
+
+    /**
+     * Genera el feed RSS para Apple Podcasts/Spotify
+     */
+    public function render_rss_feed() {
+        global $wpdb;
+
+        $serie_id = absint(get_query_var('serie_id'));
+        if ($serie_id === 0) {
+            wp_die(__('Serie no especificada', 'flavor-chat-ia'), '', ['response' => 404]);
+        }
+
+        $serie = $this->obtener_serie($serie_id);
+        if (!$serie || $serie->estado !== 'publicado') {
+            wp_die(__('Serie no encontrada', 'flavor-chat-ia'), '', ['response' => 404]);
+        }
+
+        $episodios = $this->obtener_episodios_serie($serie_id, $this->get_setting('rss_items_limite'), 0, 'recientes');
+        $autor = get_userdata($serie->autor_id);
+        $autor_nombre = $autor ? $autor->display_name : get_bloginfo('name');
+        $autor_email = $autor ? $autor->user_email : get_bloginfo('admin_email');
+
+        header('Content-Type: application/rss+xml; charset=' . get_option('blog_charset'), true);
+
+        echo '<?xml version="1.0" encoding="' . get_option('blog_charset') . '"?>' . "\n";
+        ?>
+<rss version="2.0"
+     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+     xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:podcast="https://podcastindex.org/namespace/1.0">
+<channel>
+    <title><?php echo esc_html($serie->titulo); ?></title>
+    <link><?php echo esc_url($this->obtener_url_serie($serie)); ?></link>
+    <language><?php echo esc_html($serie->idioma ?: 'es'); ?></language>
+    <copyright><?php echo esc_html($serie->copyright ?: '© ' . date('Y') . ' ' . $autor_nombre); ?></copyright>
+    <description><?php echo esc_html($serie->descripcion); ?></description>
+    <atom:link href="<?php echo esc_url($this->obtener_url_feed($serie_id)); ?>" rel="self" type="application/rss+xml"/>
+
+    <itunes:author><?php echo esc_html($autor_nombre); ?></itunes:author>
+    <itunes:summary><?php echo esc_html($serie->descripcion_corta ?: wp_trim_words($serie->descripcion, 100)); ?></itunes:summary>
+    <itunes:type><?php echo $serie->tipo === 'serial' ? 'serial' : 'episodic'; ?></itunes:type>
+    <itunes:owner>
+        <itunes:name><?php echo esc_html($autor_nombre); ?></itunes:name>
+        <itunes:email><?php echo esc_html($autor_email); ?></itunes:email>
+    </itunes:owner>
+    <itunes:explicit><?php echo $serie->explicito ? 'true' : 'false'; ?></itunes:explicit>
+    <?php if ($serie->imagen_url): ?>
+    <itunes:image href="<?php echo esc_url($serie->imagen_url); ?>"/>
+    <image>
+        <url><?php echo esc_url($serie->imagen_url); ?></url>
+        <title><?php echo esc_html($serie->titulo); ?></title>
+        <link><?php echo esc_url($this->obtener_url_serie($serie)); ?></link>
+    </image>
+    <?php endif; ?>
+    <?php if ($serie->categoria): ?>
+    <itunes:category text="<?php echo esc_attr($this->obtener_categoria_itunes($serie->categoria)); ?>">
+        <?php if ($serie->subcategoria): ?>
+        <itunes:category text="<?php echo esc_attr($serie->subcategoria); ?>"/>
+        <?php endif; ?>
+    </itunes:category>
+    <?php endif; ?>
+
+    <googleplay:author><?php echo esc_html($autor_nombre); ?></googleplay:author>
+    <googleplay:description><?php echo esc_html($serie->descripcion_corta ?: wp_trim_words($serie->descripcion, 100)); ?></googleplay:description>
+    <googleplay:explicit><?php echo $serie->explicito ? 'yes' : 'no'; ?></googleplay:explicit>
+    <?php if ($serie->imagen_url): ?>
+    <googleplay:image href="<?php echo esc_url($serie->imagen_url); ?>"/>
+    <?php endif; ?>
+
+    <?php foreach ($episodios as $episodio): ?>
+    <item>
+        <title><?php echo esc_html($episodio->titulo); ?></title>
+        <link><?php echo esc_url($this->obtener_url_episodio($episodio)); ?></link>
+        <guid isPermaLink="false"><?php echo esc_html($episodio->guid); ?></guid>
+        <pubDate><?php echo esc_html(mysql2date('D, d M Y H:i:s O', $episodio->fecha_publicacion)); ?></pubDate>
+        <description><![CDATA[<?php echo wp_kses_post($episodio->descripcion); ?>]]></description>
+        <content:encoded><![CDATA[<?php echo wp_kses_post($episodio->descripcion); ?>]]></content:encoded>
+
+        <enclosure url="<?php echo esc_url($episodio->archivo_url); ?>"
+                   length="<?php echo esc_attr($episodio->tamano_bytes ?: 0); ?>"
+                   type="<?php echo esc_attr($episodio->tipo_archivo ?: 'audio/mpeg'); ?>"/>
+
+        <itunes:title><?php echo esc_html($episodio->titulo); ?></itunes:title>
+        <itunes:summary><?php echo esc_html($episodio->descripcion_corta ?: wp_trim_words($episodio->descripcion, 100)); ?></itunes:summary>
+        <itunes:duration><?php echo esc_html($this->formatear_duracion_iso($episodio->duracion_segundos)); ?></itunes:duration>
+        <itunes:explicit><?php echo $episodio->explicito ? 'true' : 'false'; ?></itunes:explicit>
+        <itunes:episodeType><?php echo esc_html($episodio->tipo_episodio ?: 'full'); ?></itunes:episodeType>
+        <?php if ($serie->tipo === 'serial'): ?>
+        <itunes:season><?php echo esc_html($episodio->temporada); ?></itunes:season>
+        <itunes:episode><?php echo esc_html($episodio->numero_episodio); ?></itunes:episode>
+        <?php endif; ?>
+        <?php if ($episodio->imagen_url): ?>
+        <itunes:image href="<?php echo esc_url($episodio->imagen_url); ?>"/>
+        <?php endif; ?>
+    </item>
+    <?php endforeach; ?>
+
+</channel>
+</rss>
+        <?php
+        exit;
+    }
+
+    // ==================== MÉTODOS HELPER ====================
+
+    /**
+     * Obtiene una serie por ID
+     */
+    private function obtener_serie($serie_id) {
+        global $wpdb;
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_series} WHERE id = %d",
+            absint($serie_id)
+        ));
+    }
+
+    /**
+     * Obtiene series con filtros
+     */
+    private function obtener_series($args = []) {
+        global $wpdb;
+
+        $defaults = [
+            'limite' => 10,
+            'offset' => 0,
+            'categoria' => '',
+            'orden' => 'recientes',
+            'estado' => 'publicado',
+        ];
+        $args = wp_parse_args($args, $defaults);
+
+        $where = ['estado = %s'];
+        $params = [$args['estado']];
+
+        if (!empty($args['categoria'])) {
+            $where[] = 'categoria = %s';
+            $params[] = $args['categoria'];
+        }
+
+        $order_by = match($args['orden']) {
+            'populares' => 'suscriptores DESC',
+            'alfabetico' => 'titulo ASC',
+            'episodios' => 'total_episodios DESC',
+            default => 'fecha_ultimo_episodio DESC, fecha_creacion DESC',
+        };
+
+        $sql = "SELECT * FROM {$this->tabla_series}
+                WHERE " . implode(' AND ', $where) . "
+                ORDER BY {$order_by}
+                LIMIT %d OFFSET %d";
+
+        $params[] = $args['limite'];
+        $params[] = $args['offset'];
+
+        return $wpdb->get_results($wpdb->prepare($sql, ...$params));
+    }
+
+    /**
+     * Obtiene un episodio por ID
+     */
+    private function obtener_episodio($episodio_id) {
+        global $wpdb;
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_episodios} WHERE id = %d",
+            absint($episodio_id)
+        ));
+    }
+
+    /**
+     * Obtiene el último episodio de una serie
+     */
+    private function obtener_ultimo_episodio($serie_id) {
+        global $wpdb;
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_episodios}
+             WHERE serie_id = %d AND estado = 'publicado'
+             ORDER BY fecha_publicacion DESC LIMIT 1",
+            absint($serie_id)
+        ));
+    }
+
+    /**
+     * Obtiene episodios de una serie
+     */
+    private function obtener_episodios_serie($serie_id, $limite = 10, $offset = 0, $orden = 'recientes', $temporada = 0) {
+        global $wpdb;
+
+        $where = ['serie_id = %d', "estado = 'publicado'"];
+        $params = [absint($serie_id)];
+
+        if ($temporada > 0) {
+            $where[] = 'temporada = %d';
+            $params[] = $temporada;
+        }
+
+        $order_by = match($orden) {
+            'antiguos' => 'fecha_publicacion ASC',
+            'populares' => 'reproducciones DESC',
+            default => 'fecha_publicacion DESC',
+        };
+
+        $sql = "SELECT * FROM {$this->tabla_episodios}
+                WHERE " . implode(' AND ', $where) . "
+                ORDER BY {$order_by}
+                LIMIT %d OFFSET %d";
+
+        $params[] = $limite;
+        $params[] = $offset;
+
+        return $wpdb->get_results($wpdb->prepare($sql, ...$params));
+    }
+
+    /**
+     * Cuenta episodios de una serie
+     */
+    private function contar_episodios_serie($serie_id, $temporada = 0) {
+        global $wpdb;
+
+        $where = ['serie_id = %d', "estado = 'publicado'"];
+        $params = [absint($serie_id)];
+
+        if ($temporada > 0) {
+            $where[] = 'temporada = %d';
+            $params[] = $temporada;
+        }
+
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$this->tabla_episodios} WHERE " . implode(' AND ', $where),
+            ...$params
+        ));
+    }
+
+    /**
+     * Obtiene número de temporadas de una serie
+     */
+    private function obtener_temporadas_serie($serie_id) {
+        global $wpdb;
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT MAX(temporada) FROM {$this->tabla_episodios} WHERE serie_id = %d AND estado = 'publicado'",
+            absint($serie_id)
+        ));
+    }
+
+    /**
+     * Obtiene transcripción de un episodio
+     */
+    private function obtener_transcripcion($episodio_id, $idioma = 'es') {
+        global $wpdb;
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_transcripciones}
+             WHERE episodio_id = %d AND idioma = %s AND estado = 'completado'",
+            absint($episodio_id),
+            $idioma
+        ));
+    }
+
+    /**
+     * Verifica si un usuario está suscrito a una serie
+     */
+    private function esta_suscrito($usuario_id, $serie_id) {
+        global $wpdb;
+        return (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$this->tabla_suscripciones} WHERE usuario_id = %d AND serie_id = %d",
+            $usuario_id,
+            $serie_id
+        ));
+    }
+
+    /**
+     * Busca series por término
+     */
+    private function buscar_series($termino, $categoria = '', $limite = 10) {
+        global $wpdb;
+
+        $where = ["estado = 'publicado'"];
+        $params = [];
+
+        if (!empty($termino)) {
+            $where[] = "(titulo LIKE %s OR descripcion LIKE %s)";
+            $like = '%' . $wpdb->esc_like($termino) . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        if (!empty($categoria)) {
+            $where[] = 'categoria = %s';
+            $params[] = $categoria;
+        }
+
+        $params[] = $limite;
+
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$this->tabla_series}
+             WHERE " . implode(' AND ', $where) . "
+             ORDER BY suscriptores DESC, fecha_creacion DESC
+             LIMIT %d",
+            ...$params
+        ));
+    }
+
+    /**
+     * Busca episodios por término
+     */
+    private function buscar_episodios($termino, $categoria = '', $limite = 10) {
+        global $wpdb;
+
+        $where = ["e.estado = 'publicado'"];
+        $params = [];
+
+        if (!empty($termino)) {
+            $where[] = "(e.titulo LIKE %s OR e.descripcion LIKE %s)";
+            $like = '%' . $wpdb->esc_like($termino) . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        if (!empty($categoria)) {
+            $where[] = 's.categoria = %s';
+            $params[] = $categoria;
+        }
+
+        $params[] = $limite;
+
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT e.*, s.titulo as serie_titulo, s.imagen_url as serie_imagen
+             FROM {$this->tabla_episodios} e
+             JOIN {$this->tabla_series} s ON e.serie_id = s.id
+             WHERE " . implode(' AND ', $where) . "
+             ORDER BY e.reproducciones DESC, e.fecha_publicacion DESC
+             LIMIT %d",
+            ...$params
+        ));
+    }
+
+    /**
+     * Obtiene estadísticas de una serie
+     */
+    private function obtener_estadisticas_serie($serie_id, $dias = 30) {
+        global $wpdb;
+
+        $fecha_inicio = date('Y-m-d H:i:s', strtotime("-{$dias} days"));
+
+        $reproducciones_totales = $wpdb->get_var($wpdb->prepare(
+            "SELECT SUM(e.reproducciones)
+             FROM {$this->tabla_episodios} e
+             WHERE e.serie_id = %d",
+            $serie_id
+        ));
+
+        $reproducciones_periodo = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*)
+             FROM {$this->tabla_reproducciones} r
+             JOIN {$this->tabla_episodios} e ON r.episodio_id = e.id
+             WHERE e.serie_id = %d AND r.fecha_inicio >= %s",
+            $serie_id,
+            $fecha_inicio
+        ));
+
+        $tiempo_escucha_total = $wpdb->get_var($wpdb->prepare(
+            "SELECT SUM(r.duracion_escuchada)
+             FROM {$this->tabla_reproducciones} r
+             JOIN {$this->tabla_episodios} e ON r.episodio_id = e.id
+             WHERE e.serie_id = %d",
+            $serie_id
+        ));
+
+        $porcentaje_completado_promedio = $wpdb->get_var($wpdb->prepare(
+            "SELECT AVG(r.porcentaje_completado)
+             FROM {$this->tabla_reproducciones} r
+             JOIN {$this->tabla_episodios} e ON r.episodio_id = e.id
+             WHERE e.serie_id = %d AND r.porcentaje_completado > 0",
+            $serie_id
+        ));
+
+        $serie = $this->obtener_serie($serie_id);
+
+        $reproducciones_por_dia = $wpdb->get_results($wpdb->prepare(
+            "SELECT DATE(r.fecha_inicio) as fecha, COUNT(*) as total
+             FROM {$this->tabla_reproducciones} r
+             JOIN {$this->tabla_episodios} e ON r.episodio_id = e.id
+             WHERE e.serie_id = %d AND r.fecha_inicio >= %s
+             GROUP BY DATE(r.fecha_inicio)
+             ORDER BY fecha ASC",
+            $serie_id,
+            $fecha_inicio
+        ));
+
+        return [
+            'reproducciones_totales' => (int) $reproducciones_totales,
+            'reproducciones_periodo' => (int) $reproducciones_periodo,
+            'suscriptores' => $serie ? (int) $serie->suscriptores : 0,
+            'tiempo_escucha_total' => (int) $tiempo_escucha_total,
+            'porcentaje_completado_promedio' => round((float) $porcentaje_completado_promedio, 2),
+            'reproducciones_por_dia' => $reproducciones_por_dia,
+            'periodo_dias' => $dias,
+        ];
+    }
+
+    /**
+     * Verifica si tiene reproducción previa
+     */
+    private function tiene_reproduccion_previa($episodio_id, $usuario_id, $sesion_id) {
+        global $wpdb;
+        return (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$this->tabla_reproducciones}
+             WHERE episodio_id = %d AND (usuario_id = %d OR sesion_id = %s)
+             LIMIT 1",
+            $episodio_id,
+            $usuario_id,
+            $sesion_id
+        ));
+    }
+
+    /**
+     * Genera ID de sesión único
+     */
+    private function generar_sesion_id() {
+        return 'sess_' . bin2hex(random_bytes(16));
+    }
+
+    /**
+     * Genera GUID único para episodio
+     */
+    private function generar_guid_episodio($serie_id, $numero_episodio) {
+        return sprintf('podcast-%d-ep%d-%s', $serie_id, $numero_episodio, uniqid());
+    }
+
+    /**
+     * Obtiene IP del cliente
+     */
+    private function obtener_ip_cliente() {
+        $headers = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR'];
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ips = explode(',', $_SERVER[$header]);
+                return trim($ips[0]);
+            }
+        }
+        return '0.0.0.0';
+    }
+
+    /**
+     * Detecta tipo de dispositivo
+     */
+    private function detectar_dispositivo() {
+        $user_agent = strtolower($_SERVER['HTTP_USER_AGENT'] ?? '');
+        if (strpos($user_agent, 'mobile') !== false || strpos($user_agent, 'android') !== false) {
+            return 'mobile';
+        }
+        if (strpos($user_agent, 'tablet') !== false || strpos($user_agent, 'ipad') !== false) {
+            return 'tablet';
+        }
+        return 'desktop';
+    }
+
+    /**
+     * Formatea duración en formato legible
+     */
+    private function formatear_duracion($segundos) {
+        if (!$segundos || $segundos < 0) {
+            return '0:00';
+        }
+        $horas = floor($segundos / 3600);
+        $minutos = floor(($segundos % 3600) / 60);
+        $segs = $segundos % 60;
+
+        if ($horas > 0) {
+            return sprintf('%d:%02d:%02d', $horas, $minutos, $segs);
+        }
+        return sprintf('%d:%02d', $minutos, $segs);
+    }
+
+    /**
+     * Formatea duración en formato ISO para RSS
+     */
+    private function formatear_duracion_iso($segundos) {
+        if (!$segundos || $segundos < 0) {
+            return '00:00:00';
+        }
+        $horas = floor($segundos / 3600);
+        $minutos = floor(($segundos % 3600) / 60);
+        $segs = $segundos % 60;
+        return sprintf('%02d:%02d:%02d', $horas, $minutos, $segs);
+    }
+
+    /**
+     * Obtiene URL de una serie
+     */
+    private function obtener_url_serie($serie) {
+        return home_url('/podcast/' . $serie->slug . '/');
+    }
+
+    /**
+     * Obtiene URL de un episodio
+     */
+    private function obtener_url_episodio($episodio) {
+        $serie = $this->obtener_serie($episodio->serie_id);
+        if ($serie) {
+            return home_url('/podcast/' . $serie->slug . '/' . $episodio->slug . '/');
+        }
+        return home_url('/podcast/episodio/' . $episodio->id . '/');
+    }
+
+    /**
+     * Obtiene URL del feed RSS
+     */
+    private function obtener_url_feed($serie_id) {
+        return home_url('/feed/podcast/' . $serie_id . '/');
+    }
+
+    /**
+     * Mapea categoría interna a categoría iTunes
+     */
+    private function obtener_categoria_itunes($categoria) {
+        $mapa_categorias = [
+            'noticias' => 'News',
+            'entrevistas' => 'Society & Culture',
+            'historias' => 'Society & Culture',
+            'debates' => 'News',
+            'cultura' => 'Arts',
+            'educacion' => 'Education',
+            'tecnologia' => 'Technology',
+            'deportes' => 'Sports',
+            'musica' => 'Music',
+            'comedia' => 'Comedy',
+        ];
+        return $mapa_categorias[$categoria] ?? 'Society & Culture';
+    }
+
+    /**
+     * Formatea serie para respuesta API
+     */
+    private function formatear_serie_respuesta($serie, $detallado = false) {
+        $respuesta = [
+            'id' => (int) $serie->id,
+            'titulo' => $serie->titulo,
+            'slug' => $serie->slug,
+            'descripcion_corta' => $serie->descripcion_corta ?: wp_trim_words($serie->descripcion, 30),
+            'imagen_url' => $serie->imagen_url,
+            'categoria' => $serie->categoria,
+            'suscriptores' => (int) $serie->suscriptores,
+            'total_episodios' => (int) $serie->total_episodios,
+            'url' => $this->obtener_url_serie($serie),
+            'feed_url' => $this->obtener_url_feed($serie->id),
+        ];
+
+        if ($detallado) {
+            $respuesta['descripcion'] = $serie->descripcion;
+            $respuesta['autor_id'] = (int) $serie->autor_id;
+            $respuesta['idioma'] = $serie->idioma;
+            $respuesta['tipo'] = $serie->tipo;
+            $respuesta['explicito'] = (bool) $serie->explicito;
+            $respuesta['total_reproducciones'] = (int) $serie->total_reproducciones;
+            $respuesta['duracion_total'] = $this->formatear_duracion($serie->duracion_total_segundos);
+            $respuesta['fecha_creacion'] = $serie->fecha_creacion;
+            $respuesta['fecha_ultimo_episodio'] = $serie->fecha_ultimo_episodio;
+        }
+
+        return $respuesta;
+    }
+
+    /**
+     * Formatea episodio para respuesta API
+     */
+    private function formatear_episodio_respuesta($episodio, $detallado = false) {
+        $respuesta = [
+            'id' => (int) $episodio->id,
+            'serie_id' => (int) $episodio->serie_id,
+            'titulo' => $episodio->titulo,
+            'slug' => $episodio->slug,
+            'temporada' => (int) $episodio->temporada,
+            'numero_episodio' => (int) $episodio->numero_episodio,
+            'duracion' => $this->formatear_duracion($episodio->duracion_segundos),
+            'duracion_segundos' => (int) $episodio->duracion_segundos,
+            'imagen_url' => $episodio->imagen_url,
+            'archivo_url' => $episodio->archivo_url,
+            'reproducciones' => (int) $episodio->reproducciones,
+            'me_gusta' => (int) $episodio->me_gusta,
+            'fecha_publicacion' => $episodio->fecha_publicacion,
+            'url' => $this->obtener_url_episodio($episodio),
+        ];
+
+        if ($detallado) {
+            $respuesta['descripcion'] = $episodio->descripcion;
+            $respuesta['descripcion_corta'] = $episodio->descripcion_corta;
+            $respuesta['notas_episodio'] = $episodio->notas_episodio;
+            $respuesta['tipo_archivo'] = $episodio->tipo_archivo;
+            $respuesta['tamano_bytes'] = (int) $episodio->tamano_bytes;
+            $respuesta['explicito'] = (bool) $episodio->explicito;
+            $respuesta['tipo_episodio'] = $episodio->tipo_episodio;
+
+            $transcripcion = $this->obtener_transcripcion($episodio->id);
+            $respuesta['tiene_transcripcion'] = (bool) $transcripcion;
+        }
+
+        return $respuesta;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_actions() {
+        return [
+            'listar_series' => [
+                'description' => 'Listar series de podcast disponibles',
+                'params' => ['categoria', 'limite', 'orden'],
+            ],
+            'ver_serie' => [
+                'description' => 'Ver detalles de una serie',
+                'params' => ['serie_id'],
+            ],
+            'listar_episodios' => [
+                'description' => 'Listar episodios de una serie',
+                'params' => ['serie_id', 'limite', 'temporada'],
+            ],
+            'reproducir_episodio' => [
+                'description' => 'Obtener datos para reproducir episodio',
+                'params' => ['episodio_id'],
+            ],
+            'suscribirse' => [
+                'description' => 'Suscribirse a una serie',
+                'params' => ['serie_id'],
+            ],
+            'crear_serie' => [
+                'description' => 'Crear nueva serie de podcast',
+                'params' => ['titulo', 'descripcion', 'categoria'],
+            ],
+            'subir_episodio' => [
+                'description' => 'Subir nuevo episodio',
+                'params' => ['serie_id', 'titulo', 'archivo_url'],
+            ],
+            'buscar' => [
+                'description' => 'Buscar series y episodios',
+                'params' => ['termino', 'categoria', 'tipo'],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        $metodo_accion = 'action_' . $action_name;
+        if (method_exists($this, $metodo_accion)) {
+            return $this->$metodo_accion($params);
+        }
+        return ['success' => false, 'error' => "Acción no implementada: {$action_name}"];
+    }
+
+    /**
+     * Acción: Listar series
+     */
+    private function action_listar_series($params) {
+        $series = $this->obtener_series([
+            'limite' => absint($params['limite'] ?? 20),
+            'categoria' => sanitize_text_field($params['categoria'] ?? ''),
+            'orden' => sanitize_text_field($params['orden'] ?? 'recientes'),
+        ]);
+
+        return [
+            'success' => true,
+            'total' => count($series),
+            'series' => array_map([$this, 'formatear_serie_respuesta'], $series),
+        ];
+    }
+
+    /**
+     * Componentes web del módulo
+     */
+    public function get_web_components() {
+        return [
+            'hero_podcast' => [
+                'label' => __('Hero Podcasts', 'flavor-chat-ia'),
+                'description' => __('Sección hero para podcasts comunitarios', 'flavor-chat-ia'),
+                'category' => 'hero',
+                'icon' => 'dashicons-microphone',
+                'fields' => [
+                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Podcasts de la Comunidad', 'flavor-chat-ia')],
+                    'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-chat-ia'), 'default' => __('Historias, conversaciones y conocimiento local', 'flavor-chat-ia')],
+                    'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-chat-ia'), 'default' => ''],
+                    'serie_destacada_id' => ['type' => 'number', 'label' => __('ID de la serie destacada', 'flavor-chat-ia'), 'default' => 0],
+                ],
+                'template' => 'podcast/hero',
+            ],
+            'podcast_grid' => [
+                'label' => __('Grid de Series', 'flavor-chat-ia'),
+                'description' => __('Listado de series en tarjetas', 'flavor-chat-ia'),
+                'category' => 'listings',
+                'icon' => 'dashicons-grid-view',
+                'fields' => [
+                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Explora Nuestros Podcasts', 'flavor-chat-ia')],
+                    'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => [2, 3, 4], 'default' => 3],
+                    'limite' => ['type' => 'number', 'label' => __('Número de series', 'flavor-chat-ia'), 'default' => 6],
+                    'categoria' => ['type' => 'text', 'label' => __('Filtrar por categoría', 'flavor-chat-ia'), 'default' => ''],
+                ],
+                'template' => 'podcast/grid',
+            ],
+            'episodios_recientes' => [
+                'label' => __('Episodios Recientes', 'flavor-chat-ia'),
+                'description' => __('Lista de últimos episodios publicados', 'flavor-chat-ia'),
+                'category' => 'listings',
+                'icon' => 'dashicons-playlist-audio',
+                'fields' => [
+                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Últimos Episodios', 'flavor-chat-ia')],
+                    'limite' => ['type' => 'number', 'label' => __('Número de episodios', 'flavor-chat-ia'), 'default' => 5],
+                    'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-chat-ia'), 'options' => ['lista', 'tarjetas'], 'default' => 'tarjetas'],
+                ],
+                'template' => 'podcast/episodios-recientes',
+            ],
+            'podcast_player_embed' => [
+                'label' => __('Player Embebido', 'flavor-chat-ia'),
+                'description' => __('Reproductor de podcast embebido', 'flavor-chat-ia'),
+                'category' => 'media',
+                'icon' => 'dashicons-format-audio',
+                'fields' => [
+                    'serie_id' => ['type' => 'number', 'label' => __('ID de la serie', 'flavor-chat-ia'), 'default' => 0],
+                    'episodio_id' => ['type' => 'number', 'label' => __('ID del episodio', 'flavor-chat-ia'), 'default' => 0],
+                    'mostrar_lista' => ['type' => 'toggle', 'label' => __('Mostrar lista', 'flavor-chat-ia'), 'default' => true],
+                ],
+                'template' => 'podcast/player-embed',
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [
+            [
+                'name' => 'podcast_listar_series',
+                'description' => 'Ver lista de series de podcast comunitarios',
+                'input_schema' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'categoria' => ['type' => 'string', 'description' => 'Filtrar por categoría'],
+                        'limite' => ['type' => 'integer', 'description' => 'Número máximo de resultados'],
+                    ],
+                ],
+            ],
+            [
+                'name' => 'podcast_buscar',
+                'description' => 'Buscar podcasts y episodios',
+                'input_schema' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'termino' => ['type' => 'string', 'description' => 'Término de búsqueda'],
+                        'tipo' => ['type' => 'string', 'enum' => ['series', 'episodios', 'todos']],
+                    ],
+                    'required' => ['termino'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_knowledge_base() {
+        return <<<KNOWLEDGE
+**Plataforma de Podcast Comunitario**
+
+Sistema completo para crear, gestionar y escuchar podcasts de la comunidad.
+
+**Características principales:**
+- Crea series de podcast con múltiples episodios
+- Organiza por temporadas
+- Feed RSS compatible con Apple Podcasts, Spotify y Google Podcasts
+- Reproductor HTML5 con controles de velocidad
+- Transcripciones automáticas opcionales
+- Estadísticas detalladas de reproducciones
+- Sistema de suscripciones con notificaciones
+
+**Categorías disponibles:**
+- Noticias Locales, Entrevistas, Historias del Barrio
+- Debates Comunitarios, Cultura y Arte, Educación
+- Tecnología, Deportes, Música, Comedia
+
+**Shortcodes:**
+- [podcast_player serie_id="X"] - Reproductor completo
+- [podcast_lista_episodios serie_id="X"] - Lista de episodios
+- [podcast_series] - Grid de series disponibles
+- [podcast_suscribirse serie_id="X"] - Botón de suscripción
+- [podcast_buscar] - Buscador de podcasts
+
+**Feed RSS:**
+Cada serie tiene su propio feed RSS: /feed/podcast/{id}/
+KNOWLEDGE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_faqs() {
+        return [
+            ['pregunta' => '¿Quién puede crear un podcast?', 'respuesta' => 'Cualquier miembro verificado puede crear hasta 5 series de podcast.'],
+            ['pregunta' => '¿Cuánto puede durar un episodio?', 'respuesta' => 'La duración máxima es de 2 horas por episodio.'],
+            ['pregunta' => '¿Qué formatos de audio se aceptan?', 'respuesta' => 'MP3, MP4, OGG, M4A y WAV.'],
+            ['pregunta' => '¿Cómo suscribirse desde Apple Podcasts?', 'respuesta' => 'Copia el enlace del feed RSS de la serie y añádelo en Apple Podcasts.'],
+            ['pregunta' => '¿Las estadísticas son en tiempo real?', 'respuesta' => 'Las reproducciones se registran en tiempo real, las estadísticas se actualizan cada hora.'],
+        ];
+    }
+}
