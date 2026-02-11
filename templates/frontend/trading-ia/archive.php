@@ -19,8 +19,8 @@ $reglas_activas = $reglas_activas ?? [];
     <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">Trading IA</h1>
-                <p class="text-amber-100">Bots inteligentes, reglas automatizadas y senales de trading</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('Trading IA', 'flavor-chat-ia'); ?></h1>
+                <p class="text-amber-100"><?php echo esc_html__('Bots inteligentes, reglas automatizadas y senales de trading', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -45,7 +45,7 @@ $reglas_activas = $reglas_activas ?? [];
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-lg font-bold text-gray-800">Bot de Trading</h2>
+                    <h2 class="text-lg font-bold text-gray-800"><?php echo esc_html__('Bot de Trading', 'flavor-chat-ia'); ?></h2>
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full <?php echo esc_attr($color_estado_bot); ?> <?php echo $bot_activo ? 'animate-pulse' : ''; ?>"></span>
                         <span class="text-sm text-gray-600"><?php echo esc_html($texto_estado_bot); ?></span>
@@ -69,7 +69,7 @@ $reglas_activas = $reglas_activas ?? [];
     <?php if (!empty($estadisticas)): ?>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <p class="text-sm text-gray-500 mb-1">P&L Total</p>
+            <p class="text-sm text-gray-500 mb-1"><?php echo esc_html__('P&L Total', 'flavor-chat-ia'); ?></p>
             <?php
             $pnl_total = $estadisticas['pnl_total'] ?? 0;
             $color_pnl = $pnl_total >= 0 ? 'text-green-600' : 'text-red-500';
@@ -80,15 +80,15 @@ $reglas_activas = $reglas_activas ?? [];
             </p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <p class="text-sm text-gray-500 mb-1">Win Rate</p>
+            <p class="text-sm text-gray-500 mb-1"><?php echo esc_html__('Win Rate', 'flavor-chat-ia'); ?></p>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['win_rate'] ?? '0'); ?>%</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <p class="text-sm text-gray-500 mb-1">Total Trades</p>
+            <p class="text-sm text-gray-500 mb-1"><?php echo esc_html__('Total Trades', 'flavor-chat-ia'); ?></p>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['total_trades'] ?? 0); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <p class="text-sm text-gray-500 mb-1">Reglas Activas</p>
+            <p class="text-sm text-gray-500 mb-1"><?php echo esc_html__('Reglas Activas', 'flavor-chat-ia'); ?></p>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['reglas_activas'] ?? 0); ?></p>
         </div>
     </div>
@@ -100,9 +100,9 @@ $reglas_activas = $reglas_activas ?? [];
             <!-- Trades recientes -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-gray-800">Trades recientes</h2>
+                    <h2 class="text-xl font-bold text-gray-800"><?php echo esc_html__('Trades recientes', 'flavor-chat-ia'); ?></h2>
                     <a href="<?php echo esc_url(home_url('/trading-ia/buscar/')); ?>" class="text-amber-600 hover:text-amber-700 text-sm font-medium">
-                        Ver todos
+                        <?php echo esc_html__('Ver todos', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
                 <?php if (empty($trades_recientes)): ?>
@@ -110,18 +110,18 @@ $reglas_activas = $reglas_activas ?? [];
                     <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
-                    <p class="text-sm">No hay trades registrados todavia</p>
+                    <p class="text-sm"><?php echo esc_html__('No hay trades registrados todavia', 'flavor-chat-ia'); ?></p>
                 </div>
                 <?php else: ?>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr class="text-xs text-gray-500 border-b border-gray-100">
-                                <th class="text-left pb-3 font-medium">Token</th>
-                                <th class="text-left pb-3 font-medium">Tipo</th>
-                                <th class="text-right pb-3 font-medium">Cantidad</th>
-                                <th class="text-right pb-3 font-medium">P&L</th>
-                                <th class="text-right pb-3 font-medium">Fecha</th>
+                                <th class="text-left pb-3 font-medium"><?php echo esc_html__('Token', 'flavor-chat-ia'); ?></th>
+                                <th class="text-left pb-3 font-medium"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('P&L', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
@@ -173,10 +173,10 @@ $reglas_activas = $reglas_activas ?? [];
             <!-- Reglas activas -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-gray-800">Reglas activas</h2>
+                    <h2 class="text-xl font-bold text-gray-800"><?php echo esc_html__('Reglas activas', 'flavor-chat-ia'); ?></h2>
                     <a href="<?php echo esc_url(home_url('/trading-ia/regla/')); ?>"
                        class="text-amber-600 hover:text-amber-700 text-sm font-medium">
-                        Crear nueva
+                        <?php echo esc_html__('Crear nueva', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
                 <?php if (empty($reglas_activas)): ?>
@@ -185,10 +185,10 @@ $reglas_activas = $reglas_activas ?? [];
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    <p class="text-sm mb-3">No hay reglas configuradas</p>
+                    <p class="text-sm mb-3"><?php echo esc_html__('No hay reglas configuradas', 'flavor-chat-ia'); ?></p>
                     <a href="<?php echo esc_url(home_url('/trading-ia/regla/')); ?>"
                        class="inline-block bg-amber-500 text-white px-5 py-2 rounded-xl font-semibold hover:bg-amber-600 transition-colors text-sm">
-                        Crear primera regla
+                        <?php echo esc_html__('Crear primera regla', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
                 <?php else: ?>
@@ -221,7 +221,7 @@ $reglas_activas = $reglas_activas ?? [];
                             <span class="text-xs text-gray-400"><?php echo esc_html($regla_activa['ejecuciones'] ?? 0); ?> ejecuciones</span>
                             <a href="<?php echo esc_url($regla_activa['url'] ?? '#'); ?>"
                                class="text-amber-600 hover:text-amber-700 text-sm font-medium">
-                                Editar
+                                <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     </div>
@@ -235,39 +235,39 @@ $reglas_activas = $reglas_activas ?? [];
         <div class="space-y-6">
             <!-- Acciones rapidas -->
             <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold text-lg mb-4">Acciones rapidas</h3>
+                <h3 class="font-semibold text-lg mb-4"><?php echo esc_html__('Acciones rapidas', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <a href="<?php echo esc_url(home_url('/trading-ia/comprar/')); ?>"
                        class="w-full bg-white text-orange-700 py-3 px-4 rounded-xl font-semibold hover:bg-amber-50 transition-colors flex items-center justify-center gap-2 shadow-md">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                         </svg>
-                        Compra Manual
+                        <?php echo esc_html__('Compra Manual', 'flavor-chat-ia'); ?>
                     </a>
                     <a href="<?php echo esc_url(home_url('/trading-ia/vender/')); ?>"
                        class="w-full bg-white/20 backdrop-blur text-white py-3 px-4 rounded-xl font-semibold hover:bg-white/30 transition-colors flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
                         </svg>
-                        Venta Manual
+                        <?php echo esc_html__('Venta Manual', 'flavor-chat-ia'); ?>
                     </a>
                     <a href="<?php echo esc_url(home_url('/trading-ia/regla/')); ?>"
                        class="w-full bg-white/20 backdrop-blur text-white py-3 px-4 rounded-xl font-semibold hover:bg-white/30 transition-colors flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
-                        Crear Regla
+                        <?php echo esc_html__('Crear Regla', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
 
             <!-- Resumen de rendimiento -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Rendimiento</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Rendimiento', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-4">
                     <div>
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-sm text-gray-500">Win Rate</span>
+                            <span class="text-sm text-gray-500"><?php echo esc_html__('Win Rate', 'flavor-chat-ia'); ?></span>
                             <span class="text-sm font-semibold text-gray-800"><?php echo esc_html($estadisticas['win_rate'] ?? '0'); ?>%</span>
                         </div>
                         <div class="w-full bg-gray-100 rounded-full h-2">
@@ -276,19 +276,19 @@ $reglas_activas = $reglas_activas ?? [];
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Trades ganados</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('Trades ganados', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm font-medium text-green-600"><?php echo esc_html($estadisticas['trades_ganados'] ?? 0); ?></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Trades perdidos</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('Trades perdidos', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm font-medium text-red-500"><?php echo esc_html($estadisticas['trades_perdidos'] ?? 0); ?></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Mejor trade</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('Mejor trade', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm font-medium text-green-600"><?php echo esc_html($estadisticas['mejor_trade'] ?? '$0'); ?></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Peor trade</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('Peor trade', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm font-medium text-red-500"><?php echo esc_html($estadisticas['peor_trade'] ?? '$0'); ?></span>
                     </div>
                 </div>
@@ -296,7 +296,7 @@ $reglas_activas = $reglas_activas ?? [];
 
             <!-- Senales recientes -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Senales IA</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Senales IA', 'flavor-chat-ia'); ?></h3>
                 <?php if (!empty($estadisticas['senales_recientes'])): ?>
                 <div class="space-y-3">
                     <?php foreach ($estadisticas['senales_recientes'] as $senal_ia): ?>
@@ -315,7 +315,7 @@ $reglas_activas = $reglas_activas ?? [];
                 </div>
                 <?php else: ?>
                 <div class="text-center py-4 text-gray-400">
-                    <p class="text-sm">Sin senales recientes</p>
+                    <p class="text-sm"><?php echo esc_html__('Sin senales recientes', 'flavor-chat-ia'); ?></p>
                 </div>
                 <?php endif; ?>
             </div>

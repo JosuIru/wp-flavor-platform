@@ -117,7 +117,8 @@ class Flavor_Dashboard_Manager {
      * Inicializar hooks
      */
     private function init_hooks() {
-        add_action('admin_menu', [$this, 'add_dashboard_page']);
+        // NOTA: El menú principal se registra centralizadamente en class-admin-menu-manager.php
+        // add_action('admin_menu', [$this, 'add_dashboard_page']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
 
         // AJAX handlers
@@ -294,7 +295,7 @@ class Flavor_Dashboard_Manager {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $layout = $this->get_user_layout();
@@ -327,7 +328,7 @@ class Flavor_Dashboard_Manager {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $layout = array_map('sanitize_text_field', $_POST['layout'] ?? []);
@@ -343,7 +344,7 @@ class Flavor_Dashboard_Manager {
         $user_id = get_current_user_id();
         update_user_meta($user_id, 'flavor_dashboard_layout', $valid_layout);
 
-        wp_send_json_success(['message' => 'Layout guardado']);
+        wp_send_json_success(['message' => __('Layout guardado', 'flavor-chat-ia')]);
     }
 
     /**
@@ -353,13 +354,13 @@ class Flavor_Dashboard_Manager {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $widget_id = sanitize_text_field($_POST['widget_id'] ?? '');
 
         if (!isset($this->widgets[$widget_id])) {
-            wp_send_json_error(['message' => 'Widget no encontrado']);
+            wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-chat-ia')]);
         }
 
         ob_start();

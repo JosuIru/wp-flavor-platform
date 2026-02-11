@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/config/app_config.dart';
@@ -8,6 +9,7 @@ class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
 
   Future<void> _launchEmail(BuildContext context, {String? subject, String? body}) async {
+    final i18n = AppLocalizations.of(context)!;
     final uri = Uri(
       scheme: 'mailto',
       path: AppConfig.developerEmail,
@@ -24,13 +26,14 @@ class SupportScreen extends StatelessWidget {
       await Clipboard.setData(ClipboardData(text: AppConfig.developerEmail));
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Email copiado al portapapeles')),
+          SnackBar(content: Text(i18n.emailCopiadoAlPortapapelesDf197f)),
         );
       }
     }
   }
 
   Future<void> _launchPhone(BuildContext context) async {
+    final i18n = AppLocalizations.of(context)!;
     final uri = Uri(scheme: 'tel', path: AppConfig.developerPhone);
 
     if (await canLaunchUrl(uri)) {
@@ -39,13 +42,14 @@ class SupportScreen extends StatelessWidget {
       await Clipboard.setData(ClipboardData(text: AppConfig.developerPhone));
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Telefono copiado al portapapeles')),
+          SnackBar(content: Text(i18n.telefonoCopiadoAlPortapapeles5300e7)),
         );
       }
     }
   }
 
   Future<void> _launchWhatsApp(BuildContext context) async {
+    final i18n = AppLocalizations.of(context)!;
     // Limpiar el numero de telefono para WhatsApp
     final phone = AppConfig.developerPhone.replaceAll(RegExp(r'[^\d]'), '');
     final uri = Uri.parse('https://wa.me/$phone');
@@ -55,7 +59,7 @@ class SupportScreen extends StatelessWidget {
     } else {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No se pudo abrir WhatsApp')),
+          SnackBar(content: Text(i18n.noSePudoAbrirWhatsapp0e9a90)),
         );
       }
     }
@@ -63,11 +67,12 @@ class SupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Soporte'),
+        title: Text(i18n.soporte54532b),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -105,8 +110,7 @@ class SupportScreen extends StatelessWidget {
                                 ),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            'Equipo de desarrollo',
+                          Text(AppLocalizations.of(context)!.equipoDeDesarrollo,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: colorScheme.onPrimaryContainer.withOpacity(0.8),
                                 ),
@@ -122,8 +126,7 @@ class SupportScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Contacto rapido
-            Text(
-              'Contacto rapido',
+            Text(AppLocalizations.of(context)!.contactoRapido,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -134,7 +137,7 @@ class SupportScreen extends StatelessWidget {
                 Expanded(
                   child: _ContactButton(
                     icon: Icons.email,
-                    label: 'Email',
+                    label: i18n.supportContactEmailLabel,
                     color: Colors.red,
                     onTap: () => _launchEmail(context),
                   ),
@@ -143,7 +146,7 @@ class SupportScreen extends StatelessWidget {
                 Expanded(
                   child: _ContactButton(
                     icon: Icons.phone,
-                    label: 'Llamar',
+                    label: i18n.supportContactCallLabel,
                     color: Colors.blue,
                     onTap: () => _launchPhone(context),
                   ),
@@ -152,7 +155,7 @@ class SupportScreen extends StatelessWidget {
                 Expanded(
                   child: _ContactButton(
                     icon: Icons.chat,
-                    label: 'WhatsApp',
+                    label: i18n.supportContactWhatsAppLabel,
                     color: Colors.green,
                     onTap: () => _launchWhatsApp(context),
                   ),
@@ -163,8 +166,7 @@ class SupportScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Opciones de soporte
-            Text(
-              'Necesito ayuda con...',
+            Text(AppLocalizations.of(context)!.necesitoAyudaCon,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -172,60 +174,59 @@ class SupportScreen extends StatelessWidget {
             const SizedBox(height: 12),
             _SupportOption(
               icon: Icons.bug_report,
-              title: 'Reportar un problema',
-              description: 'Algo no funciona como esperaba',
+              title: i18n.supportReportProblemTitle,
+              description: i18n.supportReportProblemDesc,
               onTap: () => _launchEmail(
                 context,
-                subject: '[App Admin] Reporte de problema',
-                body: 'Hola,\n\nHe encontrado un problema en la app:\n\nDescripcion del problema:\n\n\nPasos para reproducirlo:\n1. \n2. \n3. \n\nVersion de la app: ${AppConfig.appVersion}\n\nGracias.',
+                subject: i18n.supportReportProblemSubject,
+                body: i18n.supportReportProblemBody(AppConfig.appVersion),
               ),
             ),
             _SupportOption(
               icon: Icons.lightbulb,
-              title: 'Proponer una mejora',
-              description: 'Tengo una idea para mejorar la app',
+              title: i18n.supportSuggestImprovementTitle,
+              description: i18n.supportSuggestImprovementDesc,
               onTap: () => _launchEmail(
                 context,
-                subject: '[App Admin] Propuesta de mejora',
-                body: 'Hola,\n\nMe gustaria proponer la siguiente mejora:\n\nDescripcion de la mejora:\n\n\nPor que seria util:\n\n\nVersion de la app: ${AppConfig.appVersion}\n\nGracias.',
+                subject: i18n.supportSuggestImprovementSubject,
+                body: i18n.supportSuggestImprovementBody(AppConfig.appVersion),
               ),
             ),
             _SupportOption(
               icon: Icons.help_outline,
-              title: 'Pregunta general',
-              description: 'Tengo una duda sobre el funcionamiento',
+              title: i18n.supportGeneralQuestionTitle,
+              description: i18n.supportGeneralQuestionDesc,
               onTap: () => _launchEmail(
                 context,
-                subject: '[App Admin] Consulta',
-                body: 'Hola,\n\nTengo una pregunta:\n\n\n\nVersion de la app: ${AppConfig.appVersion}\n\nGracias.',
+                subject: i18n.supportGeneralQuestionSubject,
+                body: i18n.supportGeneralQuestionBody(AppConfig.appVersion),
               ),
             ),
             _SupportOption(
               icon: Icons.add_circle_outline,
-              title: 'Solicitar nueva funcionalidad',
-              description: 'Necesito algo que la app no tiene',
+              title: i18n.supportRequestFeatureTitle,
+              description: i18n.supportRequestFeatureDesc,
               onTap: () => _launchEmail(
                 context,
-                subject: '[App Admin] Solicitud de funcionalidad',
-                body: 'Hola,\n\nMe gustaria solicitar la siguiente funcionalidad:\n\nDescripcion:\n\n\nCaso de uso:\n\n\nPrioridad (alta/media/baja):\n\nVersion de la app: ${AppConfig.appVersion}\n\nGracias.',
+                subject: i18n.supportRequestFeatureSubject,
+                body: i18n.supportRequestFeatureBody(AppConfig.appVersion),
               ),
             ),
             _SupportOption(
               icon: Icons.school,
-              title: 'Solicitar formacion',
-              description: 'Necesito ayuda para usar la app',
+              title: i18n.supportRequestTrainingTitle,
+              description: i18n.supportRequestTrainingDesc,
               onTap: () => _launchEmail(
                 context,
-                subject: '[App Admin] Solicitud de formacion',
-                body: 'Hola,\n\nMe gustaria solicitar formacion sobre:\n\n\n\nDisponibilidad horaria:\n\n\nVersion de la app: ${AppConfig.appVersion}\n\nGracias.',
+                subject: i18n.supportRequestTrainingSubject,
+                body: i18n.supportRequestTrainingBody(AppConfig.appVersion),
               ),
             ),
 
             const SizedBox(height: 24),
 
             // Info de contacto
-            Text(
-              'Datos de contacto',
+            Text(AppLocalizations.of(context)!.datosDeContacto,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -236,7 +237,7 @@ class SupportScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: const Icon(Icons.email),
-                    title: const Text('Email'),
+                    title: Text(i18n.emailCe8ae9),
                     subtitle: Text(AppConfig.developerEmail),
                     trailing: IconButton(
                       icon: const Icon(Icons.copy),
@@ -246,7 +247,7 @@ class SupportScreen extends StatelessWidget {
                         );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Email copiado')),
+                            SnackBar(content: Text(i18n.emailCopiadoFa2686)),
                           );
                         }
                       },
@@ -256,7 +257,7 @@ class SupportScreen extends StatelessWidget {
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.phone),
-                    title: const Text('Telefono'),
+                    title: Text(i18n.telefonoBdf77d),
                     subtitle: Text(AppConfig.developerPhone),
                     trailing: IconButton(
                       icon: const Icon(Icons.copy),
@@ -266,7 +267,7 @@ class SupportScreen extends StatelessWidget {
                         );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Telefono copiado')),
+                            SnackBar(content: Text(i18n.telefonoCopiado6cb976)),
                           );
                         }
                       },
@@ -294,15 +295,13 @@ class SupportScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Horario de atencion',
+                          Text(AppLocalizations.of(context)!.horarioDeAtencion,
                             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            'Lunes a Viernes: 9:00 - 18:00',
+                          Text(AppLocalizations.of(context)!.lunesAViernes9001800,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
@@ -336,6 +335,7 @@ class _ContactButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -382,6 +382,7 @@ class _SupportOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(

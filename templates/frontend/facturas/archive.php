@@ -23,8 +23,8 @@ $estadisticas = $estadisticas ?? [];
     <div class="bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">Facturas</h1>
-                <p class="text-emerald-100">Gestiona y controla todas tus facturas en un solo lugar</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('Facturas', 'flavor-chat-ia'); ?></h1>
+                <p class="text-emerald-100"><?php echo esc_html__('Gestiona y controla todas tus facturas en un solo lugar', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -32,7 +32,7 @@ $estadisticas = $estadisticas ?? [];
                 </span>
                 <a href="<?php echo esc_url(home_url('/facturas/crear/')); ?>"
                    class="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-emerald-50 transition-all shadow-md">
-                    Nueva Factura
+                    <?php echo esc_html__('Nueva Factura', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </div>
@@ -44,44 +44,44 @@ $estadisticas = $estadisticas ?? [];
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">&#128196;</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['total_facturas'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Total facturas</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Total facturas', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">&#9203;</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['pendientes_pago'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Pendientes de pago</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Pendientes de pago', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">&#128176;</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['facturado_mes'] ?? '0 &euro;'); ?></p>
-            <p class="text-sm text-gray-500">Facturado este mes</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Facturado este mes', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">&#128200;</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['tasa_cobro'] ?? '0%'); ?></p>
-            <p class="text-sm text-gray-500">Tasa de cobro</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Tasa de cobro', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
     <?php endif; ?>
 
     <!-- Como funciona -->
     <div class="bg-emerald-50 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Como funciona</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('Como funciona', 'flavor-chat-ia'); ?></h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="text-center">
                 <div class="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">&#128221;</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Crea</h3>
-                <p class="text-sm text-gray-600">Genera facturas profesionales con todos los datos fiscales</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Crea', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Genera facturas profesionales con todos los datos fiscales', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">&#128233;</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Envia</h3>
-                <p class="text-sm text-gray-600">Envia la factura al cliente directamente por email</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Envia', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Envia la factura al cliente directamente por email', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">&#9989;</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Cobra</h3>
-                <p class="text-sm text-gray-600">Controla el estado de pago y gestiona los cobros</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Cobra', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Controla el estado de pago y gestiona los cobros', 'flavor-chat-ia'); ?></p>
             </div>
         </div>
     </div>
@@ -89,19 +89,19 @@ $estadisticas = $estadisticas ?? [];
     <!-- Filtros por estado -->
     <div class="flex flex-wrap gap-2 mb-6">
         <button class="px-4 py-2 rounded-full bg-emerald-100 text-emerald-700 font-medium hover:bg-emerald-200 transition-colors filter-active" data-estado="todas">
-            Todas
+            <?php echo esc_html__('Todas', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-estado="pendiente">
-            Pendientes
+            <?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-estado="pagada">
-            Pagadas
+            <?php echo esc_html__('Pagadas', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-estado="vencida">
-            Vencidas
+            <?php echo esc_html__('Vencidas', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-estado="borrador">
-            Borradores
+            <?php echo esc_html__('Borradores', 'flavor-chat-ia'); ?>
         </button>
     </div>
 
@@ -110,11 +110,11 @@ $estadisticas = $estadisticas ?? [];
         <?php if (empty($facturas)): ?>
         <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
             <div class="text-6xl mb-4">&#128196;</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay facturas registradas</h3>
-            <p class="text-gray-500 mb-6">Empieza a facturar creando tu primera factura</p>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay facturas registradas', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-6"><?php echo esc_html__('Empieza a facturar creando tu primera factura', 'flavor-chat-ia'); ?></p>
             <a href="<?php echo esc_url(home_url('/facturas/crear/')); ?>"
                class="inline-block bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-600 transition-colors">
-                Nueva Factura
+                <?php echo esc_html__('Nueva Factura', 'flavor-chat-ia'); ?>
             </a>
         </div>
         <?php else: ?>
@@ -170,7 +170,7 @@ $estadisticas = $estadisticas ?? [];
                     </span>
                     <a href="<?php echo esc_url($factura_item['url'] ?? '#'); ?>"
                        class="bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-600 transition-colors">
-                        Ver factura
+                        <?php echo esc_html__('Ver factura', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
@@ -183,9 +183,9 @@ $estadisticas = $estadisticas ?? [];
     <?php if ($total_facturas > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">&larr; Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('&larr; Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo ceil($total_facturas / 12); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-colors">Siguiente &rarr;</button>
+            <button class="px-4 py-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"><?php echo esc_html__('Siguiente &rarr;', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

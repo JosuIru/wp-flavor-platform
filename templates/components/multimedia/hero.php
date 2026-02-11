@@ -25,26 +25,26 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
             <p class="text-xl md:text-2xl mb-12" style="color: rgba(255,255,255,0.9);"><?php echo esc_html($subtitulo ?? 'Comparte tus momentos'); ?></p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <a href="#subir" class="flavor-button flavor-button-primary px-8">Subir Contenido</a>
-                <a href="#explorar" class="flavor-button px-8">Explorar Galería</a>
+                <a href="#subir" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Subir Contenido', 'flavor-chat-ia'); ?></a>
+                <a href="#explorar" class="flavor-button px-8"><?php echo esc_html__('Explorar Galería', 'flavor-chat-ia'); ?></a>
             </div>
 
             <div class="grid grid-cols-4 gap-4">
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">6K+</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Archivos</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('6K+', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Archivos', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">500GB</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Almacenado</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('500GB', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Almacenado', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">1.8K</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Usuarios</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('1.8K', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Usuarios', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">24/7</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Acceso</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Acceso', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
         </div>

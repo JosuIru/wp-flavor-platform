@@ -38,8 +38,8 @@ class AppConfig {
   static const bool isDebug = false;
 
   /// Información del desarrollador (personalizar antes de distribuir)
-  static const String developerName = 'Tu Empresa';
-  static const String developerEmail = 'info@tuempresa.com';
+  static const String developerName = 'gailu Wz';
+  static const String developerEmail = 'info@gailu.net';
   static const String developerPhone = '+34 600 000 000';
 
   /// Package names de las apps (cambiar en build.gradle para producción)

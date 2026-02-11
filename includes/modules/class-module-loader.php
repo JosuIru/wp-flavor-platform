@@ -9,6 +9,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Cargar trait para páginas de admin de módulos
+$trait_file = FLAVOR_CHAT_IA_PATH . 'includes/admin/trait-module-admin-pages.php';
+if (file_exists($trait_file) && !trait_exists('Flavor_Module_Admin_Pages_Trait')) {
+    require_once $trait_file;
+}
+
 /**
  * Clase que gestiona la carga de módulos
  */
@@ -293,6 +299,12 @@ class Flavor_Chat_Module_Loader {
             return false;
         }
 
+        // Si el módulo registra shortcodes en init pero init ya ocurrió,
+        // intentar registrarlos manualmente para evitar que el shortcode se muestre como texto.
+        if (did_action('init') && is_callable([$module, 'register_shortcodes'])) {
+            $module->register_shortcodes();
+        }
+
         // Si no puede activarse, intentar crear tablas automáticamente
         if (!$module->can_activate()) {
             flavor_chat_ia_log("Intentando crear tablas para módulo: {$module_id}", 'info');
@@ -350,6 +362,28 @@ class Flavor_Chat_Module_Loader {
      * @return Flavor_Chat_Module_Interface|null
      */
     public function get_module($module_id) {
+        if (isset($this->loaded_modules[$module_id])) {
+            return $this->loaded_modules[$module_id];
+        }
+
+        $id_normalizado = str_replace('-', '_', $module_id);
+        if (isset($this->loaded_modules[$id_normalizado])) {
+            return $this->loaded_modules[$id_normalizado];
+        }
+
+        if (!isset($this->registered_modules[$module_id]) && isset($this->registered_modules[$id_normalizado])) {
+            $module_id = $id_normalizado;
+        }
+
+        if (!isset($this->registered_modules[$module_id])) {
+            return null;
+        }
+
+        $allow_lazy_load = apply_filters('flavor_chat_ia_lazy_load_modules', true, $module_id);
+        if ($allow_lazy_load || $this->is_module_active($module_id)) {
+            $this->load_module($module_id);
+        }
+
         return $this->loaded_modules[$module_id] ?? null;
     }
 
@@ -371,22 +405,27 @@ class Flavor_Chat_Module_Loader {
         $modules_info = [];
 
         foreach ($this->registered_modules as $id => $module_data) {
-            // Cargar temporalmente para obtener info
-            if (file_exists($module_data['file'])) {
-                require_once $module_data['file'];
-
-                if (class_exists($module_data['class'])) {
-                    $module = new $module_data['class']();
-                    $modules_info[$id] = [
-                        'id' => $module->get_id(),
-                        'name' => $module->get_name(),
-                        'description' => $module->get_description(),
-                        'can_activate' => $module->can_activate(),
-                        'activation_error' => $module->get_activation_error(),
-                        'is_loaded' => isset($this->loaded_modules[$id]),
-                    ];
-                }
+            if (isset($this->loaded_modules[$id])) {
+                $module = $this->loaded_modules[$id];
+                $modules_info[$id] = [
+                    'id' => $module->get_id(),
+                    'name' => $module->get_name(),
+                    'description' => $module->get_description(),
+                    'can_activate' => $module->can_activate(),
+                    'activation_error' => $module->get_activation_error(),
+                    'is_loaded' => true,
+                ];
+                continue;
             }
+
+            $modules_info[$id] = [
+                'id' => $id,
+                'name' => ucwords(str_replace(['_', '-'], ' ', $id)),
+                'description' => '',
+                'can_activate' => true,
+                'activation_error' => '',
+                'is_loaded' => false,
+            ];
         }
 
         return $modules_info;
@@ -491,5 +530,153 @@ class Flavor_Chat_Module_Loader {
         }
 
         return $faqs;
+    }
+
+    /**
+     * Obtiene la visibilidad de un módulo específico
+     *
+     * @param string $module_id ID del módulo
+     * @return string|null Visibilidad del módulo o null si no existe
+     */
+    public function get_module_visibility($module_id) {
+        // Primero verificar si hay visibilidad configurada en admin
+        $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
+
+        if (isset($visibilidades_configuradas[$module_id])) {
+            return $visibilidades_configuradas[$module_id];
+        }
+
+        // Si el módulo está cargado, obtener su visibilidad por defecto
+        if (isset($this->loaded_modules[$module_id])) {
+            return $this->loaded_modules[$module_id]->get_visibility();
+        }
+
+        // Si no está cargado, intentar cargar temporalmente para obtener info
+        if (isset($this->registered_modules[$module_id])) {
+            $module_data = $this->registered_modules[$module_id];
+
+            if (file_exists($module_data['file'])) {
+                require_once $module_data['file'];
+
+                if (class_exists($module_data['class'])) {
+                    $module_temporal = new $module_data['class']();
+                    return $module_temporal->get_visibility();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Obtiene la capacidad requerida de un módulo específico
+     *
+     * @param string $module_id ID del módulo
+     * @return string|null Capacidad requerida o null si no existe
+     */
+    public function get_module_required_capability($module_id) {
+        // Primero verificar si hay capacidad configurada en admin
+        $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
+
+        if (isset($capacidades_configuradas[$module_id])) {
+            return $capacidades_configuradas[$module_id];
+        }
+
+        // Si el módulo está cargado, obtener su capacidad por defecto
+        if (isset($this->loaded_modules[$module_id])) {
+            return $this->loaded_modules[$module_id]->get_required_capability();
+        }
+
+        // Si no está cargado, intentar cargar temporalmente para obtener info
+        if (isset($this->registered_modules[$module_id])) {
+            $module_data = $this->registered_modules[$module_id];
+
+            if (file_exists($module_data['file'])) {
+                require_once $module_data['file'];
+
+                if (class_exists($module_data['class'])) {
+                    $module_temporal = new $module_data['class']();
+                    return $module_temporal->get_required_capability();
+                }
+            }
+        }
+
+        return 'read';
+    }
+
+    /**
+     * Obtiene información de visibilidad de todos los módulos registrados
+     *
+     * @return array Array con información de visibilidad por módulo
+     */
+    public function get_all_modules_visibility_info() {
+        $informacion_visibilidad = [];
+        $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
+        $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
+
+        foreach ($this->registered_modules as $module_id => $module_data) {
+            if (file_exists($module_data['file'])) {
+                require_once $module_data['file'];
+
+                if (class_exists($module_data['class'])) {
+                    $module_temporal = new $module_data['class']();
+
+                    $informacion_visibilidad[$module_id] = [
+                        'id' => $module_id,
+                        'name' => $module_temporal->get_name(),
+                        'default_visibility' => method_exists($module_temporal, 'get_default_visibility')
+                            ? $module_temporal->get_default_visibility()
+                            : 'public',
+                        'current_visibility' => $visibilidades_configuradas[$module_id]
+                            ?? (method_exists($module_temporal, 'get_default_visibility')
+                                ? $module_temporal->get_default_visibility()
+                                : 'public'),
+                        'default_capability' => method_exists($module_temporal, 'get_default_capability')
+                            ? $module_temporal->get_default_capability()
+                            : 'read',
+                        'current_capability' => $capacidades_configuradas[$module_id]
+                            ?? (method_exists($module_temporal, 'get_default_capability')
+                                ? $module_temporal->get_default_capability()
+                                : 'read'),
+                    ];
+                }
+            }
+        }
+
+        return $informacion_visibilidad;
+    }
+
+    /**
+     * Verifica si un usuario puede acceder a un módulo
+     *
+     * @param string $module_id ID del módulo
+     * @param int|null $user_id ID del usuario (null para usuario actual)
+     * @return bool
+     */
+    public function user_can_access_module($module_id, $user_id = null) {
+        // Delegar al Access Control si está disponible
+        if (class_exists('Flavor_Module_Access_Control')) {
+            $control_acceso = Flavor_Module_Access_Control::get_instance();
+            return $control_acceso->user_can_access($module_id, $user_id);
+        }
+
+        // Fallback básico
+        $visibilidad = $this->get_module_visibility($module_id);
+
+        if ($visibilidad === 'public') {
+            return true;
+        }
+
+        if (!$user_id) {
+            $user_id = get_current_user_id();
+        }
+
+        if (!$user_id) {
+            return false;
+        }
+
+        $capacidad_requerida = $this->get_module_required_capability($module_id);
+
+        return user_can($user_id, $capacidad_requerida);
     }
 }

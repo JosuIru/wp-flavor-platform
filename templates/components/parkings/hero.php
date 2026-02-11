@@ -29,19 +29,19 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
                 <form class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">Ubicación</label>
-                            <input type="text" placeholder="Dirección o barrio..." class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('Ubicación', 'flavor-chat-ia'); ?></label>
+                            <input type="text" placeholder="<?php echo esc_attr__('Dirección o barrio...', 'flavor-chat-ia'); ?>" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">Desde</label>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('Desde', 'flavor-chat-ia'); ?></label>
                             <input type="datetime-local" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">Hasta</label>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('Hasta', 'flavor-chat-ia'); ?></label>
                             <input type="datetime-local" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
                         </div>
                     </div>
-                    <button type="submit" class="flavor-button flavor-button-primary w-full md:w-auto px-12">Buscar Parking</button>
+                    <button type="submit" class="flavor-button flavor-button-primary w-full md:w-auto px-12"><?php echo esc_html__('Buscar Parking', 'flavor-chat-ia'); ?></button>
                 </form>
             </div>
             <?php endif; ?>
@@ -49,15 +49,15 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
             <div class="grid grid-cols-3 gap-6 mt-8">
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">250+</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Plazas</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Plazas', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">€2-5/h</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Precio medio</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('€2-5/h', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Precio medio', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">€300+</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Gana/mes</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Gana/mes', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
         </div>

@@ -78,7 +78,7 @@ if (class_exists('WooCommerce')) {
                     <article class="flavor-producto-card flavor-placeholder">
                         <div class="flavor-producto-imagen"></div>
                         <div class="flavor-producto-info">
-                            <h3 class="flavor-producto-nombre">Producto de ejemplo</h3>
+                            <h3 class="flavor-producto-nombre"><?php echo esc_html__('Producto de ejemplo', 'flavor-chat-ia'); ?></h3>
                             <div class="flavor-producto-precio">€29.99</div>
                         </div>
                     </article>

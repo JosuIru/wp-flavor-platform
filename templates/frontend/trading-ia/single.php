@@ -16,14 +16,14 @@ $historial = $historial ?? [];
 <div class="flavor-frontend flavor-trading-ia-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/trading-ia/')); ?>" class="hover:text-amber-600 transition-colors">Trading IA</a>
+        <a href="<?php echo esc_url(home_url('/trading-ia/')); ?>" class="hover:text-amber-600 transition-colors"><?php echo esc_html__('Trading IA', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
         <?php if (!empty($trade['id'])): ?>
         <span class="text-gray-700">Trade #<?php echo esc_html($trade['id']); ?></span>
         <?php elseif (!empty($regla['id'])): ?>
         <span class="text-gray-700">Regla: <?php echo esc_html($regla['nombre'] ?? ''); ?></span>
         <?php else: ?>
-        <span class="text-gray-700">Detalle</span>
+        <span class="text-gray-700"><?php echo esc_html__('Detalle', 'flavor-chat-ia'); ?></span>
         <?php endif; ?>
     </nav>
 
@@ -59,19 +59,19 @@ $historial = $historial ?? [];
                 <!-- Metricas del trade -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div class="bg-gray-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">Cantidad</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></p>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($trade['cantidad'] ?? '0'); ?></p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">Precio entrada</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Precio entrada', 'flavor-chat-ia'); ?></p>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($trade['precio_entrada'] ?? '$0.00'); ?></p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">Precio salida</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Precio salida', 'flavor-chat-ia'); ?></p>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($trade['precio_salida'] ?? '-'); ?></p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">P&L</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('P&L', 'flavor-chat-ia'); ?></p>
                         <?php
                         $pnl_detalle = $trade['pnl'] ?? 0;
                         $color_pnl_detalle = $pnl_detalle >= 0 ? 'text-green-600' : 'text-red-500';
@@ -85,33 +85,33 @@ $historial = $historial ?? [];
 
                 <!-- Detalles adicionales del trade -->
                 <div class="border-t border-gray-100 pt-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Detalles de la operacion</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Detalles de la operacion', 'flavor-chat-ia'); ?></h2>
                     <dl class="grid grid-cols-2 gap-4">
                         <div>
-                            <dt class="text-sm text-gray-500">Fecha apertura</dt>
+                            <dt class="text-sm text-gray-500"><?php echo esc_html__('Fecha apertura', 'flavor-chat-ia'); ?></dt>
                             <dd class="text-gray-800 font-medium"><?php echo esc_html($trade['fecha_apertura'] ?? ''); ?></dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Fecha cierre</dt>
+                            <dt class="text-sm text-gray-500"><?php echo esc_html__('Fecha cierre', 'flavor-chat-ia'); ?></dt>
                             <dd class="text-gray-800 font-medium"><?php echo esc_html($trade['fecha_cierre'] ?? 'Abierto'); ?></dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Fee pagado</dt>
+                            <dt class="text-sm text-gray-500"><?php echo esc_html__('Fee pagado', 'flavor-chat-ia'); ?></dt>
                             <dd class="text-gray-800 font-medium"><?php echo esc_html($trade['fee'] ?? '$0.00'); ?></dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Origen</dt>
+                            <dt class="text-sm text-gray-500"><?php echo esc_html__('Origen', 'flavor-chat-ia'); ?></dt>
                             <dd class="text-gray-800 font-medium"><?php echo esc_html($trade['origen'] ?? 'Manual'); ?></dd>
                         </div>
                         <?php if (!empty($trade['stop_loss'])): ?>
                         <div>
-                            <dt class="text-sm text-gray-500">Stop Loss</dt>
+                            <dt class="text-sm text-gray-500"><?php echo esc_html__('Stop Loss', 'flavor-chat-ia'); ?></dt>
                             <dd class="text-gray-800 font-medium"><?php echo esc_html($trade['stop_loss']); ?></dd>
                         </div>
                         <?php endif; ?>
                         <?php if (!empty($trade['take_profit'])): ?>
                         <div>
-                            <dt class="text-sm text-gray-500">Take Profit</dt>
+                            <dt class="text-sm text-gray-500"><?php echo esc_html__('Take Profit', 'flavor-chat-ia'); ?></dt>
                             <dd class="text-gray-800 font-medium"><?php echo esc_html($trade['take_profit']); ?></dd>
                         </div>
                         <?php endif; ?>
@@ -121,7 +121,7 @@ $historial = $historial ?? [];
                 <!-- Notas de la IA -->
                 <?php if (!empty($trade['notas_ia'])): ?>
                 <div class="border-t border-gray-100 pt-6 mt-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-3">Analisis IA</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3"><?php echo esc_html__('Analisis IA', 'flavor-chat-ia'); ?></h2>
                     <div class="bg-amber-50 rounded-xl p-4 text-sm text-gray-700">
                         <?php echo wp_kses_post($trade['notas_ia']); ?>
                     </div>
@@ -133,7 +133,7 @@ $historial = $historial ?? [];
         <!-- Sidebar del trade -->
         <div class="space-y-6">
             <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold text-lg mb-4">Resultado</h3>
+                <h3 class="font-semibold text-lg mb-4"><?php echo esc_html__('Resultado', 'flavor-chat-ia'); ?></h3>
                 <div class="text-center mb-4">
                     <?php
                     $pnl_porcentaje = $trade['pnl_porcentaje'] ?? 0;
@@ -143,19 +143,19 @@ $historial = $historial ?? [];
                     <p class="text-4xl font-bold <?php echo esc_attr($color_resultado); ?>">
                         <?php echo esc_html($signo_resultado . $pnl_porcentaje); ?>%
                     </p>
-                    <p class="text-amber-100 text-sm mt-1">Retorno de la operacion</p>
+                    <p class="text-amber-100 text-sm mt-1"><?php echo esc_html__('Retorno de la operacion', 'flavor-chat-ia'); ?></p>
                 </div>
                 <div class="space-y-2 text-sm">
                     <div class="flex items-center justify-between text-amber-100">
-                        <span>Inversion</span>
+                        <span><?php echo esc_html__('Inversion', 'flavor-chat-ia'); ?></span>
                         <span class="text-white font-medium"><?php echo esc_html($trade['inversion_total'] ?? '$0.00'); ?></span>
                     </div>
                     <div class="flex items-center justify-between text-amber-100">
-                        <span>Valor actual</span>
+                        <span><?php echo esc_html__('Valor actual', 'flavor-chat-ia'); ?></span>
                         <span class="text-white font-medium"><?php echo esc_html($trade['valor_actual'] ?? '$0.00'); ?></span>
                     </div>
                     <div class="flex items-center justify-between text-amber-100">
-                        <span>Duracion</span>
+                        <span><?php echo esc_html__('Duracion', 'flavor-chat-ia'); ?></span>
                         <span class="text-white font-medium"><?php echo esc_html($trade['duracion'] ?? '-'); ?></span>
                     </div>
                 </div>
@@ -164,7 +164,7 @@ $historial = $historial ?? [];
             <!-- Regla asociada -->
             <?php if (!empty($trade['regla_asociada'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-3">Regla asociada</h3>
+                <h3 class="font-semibold text-gray-800 mb-3"><?php echo esc_html__('Regla asociada', 'flavor-chat-ia'); ?></h3>
                 <a href="<?php echo esc_url($trade['regla_asociada']['url'] ?? '#'); ?>"
                    class="block p-4 rounded-xl border border-amber-200 bg-amber-50/30 hover:bg-amber-50 transition-colors">
                     <p class="font-medium text-gray-800 text-sm"><?php echo esc_html($trade['regla_asociada']['nombre'] ?? ''); ?></p>
@@ -209,33 +209,33 @@ $historial = $historial ?? [];
                 <!-- Configuracion de la regla -->
                 <div class="space-y-6">
                     <div>
-                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Configuracion</h2>
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Configuracion', 'flavor-chat-ia'); ?></h2>
                         <dl class="grid grid-cols-2 gap-4">
                             <div>
-                                <dt class="text-sm text-gray-500">Token</dt>
+                                <dt class="text-sm text-gray-500"><?php echo esc_html__('Token', 'flavor-chat-ia'); ?></dt>
                                 <dd class="text-gray-800 font-medium"><?php echo esc_html($regla['token'] ?? ''); ?></dd>
                             </div>
                             <div>
-                                <dt class="text-sm text-gray-500">Tipo de accion</dt>
+                                <dt class="text-sm text-gray-500"><?php echo esc_html__('Tipo de accion', 'flavor-chat-ia'); ?></dt>
                                 <dd class="text-gray-800 font-medium"><?php echo esc_html($regla['tipo_accion'] ?? ''); ?></dd>
                             </div>
                             <div>
-                                <dt class="text-sm text-gray-500">Condicion</dt>
+                                <dt class="text-sm text-gray-500"><?php echo esc_html__('Condicion', 'flavor-chat-ia'); ?></dt>
                                 <dd class="text-gray-800 font-medium"><?php echo esc_html($regla['condicion'] ?? ''); ?></dd>
                             </div>
                             <div>
-                                <dt class="text-sm text-gray-500">Cantidad por operacion</dt>
+                                <dt class="text-sm text-gray-500"><?php echo esc_html__('Cantidad por operacion', 'flavor-chat-ia'); ?></dt>
                                 <dd class="text-gray-800 font-medium"><?php echo esc_html($regla['cantidad_operacion'] ?? ''); ?></dd>
                             </div>
                             <?php if (!empty($regla['stop_loss'])): ?>
                             <div>
-                                <dt class="text-sm text-gray-500">Stop Loss</dt>
+                                <dt class="text-sm text-gray-500"><?php echo esc_html__('Stop Loss', 'flavor-chat-ia'); ?></dt>
                                 <dd class="text-gray-800 font-medium"><?php echo esc_html($regla['stop_loss']); ?></dd>
                             </div>
                             <?php endif; ?>
                             <?php if (!empty($regla['take_profit'])): ?>
                             <div>
-                                <dt class="text-sm text-gray-500">Take Profit</dt>
+                                <dt class="text-sm text-gray-500"><?php echo esc_html__('Take Profit', 'flavor-chat-ia'); ?></dt>
                                 <dd class="text-gray-800 font-medium"><?php echo esc_html($regla['take_profit']); ?></dd>
                             </div>
                             <?php endif; ?>
@@ -245,7 +245,7 @@ $historial = $historial ?? [];
                     <!-- Descripcion de la regla -->
                     <?php if (!empty($regla['descripcion'])): ?>
                     <div class="border-t border-gray-100 pt-6">
-                        <h2 class="text-lg font-semibold text-gray-800 mb-3">Descripcion</h2>
+                        <h2 class="text-lg font-semibold text-gray-800 mb-3"><?php echo esc_html__('Descripcion', 'flavor-chat-ia'); ?></h2>
                         <div class="bg-gray-50 rounded-xl p-4 text-sm text-gray-700">
                             <?php echo wp_kses_post($regla['descripcion']); ?>
                         </div>
@@ -257,16 +257,16 @@ $historial = $historial ?? [];
             <!-- Historial de ejecuciones de la regla -->
             <?php if (!empty($historial)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-bold text-gray-800 mb-4">Historial de ejecuciones</h2>
+                <h2 class="text-lg font-bold text-gray-800 mb-4"><?php echo esc_html__('Historial de ejecuciones', 'flavor-chat-ia'); ?></h2>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr class="text-xs text-gray-500 border-b border-gray-100">
-                                <th class="text-left pb-3 font-medium">Fecha</th>
-                                <th class="text-left pb-3 font-medium">Accion</th>
-                                <th class="text-right pb-3 font-medium">Cantidad</th>
-                                <th class="text-right pb-3 font-medium">Precio</th>
-                                <th class="text-right pb-3 font-medium">P&L</th>
+                                <th class="text-left pb-3 font-medium"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th class="text-left pb-3 font-medium"><?php echo esc_html__('Accion', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('P&L', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
@@ -306,14 +306,14 @@ $historial = $historial ?? [];
         <!-- Sidebar de la regla -->
         <div class="space-y-6">
             <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold text-lg mb-4">Rendimiento de la regla</h3>
+                <h3 class="font-semibold text-lg mb-4"><?php echo esc_html__('Rendimiento de la regla', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3 text-sm">
                     <div class="flex items-center justify-between text-amber-100">
-                        <span>Ejecuciones</span>
+                        <span><?php echo esc_html__('Ejecuciones', 'flavor-chat-ia'); ?></span>
                         <span class="text-white font-medium"><?php echo esc_html($regla['total_ejecuciones'] ?? 0); ?></span>
                     </div>
                     <div class="flex items-center justify-between text-amber-100">
-                        <span>P&L acumulado</span>
+                        <span><?php echo esc_html__('P&L acumulado', 'flavor-chat-ia'); ?></span>
                         <?php
                         $pnl_regla = $regla['pnl_acumulado'] ?? 0;
                         $signo_pnl_regla = $pnl_regla >= 0 ? '+' : '';
@@ -321,22 +321,22 @@ $historial = $historial ?? [];
                         <span class="text-white font-medium"><?php echo esc_html($signo_pnl_regla . '$' . number_format(abs($pnl_regla), 2)); ?></span>
                     </div>
                     <div class="flex items-center justify-between text-amber-100">
-                        <span>Win rate</span>
+                        <span><?php echo esc_html__('Win rate', 'flavor-chat-ia'); ?></span>
                         <span class="text-white font-medium"><?php echo esc_html($regla['win_rate'] ?? '0'); ?>%</span>
                     </div>
                     <div class="flex items-center justify-between text-amber-100">
-                        <span>Creada</span>
+                        <span><?php echo esc_html__('Creada', 'flavor-chat-ia'); ?></span>
                         <span class="text-white font-medium"><?php echo esc_html($regla['fecha_creacion'] ?? ''); ?></span>
                     </div>
                 </div>
                 <div class="mt-4 pt-4 border-t border-white/20 space-y-2">
                     <button class="w-full bg-white text-orange-700 py-2 px-4 rounded-xl font-semibold hover:bg-amber-50 transition-colors text-sm"
                             onclick="flavorTradingIA.editarRegla(<?php echo esc_attr($regla['id'] ?? 0); ?>)">
-                        Editar regla
+                        <?php echo esc_html__('Editar regla', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="w-full bg-white/20 backdrop-blur text-white py-2 px-4 rounded-xl font-semibold hover:bg-white/30 transition-colors text-sm"
                             onclick="flavorTradingIA.eliminarRegla(<?php echo esc_attr($regla['id'] ?? 0); ?>)">
-                        Eliminar regla
+                        <?php echo esc_html__('Eliminar regla', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </div>
@@ -349,11 +349,11 @@ $historial = $historial ?? [];
         <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">Elemento no encontrado</h3>
-        <p class="text-gray-500 mb-6">El trade o regla que buscas no existe o ha sido eliminado</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('Elemento no encontrado', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('El trade o regla que buscas no existe o ha sido eliminado', 'flavor-chat-ia'); ?></p>
         <a href="<?php echo esc_url(home_url('/trading-ia/')); ?>"
            class="inline-block bg-amber-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-amber-600 transition-colors">
-            Volver al Trading IA
+            <?php echo esc_html__('Volver al Trading IA', 'flavor-chat-ia'); ?>
         </a>
     </div>
     <?php endif; ?>

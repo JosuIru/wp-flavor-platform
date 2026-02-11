@@ -27,13 +27,13 @@ $episodios = [
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    Recientes
+                    <?php echo esc_html__('Recientes', 'flavor-chat-ia'); ?>
                 </span>
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2"><?php echo esc_html($titulo); ?></h2>
                 <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
             </div>
             <a href="#todos-episodios" class="mt-4 md:mt-0 text-teal-600 font-semibold hover:text-teal-700 flex items-center gap-1">
-                Ver todos
+                <?php echo esc_html__('Ver todos', 'flavor-chat-ia'); ?>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
@@ -76,17 +76,17 @@ $episodios = [
                             </div>
                         </div>
                         <div class="hidden md:flex items-center gap-3">
-                            <button class="p-2 rounded-full text-gray-400 hover:text-teal-600 hover:bg-teal-100 transition-colors" title="Descargar">
+                            <button class="p-2 rounded-full text-gray-400 hover:text-teal-600 hover:bg-teal-100 transition-colors" title="<?php echo esc_attr__('Descargar', 'flavor-chat-ia'); ?>">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                 </svg>
                             </button>
-                            <button class="p-2 rounded-full text-gray-400 hover:text-teal-600 hover:bg-teal-100 transition-colors" title="Compartir">
+                            <button class="p-2 rounded-full text-gray-400 hover:text-teal-600 hover:bg-teal-100 transition-colors" title="<?php echo esc_attr__('Compartir', 'flavor-chat-ia'); ?>">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                                 </svg>
                             </button>
-                            <button class="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-100 transition-colors" title="Favorito">
+                            <button class="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-100 transition-colors" title="<?php echo esc_attr__('Favorito', 'flavor-chat-ia'); ?>">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                                 </svg>
@@ -107,8 +107,8 @@ $episodios = [
             <div class="flex items-center gap-4">
                 <img src="https://picsum.photos/seed/ep1/200/200" alt="" class="w-12 h-12 rounded-lg object-cover">
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-gray-900 truncate">El futuro del comercio local</p>
-                    <p class="text-xs text-gray-500">Economia Local</p>
+                    <p class="text-sm font-bold text-gray-900 truncate"><?php echo esc_html__('El futuro del comercio local', 'flavor-chat-ia'); ?></p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Economia Local', 'flavor-chat-ia'); ?></p>
                 </div>
                 <button class="p-2 rounded-full bg-teal-500 text-white">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

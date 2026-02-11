@@ -13,7 +13,7 @@ $servicios_relacionados = $servicios_relacionados ?? [];
 <div class="flavor-frontend flavor-banco-tiempo-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/banco-tiempo/')); ?>" class="hover:text-violet-600 transition-colors">Banco de Tiempo</a>
+        <a href="<?php echo esc_url(home_url('/banco-tiempo/')); ?>" class="hover:text-violet-600 transition-colors"><?php echo esc_html__('Banco de Tiempo', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <span class="text-gray-700"><?php echo esc_html($servicio['titulo'] ?? 'Servicio'); ?></span>
     </nav>
@@ -60,7 +60,7 @@ $servicios_relacionados = $servicios_relacionados ?? [];
             <!-- Detalles adicionales -->
             <?php if (!empty($servicio['detalles'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📋 Detalles del servicio</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📋 Detalles del servicio', 'flavor-chat-ia'); ?></h2>
                 <dl class="grid grid-cols-2 gap-4">
                     <?php foreach ($servicio['detalles'] as $label => $valor): ?>
                     <div>
@@ -109,32 +109,32 @@ $servicios_relacionados = $servicios_relacionados ?? [];
                 <div class="grid grid-cols-3 gap-2 mb-4 text-center">
                     <div>
                         <p class="text-xl font-bold text-violet-600"><?php echo esc_html($usuario['horas_disponibles'] ?? 0); ?>h</p>
-                        <p class="text-xs text-gray-500">Disponibles</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Disponibles', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($usuario['intercambios'] ?? 0); ?></p>
-                        <p class="text-xs text-gray-500">Intercambios</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Intercambios', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div>
                         <p class="text-xl font-bold text-yellow-500">⭐ <?php echo esc_html($usuario['valoracion'] ?? '5.0'); ?></p>
-                        <p class="text-xs text-gray-500">Valoración</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Valoración', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
 
                 <?php if (!empty($usuario['verificado'])): ?>
                 <span class="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full mb-4">
-                    ✓ Usuario verificado
+                    <?php echo esc_html__('✓ Usuario verificado', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
 
             <!-- Solicitar servicio -->
             <div class="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold mb-2">¿Te interesa?</h3>
+                <h3 class="font-semibold mb-2"><?php echo esc_html__('¿Te interesa?', 'flavor-chat-ia'); ?></h3>
                 <p class="text-violet-100 text-sm mb-4">Contacta con <?php echo esc_html($usuario['nombre'] ?? 'el usuario'); ?> para acordar el intercambio.</p>
                 <button class="w-full bg-white text-violet-600 py-3 px-4 rounded-xl font-semibold hover:bg-violet-50 transition-colors"
                         onclick="flavorBancoTiempo.solicitarServicio(<?php echo esc_attr($servicio['id']); ?>)">
-                    🤝 Solicitar servicio
+                    <?php echo esc_html__('🤝 Solicitar servicio', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
@@ -156,7 +156,7 @@ $servicios_relacionados = $servicios_relacionados ?? [];
             <!-- Servicios relacionados -->
             <?php if (!empty($servicios_relacionados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Servicios similares</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Servicios similares', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($servicios_relacionados as $rel): ?>
                     <a href="<?php echo esc_url($rel['url']); ?>" class="block p-3 rounded-xl hover:bg-gray-50 transition-colors">

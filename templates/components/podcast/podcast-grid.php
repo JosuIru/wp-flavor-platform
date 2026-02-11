@@ -27,7 +27,7 @@ $podcasts = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                 </svg>
-                Podcasts
+                <?php echo esc_html__('Podcasts', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -40,7 +40,7 @@ $podcasts = [
                         <img src="<?php echo esc_url($podcast['imagen']); ?>" alt="<?php echo esc_attr($podcast['titulo']); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                         <?php if ($podcast['nuevo']): ?>
-                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold bg-teal-500 text-white">NUEVO</span>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold bg-teal-500 text-white"><?php echo esc_html__('NUEVO', 'flavor-chat-ia'); ?></span>
                         <?php endif; ?>
                         <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-white/90 text-gray-700"><?php echo esc_html($podcast['categoria']); ?></span>
                         <button class="absolute bottom-4 right-4 p-4 rounded-full bg-teal-500 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 hover:bg-teal-600 shadow-lg">
@@ -79,7 +79,7 @@ $podcasts = [
 
         <div class="text-center mt-12">
             <a href="#todos-podcasts" class="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-105" style="background: linear-gradient(135deg, #14b8a6 0%, #10b981 100%); color: white;">
-                <span>Ver Todos los Podcasts</span>
+                <span><?php echo esc_html__('Ver Todos los Podcasts', 'flavor-chat-ia'); ?></span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>

@@ -330,7 +330,7 @@ class Chat_IA_Token_Monitor {
         check_ajax_referer('chat_ia_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Sin permisos']);
+            wp_send_json_error(['error' => __('Sin permisos', 'chat-ia-addon')]);
         }
 
         wp_send_json_success($this->get_summary());
@@ -343,11 +343,11 @@ class Chat_IA_Token_Monitor {
         check_ajax_referer('chat_ia_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Sin permisos']);
+            wp_send_json_error(['error' => __('Sin permisos', 'chat-ia-addon')]);
         }
 
         delete_option(self::STATS_OPTION);
-        wp_send_json_success(['message' => 'Estadísticas reseteadas']);
+        wp_send_json_success(['message' => __('Estadísticas reseteadas', 'chat-ia-addon')]);
     }
 
     /**

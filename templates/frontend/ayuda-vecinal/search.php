@@ -16,14 +16,14 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-orange-500 to-amber-500 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar Ayuda</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar Ayuda', 'flavor-chat-ia'); ?></h1>
 
             <!-- Formulario de busqueda -->
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Que buscas -->
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Que necesitas?</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Que necesitas?', 'flavor-chat-ia'); ?></label>
                         <div class="relative">
                             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -31,18 +31,18 @@ $total_resultados = $total_resultados ?? 0;
                             <input type="text"
                                    name="q"
                                    value="<?php echo esc_attr($query); ?>"
-                                   placeholder="Ej: pasear perro, hacer compras, cuidar ninos..."
+                                   placeholder="<?php echo esc_attr__('Ej: pasear perro, hacer compras, cuidar ninos...', 'flavor-chat-ia'); ?>"
                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                     </div>
 
                     <!-- Tipo -->
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Tipo de ayuda</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Tipo de ayuda', 'flavor-chat-ia'); ?></label>
                         <select name="tipo" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                            <option value="">Todos</option>
-                            <option value="necesito">Necesitan ayuda</option>
-                            <option value="ofrezco">Ofrecen ayuda</option>
+                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('necesito', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Necesitan ayuda', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('ofrezco', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Ofrecen ayuda', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -50,43 +50,43 @@ $total_resultados = $total_resultados ?? 0;
                 <!-- Filtros avanzados -->
                 <details class="mt-4">
                     <summary class="text-sm text-orange-600 font-medium cursor-pointer hover:text-orange-700">
-                        Filtros avanzados
+                        <?php echo esc_html__('Filtros avanzados', 'flavor-chat-ia'); ?>
                     </summary>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-gray-100">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Categoria</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></label>
                             <select name="categoria" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-orange-500">
-                                <option value="">Todas</option>
-                                <option value="compras">Compras</option>
-                                <option value="transporte">Transporte</option>
-                                <option value="cuidados">Cuidados</option>
-                                <option value="mascotas">Mascotas</option>
-                                <option value="hogar">Hogar</option>
+                                <option value=""><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Compras', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Transporte', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('cuidados', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Cuidados', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('mascotas', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mascotas', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('hogar', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Hogar', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Distancia</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Distancia', 'flavor-chat-ia'); ?></label>
                             <select name="distancia" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-orange-500">
-                                <option value="">Cualquiera</option>
-                                <option value="500">500m</option>
-                                <option value="1000">1 km</option>
-                                <option value="2000">2 km</option>
+                                <option value=""><?php echo esc_html__('Cualquiera', 'flavor-chat-ia'); ?></option>
+                                <option value="500"><?php echo esc_html__('500m', 'flavor-chat-ia'); ?></option>
+                                <option value="1000"><?php echo esc_html__('1 km', 'flavor-chat-ia'); ?></option>
+                                <option value="2000"><?php echo esc_html__('2 km', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Urgencia</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Urgencia', 'flavor-chat-ia'); ?></label>
                             <select name="urgencia" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-orange-500">
-                                <option value="">Todas</option>
-                                <option value="urgente">Solo urgentes</option>
+                                <option value=""><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('urgente', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Solo urgentes', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Fecha</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></label>
                             <select name="fecha" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-orange-500">
-                                <option value="">Cualquiera</option>
-                                <option value="hoy">Hoy</option>
-                                <option value="semana">Esta semana</option>
-                                <option value="mes">Este mes</option>
+                                <option value=""><?php echo esc_html__('Cualquiera', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('hoy', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Hoy', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('semana', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Esta semana', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('mes', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                     </div>
@@ -99,7 +99,7 @@ $total_resultados = $total_resultados ?? 0;
                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        Buscar
+                        <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -121,9 +121,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos resultados</h3>
-                <p class="text-gray-500 mb-4">Prueba con otros terminos o crea tu propia solicitud</p>
-                <a href="?" class="text-orange-600 font-medium hover:text-orange-700">Ver todas las solicitudes</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos resultados', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba con otros terminos o crea tu propia solicitud', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-orange-600 font-medium hover:text-orange-700"><?php echo esc_html__('Ver todas las solicitudes', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="space-y-4">

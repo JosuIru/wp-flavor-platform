@@ -1,0 +1,1237 @@
+/**
+ * Estilos del Sistema de Onboarding para Flavor Platform
+ *
+ * Incluye estilos para tours guiados, tooltips contextuales,
+ * botón de ayuda flotante y modal de videos
+ *
+ * @package FlavorPlatform
+ * @since 3.0.0
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+
+:root {
+    --flavor-tour-primary: #2271b1;
+    --flavor-tour-primary-hover: #135e96;
+    --flavor-tour-success: #00a32a;
+    --flavor-tour-warning: #dba617;
+    --flavor-tour-error: #d63638;
+    --flavor-tour-info: #72aee6;
+    --flavor-tour-bg: #ffffff;
+    --flavor-tour-text: #1d2327;
+    --flavor-tour-text-secondary: #646970;
+    --flavor-tour-border: #c3c4c7;
+    --flavor-tour-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    --flavor-tour-radius: 8px;
+    --flavor-tour-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --flavor-tour-overlay: rgba(0, 0, 0, 0.7);
+}
+
+/* ==========================================================================
+   Overlay del Tour
+   ========================================================================== */
+
+.flavor-tour-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--flavor-tour-overlay);
+    z-index: 99990;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--flavor-tour-transition);
+    pointer-events: none;
+}
+
+.flavor-tour-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+body.flavor-tour-active {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Caja de Highlight
+   ========================================================================== */
+
+.flavor-tour-highlight {
+    position: absolute;
+    z-index: 99991;
+    border-radius: var(--flavor-tour-radius);
+    box-shadow:
+        0 0 0 4px var(--flavor-tour-primary),
+        0 0 0 9999px var(--flavor-tour-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--flavor-tour-transition);
+    pointer-events: none;
+}
+
+.flavor-tour-highlight.active {
+    opacity: 1;
+    visibility: visible;
+    animation: flavor-highlight-pulse 2s ease-in-out infinite;
+}
+
+@keyframes flavor-highlight-pulse {
+    0%, 100% {
+        box-shadow:
+            0 0 0 4px var(--flavor-tour-primary),
+            0 0 0 9999px var(--flavor-tour-overlay);
+    }
+    50% {
+        box-shadow:
+            0 0 0 6px var(--flavor-tour-primary),
+            0 0 15px rgba(34, 113, 177, 0.5),
+            0 0 0 9999px var(--flavor-tour-overlay);
+    }
+}
+
+/* ==========================================================================
+   Popover del Tour
+   ========================================================================== */
+
+.flavor-tour-popover {
+    position: absolute;
+    z-index: 99992;
+    background: var(--flavor-tour-bg);
+    border-radius: var(--flavor-tour-radius);
+    box-shadow: var(--flavor-tour-shadow);
+    width: 380px;
+    max-width: calc(100vw - 40px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-tour-popover.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.flavor-tour-popover.completed {
+    animation: flavor-popover-complete 0.5s ease-out forwards;
+}
+
+@keyframes flavor-popover-complete {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+}
+
+/* Flecha del Popover */
+.flavor-tour-popover-arrow {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: var(--flavor-tour-bg);
+    transform: rotate(45deg);
+    z-index: -1;
+}
+
+.flavor-tour-popover.arrow-bottom .flavor-tour-popover-arrow {
+    top: -8px;
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.flavor-tour-popover.arrow-top .flavor-tour-popover-arrow {
+    bottom: -8px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.flavor-tour-popover.arrow-left .flavor-tour-popover-arrow {
+    right: -8px;
+    box-shadow: 2px -2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.flavor-tour-popover.arrow-right .flavor-tour-popover-arrow {
+    left: -8px;
+    box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Botón Cerrar */
+.flavor-tour-popover-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--flavor-tour-text-secondary);
+    padding: 4px;
+    line-height: 1;
+    transition: var(--flavor-tour-transition);
+    border-radius: 4px;
+}
+
+.flavor-tour-popover-close:hover {
+    background: #f0f0f1;
+    color: var(--flavor-tour-text);
+}
+
+.flavor-tour-popover-close .dashicons {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+/* Header del Popover */
+.flavor-tour-popover-header {
+    padding: 20px 40px 15px 20px;
+    border-bottom: 1px solid #f0f0f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flavor-tour-popover-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--flavor-tour-text);
+}
+
+.flavor-tour-popover-progress {
+    font-size: 12px;
+    color: var(--flavor-tour-text-secondary);
+    background: #f0f0f1;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+/* Contenido del Popover */
+.flavor-tour-popover-content {
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--flavor-tour-text);
+}
+
+.flavor-tour-popover-content p {
+    margin: 0 0 10px;
+}
+
+.flavor-tour-popover-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Footer del Popover */
+.flavor-tour-popover-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #f0f0f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    border-radius: 0 0 var(--flavor-tour-radius) var(--flavor-tour-radius);
+}
+
+.flavor-tour-popover-nav {
+    display: flex;
+    gap: 10px;
+}
+
+/* Botones del Tour */
+.flavor-tour-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--flavor-tour-transition);
+    border: 1px solid var(--flavor-tour-border);
+    background: var(--flavor-tour-bg);
+    color: var(--flavor-tour-text);
+}
+
+.flavor-tour-btn:hover {
+    background: #f0f0f1;
+    border-color: #8c8f94;
+}
+
+.flavor-tour-btn-primary {
+    background: var(--flavor-tour-primary);
+    border-color: var(--flavor-tour-primary);
+    color: #fff;
+}
+
+.flavor-tour-btn-primary:hover {
+    background: var(--flavor-tour-primary-hover);
+    border-color: var(--flavor-tour-primary-hover);
+    color: #fff;
+}
+
+.flavor-tour-btn-skip {
+    background: transparent;
+    border-color: transparent;
+    color: var(--flavor-tour-text-secondary);
+}
+
+.flavor-tour-btn-skip:hover {
+    background: transparent;
+    border-color: transparent;
+    color: var(--flavor-tour-text);
+}
+
+/* Botón de Video en Tour */
+.flavor-tour-video-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 15px;
+    padding: 8px 14px;
+    background: #f6f7f7;
+    border: 1px solid var(--flavor-tour-border);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--flavor-tour-primary);
+    font-size: 13px;
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-tour-video-btn:hover {
+    background: #f0f0f1;
+    border-color: var(--flavor-tour-primary);
+}
+
+.flavor-tour-video-btn .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+
+/* ==========================================================================
+   Tooltips Contextuales
+   ========================================================================== */
+
+.flavor-tooltip {
+    position: absolute;
+    z-index: 99995;
+    background: var(--flavor-tour-bg);
+    border-radius: 6px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--flavor-tour-text);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(5px);
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-tooltip.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.flavor-tooltip--dark {
+    background: #1d2327;
+    color: #fff;
+}
+
+.flavor-tooltip--dark .flavor-tooltip-arrow {
+    background: #1d2327;
+}
+
+/* Flecha del Tooltip */
+.flavor-tooltip-arrow {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--flavor-tour-bg);
+    transform: rotate(45deg);
+}
+
+.flavor-tooltip.arrow-bottom .flavor-tooltip-arrow {
+    top: -5px;
+    box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.flavor-tooltip.arrow-top .flavor-tooltip-arrow {
+    bottom: -5px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.flavor-tooltip.arrow-left .flavor-tooltip-arrow {
+    right: -5px;
+    box-shadow: 1px -1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.flavor-tooltip.arrow-right .flavor-tooltip-arrow {
+    left: -5px;
+    box-shadow: -1px 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Botón Cerrar Tooltip */
+.flavor-tooltip-close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--flavor-tour-text-secondary);
+    padding: 2px;
+    line-height: 1;
+}
+
+.flavor-tooltip-close:hover {
+    color: var(--flavor-tour-text);
+}
+
+.flavor-tooltip-close .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+/* Icono de Ayuda */
+.flavor-help-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    margin-left: 6px;
+    color: var(--flavor-tour-text-secondary);
+    cursor: pointer;
+    transition: var(--flavor-tour-transition);
+    vertical-align: middle;
+}
+
+.flavor-help-icon:hover {
+    color: var(--flavor-tour-primary);
+}
+
+.flavor-help-icon .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+/* Video en Tooltip */
+.flavor-tooltip-video-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--flavor-tour-primary);
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-tooltip-video-btn:hover {
+    background: var(--flavor-tour-primary-hover);
+}
+
+/* ==========================================================================
+   Botón Flotante de Ayuda
+   ========================================================================== */
+
+.flavor-help-launcher {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99980;
+}
+
+.flavor-help-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--flavor-tour-primary);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(34, 113, 177, 0.4);
+    transition: var(--flavor-tour-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-help-btn:hover {
+    background: var(--flavor-tour-primary-hover);
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(34, 113, 177, 0.5);
+}
+
+.flavor-help-btn .dashicons {
+    color: #fff;
+    width: 26px;
+    height: 26px;
+    font-size: 26px;
+}
+
+/* Menú de Ayuda */
+.flavor-help-menu {
+    position: absolute;
+    bottom: 64px;
+    right: 0;
+    width: 300px;
+    background: var(--flavor-tour-bg);
+    border-radius: var(--flavor-tour-radius);
+    box-shadow: var(--flavor-tour-shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.95);
+    transform-origin: bottom right;
+    transition: var(--flavor-tour-transition);
+    overflow: hidden;
+}
+
+.flavor-help-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.flavor-help-menu-header {
+    padding: 16px 20px;
+    background: linear-gradient(135deg, var(--flavor-tour-primary) 0%, #1a5a99 100%);
+    color: #fff;
+}
+
+.flavor-help-menu-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.flavor-help-section {
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.flavor-help-section:last-child {
+    border-bottom: none;
+}
+
+.flavor-help-section h4 {
+    margin: 0 0 8px 0;
+    padding: 0 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--flavor-tour-text-secondary);
+    font-weight: 600;
+}
+
+.flavor-help-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: var(--flavor-tour-transition);
+    text-decoration: none;
+    color: var(--flavor-tour-text);
+    position: relative;
+}
+
+.flavor-help-item:hover {
+    background: #f6f7f7;
+}
+
+.flavor-help-item.completed {
+    opacity: 0.7;
+}
+
+.flavor-help-item > .dashicons:first-child {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    color: var(--flavor-tour-primary);
+    margin-right: 12px;
+}
+
+.flavor-help-item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-help-item-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--flavor-tour-text);
+}
+
+.flavor-help-item-duration {
+    font-size: 11px;
+    color: var(--flavor-tour-text-secondary);
+    margin-top: 2px;
+}
+
+.flavor-help-item .flavor-check {
+    color: var(--flavor-tour-success);
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+
+/* ==========================================================================
+   Notificación de Tour
+   ========================================================================== */
+
+.flavor-tour-notification {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    right: 100px;
+    max-width: 500px;
+    background: var(--flavor-tour-bg);
+    border-radius: var(--flavor-tour-radius);
+    box-shadow: var(--flavor-tour-shadow);
+    border-left: 4px solid var(--flavor-tour-primary);
+    z-index: 99970;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-tour-notification.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.flavor-tour-notification-content {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    gap: 16px;
+}
+
+.flavor-tour-notification-content > .dashicons:first-child {
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+    color: var(--flavor-tour-primary);
+    flex-shrink: 0;
+}
+
+.flavor-tour-notification-text {
+    flex: 1;
+}
+
+.flavor-tour-notification-text strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--flavor-tour-text);
+}
+
+.flavor-tour-notification-text p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--flavor-tour-text-secondary);
+}
+
+.flavor-tour-notification-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.flavor-tour-notification-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--flavor-tour-text-secondary);
+    padding: 4px;
+}
+
+.flavor-tour-notification-close:hover {
+    color: var(--flavor-tour-text);
+}
+
+/* ==========================================================================
+   Notificaciones del Sistema
+   ========================================================================== */
+
+.flavor-notification {
+    position: fixed;
+    top: 50px;
+    right: 24px;
+    padding: 14px 20px;
+    background: var(--flavor-tour-bg);
+    border-radius: 6px;
+    box-shadow: var(--flavor-tour-shadow);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(20px);
+    transition: var(--flavor-tour-transition);
+    max-width: 400px;
+}
+
+.flavor-notification.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.flavor-notification--success {
+    border-left: 4px solid var(--flavor-tour-success);
+}
+
+.flavor-notification--error {
+    border-left: 4px solid var(--flavor-tour-error);
+}
+
+.flavor-notification--warning {
+    border-left: 4px solid var(--flavor-tour-warning);
+}
+
+.flavor-notification--info {
+    border-left: 4px solid var(--flavor-tour-info);
+}
+
+.flavor-notification > .dashicons:first-child {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.flavor-notification--success > .dashicons:first-child {
+    color: var(--flavor-tour-success);
+}
+
+.flavor-notification--error > .dashicons:first-child {
+    color: var(--flavor-tour-error);
+}
+
+.flavor-notification--warning > .dashicons:first-child {
+    color: var(--flavor-tour-warning);
+}
+
+.flavor-notification--info > .dashicons:first-child {
+    color: var(--flavor-tour-info);
+}
+
+.flavor-notification-message {
+    flex: 1;
+    font-size: 13px;
+    color: var(--flavor-tour-text);
+}
+
+.flavor-notification-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--flavor-tour-text-secondary);
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.flavor-notification-close:hover {
+    color: var(--flavor-tour-text);
+}
+
+/* ==========================================================================
+   Modal de Video
+   ========================================================================== */
+
+.flavor-video-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-video-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.flavor-video-modal-content {
+    width: 100%;
+    max-width: 900px;
+    position: relative;
+    transform: scale(0.9);
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-video-modal.active .flavor-video-modal-content {
+    transform: scale(1);
+}
+
+.flavor-video-modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px;
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-video-modal-close:hover {
+    transform: scale(1.1);
+}
+
+.flavor-video-modal-close .dashicons {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+}
+
+.flavor-video-modal-body {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--flavor-tour-radius);
+    background: #000;
+}
+
+.flavor-video-modal-body iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ==========================================================================
+   Bloques de Ayuda Inline
+   ========================================================================== */
+
+.flavor-help-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.flavor-help-block .dashicons {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.flavor-help-block__content {
+    flex: 1;
+}
+
+.flavor-help-block--info {
+    background: #f0f6fc;
+    border: 1px solid #c5d9ed;
+    color: #135e96;
+}
+
+.flavor-help-block--info .dashicons {
+    color: #2271b1;
+}
+
+.flavor-help-block--warning {
+    background: #fcf9e8;
+    border: 1px solid #dba617;
+    color: #8a6d00;
+}
+
+.flavor-help-block--warning .dashicons {
+    color: #dba617;
+}
+
+.flavor-help-block--tip {
+    background: #edfaef;
+    border: 1px solid #68de7c;
+    color: #0a4b1d;
+}
+
+.flavor-help-block--tip .dashicons {
+    color: #00a32a;
+}
+
+.flavor-help-block--success {
+    background: #edfaef;
+    border: 1px solid #00a32a;
+    color: #0a4b1d;
+}
+
+.flavor-help-block--success .dashicons {
+    color: #00a32a;
+}
+
+/* ==========================================================================
+   Panel de Tours
+   ========================================================================== */
+
+.flavor-tours-panel {
+    padding: 20px 0;
+}
+
+.flavor-tours-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.flavor-tours-header-content h1 {
+    margin: 0 0 8px 0;
+    font-size: 23px;
+    font-weight: 400;
+}
+
+.flavor-tours-header-content p {
+    margin: 0;
+    color: var(--flavor-tour-text-secondary);
+}
+
+.flavor-tours-stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    background: var(--flavor-tour-bg);
+    padding: 16px 24px;
+    border-radius: var(--flavor-tour-radius);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.flavor-tours-stat {
+    text-align: center;
+}
+
+.flavor-tours-stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--flavor-tour-primary);
+}
+
+.flavor-tours-stat-label {
+    font-size: 12px;
+    color: var(--flavor-tour-text-secondary);
+    text-transform: uppercase;
+}
+
+.flavor-tours-progress-bar {
+    width: 120px;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.flavor-tours-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--flavor-tour-primary), var(--flavor-tour-success));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* Grid de Tours */
+.flavor-tours-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.flavor-tour-card {
+    background: var(--flavor-tour-bg);
+    border-radius: var(--flavor-tour-radius);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: var(--flavor-tour-transition);
+}
+
+.flavor-tour-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.flavor-tour-card.completed {
+    opacity: 0.85;
+}
+
+.flavor-tour-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.flavor-tour-card.completed .flavor-tour-card-header {
+    background: linear-gradient(135deg, #edfaef 0%, #f8fdf8 100%);
+}
+
+.flavor-tour-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--flavor-tour-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.flavor-tour-card.completed .flavor-tour-card-icon {
+    background: var(--flavor-tour-success);
+}
+
+.flavor-tour-card-icon .dashicons {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    color: #fff;
+}
+
+.flavor-tour-card-title {
+    flex: 1;
+}
+
+.flavor-tour-card-title h3 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.flavor-tour-card-title span {
+    font-size: 12px;
+    color: var(--flavor-tour-text-secondary);
+}
+
+.flavor-tour-card-status {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.flavor-tour-card.completed .flavor-tour-card-status {
+    background: #d8f3dc;
+    color: var(--flavor-tour-success);
+}
+
+.flavor-tour-card:not(.completed) .flavor-tour-card-status {
+    background: #e3f2fd;
+    color: var(--flavor-tour-primary);
+}
+
+.flavor-tour-card-body {
+    padding: 20px;
+}
+
+.flavor-tour-card-description {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--flavor-tour-text-secondary);
+}
+
+.flavor-tour-card-meta {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: var(--flavor-tour-text-secondary);
+}
+
+.flavor-tour-card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flavor-tour-card-meta .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+.flavor-tour-card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.flavor-tour-card-actions .button {
+    flex: 1;
+    text-align: center;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 782px) {
+    .flavor-tour-popover {
+        width: calc(100vw - 32px);
+        max-width: none;
+        left: 16px !important;
+        right: 16px;
+    }
+
+    .flavor-tour-notification {
+        left: 16px;
+        right: 16px;
+        max-width: none;
+        bottom: 80px;
+    }
+
+    .flavor-tour-notification-content {
+        flex-wrap: wrap;
+    }
+
+    .flavor-tour-notification-actions {
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    .flavor-help-launcher {
+        bottom: 16px;
+        right: 16px;
+    }
+
+    .flavor-help-menu {
+        right: -8px;
+        width: calc(100vw - 32px);
+        max-width: 300px;
+    }
+
+    .flavor-tours-header {
+        flex-direction: column;
+    }
+
+    .flavor-tours-stats {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .flavor-tours-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-video-modal {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .flavor-tour-popover-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .flavor-tour-popover-nav {
+        width: 100%;
+    }
+
+    .flavor-tour-btn {
+        flex: 1;
+    }
+
+    .flavor-tour-btn-skip {
+        order: 1;
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   Animaciones Adicionales
+   ========================================================================== */
+
+@keyframes flavor-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes flavor-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes flavor-scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes flavor-bounce {
+    0%, 20%, 60%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-8px);
+    }
+    80% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Aplicar animaciones a elementos específicos */
+.flavor-help-launcher {
+    animation: flavor-bounce 2s ease infinite;
+    animation-delay: 5s;
+}
+
+.flavor-help-launcher:hover {
+    animation: none;
+}

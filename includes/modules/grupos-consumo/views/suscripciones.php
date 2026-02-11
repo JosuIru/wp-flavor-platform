@@ -112,15 +112,15 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
     <!-- Filtros -->
     <div class="gc-filtros-wrapper">
         <form method="get" class="gc-filtros-form">
-            <input type="hidden" name="page" value="gc-suscripciones">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-suscripciones', 'flavor-chat-ia'); ?>">
 
             <div class="gc-filtro">
                 <label for="filtro-estado"><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
                 <select id="filtro-estado" name="estado">
                     <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="activa" <?php selected($estado_filtro, 'activa'); ?>><?php _e('Activa', 'flavor-chat-ia'); ?></option>
-                    <option value="pausada" <?php selected($estado_filtro, 'pausada'); ?>><?php _e('Pausada', 'flavor-chat-ia'); ?></option>
-                    <option value="cancelada" <?php selected($estado_filtro, 'cancelada'); ?>><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('activa', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'activa'); ?>><?php _e('Activa', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('pausada', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'pausada'); ?>><?php _e('Pausada', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'cancelada'); ?>><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
@@ -226,7 +226,7 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
     <div class="gc-modal-content gc-modal-lg">
         <div class="gc-modal-header">
             <h2><?php _e('Tipos de Cestas', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close">&times;</button>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
         </div>
         <div class="gc-modal-body">
             <table class="wp-list-table widefat fixed striped">

@@ -16,7 +16,7 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-rose-500 to-red-600 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar colectivos</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar colectivos', 'flavor-chat-ia'); ?></h1>
 
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="relative">
@@ -26,25 +26,25 @@ $total_resultados = $total_resultados ?? 0;
                     <input type="text"
                            name="q"
                            value="<?php echo esc_attr($consulta_busqueda); ?>"
-                           placeholder="Buscar colectivos y asociaciones..."
+                           placeholder="<?php echo esc_attr__('Buscar colectivos y asociaciones...', 'flavor-chat-ia'); ?>"
                            class="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 text-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
                 </div>
 
                 <!-- Sugerencias -->
                 <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="text-sm text-gray-500">Sugerencias:</span>
-                    <a href="?q=cultural" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">cultural</a>
-                    <a href="?q=deportivo" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">deportivo</a>
-                    <a href="?q=medioambiental" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">medioambiental</a>
-                    <a href="?q=vecinal" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">vecinal</a>
-                    <a href="?q=solidario" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">solidario</a>
+                    <span class="text-sm text-gray-500"><?php echo esc_html__('Sugerencias:', 'flavor-chat-ia'); ?></span>
+                    <a href="?q=cultural" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"><?php echo esc_html__('cultural', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=deportivo" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"><?php echo esc_html__('deportivo', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=medioambiental" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"><?php echo esc_html__('medioambiental', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=vecinal" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"><?php echo esc_html__('vecinal', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=solidario" class="px-3 py-1 rounded-full text-sm bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"><?php echo esc_html__('solidario', 'flavor-chat-ia'); ?></a>
                 </div>
 
                 <div class="mt-4 flex justify-center">
                     <button type="submit"
                             class="px-8 py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                             style="background: linear-gradient(135deg, #f43f5e 0%, #dc2626 100%);">
-                        Buscar Colectivos
+                        <?php echo esc_html__('Buscar Colectivos', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -66,9 +66,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No se encontraron colectivos</h3>
-                <p class="text-gray-500 mb-4">Prueba con otros terminos de busqueda</p>
-                <a href="?" class="text-rose-600 font-medium hover:text-rose-700">Ver todos los colectivos</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No se encontraron colectivos', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba con otros terminos de busqueda', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-rose-600 font-medium hover:text-rose-700"><?php echo esc_html__('Ver todos los colectivos', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -98,7 +98,7 @@ $total_resultados = $total_resultados ?? 0;
             </div>
         <?php else: ?>
             <!-- Colectivos destacados -->
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Colectivos destacados</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Colectivos destacados', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
                 $colectivos_ejemplo = ['Cultural del Barrio', 'Club Deportivo Vecinal', 'Asociacion Medioambiental', 'Colectivo Solidario', 'Grupo Vecinal Norte', 'Plataforma Ciudadana'];
@@ -111,7 +111,7 @@ $total_resultados = $total_resultados ?? 0;
                             </div>
                             <div>
                                 <h3 class="font-bold text-gray-900 group-hover:text-rose-600 transition-colors"><?php echo esc_html($nombre_ejemplo); ?></h3>
-                                <span class="text-xs text-rose-600 font-medium">General</span>
+                                <span class="text-xs text-rose-600 font-medium"><?php echo esc_html__('General', 'flavor-chat-ia'); ?></span>
                             </div>
                         </div>
                         <p class="text-sm text-gray-500"><?php echo (($indice_colectivo + 1) * 15); ?> miembros</p>

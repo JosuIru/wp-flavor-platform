@@ -5,6 +5,8 @@
 (function($) {
     'use strict';
 
+    const strings = (typeof flavorRestaurantAdmin !== 'undefined' && flavorRestaurantAdmin.strings) ? flavorRestaurantAdmin.strings : {};
+
     const RestaurantAdmin = {
         currentPage: null,
         refreshInterval: null,
@@ -79,7 +81,7 @@
             const $noOrders = $('#no-orders');
 
             if (!silent) {
-                $list.html('<div class="loading-indicator"><span class="spinner is-active"></span> Cargando pedidos...</div>');
+                $list.html(`<div class="loading-indicator"><span class="spinner is-active"></span> ${strings.loading_orders || 'Cargando pedidos...'}</div>`);
             }
 
             const data = {
@@ -98,7 +100,7 @@
                     }
                 })
                 .fail(() => {
-                    $list.html('<div class="notice notice-error"><p>Error al cargar pedidos</p></div>');
+                    $list.html(`<div class="notice notice-error"><p>${strings.error_load_orders || 'Error al cargar pedidos'}</p></div>`);
                 });
         },
 
@@ -124,7 +126,7 @@
 
         getOrderCardHTML(order) {
             const itemsCount = order.items ? order.items.length : 0;
-            const tableInfo = order.table ? `Mesa ${order.table.table_number}` : 'Sin mesa';
+            const tableInfo = order.table ? `${strings.table_label || 'Mesa'} ${order.table.table_number}` : (strings.no_table || 'Sin mesa');
 
             return `
                 <div class="order-card" data-order-id="${order.id}">
@@ -147,7 +149,7 @@
                     </div>
 
                     <div class="order-items">
-                        ${itemsCount} ${itemsCount === 1 ? 'item' : 'items'}
+                        ${itemsCount} ${itemsCount === 1 ? (strings.item_singular || 'item') : (strings.item_plural || 'items')}
                     </div>
 
                     <div class="order-footer">
@@ -182,7 +184,7 @@
             const $content = $('#order-details-content');
 
             $modal.fadeIn(300);
-            $content.html('<div class="loading-indicator"><span class="spinner is-active"></span> Cargando detalles...</div>');
+            $content.html(`<div class="loading-indicator"><span class="spinner is-active"></span> ${strings.loading_details || 'Cargando detalles...'}</div>`);
 
             $.post(flavorRestaurantAdmin.ajax_url, {
                 action: 'get_order_details',
@@ -195,7 +197,7 @@
                     }
                 })
                 .fail(() => {
-                    $content.html('<p>Error al cargar detalles del pedido</p>');
+                    $content.html(`<p>${strings.error_load_details || 'Error al cargar detalles del pedido'}</p>`);
                 });
         },
 
@@ -207,46 +209,46 @@
 
             let html = `
                 <div class="order-detail-section">
-                    <h3>Estado: <span class="order-status ${order.status}">${order.status_label}</span></h3>
+                    <h3>${strings.status_label || 'Estado'}: <span class="order-status ${order.status}">${order.status_label}</span></h3>
 
                     <div class="order-actions" style="margin: 15px 0;">
                         <button class="button change-order-status" data-order-id="${order.id}">
-                            Cambiar Estado
+                            ${strings.change_status || 'Cambiar Estado'}
                         </button>
                     </div>
                 </div>
 
                 <div class="order-detail-section">
-                    <h3>Información del Cliente</h3>
+                    <h3>${strings.customer_info || 'Información del Cliente'}</h3>
                     <table class="widefat">
                         <tr>
-                            <th>Nombre:</th>
+                            <th>${strings.name_label || 'Nombre'}:</th>
                             <td>${order.customer.name || '-'}</td>
                         </tr>
                         <tr>
-                            <th>Teléfono:</th>
+                            <th>${strings.phone_label || 'Teléfono'}:</th>
                             <td>${order.customer.phone || '-'}</td>
                         </tr>
                         <tr>
-                            <th>Email:</th>
+                            <th>${strings.email_label || 'Email'}:</th>
                             <td>${order.customer.email || '-'}</td>
                         </tr>
                         <tr>
-                            <th>Mesa:</th>
-                            <td>${order.table ? order.table.table_name : 'Sin mesa'}</td>
+                            <th>${strings.table_label || 'Mesa'}:</th>
+                            <td>${order.table ? order.table.table_name : (strings.no_table || 'Sin mesa')}</td>
                         </tr>
                     </table>
                 </div>
 
                 <div class="order-detail-section">
-                    <h3>Items del Pedido</h3>
+                    <h3>${strings.items_label || 'Items del Pedido'}</h3>
                     <table class="widefat">
                         <thead>
                             <tr>
-                                <th>Item</th>
-                                <th>Cantidad</th>
-                                <th>Precio</th>
-                                <th>Subtotal</th>
+                                <th>${strings.item_label || 'Item'}</th>
+                                <th>${strings.quantity_label || 'Cantidad'}</th>
+                                <th>${strings.price_label || 'Precio'}</th>
+                                <th>${strings.subtotal_label || 'Subtotal'}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -269,15 +271,15 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3">Subtotal:</th>
+                                <th colspan="3">${strings.subtotal_label || 'Subtotal'}:</th>
                                 <td>€ ${order.subtotal.toFixed(2)}</td>
                             </tr>
                             <tr>
-                                <th colspan="3">IVA:</th>
+                                <th colspan="3">${strings.tax_label || 'IVA'}:</th>
                                 <td>€ ${order.tax.toFixed(2)}</td>
                             </tr>
                             <tr>
-                                <th colspan="3"><strong>Total:</strong></th>
+                                <th colspan="3"><strong>${strings.total_label || 'Total'}:</strong></th>
                                 <td><strong>€ ${order.total.toFixed(2)}</strong></td>
                             </tr>
                         </tfoot>
@@ -286,7 +288,7 @@
 
                 ${order.notes ? `
                 <div class="order-detail-section">
-                    <h3>Notas</h3>
+                    <h3>${strings.notes_label || 'Notas'}</h3>
                     <p>${order.notes}</p>
                 </div>
                 ` : ''}
@@ -296,11 +298,11 @@
         },
 
         changeOrderStatus(orderId) {
-            const newStatus = prompt('Nuevo estado (pending, preparing, ready, served, completed, cancelled):');
+            const newStatus = prompt(strings.new_status_prompt || 'Nuevo estado (pending, preparing, ready, served, completed, cancelled):');
 
             if (!newStatus) return;
 
-            const notes = prompt('Notas opcionales:');
+            const notes = prompt(strings.notes_optional_prompt || 'Notas opcionales:');
 
             $.post(flavorRestaurantAdmin.ajax_url, {
                 action: 'update_order_status',
@@ -311,15 +313,15 @@
             })
                 .done((response) => {
                     if (response.success) {
-                        alert('Estado actualizado correctamente');
+                        alert(strings.status_updated || 'Estado actualizado correctamente');
                         this.loadOrders();
                         $('.flavor-modal').fadeOut(300);
                     } else {
-                        alert('Error: ' + response.data.message);
+                        alert((strings.error_prefix || 'Error') + ': ' + response.data.message);
                     }
                 })
                 .fail(() => {
-                    alert('Error al actualizar el estado');
+                    alert(strings.error_update_status || 'Error al actualizar el estado');
                 });
         },
 
@@ -360,7 +362,7 @@
         loadTables() {
             const $list = $('#tables-list');
 
-            $list.html('<div class="loading-indicator"><span class="spinner is-active"></span> Cargando mesas...</div>');
+            $list.html(`<div class="loading-indicator"><span class="spinner is-active"></span> ${strings.loading_tables || 'Cargando mesas...'}</div>`);
 
             $.post(flavorRestaurantAdmin.ajax_url, {
                 action: 'get_tables_list',
@@ -373,7 +375,7 @@
                     }
                 })
                 .fail(() => {
-                    $list.html('<div class="notice notice-error"><p>Error al cargar mesas</p></div>');
+                    $list.html(`<div class="notice notice-error"><p>${strings.error_load_tables || 'Error al cargar mesas'}</p></div>`);
                 });
         },
 
@@ -406,17 +408,17 @@
                     </div>
 
                     <div class="table-info">
-                        <div>Número: ${table.table_number}</div>
-                        <div>Capacidad: ${table.capacity} personas</div>
-                        ${table.location ? `<div>Ubicación: ${table.location}</div>` : ''}
+                        <div>${strings.number_label || 'Número'}: ${table.table_number}</div>
+                        <div>${strings.capacity_label || 'Capacidad'}: ${table.capacity} ${strings.people_label || 'personas'}</div>
+                        ${table.location ? `<div>${strings.location_label || 'Ubicación'}: ${table.location}</div>` : ''}
                     </div>
 
                     <div class="table-actions">
                         <button class="button button-small edit-table" data-table-id="${table.id}">
-                            <span class="dashicons dashicons-edit"></span> Editar
+                            <span class="dashicons dashicons-edit"></span> ${strings.edit_table || 'Editar'}
                         </button>
                         <button class="button button-small delete-table" data-table-id="${table.id}">
-                            <span class="dashicons dashicons-trash"></span> Eliminar
+                            <span class="dashicons dashicons-trash"></span> ${strings.delete_table || 'Eliminar'}
                         </button>
                     </div>
                 </div>
@@ -440,7 +442,7 @@
             $('#table-id').val('');
 
             if (tableData) {
-                $title.text('Editar Mesa');
+                $title.text(strings.edit_table_title || 'Editar Mesa');
                 $('#table-id').val(tableData.id);
                 $('#table-number').val(tableData.table_number);
                 $('#table-name').val(tableData.table_name);
@@ -448,7 +450,7 @@
                 $('#table-location').val(tableData.location);
                 $('#table-notes').val(tableData.notes);
             } else {
-                $title.text('Nueva Mesa');
+                $title.text(strings.new_table_title || 'Nueva Mesa');
             }
 
             $modal.fadeIn(300);
@@ -495,16 +497,16 @@
                         this.loadTables();
                         $('.flavor-modal').fadeOut(300);
                     } else {
-                        alert('Error: ' + response.data.message);
+                        alert((strings.error_prefix || 'Error') + ': ' + response.data.message);
                     }
                 })
                 .fail(() => {
-                    alert('Error al guardar la mesa');
+                    alert(strings.error_save_table || 'Error al guardar la mesa');
                 });
         },
 
         deleteTable(tableId) {
-            if (!confirm('¿Estás seguro de eliminar esta mesa?')) {
+            if (!confirm(strings.confirm_delete_table || '¿Estás seguro de eliminar esta mesa?')) {
                 return;
             }
 
@@ -517,11 +519,11 @@
                     if (response.success) {
                         this.loadTables();
                     } else {
-                        alert('Error: ' + response.data.message);
+                        alert((strings.error_prefix || 'Error') + ': ' + response.data.message);
                     }
                 })
                 .fail(() => {
-                    alert('Error al eliminar la mesa');
+                    alert(strings.error_delete_table || 'Error al eliminar la mesa');
                 });
         },
 
@@ -534,17 +536,17 @@
             const diff = now - date;
             const minutes = Math.floor(diff / 60000);
 
-            if (minutes < 1) return 'Ahora mismo';
-            if (minutes === 1) return 'Hace 1 minuto';
-            if (minutes < 60) return `Hace ${minutes} minutos`;
+            if (minutes < 1) return strings.now || 'Ahora mismo';
+            if (minutes === 1) return strings.minute_ago || 'Hace 1 minuto';
+            if (minutes < 60) return (strings.minutes_ago || 'Hace %d minutos').replace('%d', minutes);
 
             const hours = Math.floor(minutes / 60);
-            if (hours === 1) return 'Hace 1 hora';
-            if (hours < 24) return `Hace ${hours} horas`;
+            if (hours === 1) return strings.hour_ago || 'Hace 1 hora';
+            if (hours < 24) return (strings.hours_ago || 'Hace %d horas').replace('%d', hours);
 
             const days = Math.floor(hours / 24);
-            if (days === 1) return 'Ayer';
-            return `Hace ${days} días`;
+            if (days === 1) return strings.yesterday || 'Ayer';
+            return (strings.days_ago || 'Hace %d días').replace('%d', days);
         }
     };
 

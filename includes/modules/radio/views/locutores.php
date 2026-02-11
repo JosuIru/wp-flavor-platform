@@ -25,9 +25,9 @@ $locutores = $wpdb->get_results("
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-admin-users"></span>
-        Gestión de Locutores
+        <?php echo esc_html__('Gestión de Locutores', 'flavor-chat-ia'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalNuevoLocutor(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> Nuevo Locutor
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nuevo Locutor', 'flavor-chat-ia'); ?>
         </a>
     </h1>
 
@@ -36,7 +36,7 @@ $locutores = $wpdb->get_results("
         <?php if (empty($locutores)): ?>
             <div style="grid-column: 1 / -1; text-align: center; padding: 60px; background: #fff; border-radius: 8px;">
                 <span class="dashicons dashicons-admin-users" style="font-size: 64px; color: #ddd;"></span>
-                <h3 style="color: #666;">No hay locutores registrados</h3>
+                <h3 style="color: #666;"><?php echo esc_html__('No hay locutores registrados', 'flavor-chat-ia'); ?></h3>
             </div>
         <?php else: ?>
             <?php foreach ($locutores as $locutor): ?>
@@ -62,13 +62,13 @@ $locutores = $wpdb->get_results("
                             <div style="flex: 1;">
                                 <span class="dashicons dashicons-microphone" style="color: #2271b1;"></span>
                                 <strong><?php echo $locutor->total_programas; ?></strong>
-                                <div style="color: #666; font-size: 11px;">Programas</div>
+                                <div style="color: #666; font-size: 11px;"><?php echo esc_html__('Programas', 'flavor-chat-ia'); ?></div>
                             </div>
                         </div>
 
                         <div style="display: flex; gap: 10px;">
                             <button onclick="editarLocutor(<?php echo $locutor->id; ?>)" class="button button-small" style="flex: 1;">
-                                <span class="dashicons dashicons-edit"></span> Editar
+                                <span class="dashicons dashicons-edit"></span> <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
                             </button>
                         </div>
                     </div>

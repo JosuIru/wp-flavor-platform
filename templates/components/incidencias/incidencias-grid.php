@@ -40,7 +40,7 @@ $stats = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
-                Incidencias
+                <?php echo esc_html__('Incidencias', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -58,10 +58,10 @@ $stats = [
 
         <!-- Filtros -->
         <div class="flex flex-wrap justify-center gap-2 mb-8">
-            <button class="px-4 py-2 rounded-full text-sm font-medium transition-all" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">Todas</button>
-            <button class="px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors">⏳ Pendientes</button>
-            <button class="px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">🔧 En Proceso</button>
-            <button class="px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors">✅ Resueltas</button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium transition-all" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;"><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors"><?php echo esc_html__('⏳ Pendientes', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"><?php echo esc_html__('🔧 En Proceso', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors"><?php echo esc_html__('✅ Resueltas', 'flavor-chat-ia'); ?></button>
         </div>
 
         <!-- Lista de incidencias -->
@@ -102,12 +102,12 @@ $stats = [
                             </div>
                         </div>
                         <div class="flex-shrink-0 flex flex-col gap-2">
-                            <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors" title="Votar">
+                            <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors" title="<?php echo esc_attr__('Votar', 'flavor-chat-ia'); ?>">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
                                 </svg>
                             </button>
-                            <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 transition-colors" title="Comentar">
+                            <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Comentar', 'flavor-chat-ia'); ?>">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                                 </svg>
@@ -123,7 +123,7 @@ $stats = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
-                Reportar Nueva Incidencia
+                <?php echo esc_html__('Reportar Nueva Incidencia', 'flavor-chat-ia'); ?>
             </a>
         </div>
     </div>

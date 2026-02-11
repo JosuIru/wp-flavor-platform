@@ -69,12 +69,12 @@ $url_imagen_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
                             </label>
                             <select class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
                                 <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                                <option value="bar"><?php _e('Bar', 'flavor-chat-ia'); ?></option>
-                                <option value="restaurante"><?php _e('Restaurante', 'flavor-chat-ia'); ?></option>
-                                <option value="cafeteria"><?php _e('Cafeteria', 'flavor-chat-ia'); ?></option>
-                                <option value="pub"><?php _e('Pub', 'flavor-chat-ia'); ?></option>
-                                <option value="terraza"><?php _e('Terraza', 'flavor-chat-ia'); ?></option>
-                                <option value="cocteleria"><?php _e('Cocteleria', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('bar', 'flavor-chat-ia'); ?>"><?php _e('Bar', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('restaurante', 'flavor-chat-ia'); ?>"><?php _e('Restaurante', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('cafeteria', 'flavor-chat-ia'); ?>"><?php _e('Cafeteria', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('pub', 'flavor-chat-ia'); ?>"><?php _e('Pub', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('terraza', 'flavor-chat-ia'); ?>"><?php _e('Terraza', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('cocteleria', 'flavor-chat-ia'); ?>"><?php _e('Cocteleria', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ $url_imagen_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
                         <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Establecimientos', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);">1.2K+</div>
+                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('1.2K+', 'flavor-chat-ia'); ?></div>
                         <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Reservas', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">

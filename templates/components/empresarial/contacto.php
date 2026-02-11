@@ -41,10 +41,10 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                 <div class="space-y-8">
                     <div>
                         <h3 class="text-2xl font-bold mb-6" style="color: var(--flavor-text-primary, #1a1a1a);">
-                            Información de Contacto
+                            <?php echo esc_html__('Información de Contacto', 'flavor-chat-ia'); ?>
                         </h3>
                         <p class="text-lg mb-8" style="color: var(--flavor-text-secondary, #666666);">
-                            Estamos disponibles para responder tus preguntas. No dudes en ponerte en contacto con nosotros.
+                            <?php echo esc_html__('Estamos disponibles para responder tus preguntas. No dudes en ponerte en contacto con nosotros.', 'flavor-chat-ia'); ?>
                         </p>
                     </div>
 
@@ -60,7 +60,7 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                                 </div>
                                 <div>
                                     <div class="font-semibold text-lg mb-1" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                        Teléfono
+                                        <?php echo esc_html__('Teléfono', 'flavor-chat-ia'); ?>
                                     </div>
                                     <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/', '', $telefono)); ?>"
                                        class="text-lg hover:underline" style="color: var(--flavor-primary, #667eea);">
@@ -79,7 +79,7 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                             </div>
                             <div>
                                 <div class="font-semibold text-lg mb-1" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                    Email
+                                    <?php echo esc_html__('Email', 'flavor-chat-ia'); ?>
                                 </div>
                                 <a href="mailto:<?php echo esc_attr($email_destino); ?>"
                                    class="text-lg hover:underline" style="color: var(--flavor-primary, #667eea);">
@@ -99,7 +99,7 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                                 </div>
                                 <div>
                                     <div class="font-semibold text-lg mb-1" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                        Dirección
+                                        <?php echo esc_html__('Dirección', 'flavor-chat-ia'); ?>
                                     </div>
                                     <p class="text-lg" style="color: var(--flavor-text-secondary, #666666);">
                                         <?php echo esc_html($direccion); ?>
@@ -112,7 +112,7 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                     <!-- Redes sociales -->
                     <div class="pt-8 border-t" style="border-color: rgba(0,0,0,0.1);">
                         <p class="font-semibold mb-4" style="color: var(--flavor-text-primary, #1a1a1a);">
-                            Síguenos en Redes Sociales
+                            <?php echo esc_html__('Síguenos en Redes Sociales', 'flavor-chat-ia'); ?>
                         </p>
                         <div class="flex gap-4">
                             <a href="#" class="w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-300 hover:transform hover:scale-110"
@@ -140,37 +140,37 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                 <!-- Formulario -->
                 <div class="bg-white rounded-2xl p-8 shadow-2xl">
                     <form class="space-y-6" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                        <input type="hidden" name="action" value="flavor_contact_form">
+                        <input type="hidden" name="action" value="<?php echo esc_attr__('flavor_contact_form', 'flavor-chat-ia'); ?>">
                         <?php wp_nonce_field('flavor_contact_form', 'flavor_contact_nonce'); ?>
 
                         <div>
                             <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                Nombre Completo *
+                                <?php echo esc_html__('Nombre Completo *', 'flavor-chat-ia'); ?>
                             </label>
                             <input type="text"
                                    name="nombre_completo"
                                    required
                                    class="w-full px-4 py-3 rounded-lg border-2 transition-all duration-300 focus:outline-none"
                                    style="border-color: rgba(0,0,0,0.1); focus:border-color: var(--flavor-primary, #667eea);"
-                                   placeholder="Juan Pérez">
+                                   placeholder="<?php echo esc_attr__('Juan Pérez', 'flavor-chat-ia'); ?>">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                    Email *
+                                    <?php echo esc_html__('Email *', 'flavor-chat-ia'); ?>
                                 </label>
                                 <input type="email"
                                        name="email"
                                        required
                                        class="w-full px-4 py-3 rounded-lg border-2 transition-all duration-300 focus:outline-none"
                                        style="border-color: rgba(0,0,0,0.1);"
-                                       placeholder="juan@empresa.com">
+                                       placeholder="<?php echo esc_attr__('juan@empresa.com', 'flavor-chat-ia'); ?>">
                             </div>
 
                             <div>
                                 <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                    Teléfono
+                                    <?php echo esc_html__('Teléfono', 'flavor-chat-ia'); ?>
                                 </label>
                                 <input type="tel"
                                        name="telefono"
@@ -182,42 +182,42 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
 
                         <div>
                             <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                Empresa
+                                <?php echo esc_html__('Empresa', 'flavor-chat-ia'); ?>
                             </label>
                             <input type="text"
                                    name="empresa"
                                    class="w-full px-4 py-3 rounded-lg border-2 transition-all duration-300 focus:outline-none"
                                    style="border-color: rgba(0,0,0,0.1);"
-                                   placeholder="Mi Empresa S.L.">
+                                   placeholder="<?php echo esc_attr__('Mi Empresa S.L.', 'flavor-chat-ia'); ?>">
                         </div>
 
                         <div>
                             <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                Asunto *
+                                <?php echo esc_html__('Asunto *', 'flavor-chat-ia'); ?>
                             </label>
                             <select name="asunto"
                                     required
                                     class="w-full px-4 py-3 rounded-lg border-2 transition-all duration-300 focus:outline-none"
                                     style="border-color: rgba(0,0,0,0.1);">
-                                <option value="">Selecciona una opción</option>
-                                <option value="consulta">Consulta General</option>
-                                <option value="presupuesto">Solicitar Presupuesto</option>
-                                <option value="soporte">Soporte Técnico</option>
-                                <option value="ventas">Información de Ventas</option>
-                                <option value="otro">Otro</option>
+                                <option value=""><?php echo esc_html__('Selecciona una opción', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('consulta', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Consulta General', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('presupuesto', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Solicitar Presupuesto', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('soporte', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Soporte Técnico', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('ventas', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Información de Ventas', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Otro', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
 
                         <div>
                             <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                Mensaje *
+                                <?php echo esc_html__('Mensaje *', 'flavor-chat-ia'); ?>
                             </label>
                             <textarea name="mensaje"
                                       required
                                       rows="6"
                                       class="w-full px-4 py-3 rounded-lg border-2 transition-all duration-300 focus:outline-none resize-none"
                                       style="border-color: rgba(0,0,0,0.1);"
-                                      placeholder="Cuéntanos más sobre tu consulta..."></textarea>
+                                      placeholder="<?php echo esc_attr__('Cuéntanos más sobre tu consulta...', 'flavor-chat-ia'); ?>"></textarea>
                         </div>
 
                         <div class="flex items-start gap-3">
@@ -227,14 +227,14 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                                    class="mt-1"
                                    id="acepto_privacidad">
                             <label for="acepto_privacidad" class="text-sm" style="color: var(--flavor-text-secondary, #666666);">
-                                Acepto la <a href="#" class="underline" style="color: var(--flavor-primary, #667eea);">política de privacidad</a> y el tratamiento de mis datos *
+                                <?php echo esc_html__('Acepto la', 'flavor-chat-ia'); ?> <a href="#" class="underline" style="color: var(--flavor-primary, #667eea);"><?php echo esc_html__('política de privacidad', 'flavor-chat-ia'); ?></a> <?php echo esc_html__('y el tratamiento de mis datos *', 'flavor-chat-ia'); ?>
                             </label>
                         </div>
 
                         <button type="submit"
                                 class="w-full px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl"
                                 style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%); color: white;">
-                            Enviar Mensaje
+                            <?php echo esc_html__('Enviar Mensaje', 'flavor-chat-ia'); ?>
                         </button>
                     </form>
                 </div>
@@ -246,27 +246,27 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                 <!-- Formulario -->
                 <div class="max-w-3xl mx-auto bg-white rounded-2xl p-8 shadow-2xl">
                     <form class="space-y-6" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                        <input type="hidden" name="action" value="flavor_contact_form">
+                        <input type="hidden" name="action" value="<?php echo esc_attr__('flavor_contact_form', 'flavor-chat-ia'); ?>">
                         <?php wp_nonce_field('flavor_contact_form', 'flavor_contact_nonce'); ?>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">Nombre *</label>
+                                <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Nombre *', 'flavor-chat-ia'); ?></label>
                                 <input type="text" name="nombre_completo" required class="w-full px-4 py-3 rounded-lg border-2" style="border-color: rgba(0,0,0,0.1);">
                             </div>
                             <div>
-                                <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">Email *</label>
+                                <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Email *', 'flavor-chat-ia'); ?></label>
                                 <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border-2" style="border-color: rgba(0,0,0,0.1);">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">Mensaje *</label>
+                            <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Mensaje *', 'flavor-chat-ia'); ?></label>
                             <textarea name="mensaje" required rows="4" class="w-full px-4 py-3 rounded-lg border-2" style="border-color: rgba(0,0,0,0.1);"></textarea>
                         </div>
 
                         <button type="submit" class="w-full px-8 py-4 text-lg font-semibold rounded-lg" style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%); color: white;">
-                            Enviar Mensaje
+                            <?php echo esc_html__('Enviar Mensaje', 'flavor-chat-ia'); ?>
                         </button>
                     </form>
                 </div>
@@ -274,7 +274,7 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                 <!-- Mapa e información -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="bg-gray-200 rounded-2xl h-96 flex items-center justify-center">
-                        <p class="text-gray-600">Mapa de Google Maps aquí</p>
+                        <p class="text-gray-600"><?php echo esc_html__('Mapa de Google Maps aquí', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div class="space-y-6">
                         <?php if ($mostrar_telefono): ?>
@@ -283,7 +283,7 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                                 </div>
                                 <div>
-                                    <div class="font-semibold">Teléfono</div>
+                                    <div class="font-semibold"><?php echo esc_html__('Teléfono', 'flavor-chat-ia'); ?></div>
                                     <p><?php echo esc_html($telefono); ?></p>
                                 </div>
                             </div>
@@ -294,7 +294,7 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
                                 </div>
                                 <div>
-                                    <div class="font-semibold">Dirección</div>
+                                    <div class="font-semibold"><?php echo esc_html__('Dirección', 'flavor-chat-ia'); ?></div>
                                     <p><?php echo esc_html($direccion); ?></p>
                                 </div>
                             </div>
@@ -308,26 +308,26 @@ $direccion = $direccion ?? 'Calle Principal 123, 28001 Madrid, España';
             <div class="max-w-2xl mx-auto">
                 <div class="bg-white rounded-2xl p-8 md:p-12 shadow-2xl">
                     <form class="space-y-6" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                        <input type="hidden" name="action" value="flavor_contact_form">
+                        <input type="hidden" name="action" value="<?php echo esc_attr__('flavor_contact_form', 'flavor-chat-ia'); ?>">
                         <?php wp_nonce_field('flavor_contact_form', 'flavor_contact_nonce'); ?>
 
                         <div>
-                            <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">Nombre Completo *</label>
-                            <input type="text" name="nombre_completo" required class="w-full px-4 py-3 rounded-lg border-2" style="border-color: rgba(0,0,0,0.1);" placeholder="Tu nombre">
+                            <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Nombre Completo *', 'flavor-chat-ia'); ?></label>
+                            <input type="text" name="nombre_completo" required class="w-full px-4 py-3 rounded-lg border-2" style="border-color: rgba(0,0,0,0.1);" placeholder="<?php echo esc_attr__('Tu nombre', 'flavor-chat-ia'); ?>">
                         </div>
 
                         <div>
-                            <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">Email *</label>
-                            <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border-2" style="border-color: rgba(0,0,0,0.1);" placeholder="tu@email.com">
+                            <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Email *', 'flavor-chat-ia'); ?></label>
+                            <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border-2" style="border-color: rgba(0,0,0,0.1);" placeholder="<?php echo esc_attr__('tu@email.com', 'flavor-chat-ia'); ?>">
                         </div>
 
                         <div>
-                            <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">Mensaje *</label>
-                            <textarea name="mensaje" required rows="6" class="w-full px-4 py-3 rounded-lg border-2 resize-none" style="border-color: rgba(0,0,0,0.1);" placeholder="Tu mensaje..."></textarea>
+                            <label class="block font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Mensaje *', 'flavor-chat-ia'); ?></label>
+                            <textarea name="mensaje" required rows="6" class="w-full px-4 py-3 rounded-lg border-2 resize-none" style="border-color: rgba(0,0,0,0.1);" placeholder="<?php echo esc_attr__('Tu mensaje...', 'flavor-chat-ia'); ?>"></textarea>
                         </div>
 
                         <button type="submit" class="w-full px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:shadow-xl" style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%); color: white;">
-                            Enviar Mensaje
+                            <?php echo esc_html__('Enviar Mensaje', 'flavor-chat-ia'); ?>
                         </button>
                     </form>
                 </div>

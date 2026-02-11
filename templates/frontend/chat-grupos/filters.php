@@ -11,16 +11,16 @@ $filtros_activos = $filtros_activos ?? [];
 <div class="flavor-frontend flavor-chat-grupos-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+            <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-purple-600 hover:text-purple-700 font-medium">Limpiar</a>
+            <a href="?" class="text-sm text-purple-600 hover:text-purple-700 font-medium"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
             <?php endif; ?>
         </div>
 
         <form method="get" class="space-y-6">
             <!-- Categoria -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Categoria</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $categorias_chat_grupo = [
@@ -49,7 +49,7 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Tipo de grupo -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Tipo de grupo</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Tipo de grupo', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $tipos_grupo = [
@@ -73,32 +73,32 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Miembros minimo -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Miembros minimo</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Miembros minimo', 'flavor-chat-ia'); ?></h4>
                 <select name="miembros_minimo" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-purple-500">
-                    <option value="">Cualquiera</option>
-                    <option value="5" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '5' ? 'selected' : ''; ?>>5+ miembros</option>
-                    <option value="10" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '10' ? 'selected' : ''; ?>>10+ miembros</option>
-                    <option value="25" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '25' ? 'selected' : ''; ?>>25+ miembros</option>
-                    <option value="50" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '50' ? 'selected' : ''; ?>>50+ miembros</option>
-                    <option value="100" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '100' ? 'selected' : ''; ?>>100+ miembros</option>
+                    <option value=""><?php echo esc_html__('Cualquiera', 'flavor-chat-ia'); ?></option>
+                    <option value="5" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '5' ? 'selected' : ''; ?>><?php echo esc_html__('5+ miembros', 'flavor-chat-ia'); ?></option>
+                    <option value="10" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '10' ? 'selected' : ''; ?>><?php echo esc_html__('10+ miembros', 'flavor-chat-ia'); ?></option>
+                    <option value="25" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '25' ? 'selected' : ''; ?>><?php echo esc_html__('25+ miembros', 'flavor-chat-ia'); ?></option>
+                    <option value="50" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '50' ? 'selected' : ''; ?>><?php echo esc_html__('50+ miembros', 'flavor-chat-ia'); ?></option>
+                    <option value="100" <?php echo ($filtros_activos['miembros_minimo'] ?? '') === '100' ? 'selected' : ''; ?>><?php echo esc_html__('100+ miembros', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <!-- Ordenar -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Ordenar por</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?></h4>
                 <select name="ordenar" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-purple-500">
-                    <option value="actividad" <?php echo ($filtros_activos['ordenar'] ?? '') === 'actividad' ? 'selected' : ''; ?>>Mas activos</option>
-                    <option value="miembros" <?php echo ($filtros_activos['ordenar'] ?? '') === 'miembros' ? 'selected' : ''; ?>>Mas miembros</option>
-                    <option value="recientes" <?php echo ($filtros_activos['ordenar'] ?? '') === 'recientes' ? 'selected' : ''; ?>>Mas recientes</option>
-                    <option value="nombre" <?php echo ($filtros_activos['ordenar'] ?? '') === 'nombre' ? 'selected' : ''; ?>>Nombre A-Z</option>
+                    <option value="<?php echo esc_attr__('actividad', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'actividad' ? 'selected' : ''; ?>><?php echo esc_html__('Mas activos', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('miembros', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'miembros' ? 'selected' : ''; ?>><?php echo esc_html__('Mas miembros', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('recientes', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'recientes' ? 'selected' : ''; ?>><?php echo esc_html__('Mas recientes', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('nombre', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'nombre' ? 'selected' : ''; ?>><?php echo esc_html__('Nombre A-Z', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <!-- Boton aplicar -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-violet-500 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-violet-600 hover:to-purple-700 transition-all shadow-md">
-                Aplicar Filtros
+                <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

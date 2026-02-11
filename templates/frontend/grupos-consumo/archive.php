@@ -15,8 +15,8 @@ $estadisticas = $estadisticas ?? [];
     <div class="bg-gradient-to-r from-lime-500 to-green-500 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">🥕 Grupos de Consumo</h1>
-                <p class="text-lime-100">Consume productos locales, ecológicos y de temporada junto a tus vecinos</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('🥕 Grupos de Consumo', 'flavor-chat-ia'); ?></h1>
+                <p class="text-lime-100"><?php echo esc_html__('Consume productos locales, ecológicos y de temporada junto a tus vecinos', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -24,7 +24,7 @@ $estadisticas = $estadisticas ?? [];
                 </span>
                 <button class="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all shadow-md"
                         onclick="flavorGruposConsumo.crearGrupo()">
-                    ➕ Crear grupo
+                    <?php echo esc_html__('➕ Crear grupo', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>
@@ -36,60 +36,60 @@ $estadisticas = $estadisticas ?? [];
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">👥</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['total_miembros'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Miembros activos</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Miembros activos', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">🌾</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['productores'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Productores locales</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Productores locales', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">📦</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['pedidos_mes'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Pedidos este mes</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Pedidos este mes', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">💚</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['kg_co2_ahorrados'] ?? 0); ?>kg</p>
-            <p class="text-sm text-gray-500">CO₂ ahorrado</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('CO₂ ahorrado', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
     <?php endif; ?>
 
     <!-- Cómo funciona -->
     <div class="bg-lime-50 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">🌱 ¿Cómo funciona?</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('🌱 ¿Cómo funciona?', 'flavor-chat-ia'); ?></h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="text-center">
                 <div class="w-12 h-12 bg-lime-500 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold">1</div>
-                <p class="text-sm text-gray-600">Únete a un grupo o crea el tuyo</p>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Únete a un grupo o crea el tuyo', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-12 h-12 bg-lime-500 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold">2</div>
-                <p class="text-sm text-gray-600">Haz tu pedido semanal</p>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Haz tu pedido semanal', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-12 h-12 bg-lime-500 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold">3</div>
-                <p class="text-sm text-gray-600">Recoge en el punto acordado</p>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Recoge en el punto acordado', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-12 h-12 bg-lime-500 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold">4</div>
-                <p class="text-sm text-gray-600">Disfruta productos frescos</p>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Disfruta productos frescos', 'flavor-chat-ia'); ?></p>
             </div>
         </div>
     </div>
 
     <!-- Grid de grupos -->
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Grupos disponibles</h2>
+    <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('Grupos disponibles', 'flavor-chat-ia'); ?></h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php if (empty($grupos)): ?>
         <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
             <div class="text-6xl mb-4">🥬</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay grupos todavía</h3>
-            <p class="text-gray-500 mb-6">¡Sé el primero en crear un grupo de consumo!</p>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay grupos todavía', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Sé el primero en crear un grupo de consumo!', 'flavor-chat-ia'); ?></p>
             <button class="bg-lime-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-lime-600 transition-colors"
                     onclick="flavorGruposConsumo.crearGrupo()">
-                Crear grupo de consumo
+                <?php echo esc_html__('Crear grupo de consumo', 'flavor-chat-ia'); ?>
             </button>
         </div>
         <?php else: ?>
@@ -103,7 +103,7 @@ $estadisticas = $estadisticas ?? [];
                 <?php endif; ?>
                 <?php if ($grupo['abierto_inscripciones'] ?? true): ?>
                 <span class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    Abierto
+                    <?php echo esc_html__('Abierto', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -140,7 +140,7 @@ $estadisticas = $estadisticas ?? [];
 
                 <a href="<?php echo esc_url($grupo['url']); ?>"
                    class="block mt-4 text-center bg-lime-500 hover:bg-lime-600 text-white py-2 px-4 rounded-xl font-medium transition-colors">
-                    Ver grupo
+                    <?php echo esc_html__('Ver grupo', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </article>
@@ -152,9 +152,9 @@ $estadisticas = $estadisticas ?? [];
     <?php if ($total_grupos > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">← Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Página 1 de <?php echo ceil($total_grupos / 12); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-lime-500 text-white hover:bg-lime-600 transition-colors">Siguiente →</button>
+            <button class="px-4 py-2 rounded-lg bg-lime-500 text-white hover:bg-lime-600 transition-colors"><?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

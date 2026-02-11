@@ -44,6 +44,19 @@ $stats_pedidos = $wpdb->get_row($wpdb->prepare(
     $fecha_fin . ' 23:59:59'
 ));
 
+$ticket_medio = ($stats_pedidos && $stats_pedidos->total > 0)
+    ? ($stats_pedidos->importe / $stats_pedidos->total)
+    : 0;
+
+$inicio_mes = date('Y-m-01');
+$stats_mes = $wpdb->get_row($wpdb->prepare(
+    "SELECT COUNT(*) as total, COALESCE(SUM(total), 0) as importe
+     FROM {$wpdb->prefix}flavor_gc_pedidos
+     WHERE fecha_pedido BETWEEN %s AND %s",
+    $inicio_mes . ' 00:00:00',
+    $fecha_fin . ' 23:59:59'
+));
+
 // Pedidos por estado
 $pedidos_por_estado = $wpdb->get_results($wpdb->prepare(
     "SELECT estado, COUNT(*) as total, COALESCE(SUM(total), 0) as importe
@@ -95,6 +108,39 @@ $top_consumidores = $wpdb->get_results($wpdb->prepare(
      WHERE p.fecha_pedido BETWEEN %s AND %s
      GROUP BY p.usuario_id
      ORDER BY importe DESC
+     LIMIT 10",
+    $fecha_inicio . ' 00:00:00',
+    $fecha_fin . ' 23:59:59'
+));
+
+// Top 10 productores
+$top_productores = $wpdb->get_results($wpdb->prepare(
+    "SELECT pm.meta_value as productor_id, prod.post_title as nombre,
+            SUM(c.cantidad_total) as cantidad,
+            SUM(c.total) as importe
+     FROM {$wpdb->prefix}flavor_gc_consolidado c
+     LEFT JOIN {$wpdb->postmeta} pm ON c.producto_id = pm.post_id AND pm.meta_key = '_gc_productor_id'
+     LEFT JOIN {$wpdb->posts} prod ON prod.ID = pm.meta_value
+     LEFT JOIN {$wpdb->posts} ciclo ON c.ciclo_id = ciclo.ID
+     LEFT JOIN {$wpdb->postmeta} pmc ON ciclo.ID = pmc.post_id AND pmc.meta_key = '_gc_fecha_cierre'
+     WHERE pmc.meta_value BETWEEN %s AND %s
+     GROUP BY pm.meta_value
+     ORDER BY cantidad DESC
+     LIMIT 10",
+    $fecha_inicio,
+    $fecha_fin
+));
+
+// Resumen por ciclo (top 10 recientes)
+$resumen_ciclos = $wpdb->get_results($wpdb->prepare(
+    "SELECT c.ID as ciclo_id, c.post_title as nombre,
+            COUNT(p.id) as pedidos,
+            COALESCE(SUM(p.total), 0) as importe
+     FROM {$wpdb->prefix}flavor_gc_pedidos p
+     LEFT JOIN {$wpdb->posts} c ON c.ID = p.ciclo_id
+     WHERE p.fecha_pedido BETWEEN %s AND %s
+     GROUP BY p.ciclo_id
+     ORDER BY MAX(p.fecha_pedido) DESC
      LIMIT 10",
     $fecha_inicio . ' 00:00:00',
     $fecha_fin . ' 23:59:59'
@@ -169,6 +215,61 @@ $suscripciones_frecuencia = $wpdb->get_results(
         </form>
     </div>
 
+    <?php
+    $ciclos_filtro = get_posts([
+        'post_type' => 'gc_ciclo',
+        'posts_per_page' => 50,
+        'orderby' => 'date',
+        'order' => 'DESC',
+    ]);
+    $productores_filtro = get_posts([
+        'post_type' => 'gc_productor',
+        'posts_per_page' => 100,
+        'orderby' => 'title',
+        'order' => 'ASC',
+    ]);
+    $filtro_ciclo = absint($_GET['ciclo_id'] ?? 0);
+    $filtro_productor = absint($_GET['productor_id'] ?? 0);
+    ?>
+
+    <div class="gc-filtro-periodo">
+        <form method="get">
+            <input type="hidden" name="page" value="gc-reportes">
+            <div class="gc-filtro-grid">
+                <div class="gc-filtro-item">
+                    <label><?php _e('Ciclo:', 'flavor-chat-ia'); ?></label>
+                    <select name="ciclo_id">
+                        <option value="0"><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($ciclos_filtro as $c): ?>
+                            <option value="<?php echo esc_attr($c->ID); ?>" <?php selected($filtro_ciclo, $c->ID); ?>>
+                                <?php echo esc_html($c->post_title); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="gc-filtro-item">
+                    <label><?php _e('Productor:', 'flavor-chat-ia'); ?></label>
+                    <select name="productor_id">
+                        <option value="0"><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($productores_filtro as $p): ?>
+                            <option value="<?php echo esc_attr($p->ID); ?>" <?php selected($filtro_productor, $p->ID); ?>>
+                                <?php echo esc_html($p->post_title); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="gc-filtro-item">
+                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                </div>
+                <div class="gc-filtro-item">
+                    <a class="button button-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_pedidos_filtrado&ciclo_id=' . $filtro_ciclo . '&productor_id=' . $filtro_productor . '&desde=' . $fecha_inicio . '&hasta=' . $fecha_fin), 'gc_exportar_pedidos_filtrado')); ?>">
+                        <?php _e('Exportar CSV filtrado', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- KPIs Principales -->
     <div class="gc-kpis-grid">
         <div class="gc-kpi-card">
@@ -183,6 +284,27 @@ $suscripciones_frecuencia = $wpdb->get_results(
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($stats_pedidos->importe, 2, ',', '.'); ?>€</span>
                 <span class="gc-kpi-label"><?php _e('Facturación', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <div class="gc-kpi-card">
+            <div class="gc-kpi-icon"><span class="dashicons dashicons-chart-area"></span></div>
+            <div class="gc-kpi-content">
+                <span class="gc-kpi-value"><?php echo number_format($ticket_medio, 2, ',', '.'); ?>€</span>
+                <span class="gc-kpi-label"><?php _e('Ticket medio', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <div class="gc-kpi-card">
+            <div class="gc-kpi-icon"><span class="dashicons dashicons-calendar-alt"></span></div>
+            <div class="gc-kpi-content">
+                <span class="gc-kpi-value"><?php echo number_format($stats_mes->total ?? 0); ?></span>
+                <span class="gc-kpi-label"><?php _e('Pedidos este mes', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <div class="gc-kpi-card">
+            <div class="gc-kpi-icon"><span class="dashicons dashicons-analytics"></span></div>
+            <div class="gc-kpi-content">
+                <span class="gc-kpi-value"><?php echo number_format($stats_mes->importe ?? 0, 2, ',', '.'); ?>€</span>
+                <span class="gc-kpi-label"><?php _e('Facturación este mes', 'flavor-chat-ia'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card">
@@ -244,6 +366,37 @@ $suscripciones_frecuencia = $wpdb->get_results(
 
     <!-- Tablas de rankings -->
     <div class="gc-tablas-grid">
+        <!-- Resumen por ciclo -->
+        <div class="gc-tabla-card">
+            <h2><?php _e('Resumen por ciclo', 'flavor-chat-ia'); ?></h2>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th><?php _e('Ciclo', 'flavor-chat-ia'); ?></th>
+                        <th class="text-right"><?php _e('Pedidos', 'flavor-chat-ia'); ?></th>
+                        <th class="text-right"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($resumen_ciclos)): ?>
+                        <tr><td colspan="3" class="text-center"><?php _e('Sin datos', 'flavor-chat-ia'); ?></td></tr>
+                    <?php else: ?>
+                        <?php foreach ($resumen_ciclos as $ciclo): ?>
+                            <tr>
+                                <td>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=gc-consolidado&ciclo=' . $ciclo->ciclo_id)); ?>">
+                                        <?php echo esc_html($ciclo->nombre ?: ('#' . $ciclo->ciclo_id)); ?>
+                                    </a>
+                                </td>
+                                <td class="text-right"><?php echo number_format($ciclo->pedidos); ?></td>
+                                <td class="text-right"><?php echo number_format($ciclo->importe, 2, ',', '.'); ?>€</td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
         <!-- Top Productos -->
         <div class="gc-tabla-card">
             <h2><?php _e('Top 10 Productos', 'flavor-chat-ia'); ?></h2>
@@ -266,6 +419,35 @@ $suscripciones_frecuencia = $wpdb->get_results(
                                 <td><?php echo esc_html($producto->nombre); ?></td>
                                 <td class="text-right"><?php echo number_format($producto->cantidad, 2, ',', '.'); ?></td>
                                 <td class="text-right"><?php echo number_format($producto->importe, 2, ',', '.'); ?>€</td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Top Productores -->
+        <div class="gc-tabla-card">
+            <h2><?php _e('Top 10 Productores', 'flavor-chat-ia'); ?></h2>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th><?php _e('Productor', 'flavor-chat-ia'); ?></th>
+                        <th class="text-right"><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
+                        <th class="text-right"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($top_productores)): ?>
+                        <tr><td colspan="4" class="text-center"><?php _e('Sin datos', 'flavor-chat-ia'); ?></td></tr>
+                    <?php else: ?>
+                        <?php foreach ($top_productores as $i => $productor): ?>
+                            <tr>
+                                <td><?php echo $i + 1; ?></td>
+                                <td><?php echo esc_html($productor->nombre ?: __('Sin nombre', 'flavor-chat-ia')); ?></td>
+                                <td class="text-right"><?php echo number_format($productor->cantidad ?? 0, 2, ',', '.'); ?></td>
+                                <td class="text-right"><?php echo number_format($productor->importe ?? 0, 2, ',', '.'); ?>€</td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

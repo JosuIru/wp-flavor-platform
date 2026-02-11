@@ -1,0 +1,1363 @@
+{
+  "appTitle": "Basabere",
+  "appTagline": "Experiencias en la naturaleza",
+  "clientAppTitle": "Reservar Experiencia",
+  "clientAppSubtitle": "Consulta disponibilidad y reserva tu visita",
+  "adminAppTitle": "Administración",
+  "adminAppSubtitle": "Gestión de reservas y estadísticas",
+  "appVersionLabel": "v{version}",
+  "@appVersionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "languageTitle": "Idioma",
+  "languageDescription": "El idioma seleccionado se usara para las comunicaciones con el asistente IA y las notificaciones.",
+  "languageChanged": "Idioma cambiado a {language}",
+  "@languageChanged": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigConnectionError": "Error de conexion",
+  "serverConfigConnectedTo": "Conectado a {name}",
+  "@serverConfigConnectedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigError": "Error: {error}",
+  "@serverConfigError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigConnectionSuccess": "Conexion exitosa con el servidor",
+  "serverConfigSavedRestartNotice": "Configuracion guardada. Reinicia la app para aplicar los cambios.",
+  "serverConfigSaveError": "Error al guardar: {error}",
+  "@serverConfigSaveError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigInvalidQr": "QR no valido: {url}",
+  "@serverConfigInvalidQr": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigResetTitle": "Restablecer valores",
+  "serverConfigResetDescription": "Se restablecera la URL del servidor a los valores por defecto. ¿Continuar?",
+  "commonCancel": "Cancelar",
+  "serverConfigResetAction": "Restablecer",
+  "serverConfigResetDone": "Configuracion restablecida",
+  "serverConfigTitle": "Configuracion del servidor",
+  "serverConfigResetTooltip": "Restablecer valores",
+  "serverConfigScanQrTitle": "Escanear codigo QR",
+  "serverConfigScanQrDescription": "Escanea el QR desde el panel de WordPress para configurar automaticamente",
+  "serverConfigSavedBusinesses": "Negocios guardados",
+  "commonCurrent": "Actual",
+  "commonUse": "Usar",
+  "serverConfigManualSeparator": "o configura manualmente",
+  "serverConfigServerUrlTitle": "URL del servidor",
+  "serverConfigServerUrlLabel": "URL del servidor",
+  "serverConfigServerUrlHint": "https://ejemplo.com",
+  "serverConfigServerUrlHelper": "Incluir https:// o http://",
+  "serverConfigServerUrlRequired": "La URL es requerida",
+  "serverConfigServerUrlInvalid": "URL no valida. Debe comenzar con http:// o https://",
+  "serverConfigNamespaceTitle": "Namespace de la API",
+  "serverConfigNamespaceLabel": "Namespace",
+  "serverConfigNamespaceHint": "/wp-json/chat-ia-mobile/v1",
+  "serverConfigNamespaceHelper": "Normalmente no es necesario cambiar esto",
+  "serverConfigNamespaceRequired": "El namespace es requerido",
+  "serverConfigNamespaceMustStartSlash": "Debe comenzar con /",
+  "serverConfigApiUrlPreviewTitle": "URL completa de la API:",
+  "serverConfigTestingLabel": "Probando...",
+  "serverConfigTestButton": "Probar conexion",
+  "serverConfigSavingLabel": "Guardando...",
+  "serverConfigSaveButton": "Guardar configuracion",
+  "serverConfigRestartNote": "Despues de guardar, reinicia la aplicacion para que los cambios surtan efecto.",
+  "serverConfigQrScanTitle": "Escanear QR",
+  "serverConfigQrScanInstruction": "Escanea el codigo QR",
+  "serverConfigQrScanHelp": "Encontraras el QR en el panel de WordPress:\nChat IA → Configuracion → Apps Moviles",
+  "reserveCta": "Reservar",
+  "reservationCompletedTitle": "¡Reserva completada!",
+  "acceptButton": "Aceptar",
+  "completePurchaseTitle": "Finalizar compra",
+  "cancelPurchaseConfirm": "¿Cancelar compra?",
+  "continueButton": "Continuar",
+  "exitButton": "Salir",
+  "ticketsEmailPrompt": "Ingresa tu email para ver tus tickets. Te enviaremos un código de verificación.",
+  "sendCodeLabel": "Enviar código",
+  "verificationCodeLabel": "Código de verificación",
+  "resendCodeLabel": "Reenviar código",
+  "verificar8e93d9": "Verificar",
+  "misTicketsD730aa": "Mis Tickets",
+  "cambiarD1bdc3": "Cambiar",
+  "enviarCDigoDeVerificaciNEd6c4b": "Enviar código de verificación",
+  "usarOtroEmail7573e1": "Usar otro email",
+  "verificarEmailDa92ce": "Verificar email",
+  "cambiarEmailC3a46a": "Cambiar email",
+  "reintentar179654": "Reintentar",
+  "verQr93c2a8": "Ver QR",
+  "calendarioB0743a": "Calendario",
+  "compartirFba5ba": "Compartir",
+  "cerrar92eb39": "Cerrar",
+  "aAdirD20f65": "Añadir",
+  "emailVerificadoCorrectamente13db6f": "✓ Email verificado correctamente",
+  "enviandoCDigo36cd31": "Enviando código...",
+  "verificando1361c9": "Verificando...",
+  "errorAlAAdirAlCalendario030367": "Error al añadir al calendario",
+  "emailCe8ae9": "Email",
+  "tuEmailComE48501": "tu@email.com",
+  "cDigoC54e67": "Código",
+  "t000000670b14": "000000",
+  "recargar3a9786": "Recargar",
+  "whatsapp8b777e": "WhatsApp",
+  "directorioDf7b92": "Directorio",
+  "sitiosGuardados13e63b": "Sitios guardados",
+  "buscar113f74": "Buscar",
+  "cercaDeMC17429": "Cerca de mí",
+  "soloFavoritos66eeaf": "Solo favoritos",
+  "vistaCompactaCe3da5": "Vista compacta",
+  "radioC210a7": "Radio:",
+  "conectar4b2e15": "Conectar",
+  "verPerfilD615f4": "Ver perfil",
+  "todos32630c": "Todos",
+  "comunidad6b02af": "Comunidad",
+  "cooperativa657922": "Cooperativa",
+  "asociaciN59d9a3": "Asociación",
+  "empresa9bc720": "Empresa",
+  "colectivo9c6f6f": "Colectivo",
+  "fundaciN0bcfd2": "Fundación",
+  "particular1d75c6": "Particular",
+  "administraciNPBlica86e1c4": "Administración Pública",
+  "centroEducativo96e832": "Centro Educativo",
+  "otroC22952": "Otro",
+  "bSico597ae7": "Básico",
+  "enTransiciN3c5b08": "En Transición",
+  "conscienteDf134a": "Consciente",
+  "referenteD876b0": "Referente",
+  "noHayNegociosEnElDirectorio7c8399": "No hay negocios en el directorio",
+  "noHaySitiosGuardados5a9b5e": "No hay sitios guardados",
+  "negocios2d41e3": "Negocios",
+  "toqueParaVerDetallesBa76e9": "Toque para ver detalles",
+  "tipo4f427c": "Tipo",
+  "nivel48281f": "Nivel",
+  "sectorOpcional94b201": "Sector (opcional)",
+  "ciudadOpcionalE747b0": "Ciudad (opcional)",
+  "chat55dcdf": "Chat",
+  "limpiarChatE7dfdf": "Limpiar chat",
+  "seguroQueQuieresBorrarElHistorialDE3b015": "¿Seguro que quieres borrar el historial de mensajes?",
+  "borrarA96f30": "Borrar",
+  "pendiente17fd63": "Pendiente",
+  "usadoC277c8": "Usado",
+  "cancelado04b0f5": "Cancelado",
+  "hoy6368f5": "Hoy",
+  "buscarCliente5a2444": "Buscar cliente",
+  "nombreEmailOTelFonoC50094": "Nombre, email o teléfono...",
+  "tipoTicket402ee5": "Tipo ticket",
+  "estado3397e6": "Estado",
+  "estadSticasF66aff": "Estadísticas",
+  "chatsEscalados032c6e": "Chats Escalados",
+  "actualizar2e7be1": "Actualizar",
+  "clientesA374d1": "Clientes",
+  "llamarC9c110": "Llamar",
+  "buscarPorNombreEmailOTelFono63ad57": "Buscar por nombre, email o teléfono...",
+  "quitarFiltro9c7d57": "Quitar filtro",
+  "chatIaAdminAffb65": "Chat IA Admin",
+  "seguroQueQuieresBorrarElHistorialFdb76f": "¿Seguro que quieres borrar el historial?",
+  "preguntaSobreReservasClientesEstadSD68421": "Pregunta sobre reservas, clientes, estadísticas...",
+  "clientesSemanaD70cd2": "Clientes Semana",
+  "guardarD3270b": "Guardar",
+  "eliminarCliente63bb53": "Eliminar cliente",
+  "eliminar5b5c9f": "Eliminar",
+  "fechaDelEvento63f6fa": "Fecha del evento *",
+  "errorAlCargarTicketsAb3af0": "Error al cargar tickets",
+  "soloSePuedenEditarClientesManualesE83c06": "Solo se pueden editar clientes manuales",
+  "soloSePuedenEliminarClientesManuale76681f": "Solo se pueden eliminar clientes manuales",
+  "escribeLasNotas771c72": "Escribe las notas...",
+  "editarEf485e": "Editar",
+  "notas265b13": "Notas",
+  "nombre45576f": "Nombre *",
+  "telFonoD091ea": "Teléfono",
+  "checkInMasivo074798": "Check-in masivo",
+  "confirmar848793": "Confirmar",
+  "cancelaciNMasiva9b9f47": "Cancelación masiva",
+  "noBafd73": "No",
+  "sCancelarA16a02": "Sí, cancelar",
+  "reservas843a17": "Reservas",
+  "seleccionarPendientesC4afe1": "Seleccionar pendientes",
+  "ticketC75143": "Ticket",
+  "cancelarReserva8c43c1": "Cancelar reserva",
+  "seguroQueQuieresCancelarEstaReservaC7d487": "¿Seguro que quieres cancelar esta reserva? Esta acción no se puede deshacer.",
+  "checkInEc86d6": "Check-in",
+  "enviar30cc00": "Enviar",
+  "ningunaReservaSeleccionadaTieneDatosB33ea0": "Ninguna reserva seleccionada tiene datos de contacto",
+  "dA734300": "Día",
+  "rango10f7ce": "Rango",
+  "checkInRealizadoCorrectamente74e5cd": "Check-in realizado correctamente",
+  "reservaCanceladaB25309": "Reserva cancelada",
+  "cancelarMasivo3df6df": "Cancelar masivo",
+  "enviarMensaje66679f": "Enviar mensaje",
+  "selecciNMLtipleE97c53": "Selección múltiple",
+  "buscarPorNombreEmailOCDigo1c88c2": "Buscar por nombre, email o código...",
+  "escribeTuMensajeA97d6f": "Escribe tu mensaje...",
+  "escribeTuMensajeNusaLasVariablesPaE2f1ec": "Escribe tu mensaje...\\nUsa las variables para personalizar cada mensaje.",
+  "procesandoF16b30": "Procesando...",
+  "linterna8f3689": "Linterna",
+  "cambiarCamara5a36e3": "Cambiar camara",
+  "dashboard2938c7": "Dashboard",
+  "soporte54532b": "Soporte",
+  "telefonoBdf77d": "Telefono",
+  "emailCopiadoAlPortapapelesDf197f": "Email copiado al portapapeles",
+  "telefonoCopiadoAlPortapapeles5300e7": "Telefono copiado al portapapeles",
+  "noSePudoAbrirWhatsapp0e9a90": "No se pudo abrir WhatsApp",
+  "emailCopiadoFa2686": "Email copiado",
+  "telefonoCopiado6cb976": "Telefono copiado",
+  "inscripciones7f2754": "Inscripciones",
+  "exportandoAExcel583e30": "Exportando a Excel...",
+  "pagadas6be9ac": "Pagadas",
+  "pendientesB4188c": "Pendientes",
+  "exportarAExcel3ac529": "Exportar a Excel",
+  "eliminarCampamento01a566": "Eliminar campamento",
+  "copiar0816bd": "Copiar",
+  "copiarDeeplinkE589f8": "Copiar deeplink",
+  "gestiNDeCampamentos247af6": "Gestión de Campamentos",
+  "nuevo73fa04": "Nuevo",
+  "crearPrimeroE98bb6": "Crear primero",
+  "campamentoEliminadoCorrectamenteEe685d": "Campamento eliminado correctamente",
+  "enlaceCopiadoAlPortapapelesBdfefc": "Enlace copiado al portapapeles",
+  "deeplinkCopiadoAlPortapapeles3bd450": "Deeplink copiado al portapapeles",
+  "verInscripcionesB46dd7": "Ver inscripciones",
+  "escribeParaBuscar633b34": "Escribe para buscar",
+  "lasInscripcionesEstNCerradas4a5c6d": "Las inscripciones están cerradas",
+  "elCampamentoEstCompleto98127c": "El campamento está completo",
+  "noSeEncontrElCampamentoA8179a": "No se encontró el campamento",
+  "campamentosB769f1": "Campamentos",
+  "limpiar476e7d": "Limpiar",
+  "limpiarFiltrosAf85d5": "Limpiar filtros",
+  "aplicarFiltros880da9": "Aplicar filtros",
+  "todasF28c2b": "Todas",
+  "abierto12ec8f": "Abierto",
+  "cerrado4e2af9": "Cerrado",
+  "filtros57aacc": "Filtros",
+  "buscarCampamentosDf032d": "Buscar campamentos...",
+  "reservationsCheckinConfirm": "¿Realizar check-in de {count} reservas?",
+  "@reservationsCheckinConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsCheckinResult": "Check-in: {success} exitosos, {error} errores",
+  "@reservationsCheckinResult": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "error": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsCancelConfirm": "¿Cancelar {count} reservas? Esta acción no se puede deshacer.",
+  "@reservationsCancelConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsCancelResult": "Canceladas: {success} exitosas, {error} errores",
+  "@reservationsCancelResult": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "error": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsSelectedCount": "{count} seleccionadas",
+  "@reservationsSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonCannotOpenUrl": "No se puede abrir: {url}",
+  "@commonCannotOpenUrl": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "reservationsMessagesSent": "Enviados {sent} de {total} mensajes",
+  "@reservationsMessagesSent": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsChannelWhatsApp": "WhatsApp ({count})",
+  "@reservationsChannelWhatsApp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsChannelEmail": "Email ({count})",
+  "@reservationsChannelEmail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsSendingProgress": "Enviando {sent} de {total}...",
+  "@reservationsSendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsManualCount": "📞 {count}",
+  "@reservationsManualCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsWcCount": "🛒 {count}",
+  "@reservationsWcCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "customersNotesTitle": "Notas - {name}",
+  "@customersNotesTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customersDeleteConfirm": "¿Seguro que quieres eliminar a {name}?",
+  "@customersDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customersManualCount": "📞 {count}",
+  "@customersManualCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "customersWcCount": "🛒 {count}",
+  "@customersWcCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonDateDmy": "{day}/{month}/{year}",
+  "@commonDateDmy": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "campsShareTitle": "Compartir: {title}",
+  "@campsShareTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "commonPriceEur": "{amount}€",
+  "@commonPriceEur": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "campsInscriptionsLabel": "inscripciones",
+  "commonYearsOld": "{age} años",
+  "@commonYearsOld": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "commonError": "Error: {error}",
+  "@commonError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "escalatedFilterLabel": "Filtrando: {status}",
+  "@escalatedFilterLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "commonPlacesAvailable": "{count} plazas",
+  "@commonPlacesAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonConnectedTo": "Conectado a {name}",
+  "@commonConnectedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reservationsOtpSent": "Hemos enviado un código de 6 dígitos a:\n{email}",
+  "@reservationsOtpSent": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "commonResultsFor": "Resultados para: {query}",
+  "@commonResultsFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "commonRetry": "Reintentar",
+  "calendarSelectTickets": "Seleccionar tickets",
+  "calendarStatusAvailable": "Disponible",
+  "calendarStatusFull": "Completo",
+  "calendarStatusClosed": "Cerrado",
+  "calendarDayStatusMessage": "Este día está {status}",
+  "@calendarDayStatusMessage": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsItemQuantity": "{qty}x {name}",
+  "@ticketsItemQuantity": {
+    "placeholders": {
+      "qty": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "commonTotal": "Total",
+  "commonProcessing": "Procesando...",
+  "reservationsCheckoutFinish": "Finalizar reserva",
+  "clientNoTabs": "No hay pestañas configuradas",
+  "clientAdminAppNotInstalled": "La app de administración no está instalada",
+  "commonAdmin": "Admin",
+  "commonShortDate": "{date}",
+  "@commonShortDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "loadingDashboard": "Cargando dashboard...",
+  "loadingAvailability": "Cargando disponibilidad...",
+  "loadingTickets": "Cargando tickets...",
+  "loadingStats": "Cargando estadísticas...",
+  "loadingCamps": "Cargando campamentos...",
+  "loadingReservations": "Cargando reservas...",
+  "loadingCustomers": "Cargando clientes...",
+  "loadingInfo": "Cargando información...",
+  "holaEnQuePuedoAyudarte": "¡Hola! ¿En qué puedo ayudarte?",
+  "preguntameSobreDisponibilidadNhorariosOComoHacerUnaReserva": "Pregúntame sobre disponibilidad,\\nhorarios o cómo hacer una reserva",
+  "tuReservaHaSidoProcesadaConExito": "Tu reserva ha sido procesada con éxito. ",
+  "siSalesAhoraPerderasLosCambiosYTendrasQueEmpezarDeNuevo": "Si sales ahora, perderás los cambios y tendrás que empezar de nuevo.",
+  "modoOfflineMostrandoTicketsGuardados": "Modo offline - mostrando tickets guardados",
+  "emailVerificado": "Email verificado",
+  "verificacionRequerida": "Verificación requerida",
+  "paraVerTusTicketsNecesitasVerificarTuEmail": "Para ver tus tickets, necesitas verificar tu email.",
+  "tuBilleteraDeTickets": "Tu billetera de tickets",
+  "verificaTuEmailParaAccederATusTicketsDeFormaSegura": "Verifica tu email para acceder a tus tickets de forma segura",
+  "noTienesReservas": "No tienes reservas",
+  "sinConexion": "Sin conexión",
+  "mostrandoTicketsGuardadosEnElDispositivo": "Mostrando tickets guardados en el dispositivo",
+  "muestraEsteCodigoEnLaEntrada": "Muestra este código en la entrada",
+  "reservasPorDia": "Reservas por día",
+  "ingresosPorDia": "Ingresos por día",
+  "reservasPorTipoDeTicket": "Reservas por tipo de ticket",
+  "ingresosPorTipoDeTicket": "Ingresos por tipo de ticket",
+  "asistenteIaParaGestion": "Asistente IA para gestión",
+  "puedoAyudarteConReservasClientesEstadisticasYMas": "Puedo ayudarte con reservas, clientes, estadísticas y más. ",
+  "detallesDeLaReserva": "Detalles de la reserva",
+  "cliente": "Cliente",
+  "contactarCliente": "Contactar cliente",
+  "plantillasRapidas": "Plantillas rápidas:",
+  "enviarMensajeMasivo": "Enviar mensaje masivo",
+  "enviarPor": "Enviar por:",
+  "plantillas": "Plantillas:",
+  "variablesDisponibles": "Variables disponibles:",
+  "nombreNombreDelClienteN": "{nombre} - Nombre del cliente\\n",
+  "hoy": "Hoy",
+  "estaSemana": "Esta semana",
+  "esteMes": "Este mes",
+  "accesosRapidos": "Accesos rápidos",
+  "herramientas": "Herramientas",
+  "equipoDeDesarrollo": "Equipo de desarrollo",
+  "contactoRapido": "Contacto rapido",
+  "necesitoAyudaCon": "Necesito ayuda con...",
+  "datosDeContacto": "Datos de contacto",
+  "horarioDeAtencion": "Horario de atencion",
+  "lunesAViernes9001800": "Lunes a Viernes: 9:00 - 18:00",
+  "noHayInscripciones": "No hay inscripciones",
+  "responsable": "Responsable",
+  "inscripcion": "Inscripción:",
+  "importe": "Importe:",
+  "enlaceWeb": "Enlace web:",
+  "enlaceParaAppMovil": "Enlace para app móvil:",
+  "precios": "Precios",
+  "inscripcion2": "Inscripción",
+  "total": "Total",
+  "descripcion": "Descripción",
+  "precioTotal": "Precio total",
+  "filtros": "Filtros",
+  "categoria": "Categoría",
+  "edad": "Edad",
+  "idioma": "Idioma",
+  "estado": "Estado",
+  "setupConnectedSuccess": "¡Conectado correctamente!",
+  "setupConnectionFailed": "No se pudo conectar con el servidor. Verifica la URL.",
+  "setupConnectionError": "Error de conexión: {error}",
+  "@setupConnectionError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "setupConfiguredSiteNameDefault": "Sitio configurado",
+  "setupQrClientAppWarning": "⚠️ Este QR es para la app de clientes. Usa el QR de Admin.",
+  "setupAdminQrMissingToken": "❌ QR de Admin inválido: falta token de seguridad",
+  "setupAdminTokenInvalid": "Token de seguridad inválido. Genera un nuevo QR en WordPress.",
+  "setupAdminTokenValidateError": "Error al validar token: {error}",
+  "@setupAdminTokenValidateError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "setupConfigDetected": "Configuración detectada: {siteName}",
+  "@setupConfigDetected": {
+    "placeholders": {
+      "siteName": {}
+    }
+  },
+  "setupAdminRequiresSecureQr": "⚠️ La app Admin requiere escanear el QR seguro desde WordPress",
+  "setupUrlDetected": "URL detectada",
+  "setupInvalidQr": "Código QR no válido",
+  "setupTitle": "Configurar servidor",
+  "setupSubtitle": "Introduce la URL de tu sitio WordPress o escanea el código QR de configuración",
+  "setupUrlRequired": "Introduce la URL del sitio",
+  "setupConnecting": "Conectando...",
+  "setupConnect": "Conectar",
+  "setupScanQr": "Escanear código QR",
+  "setupHowToGetQr": "¿Cómo obtener el código QR?",
+  "setupQrSteps": "1. Accede al panel de administración de WordPress\n2. Ve a Calendario > Chat IA > Apps Móviles\n3. Escanea el código QR mostrado",
+  "setupQrScanTitle": "Escanear QR",
+  "setupQrScanHint": "Apunta la cámara al código QR de configuración",
+  "exportNoDataToShow": "No hay datos para mostrar",
+  "exportErrorFetchingData": "Error al obtener datos",
+  "exportSelectDateRange": "Selecciona un rango de fechas",
+  "exportFileSaveError": "Error al guardar archivo: {error}",
+  "@exportFileSaveError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "exportNoDataToExport": "No hay datos para exportar",
+  "exportErrorExporting": "Error al exportar",
+  "exportCompletedTitle": "Exportación completada",
+  "exportShareSubject": "Exportación {filename}",
+  "@exportShareSubject": {
+    "placeholders": {
+      "filename": {}
+    }
+  },
+  "exportShareFile": "Compartir archivo",
+  "commonClose": "Cerrar",
+  "exportTitle": "Ver y exportar resúmenes",
+  "exportDescription": "Visualiza o exporta los datos de reservas, clientes o ingresos.",
+  "exportDataTypeTitle": "Tipo de datos",
+  "exportFilterTicketTypeTitle": "Filtrar por tipo de ticket",
+  "exportErrorLoadingTicketTypes": "Error al cargar tipos de ticket",
+  "exportDateRangeTitle": "Rango de fechas",
+  "exportSelectDates": "Seleccionar fechas",
+  "exportDaysCount": "{days} días",
+  "@exportDaysCount": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "exportQuickRangesTitle": "Rangos rápidos",
+  "exportQuickToday": "Hoy",
+  "exportQuickWeek": "Esta semana",
+  "exportQuickMonth": "Este mes",
+  "exportQuickLast30": "Últimos 30 días",
+  "exportQuickYear": "Este año",
+  "exportViewData": "Ver datos",
+  "commonLoading": "Cargando...",
+  "exportCsv": "Exportar CSV",
+  "exportAllTickets": "Todos los tickets",
+  "exportNoTicketFilter": "Sin filtro de tipo",
+  "exportTypeReservations": "Reservas",
+  "exportTypeCustomers": "Clientes",
+  "exportTypeRevenue": "Ingresos",
+  "exportTypeReservationsDesc": "Todas las reservas con datos del cliente",
+  "exportTypeCustomersDesc": "Lista de clientes con historial",
+  "exportTypeRevenueDesc": "Resumen de ingresos por día",
+  "exportTotalRecords": "{total} registros",
+  "@exportTotalRecords": {
+    "placeholders": {
+      "total": {}
+    }
+  },
+  "exportTicketLabel": "Ticket: {ticketType}",
+  "@exportTicketLabel": {
+    "placeholders": {
+      "ticketType": {}
+    }
+  },
+  "exportNoData": "No hay datos",
+  "dashboardReservationsLabel": "Reservas",
+  "dashboardCheckinsLabel": "Check-ins",
+  "dashboardPending": "{count} pendientes",
+  "@dashboardPending": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "dashboardTotalReservationsLabel": "Reservas totales",
+  "dashboardRevenueLabel": "Ingresos",
+  "dashboardLoadError": "Error al cargar el dashboard",
+  "dashboardScanQr": "Escanear QR",
+  "dashboardViewReservations": "Ver reservas",
+  "dashboardChatIa": "Chat IA",
+  "dashboardViewSummaries": "Ver resúmenes",
+  "dashboardStats": "Estadísticas",
+  "dashboardCalendar": "Calendario",
+  "dashboardCustomers": "Clientes",
+  "dashboardWeeklyCustomers": "Clientes Semana",
+  "dashboardEscalatedChats": "Chats Escalados",
+  "dashboardCamps": "Campamentos",
+  "checkoutSuccessMessage": "Tu reserva ha sido procesada con éxito.\nRecibirás un email de confirmación.",
+  "checkoutExitWarning": "Si sales ahora perderás los cambios y tendrás que empezar de nuevo.",
+  "adminChatIntro": "Puedo ayudarte con reservas, clientes, estadísticas y más.\nTambién puedo generar informes CSV.",
+  "adminMessageVariablesTemplate": "{nombre} - Nombre del cliente\n{fecha} - Fecha de la reserva\n{ticket} - Tipo de ticket\n{codigo} - Código de reserva",
+  "@adminMessageVariablesTemplate": {
+    "placeholders": {
+      "nombre": {},
+      "fecha": {},
+      "ticket": {},
+      "codigo": {}
+    }
+  },
+  "reservationsAvailabilityError": "Error al cargar disponibilidad",
+  "reservationsTicketsError": "Error al cargar tickets",
+  "infoLoadError": "Error al cargar información",
+  "adminChatCategoryReservations": "Reservas",
+  "adminChatCategoryClients": "Clientes",
+  "adminChatCategoryStats": "Estadísticas",
+  "adminChatCategoryExport": "Exportar",
+  "adminChatSuggestionReservationsToday": "¿Cuántas reservas hay para hoy?",
+  "adminChatSuggestionReservationsWeek": "Resumen de reservas de esta semana",
+  "adminChatSuggestionReservationsPending": "Lista de reservas pendientes",
+  "adminChatSuggestionClientsCount": "¿Cuántos clientes diferentes tenemos?",
+  "adminChatSuggestionTopClients": "Clientes con más reservas",
+  "adminChatSuggestionFindClientByEmail": "Buscar cliente por email",
+  "adminChatSuggestionMonthlyRevenue": "Resumen de ingresos del mes",
+  "adminChatSuggestionTopTickets": "Tickets más vendidos",
+  "adminChatSuggestionMonthComparison": "Comparativa con el mes anterior",
+  "adminChatSuggestionExportTodayCsv": "Exportar reservas de hoy a CSV",
+  "adminChatSuggestionExportClientsCsv": "Lista de clientes en CSV",
+  "adminChatSuggestionExportMonthlyRevenue": "Informe de ingresos mensual",
+  "notificationsTitle": "Notificaciones",
+  "notificationsPushTitle": "Notificaciones push",
+  "notificationsPushDesc": "Las notificaciones push estaran disponibles proximamente.",
+  "notificationsSectionReservations": "Reservas",
+  "notificationsNewReservationsTitle": "Nuevas reservas",
+  "notificationsNewReservationsDesc": "Recibir alerta cuando se realiza una nueva reserva",
+  "notificationsCheckinsTitle": "Check-ins",
+  "notificationsCheckinsDesc": "Recibir alerta cuando se realiza un check-in",
+  "notificationsCancellationsTitle": "Cancelaciones",
+  "notificationsCancellationsDesc": "Recibir alerta cuando se cancela una reserva",
+  "notificationsSectionSummaries": "Resumenes",
+  "notificationsDailySummaryTitle": "Resumen diario",
+  "notificationsDailySummaryDesc": "Recibir resumen de reservas cada manana",
+  "notificationsSectionAlerts": "Alertas",
+  "notificationsLowAvailabilityTitle": "Baja disponibilidad",
+  "notificationsLowAvailabilityDesc": "Alerta cuando quedan pocas plazas disponibles",
+  "notificationsChatEscalationsTitle": "Escalados del chat",
+  "notificationsChatEscalationsDesc": "Alerta cuando un cliente solicita atencion humana",
+  "supportContactEmailLabel": "Email",
+  "supportContactCallLabel": "Llamar",
+  "supportContactWhatsAppLabel": "WhatsApp",
+  "supportReportProblemTitle": "Reportar un problema",
+  "supportReportProblemDesc": "Algo no funciona como esperaba",
+  "supportReportProblemSubject": "[App Admin] Reporte de problema",
+  "supportReportProblemBody": "Hola,\n\nHe encontrado un problema en la app:\n\nDescripcion del problema:\n\n\nPasos para reproducirlo:\n1. \n2. \n3. \n\nVersion de la app: {version}\n\nGracias.",
+  "@supportReportProblemBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "supportSuggestImprovementTitle": "Proponer una mejora",
+  "supportSuggestImprovementDesc": "Tengo una idea para mejorar la app",
+  "supportSuggestImprovementSubject": "[App Admin] Propuesta de mejora",
+  "supportSuggestImprovementBody": "Hola,\n\nMe gustaria proponer la siguiente mejora:\n\nDescripcion de la mejora:\n\n\nPor que seria util:\n\n\nVersion de la app: {version}\n\nGracias.",
+  "@supportSuggestImprovementBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "supportGeneralQuestionTitle": "Pregunta general",
+  "supportGeneralQuestionDesc": "Tengo una duda sobre el funcionamiento",
+  "supportGeneralQuestionSubject": "[App Admin] Consulta",
+  "supportGeneralQuestionBody": "Hola,\n\nTengo una pregunta:\n\n\n\nVersion de la app: {version}\n\nGracias.",
+  "@supportGeneralQuestionBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "supportRequestFeatureTitle": "Solicitar nueva funcionalidad",
+  "supportRequestFeatureDesc": "Necesito algo que la app no tiene",
+  "supportRequestFeatureSubject": "[App Admin] Solicitud de funcionalidad",
+  "supportRequestFeatureBody": "Hola,\n\nMe gustaria solicitar la siguiente funcionalidad:\n\nDescripcion:\n\n\nCaso de uso:\n\n\nPrioridad (alta/media/baja):\n\nVersion de la app: {version}\n\nGracias.",
+  "@supportRequestFeatureBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "supportRequestTrainingTitle": "Solicitar formacion",
+  "supportRequestTrainingDesc": "Necesito ayuda para usar la app",
+  "supportRequestTrainingSubject": "[App Admin] Solicitud de formacion",
+  "supportRequestTrainingBody": "Hola,\n\nMe gustaria solicitar formacion sobre:\n\n\n\nDisponibilidad horaria:\n\n\nVersion de la app: {version}\n\nGracias.",
+  "@supportRequestTrainingBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "commonAccept": "Aceptar",
+  "commonSave": "Guardar",
+  "siteUrlLabel": "URL del sitio",
+  "siteUrlExampleHint": "ejemplo.com",
+  "exportSelectDateRangeHelp": "Selecciona el rango de fechas",
+  "infoChangeBusinessTitle": "Cambiar negocio",
+  "infoConnectOtherSiteSubtitle": "Conectar a otro sitio",
+  "commonResyncTitle": "Resincronizar",
+  "commonResyncSubtitle": "Actualizar configuracion desde el servidor",
+  "commonResyncInProgress": "Sincronizando configuracion...",
+  "commonResyncSuccess": "Configuracion actualizada",
+  "commonResyncError": "No se pudo sincronizar",
+  "infoChangeBusinessDialogTitle": "Cambiar de negocio",
+  "infoChangeBusinessDialogBody": "¿Quieres conectar esta app a otro negocio?\n\nPodrás escanear el código QR de configuración del nuevo sitio.",
+  "infoQuickLinks": "Accesos rápidos",
+  "infoOurExperiences": "Nuestras experiencias",
+  "infoNoExperiencesNextMonths": "No hay experiencias disponibles en los próximos 2 meses",
+  "infoUpcomingDates": "Próximas fechas disponibles:",
+  "infoMoreDatesCount": "+ {count} fechas más disponibles",
+  "@infoMoreDatesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "infoSectionTitle": "Información",
+  "infoSeeMoreOnWeb": "Ver más en la web",
+  "infoGalleryTitle": "Galería",
+  "infoNewsTitle": "Noticias",
+  "infoSchedulesLabel": "Horarios",
+  "infoLocationLabel": "Ubicación",
+  "infoViewMap": "Ver mapa",
+  "infoHowToGetThere": "Cómo llegar",
+  "infoContactTitle": "Contacto",
+  "infoWhatsAppLabel": "WhatsApp",
+  "infoEmailLabel": "Email",
+  "infoWebFormLabel": "Formulario Web",
+  "infoFollowUsTitle": "Síguenos",
+  "infoConnectedTo": "✓ Conectado a {name}",
+  "@infoConnectedTo": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "infoScanQrTitle": "Escanear QR",
+  "infoScanNewBusinessHint": "Escanea el código QR del nuevo negocio",
+  "infoConnectAnotherBusinessTitle": "Conectar a otro negocio",
+  "infoScanConfigQrHint": "Escanea el código QR de configuración del nuevo sitio web.",
+  "infoScanQrButton": "Escanear QR",
+  "commonChange": "Cambiar",
+  "infoInvalidQrMissingUrl": "QR no válido: no contiene URL",
+  "campInscriptionSuccessTitle": "¡Inscripción enviada!",
+  "campInscriptionSuccessMessage": "Tu inscripción ha sido registrada correctamente.",
+  "campInscriptionSuccessEmailNote": "Recibirás un correo electrónico con los detalles del pago y confirmación.",
+  "campInscriptionCreateError": "Error al crear inscripción",
+  "campInscriptionTitle": "Inscripción",
+  "campInscriptionParticipantSection": "Datos del participante",
+  "campInscriptionFullNameRequired": "Nombre completo *",
+  "campInscriptionNameRequiredError": "El nombre es obligatorio",
+  "campInscriptionAgeRequired": "Edad *",
+  "campInscriptionYearsSuffix": "años",
+  "campInscriptionAgeRequiredError": "La edad es obligatoria",
+  "campInscriptionAgeInvalidError": "Edad inválida",
+  "campInscriptionAllergiesLabel": "Alergias o condiciones médicas",
+  "campInscriptionAllergiesHelper": "Opcional. Indica si tiene alguna alergia importante.",
+  "campInscriptionGuardianSection": "Datos del responsable",
+  "campInscriptionGuardianNameRequiredError": "El nombre del responsable es obligatorio",
+  "campInscriptionEmailRequired": "Email *",
+  "campInscriptionEmailRequiredError": "El email es obligatorio",
+  "campInscriptionEmailInvalidError": "Email inválido",
+  "campInscriptionPhoneRequired": "Teléfono *",
+  "campInscriptionPhoneHelper": "Incluye el prefijo del país (ej: +34)",
+  "campInscriptionPhoneRequiredError": "El teléfono es obligatorio",
+  "campInscriptionTermsTitle": "Acepto los términos y condiciones",
+  "campInscriptionTermsSubtitle": "He leído y acepto las condiciones de inscripción y la política de privacidad.",
+  "campInscriptionPaymentInfoTitle": "Información de pago",
+  "campInscriptionPaymentInfoBody": "Recibirás un correo electrónico con las instrucciones de pago. La inscripción quedará confirmada una vez se reciba el pago.",
+  "campInscriptionSubmit": "Enviar inscripción",
+  "campInscriptionRequiredNote": "* Campos obligatorios",
+  "commonSending": "Enviando...",
+  "campDetailLoadError": "Error al cargar campamento",
+  "campDetailCategoryLabel": "Categoría",
+  "campDetailAgesLabel": "Edades",
+  "campDetailLanguagesLabel": "Idiomas",
+  "campDetailDurationLabel": "Duración",
+  "campDetailDatesLabel": "Fechas",
+  "campDetailScheduleTitle": "Horario",
+  "campDetailLocationTitle": "Ubicación",
+  "campDetailIncludesTitle": "Qué incluye",
+  "campDetailRequirementsTitle": "Requisitos",
+  "campDetailClosedLabel": "Inscripciones cerradas",
+  "campDetailFullLabel": "Completo",
+  "campDetailEnrollLabel": "Inscribirse",
+  "campInscriptionsLoadError": "Error al cargar inscripciones",
+  "campInscriptionsExportError": "Error al exportar",
+  "campInscriptionsTotalLabel": "Total",
+  "campInscriptionsPaidLabel": "Pagadas",
+  "campInscriptionsPendingLabel": "Pendientes",
+  "commonCustomer": "Cliente",
+  "commonSelect": "Seleccionar",
+  "commonRequired": "Requerido",
+  "commonCreate": "Crear",
+  "commonViewMore": "Ver más",
+  "reservationsTemplateNameConfirmation": "Confirmación",
+  "reservationsTemplateTextConfirmation": "Hola {nombre}! Tu reserva para {ticket} el día {fecha} está confirmada. Código: {codigo}. ¡Te esperamos!",
+  "@reservationsTemplateTextConfirmation": {
+    "placeholders": {
+      "nombre": {},
+      "ticket": {},
+      "fecha": {},
+      "codigo": {}
+    }
+  },
+  "reservationsTemplateNameReminder": "Recordatorio",
+  "reservationsTemplateTextReminder": "Hola {nombre}! Te recordamos que tienes una reserva para {ticket} el día {fecha}. Código: {codigo}. ¡Te esperamos!",
+  "@reservationsTemplateTextReminder": {
+    "placeholders": {
+      "nombre": {},
+      "ticket": {},
+      "fecha": {},
+      "codigo": {}
+    }
+  },
+  "reservationsTemplateNameChange": "Cambio/Aviso",
+  "reservationsTemplateTextChange": "Hola {nombre}! Te informamos sobre tu reserva de {ticket} del día {fecha}. ",
+  "@reservationsTemplateTextChange": {
+    "placeholders": {
+      "nombre": {},
+      "ticket": {},
+      "fecha": {}
+    }
+  },
+  "reservationsTemplateNameThanks": "Agradecimiento",
+  "reservationsTemplateTextThanks": "Hola {nombre}! Gracias por visitarnos. Esperamos que hayas disfrutado de {ticket}. ¡Esperamos verte pronto!",
+  "@reservationsTemplateTextThanks": {
+    "placeholders": {
+      "nombre": {},
+      "ticket": {}
+    }
+  },
+  "reservationsEmptyTitle": "No hay reservas",
+  "reservationsEmptySubtitle": "No se encontraron reservas para los filtros seleccionados",
+  "reservationsPendingCount": "{count} pendientes",
+  "@reservationsPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "reservationsLoadError": "Error al cargar reservas",
+  "reservationsNoName": "Sin nombre",
+  "reservationsCheckinError": "Error al realizar check-in",
+  "reservationsCancelError": "Error al cancelar",
+  "reservationsLabelCode": "Código",
+  "reservationsLabelTicket": "Ticket",
+  "reservationsLabelDate": "Fecha",
+  "reservationsLabelStatus": "Estado",
+  "reservationsLabelName": "Nombre",
+  "reservationsLabelEmail": "Email",
+  "reservationsLabelPhone": "Teléfono",
+  "reservationsLabelCheckin": "Check-in",
+  "reservationsSendWhatsApp": "Enviar WhatsApp",
+  "reservationsSendEmail": "Enviar Email",
+  "reservationsTo": "A: {name}",
+  "@reservationsTo": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "reservationsEmailSubject": "Reserva {code}",
+  "@reservationsEmailSubject": {
+    "placeholders": {
+      "code": {}
+    }
+  },
+  "reservationsSendToClients": "Enviar a {count} clientes",
+  "@reservationsSendToClients": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "reservationsOpenWhatsAppEach": "Se abrirá WhatsApp para cada mensaje. Deberás confirmar el envío de cada uno.",
+  "reservationsOpenEmailEach": "Se abrirá tu app de email para cada mensaje.",
+  "reservationsOriginAll": "Todos",
+  "reservationsOriginManual": "📞 Manual",
+  "reservationsOriginWooCommerce": "🛒 WooCommerce",
+  "reservationsNoCustomers": "No hay clientes",
+  "reservationsNoCustomersInRange": "No hay clientes en el rango seleccionado",
+  "reservationsNoCustomersManual": "No hay clientes manuales",
+  "reservationsNoCustomersWooCommerce": "No hay clientes de WooCommerce",
+  "reservationsLoadCustomersError": "Error al cargar clientes",
+  "customersFilterByDate": "Filtrar por fecha",
+  "customersEmptyTitle": "No hay clientes",
+  "customersEmptySubtitle": "No se encontraron clientes con los filtros actuales",
+  "customersLoadError": "Error al cargar clientes",
+  "customersReservationsCount": "{count} reservas",
+  "@customersReservationsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "customersHistoryTitle": "Historial",
+  "customersFirstReservation": "Primera reserva",
+  "customersLastReservation": "Última reserva",
+  "customersSaveError": "Error al guardar",
+  "customersDeleteError": "Error al eliminar",
+  "ticketsLabel": "Tickets",
+  "customersAddTitle": "Añadir Cliente",
+  "customersEditTitle": "Editar Cliente",
+  "campFormCreatedSuccess": "Campamento creado correctamente",
+  "campFormUpdatedSuccess": "Campamento actualizado correctamente",
+  "campFormSaveError": "Error al guardar campamento",
+  "campFormEditTitle": "Editar Campamento",
+  "campFormNewTitle": "Nuevo Campamento",
+  "campFormTitleLabel": "Título *",
+  "campFormTitleRequired": "El título es obligatorio",
+  "campFormExcerptLabel": "Extracto",
+  "campFormExcerptHelper": "Resumen corto del campamento",
+  "campFormDescriptionLabel": "Descripción completa",
+  "campFormPricesSection": "Precios",
+  "campFormPriceInscriptionLabel": "Precio inscripción",
+  "campFormPriceTotalLabel": "Precio total",
+  "campFormDurationLabel": "Duración",
+  "campFormDurationHelper": "Ej: 5 días, 1 semana",
+  "campFormLabelLabel": "Etiqueta especial",
+  "campFormLabelHelper": "Ej: Nuevo, Destacado",
+  "campFormInscriptionClosedTitle": "Inscripciones cerradas",
+  "campFormInscriptionClosedSubtitle": "Si está activado, los usuarios no podrán inscribirse",
+  "campFormDatesSection": "Fechas",
+  "campFormStartDateLabel": "Fecha inicio",
+  "campFormEndDateLabel": "Fecha fin",
+  "campFormNotSelected": "No seleccionada",
+  "campFormAdditionalInfoSection": "Información adicional",
+  "campFormScheduleLabel": "Horario",
+  "campFormLocationLabel": "Ubicación",
+  "campFormIncludesLabel": "Qué incluye",
+  "campFormRequirementsLabel": "Requisitos",
+  "campFormCategorizationSection": "Categorización",
+  "campFormCategories": "Categorías",
+  "campFormAges": "Edades",
+  "campFormLanguages": "Idiomas",
+  "campsLoadError": "Error al cargar campamentos",
+  "campsConnectionError": "Error de conexión: {error}",
+  "@campsConnectionError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "campsEmptyFiltered": "No se encontraron campamentos con los filtros aplicados",
+  "campsEmptyAvailable": "No hay campamentos disponibles",
+  "escalatedChatLoadError": "Error al cargar chat",
+  "escalatedChatConnectionError": "Error de conexión: {error}",
+  "@escalatedChatConnectionError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "escalatedChatReplySent": "Respuesta enviada",
+  "escalatedChatSendError": "Error al enviar",
+  "escalatedChatError": "Error: {error}",
+  "@escalatedChatError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "escalatedChatResolveTitle": "Marcar como resuelto",
+  "escalatedChatResolveConfirm": "¿Confirmas que este chat está resuelto?",
+  "escalatedChatResolveNotesLabel": "Notas (opcional)",
+  "escalatedChatResolveNotesHint": "Añade notas sobre la resolución...",
+  "escalatedChatResolveAction": "Resolver",
+  "escalatedChatResolvedToast": "Chat marcado como resuelto",
+  "escalatedChatResolveError": "Error al resolver",
+  "escalatedChatTitle": "Chat Escalado",
+  "escalatedChatResolveTooltip": "Marcar como resuelto",
+  "escalatedChatNotFound": "No se encontró el chat",
+  "escalatedChatDraftTitle": "Borrador de reserva",
+  "escalatedChatDraftDate": "Fecha: {date}",
+  "@escalatedChatDraftDate": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "escalatedChatDraftTotal": "Total: {total}€",
+  "@escalatedChatDraftTotal": {
+    "placeholders": {
+      "total": {}
+    }
+  },
+  "escalatedChatReplyHint": "Escribe tu respuesta...",
+  "escalatedChatResolvedBanner": "Este chat ha sido marcado como resuelto",
+  "campInscriptionAcceptTermsError": "Debes aceptar los términos y condiciones",
+  "loadingConnecting": "Conectando...",
+  "adminSetupQrScannedTitle": "QR Escaneado",
+  "adminSetupQrContentLabel": "Contenido del QR:",
+  "adminSetupConnect": "Conectar",
+  "adminSetupQrClientOnly": "⚠️ Este QR es para la app de clientes.\n\nUsa el QR de Admin (amarillo) desde el panel de WordPress.",
+  "adminSetupQrInvalid": "❌ QR de Admin inválido.\n\nEl código QR no incluye token de seguridad. Genera uno nuevo desde WordPress.",
+  "adminSetupRequiresSecureQr": "⚠️ La app Admin requiere escanear el QR seguro.\n\nEncontrarás el QR de Admin (amarillo) en WordPress > Chat IA > Apps Móviles.",
+  "adminSetupQrNotRecognized": "QR no reconocido: {url}\n\nDebe contener una URL válida",
+  "@adminSetupQrNotRecognized": {
+    "placeholders": {
+      "url": {}
+    }
+  },
+  "adminSetupTimeoutServer": "Timeout - el servidor tardó más de 15 segundos",
+  "adminSetupTimeoutToken": "Timeout validando token",
+  "adminSetupInvalidToken": "❌ Token de seguridad inválido.\n\nEl QR puede estar obsoleto. Genera uno nuevo desde WordPress > Chat IA > Apps Móviles.",
+  "adminSetupServerConfiguredSuccess": "✓ Servidor configurado correctamente",
+  "commonInvalidResponse": "Respuesta inválida",
+  "adminSetupServerError": "Error del servidor: {error}\n\nURL: {url}",
+  "@adminSetupServerError": {
+    "placeholders": {
+      "error": {},
+      "url": {}
+    }
+  },
+  "adminSetupConnectionError": "Error de conexión:\n{error}\n\nURL intentada: {url}",
+  "@adminSetupConnectionError": {
+    "placeholders": {
+      "error": {},
+      "url": {}
+    }
+  },
+  "adminSetupTitle": "Configurar Servidor",
+  "adminSetupSubtitle": "Conecta la app con tu servidor WordPress",
+  "adminSetupScanQrButton": "Escanear código QR",
+  "adminSetupFindQrHint": "Encuentra el QR en WordPress:\nChat IA → Configuración → Apps Móviles",
+  "adminSetupOrEnterUrl": "o ingresa la URL",
+  "adminSetupServerUrlLabel": "URL del servidor",
+  "adminSetupServerUrlHint": "https://tu-sitio.com",
+  "adminSetupScanQrTitle": "Escanear QR",
+  "adminSetupScanQrInstruction": "Apunta al código QR",
+  "adminSetupScanQrSubtitle": "Lo encontrarás en el panel de WordPress",
+  "adminLoginError": "Error de login",
+  "adminLoginConfigServerTooltip": "Configurar servidor",
+  "adminLoginSubtitle": "Inicia sesión con tu cuenta de WordPress",
+  "adminServerConfiguredStatus": "Servidor configurado",
+  "adminServerNotConfiguredStatus": "Servidor no configurado",
+  "adminServerConfigureHint": "Toca el icono ⚙️ arriba para configurar",
+  "adminLoginUsernameLabel": "Usuario",
+  "adminLoginUsernameRequired": "Introduce tu usuario",
+  "adminLoginPasswordLabel": "Contraseña",
+  "adminLoginPasswordRequired": "Introduce tu contraseña",
+  "adminLoginRememberCredentials": "Recordar credenciales",
+  "adminLoginButton": "Iniciar sesión",
+  "adminBottomNavDashboard": "Dashboard",
+  "adminBottomNavReservations": "Reservas",
+  "adminBottomNavChat": "Chat IA",
+  "adminBottomNavSettings": "Ajustes",
+  "adminSettingsTitle": "Ajustes",
+  "adminSettingsUserFallback": "Usuario",
+  "adminSettingsSectionConfig": "Configuración",
+  "languageNameEs": "Español",
+  "languageNameEu": "Euskera",
+  "languageNameEn": "Inglés",
+  "languageNameFr": "Francés",
+  "languageNameCa": "Catalán",
+  "adminSettingsLanguageTitle": "Idioma",
+  "adminSettingsNotificationsTitle": "Notificaciones",
+  "adminSettingsNotificationsSubtitle": "Configurar alertas",
+  "adminSettingsModulesTitle": "Módulos",
+  "adminSettingsModulesSubtitle": "Gestiona y revisa módulos activos",
+  "adminModulesDashboardTitle": "Panel de módulos",
+  "adminModulesDashboardSubtitle": "Resumen operativo de módulos",
+  "adminModulesDashboardEmpty": "No hay métricas disponibles",
+  "adminModulesTabSummary": "Resumen",
+  "adminModulesPedidosError": "No se pudieron cargar los pedidos",
+  "adminModulesPedidosEmpty": "No hay pedidos abiertos",
+  "adminModulesPedidosMarkPaid": "Marcar pagado",
+  "adminModulesPedidosMarkPaidSuccess": "Pedido marcado como pagado",
+  "adminModulesPedidosMarkPaidError": "No se pudo marcar como pagado",
+  "adminModulesPedidosMarkPicked": "Marcar recogido",
+  "adminModulesPedidosMarkPickedSuccess": "Pedido marcado como recogido",
+  "adminModulesPedidosMarkPickedError": "No se pudo marcar como recogido",
+  "adminModulesServiciosError": "No se pudieron cargar los servicios",
+  "adminModulesServiciosEmpty": "No hay servicios activos",
+  "adminModulesAnunciosError": "No se pudieron cargar los anuncios",
+  "adminModulesAnunciosEmpty": "No hay anuncios activos",
+  "adminModulesMarkSold": "Marcar vendido",
+  "adminModulesMarkSoldSuccess": "Anuncio marcado como vendido",
+  "adminModulesMarkSoldError": "No se pudo marcar como vendido",
+  "adminSettingsServerTitle": "Servidor",
+  "adminSettingsServerLoading": "Cargando...",
+  "adminSettingsAppsSection": "Aplicaciones",
+  "adminSettingsClientAppTitle": "App de Cliente",
+  "adminSettingsClientAppSubtitle": "Abrir app para clientes",
+  "adminSettingsClientAppMissing": "La app de cliente no está instalada",
+  "adminSettingsSupportTitle": "Soporte y ayuda",
+  "adminSettingsSupportSubtitle": "Contactar con el equipo de desarrollo",
+  "adminSettingsVersionTitle": "Versión",
+  "adminSettingsDevelopedByTitle": "Desarrollado por",
+  "adminSettingsLogoutTitle": "Cerrar sesión",
+  "adminSettingsLogoutConfirm": "¿Seguro que quieres cerrar sesión?",
+  "adminSettingsLogoutAction": "Cerrar sesión",
+  "adminDrawerStats": "Estadísticas",
+  "adminDrawerCalendar": "Calendario",
+  "adminDrawerCustomers": "Clientes",
+  "adminDrawerManualCustomers": "Clientes manuales",
+  "adminDrawerCamps": "Campamentos",
+  "defaultAppName": "Mi App",
+  "statsSummaryReservations": "Reservas",
+  "statsSummaryCheckins": "Check-ins",
+  "statsSummaryCancelled": "Canceladas",
+  "statsSummaryRevenue": "Ingresos",
+  "defaultBusinessName": "Mi Negocio",
+  "navHome": "Inicio",
+  "navExplore": "Explorar",
+  "navChat": "Chat",
+  "navProfile": "Perfil",
+  "tabChatLabel": "Chat",
+  "tabReservationsLabel": "Reservar",
+  "tabMyTicketsLabel": "Mis Tickets",
+  "tabInfoLabel": "Info",
+  "tabWebLabel": "Sección web",
+  "tabModulesLabel": "Módulos",
+  "moduleHubTitle": "Módulos",
+  "moduleHubError": "No se pudieron cargar los módulos",
+  "moduleHubEmpty": "No hay módulos disponibles",
+  "moduleHubNoDescription": "Módulo disponible para esta comunidad",
+  "modulePlaceholderDescription": "Este módulo está disponible pero su interfaz aún está en desarrollo.",
+  "modulePlaceholderSubtitle": "Pronto podrás usar todas las funciones desde la app.",
+  "clientDashboardTitle": "Mi actividad",
+  "clientDashboardSubtitle": "Resumen de mis módulos",
+  "clientDashboardEmpty": "No hay datos disponibles",
+  "gruposConsumoTitle": "Grupos de Consumo",
+  "gruposConsumoError": "No se pudieron cargar los pedidos",
+  "gruposConsumoEmpty": "No hay pedidos disponibles",
+  "gruposConsumoJoin": "Unirme",
+  "gruposConsumoJoinTitle": "Unirse al pedido",
+  "gruposConsumoJoinQuantity": "Cantidad",
+  "gruposConsumoJoinSuccess": "Te has unido al pedido",
+  "gruposConsumoJoinError": "No se pudo unir al pedido",
+  "gruposConsumoTabAll": "Pedidos",
+  "gruposConsumoTabMine": "Mis pedidos",
+  "gruposConsumoTabCatalog": "Catálogo",
+  "gruposConsumoTabShoppingList": "Lista compra",
+  "gruposConsumoTabCycles": "Ciclos",
+  "gruposConsumoTabProducers": "Productores",
+  "gruposConsumoTabProfile": "Perfil",
+  "gruposConsumoTabHistory": "Historial",
+  "gruposConsumoProfileError": "No se pudo cargar el perfil",
+  "gruposConsumoProfileMemberYes": "Miembro activo",
+  "gruposConsumoProfileMemberNo": "No eres miembro",
+  "gruposConsumoProfileBalance": "Saldo pendiente",
+  "gruposConsumoProfileRoleUnknown": "Rol no definido",
+  "gruposConsumoSubscriptionsTitle": "Suscripciones",
+  "gruposConsumoSubscriptionsEmpty": "No tienes suscripciones",
+  "gruposConsumoSubscriptionsError": "No se pudieron cargar las suscripciones",
+  "gruposConsumoSubCreate": "Nueva suscripción",
+  "gruposConsumoSubProductId": "ID de producto",
+  "gruposConsumoSubProduct": "Producto",
+  "gruposConsumoSubNoProducts": "No hay productos disponibles",
+  "gruposConsumoSubQuantity": "Cantidad",
+  "gruposConsumoSubFrequency": "Frecuencia (semanal, quincenal, mensual)",
+  "gruposConsumoSubFrequencyWeekly": "Semanal",
+  "gruposConsumoSubFrequencyBiweekly": "Quincenal",
+  "gruposConsumoSubFrequencyMonthly": "Mensual",
+  "gruposConsumoSubCreateSuccess": "Suscripción creada",
+  "gruposConsumoSubCreateError": "No se pudo crear la suscripción",
+  "gruposConsumoSubPause": "Pausar",
+  "gruposConsumoSubCancel": "Cancelar",
+  "gruposConsumoSubPauseSuccess": "Suscripción pausada",
+  "gruposConsumoSubPauseError": "No se pudo pausar",
+  "gruposConsumoSubCancelSuccess": "Suscripción cancelada",
+  "gruposConsumoSubCancelError": "No se pudo cancelar",
+  "gruposConsumoHistoryError": "No se pudo cargar el historial",
+  "gruposConsumoHistoryEmpty": "Sin historial",
+  "gruposConsumoCatalogError": "No se pudo cargar el catálogo",
+  "gruposConsumoCatalogEmpty": "No hay productos disponibles",
+  "gruposConsumoCatalogSearch": "Buscar producto",
+  "gruposConsumoCatalogCategory": "Categoría",
+  "gruposConsumoCatalogCategoryAll": "Todas",
+  "gruposConsumoCatalogProducer": "Productor",
+  "gruposConsumoCatalogProducerAll": "Todos",
+  "gruposConsumoShoppingListError": "No se pudo cargar la lista de compra",
+  "gruposConsumoShoppingListEmpty": "Tu lista está vacía",
+  "gruposConsumoShoppingAddSuccess": "Producto añadido",
+  "gruposConsumoShoppingAddError": "No se pudo añadir",
+  "gruposConsumoShoppingRemoveSuccess": "Producto eliminado",
+  "gruposConsumoShoppingRemoveError": "No se pudo eliminar",
+  "gruposConsumoShoppingQuantity": "Cantidad",
+  "gruposConsumoCyclesError": "No se pudo cargar el calendario",
+  "gruposConsumoCyclesEmpty": "No hay ciclos disponibles",
+  "gruposConsumoProducersError": "No se pudieron cargar los productores",
+  "gruposConsumoProducersEmpty": "No hay productores disponibles",
+  "gruposConsumoProducersRadius": "Radio",
+  "gruposConsumoProducersNearby": "Productores cercanos",
+  "gruposConsumoProducersDelivery": "Con entrega",
+  "gruposConsumoProducersEco": "Solo ecológicos",
+  "gruposConsumoMapTitle": "Mapa de productores",
+  "gruposConsumoMapOpen": "Ver mapa",
+  "gruposConsumoMapNoData": "No hay productores con coordenadas",
+  "gruposConsumoDeliveriesMapTitle": "Puntos de entrega",
+  "gruposConsumoDeliveriesMapOpen": "Ver mapa de entregas",
+  "gruposConsumoDeliveriesMapNoData": "No hay lugares de entrega",
+  "gruposConsumoRoutesMapTitle": "Rutas productor a entrega",
+  "gruposConsumoRoutesMapOpen": "Ver rutas productores",
+  "gruposConsumoRoutesMapNoData": "No hay rutas disponibles",
+  "gruposConsumoCyclesFiltersTitle": "Filtros de entrega",
+  "gruposConsumoCyclesFrom": "Desde",
+  "gruposConsumoCyclesTo": "Hasta",
+  "gruposConsumoCyclesTurn": "Turno",
+  "gruposConsumoCyclesTurnAny": "Todos",
+  "gruposConsumoCyclesTurnMorning": "Mañana",
+  "gruposConsumoCyclesTurnAfternoon": "Tarde",
+  "gruposConsumoCyclesTurnEvening": "Noche",
+  "gruposConsumoCyclesFiltersClear": "Limpiar filtros",
+  "gruposConsumoProductPrice": "Precio",
+  "gruposConsumoProductStock": "Stock",
+  "gruposConsumoProductSeason": "Temporada",
+  "gruposConsumoProductOrigin": "Origen",
+  "gruposConsumoProductCategories": "Categorías",
+  "gruposConsumoShoppingAdd": "Añadir a lista",
+  "gruposConsumoMineError": "No se pudieron cargar tus pedidos",
+  "gruposConsumoMineEmpty": "Aún no tienes pedidos",
+  "bancoTiempoTitle": "Banco de Tiempo",
+  "bancoTiempoError": "No se pudieron cargar los servicios",
+  "bancoTiempoEmpty": "No hay servicios disponibles",
+  "bancoTiempoCreate": "Publicar servicio",
+  "bancoTiempoCreateSuccess": "Servicio publicado",
+  "bancoTiempoCreateError": "No se pudo publicar el servicio",
+  "bancoTiempoFieldTitle": "Título",
+  "bancoTiempoFieldDescription": "Descripción",
+  "bancoTiempoFieldCategory": "Categoría",
+  "bancoTiempoFieldHours": "Horas estimadas",
+  "bancoTiempoTabAll": "Servicios",
+  "bancoTiempoTabMine": "Mis servicios",
+  "bancoTiempoMineError": "No se pudieron cargar tus servicios",
+  "bancoTiempoMineEmpty": "Aún no tienes servicios",
+  "marketplaceTitle": "Marketplace",
+  "marketplaceError": "No se pudieron cargar los anuncios",
+  "marketplaceEmpty": "No hay anuncios disponibles",
+  "marketplaceCreate": "Publicar anuncio",
+  "marketplaceCreateSuccess": "Anuncio publicado",
+  "marketplaceCreateError": "No se pudo publicar el anuncio",
+  "marketplaceFieldTitle": "Título",
+  "marketplaceFieldDescription": "Descripción",
+  "marketplaceFieldCategory": "Categoría",
+  "marketplaceFieldType": "Tipo (venta, cambio, regalo)",
+  "marketplaceFieldPrice": "Precio",
+  "marketplaceFieldLocation": "Ubicación",
+  "marketplaceTabAll": "Anuncios",
+  "marketplaceTabMine": "Mis anuncios",
+  "marketplaceMineError": "No se pudieron cargar tus anuncios",
+  "marketplaceMineEmpty": "Aún no tienes anuncios",
+  "marketplaceStatusSold": "Vendido",
+  "marketplaceStatusActive": "Activo",
+  "marketplaceMarkSold": "Marcar vendido",
+  "marketplaceMarkSoldSuccess": "Anuncio marcado como vendido",
+  "marketplaceMarkSoldError": "No se pudo marcar como vendido",
+  "marketplaceDelete": "Eliminar anuncio",
+  "marketplaceDeleteSuccess": "Anuncio eliminado",
+  "marketplaceDeleteError": "No se pudo eliminar el anuncio",
+  "clientUnknownSection": "Sección \"{section}\"",
+  "@clientUnknownSection": {
+    "placeholders": {
+      "section": {}
+    }
+  },
+  "clientComingSoon": "Próximamente"
+}

@@ -148,7 +148,7 @@ $col_class = $grid_cols[$columnas] ?? 'md:grid-cols-3';
                         <div class="flex items-center justify-between pt-4 border-t">
                             <div class="text-2xl font-bold text-blue-600">
                                 <?php echo number_format($viaje['precio'], 2); ?>€
-                                <span class="text-sm text-gray-500 font-normal">/plaza</span>
+                                <span class="text-sm text-gray-500 font-normal"><?php echo esc_html__('/plaza', 'flavor-chat-ia'); ?></span>
                             </div>
                             <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-300 transform group-hover:scale-105">
                                 <?php _e('Reservar', 'flavor-chat-ia'); ?>

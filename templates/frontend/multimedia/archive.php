@@ -18,8 +18,8 @@ $vista_actual = $vista_actual ?? 'grid';
     <!-- Header con gradiente -->
     <div class="bg-gradient-to-r from-indigo-500 to-indigo-700 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Multimedia</h1>
-            <p class="text-white/90 text-lg">Videos, fotos, podcasts y mas contenido de la comunidad</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Multimedia', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Videos, fotos, podcasts y mas contenido de la comunidad', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
 
@@ -28,19 +28,19 @@ $vista_actual = $vista_actual ?? 'grid';
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-indigo-600">284</span>
-                <span class="text-sm text-gray-500">Videos</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Videos', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
-                <span class="block text-3xl font-bold text-indigo-700">1.2k</span>
-                <span class="text-sm text-gray-500">Fotos</span>
+                <span class="block text-3xl font-bold text-indigo-700"><?php echo esc_html__('1.2k', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Fotos', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-indigo-600">45</span>
-                <span class="text-sm text-gray-500">Podcasts</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Podcasts', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
-                <span class="block text-3xl font-bold text-indigo-700">52k</span>
-                <span class="text-sm text-gray-500">Visualizaciones</span>
+                <span class="block text-3xl font-bold text-indigo-700"><?php echo esc_html__('52k', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Visualizaciones', 'flavor-chat-ia'); ?></span>
             </div>
         </div>
 
@@ -48,7 +48,7 @@ $vista_actual = $vista_actual ?? 'grid';
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-4">
                 <p class="text-gray-600">
-                    Mostrando <span class="font-semibold"><?php echo count($elementos_multimedia); ?></span> de <?php echo esc_html($total_elementos); ?>
+                    <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($elementos_multimedia); ?></span> de <?php echo esc_html($total_elementos); ?>
                 </p>
                 <!-- Toggle vista -->
                 <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
@@ -66,7 +66,7 @@ $vista_actual = $vista_actual ?? 'grid';
             </div>
             <button class="px-6 py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                     style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);">
-                + Subir Contenido
+                <?php echo esc_html__('+ Subir Contenido', 'flavor-chat-ia'); ?>
             </button>
         </div>
 
@@ -75,8 +75,8 @@ $vista_actual = $vista_actual ?? 'grid';
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay contenido multimedia</h3>
-                <p class="text-gray-500">Sube tu primer contenido para la comunidad</p>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay contenido multimedia', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500"><?php echo esc_html__('Sube tu primer contenido para la comunidad', 'flavor-chat-ia'); ?></p>
             </div>
         <?php else: ?>
             <!-- Grid de multimedia -->

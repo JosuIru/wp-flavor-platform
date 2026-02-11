@@ -12,17 +12,17 @@ get_header();
 ?>
 
 <div class="flavor-container py-8">
-    <nav class="flex mb-6 text-sm" aria-label="Breadcrumb">
+    <nav class="flex mb-6 text-sm" aria-label="<?php echo esc_attr__('Breadcrumb', 'flavor-chat-ia'); ?>">
         <ol class="inline-flex items-center space-x-2">
-            <li><a href="<?php echo esc_url(home_url('/')); ?>" class="text-gray-600 hover:text-primary transition-colors">Inicio</a></li>
+            <li><a href="<?php echo esc_url(home_url('/')); ?>" class="text-gray-600 hover:text-primary transition-colors"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a></li>
             <li><span class="mx-2 text-gray-400">/</span></li>
-            <li class="text-gray-900 font-medium" aria-current="page">Grupos de Consumo</li>
+            <li class="text-gray-900 font-medium" aria-current="page"><?php echo esc_html__('Grupos de Consumo', 'flavor-chat-ia'); ?></li>
         </ol>
     </nav>
 
     <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">Grupos de Consumo</h1>
-        <p class="text-lg text-gray-600">Productos locales y ecológicos directamente de productores de tu comunidad.</p>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Grupos de Consumo', 'flavor-chat-ia'); ?></h1>
+        <p class="text-lg text-gray-600"><?php echo esc_html__('Productos locales y ecológicos directamente de productores de tu comunidad.', 'flavor-chat-ia'); ?></p>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-8">
@@ -33,8 +33,8 @@ get_header();
         <main class="lg:w-3/4">
             <div class="mb-6">
                 <form method="get" class="flex gap-2">
-                    <input type="text" name="s" value="<?php echo esc_attr(get_search_query()); ?>" placeholder="Buscar productos..." class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"/>
-                    <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium">Buscar</button>
+                    <input type="text" name="s" value="<?php echo esc_attr(get_search_query()); ?>" placeholder="<?php echo esc_attr__('Buscar productos...', 'flavor-chat-ia'); ?>" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"/>
+                    <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></button>
                 </form>
             </div>
 
@@ -111,14 +111,14 @@ get_header();
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($disponibilidad === 'disponible') : ?>
-                                        <span class="text-xs font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">Disponible</span>
+                                        <span class="text-xs font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full"><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></span>
                                     <?php else : ?>
-                                        <span class="text-xs font-semibold text-red-700 bg-red-100 px-3 py-1 rounded-full">Agotado</span>
+                                        <span class="text-xs font-semibold text-red-700 bg-red-100 px-3 py-1 rounded-full"><?php echo esc_html__('Agotado', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
                                 </div>
 
                                 <a href="<?php the_permalink(); ?>" class="mt-4 block w-full text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium">
-                                    Ver Producto
+                                    <?php echo esc_html__('Ver Producto', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
                         </article>
@@ -126,7 +126,7 @@ get_header();
                 </div>
 
                 <?php if ($productos_query->max_num_pages > 1) : ?>
-                    <nav class="flex justify-center" aria-label="Paginación">
+                    <nav class="flex justify-center" aria-label="<?php echo esc_attr__('Paginación', 'flavor-chat-ia'); ?>">
                         <?php echo paginate_links(array('total' => $productos_query->max_num_pages, 'current' => $paged)); ?>
                     </nav>
                 <?php endif; ?>
@@ -136,8 +136,8 @@ get_header();
                     <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">No hay productos disponibles</h3>
-                    <p class="text-gray-600">No se encontraron productos en este momento.</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2"><?php echo esc_html__('No hay productos disponibles', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-gray-600"><?php echo esc_html__('No se encontraron productos en este momento.', 'flavor-chat-ia'); ?></p>
                 </div>
             <?php endif; wp_reset_postdata(); ?>
         </main>

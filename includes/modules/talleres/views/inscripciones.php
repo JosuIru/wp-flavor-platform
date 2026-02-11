@@ -28,21 +28,21 @@ $inscripciones = $wpdb->get_results(
 ?>
 
 <div class="wrap">
-    <h1>Gestión de Inscripciones</h1>
+    <h1><?php echo esc_html__('Gestión de Inscripciones', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <div class="flavor-card">
         <table class="wp-list-table widefat striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Taller</th>
-                    <th>Participante</th>
-                    <th>Fecha Inscripción</th>
-                    <th>Precio</th>
-                    <th>Estado Pago</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Taller', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Participante', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Fecha Inscripción', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Estado Pago', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -73,12 +73,12 @@ $inscripciones = $wpdb->get_results(
                                     <?php echo ucfirst($i->estado); ?>
                                 </span>
                             </td>
-                            <td><button class="button button-small">Ver</button></td>
+                            <td><button class="button button-small"><?php echo esc_html__('Ver', 'flavor-chat-ia'); ?></button></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="8" class="flavor-no-data">No hay inscripciones</td>
+                        <td colspan="8" class="flavor-no-data"><?php echo esc_html__('No hay inscripciones', 'flavor-chat-ia'); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>

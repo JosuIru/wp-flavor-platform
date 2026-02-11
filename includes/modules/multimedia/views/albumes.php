@@ -26,9 +26,9 @@ $albumes = $wpdb->get_results("
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-images-alt2"></span>
-        Gestión de Álbumes
+        <?php echo esc_html__('Gestión de Álbumes', 'flavor-chat-ia'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalNuevoAlbum(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> Nuevo Álbum
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nuevo Álbum', 'flavor-chat-ia'); ?>
         </a>
     </h1>
 
@@ -37,9 +37,9 @@ $albumes = $wpdb->get_results("
         <?php if (empty($albumes)): ?>
             <div style="grid-column: 1 / -1; text-align: center; padding: 60px; background: #fff; border-radius: 8px;">
                 <span class="dashicons dashicons-images-alt2" style="font-size: 64px; color: #ddd;"></span>
-                <h3 style="color: #666;">No hay álbumes creados</h3>
+                <h3 style="color: #666;"><?php echo esc_html__('No hay álbumes creados', 'flavor-chat-ia'); ?></h3>
                 <button onclick="abrirModalNuevoAlbum()" class="button button-primary button-large">
-                    Crear Primer Álbum
+                    <?php echo esc_html__('Crear Primer Álbum', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         <?php else: ?>
@@ -80,22 +80,22 @@ $albumes = $wpdb->get_results("
                             <?php if ($album->publico): ?>
                                 <span style="color: #00a32a;">
                                     <span class="dashicons dashicons-visibility" style="font-size: 14px;"></span>
-                                    Público
+                                    <?php echo esc_html__('Público', 'flavor-chat-ia'); ?>
                                 </span>
                             <?php else: ?>
                                 <span style="color: #999;">
                                     <span class="dashicons dashicons-hidden" style="font-size: 14px;"></span>
-                                    Privado
+                                    <?php echo esc_html__('Privado', 'flavor-chat-ia'); ?>
                                 </span>
                             <?php endif; ?>
                         </div>
 
                         <div style="display: flex; gap: 10px; margin-top: 15px;">
                             <button onclick="event.stopPropagation(); editarAlbum(<?php echo $album->id; ?>)" class="button button-small" style="flex: 1;">
-                                <span class="dashicons dashicons-edit"></span> Editar
+                                <span class="dashicons dashicons-edit"></span> <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
                             </button>
                             <button onclick="event.stopPropagation(); verAlbum(<?php echo $album->id; ?>)" class="button button-primary button-small" style="flex: 1;">
-                                <span class="dashicons dashicons-visibility"></span> Ver
+                                <span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
                             </button>
                         </div>
                     </div>

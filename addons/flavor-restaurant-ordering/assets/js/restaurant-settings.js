@@ -5,6 +5,8 @@
 (function($) {
     'use strict';
 
+    const strings = (typeof flavorRestaurantSettings !== 'undefined' && flavorRestaurantSettings.strings) ? flavorRestaurantSettings.strings : {};
+
     const RestaurantSettings = {
         init() {
             this.bindEvents();
@@ -240,13 +242,13 @@
             $.post(flavorRestaurantSettings.ajax_url, formData)
                 .done((response) => {
                     if (response.success) {
-                        this.showNotice('success', response.data.message || 'Configuración guardada exitosamente');
+                        this.showNotice('success', response.data.message || strings.save_success || 'Configuración guardada exitosamente');
                     } else {
-                        this.showNotice('error', response.data.message || 'Error al guardar la configuración');
+                        this.showNotice('error', response.data.message || strings.save_error || 'Error al guardar la configuración');
                     }
                 })
                 .fail(() => {
-                    this.showNotice('error', 'Error de conexión al guardar');
+                    this.showNotice('error', strings.save_error_connection || 'Error de conexión al guardar');
                 })
                 .always(() => {
                     $button.prop('disabled', false);

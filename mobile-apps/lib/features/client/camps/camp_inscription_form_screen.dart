@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/models/models.dart';
@@ -20,6 +21,7 @@ class CampInscriptionFormScreen extends ConsumerStatefulWidget {
 
 class _CampInscriptionFormScreenState
     extends ConsumerState<CampInscriptionFormScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -40,8 +42,8 @@ class _CampInscriptionFormScreenState
 
     if (!_acceptTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Debes aceptar los términos y condiciones'),
+        SnackBar(
+          content: Text(i18n.campInscriptionAcceptTermsError),
           backgroundColor: Colors.orange,
         ),
       );
@@ -80,19 +82,19 @@ class _CampInscriptionFormScreenState
         barrierDismissible: false,
         builder: (context) => AlertDialog(
           icon: const Icon(Icons.check_circle, color: Colors.green, size: 64),
-          title: const Text('¡Inscripción enviada!'),
+          title: Text(i18n.campInscriptionSuccessTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Tu inscripción ha sido registrada correctamente.',
+              Text(
+                i18n.campInscriptionSuccessMessage,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Recibirás un correo electrónico con los detalles del pago y confirmación.',
+              Text(
+                i18n.campInscriptionSuccessEmailNote,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12),
+                style: const TextStyle(fontSize: 12),
               ),
             ],
           ),
@@ -103,7 +105,7 @@ class _CampInscriptionFormScreenState
                 Navigator.of(context).pop(); // Volver a detalle
                 Navigator.of(context).pop(); // Volver a lista
               },
-              child: const Text('Aceptar'),
+              child: Text(i18n.commonAccept),
             ),
           ],
         ),
@@ -111,7 +113,7 @@ class _CampInscriptionFormScreenState
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.error ?? 'Error al crear inscripción'),
+          content: Text(response.error ?? i18n.campInscriptionCreateError),
           backgroundColor: Colors.red,
         ),
       );
@@ -122,7 +124,7 @@ class _CampInscriptionFormScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inscripción'),
+        title: Text(i18n.campInscriptionTitle),
       ),
       body: Form(
         key: _formKey,
@@ -168,21 +170,21 @@ class _CampInscriptionFormScreenState
 
             // Datos del participante
             Text(
-              'Datos del participante',
+              i18n.campInscriptionParticipantSection,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
 
             TextFormField(
               controller: _participantNameController,
-              decoration: const InputDecoration(
-                labelText: 'Nombre completo *',
+              decoration: InputDecoration(
+                labelText: i18n.campInscriptionFullNameRequired,
                 border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
+                prefixIcon: const Icon(Icons.person),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'El nombre es obligatorio';
+                  return i18n.campInscriptionNameRequiredError;
                 }
                 return null;
               },
@@ -191,20 +193,20 @@ class _CampInscriptionFormScreenState
 
             TextFormField(
               controller: _participantAgeController,
-              decoration: const InputDecoration(
-                labelText: 'Edad *',
+              decoration: InputDecoration(
+                labelText: i18n.campInscriptionAgeRequired,
                 border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.cake),
-                suffixText: 'años',
+                prefixIcon: const Icon(Icons.cake),
+                suffixText: i18n.campInscriptionYearsSuffix,
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'La edad es obligatoria';
+                  return i18n.campInscriptionAgeRequiredError;
                 }
                 final age = int.tryParse(value);
                 if (age == null || age <= 0) {
-                  return 'Edad inválida';
+                  return i18n.campInscriptionAgeInvalidError;
                 }
                 return null;
               },
@@ -213,11 +215,11 @@ class _CampInscriptionFormScreenState
 
             TextFormField(
               controller: _participantAllergiesController,
-              decoration: const InputDecoration(
-                labelText: 'Alergias o condiciones médicas',
+              decoration: InputDecoration(
+                labelText: i18n.campInscriptionAllergiesLabel,
                 border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_services),
-                helperText: 'Opcional. Indica si tiene alguna alergia importante.',
+                prefixIcon: const Icon(Icons.medical_services),
+                helperText: i18n.campInscriptionAllergiesHelper,
               ),
               maxLines: 3,
             ),
@@ -225,21 +227,21 @@ class _CampInscriptionFormScreenState
 
             // Datos del responsable
             Text(
-              'Datos del responsable',
+              i18n.campInscriptionGuardianSection,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
 
             TextFormField(
               controller: _guardianNameController,
-              decoration: const InputDecoration(
-                labelText: 'Nombre completo *',
+              decoration: InputDecoration(
+                labelText: i18n.campInscriptionFullNameRequired,
                 border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person_outline),
+                prefixIcon: const Icon(Icons.person_outline),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'El nombre del responsable es obligatorio';
+                  return i18n.campInscriptionGuardianNameRequiredError;
                 }
                 return null;
               },
@@ -248,18 +250,18 @@ class _CampInscriptionFormScreenState
 
             TextFormField(
               controller: _guardianEmailController,
-              decoration: const InputDecoration(
-                labelText: 'Email *',
+              decoration: InputDecoration(
+                labelText: i18n.campInscriptionEmailRequired,
                 border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
+                prefixIcon: const Icon(Icons.email),
               ),
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'El email es obligatorio';
+                  return i18n.campInscriptionEmailRequiredError;
                 }
                 if (!value.contains('@')) {
-                  return 'Email inválido';
+                  return i18n.campInscriptionEmailInvalidError;
                 }
                 return null;
               },
@@ -268,16 +270,16 @@ class _CampInscriptionFormScreenState
 
             TextFormField(
               controller: _guardianPhoneController,
-              decoration: const InputDecoration(
-                labelText: 'Teléfono *',
+              decoration: InputDecoration(
+                labelText: i18n.campInscriptionPhoneRequired,
                 border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.phone),
-                helperText: 'Incluye el prefijo del país (ej: +34)',
+                prefixIcon: const Icon(Icons.phone),
+                helperText: i18n.campInscriptionPhoneHelper,
               ),
               keyboardType: TextInputType.phone,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'El teléfono es obligatorio';
+                  return i18n.campInscriptionPhoneRequiredError;
                 }
                 return null;
               },
@@ -291,10 +293,10 @@ class _CampInscriptionFormScreenState
                 onChanged: (value) {
                   setState(() => _acceptTerms = value ?? false);
                 },
-                title: const Text('Acepto los términos y condiciones'),
-                subtitle: const Text(
-                  'He leído y acepto las condiciones de inscripción y la política de privacidad.',
-                  style: TextStyle(fontSize: 12),
+                title: Text(i18n.campInscriptionTermsTitle),
+                subtitle: Text(
+                  i18n.campInscriptionTermsSubtitle,
+                  style: const TextStyle(fontSize: 12),
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
               ),
@@ -317,20 +319,20 @@ class _CampInscriptionFormScreenState
                       Icon(Icons.info, color: Colors.blue[700]),
                       const SizedBox(width: 8),
                       Text(
-                        'Información de pago',
-                        style: TextStyle(
+                        i18n.campInscriptionPaymentInfoTitle,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue[900],
+                          color: Colors.blue,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Recibirás un correo electrónico con las instrucciones de pago. La inscripción quedará confirmada una vez se reciba el pago.',
-                    style: TextStyle(
+                    i18n.campInscriptionPaymentInfoBody,
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: Colors.blue[900],
+                      color: Colors.blue,
                     ),
                   ),
                 ],
@@ -351,7 +353,7 @@ class _CampInscriptionFormScreenState
                       ),
                     )
                   : const Icon(Icons.send),
-              label: Text(_isLoading ? 'Enviando...' : 'Enviar inscripción'),
+              label: Text(_isLoading ? i18n.commonSending : i18n.campInscriptionSubmit),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.all(16),
               ),
@@ -359,9 +361,9 @@ class _CampInscriptionFormScreenState
             const SizedBox(height: 8),
 
             // Nota de campos obligatorios
-            const Text(
-              '* Campos obligatorios',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+            Text(
+              i18n.campInscriptionRequiredNote,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ],

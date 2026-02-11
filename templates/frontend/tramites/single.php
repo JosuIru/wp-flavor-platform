@@ -13,9 +13,9 @@ $preguntas_frecuentes = $preguntas_frecuentes ?? [];
 <div class="flavor-frontend flavor-tramites-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-orange-600 transition-colors">Inicio</a>
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-orange-600 transition-colors"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
-        <a href="<?php echo esc_url(home_url('/tramites/')); ?>" class="hover:text-orange-600 transition-colors">Tramites</a>
+        <a href="<?php echo esc_url(home_url('/tramites/')); ?>" class="hover:text-orange-600 transition-colors"><?php echo esc_html__('Tramites', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
         <span class="text-gray-700"><?php echo esc_html($tramite['titulo'] ?? 'Tramite'); ?></span>
     </nav>
@@ -60,7 +60,7 @@ $preguntas_frecuentes = $preguntas_frecuentes ?? [];
             <!-- Requisitos -->
             <?php if (!empty($tramite['requisitos'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Requisitos</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Requisitos', 'flavor-chat-ia'); ?></h2>
                 <ul class="space-y-3">
                     <?php foreach ($tramite['requisitos'] as $requisito_item): ?>
                     <li class="flex items-start gap-3">
@@ -77,7 +77,7 @@ $preguntas_frecuentes = $preguntas_frecuentes ?? [];
             <!-- Pasos a seguir -->
             <?php if (!empty($tramite['pasos'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Pasos a seguir</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Pasos a seguir', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-4">
                     <?php foreach ($tramite['pasos'] as $indice_paso => $paso_detalle): ?>
                     <div class="flex items-start gap-4">
@@ -96,7 +96,7 @@ $preguntas_frecuentes = $preguntas_frecuentes ?? [];
             <!-- Documentos necesarios -->
             <?php if (!empty($tramite['documentos'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Documentos necesarios</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Documentos necesarios', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-3">
                     <?php foreach ($tramite['documentos'] as $documento_necesario): ?>
                     <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
@@ -113,7 +113,7 @@ $preguntas_frecuentes = $preguntas_frecuentes ?? [];
             <!-- Tramites relacionados -->
             <?php if (!empty($relacionados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Tramites relacionados</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Tramites relacionados', 'flavor-chat-ia'); ?></h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <?php foreach ($relacionados as $tramite_relacionado): ?>
                     <a href="<?php echo esc_url($tramite_relacionado['url'] ?? '#'); ?>"
@@ -133,18 +133,18 @@ $preguntas_frecuentes = $preguntas_frecuentes ?? [];
         <div class="space-y-6">
             <!-- CTA Iniciar tramite -->
             <div class="bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl p-6 text-white">
-                <h3 class="font-bold text-lg mb-2">Iniciar tramite</h3>
+                <h3 class="font-bold text-lg mb-2"><?php echo esc_html__('Iniciar tramite', 'flavor-chat-ia'); ?></h3>
                 <p class="text-orange-100 text-sm mb-3">Tiempo estimado: <?php echo esc_html($tramite['tiempo_estimado'] ?? ''); ?></p>
                 <button class="w-full bg-white text-orange-600 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-colors"
                         onclick="flavorTramites.iniciar(<?php echo esc_attr($tramite['id'] ?? 0); ?>)">
-                    Comenzar ahora
+                    <?php echo esc_html__('Comenzar ahora', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- FAQ Accordion -->
             <?php if (!empty($preguntas_frecuentes)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Preguntas frecuentes</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Preguntas frecuentes', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($preguntas_frecuentes as $indice_pregunta => $pregunta_frecuente): ?>
                     <details class="group">
@@ -165,7 +165,7 @@ $preguntas_frecuentes = $preguntas_frecuentes ?? [];
 
             <!-- Informacion de contacto -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Contacto</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Contacto', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3 text-sm">
                     <?php if (!empty($tramite['telefono'])): ?>
                     <div class="flex items-center gap-3">

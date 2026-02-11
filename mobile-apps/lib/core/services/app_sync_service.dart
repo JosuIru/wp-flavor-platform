@@ -159,8 +159,15 @@ class AppSyncService {
 
       debugPrint('AppSyncService: Syncing with $cleanUrl');
 
+      // Limpiar cachés para forzar configuración nueva
+      await DynamicConfig().clearCache();
+      await LayoutService().clearCache();
+
       // Guardar URL en ServerConfig
-      await ServerConfig.setServerUrl(cleanUrl);
+      await ServerConfig.setCurrentBusiness(
+        serverUrl: cleanUrl,
+        apiNamespace: ServerConfig.defaultApiNamespace,
+      );
 
       // Crear cliente API
       final apiClient = await ApiClient.fromSavedConfig();
@@ -175,25 +182,47 @@ class AppSyncService {
       final siteInfo = discoveryResponse.data!;
 
       // Extraer información del sitio
-      final siteName = siteInfo['app_name'] ?? siteInfo['site_name'] ?? 'Mi App';
+      final siteName =
+          (siteInfo['app_name'] ?? siteInfo['site_name'])?.toString();
+      if (siteName != null && siteName.trim().isNotEmpty) {
+        await ServerConfig.updateCurrentBusinessName(siteName);
+      }
 
       // 2. Actualizar DynamicConfig con tema
       if (siteInfo['theme'] != null) {
+        final theme = Map<String, dynamic>.from(siteInfo['theme'] as Map);
+        final colors = <String, dynamic>{
+          'primary': theme['primary_color'] ?? theme['primary'],
+          'secondary': theme['secondary_color'] ?? theme['secondary'],
+          'accent': theme['accent_color'] ?? theme['accent'],
+          'background': theme['background_color'] ?? theme['background'],
+          'surface': theme['surface_color'] ?? theme['surface'],
+          'text_primary': theme['text_primary_color'] ?? theme['text_primary'] ?? theme['text_color'],
+          'text_secondary': theme['text_secondary_color'] ?? theme['text_secondary'],
+        };
+
         await DynamicConfig().updateConfig({
-          'colors': siteInfo['theme'],
+          'colors': colors,
           'branding': {
             'business_name': siteInfo['site_name'],
             'app_name': siteInfo['app_name'],
-            'logo_url': siteInfo['theme']['logo_url'],
+            'logo_url': theme['logo_url'],
           },
         });
       }
 
       // 3. Actualizar LayoutService con layouts
       if (siteInfo['layouts'] != null && siteInfo['layouts']['available'] == true) {
+        final theme = siteInfo['theme'] != null
+            ? Map<String, dynamic>.from(siteInfo['theme'] as Map)
+            : <String, dynamic>{};
+        final layoutTheme = <String, dynamic>{
+          ...theme,
+          'text_color': theme['text_color'] ?? theme['text_primary_color'] ?? theme['text_primary'],
+        };
         await LayoutService().updateConfig(
           siteInfo['layouts'],
-          themeData: siteInfo['theme'],
+          themeData: layoutTheme,
         );
         debugPrint('AppSyncService: Layouts updated from site');
       } else {
@@ -207,7 +236,9 @@ class AppSyncService {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_siteUrlKey, cleanUrl);
-      await prefs.setString(_siteNameKey, siteName);
+      if (siteName != null && siteName.trim().isNotEmpty) {
+        await prefs.setString(_siteNameKey, siteName);
+      }
       await prefs.setInt(_lastSyncKey, DateTime.now().millisecondsSinceEpoch);
       await prefs.setString(_siteInfoKey, siteInfo.toString());
 
@@ -216,8 +247,10 @@ class AppSyncService {
 
       debugPrint('AppSyncService: Sync successful - $siteName');
 
+      final resolvedSiteName =
+          (siteName != null && siteName.trim().isNotEmpty) ? siteName : cleanUrl;
       return SyncResult.success(
-        siteName: siteName,
+        siteName: resolvedSiteName,
         siteInfo: siteInfo,
       );
     } catch (e) {

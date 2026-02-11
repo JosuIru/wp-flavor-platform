@@ -41,7 +41,7 @@ if (!defined('ABSPATH')) exit;
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
                             </svg>
-                            Disponible Hoy
+                            <?php echo esc_html__('Disponible Hoy', 'flavor-chat-ia'); ?>
                         </div>
                         <!-- Capacity -->
                         <div class="absolute bottom-4 right-4 px-3 py-2 bg-black/50 backdrop-blur-sm rounded-lg text-white text-sm font-bold">
@@ -49,32 +49,32 @@ if (!defined('ABSPATH')) exit;
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                Hasta 100 personas
+                                <?php echo esc_html__('Hasta 100 personas', 'flavor-chat-ia'); ?>
                             </span>
                         </div>
                     </div>
 
                     <div class="p-6">
                         <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                            Salón de Eventos
+                            <?php echo esc_html__('Salón de Eventos', 'flavor-chat-ia'); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4">
-                            Espacio multiusos ideal para celebraciones, reuniones y eventos comunitarios.
+                            <?php echo esc_html__('Espacio multiusos ideal para celebraciones, reuniones y eventos comunitarios.', 'flavor-chat-ia'); ?>
                         </p>
 
                         <!-- Amenities -->
                         <div class="flex flex-wrap gap-2 mb-4">
                             <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                                Sistema de Sonido
+                                <?php echo esc_html__('Sistema de Sonido', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                                Proyector
+                                <?php echo esc_html__('Proyector', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                                Cocina
+                                <?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                                WiFi
+                                <?php echo esc_html__('WiFi', 'flavor-chat-ia'); ?>
                             </span>
                         </div>
 
@@ -82,10 +82,10 @@ if (!defined('ABSPATH')) exit;
                         <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                             <div>
                                 <span class="text-2xl font-bold text-blue-600">€25</span>
-                                <span class="text-gray-500 text-sm">/hora</span>
+                                <span class="text-gray-500 text-sm"><?php echo esc_html__('/hora', 'flavor-chat-ia'); ?></span>
                             </div>
                             <a href="#reservar" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
-                                Reservar
+                                <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     </div>
@@ -103,48 +103,48 @@ if (!defined('ABSPATH')) exit;
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
-                            Aire Libre
+                            <?php echo esc_html__('Aire Libre', 'flavor-chat-ia'); ?>
                         </div>
                         <div class="absolute bottom-4 right-4 px-3 py-2 bg-black/50 backdrop-blur-sm rounded-lg text-white text-sm font-bold">
                             <span class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                Hasta 60 personas
+                                <?php echo esc_html__('Hasta 60 personas', 'flavor-chat-ia'); ?>
                             </span>
                         </div>
                     </div>
 
                     <div class="p-6">
                         <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                            Terraza Jardín
+                            <?php echo esc_html__('Terraza Jardín', 'flavor-chat-ia'); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4">
-                            Espacio exterior con zona verde, perfecto para eventos al aire libre y barbacoas.
+                            <?php echo esc_html__('Espacio exterior con zona verde, perfecto para eventos al aire libre y barbacoas.', 'flavor-chat-ia'); ?>
                         </p>
 
                         <div class="flex flex-wrap gap-2 mb-4">
                             <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                                Barbacoa
+                                <?php echo esc_html__('Barbacoa', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                                Mesas
+                                <?php echo esc_html__('Mesas', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                                Sombra
+                                <?php echo esc_html__('Sombra', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                                Juegos
+                                <?php echo esc_html__('Juegos', 'flavor-chat-ia'); ?>
                             </span>
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                             <div>
                                 <span class="text-2xl font-bold text-green-600">€15</span>
-                                <span class="text-gray-500 text-sm">/hora</span>
+                                <span class="text-gray-500 text-sm"><?php echo esc_html__('/hora', 'flavor-chat-ia'); ?></span>
                             </div>
                             <a href="#reservar" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors">
-                                Reservar
+                                <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     </div>
@@ -162,48 +162,48 @@ if (!defined('ABSPATH')) exit;
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
-                            Para Niños
+                            <?php echo esc_html__('Para Niños', 'flavor-chat-ia'); ?>
                         </div>
                         <div class="absolute bottom-4 right-4 px-3 py-2 bg-black/50 backdrop-blur-sm rounded-lg text-white text-sm font-bold">
                             <span class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                Hasta 30 niños
+                                <?php echo esc_html__('Hasta 30 niños', 'flavor-chat-ia'); ?>
                             </span>
                         </div>
                     </div>
 
                     <div class="p-6">
                         <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">
-                            Ludoteca
+                            <?php echo esc_html__('Ludoteca', 'flavor-chat-ia'); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4">
-                            Sala equipada para fiestas infantiles con juegos, decoración y zona de merienda.
+                            <?php echo esc_html__('Sala equipada para fiestas infantiles con juegos, decoración y zona de merienda.', 'flavor-chat-ia'); ?>
                         </p>
 
                         <div class="flex flex-wrap gap-2 mb-4">
                             <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-medium rounded-full">
-                                Juguetes
+                                <?php echo esc_html__('Juguetes', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-medium rounded-full">
-                                Decoración
+                                <?php echo esc_html__('Decoración', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-medium rounded-full">
-                                Seguro
+                                <?php echo esc_html__('Seguro', 'flavor-chat-ia'); ?>
                             </span>
                             <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-medium rounded-full">
-                                Zona Merienda
+                                <?php echo esc_html__('Zona Merienda', 'flavor-chat-ia'); ?>
                             </span>
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                             <div>
                                 <span class="text-2xl font-bold text-pink-600">€20</span>
-                                <span class="text-gray-500 text-sm">/hora</span>
+                                <span class="text-gray-500 text-sm"><?php echo esc_html__('/hora', 'flavor-chat-ia'); ?></span>
                             </div>
                             <a href="#reservar" class="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg transition-colors">
-                                Reservar
+                                <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     </div>
@@ -212,12 +212,12 @@ if (!defined('ABSPATH')) exit;
 
             <!-- Info Banner -->
             <div class="mt-12 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-8 text-center">
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">💡 Información Importante</h3>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3"><?php echo esc_html__('💡 Información Importante', 'flavor-chat-ia'); ?></h3>
                 <p class="text-gray-700 mb-4 max-w-2xl mx-auto">
-                    Reserva con al menos 24h de antelación. Los vecinos tienen prioridad y descuentos especiales.
+                    <?php echo esc_html__('Reserva con al menos 24h de antelación. Los vecinos tienen prioridad y descuentos especiales.', 'flavor-chat-ia'); ?>
                 </p>
                 <a href="#normas" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
-                    Ver Normas y Condiciones
+                    <?php echo esc_html__('Ver Normas y Condiciones', 'flavor-chat-ia'); ?>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>

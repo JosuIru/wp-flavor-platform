@@ -660,25 +660,25 @@ class Chat_IA_Admin_Assistant {
         check_ajax_referer('chat_ia_admin_assistant_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Sin permisos']);
+            wp_send_json_error(['error' => __('Sin permisos', 'chat-ia-addon')]);
         }
 
         $message = sanitize_textarea_field($_POST['message'] ?? '');
 
         if (empty($message)) {
-            wp_send_json_error(['error' => 'Mensaje vacío']);
+            wp_send_json_error(['error' => __('Mensaje vacío', 'flavor-chat-ia')]);
         }
 
         // Obtener motor de IA (contexto backend = admin assistant)
         if (!class_exists('Chat_IA_Engine_Manager')) {
-            wp_send_json_error(['error' => 'Motor de IA no disponible']);
+            wp_send_json_error(['error' => __('Motor de IA no disponible', 'flavor-chat-ia')]);
         }
 
         $engine_manager = Chat_IA_Engine_Manager::get_instance();
         $engine = $engine_manager->get_backend_engine();
 
         if (!$engine || !$engine->is_configured()) {
-            wp_send_json_error(['error' => 'Configura un proveedor de IA primero']);
+            wp_send_json_error(['error' => __('Configura un proveedor de IA primero', 'flavor-chat-ia')]);
         }
 
         // Obtener historial de conversación
@@ -832,19 +832,19 @@ class Chat_IA_Admin_Assistant {
      */
     public function process_message($message, $session_id = null) {
         if (empty($message)) {
-            return ['success' => false, 'error' => 'Mensaje vacío'];
+            return ['success' => false, 'error' => __('Mensaje vacío', 'flavor-chat-ia')];
         }
 
         // Obtener motor de IA (contexto backend = admin assistant)
         if (!class_exists('Chat_IA_Engine_Manager')) {
-            return ['success' => false, 'error' => 'Motor de IA no disponible'];
+            return ['success' => false, 'error' => __('Motor de IA no disponible', 'flavor-chat-ia')];
         }
 
         $engine_manager = Chat_IA_Engine_Manager::get_instance();
         $engine = $engine_manager->get_backend_engine();
 
         if (!$engine || !$engine->is_configured()) {
-            return ['success' => false, 'error' => 'Configura un proveedor de IA primero'];
+            return ['success' => false, 'error' => __('Configura un proveedor de IA primero', 'flavor-chat-ia')];
         }
 
         // Obtener historial de conversación (usando session_id si se proporciona)
@@ -1184,7 +1184,7 @@ MODO DOCUMENTO LARGO - SIGUE ESTE PROTOCOLO:
 
 REGLAS CRÍTICAS:
 - NUNCA ejecutes acciones sin confirmación explícita
-- Presenta TODO el plan antes de empezar
+- Presenta todo el plan antes de empezar
 - Si hay información ambigua, PREGUNTA primero
 - Usa las herramientas una por una, verificando cada resultado
 PROMPT;
@@ -1553,7 +1553,7 @@ PROMPT;
         check_ajax_referer('chat_ia_admin_assistant_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Sin permisos']);
+            wp_send_json_error(['error' => __('Sin permisos', 'chat-ia-addon')]);
         }
 
         $user_id = get_current_user_id();

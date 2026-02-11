@@ -14,7 +14,7 @@ $historial = $historial ?? [];
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
         <a href="<?php echo esc_url(home_url('/incidencias/')); ?>" class="hover:text-red-600 transition-colors">
-            Incidencias
+            <?php echo esc_html__('Incidencias', 'flavor-chat-ia'); ?>
         </a>
         <span>›</span>
         <span class="text-gray-700"><?php echo esc_html($incidencia['titulo'] ?? 'Incidencia'); ?></span>
@@ -83,11 +83,11 @@ $historial = $historial ?? [];
             <!-- Galería de fotos adicionales -->
             <?php if (!empty($incidencia['galeria'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📷 Fotos adicionales</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📷 Fotos adicionales', 'flavor-chat-ia'); ?></h2>
                 <div class="grid grid-cols-3 gap-4">
                     <?php foreach ($incidencia['galeria'] as $foto): ?>
                     <a href="<?php echo esc_url($foto); ?>" class="aspect-square rounded-lg overflow-hidden" data-lightbox="galeria">
-                        <img src="<?php echo esc_url($foto); ?>" alt="Foto de la incidencia" class="w-full h-full object-cover hover:scale-105 transition-transform">
+                        <img src="<?php echo esc_url($foto); ?>" alt="<?php echo esc_attr__('Foto de la incidencia', 'flavor-chat-ia'); ?>" class="w-full h-full object-cover hover:scale-105 transition-transform">
                     </a>
                     <?php endforeach; ?>
                 </div>
@@ -97,7 +97,7 @@ $historial = $historial ?? [];
             <!-- Historial de cambios -->
             <?php if (!empty($historial)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📋 Historial de la incidencia</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📋 Historial de la incidencia', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-4">
                     <?php foreach ($historial as $evento): ?>
                     <div class="flex gap-4">
@@ -121,7 +121,7 @@ $historial = $historial ?? [];
                 </h2>
 
                 <?php if (empty($comentarios)): ?>
-                <p class="text-gray-500 text-center py-8">No hay comentarios todavía. ¡Sé el primero!</p>
+                <p class="text-gray-500 text-center py-8"><?php echo esc_html__('No hay comentarios todavía. ¡Sé el primero!', 'flavor-chat-ia'); ?></p>
                 <?php else: ?>
                 <div class="space-y-4 mb-6">
                     <?php foreach ($comentarios as $comentario): ?>
@@ -144,11 +144,11 @@ $historial = $historial ?? [];
                 <!-- Formulario de comentario -->
                 <form class="space-y-4" onsubmit="return flavorIncidencias.enviarComentario(event, <?php echo esc_attr($incidencia['id']); ?>)">
                     <textarea name="comentario" rows="3"
-                              placeholder="Escribe tu comentario..."
+                              placeholder="<?php echo esc_attr__('Escribe tu comentario...', 'flavor-chat-ia'); ?>"
                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"></textarea>
                     <button type="submit"
                             class="bg-red-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors">
-                        Enviar comentario
+                        <?php echo esc_html__('Enviar comentario', 'flavor-chat-ia'); ?>
                     </button>
                 </form>
             </div>
@@ -158,29 +158,29 @@ $historial = $historial ?? [];
         <div class="space-y-6">
             <!-- Info de la incidencia -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">📍 Información</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('📍 Información', 'flavor-chat-ia'); ?></h3>
                 <dl class="space-y-4">
                     <div>
-                        <dt class="text-sm text-gray-500">Ubicación</dt>
+                        <dt class="text-sm text-gray-500"><?php echo esc_html__('Ubicación', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800 font-medium"><?php echo esc_html($incidencia['ubicacion'] ?? 'No especificada'); ?></dd>
                     </div>
                     <div>
-                        <dt class="text-sm text-gray-500">Fecha de reporte</dt>
+                        <dt class="text-sm text-gray-500"><?php echo esc_html__('Fecha de reporte', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800"><?php echo esc_html($incidencia['fecha_creacion'] ?? ''); ?></dd>
                     </div>
                     <?php if (!empty($incidencia['fecha_resolucion'])): ?>
                     <div>
-                        <dt class="text-sm text-gray-500">Fecha de resolución</dt>
+                        <dt class="text-sm text-gray-500"><?php echo esc_html__('Fecha de resolución', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800"><?php echo esc_html($incidencia['fecha_resolucion']); ?></dd>
                     </div>
                     <?php endif; ?>
                     <div>
-                        <dt class="text-sm text-gray-500">Reportado por</dt>
+                        <dt class="text-sm text-gray-500"><?php echo esc_html__('Reportado por', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800"><?php echo esc_html($incidencia['autor'] ?? 'Anónimo'); ?></dd>
                     </div>
                     <?php if (!empty($incidencia['asignado_a'])): ?>
                     <div>
-                        <dt class="text-sm text-gray-500">Asignado a</dt>
+                        <dt class="text-sm text-gray-500"><?php echo esc_html__('Asignado a', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800"><?php echo esc_html($incidencia['asignado_a']); ?></dd>
                     </div>
                     <?php endif; ?>
@@ -190,7 +190,7 @@ $historial = $historial ?? [];
             <!-- Mapa de ubicación -->
             <?php if (!empty($incidencia['coordenadas'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">🗺️ Ubicación en el mapa</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('🗺️ Ubicación en el mapa', 'flavor-chat-ia'); ?></h3>
                 <div class="aspect-square rounded-xl overflow-hidden bg-gray-100" id="mapa-incidencia"
                      data-lat="<?php echo esc_attr($incidencia['coordenadas']['lat']); ?>"
                      data-lng="<?php echo esc_attr($incidencia['coordenadas']['lng']); ?>">
@@ -201,11 +201,11 @@ $historial = $historial ?? [];
 
             <!-- Acciones -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-3">
-                <h3 class="font-semibold text-gray-800 mb-4">⚡ Acciones</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('⚡ Acciones', 'flavor-chat-ia'); ?></h3>
 
                 <button class="w-full flex items-center justify-center gap-2 bg-red-100 text-red-700 py-3 px-4 rounded-xl font-medium hover:bg-red-200 transition-colors"
                         onclick="flavorIncidencias.apoyar(<?php echo esc_attr($incidencia['id']); ?>)">
-                    👍 Apoyar incidencia
+                    <?php echo esc_html__('👍 Apoyar incidencia', 'flavor-chat-ia'); ?>
                     <span class="bg-red-200 px-2 py-0.5 rounded-full text-sm">
                         <?php echo esc_html($incidencia['votos'] ?? 0); ?>
                     </span>
@@ -213,19 +213,19 @@ $historial = $historial ?? [];
 
                 <button class="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors"
                         onclick="flavorIncidencias.compartir(<?php echo esc_attr($incidencia['id']); ?>)">
-                    📤 Compartir
+                    <?php echo esc_html__('📤 Compartir', 'flavor-chat-ia'); ?>
                 </button>
 
                 <button class="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors"
                         onclick="flavorIncidencias.seguir(<?php echo esc_attr($incidencia['id']); ?>)">
-                    🔔 Seguir actualizaciones
+                    <?php echo esc_html__('🔔 Seguir actualizaciones', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- Incidencias cercanas -->
             <?php if (!empty($incidencia['cercanas'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">📍 Incidencias cercanas</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('📍 Incidencias cercanas', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($incidencia['cercanas'] as $cercana): ?>
                     <a href="<?php echo esc_url($cercana['url']); ?>"

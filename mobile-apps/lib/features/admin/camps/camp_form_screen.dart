@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
@@ -18,6 +19,7 @@ class CampFormScreen extends ConsumerStatefulWidget {
 }
 
 class _CampFormScreenState extends ConsumerState<CampFormScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _excerptController = TextEditingController();
@@ -211,8 +213,8 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(widget.camp == null
-              ? 'Campamento creado correctamente'
-              : 'Campamento actualizado correctamente'),
+              ? i18n.campFormCreatedSuccess
+              : i18n.campFormUpdatedSuccess),
           backgroundColor: Colors.green,
         ),
       );
@@ -220,7 +222,7 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.error ?? 'Error al guardar campamento'),
+          content: Text(response.error ?? i18n.campFormSaveError),
           backgroundColor: Colors.red,
         ),
       );
@@ -233,7 +235,7 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Editar Campamento' : 'Nuevo Campamento'),
+        title: Text(isEditing ? i18n.campFormEditTitle : i18n.campFormNewTitle),
         actions: [
           if (_isLoading)
             const Center(
@@ -250,7 +252,7 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
             IconButton(
               icon: const Icon(Icons.save),
               onPressed: _saveCamp,
-              tooltip: 'Guardar',
+              tooltip: i18n.commonSave,
             ),
         ],
       ),
@@ -262,13 +264,13 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
             // Título
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Título *',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.campFormTitleLabel,
+                border: const OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'El título es obligatorio';
+                  return i18n.campFormTitleRequired;
                 }
                 return null;
               },
@@ -278,10 +280,10 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
             // Extracto
             TextFormField(
               controller: _excerptController,
-              decoration: const InputDecoration(
-                labelText: 'Extracto',
-                border: OutlineInputBorder(),
-                helperText: 'Resumen corto del campamento',
+              decoration: InputDecoration(
+                labelText: i18n.campFormExcerptLabel,
+                border: const OutlineInputBorder(),
+                helperText: i18n.campFormExcerptHelper,
               ),
               maxLines: 2,
             ),
@@ -290,9 +292,9 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
             // Descripción
             TextFormField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Descripción completa',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.campFormDescriptionLabel,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 5,
             ),
@@ -300,7 +302,7 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
 
             // Sección de precios
             Text(
-              'Precios',
+              i18n.campFormPricesSection,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -309,9 +311,9 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _priceController,
-                    decoration: const InputDecoration(
-                      labelText: 'Precio inscripción',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: i18n.campFormPriceInscriptionLabel,
+                      border: const OutlineInputBorder(),
                       suffixText: '€',
                     ),
                     keyboardType: TextInputType.number,
@@ -321,9 +323,9 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _priceTotalController,
-                    decoration: const InputDecoration(
-                      labelText: 'Precio total',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: i18n.campFormPriceTotalLabel,
+                      border: const OutlineInputBorder(),
                       suffixText: '€',
                     ),
                     keyboardType: TextInputType.number,
@@ -339,10 +341,10 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _durationController,
-                    decoration: const InputDecoration(
-                      labelText: 'Duración',
-                      border: OutlineInputBorder(),
-                      helperText: 'Ej: 5 días, 1 semana',
+                    decoration: InputDecoration(
+                      labelText: i18n.campFormDurationLabel,
+                      border: const OutlineInputBorder(),
+                      helperText: i18n.campFormDurationHelper,
                     ),
                   ),
                 ),
@@ -350,10 +352,10 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _labelController,
-                    decoration: const InputDecoration(
-                      labelText: 'Etiqueta especial',
-                      border: OutlineInputBorder(),
-                      helperText: 'Ej: Nuevo, Destacado',
+                    decoration: InputDecoration(
+                      labelText: i18n.campFormLabelLabel,
+                      border: const OutlineInputBorder(),
+                      helperText: i18n.campFormLabelHelper,
                     ),
                   ),
                 ),
@@ -363,9 +365,8 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
 
             // Estado de inscripción
             SwitchListTile(
-              title: const Text('Inscripciones cerradas'),
-              subtitle: const Text(
-                  'Si está activado, los usuarios no podrán inscribirse'),
+              title: Text(i18n.campFormInscriptionClosedTitle),
+              subtitle: Text(i18n.campFormInscriptionClosedSubtitle),
               value: _inscriptionClosed,
               onChanged: (value) {
                 setState(() => _inscriptionClosed = value);
@@ -375,7 +376,7 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
 
             // Fechas
             Text(
-              'Fechas',
+              i18n.campFormDatesSection,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -383,8 +384,8 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
               children: [
                 Expanded(
                   child: ListTile(
-                    title: const Text('Fecha inicio'),
-                    subtitle: Text(_startDate ?? 'No seleccionada'),
+                    title: Text(i18n.campFormStartDateLabel),
+                    subtitle: Text(_startDate ?? i18n.campFormNotSelected),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () async {
                       final date = await showDatePicker(
@@ -403,8 +404,8 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
                 ),
                 Expanded(
                   child: ListTile(
-                    title: const Text('Fecha fin'),
-                    subtitle: Text(_endDate ?? 'No seleccionada'),
+                    title: Text(i18n.campFormEndDateLabel),
+                    subtitle: Text(_endDate ?? i18n.campFormNotSelected),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () async {
                       final date = await showDatePicker(
@@ -427,41 +428,41 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
 
             // Información adicional
             Text(
-              'Información adicional',
+              i18n.campFormAdditionalInfoSection,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _scheduleController,
-              decoration: const InputDecoration(
-                labelText: 'Horario',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.campFormScheduleLabel,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 2,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _locationController,
-              decoration: const InputDecoration(
-                labelText: 'Ubicación',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.campFormLocationLabel,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _includesController,
-              decoration: const InputDecoration(
-                labelText: 'Qué incluye',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.campFormIncludesLabel,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _requirementsController,
-              decoration: const InputDecoration(
-                labelText: 'Requisitos',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.campFormRequirementsLabel,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
@@ -469,24 +470,24 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
 
             // Taxonomías
             Text(
-              'Categorización',
+              i18n.campFormCategorizationSection,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             _buildTaxonomySection(
-              'Categorías',
+              i18n.campFormCategories,
               _availableCategories,
               _selectedCategoryIds,
             ),
             const SizedBox(height: 16),
             _buildTaxonomySection(
-              'Edades',
+              i18n.campFormAges,
               _availableAges,
               _selectedAgeIds,
             ),
             const SizedBox(height: 16),
             _buildTaxonomySection(
-              'Idiomas',
+              i18n.campFormLanguages,
               _availableLanguages,
               _selectedLanguageIds,
             ),
@@ -496,7 +497,7 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
             FilledButton.icon(
               onPressed: _isLoading ? null : _saveCamp,
               icon: const Icon(Icons.save),
-              label: Text(isEditing ? 'Actualizar' : 'Crear'),
+              label: Text(isEditing ? i18n.actualizar2e7be1 : i18n.commonCreate),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.all(16),
               ),

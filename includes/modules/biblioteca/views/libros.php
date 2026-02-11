@@ -70,25 +70,25 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Catálogo de Libros</h1>
-    <a href="#" class="page-title-action" id="btn-nuevo-libro">Añadir Libro</a>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Catálogo de Libros', 'flavor-chat-ia'); ?></h1>
+    <a href="#" class="page-title-action" id="btn-nuevo-libro"><?php echo esc_html__('Añadir Libro', 'flavor-chat-ia'); ?></a>
     <hr class="wp-header-end">
 
     <!-- Filtros -->
     <div class="flavor-filters">
         <form method="get" action="">
-            <input type="hidden" name="page" value="flavor-chat-biblioteca">
-            <input type="hidden" name="tab" value="libros">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-biblioteca', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="tab" value="<?php echo esc_attr__('libros', 'flavor-chat-ia'); ?>">
 
             <div class="flavor-filters-row">
                 <input type="search"
                        name="s"
                        value="<?php echo esc_attr($search); ?>"
-                       placeholder="Buscar por título, autor o ISBN..."
+                       placeholder="<?php echo esc_attr__('Buscar por título, autor o ISBN...', 'flavor-chat-ia'); ?>"
                        class="flavor-filter-search">
 
                 <select name="genero" class="flavor-filter-select">
-                    <option value="">Todos los géneros</option>
+                    <option value=""><?php echo esc_html__('Todos los géneros', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($generos as $genero): ?>
                         <option value="<?php echo esc_attr($genero); ?>" <?php selected($filtro_genero, $genero); ?>>
                             <?php echo esc_html($genero); ?>
@@ -97,16 +97,16 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
                 </select>
 
                 <select name="disponibilidad" class="flavor-filter-select">
-                    <option value="">Todas las disponibilidades</option>
-                    <option value="disponible" <?php selected($filtro_disponibilidad, 'disponible'); ?>>Disponible</option>
-                    <option value="prestado" <?php selected($filtro_disponibilidad, 'prestado'); ?>>Prestado</option>
-                    <option value="reservado" <?php selected($filtro_disponibilidad, 'reservado'); ?>>Reservado</option>
-                    <option value="no_disponible" <?php selected($filtro_disponibilidad, 'no_disponible'); ?>>No disponible</option>
+                    <option value=""><?php echo esc_html__('Todas las disponibilidades', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('disponible', 'flavor-chat-ia'); ?>" <?php selected($filtro_disponibilidad, 'disponible'); ?>><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('prestado', 'flavor-chat-ia'); ?>" <?php selected($filtro_disponibilidad, 'prestado'); ?>><?php echo esc_html__('Prestado', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('reservado', 'flavor-chat-ia'); ?>" <?php selected($filtro_disponibilidad, 'reservado'); ?>><?php echo esc_html__('Reservado', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('no_disponible', 'flavor-chat-ia'); ?>" <?php selected($filtro_disponibilidad, 'no_disponible'); ?>><?php echo esc_html__('No disponible', 'flavor-chat-ia'); ?></option>
                 </select>
 
-                <button type="submit" class="button">Filtrar</button>
+                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
                 <?php if ($search || $filtro_genero || $filtro_disponibilidad): ?>
-                    <a href="?page=flavor-chat-biblioteca&tab=libros" class="button">Limpiar</a>
+                    <a href="?page=flavor-chat-biblioteca&tab=libros" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
                 <?php endif; ?>
             </div>
         </form>
@@ -118,15 +118,15 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
             <table class="wp-list-table widefat striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">ID</th>
-                        <th>Libro</th>
-                        <th>Autor</th>
-                        <th>Género</th>
-                        <th>Propietario</th>
-                        <th style="width: 80px;">Estado</th>
-                        <th style="width: 100px;">Disponibilidad</th>
-                        <th style="width: 80px;">Préstamos</th>
-                        <th style="width: 150px;">Acciones</th>
+                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Libro', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Autor', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Género', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Propietario', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 80px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Disponibilidad', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 80px;"><?php echo esc_html__('Préstamos', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -173,17 +173,17 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
                                 </td>
                                 <td>
                                     <button class="button button-small btn-editar-libro" data-id="<?php echo $libro->id; ?>">
-                                        Editar
+                                        <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
                                     </button>
                                     <button class="button button-small btn-historial-libro" data-id="<?php echo $libro->id; ?>">
-                                        Historial
+                                        <?php echo esc_html__('Historial', 'flavor-chat-ia'); ?>
                                     </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9" class="flavor-no-data">No se encontraron libros</td>
+                            <td colspan="9" class="flavor-no-data"><?php echo esc_html__('No se encontraron libros', 'flavor-chat-ia'); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

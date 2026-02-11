@@ -86,10 +86,56 @@ $datos = $cache->remember('clave', function() {
 
 ## 📚 Documentación
 
-- [Sistema de Addons](docs/ADDON-SYSTEM.md)
-- [Crear Addons](docs/ADDON-EXAMPLE.md)
-- [Mejoras v3.0](docs/MEJORAS-V3.0.md)
-- [Sistema Completo](docs/SISTEMA-COMPLETO-V3.md)
+### 📖 Documentos Principales
+
+- **[Estado Actual del Proyecto](ESTADO_ACTUAL_PROYECTO.md)** - Estado consolidado y roadmap
+- **[Verificación de Implementaciones](VERIFICACION_IMPLEMENTACIONES.md)** - Auditoría exhaustiva de código (Feb 11, 2026)
+- **[Arquitectura de Módulos](ARQUITECTURA_MODULOS.md)** - Estructura modular del sistema
+
+### 🚀 Guías de Inicio
+
+- **[Quick Start](docs/QUICK-START.md)** - Inicio rápido en 5 minutos
+- **[Construir Aplicación](docs/CONSTRUIR_APLICACION.md)** - Cómo crear una app completa
+- **[Configuración Apps](docs/CONFIGURACION-APPS.md)** - Setup de apps móviles
+
+### 🏗️ Arquitectura y Sistema
+
+- **[Ecosystem](docs/ECOSYSTEM.md)** - Visión general del ecosistema
+- **[Sistema de Addons](docs/ADDON-SYSTEM.md)** - Arquitectura de addons
+- **[Crear Addons](docs/ADDON-EXAMPLE.md)** - Ejemplo paso a paso
+- **[Sistema Completo v3](docs/SISTEMA-COMPLETO-V3.md)** - Arquitectura completa
+
+### 📱 Apps Móviles
+
+- **[README Apps](mobile-apps/README.md)** - Instalación y configuración Flutter
+- **[Documentación Apps](mobile-apps/DOCUMENTACION_APPS.md)** - Guía completa apps
+- **[Auditoría Apps](mobile-apps/AUDITORIA_COMPLETA_APPS.md)** - Estado y checklist
+
+### 🔧 Desarrollo
+
+- **[Guía de Módulos](docs/GUIA_MODULOS.md)** - Desarrollo de módulos
+- **[Referencia Rápida](docs/REFERENCIA_RAPIDA_MODULOS.md)** - API de módulos
+- **[CPT Apps Guía](docs/CPT-APPS-GUIA.md)** - Custom Post Types
+- **[Design Guide](docs/DESIGN-GUIDE.md)** - Guía de diseño
+- **[Permissions Usage](docs/PERMISSIONS-USAGE.md)** - Sistema de permisos
+
+### 📊 Calidad y Mejoras
+
+- **[Gaps and Improvements](docs/GAPS-AND-IMPROVEMENTS.md)** - Mejoras pendientes
+- **[Plan de Pruebas](docs/PLAN-PRUEBAS.md)** - Estrategia de testing
+- **[Checklist Release](docs/CHECKLIST-RELEASE.md)** - Pre-release checklist
+- **[Mejoras v3.0](docs/MEJORAS-V3.0.md)** - Changelog v3.0
+- **[UX Módulos Apps](docs/UX-MODULOS-APPS.md)** - Mejoras UX
+
+### 🔀 Migración
+
+- **[Migración Network](docs/MIGRATION-NETWORK.md)** - Migrar red de nodos
+- **[Migración Web Builder](docs/MIGRATION-WEB-BUILDER.md)** - Migrar page builder
+
+### 🌐 APIs
+
+- **[Endpoints](docs/api/ENDPOINTS.md)** - Documentación endpoints REST
+- **[Contratos JSON](docs/CONTRATOS-JSON.md)** - Schemas de datos
 
 ---
 

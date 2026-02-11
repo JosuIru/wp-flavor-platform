@@ -40,7 +40,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Nodos de la red ───
         $tabla_nodos = $prefix . 'nodes';
-        $sql_nodos = "CREATE TABLE IF NOT EXISTS {$tabla_nodos} (
+        $sql_nodos = "CREATE TABLE {$tabla_nodos} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             site_url varchar(500) NOT NULL,
             nombre varchar(255) NOT NULL,
@@ -88,7 +88,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Conexiones entre nodos ───
         $tabla_conexiones = $prefix . 'connections';
-        $sql_conexiones = "CREATE TABLE IF NOT EXISTS {$tabla_conexiones} (
+        $sql_conexiones = "CREATE TABLE {$tabla_conexiones} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_origen_id bigint(20) unsigned NOT NULL,
             nodo_destino_id bigint(20) unsigned NOT NULL,
@@ -113,7 +113,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Mensajes entre nodos ───
         $tabla_mensajes = $prefix . 'messages';
-        $sql_mensajes = "CREATE TABLE IF NOT EXISTS {$tabla_mensajes} (
+        $sql_mensajes = "CREATE TABLE {$tabla_mensajes} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             de_nodo_id bigint(20) unsigned NOT NULL,
             a_nodo_id bigint(20) unsigned NOT NULL,
@@ -137,7 +137,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Favoritos ───
         $tabla_favoritos = $prefix . 'favorites';
-        $sql_favoritos = "CREATE TABLE IF NOT EXISTS {$tabla_favoritos} (
+        $sql_favoritos = "CREATE TABLE {$tabla_favoritos} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             nodo_favorito_id bigint(20) unsigned NOT NULL,
@@ -152,7 +152,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Recomendaciones ───
         $tabla_recomendaciones = $prefix . 'recommendations';
-        $sql_recomendaciones = "CREATE TABLE IF NOT EXISTS {$tabla_recomendaciones} (
+        $sql_recomendaciones = "CREATE TABLE {$tabla_recomendaciones} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             de_nodo_id bigint(20) unsigned NOT NULL,
             a_nodo_id bigint(20) unsigned NOT NULL,
@@ -169,7 +169,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Tablón de red (anuncios/publicaciones) ───
         $tabla_tablon = $prefix . 'board';
-        $sql_tablon = "CREATE TABLE IF NOT EXISTS {$tabla_tablon} (
+        $sql_tablon = "CREATE TABLE {$tabla_tablon} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             tipo varchar(50) DEFAULT 'anuncio',
@@ -196,7 +196,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Contenido compartido (catálogo, servicios, espacios, recursos) ───
         $tabla_contenido = $prefix . 'shared_content';
-        $sql_contenido = "CREATE TABLE IF NOT EXISTS {$tabla_contenido} (
+        $sql_contenido = "CREATE TABLE {$tabla_contenido} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             tipo_contenido varchar(50) NOT NULL,
@@ -237,7 +237,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Eventos de red ───
         $tabla_eventos = $prefix . 'events';
-        $sql_eventos = "CREATE TABLE IF NOT EXISTS {$tabla_eventos} (
+        $sql_eventos = "CREATE TABLE {$tabla_eventos} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             titulo varchar(255) NOT NULL,
@@ -268,7 +268,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Colaboraciones (compras colectivas, proyectos, alianzas, etc.) ───
         $tabla_colaboraciones = $prefix . 'collaborations';
-        $sql_colaboraciones = "CREATE TABLE IF NOT EXISTS {$tabla_colaboraciones} (
+        $sql_colaboraciones = "CREATE TABLE {$tabla_colaboraciones} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_creador_id bigint(20) unsigned NOT NULL,
             tipo varchar(50) NOT NULL,
@@ -298,7 +298,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Participantes en colaboraciones ───
         $tabla_participantes = $prefix . 'collaboration_participants';
-        $sql_participantes = "CREATE TABLE IF NOT EXISTS {$tabla_participantes} (
+        $sql_participantes = "CREATE TABLE {$tabla_participantes} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             colaboracion_id bigint(20) unsigned NOT NULL,
             nodo_id bigint(20) unsigned NOT NULL,
@@ -318,7 +318,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Sello de calidad / certificaciones ───
         $tabla_sellos = $prefix . 'quality_seals';
-        $sql_sellos = "CREATE TABLE IF NOT EXISTS {$tabla_sellos} (
+        $sql_sellos = "CREATE TABLE {$tabla_sellos} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             tipo_sello varchar(50) NOT NULL DEFAULT 'app_consciente',
@@ -340,7 +340,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Alertas solidarias ───
         $tabla_alertas = $prefix . 'solidarity_alerts';
-        $sql_alertas = "CREATE TABLE IF NOT EXISTS {$tabla_alertas} (
+        $sql_alertas = "CREATE TABLE {$tabla_alertas} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             tipo varchar(50) DEFAULT 'necesidad',
@@ -366,7 +366,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Ofertas de tiempo (banco de tiempo inter-nodos) ───
         $tabla_tiempo = $prefix . 'time_offers';
-        $sql_tiempo = "CREATE TABLE IF NOT EXISTS {$tabla_tiempo} (
+        $sql_tiempo = "CREATE TABLE {$tabla_tiempo} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             tipo varchar(20) DEFAULT 'oferta',
@@ -389,7 +389,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Newsletters de red ───
         $tabla_newsletters = $prefix . 'newsletters';
-        $sql_newsletters = "CREATE TABLE IF NOT EXISTS {$tabla_newsletters} (
+        $sql_newsletters = "CREATE TABLE {$tabla_newsletters} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             asunto varchar(255) NOT NULL,
@@ -410,7 +410,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Suscripciones a newsletter ───
         $tabla_suscripciones = $prefix . 'newsletter_subscribers';
-        $sql_suscripciones = "CREATE TABLE IF NOT EXISTS {$tabla_suscripciones} (
+        $sql_suscripciones = "CREATE TABLE {$tabla_suscripciones} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             email varchar(255) NOT NULL,
@@ -427,7 +427,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Matches entre necesidades y excedentes ───
         $tabla_matches = $prefix . 'matches';
-        $sql_matches = "CREATE TABLE IF NOT EXISTS {$tabla_matches} (
+        $sql_matches = "CREATE TABLE {$tabla_matches} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             necesidad_id bigint(20) unsigned NOT NULL,
             excedente_id bigint(20) unsigned NOT NULL,
@@ -450,7 +450,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Preguntas a la red ───
         $tabla_preguntas = $prefix . 'questions';
-        $sql_preguntas = "CREATE TABLE IF NOT EXISTS {$tabla_preguntas} (
+        $sql_preguntas = "CREATE TABLE {$tabla_preguntas} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nodo_id bigint(20) unsigned NOT NULL,
             titulo varchar(255) NOT NULL,
@@ -476,7 +476,7 @@ class Flavor_Network_Installer {
 
         // ─── Tabla: Respuestas a preguntas de la red ───
         $tabla_respuestas = $prefix . 'answers';
-        $sql_respuestas = "CREATE TABLE IF NOT EXISTS {$tabla_respuestas} (
+        $sql_respuestas = "CREATE TABLE {$tabla_respuestas} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             pregunta_id bigint(20) unsigned NOT NULL,
             nodo_id bigint(20) unsigned NOT NULL,

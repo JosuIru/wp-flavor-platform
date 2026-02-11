@@ -50,8 +50,8 @@ class Flavor_Order_Admin {
         // Página principal de pedidos
         add_submenu_page(
             'flavor-platform',
-            'Pedidos del Restaurante',
-            'Pedidos',
+            __('Pedidos del Restaurante', 'flavor-restaurant-ordering'),
+            __('Pedidos', 'flavor-restaurant-ordering'),
             'manage_options',
             'flavor-restaurant-orders',
             [$this, 'render_orders_page']
@@ -60,8 +60,8 @@ class Flavor_Order_Admin {
         // Página de mesas
         add_submenu_page(
             'flavor-platform',
-            'Mesas del Restaurante',
-            'Mesas',
+            __('Mesas del Restaurante', 'flavor-restaurant-ordering'),
+            __('Mesas', 'flavor-restaurant-ordering'),
             'manage_options',
             'flavor-restaurant-tables',
             [$this, 'render_tables_page']
@@ -102,6 +102,55 @@ class Flavor_Order_Admin {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_restaurant_admin'),
             'current_page' => $hook,
+            'strings' => [
+                'loading_orders' => __('Cargando pedidos...', 'flavor-restaurant-ordering'),
+                'error_load_orders' => __('Error al cargar pedidos', 'flavor-restaurant-ordering'),
+                'loading_details' => __('Cargando detalles...', 'flavor-restaurant-ordering'),
+                'error_load_details' => __('Error al cargar detalles del pedido', 'flavor-restaurant-ordering'),
+                'status_label' => __('Estado', 'flavor-restaurant-ordering'),
+                'change_status' => __('Cambiar Estado', 'flavor-restaurant-ordering'),
+                'customer_info' => __('Información del Cliente', 'flavor-restaurant-ordering'),
+                'name_label' => __('Nombre', 'flavor-restaurant-ordering'),
+                'phone_label' => __('Teléfono', 'flavor-restaurant-ordering'),
+                'email_label' => __('Email', 'flavor-restaurant-ordering'),
+                'table_label' => __('Mesa', 'flavor-restaurant-ordering'),
+                'no_table' => __('Sin mesa', 'flavor-restaurant-ordering'),
+                'items_label' => __('Items del Pedido', 'flavor-restaurant-ordering'),
+                'item_label' => __('Item', 'flavor-restaurant-ordering'),
+                'item_singular' => __('item', 'flavor-restaurant-ordering'),
+                'item_plural' => __('items', 'flavor-restaurant-ordering'),
+                'quantity_label' => __('Cantidad', 'flavor-restaurant-ordering'),
+                'price_label' => __('Precio', 'flavor-restaurant-ordering'),
+                'subtotal_label' => __('Subtotal', 'flavor-restaurant-ordering'),
+                'tax_label' => __('IVA', 'flavor-restaurant-ordering'),
+                'total_label' => __('Total', 'flavor-restaurant-ordering'),
+                'notes_label' => __('Notas', 'flavor-restaurant-ordering'),
+                'new_status_prompt' => __('Nuevo estado (pending, preparing, ready, served, completed, cancelled):', 'flavor-restaurant-ordering'),
+                'notes_optional_prompt' => __('Notas opcionales:', 'flavor-restaurant-ordering'),
+                'status_updated' => __('Estado actualizado correctamente', 'flavor-restaurant-ordering'),
+                'error_update_status' => __('Error al actualizar el estado', 'flavor-restaurant-ordering'),
+                'error_prefix' => __('Error', 'flavor-restaurant-ordering'),
+                'loading_tables' => __('Cargando mesas...', 'flavor-restaurant-ordering'),
+                'error_load_tables' => __('Error al cargar mesas', 'flavor-restaurant-ordering'),
+                'number_label' => __('Número', 'flavor-restaurant-ordering'),
+                'capacity_label' => __('Capacidad', 'flavor-restaurant-ordering'),
+                'people_label' => __('personas', 'flavor-restaurant-ordering'),
+                'location_label' => __('Ubicación', 'flavor-restaurant-ordering'),
+                'edit_table' => __('Editar', 'flavor-restaurant-ordering'),
+                'delete_table' => __('Eliminar', 'flavor-restaurant-ordering'),
+                'edit_table_title' => __('Editar Mesa', 'flavor-restaurant-ordering'),
+                'new_table_title' => __('Nueva Mesa', 'flavor-restaurant-ordering'),
+                'error_save_table' => __('Error al guardar la mesa', 'flavor-restaurant-ordering'),
+                'error_delete_table' => __('Error al eliminar la mesa', 'flavor-restaurant-ordering'),
+                'confirm_delete_table' => __('¿Estás seguro de eliminar esta mesa?', 'flavor-restaurant-ordering'),
+                'now' => __('Ahora mismo', 'flavor-restaurant-ordering'),
+                'minute_ago' => __('Hace 1 minuto', 'flavor-restaurant-ordering'),
+                'minutes_ago' => __('Hace %d minutos', 'flavor-restaurant-ordering'),
+                'hour_ago' => __('Hace 1 hora', 'flavor-restaurant-ordering'),
+                'hours_ago' => __('Hace %d horas', 'flavor-restaurant-ordering'),
+                'yesterday' => __('Ayer', 'flavor-restaurant-ordering'),
+                'days_ago' => __('Hace %d días', 'flavor-restaurant-ordering'),
+            ],
         ]);
     }
 
@@ -116,14 +165,14 @@ class Flavor_Order_Admin {
         <div class="wrap flavor-restaurant-orders">
             <h1>
                 <span class="dashicons dashicons-clipboard"></span>
-                Gestión de Pedidos
+                <?php esc_html_e('Gestión de Pedidos', 'flavor-restaurant-ordering'); ?>
             </h1>
 
             <div class="flavor-restaurant-toolbar">
                 <div class="filter-group">
-                    <label>Estado:</label>
+                    <label><?php esc_html_e('Estado:', 'flavor-restaurant-ordering'); ?></label>
                     <select id="filter-status" class="status-filter">
-                        <option value="">Todos</option>
+                        <option value=""><?php esc_html_e('Todos', 'flavor-restaurant-ordering'); ?></option>
                         <?php foreach ($statuses as $status => $label): ?>
                         <option value="<?php echo esc_attr($status); ?>"><?php echo esc_html($label); ?></option>
                         <?php endforeach; ?>
@@ -131,31 +180,31 @@ class Flavor_Order_Admin {
                 </div>
 
                 <div class="filter-group">
-                    <label>Mesa:</label>
+                    <label><?php esc_html_e('Mesa:', 'flavor-restaurant-ordering'); ?></label>
                     <select id="filter-table" class="table-filter">
-                        <option value="">Todas las mesas</option>
+                        <option value=""><?php esc_html_e('Todas las mesas', 'flavor-restaurant-ordering'); ?></option>
                     </select>
                 </div>
 
                 <div class="filter-group">
-                    <label>Fecha:</label>
+                    <label><?php esc_html_e('Fecha:', 'flavor-restaurant-ordering'); ?></label>
                     <select id="filter-date" class="date-filter">
-                        <option value="today">Hoy</option>
-                        <option value="yesterday">Ayer</option>
-                        <option value="week">Última semana</option>
-                        <option value="month">Último mes</option>
-                        <option value="">Todos</option>
+                        <option value="today"><?php esc_html_e('Hoy', 'flavor-restaurant-ordering'); ?></option>
+                        <option value="yesterday"><?php esc_html_e('Ayer', 'flavor-restaurant-ordering'); ?></option>
+                        <option value="week"><?php esc_html_e('Última semana', 'flavor-restaurant-ordering'); ?></option>
+                        <option value="month"><?php esc_html_e('Último mes', 'flavor-restaurant-ordering'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', 'flavor-restaurant-ordering'); ?></option>
                     </select>
                 </div>
 
                 <button type="button" id="refresh-orders" class="button">
                     <span class="dashicons dashicons-update"></span>
-                    Actualizar
+                    <?php esc_html_e('Actualizar', 'flavor-restaurant-ordering'); ?>
                 </button>
 
                 <button type="button" id="show-statistics" class="button">
                     <span class="dashicons dashicons-chart-bar"></span>
-                    Estadísticas
+                    <?php esc_html_e('Estadísticas', 'flavor-restaurant-ordering'); ?>
                 </button>
             </div>
 
@@ -164,7 +213,7 @@ class Flavor_Order_Admin {
                 <div class="stat-card pending">
                     <span class="stat-icon dashicons dashicons-clock"></span>
                     <div class="stat-content">
-                        <div class="stat-label">Pendientes</div>
+                        <div class="stat-label"><?php esc_html_e('Pendientes', 'flavor-restaurant-ordering'); ?></div>
                         <div class="stat-value" id="stat-pending">-</div>
                     </div>
                 </div>
@@ -172,7 +221,7 @@ class Flavor_Order_Admin {
                 <div class="stat-card preparing">
                     <span class="stat-icon dashicons dashicons-carrot"></span>
                     <div class="stat-content">
-                        <div class="stat-label">En preparación</div>
+                        <div class="stat-label"><?php esc_html_e('En preparación', 'flavor-restaurant-ordering'); ?></div>
                         <div class="stat-value" id="stat-preparing">-</div>
                     </div>
                 </div>
@@ -180,7 +229,7 @@ class Flavor_Order_Admin {
                 <div class="stat-card ready">
                     <span class="stat-icon dashicons dashicons-yes"></span>
                     <div class="stat-content">
-                        <div class="stat-label">Listos</div>
+                        <div class="stat-label"><?php esc_html_e('Listos', 'flavor-restaurant-ordering'); ?></div>
                         <div class="stat-value" id="stat-ready">-</div>
                     </div>
                 </div>
@@ -188,7 +237,7 @@ class Flavor_Order_Admin {
                 <div class="stat-card revenue">
                     <span class="stat-icon dashicons dashicons-money-alt"></span>
                     <div class="stat-content">
-                        <div class="stat-label">Ingresos hoy</div>
+                        <div class="stat-label"><?php esc_html_e('Ingresos hoy', 'flavor-restaurant-ordering'); ?></div>
                         <div class="stat-value" id="stat-revenue">-</div>
                     </div>
                 </div>
@@ -199,13 +248,13 @@ class Flavor_Order_Admin {
                 <div id="orders-list" class="orders-grid">
                     <div class="loading-indicator">
                         <span class="spinner is-active"></span>
-                        Cargando pedidos...
+                        <?php esc_html_e('Cargando pedidos...', 'flavor-restaurant-ordering'); ?>
                     </div>
                 </div>
 
                 <div id="no-orders" class="no-results" style="display: none;">
                     <span class="dashicons dashicons-clipboard"></span>
-                    <p>No hay pedidos que coincidan con los filtros seleccionados.</p>
+                    <p><?php esc_html_e('No hay pedidos que coincidan con los filtros seleccionados.', 'flavor-restaurant-ordering'); ?></p>
                 </div>
             </div>
         </div>
@@ -214,7 +263,7 @@ class Flavor_Order_Admin {
         <div id="order-details-modal" class="flavor-modal" style="display: none;">
             <div class="flavor-modal-content">
                 <div class="flavor-modal-header">
-                    <h2 id="modal-order-title">Pedido #</h2>
+                    <h2 id="modal-order-title"><?php esc_html_e('Pedido #', 'flavor-restaurant-ordering'); ?></h2>
                     <button type="button" class="flavor-modal-close">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
@@ -223,12 +272,12 @@ class Flavor_Order_Admin {
                 <div class="flavor-modal-body" id="order-details-content">
                     <div class="loading-indicator">
                         <span class="spinner is-active"></span>
-                        Cargando detalles...
+                        <?php esc_html_e('Cargando detalles...', 'flavor-restaurant-ordering'); ?>
                     </div>
                 </div>
 
                 <div class="flavor-modal-footer">
-                    <button type="button" class="button button-secondary flavor-modal-close">Cerrar</button>
+                    <button type="button" class="button button-secondary flavor-modal-close"><?php esc_html_e('Cerrar', 'flavor-restaurant-ordering'); ?></button>
                 </div>
             </div>
         </div>
@@ -237,7 +286,7 @@ class Flavor_Order_Admin {
         <div id="statistics-modal" class="flavor-modal" style="display: none;">
             <div class="flavor-modal-content">
                 <div class="flavor-modal-header">
-                    <h2>Estadísticas del Restaurante</h2>
+                    <h2><?php esc_html_e('Estadísticas del Restaurante', 'flavor-restaurant-ordering'); ?></h2>
                     <button type="button" class="flavor-modal-close">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
@@ -246,12 +295,12 @@ class Flavor_Order_Admin {
                 <div class="flavor-modal-body" id="statistics-content">
                     <div class="loading-indicator">
                         <span class="spinner is-active"></span>
-                        Cargando estadísticas...
+                        <?php esc_html_e('Cargando estadísticas...', 'flavor-restaurant-ordering'); ?>
                     </div>
                 </div>
 
                 <div class="flavor-modal-footer">
-                    <button type="button" class="button button-secondary flavor-modal-close">Cerrar</button>
+                    <button type="button" class="button button-secondary flavor-modal-close"><?php esc_html_e('Cerrar', 'flavor-restaurant-ordering'); ?></button>
                 </div>
             </div>
         </div>
@@ -266,18 +315,18 @@ class Flavor_Order_Admin {
         <div class="wrap flavor-restaurant-tables">
             <h1>
                 <span class="dashicons dashicons-layout"></span>
-                Gestión de Mesas
+                <?php esc_html_e('Gestión de Mesas', 'flavor-restaurant-ordering'); ?>
             </h1>
 
             <div class="flavor-restaurant-toolbar">
                 <button type="button" id="add-table" class="button button-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    Agregar Mesa
+                    <?php esc_html_e('Agregar Mesa', 'flavor-restaurant-ordering'); ?>
                 </button>
 
                 <button type="button" id="refresh-tables" class="button">
                     <span class="dashicons dashicons-update"></span>
-                    Actualizar
+                    <?php esc_html_e('Actualizar', 'flavor-restaurant-ordering'); ?>
                 </button>
             </div>
 
@@ -286,7 +335,7 @@ class Flavor_Order_Admin {
                 <div class="stat-card available">
                     <span class="stat-icon dashicons dashicons-yes-alt"></span>
                     <div class="stat-content">
-                        <div class="stat-label">Disponibles</div>
+                        <div class="stat-label"><?php esc_html_e('Disponibles', 'flavor-restaurant-ordering'); ?></div>
                         <div class="stat-value" id="stat-tables-available">-</div>
                     </div>
                 </div>
@@ -294,7 +343,7 @@ class Flavor_Order_Admin {
                 <div class="stat-card occupied">
                     <span class="stat-icon dashicons dashicons-admin-users"></span>
                     <div class="stat-content">
-                        <div class="stat-label">Ocupadas</div>
+                        <div class="stat-label"><?php esc_html_e('Ocupadas', 'flavor-restaurant-ordering'); ?></div>
                         <div class="stat-value" id="stat-tables-occupied">-</div>
                     </div>
                 </div>
@@ -302,7 +351,7 @@ class Flavor_Order_Admin {
                 <div class="stat-card reserved">
                     <span class="stat-icon dashicons dashicons-calendar-alt"></span>
                     <div class="stat-content">
-                        <div class="stat-label">Reservadas</div>
+                        <div class="stat-label"><?php esc_html_e('Reservadas', 'flavor-restaurant-ordering'); ?></div>
                         <div class="stat-value" id="stat-tables-reserved">-</div>
                     </div>
                 </div>
@@ -310,7 +359,7 @@ class Flavor_Order_Admin {
                 <div class="stat-card total">
                     <span class="stat-icon dashicons dashicons-layout"></span>
                     <div class="stat-content">
-                        <div class="stat-label">Total</div>
+                        <div class="stat-label"><?php esc_html_e('Total', 'flavor-restaurant-ordering'); ?></div>
                         <div class="stat-value" id="stat-tables-total">-</div>
                     </div>
                 </div>
@@ -321,16 +370,16 @@ class Flavor_Order_Admin {
                 <div id="tables-list" class="tables-grid">
                     <div class="loading-indicator">
                         <span class="spinner is-active"></span>
-                        Cargando mesas...
+                        <?php esc_html_e('Cargando mesas...', 'flavor-restaurant-ordering'); ?>
                     </div>
                 </div>
 
                 <div id="no-tables" class="no-results" style="display: none;">
                     <span class="dashicons dashicons-layout"></span>
-                    <p>No hay mesas creadas. ¡Crea tu primera mesa!</p>
+                    <p><?php esc_html_e('No hay mesas creadas. ¡Crea tu primera mesa!', 'flavor-restaurant-ordering'); ?></p>
                     <button type="button" class="button button-primary" id="add-first-table">
                         <span class="dashicons dashicons-plus-alt"></span>
-                        Crear Primera Mesa
+                        <?php esc_html_e('Crear Primera Mesa', 'flavor-restaurant-ordering'); ?>
                     </button>
                 </div>
             </div>
@@ -340,7 +389,7 @@ class Flavor_Order_Admin {
         <div id="table-form-modal" class="flavor-modal" style="display: none;">
             <div class="flavor-modal-content">
                 <div class="flavor-modal-header">
-                    <h2 id="modal-table-title">Nueva Mesa</h2>
+                    <h2 id="modal-table-title"><?php esc_html_e('Nueva Mesa', 'flavor-restaurant-ordering'); ?></h2>
                     <button type="button" class="flavor-modal-close">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
@@ -353,7 +402,7 @@ class Flavor_Order_Admin {
                         <table class="form-table">
                             <tr>
                                 <th scope="row">
-                                    <label for="table-number">Número de Mesa *</label>
+                                    <label for="table-number"><?php esc_html_e('Número de Mesa *', 'flavor-restaurant-ordering'); ?></label>
                                 </th>
                                 <td>
                                     <input type="text"
@@ -366,20 +415,20 @@ class Flavor_Order_Admin {
 
                             <tr>
                                 <th scope="row">
-                                    <label for="table-name">Nombre</label>
+                                    <label for="table-name"><?php esc_html_e('Nombre', 'flavor-restaurant-ordering'); ?></label>
                                 </th>
                                 <td>
                                     <input type="text"
                                            id="table-name"
                                            name="table_name"
                                            class="regular-text">
-                                    <p class="description">Opcional: un nombre descriptivo</p>
+                                    <p class="description"><?php esc_html_e('Opcional: un nombre descriptivo', 'flavor-restaurant-ordering'); ?></p>
                                 </td>
                             </tr>
 
                             <tr>
                                 <th scope="row">
-                                    <label for="table-capacity">Capacidad</label>
+                                    <label for="table-capacity"><?php esc_html_e('Capacidad', 'flavor-restaurant-ordering'); ?></label>
                                 </th>
                                 <td>
                                     <input type="number"
@@ -389,26 +438,26 @@ class Flavor_Order_Admin {
                                            max="20"
                                            value="4"
                                            class="small-text">
-                                    <p class="description">Número de comensales</p>
+                                    <p class="description"><?php esc_html_e('Número de comensales', 'flavor-restaurant-ordering'); ?></p>
                                 </td>
                             </tr>
 
                             <tr>
                                 <th scope="row">
-                                    <label for="table-location">Ubicación</label>
+                                    <label for="table-location"><?php esc_html_e('Ubicación', 'flavor-restaurant-ordering'); ?></label>
                                 </th>
                                 <td>
                                     <input type="text"
                                            id="table-location"
                                            name="location"
                                            class="regular-text"
-                                           placeholder="Ej: Terraza, Salón Principal">
+                                           placeholder="<?php esc_attr_e('Ej: Terraza, Salón Principal', 'flavor-restaurant-ordering'); ?>">
                                 </td>
                             </tr>
 
                             <tr>
                                 <th scope="row">
-                                    <label for="table-notes">Notas</label>
+                                    <label for="table-notes"><?php esc_html_e('Notas', 'flavor-restaurant-ordering'); ?></label>
                                 </th>
                                 <td>
                                     <textarea id="table-notes"
@@ -422,8 +471,8 @@ class Flavor_Order_Admin {
                 </div>
 
                 <div class="flavor-modal-footer">
-                    <button type="button" class="button button-secondary flavor-modal-close">Cancelar</button>
-                    <button type="button" id="save-table" class="button button-primary">Guardar Mesa</button>
+                    <button type="button" class="button button-secondary flavor-modal-close"><?php esc_html_e('Cancelar', 'flavor-restaurant-ordering'); ?></button>
+                    <button type="button" id="save-table" class="button button-primary"><?php esc_html_e('Guardar Mesa', 'flavor-restaurant-ordering'); ?></button>
                 </div>
             </div>
         </div>
@@ -437,7 +486,7 @@ class Flavor_Order_Admin {
         check_ajax_referer('flavor_restaurant_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $args = [
@@ -485,7 +534,7 @@ class Flavor_Order_Admin {
         check_ajax_referer('flavor_restaurant_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $order_id = absint($_POST['order_id']);
@@ -500,7 +549,7 @@ class Flavor_Order_Admin {
         }
 
         wp_send_json_success([
-            'message' => 'Estado actualizado correctamente',
+            'message' => __('Estado actualizado correctamente', 'flavor-restaurant-ordering'),
             'order' => $result,
         ]);
     }
@@ -512,7 +561,7 @@ class Flavor_Order_Admin {
         check_ajax_referer('flavor_restaurant_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $order_id = absint($_POST['order_id']);
@@ -521,7 +570,7 @@ class Flavor_Order_Admin {
         $order = $order_manager->get_order($order_id);
 
         if (!$order) {
-            wp_send_json_error(['message' => 'Pedido no encontrado']);
+            wp_send_json_error(['message' => __('Pedido no encontrado', 'flavor-restaurant-ordering')]);
         }
 
         // Obtener historial
@@ -540,7 +589,7 @@ class Flavor_Order_Admin {
         check_ajax_referer('flavor_restaurant_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $table_manager = Flavor_Table_Manager::get_instance();
@@ -560,7 +609,7 @@ class Flavor_Order_Admin {
         check_ajax_referer('flavor_restaurant_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $data = [
@@ -579,7 +628,7 @@ class Flavor_Order_Admin {
         }
 
         wp_send_json_success([
-            'message' => 'Mesa creada exitosamente',
+            'message' => __('Mesa creada exitosamente', 'flavor-restaurant-ordering'),
             'table' => $result,
         ]);
     }
@@ -591,7 +640,7 @@ class Flavor_Order_Admin {
         check_ajax_referer('flavor_restaurant_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $table_id = absint($_POST['table_id']);
@@ -612,7 +661,7 @@ class Flavor_Order_Admin {
         }
 
         wp_send_json_success([
-            'message' => 'Mesa actualizada exitosamente',
+            'message' => __('Mesa actualizada exitosamente', 'flavor-restaurant-ordering'),
             'table' => $result,
         ]);
     }
@@ -624,7 +673,7 @@ class Flavor_Order_Admin {
         check_ajax_referer('flavor_restaurant_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $table_id = absint($_POST['table_id']);
@@ -636,6 +685,6 @@ class Flavor_Order_Admin {
             wp_send_json_error(['message' => $result->get_error_message()]);
         }
 
-        wp_send_json_success(['message' => 'Mesa eliminada exitosamente']);
+        wp_send_json_success(['message' => __('Mesa eliminada exitosamente', 'flavor-restaurant-ordering')]);
     }
 }

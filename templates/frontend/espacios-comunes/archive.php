@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header -->
     <div class="bg-gradient-to-r from-rose-500 to-pink-600 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Espacios Comunes</h1>
-            <p class="text-white/90 text-lg">Reserva espacios para tus actividades y eventos</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Espacios Comunes', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Reserva espacios para tus actividades y eventos', 'flavor-chat-ia'); ?></p>
             <div class="mt-4 flex items-center gap-4 text-white/80 text-sm">
                 <span><?php echo esc_html($total_espacios); ?> espacios disponibles</span>
             </div>
@@ -37,14 +37,14 @@ $por_pagina = $por_pagina ?? 12;
                 <!-- Ordenacion -->
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-gray-600">
-                        Mostrando <span class="font-semibold"><?php echo count($espacios); ?></span> de <?php echo esc_html($total_espacios); ?> espacios
+                        <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($espacios); ?></span> de <?php echo esc_html($total_espacios); ?> espacios
                     </p>
                     <select class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
-                        <option>Mas relevantes</option>
-                        <option>Precio: menor a mayor</option>
-                        <option>Precio: mayor a menor</option>
-                        <option>Capacidad: mayor a menor</option>
-                        <option>Mas reservados</option>
+                        <option><?php echo esc_html__('Mas relevantes', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Precio: menor a mayor', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Precio: mayor a menor', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Capacidad: mayor a menor', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mas reservados', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -53,8 +53,8 @@ $por_pagina = $por_pagina ?? 12;
                         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                         </svg>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay espacios disponibles</h3>
-                        <p class="text-gray-500">Prueba a modificar los filtros de busqueda</p>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay espacios disponibles', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-gray-500"><?php echo esc_html__('Prueba a modificar los filtros de busqueda', 'flavor-chat-ia'); ?></p>
                     </div>
                 <?php else: ?>
                     <!-- Grid de espacios -->
@@ -69,9 +69,9 @@ $por_pagina = $por_pagina ?? 12;
 
                                     <!-- Badge disponibilidad -->
                                     <?php if (!empty($espacio['disponible'])): ?>
-                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-green-500 text-white">Disponible</span>
+                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-green-500 text-white"><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></span>
                                     <?php else: ?>
-                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-red-500 text-white">Ocupado</span>
+                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-red-500 text-white"><?php echo esc_html__('Ocupado', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
 
                                     <!-- Capacidad -->
@@ -118,7 +118,7 @@ $por_pagina = $por_pagina ?? 12;
                                     <a href="<?php echo esc_url($espacio['url'] ?? '#'); ?>"
                                        class="block w-full py-2.5 rounded-xl text-center font-semibold text-white transition-all hover:scale-105"
                                        style="background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);">
-                                        Ver Disponibilidad
+                                        <?php echo esc_html__('Ver Disponibilidad', 'flavor-chat-ia'); ?>
                                     </a>
                                 </div>
                             </article>

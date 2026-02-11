@@ -39,7 +39,7 @@ $testimonios = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                 </svg>
-                Se Instructor
+                <?php echo esc_html__('Se Instructor', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-6"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-white/90"><?php echo esc_html($subtitulo); ?></p>
@@ -82,7 +82,7 @@ $testimonios = [
                         </div>
                         <div class="ml-auto text-center">
                             <div class="text-2xl font-bold text-cyan-600"><?php echo esc_html($test['cursos']); ?></div>
-                            <div class="text-xs text-gray-500">cursos</div>
+                            <div class="text-xs text-gray-500"><?php echo esc_html__('cursos', 'flavor-chat-ia'); ?></div>
                         </div>
                     </div>
                     <p class="text-gray-600 italic">"<?php echo esc_html($test['texto']); ?>"</p>
@@ -92,20 +92,20 @@ $testimonios = [
 
         <!-- CTA Final -->
         <div class="text-center bg-white/15 backdrop-blur-sm rounded-2xl p-8">
-            <h3 class="text-2xl font-bold text-white mb-4">Listo para Empezar?</h3>
-            <p class="text-white/90 mb-6">El proceso es sencillo. Registrate, crea tu perfil y comienza a ensear.</p>
+            <h3 class="text-2xl font-bold text-white mb-4"><?php echo esc_html__('Listo para Empezar?', 'flavor-chat-ia'); ?></h3>
+            <p class="text-white/90 mb-6"><?php echo esc_html__('El proceso es sencillo. Registrate, crea tu perfil y comienza a ensear.', 'flavor-chat-ia'); ?></p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="#registro-instructor" class="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl bg-white text-cyan-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                     </svg>
-                    <span>Quiero Ser Instructor</span>
+                    <span><?php echo esc_html__('Quiero Ser Instructor', 'flavor-chat-ia'); ?></span>
                 </a>
                 <a href="#como-funciona" class="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:bg-white/20" style="background: transparent; color: white; border: 2px solid rgba(255,255,255,0.5);">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span>Como Funciona</span>
+                    <span><?php echo esc_html__('Como Funciona', 'flavor-chat-ia'); ?></span>
                 </a>
             </div>
         </div>

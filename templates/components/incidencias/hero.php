@@ -26,18 +26,18 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
 
             <div class="grid grid-cols-2 gap-4 mb-8 max-w-2xl mx-auto">
                 <div class="flavor-card text-center">
-                    <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);">2.5h</div>
-                    <div class="text-sm" style="color: var(--flavor-text-muted);">Tiempo Respuesta</div>
+                    <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);"><?php echo esc_html__('2.5h', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Tiempo Respuesta', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="flavor-card text-center">
                     <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);">92%</div>
-                    <div class="text-sm" style="color: var(--flavor-text-muted);">Resueltas</div>
+                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Resueltas', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#nueva-incidencia" class="flavor-button flavor-button-primary px-8">Reportar Incidencia</a>
-                <a href="#mis-incidencias" class="flavor-button px-8">Mis Reportes</a>
+                <a href="#nueva-incidencia" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Reportar Incidencia', 'flavor-chat-ia'); ?></a>
+                <a href="#mis-incidencias" class="flavor-button px-8"><?php echo esc_html__('Mis Reportes', 'flavor-chat-ia'); ?></a>
             </div>
         </div>
     </div>

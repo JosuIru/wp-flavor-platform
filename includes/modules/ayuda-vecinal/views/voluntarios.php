@@ -22,20 +22,20 @@ if (!defined('ABSPATH')) exit;
             <label><?php _e('Disponibilidad:', 'flavor-chat-ia'); ?></label>
             <select id="filtro-disponibilidad" class="flavor-select">
                 <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="disponible"><?php _e('Disponible', 'flavor-chat-ia'); ?></option>
-                <option value="ocupado"><?php _e('Ocupado', 'flavor-chat-ia'); ?></option>
-                <option value="inactivo"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('disponible', 'flavor-chat-ia'); ?>"><?php _e('Disponible', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('ocupado', 'flavor-chat-ia'); ?>"><?php _e('Ocupado', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
             </select>
         </div>
         <div class="flavor-filter-group">
             <label><?php _e('Categoría:', 'flavor-chat-ia'); ?></label>
             <select id="filtro-categoria-vol" class="flavor-select">
                 <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                <option value="compras"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
-                <option value="transporte"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
-                <option value="companía"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
-                <option value="tramites"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
-                <option value="tecnologia"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('companía', 'flavor-chat-ia'); ?>"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('tramites', 'flavor-chat-ia'); ?>"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('tecnologia', 'flavor-chat-ia'); ?>"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
             </select>
         </div>
     </div>
@@ -65,12 +65,12 @@ if (!defined('ABSPATH')) exit;
                 <div class="flavor-form-group">
                     <label><?php _e('Categorías de ayuda', 'flavor-chat-ia'); ?> *</label>
                     <div class="flavor-checkboxes-grid">
-                        <label><input type="checkbox" name="categorias[]" value="compras"> <?php _e('Compras', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="transporte"> <?php _e('Transporte', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="companía"> <?php _e('Compañía', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="tramites"> <?php _e('Trámites', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="tecnologia"> <?php _e('Tecnología', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="otro"> <?php _e('Otro', 'flavor-chat-ia'); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"> <?php _e('Compras', 'flavor-chat-ia'); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"> <?php _e('Transporte', 'flavor-chat-ia'); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('companía', 'flavor-chat-ia'); ?>"> <?php _e('Compañía', 'flavor-chat-ia'); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('tramites', 'flavor-chat-ia'); ?>"> <?php _e('Trámites', 'flavor-chat-ia'); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('tecnologia', 'flavor-chat-ia'); ?>"> <?php _e('Tecnología', 'flavor-chat-ia'); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"> <?php _e('Otro', 'flavor-chat-ia'); ?></label>
                     </div>
                 </div>
                 <div class="flavor-form-group">
@@ -96,9 +96,9 @@ if (!defined('ABSPATH')) exit;
                 <div class="flavor-form-group">
                     <label for="voluntario-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
                     <select id="voluntario-estado" name="estado" class="widefat">
-                        <option value="disponible"><?php _e('Disponible', 'flavor-chat-ia'); ?></option>
-                        <option value="ocupado"><?php _e('Ocupado', 'flavor-chat-ia'); ?></option>
-                        <option value="inactivo"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('disponible', 'flavor-chat-ia'); ?>"><?php _e('Disponible', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('ocupado', 'flavor-chat-ia'); ?>"><?php _e('Ocupado', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
             </form>
@@ -253,7 +253,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
                     response.data.forEach(usuario => {
-                        options += `<option value="${usuario.id}">${usuario.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${usuario.id}', 'flavor-chat-ia'); ?>">${usuario.nombre}</option>`;
                     });
                     $('#voluntario-usuario').html(options);
                 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
 import '../../core/widgets/chat_widgets.dart';
@@ -12,6 +13,7 @@ class AdminChatScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminChatScreenState extends ConsumerState<AdminChatScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _scrollController = ScrollController();
 
   @override
@@ -32,6 +34,7 @@ class _AdminChatScreenState extends ConsumerState<AdminChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final chatState = ref.watch(adminChatProvider);
 
     // Scroll automático con nuevos mensajes
@@ -45,7 +48,7 @@ class _AdminChatScreenState extends ConsumerState<AdminChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat IA Admin'),
+        title: Text(i18n.chatIaAdminAffb65),
         actions: [
           if (chatState.messages.isNotEmpty)
             IconButton(
@@ -53,19 +56,19 @@ class _AdminChatScreenState extends ConsumerState<AdminChatScreen> {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text('Limpiar chat'),
-                    content: const Text('¿Seguro que quieres borrar el historial?'),
+                    title: Text(i18n.limpiarChatE7dfdf),
+                    content: Text(i18n.seguroQueQuieresBorrarElHistorialFdb76f),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancelar'),
+                        child: Text(i18n.commonCancel),
                       ),
                       FilledButton(
                         onPressed: () {
                           Navigator.pop(context);
                           ref.read(adminChatProvider.notifier).clearChat();
                         },
-                        child: const Text('Borrar'),
+                        child: Text(i18n.borrarA96f30),
                       ),
                     ],
                   ),
@@ -99,7 +102,7 @@ class _AdminChatScreenState extends ConsumerState<AdminChatScreen> {
               ref.read(adminChatProvider.notifier).sendMessage(message);
             },
             enabled: !chatState.isLoading,
-            hintText: 'Pregunta sobre reservas, clientes, estadísticas...',
+            hintText: i18n.preguntaSobreReservasClientesEstadSD68421,
           ),
         ],
       ),
@@ -115,41 +118,42 @@ class _AdminSuggestions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final suggestions = [
       (
-        category: 'Reservas',
+        category: i18n.adminChatCategoryReservations,
         icon: Icons.calendar_today,
         items: [
-          '¿Cuántas reservas hay para hoy?',
-          'Resumen de reservas de esta semana',
-          'Lista de reservas pendientes',
+          i18n.adminChatSuggestionReservationsToday,
+          i18n.adminChatSuggestionReservationsWeek,
+          i18n.adminChatSuggestionReservationsPending,
         ]
       ),
       (
-        category: 'Clientes',
+        category: i18n.adminChatCategoryClients,
         icon: Icons.people,
         items: [
-          '¿Cuántos clientes diferentes tenemos?',
-          'Clientes con más reservas',
-          'Buscar cliente por email',
+          i18n.adminChatSuggestionClientsCount,
+          i18n.adminChatSuggestionTopClients,
+          i18n.adminChatSuggestionFindClientByEmail,
         ]
       ),
       (
-        category: 'Estadísticas',
+        category: i18n.adminChatCategoryStats,
         icon: Icons.analytics,
         items: [
-          'Resumen de ingresos del mes',
-          'Tickets más vendidos',
-          'Comparativa con el mes anterior',
+          i18n.adminChatSuggestionMonthlyRevenue,
+          i18n.adminChatSuggestionTopTickets,
+          i18n.adminChatSuggestionMonthComparison,
         ]
       ),
       (
-        category: 'Exportar',
+        category: i18n.adminChatCategoryExport,
         icon: Icons.file_download,
         items: [
-          'Exportar reservas de hoy a CSV',
-          'Lista de clientes en CSV',
-          'Informe de ingresos mensual',
+          i18n.adminChatSuggestionExportTodayCsv,
+          i18n.adminChatSuggestionExportClientsCsv,
+          i18n.adminChatSuggestionExportMonthlyRevenue,
         ]
       ),
     ];
@@ -166,8 +170,7 @@ class _AdminSuggestions extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 8),
-              Text(
-                'Asistente IA para gestión',
+              Text(AppLocalizations.of(context)!.asistenteIaParaGestion,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -176,8 +179,7 @@ class _AdminSuggestions extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Puedo ayudarte con reservas, clientes, estadísticas y más. '
-            'También puedo generar informes CSV.',
+            i18n.adminChatIntro,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                 ),

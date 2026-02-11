@@ -37,7 +37,7 @@ $beneficios_unirse = $beneficios_unirse ?? [
                         <!-- Cabecera grupo -->
                         <div class="flex items-center gap-3 mb-5 pb-4 border-b border-gray-100">
                             <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
-                                GC
+                                <?php echo esc_html__('GC', 'flavor-chat-ia'); ?>
                             </div>
                             <div>
                                 <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Grupo Activo', 'flavor-chat-ia'); ?></p>
@@ -63,9 +63,9 @@ $beneficios_unirse = $beneficios_unirse ?? [
                         <div class="mt-4">
                             <p class="text-xs text-gray-500 mb-2"><?php echo esc_html__('Productores asociados', 'flavor-chat-ia'); ?></p>
                             <div class="flex -space-x-2">
-                                <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">FN</div>
-                                <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">QL</div>
-                                <div class="w-8 h-8 bg-gradient-to-br from-teal-400 to-teal-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">OA</div>
+                                <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('FN', 'flavor-chat-ia'); ?></div>
+                                <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('QL', 'flavor-chat-ia'); ?></div>
+                                <div class="w-8 h-8 bg-gradient-to-br from-teal-400 to-teal-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('OA', 'flavor-chat-ia'); ?></div>
                                 <div class="w-8 h-8 bg-gray-200 rounded-full border-2 border-white flex items-center justify-center text-gray-500 text-xs font-bold">+5</div>
                             </div>
                         </div>

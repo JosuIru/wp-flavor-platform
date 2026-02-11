@@ -72,20 +72,20 @@ if (!defined('ABSPATH')) {
                 <label><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
                 <select id="filtro-estado-reserva" class="flavor-select">
                     <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="pendiente"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                    <option value="confirmada"><?php _e('Confirmada', 'flavor-chat-ia'); ?></option>
-                    <option value="completada"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
-                    <option value="cancelada"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('confirmada', 'flavor-chat-ia'); ?>"><?php _e('Confirmada', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
             <div class="flavor-filter-group">
                 <label><?php _e('Período:', 'flavor-chat-ia'); ?></label>
                 <select id="filtro-periodo" class="flavor-select">
-                    <option value="proximas"><?php _e('Próximas', 'flavor-chat-ia'); ?></option>
-                    <option value="hoy"><?php _e('Hoy', 'flavor-chat-ia'); ?></option>
-                    <option value="semana"><?php _e('Esta semana', 'flavor-chat-ia'); ?></option>
-                    <option value="mes"><?php _e('Este mes', 'flavor-chat-ia'); ?></option>
-                    <option value="todas"><?php _e('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('proximas', 'flavor-chat-ia'); ?>"><?php _e('Próximas', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('hoy', 'flavor-chat-ia'); ?>"><?php _e('Hoy', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('semana', 'flavor-chat-ia'); ?>"><?php _e('Esta semana', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('mes', 'flavor-chat-ia'); ?>"><?php _e('Este mes', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('todas', 'flavor-chat-ia'); ?>"><?php _e('Todas', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
         </div>
@@ -175,10 +175,10 @@ if (!defined('ABSPATH')) {
                 <div class="flavor-form-group">
                     <label for="reserva-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
                     <select id="reserva-estado" name="estado" class="widefat">
-                        <option value="pendiente"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="confirmada"><?php _e('Confirmada', 'flavor-chat-ia'); ?></option>
-                        <option value="completada"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
-                        <option value="cancelada"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('confirmada', 'flavor-chat-ia'); ?>"><?php _e('Confirmada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -587,7 +587,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
                     response.data.forEach(espacio => {
-                        options += `<option value="${espacio.id}">${espacio.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${espacio.id}', 'flavor-chat-ia'); ?>">${espacio.nombre}</option>`;
                     });
                     $('#reserva-espacio, #filtro-espacio, #filtro-espacio-calendario').html(options);
                 }
@@ -604,7 +604,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
                     response.data.forEach(usuario => {
-                        options += `<option value="${usuario.id}">${usuario.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${usuario.id}', 'flavor-chat-ia'); ?>">${usuario.nombre}</option>`;
                     });
                     $('#reserva-usuario').html(options);
                 }
@@ -667,7 +667,7 @@ jQuery(document).ready(function($) {
 
             if (reservas[dateStr]) {
                 reservas[dateStr].forEach(reserva => {
-                    html += `<div class="flavor-calendar-reserva ${reserva.estado}" data-id="${reserva.id}" title="${reserva.espacio} - ${reserva.hora_inicio}">
+                    html += `<div class="flavor-calendar-reserva ${reserva.estado}" data-id="${reserva.id}" title="<?php echo esc_attr__('${reserva.espacio} - ${reserva.hora_inicio}', 'flavor-chat-ia'); ?>">
                         ${reserva.hora_inicio} ${reserva.espacio_corto}
                     </div>`;
                 });

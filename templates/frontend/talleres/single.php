@@ -14,7 +14,7 @@ $talleres_relacionados = $talleres_relacionados ?? [];
 <div class="flavor-frontend flavor-talleres-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/talleres/')); ?>" class="hover:text-violet-600 transition-colors">Talleres</a>
+        <a href="<?php echo esc_url(home_url('/talleres/')); ?>" class="hover:text-violet-600 transition-colors"><?php echo esc_html__('Talleres', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <?php if (!empty($taller['categoria'])): ?>
         <a href="<?php echo esc_url(home_url('/talleres/?cat=' . ($taller['categoria_slug'] ?? ''))); ?>" class="hover:text-violet-600 transition-colors">
@@ -62,19 +62,19 @@ $talleres_relacionados = $talleres_relacionados ?? [];
                 <!-- Info rapida -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-purple-50 rounded-xl">
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Fecha</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($taller['fecha'] ?? ''); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Horario</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Horario', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($taller['horario'] ?? ''); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Duracion</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Duracion', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($taller['duracion'] ?? ''); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Plazas</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Plazas', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($taller['plazas_disponibles'] ?? 0); ?> libres</p>
                     </div>
                 </div>
@@ -86,7 +86,7 @@ $talleres_relacionados = $talleres_relacionados ?? [];
                 <!-- Programa / Contenido -->
                 <?php if (!empty($taller['programa'])): ?>
                 <div class="border-t border-gray-100 pt-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">📋 Programa del taller</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📋 Programa del taller', 'flavor-chat-ia'); ?></h2>
                     <ol class="space-y-3">
                         <?php foreach ($taller['programa'] as $indice_programa => $punto_programa): ?>
                         <li class="flex items-start gap-3">
@@ -104,7 +104,7 @@ $talleres_relacionados = $talleres_relacionados ?? [];
             <!-- Materiales necesarios -->
             <?php if (!empty($taller['materiales'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">🧰 Materiales necesarios</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('🧰 Materiales necesarios', 'flavor-chat-ia'); ?></h2>
                 <ul class="space-y-2">
                     <?php foreach ($taller['materiales'] as $material_necesario): ?>
                     <li class="flex items-center gap-2 text-gray-700">
@@ -115,7 +115,7 @@ $talleres_relacionados = $talleres_relacionados ?? [];
                 </ul>
                 <?php if (!empty($taller['materiales_incluidos'])): ?>
                 <p class="mt-4 text-sm text-green-600 bg-green-50 px-4 py-2 rounded-lg">
-                    ✓ Materiales incluidos en el precio
+                    <?php echo esc_html__('✓ Materiales incluidos en el precio', 'flavor-chat-ia'); ?>
                 </p>
                 <?php endif; ?>
             </div>
@@ -124,7 +124,7 @@ $talleres_relacionados = $talleres_relacionados ?? [];
             <!-- Resenas -->
             <?php if (!empty($resenas_taller)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">⭐ Resenas de alumnos</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('⭐ Resenas de alumnos', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-4">
                     <?php foreach ($resenas_taller as $resena_alumno): ?>
                     <div class="border-b border-gray-100 pb-4 last:border-0">
@@ -159,7 +159,7 @@ $talleres_relacionados = $talleres_relacionados ?? [];
                 </div>
                 <button class="w-full bg-white text-violet-600 py-3 px-4 rounded-xl font-semibold hover:bg-purple-50 transition-colors"
                         onclick="flavorTalleres.inscribirse(<?php echo esc_attr($taller['id'] ?? 0); ?>)">
-                    🎓 Inscribirse al taller
+                    <?php echo esc_html__('🎓 Inscribirse al taller', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
@@ -168,7 +168,7 @@ $talleres_relacionados = $talleres_relacionados ?? [];
                 <div class="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 text-3xl font-bold mx-auto mb-4">
                     <?php echo esc_html(mb_substr($instructor['nombre'] ?? 'I', 0, 1)); ?>
                 </div>
-                <p class="text-xs text-gray-500 mb-1">Instructor</p>
+                <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Instructor', 'flavor-chat-ia'); ?></p>
                 <h3 class="text-lg font-semibold text-gray-800"><?php echo esc_html($instructor['nombre'] ?? 'Instructor'); ?></h3>
 
                 <?php if (!empty($instructor['bio'])): ?>
@@ -178,21 +178,21 @@ $talleres_relacionados = $talleres_relacionados ?? [];
                 <div class="grid grid-cols-3 gap-2 mb-4 text-center">
                     <div>
                         <p class="text-xl font-bold text-purple-600"><?php echo esc_html($instructor['talleres_impartidos'] ?? 0); ?></p>
-                        <p class="text-xs text-gray-500">Talleres</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Talleres', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($instructor['alumnos'] ?? 0); ?></p>
-                        <p class="text-xs text-gray-500">Alumnos</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Alumnos', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div>
                         <p class="text-xl font-bold text-yellow-500">⭐ <?php echo esc_html($instructor['valoracion'] ?? '5.0'); ?></p>
-                        <p class="text-xs text-gray-500">Valoracion</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Valoracion', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
 
                 <?php if (!empty($instructor['verificado'])): ?>
                 <span class="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                    ✓ Instructor verificado
+                    <?php echo esc_html__('✓ Instructor verificado', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -200,7 +200,7 @@ $talleres_relacionados = $talleres_relacionados ?? [];
             <!-- Talleres relacionados -->
             <?php if (!empty($talleres_relacionados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Talleres similares</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Talleres similares', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($talleres_relacionados as $taller_similar): ?>
                     <a href="<?php echo esc_url($taller_similar['url'] ?? '#'); ?>" class="flex gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">

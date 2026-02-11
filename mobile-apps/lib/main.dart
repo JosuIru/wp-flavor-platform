@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/config/app_config.dart';
 import 'main_client.dart' as client;
 import 'main_admin.dart' as admin;
@@ -24,6 +26,13 @@ class AppSelectorApp extends StatelessWidget {
     return MaterialApp(
       title: 'Basabere',
       debugShowCheckedModeBanner: AppConfig.isDebug,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -51,6 +60,7 @@ class AppSelectorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final i18n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -68,7 +78,7 @@ class AppSelectorScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Basabere',
+                i18n.appTitle,
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.primary,
@@ -76,7 +86,7 @@ class AppSelectorScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Experiencias en la naturaleza',
+                i18n.appTagline,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: colorScheme.onSurface.withOpacity(0.7),
                 ),
@@ -87,8 +97,8 @@ class AppSelectorScreen extends StatelessWidget {
               // Botón App Cliente
               _AppOptionCard(
                 icon: Icons.calendar_today,
-                title: 'Reservar Experiencia',
-                subtitle: 'Consulta disponibilidad y reserva tu visita',
+                title: i18n.clientAppTitle,
+                subtitle: i18n.clientAppSubtitle,
                 color: colorScheme.primary,
                 onTap: () => _openClientApp(context),
               ),
@@ -98,8 +108,8 @@ class AppSelectorScreen extends StatelessWidget {
               // Botón App Admin
               _AppOptionCard(
                 icon: Icons.admin_panel_settings,
-                title: 'Administración',
-                subtitle: 'Gestión de reservas y estadísticas',
+                title: i18n.adminAppTitle,
+                subtitle: i18n.adminAppSubtitle,
                 color: colorScheme.secondary,
                 onTap: () => _openAdminApp(context),
               ),
@@ -108,7 +118,7 @@ class AppSelectorScreen extends StatelessWidget {
 
               // Footer
               Text(
-                'v${AppConfig.appVersion}',
+                i18n.appVersionLabel(AppConfig.appVersion),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurface.withOpacity(0.5),
                 ),
@@ -160,6 +170,7 @@ class _AppOptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Card(
       elevation: 2,
       clipBehavior: Clip.antiAlias,

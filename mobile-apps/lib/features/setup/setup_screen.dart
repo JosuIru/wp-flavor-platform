@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../core/config/server_config.dart';
 import '../../core/api/api_client.dart';
@@ -31,6 +32,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   bool _showScanner = false;
   String? _error;
   String? _successMessage;
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
 
   @override
   void dispose() {
@@ -74,7 +76,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
         setState(() {
           _isLoading = false;
-          _successMessage = '¡Conectado correctamente!';
+          _successMessage = i18n.setupConnectedSuccess;
         });
 
         // Esperar un momento para mostrar el mensaje
@@ -84,13 +86,13 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       } else {
         setState(() {
           _isLoading = false;
-          _error = 'No se pudo conectar con el servidor. Verifica la URL.';
+          _error = i18n.setupConnectionFailed;
         });
       }
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _error = 'Error de conexión: ${e.toString()}';
+        _error = i18n.setupConnectionError(e.toString());
       });
     }
   }
@@ -115,14 +117,14 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
         final qrType = config['type'] as String? ?? 'client';
         final token = config['token'] as String?;
-        final siteName = config['name'] ?? 'Sitio configurado';
+        final siteName = config['name'] ?? i18n.setupConfiguredSiteNameDefault;
 
         // Validación para app Admin
         if (widget.isAdminApp) {
           if (qrType != 'admin') {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('⚠️ Este QR es para la app de clientes. Usa el QR de Admin.'),
+              SnackBar(
+                content: Text(i18n.setupQrClientAppWarning),
                 backgroundColor: Colors.orange,
                 duration: Duration(seconds: 4),
               ),
@@ -132,8 +134,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
           if (token == null || token.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('❌ QR de Admin inválido: falta token de seguridad'),
+              SnackBar(
+                content: Text(i18n.setupAdminQrMissingToken),
                 backgroundColor: Colors.red,
               ),
             );
@@ -155,7 +157,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             if (!validateResponse.success) {
               setState(() {
                 _isLoading = false;
-                _error = 'Token de seguridad inválido. Genera un nuevo QR en WordPress.';
+                _error = i18n.setupAdminTokenInvalid;
               });
               return;
             }
@@ -164,7 +166,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           } catch (e) {
             setState(() {
               _isLoading = false;
-              _error = 'Error al validar token: $e';
+              _error = i18n.setupAdminTokenValidateError(e.toString());
             });
             return;
           }
@@ -179,7 +181,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         // Mostrar información adicional si existe
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Configuración detectada: $siteName'),
+            content: Text(i18n.setupConfigDetected(siteName)),
             backgroundColor: Colors.green,
           ),
         );
@@ -193,8 +195,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         // Para admin app, no permitir URL directa sin token
         if (widget.isAdminApp) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('⚠️ La app Admin requiere escanear el QR seguro desde WordPress'),
+            SnackBar(
+              content: Text(i18n.setupAdminRequiresSecureQr),
               backgroundColor: Colors.orange,
               duration: Duration(seconds: 4),
             ),
@@ -204,15 +206,15 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
         _urlController.text = code;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('URL detectada'),
+          SnackBar(
+            content: Text(i18n.setupUrlDetected),
             backgroundColor: Colors.green,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Código QR no válido'),
+          SnackBar(
+            content: Text(i18n.setupInvalidQr),
             backgroundColor: Colors.red,
           ),
         );
@@ -247,7 +249,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
                 // Título
                 Text(
-                  'Configurar servidor',
+                  i18n.setupTitle,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -257,7 +259,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
                 // Subtítulo
                 Text(
-                  'Introduce la URL de tu sitio WordPress o escanea el código QR de configuración',
+                  i18n.setupSubtitle,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   ),
@@ -269,8 +271,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                 TextFormField(
                   controller: _urlController,
                   decoration: InputDecoration(
-                    labelText: 'URL del sitio',
-                    hintText: 'ejemplo.com',
+                    labelText: i18n.siteUrlLabel,
+                    hintText: i18n.siteUrlExampleHint,
                     prefixIcon: const Icon(Icons.language),
                     prefixText: _urlController.text.isEmpty ? 'https://' : null,
                     border: OutlineInputBorder(
@@ -283,7 +285,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   onFieldSubmitted: (_) => _validateAndSave(),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Introduce la URL del sitio';
+                      return i18n.setupUrlRequired;
                     }
                     return null;
                   },
@@ -351,7 +353,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.check),
-                  label: Text(_isLoading ? 'Conectando...' : 'Conectar'),
+                  label: Text(_isLoading ? i18n.setupConnecting : i18n.setupConnect),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -364,7 +366,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                     setState(() => _showScanner = true);
                   },
                   icon: const Icon(Icons.qr_code_scanner),
-                  label: const Text('Escanear código QR'),
+                  label: Text(i18n.setupScanQr),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -375,7 +377,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Cancelar'),
+                    child: Text(i18n.commonCancel),
                   ),
                 ],
 
@@ -396,7 +398,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              '¿Cómo obtener el código QR?',
+                              i18n.setupHowToGetQr,
                               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -405,9 +407,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          '1. Accede al panel de administración de WordPress\n'
-                          '2. Ve a Calendario > Chat IA > Apps Móviles\n'
-                          '3. Escanea el código QR mostrado',
+                          i18n.setupQrSteps,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
@@ -425,7 +425,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   Widget _buildScanner(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Escanear QR'),
+        title: Text(i18n.setupQrScanTitle),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => setState(() => _showScanner = false),
@@ -453,7 +453,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  'Apunta la cámara al código QR de configuración',
+                  i18n.setupQrScanHint,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),

@@ -19,22 +19,22 @@ $titulo = $titulo ?? 'Sección de Contenido';
                     <div class="flavor-content-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <h3>Paso 1</h3>
-                    <p>Descripción del primer paso</p>
+                    <h3><?php echo esc_html__('Paso 1', 'flavor-chat-ia'); ?></h3>
+                    <p><?php echo esc_html__('Descripción del primer paso', 'flavor-chat-ia'); ?></p>
                 </div>
                 <div class="flavor-content-item">
                     <div class="flavor-content-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <h3>Paso 2</h3>
-                    <p>Descripción del segundo paso</p>
+                    <h3><?php echo esc_html__('Paso 2', 'flavor-chat-ia'); ?></h3>
+                    <p><?php echo esc_html__('Descripción del segundo paso', 'flavor-chat-ia'); ?></p>
                 </div>
                 <div class="flavor-content-item">
                     <div class="flavor-content-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <h3>Paso 3</h3>
-                    <p>Descripción del tercer paso</p>
+                    <h3><?php echo esc_html__('Paso 3', 'flavor-chat-ia'); ?></h3>
+                    <p><?php echo esc_html__('Descripción del tercer paso', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>

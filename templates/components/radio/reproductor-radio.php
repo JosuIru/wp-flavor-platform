@@ -37,7 +37,7 @@ $stream_url = $stream_url ?? '#';
                             <p class="text-white/80 flex items-center gap-2">
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-500 text-white">
                                     <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                                    EN VIVO
+                                    <?php echo esc_html__('EN VIVO', 'flavor-chat-ia'); ?>
                                 </span>
                             </p>
                         </div>
@@ -48,7 +48,7 @@ $stream_url = $stream_url ?? '#';
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
                             <span class="text-xl font-bold text-white"><?php echo esc_html($oyentes); ?></span>
-                            <span class="text-sm">oyentes</span>
+                            <span class="text-sm"><?php echo esc_html__('oyentes', 'flavor-chat-ia'); ?></span>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@ $stream_url = $stream_url ?? '#';
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <p class="text-white/60 text-sm mb-1">Ahora sonando</p>
+                            <p class="text-white/60 text-sm mb-1"><?php echo esc_html__('Ahora sonando', 'flavor-chat-ia'); ?></p>
                             <h3 class="text-xl font-bold text-white mb-1"><?php echo esc_html($programa_actual); ?></h3>
                             <p class="text-white/80 flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@ $stream_url = $stream_url ?? '#';
                             </p>
                         </div>
                         <div class="text-right">
-                            <p class="text-white/60 text-sm">Horario</p>
+                            <p class="text-white/60 text-sm"><?php echo esc_html__('Horario', 'flavor-chat-ia'); ?></p>
                             <p class="text-white font-semibold">8:00 - 11:00</p>
                         </div>
                     </div>
@@ -121,19 +121,19 @@ $stream_url = $stream_url ?? '#';
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                         </svg>
-                        Compartir
+                        <?php echo esc_html__('Compartir', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors text-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                         </svg>
-                        Chat en vivo
+                        <?php echo esc_html__('Chat en vivo', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors text-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                         </svg>
-                        Llamar
+                        <?php echo esc_html__('Llamar', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </div>

@@ -394,7 +394,19 @@ class Flavor_Design_Settings {
             <!-- Selector de Temas -->
             <div class="flavor-theme-selector-wrapper">
                 <h2><?php _e('Temas Predefinidos', 'flavor-chat-ia'); ?></h2>
-                <p class="description"><?php _e('Selecciona un tema base. Los ajustes manuales de abajo sobreescriben los valores del tema.', 'flavor-chat-ia'); ?></p>
+                <p class="description"><?php _e('Selecciona un tema base por sector. Los ajustes manuales de abajo sobreescriben los valores del tema.', 'flavor-chat-ia'); ?></p>
+
+                <!-- Filtro por Categoría -->
+                <div id="flavor-category-filter" class="flavor-category-filter" style="margin: 16px 0 20px;">
+                    <label for="flavor-category-select" style="margin-right: 10px; font-weight: 500;">
+                        <?php _e('Filtrar por sector:', 'flavor-chat-ia'); ?>
+                    </label>
+                    <select id="flavor-category-select" class="flavor-category-select">
+                        <option value="all"><?php _e('Todos los temas', 'flavor-chat-ia'); ?></option>
+                    </select>
+                    <span id="flavor-themes-count" class="flavor-themes-count" style="margin-left: 12px; color: #6b7280; font-size: 13px;"></span>
+                </div>
+
                 <div id="flavor-themes-grid" class="flavor-themes-grid">
                     <p class="flavor-themes-loading"><?php _e('Cargando temas...', 'flavor-chat-ia'); ?></p>
                 </div>
@@ -467,6 +479,12 @@ class Flavor_Design_Settings {
 
             <div class="flavor-design-actions">
                 <h3><?php _e('Acciones', 'flavor-chat-ia'); ?></h3>
+                <div class="flavor-starter-theme-action" style="margin-bottom: 10px;">
+                    <button type="button" class="button button-primary" id="flavor-install-starter-theme">
+                        <?php _e('Instalar y activar tema Flavor Starter', 'flavor-chat-ia'); ?>
+                    </button>
+                    <span id="flavor-starter-theme-status" style="margin-left:10px;color:#6b7280;font-size:12px;"></span>
+                </div>
                 <button type="button" class="button" id="flavor-reset-defaults">
                     <?php _e('Restaurar Valores por Defecto', 'flavor-chat-ia'); ?>
                 </button>
@@ -483,8 +501,14 @@ class Flavor_Design_Settings {
         (function() {
             var ajaxUrl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>';
             var nonce = '<?php echo esc_js($nonce_temas); ?>';
+            var starterThemeUrl = '<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=flavor_install_starter_theme'), 'flavor_install_starter_theme')); ?>';
             var gridEl = document.getElementById('flavor-themes-grid');
             var feedbackEl = document.getElementById('flavor-theme-feedback');
+            var categorySelect = document.getElementById('flavor-category-select');
+            var themesCountEl = document.getElementById('flavor-themes-count');
+            var temasCargados = {};
+            var categoriasDisponibles = {};
+            var temaActivoActual = 'default';
 
             function mostrarFeedback(mensaje, tipo) {
                 feedbackEl.textContent = mensaje;
@@ -493,10 +517,13 @@ class Flavor_Design_Settings {
                 setTimeout(function() { feedbackEl.style.display = 'none'; }, 3000);
             }
 
-            function cargarTemas() {
+            function cargarTemas(categoria) {
+                categoria = categoria || 'all';
+
                 var formData = new FormData();
                 formData.append('action', 'flavor_get_themes');
                 formData.append('nonce', nonce);
+                formData.append('category', categoria);
 
                 fetch(ajaxUrl, { method: 'POST', body: formData })
                     .then(function(r) { return r.json(); })
@@ -505,91 +532,145 @@ class Flavor_Design_Settings {
                             gridEl.innerHTML = '<p>Error al cargar temas.</p>';
                             return;
                         }
-                        renderizarTemas(respuesta.data.themes, respuesta.data.active_theme);
+                        temasCargados = respuesta.data.themes;
+                        temaActivoActual = respuesta.data.active_theme;
+
+                        // Actualizar selector de categorías (solo la primera vez)
+                        if (respuesta.data.categories && Object.keys(categoriasDisponibles).length === 0) {
+                            categoriasDisponibles = respuesta.data.categories;
+                            actualizarSelectorCategorias();
+                        }
+
+                        renderizarTemas(temasCargados, temaActivoActual);
                     })
                     .catch(function() {
                         gridEl.innerHTML = '<p>Error de conexión.</p>';
                     });
             }
 
+            function actualizarSelectorCategorias() {
+                categorySelect.innerHTML = '';
+                for (var catId in categoriasDisponibles) {
+                    if (!categoriasDisponibles.hasOwnProperty(catId)) continue;
+                    var opt = document.createElement('option');
+                    opt.value = catId;
+                    opt.textContent = categoriasDisponibles[catId];
+                    categorySelect.appendChild(opt);
+                }
+            }
+
+            var starterBtn = document.getElementById('flavor-install-starter-theme');
+            var starterStatus = document.getElementById('flavor-starter-theme-status');
+            if (starterBtn) {
+                starterBtn.addEventListener('click', function() {
+                    starterBtn.disabled = true;
+                    starterStatus.textContent = '<?php echo esc_js(__('Instalando y activando...', 'flavor-chat-ia')); ?>';
+                    window.location.href = starterThemeUrl;
+                });
+            }
+
+            // Extraer colores de las variables del tema
+            function obtenerColoresDeTema(tema) {
+                // Intentar extraer de variables CSS si existen
+                var colorPrimario = '#3b82f6';
+                var colorFondo = '#ffffff';
+                var colorTexto = '#1f2937';
+                var colorTextoSec = '#6b7280';
+
+                // Colores hardcodeados para temas conocidos (fallback)
+                var coloresTema = {
+                    'default': '#3b82f6', 'modern-purple': '#8b5cf6', 'ocean-blue': '#0891b2',
+                    'forest-green': '#16a34a', 'sunset-orange': '#ea580c', 'dark-mode': '#60a5fa',
+                    'minimal': '#171717', 'corporate': '#1e40af', 'themacle': '#5660b9',
+                    'themacle-dark': '#7b84d1', 'zunbeltz': '#2D5F2E', 'naarq': '#1a1a1a',
+                    'campi': '#1a1b3a', 'denendako': '#333333', 'escena-familiar': '#7c3aed',
+                    'grupos-consumo': '#4a7c59', 'comunidad-viva': '#4f46e5', 'jantoki': '#8b5a2b',
+                    'mercado-espiral': '#2e7d32', 'spiral-bank': '#764ba2', 'red-cuidados': '#ec4899',
+                    'academia-espiral': '#d97706', 'democracia-universal': '#8b5cf6', 'flujo': '#166534',
+                    'kulturaka': '#e63946', 'pueblo-vivo': '#c2703a', 'ecos-comunitarios': '#0891b2',
+                    // Nuevos temas por sector
+                    'salud-vital': '#0d9488', 'academia-moderna': '#7c3aed', 'fitness-energy': '#dc2626',
+                    'galeria-arte': '#1f2937', 'tech-startup': '#6366f1', 'organic-fresh': '#65a30d',
+                    'real-estate-pro': '#0369a1', 'corporate-trust': '#1e3a5f', 'gastro-deluxe': '#92400e',
+                    'kids-fun': '#f97316'
+                };
+
+                var fondosTema = {
+                    'dark-mode': '#111827', 'themacle-dark': '#1a1a2e', 'minimal': '#fafafa',
+                    'naarq': '#f5f0e8', 'campi': '#0d0e24', 'denendako': '#fafafa',
+                    'comunidad-viva': '#f8f9ff', 'jantoki': '#fdf8f3', 'mercado-espiral': '#f9fdf9',
+                    'spiral-bank': '#faf8ff', 'red-cuidados': '#fef7fb', 'academia-espiral': '#fffbf5',
+                    'democracia-universal': '#faf8ff', 'flujo': '#f7fdf9', 'kulturaka': '#fffaf9',
+                    'pueblo-vivo': '#fdf9f5', 'ecos-comunitarios': '#f5fcff',
+                    // Nuevos temas
+                    'salud-vital': '#f0fdfa', 'academia-moderna': '#faf5ff', 'fitness-energy': '#fafafa',
+                    'galeria-arte': '#fafafa', 'tech-startup': '#f8fafc', 'organic-fresh': '#f7fee7',
+                    'real-estate-pro': '#f8fafc', 'corporate-trust': '#f8fafc', 'gastro-deluxe': '#fffbeb',
+                    'kids-fun': '#fffbeb'
+                };
+
+                var temasOscuros = ['dark-mode', 'themacle-dark', 'campi'];
+
+                colorPrimario = coloresTema[tema.id] || colorPrimario;
+                colorFondo = fondosTema[tema.id] || colorFondo;
+
+                var esOscuro = temasOscuros.indexOf(tema.id) !== -1;
+                colorTexto = esOscuro ? '#e5e7eb' : '#1f2937';
+                colorTextoSec = esOscuro ? '#9ca3af' : '#6b7280';
+
+                return {
+                    primario: colorPrimario,
+                    fondo: colorFondo,
+                    texto: colorTexto,
+                    textoSecundario: colorTextoSec,
+                    esOscuro: esOscuro
+                };
+            }
+
             function renderizarTemas(temas, temaActivo) {
                 var html = '';
-                var coloresTema = {
-                    'default': '#3b82f6',
-                    'modern-purple': '#8b5cf6',
-                    'ocean-blue': '#0891b2',
-                    'forest-green': '#16a34a',
-                    'sunset-orange': '#ea580c',
-                    'dark-mode': '#60a5fa',
-                    'minimal': '#171717',
-                    'corporate': '#1e40af',
-                    'themacle': '#5660b9',
-                    'themacle-dark': '#7b84d1',
-                    'zunbeltz': '#2D5F2E',
-                    'naarq': '#1a1a1a',
-                    'campi': '#1a1b3a',
-                    'denendako': '#333333',
-                    'escena-familiar': '#7c3aed',
-                    'grupos-consumo': '#4a7c59',
-                    'comunidad-viva': '#4f46e5',
-                    'jantoki': '#8b5a2b',
-                    'mercado-espiral': '#2e7d32',
-                    'spiral-bank': '#764ba2',
-                    'red-cuidados': '#ec4899',
-                    'academia-espiral': '#d97706',
-                    'democracia-universal': '#8b5cf6',
-                    'flujo': '#166534',
-                    'kulturaka': '#e63946',
-                    'pueblo-vivo': '#c2703a',
-                    'ecos-comunitarios': '#0891b2'
-                };
-                var fondosTema = {
-                    'dark-mode': '#111827',
-                    'themacle-dark': '#1a1a2e',
-                    'minimal': '#fafafa',
-                    'naarq': '#f5f0e8',
-                    'campi': '#0d0e24',
-                    'denendako': '#fafafa',
-                    'comunidad-viva': '#f8f9ff',
-                    'jantoki': '#fdf8f3',
-                    'mercado-espiral': '#f9fdf9',
-                    'spiral-bank': '#faf8ff',
-                    'red-cuidados': '#fef7fb',
-                    'academia-espiral': '#fffbf5',
-                    'democracia-universal': '#faf8ff',
-                    'flujo': '#f7fdf9',
-                    'kulturaka': '#fffaf9',
-                    'pueblo-vivo': '#fdf9f5',
-                    'ecos-comunitarios': '#f5fcff'
-                };
+                var contadorTemas = 0;
 
                 for (var id in temas) {
                     if (!temas.hasOwnProperty(id)) continue;
                     var tema = temas[id];
+                    tema.id = id;
+                    contadorTemas++;
+
                     var esActivo = (id === temaActivo);
-                    var colorPrimario = coloresTema[id] || '#3b82f6';
-                    var colorFondo = fondosTema[id] || '#ffffff';
-                    var esOscuro = (id === 'dark-mode' || id === 'themacle-dark' || id === 'campi');
-                    var colorTexto = esOscuro ? '#e5e7eb' : '#1f2937';
-                    var colorTextoSec = esOscuro ? '#9ca3af' : '#6b7280';
+                    var colores = obtenerColoresDeTema(tema);
 
-                    html += '<div class="flavor-theme-card' + (esActivo ? ' flavor-theme-card--active' : '') + '" data-theme-id="' + id + '">';
+                    html += '<div class="flavor-theme-card' + (esActivo ? ' flavor-theme-card--active' : '') + '" data-theme-id="' + id + '" data-category="' + (tema.category || 'general') + '">';
 
-                    // Preview visual
-                    html += '<div class="flavor-theme-card__preview" style="background:' + colorFondo + ';">';
-                    html += '  <div class="flavor-theme-card__preview-header" style="background:' + colorPrimario + ';"></div>';
+                    // Preview visual mejorado
+                    html += '<div class="flavor-theme-card__preview" style="background:' + colores.fondo + ';">';
+                    html += '  <div class="flavor-theme-card__preview-header" style="background:' + colores.primario + ';"></div>';
                     html += '  <div class="flavor-theme-card__preview-body">';
-                    html += '    <div class="flavor-theme-card__preview-title" style="background:' + colorTexto + ';"></div>';
-                    html += '    <div class="flavor-theme-card__preview-text" style="background:' + colorTextoSec + ';"></div>';
-                    html += '    <div class="flavor-theme-card__preview-text flavor-theme-card__preview-text--short" style="background:' + colorTextoSec + ';"></div>';
-                    html += '    <div class="flavor-theme-card__preview-btn" style="background:' + colorPrimario + ';"></div>';
+                    html += '    <div class="flavor-theme-card__preview-title" style="background:' + colores.texto + ';"></div>';
+                    html += '    <div class="flavor-theme-card__preview-text" style="background:' + colores.textoSecundario + ';"></div>';
+                    html += '    <div class="flavor-theme-card__preview-text flavor-theme-card__preview-text--short" style="background:' + colores.textoSecundario + ';"></div>';
+                    html += '    <div class="flavor-theme-card__preview-btn" style="background:' + colores.primario + ';"></div>';
                     html += '  </div>';
                     html += '</div>';
 
-                    // Info
+                    // Info mejorada
                     html += '<div class="flavor-theme-card__info">';
-                    html += '  <div class="flavor-theme-card__name">' + tema.name + '</div>';
-                    html += '  <div class="flavor-theme-card__desc">' + (tema.description || '') + '</div>';
+                    html += '  <div class="flavor-theme-card__name">' + escapeHtml(tema.name) + '</div>';
+                    html += '  <div class="flavor-theme-card__desc">' + escapeHtml(tema.description || '') + '</div>';
+
+                    // Mostrar "ideal para" si existe
+                    if (tema.ideal_for) {
+                        html += '  <div class="flavor-theme-card__ideal-for" title="' + escapeHtml(tema.ideal_for) + '">';
+                        html += '    <span class="dashicons dashicons-lightbulb" style="font-size:12px;width:12px;height:12px;margin-right:4px;color:#f59e0b;"></span>';
+                        html += '    <span style="font-size:10px;color:#6b7280;">' + escapeHtml(truncarTexto(tema.ideal_for, 40)) + '</span>';
+                        html += '  </div>';
+                    }
+
+                    // Badges de categoría
+                    if (tema.category_label && tema.category !== 'general') {
+                        html += '  <span class="flavor-theme-card__badge flavor-theme-card__badge--category">' + escapeHtml(tema.category_label) + '</span>';
+                    }
+
                     if (esActivo) {
                         html += '  <span class="flavor-theme-card__badge"><?php echo esc_js(__('Activo', 'flavor-chat-ia')); ?></span>';
                     }
@@ -603,6 +684,9 @@ class Flavor_Design_Settings {
 
                 gridEl.innerHTML = html;
 
+                // Actualizar contador
+                themesCountEl.textContent = contadorTemas + ' <?php echo esc_js(__('temas disponibles', 'flavor-chat-ia')); ?>';
+
                 // Bind clicks
                 var tarjetas = gridEl.querySelectorAll('.flavor-theme-card');
                 tarjetas.forEach(function(tarjeta) {
@@ -612,6 +696,23 @@ class Flavor_Design_Settings {
                     });
                 });
             }
+
+            function escapeHtml(text) {
+                var div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function truncarTexto(texto, maxLength) {
+                if (texto.length <= maxLength) return texto;
+                return texto.substring(0, maxLength) + '...';
+            }
+
+            // Event listener para filtro de categoría
+            categorySelect.addEventListener('change', function() {
+                var categoriaSeleccionada = this.value;
+                cargarTemas(categoriaSeleccionada);
+            });
 
             function aplicarTema(idTema, tarjetaEl) {
                 // Deshabilitar clicks temporalmente
@@ -910,6 +1011,40 @@ class Flavor_Design_Settings {
                 background: #fef3c7;
                 color: #92400e;
             }
+            .flavor-theme-card__badge--category {
+                background: #f0fdf4;
+                color: #166534;
+                margin-right: 4px;
+            }
+            .flavor-theme-card__ideal-for {
+                display: flex;
+                align-items: center;
+                margin-bottom: 6px;
+                padding: 4px 0;
+            }
+            .flavor-category-filter {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .flavor-category-select {
+                min-width: 200px;
+                padding: 6px 12px;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                font-size: 14px;
+                background: #fff;
+            }
+            .flavor-category-select:focus {
+                border-color: #3b82f6;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+            }
+            .flavor-themes-count {
+                font-size: 13px;
+                color: #6b7280;
+            }
             .flavor-theme-feedback {
                 margin-top: 16px;
                 padding: 10px 16px;
@@ -1005,11 +1140,103 @@ class Flavor_Design_Settings {
 
     /**
      * Obtener settings actuales
+     *
+     * Prioridad:
+     * 1. Configuración guardada manualmente (flavor_design_settings)
+     * 2. Valores del tema activo (del Theme Manager)
+     * 3. Valores por defecto
      */
     public function get_settings() {
         $defaults = $this->get_default_settings();
         $saved = get_option(self::OPTION_NAME, []);
-        return wp_parse_args($saved, $defaults);
+
+        // Si hay configuración guardada, usarla
+        if (!empty($saved)) {
+            return wp_parse_args($saved, $defaults);
+        }
+
+        // Si no hay configuración guardada, obtener valores del tema activo
+        $theme_values = $this->get_theme_values_as_settings();
+
+        return wp_parse_args($theme_values, $defaults);
+    }
+
+    /**
+     * Obtener los valores del tema activo convertidos a formato de settings
+     *
+     * @return array Settings derivados del tema activo
+     */
+    private function get_theme_values_as_settings() {
+        // Verificar si el Theme Manager está disponible
+        if (!class_exists('Flavor_Theme_Manager')) {
+            return [];
+        }
+
+        $theme_manager = Flavor_Theme_Manager::get_instance();
+        $active_theme_id = get_option('flavor_active_theme', 'default');
+        $theme = $theme_manager->get_theme($active_theme_id);
+
+        if (!$theme || empty($theme['variables'])) {
+            return [];
+        }
+
+        $variables = $theme['variables'];
+
+        // Mapeo de variables CSS del tema a campos de settings
+        $settings = [];
+
+        // Colores
+        if (isset($variables['--flavor-primary'])) {
+            $settings['primary_color'] = $variables['--flavor-primary'];
+        }
+        if (isset($variables['--flavor-secondary'])) {
+            $settings['secondary_color'] = $variables['--flavor-secondary'];
+        }
+        if (isset($variables['--flavor-accent']) || isset($variables['--flavor-warning'])) {
+            $settings['accent_color'] = $variables['--flavor-accent'] ?? $variables['--flavor-warning'];
+        }
+        if (isset($variables['--flavor-success'])) {
+            $settings['success_color'] = $variables['--flavor-success'];
+        }
+        if (isset($variables['--flavor-warning'])) {
+            $settings['warning_color'] = $variables['--flavor-warning'];
+        }
+        if (isset($variables['--flavor-error'])) {
+            $settings['error_color'] = $variables['--flavor-error'];
+        }
+        if (isset($variables['--flavor-bg'])) {
+            $settings['background_color'] = $variables['--flavor-bg'];
+        }
+        if (isset($variables['--flavor-text'])) {
+            $settings['text_color'] = $variables['--flavor-text'];
+        }
+        if (isset($variables['--flavor-text-muted']) || isset($variables['--flavor-text-secondary'])) {
+            $settings['text_muted_color'] = $variables['--flavor-text-muted'] ?? $variables['--flavor-text-secondary'];
+        }
+
+        // Bordes redondeados
+        if (isset($variables['--flavor-radius'])) {
+            $radius = $this->parse_css_value($variables['--flavor-radius']);
+            $settings['button_border_radius'] = $radius;
+            $settings['image_border_radius'] = $radius;
+        }
+        if (isset($variables['--flavor-radius-lg'])) {
+            $settings['card_border_radius'] = $this->parse_css_value($variables['--flavor-radius-lg']);
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Parsear valor CSS a número
+     *
+     * @param string $value Valor CSS (ej: "12px", "1rem")
+     * @return float Valor numérico
+     */
+    private function parse_css_value($value) {
+        // Extraer el número del valor CSS
+        preg_match('/^([\d.]+)/', $value, $matches);
+        return isset($matches[1]) ? floatval($matches[1]) : 0;
     }
 
     /**

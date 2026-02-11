@@ -124,6 +124,7 @@ class Flavor_Network_Node {
             'nombre'            => $this->datos['nombre'] ?? '',
             'slug'              => $this->datos['slug'] ?? '',
             'descripcion_corta' => $this->datos['descripcion_corta'] ?? '',
+            'site_url'          => $this->datos['site_url'] ?? '',
             'logo_url'          => $this->datos['logo_url'] ?? '',
             'tipo_entidad'      => $this->datos['tipo_entidad'] ?? 'comunidad',
             'sector'            => $this->datos['sector'] ?? '',
@@ -167,6 +168,25 @@ class Flavor_Network_Node {
         $resultado = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$tabla} WHERE slug = %s",
             $slug
+        ));
+
+        if (!$resultado) {
+            return null;
+        }
+
+        return new self($resultado);
+    }
+
+    /**
+     * Busca un nodo por URL del sitio
+     */
+    public static function find_by_site_url($site_url) {
+        global $wpdb;
+        $tabla = Flavor_Network_Installer::get_table_name('nodes');
+
+        $resultado = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla} WHERE site_url = %s",
+            esc_url_raw($site_url)
         ));
 
         if (!$resultado) {
@@ -266,6 +286,47 @@ class Flavor_Network_Node {
         }
 
         return self::find($nodo_id);
+    }
+
+    /**
+     * Inserta o actualiza un nodo remoto por site_url o slug
+     */
+    public static function upsert_remote_node($datos_nodo) {
+        global $wpdb;
+        $tabla = Flavor_Network_Installer::get_table_name('nodes');
+
+        $datos_sanitizados = self::sanitize_node_data($datos_nodo);
+        $datos_sanitizados['es_nodo_local'] = 0;
+        $datos_sanitizados['estado'] = $datos_sanitizados['estado'] ?? 'activo';
+        $datos_sanitizados['ultima_sincronizacion'] = current_time('mysql');
+
+        $existente = null;
+        if (!empty($datos_sanitizados['site_url'])) {
+            $existente = self::find_by_site_url($datos_sanitizados['site_url']);
+        }
+        if (!$existente && !empty($datos_sanitizados['slug'])) {
+            $existente = self::find_by_slug($datos_sanitizados['slug']);
+        }
+
+        if ($existente) {
+            if ((int) $existente->es_nodo_local === 1) {
+                return $existente;
+            }
+
+            $wpdb->update(
+                $tabla,
+                $datos_sanitizados,
+                ['id' => $existente->id]
+            );
+            return self::find($existente->id);
+        }
+
+        $resultado = $wpdb->insert($tabla, $datos_sanitizados);
+        if ($resultado === false) {
+            return null;
+        }
+
+        return self::find($wpdb->insert_id);
     }
 
     /**
@@ -460,7 +521,7 @@ class Flavor_Network_Node {
         $where_sql = implode(' AND ', $where_clauses);
 
         $sql = "SELECT id, nombre, slug, descripcion_corta, logo_url, tipo_entidad,
-                       sector, nivel_consciencia, latitud, longitud, ciudad, pais, verificado
+                       sector, nivel_consciencia, latitud, longitud, ciudad, pais, verificado, site_url
                 FROM {$tabla} WHERE {$where_sql} ORDER BY nombre ASC";
 
         if (!empty($where_values)) {
@@ -475,6 +536,7 @@ class Flavor_Network_Node {
                 'nombre'            => $fila->nombre,
                 'slug'              => $fila->slug,
                 'descripcion_corta' => $fila->descripcion_corta,
+                'site_url'          => $fila->site_url ?? '',
                 'logo_url'          => $fila->logo_url,
                 'tipo_entidad'      => $fila->tipo_entidad,
                 'sector'            => $fila->sector,

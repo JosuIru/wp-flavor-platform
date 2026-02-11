@@ -91,7 +91,7 @@ $clase_columnas = $grid_columnas[$columnas] ?? $grid_columnas['3'];
                             </p>
                             <div class="mt-6 flex items-center gap-2 font-semibold transition-all duration-300"
                                  style="color: var(--flavor-primary, #667eea);">
-                                <span>Más información</span>
+                                <span><?php echo esc_html__('Más información', 'flavor-chat-ia'); ?></span>
                                 <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                                 </svg>
@@ -137,7 +137,7 @@ $clase_columnas = $grid_columnas[$columnas] ?? $grid_columnas['3'];
             <a href="#contacto"
                class="flavor-button inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:transform hover:scale-105 hover:shadow-lg"
                style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%); color: white;">
-                <span>Solicitar Información</span>
+                <span><?php echo esc_html__('Solicitar Información', 'flavor-chat-ia'); ?></span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>

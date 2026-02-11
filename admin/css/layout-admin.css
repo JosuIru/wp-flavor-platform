@@ -1154,6 +1154,36 @@
     width: 120px;
 }
 
+/* Sponsors rows */
+.flavor-sponsors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.flavor-sponsor-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.flavor-sponsor-row input {
+    width: 100%;
+}
+
+.flavor-sponsor-row .button {
+    white-space: nowrap;
+}
+
+/* Menu settings */
+.flavor-menu-settings .flavor-action-order {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
 /* Components Form */
 #flavor-components-settings-form .flavor-settings-section {
     border-left: 3px solid var(--flavor-admin-primary);

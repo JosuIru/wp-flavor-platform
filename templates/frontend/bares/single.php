@@ -13,7 +13,7 @@ $locales_relacionados = $locales_relacionados ?? [];
 <div class="flavor-frontend flavor-bares-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/bares/')); ?>" class="hover:text-orange-600 transition-colors">Bares y Restaurantes</a>
+        <a href="<?php echo esc_url(home_url('/bares/')); ?>" class="hover:text-orange-600 transition-colors"><?php echo esc_html__('Bares y Restaurantes', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <?php if (!empty($local['tipo_cocina'])): ?>
         <a href="<?php echo esc_url(home_url('/bares/?tipo=' . ($local['tipo_cocina_slug'] ?? ''))); ?>" class="hover:text-orange-600 transition-colors">
@@ -74,7 +74,7 @@ $locales_relacionados = $locales_relacionados ?? [];
                 <!-- Platos destacados -->
                 <?php if (!empty($local['platos_destacados'])): ?>
                 <div class="border-t border-gray-100 pt-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">🍳 Platos destacados</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('🍳 Platos destacados', 'flavor-chat-ia'); ?></h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <?php foreach ($local['platos_destacados'] as $plato_destacado): ?>
                         <div class="flex items-center justify-between p-3 bg-amber-50 rounded-xl">
@@ -92,7 +92,7 @@ $locales_relacionados = $locales_relacionados ?? [];
 
             <!-- Horario -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">🕐 Horario de apertura</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('🕐 Horario de apertura', 'flavor-chat-ia'); ?></h2>
                 <?php if (!empty($local['horario'])): ?>
                 <div class="space-y-2">
                     <?php foreach ($local['horario'] as $dia_semana => $horas_apertura): ?>
@@ -103,15 +103,15 @@ $locales_relacionados = $locales_relacionados ?? [];
                     <?php endforeach; ?>
                 </div>
                 <?php else: ?>
-                <p class="text-gray-500">Horario no disponible</p>
+                <p class="text-gray-500"><?php echo esc_html__('Horario no disponible', 'flavor-chat-ia'); ?></p>
                 <?php endif; ?>
             </div>
 
             <!-- Ubicacion -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📍 Ubicacion</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📍 Ubicacion', 'flavor-chat-ia'); ?></h2>
                 <div class="bg-gray-100 rounded-xl h-48 flex items-center justify-center text-gray-400 mb-3">
-                    <span class="text-lg">Mapa de ubicacion</span>
+                    <span class="text-lg"><?php echo esc_html__('Mapa de ubicacion', 'flavor-chat-ia'); ?></span>
                 </div>
                 <p class="text-gray-600"><?php echo esc_html($local['direccion'] ?? 'Direccion no disponible'); ?></p>
             </div>
@@ -119,7 +119,7 @@ $locales_relacionados = $locales_relacionados ?? [];
             <!-- Resenas -->
             <?php if (!empty($resenas)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">⭐ Resenas</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('⭐ Resenas', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-4">
                     <?php foreach ($resenas as $resena_individual): ?>
                     <div class="border-b border-gray-100 pb-4 last:border-0">
@@ -144,21 +144,21 @@ $locales_relacionados = $locales_relacionados ?? [];
         <div class="space-y-6">
             <!-- Reservar -->
             <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold mb-2">Reserva tu mesa</h3>
+                <h3 class="font-semibold mb-2"><?php echo esc_html__('Reserva tu mesa', 'flavor-chat-ia'); ?></h3>
                 <p class="text-amber-100 text-sm mb-4">Contacta con <?php echo esc_html($local['nombre'] ?? 'el local'); ?> para reservar.</p>
                 <button class="w-full bg-white text-orange-600 py-3 px-4 rounded-xl font-semibold hover:bg-amber-50 transition-colors mb-3"
                         onclick="flavorBares.reservar(<?php echo esc_attr($local['id'] ?? 0); ?>)">
-                    📞 Reservar mesa
+                    <?php echo esc_html__('📞 Reservar mesa', 'flavor-chat-ia'); ?>
                 </button>
                 <button class="w-full bg-white/20 backdrop-blur text-white py-3 px-4 rounded-xl font-semibold hover:bg-white/30 transition-colors"
                         onclick="flavorBares.guardarFavorito(<?php echo esc_attr($local['id'] ?? 0); ?>)">
-                    ❤️ Guardar favorito
+                    <?php echo esc_html__('❤️ Guardar favorito', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- Informacion de contacto -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">📋 Informacion de contacto</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('📋 Informacion de contacto', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php if (!empty($local['telefono'])): ?>
                     <div class="flex items-center gap-3">
@@ -176,7 +176,7 @@ $locales_relacionados = $locales_relacionados ?? [];
                     <div class="flex items-center gap-3">
                         <span class="text-lg">🌐</span>
                         <a href="<?php echo esc_url($local['web']); ?>" class="text-orange-600 hover:text-orange-700" target="_blank" rel="noopener noreferrer">
-                            Sitio web
+                            <?php echo esc_html__('Sitio web', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
                     <?php endif; ?>
@@ -192,7 +192,7 @@ $locales_relacionados = $locales_relacionados ?? [];
             <!-- Locales relacionados -->
             <?php if (!empty($locales_relacionados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Locales similares</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Locales similares', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($locales_relacionados as $local_relacionado): ?>
                     <a href="<?php echo esc_url($local_relacionado['url'] ?? '#'); ?>" class="flex gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">

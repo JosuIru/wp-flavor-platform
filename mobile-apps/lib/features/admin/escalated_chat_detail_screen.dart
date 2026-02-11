@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
@@ -19,6 +20,7 @@ class EscalatedChatDetailScreen extends ConsumerStatefulWidget {
 
 class _EscalatedChatDetailScreenState
     extends ConsumerState<EscalatedChatDetailScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   EscalatedChatDetail? _chatDetail;
   bool _isLoading = true;
   String? _error;
@@ -70,13 +72,13 @@ class _EscalatedChatDetailScreenState
         });
       } else {
         setState(() {
-          _error = response.error ?? 'Error al cargar chat';
+          _error = response.error ?? i18n.escalatedChatLoadError;
           _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        _error = 'Error de conexión: $e';
+        _error = i18n.escalatedChatConnectionError(e.toString());
         _isLoading = false;
       });
     }
@@ -96,7 +98,7 @@ class _EscalatedChatDetailScreenState
       final response = await api.replyEscalatedChat(
         widget.sessionId,
         message,
-        adminUser?.name ?? 'Admin',
+        adminUser?.name ?? i18n.commonAdmin,
       );
 
       if (response.success) {
@@ -106,14 +108,14 @@ class _EscalatedChatDetailScreenState
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Respuesta enviada')),
+            SnackBar(content: Text(i18n.escalatedChatReplySent)),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(response.error ?? 'Error al enviar'),
+              content: Text(response.error ?? i18n.escalatedChatSendError),
               backgroundColor: Colors.red,
             ),
           );
@@ -123,7 +125,7 @@ class _EscalatedChatDetailScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text(i18n.escalatedChatError(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -141,19 +143,19 @@ class _EscalatedChatDetailScreenState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Marcar como resuelto'),
+        title: Text(i18n.escalatedChatResolveTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('¿Confirmas que este chat está resuelto?'),
+            Text(i18n.escalatedChatResolveConfirm),
             const SizedBox(height: 16),
             TextField(
               controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: 'Notas (opcional)',
-                hintText: 'Añade notas sobre la resolución...',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.escalatedChatResolveNotesLabel,
+                hintText: i18n.escalatedChatResolveNotesHint,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
@@ -162,11 +164,11 @@ class _EscalatedChatDetailScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Resolver'),
+            child: Text(i18n.escalatedChatResolveAction),
           ),
         ],
       ),
@@ -184,7 +186,7 @@ class _EscalatedChatDetailScreenState
       if (response.success) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Chat marcado como resuelto')),
+            SnackBar(content: Text(i18n.escalatedChatResolvedToast)),
           );
           Navigator.pop(context, true); // Volver con resultado true
         }
@@ -192,7 +194,7 @@ class _EscalatedChatDetailScreenState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(response.error ?? 'Error al resolver'),
+              content: Text(response.error ?? i18n.escalatedChatResolveError),
               backgroundColor: Colors.red,
             ),
           );
@@ -202,7 +204,7 @@ class _EscalatedChatDetailScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text(i18n.escalatedChatError(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -216,13 +218,13 @@ class _EscalatedChatDetailScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat Escalado'),
+        title: Text(i18n.escalatedChatTitle),
         actions: [
           if (_chatDetail?.escalation?.status != 'resolved')
             IconButton(
               onPressed: _resolveChat,
               icon: const Icon(Icons.check_circle),
-              tooltip: 'Marcar como resuelto',
+              tooltip: i18n.escalatedChatResolveTooltip,
             ),
         ],
       ),
@@ -248,13 +250,13 @@ class _EscalatedChatDetailScreenState
                       FilledButton.icon(
                         onPressed: _loadChatDetail,
                         icon: const Icon(Icons.refresh),
-                        label: const Text('Reintentar'),
+                        label: Text(i18n.commonRetry),
                       ),
                     ],
                   ),
                 )
               : _chatDetail == null
-                  ? const Center(child: Text('No se encontró el chat'))
+                  ? Center(child: Text(i18n.escalatedChatNotFound))
                   : Column(
                       children: [
                         // Info del escalado
@@ -316,7 +318,7 @@ class _EscalatedChatDetailScreenState
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      'Borrador de reserva',
+                                      i18n.escalatedChatDraftTitle,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blue.shade700,
@@ -325,9 +327,16 @@ class _EscalatedChatDetailScreenState
                                   ],
                                 ),
                                 const SizedBox(height: 8),
-                                Text('Fecha: ${_chatDetail!.draft!.date}'),
                                 Text(
-                                    'Total: ${_chatDetail!.draft!.total.toStringAsFixed(2)}€'),
+                                  i18n.escalatedChatDraftDate(
+                                    _chatDetail!.draft!.date,
+                                  ),
+                                ),
+                                Text(
+                                  i18n.escalatedChatDraftTotal(
+                                    _chatDetail!.draft!.total.toStringAsFixed(2),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -360,7 +369,7 @@ class _EscalatedChatDetailScreenState
                                   child: TextField(
                                     controller: _messageController,
                                     decoration: InputDecoration(
-                                      hintText: 'Escribe tu respuesta...',
+                                      hintText: i18n.escalatedChatReplyHint,
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(24),
                                       ),
@@ -407,7 +416,7 @@ class _EscalatedChatDetailScreenState
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
-                                    'Este chat ha sido marcado como resuelto',
+                                    i18n.escalatedChatResolvedBanner,
                                     style: TextStyle(
                                       color: Colors.green.shade700,
                                       fontWeight: FontWeight.bold,

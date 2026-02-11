@@ -100,14 +100,13 @@ class DynamicConfig {
 
   /// Nombre del negocio
   String get businessName =>
-      _config?['branding']?['business_name'] as String? ??
-      AppConfig.businessName;
+      _config?['branding']?['business_name'] as String? ?? '';
 
   /// Nombre de la app
   String get appName =>
       _config?['branding']?['app_name'] as String? ??
       _config?['branding']?['business_name'] as String? ??
-      AppConfig.clientAppName;
+      '';
 
   /// Mensaje de bienvenida (del branding)
   String get welcomeMessage =>
@@ -163,23 +162,23 @@ class DynamicConfig {
 
   /// Título de la sección Info
   String get infoTitle =>
-      _config?['texts']?['info_title'] as String? ?? 'Información';
+      _config?['texts']?['info_title'] as String? ?? '';
 
   /// Placeholder del chat
   String get chatPlaceholder =>
-      _config?['texts']?['chat_placeholder'] as String? ?? 'Escribe tu mensaje...';
+      _config?['texts']?['chat_placeholder'] as String? ?? '';
 
   /// Título de reservas
   String get reservationsTitle =>
-      _config?['texts']?['reservations_title'] as String? ?? 'Reservas';
+      _config?['texts']?['reservations_title'] as String? ?? '';
 
   /// Mensaje sin reservas
   String get noReservationsText =>
-      _config?['texts']?['no_reservations'] as String? ?? 'No tienes reservas';
+      _config?['texts']?['no_reservations'] as String? ?? '';
 
   /// Mensaje sin tickets
   String get noTicketsText =>
-      _config?['texts']?['no_tickets'] as String? ?? 'No tienes tickets';
+      _config?['texts']?['no_tickets'] as String? ?? '';
 
   // ==========================================
   // TABS / NAVEGACIÓN
@@ -216,10 +215,10 @@ class DynamicConfig {
       );
     }
     return [
-      {'id': 'chat', 'label': 'Chat', 'icon': 'chat_bubble', 'enabled': true, 'order': 0},
-      {'id': 'reservations', 'label': 'Reservar', 'icon': 'calendar_today', 'enabled': true, 'order': 1},
-      {'id': 'my_tickets', 'label': 'Mis Tickets', 'icon': 'confirmation_number', 'enabled': true, 'order': 2},
-      {'id': 'info', 'label': 'Info', 'icon': 'info', 'enabled': true, 'order': 3},
+      {'id': 'chat', 'label': '', 'icon': 'chat_bubble', 'enabled': true, 'order': 0},
+      {'id': 'reservations', 'label': '', 'icon': 'calendar_today', 'enabled': true, 'order': 1},
+      {'id': 'my_tickets', 'label': '', 'icon': 'confirmation_number', 'enabled': true, 'order': 2},
+      {'id': 'info', 'label': '', 'icon': 'info', 'enabled': true, 'order': 3},
     ];
   }
 
@@ -356,8 +355,96 @@ class DynamicConfig {
     return luminance > 0.5 ? Colors.black : Colors.white;
   }
 
+  // ==========================================
+  // CONFIGURACIÓN DE MÓDULOS
+  // ==========================================
+
+  /// Lista de módulos activos
+  List<String> get activeModules {
+    final modules = _config?['modules']?['active'];
+    if (modules is List) {
+      return List<String>.from(modules);
+    }
+    return [];
+  }
+
+  /// Lista de módulos deshabilitados
+  List<String> get disabledModules {
+    final modules = _config?['modules']?['disabled'];
+    if (modules is List) {
+      return List<String>.from(modules);
+    }
+    return [];
+  }
+
+  /// Orden de visualización de módulos
+  List<String> get modulesOrder {
+    final order = _config?['modules']?['order'];
+    if (order is List) {
+      return List<String>.from(order);
+    }
+    return [];
+  }
+
+  /// Configuración de módulos favoritos
+  List<String> get favoriteModules {
+    final favorites = _config?['modules']?['favorites'];
+    if (favorites is List) {
+      return List<String>.from(favorites);
+    }
+    return [];
+  }
+
+  /// Módulos visibles en el dashboard admin
+  List<String> get adminDashboardModules {
+    final modules = _config?['modules']?['admin_dashboard'];
+    if (modules is List) {
+      return List<String>.from(modules);
+    }
+    return activeModules; // Fallback a todos los activos
+  }
+
+  /// Configuración específica de un módulo
+  Map<String, dynamic> getModuleConfig(String moduleId) {
+    final modulesConfig = _config?['modules']?['config'];
+    if (modulesConfig is Map) {
+      final moduleConfig = modulesConfig[moduleId];
+      if (moduleConfig is Map<String, dynamic>) {
+        return moduleConfig;
+      }
+    }
+    return {};
+  }
+
+  /// Verifica si un módulo está activo
+  bool isModuleActive(String moduleId) {
+    return activeModules.contains(moduleId) &&
+           !disabledModules.contains(moduleId);
+  }
+
+  /// Permisos del usuario para módulos
+  Map<String, List<String>> get modulePermissions {
+    final permissions = _config?['modules']?['permissions'];
+    if (permissions is Map) {
+      return permissions.map(
+        (key, value) => MapEntry(
+          key.toString(),
+          value is List ? List<String>.from(value) : <String>[],
+        ),
+      );
+    }
+    return {};
+  }
+
+  /// Verifica si el usuario tiene permiso para un módulo
+  bool hasModulePermission(String moduleId, String permission) {
+    final perms = modulePermissions[moduleId];
+    if (perms == null) return true; // Sin restricciones = permitido
+    return perms.contains(permission) || perms.contains('*');
+  }
+
   @override
   String toString() {
-    return 'DynamicConfig(isLoaded: $_isLoaded, businessName: $businessName, primaryColor: $primaryColor)';
+    return 'DynamicConfig(isLoaded: $_isLoaded, businessName: $businessName, primaryColor: $primaryColor, activeModules: ${activeModules.length})';
   }
 }

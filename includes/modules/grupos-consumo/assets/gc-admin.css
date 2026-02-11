@@ -789,3 +789,31 @@ tr:hover .gc-row-actions {
         border: 1px solid #ddd;
     }
 }
+
+/* Badge de solicitudes pendientes en menu admin */
+.gc-solicitudes-badge {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+    padding: 0 6px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    background-color: #d63638;
+    color: #fff;
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Menu lateral - asegurar que el badge sea visible */
+#adminmenu .gc-solicitudes-badge {
+    float: right;
+    margin-right: 10px;
+}
+
+/* Cuando el menu esta colapsado */
+.folded #adminmenu .gc-solicitudes-badge {
+    display: none;
+}

@@ -92,6 +92,20 @@ interface Flavor_Chat_Module_Interface {
      * @return array
      */
     public function get_faqs();
+
+    /**
+     * Obtiene la visibilidad del módulo
+     *
+     * @return string 'public', 'private', 'members_only'
+     */
+    public function get_visibility();
+
+    /**
+     * Obtiene la capacidad requerida para acceder al módulo
+     *
+     * @return string Capacidad de WordPress (ej: 'read', 'edit_posts', 'manage_options')
+     */
+    public function get_required_capability();
 }
 
 /**
@@ -118,6 +132,17 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      * Configuración del módulo
      */
     protected $settings = [];
+
+    /**
+     * Visibilidad por defecto del módulo
+     * Opciones: 'public', 'private', 'members_only'
+     */
+    protected $default_visibility = 'public';
+
+    /**
+     * Capacidad requerida por defecto
+     */
+    protected $required_capability = 'read';
 
     /**
      * Constructor
@@ -232,5 +257,52 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
     protected function update_setting($key, $value) {
         $this->settings[$key] = $value;
         return update_option('flavor_chat_ia_module_' . $this->id, $this->settings);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_visibility() {
+        // Primero verificar si hay visibilidad configurada en admin
+        $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
+
+        if (isset($visibilidades_configuradas[$this->id])) {
+            return $visibilidades_configuradas[$this->id];
+        }
+
+        // Si no, usar la visibilidad por defecto del módulo
+        return $this->default_visibility;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_required_capability() {
+        // Verificar si hay capacidad configurada en admin
+        $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
+
+        if (isset($capacidades_configuradas[$this->id])) {
+            return $capacidades_configuradas[$this->id];
+        }
+
+        return $this->required_capability;
+    }
+
+    /**
+     * Obtiene la visibilidad por defecto del módulo
+     *
+     * @return string
+     */
+    public function get_default_visibility() {
+        return $this->default_visibility;
+    }
+
+    /**
+     * Obtiene la capacidad requerida por defecto
+     *
+     * @return string
+     */
+    public function get_default_capability() {
+        return $this->required_capability;
     }
 }

@@ -50,7 +50,7 @@ $mostrar_mapa = $atts['mostrar_mapa'] === 'true';
             </div>
 
             <div class="carpooling-campo">
-                <label class="carpooling-campo__label">&nbsp;</label>
+                <label class="carpooling-campo__label"><?php echo esc_html__('&nbsp;', 'flavor-chat-ia'); ?></label>
                 <button type="submit" class="carpooling-btn carpooling-btn--primary carpooling-btn--lg">
                     <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
                 </button>

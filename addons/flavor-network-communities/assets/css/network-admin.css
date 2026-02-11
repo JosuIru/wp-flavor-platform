@@ -8,11 +8,101 @@
     overflow-x: auto;
     white-space: nowrap;
     flex-wrap: nowrap;
+    background: #f6f7f7;
+    padding: 6px;
+    border-radius: 10px;
 }
 
 .flavor-network-admin .nav-tab {
     font-size: 13px;
     padding: 5px 12px;
+    border-radius: 8px;
+    margin-right: 4px;
+}
+
+.flavor-network-admin .nav-tab.nav-tab-active {
+    background: #1d2327;
+    color: #fff;
+    border-color: #1d2327;
+}
+
+.flavor-network-dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 12px;
+}
+
+.flavor-network-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e2e4e7;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #1d2327;
+}
+
+.network-status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    background: #d63638;
+    box-shadow: 0 0 0 3px rgba(214, 54, 56, 0.15);
+}
+
+.network-status-indicator.is-online {
+    background: #00a32a;
+    box-shadow: 0 0 0 3px rgba(0, 163, 42, 0.15);
+}
+
+.flavor-network-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin: 10px 0 20px;
+}
+
+.flavor-network-card {
+    background: #fff;
+    border: 1px solid #e2e4e7;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.flavor-network-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.flavor-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.flavor-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.summary-label {
+    display: block;
+    font-size: 12px;
+    color: #646970;
+}
+
+.summary-value {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+    margin-top: 4px;
 }
 
 /* ─── Stats Grid ─── */
@@ -533,4 +623,3 @@
 .flavor-network-sellos .flavor-content-card {
     border-left: 4px solid #f59e0b;
 }
-

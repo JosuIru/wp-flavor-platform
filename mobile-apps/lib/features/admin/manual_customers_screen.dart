@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart';
@@ -110,6 +112,7 @@ class ManualCustomersScreen extends ConsumerStatefulWidget {
 }
 
 class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   String _filterOrigin = 'all'; // 'all', 'manual', 'woocommerce'
@@ -153,12 +156,13 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final customersAsync = ref.watch(unifiedCustomersProvider(_params));
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clientes Semana'),
+        title: Text(i18n.clientesSemanaD70cd2),
         actions: [
           IconButton(
             onPressed: () => ref.invalidate(unifiedCustomersProvider(_params)),
@@ -169,7 +173,7 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddCustomerDialog(),
         icon: const Icon(Icons.person_add),
-        label: const Text('Añadir'),
+        label: Text(i18n.aAdirD20f65),
       ),
       body: Column(
         children: [
@@ -203,7 +207,11 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
                         Icon(Icons.date_range, color: colorScheme.primary),
                         const SizedBox(width: 12),
                         Text(
-                          '${_startDate.day}/${_startDate.month} - ${_endDate.day}/${_endDate.month}/${_endDate.year}',
+                          _formatRangeLabel(
+                            _startDate,
+                            _endDate,
+                            i18n.localeName,
+                          ),
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const Spacer(),
@@ -218,20 +226,20 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
                 Row(
                   children: [
                     _FilterChip(
-                      label: 'Todos',
+                      label: i18n.reservationsOriginAll,
                       selected: _filterOrigin == 'all',
                       onSelected: () => setState(() => _filterOrigin = 'all'),
                     ),
                     const SizedBox(width: 8),
                     _FilterChip(
-                      label: '📞 Manual',
+                      label: i18n.reservationsOriginManual,
                       selected: _filterOrigin == 'manual',
                       onSelected: () => setState(() => _filterOrigin = 'manual'),
                       color: Colors.orange,
                     ),
                     const SizedBox(width: 8),
                     _FilterChip(
-                      label: '🛒 WooCommerce',
+                      label: i18n.reservationsOriginWooCommerce,
                       selected: _filterOrigin == 'woocommerce',
                       onSelected: () => setState(() => _filterOrigin = 'woocommerce'),
                       color: Colors.purple,
@@ -253,10 +261,12 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
 
                 if (filtered.isEmpty) {
                   return EmptyScreen(
-                    message: 'No hay clientes',
+                    message: i18n.reservationsNoCustomers,
                     subtitle: _filterOrigin == 'all'
-                        ? 'No hay clientes en el rango seleccionado'
-                        : 'No hay clientes ${_filterOrigin == 'manual' ? 'manuales' : 'de WooCommerce'}',
+                        ? i18n.reservationsNoCustomersInRange
+                        : _filterOrigin == 'manual'
+                            ? i18n.reservationsNoCustomersManual
+                            : i18n.reservationsNoCustomersWooCommerce,
                     icon: Icons.people_outline,
                   );
                 }
@@ -290,9 +300,9 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
                   ),
                 );
               },
-              loading: () => const LoadingScreen(message: 'Cargando clientes...'),
+              loading: () => LoadingScreen(message: i18n.loadingCustomers),
               error: (error, _) => ErrorScreen(
-                message: 'Error al cargar clientes',
+                message: i18n.reservationsLoadCustomersError,
                 onRetry: () => ref.invalidate(unifiedCustomersProvider(_params)),
               ),
             ),
@@ -302,6 +312,12 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
     );
   }
 
+  String _formatRangeLabel(DateTime start, DateTime end, String localeName) {
+    final startLabel = DateFormat.Md(localeName).format(start);
+    final endLabel = DateFormat.yMd(localeName).format(end);
+    return '$startLabel - $endLabel';
+  }
+
   void _showAddCustomerDialog() {
     _showCustomerDialog(null);
   }
@@ -309,7 +325,7 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
   void _showEditCustomerDialog(ManualCustomer customer) {
     if (!customer.isManual) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Solo se pueden editar clientes manuales')),
+        SnackBar(content: Text(i18n.soloSePuedenEditarClientesManualesE83c06)),
       );
       return;
     }
@@ -341,7 +357,7 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
           } else {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(response.error ?? 'Error al guardar')),
+                SnackBar(content: Text(response.error ?? i18n.customersSaveError)),
               );
             }
           }
@@ -356,11 +372,11 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Notas - ${customer.name}'),
+        title: Text(i18n.customersNotesTitle(customer.name)),
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(
-            hintText: 'Escribe las notas...',
+          decoration: InputDecoration(
+            hintText: i18n.escribeLasNotas771c72,
             border: OutlineInputBorder(),
           ),
           maxLines: 5,
@@ -368,7 +384,7 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () async {
@@ -382,7 +398,7 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
               ref.invalidate(unifiedCustomersProvider(_params));
               if (mounted) Navigator.pop(context);
             },
-            child: const Text('Guardar'),
+            child: Text(i18n.guardarD3270b),
           ),
         ],
       ),
@@ -392,7 +408,7 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
   Future<void> _deleteCustomer(ManualCustomer customer) async {
     if (!customer.isManual) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Solo se pueden eliminar clientes manuales')),
+        SnackBar(content: Text(i18n.soloSePuedenEliminarClientesManuale76681f)),
       );
       return;
     }
@@ -400,17 +416,17 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar cliente'),
-        content: Text('¿Seguro que quieres eliminar a ${customer.name}?'),
+        title: Text(i18n.eliminarCliente63bb53),
+        content: Text(i18n.customersDeleteConfirm(customer.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Eliminar'),
+            child: Text(i18n.eliminar5b5c9f),
           ),
         ],
       ),
@@ -424,7 +440,7 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.error ?? 'Error al eliminar')),
+            SnackBar(content: Text(response.error ?? i18n.customersDeleteError)),
           );
         }
       }
@@ -447,6 +463,7 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return FilterChip(
       label: Text(label),
       selected: selected,
@@ -472,11 +489,13 @@ class _DaySection extends StatelessWidget {
     required this.onEditNotes,
   });
 
-  String _formatDate(String dateStr) {
+  String _formatDate(BuildContext context, String dateStr) {
     try {
       final dt = DateTime.parse(dateStr);
-      final weekdays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-      return '${weekdays[dt.weekday - 1]} ${dt.day}/${dt.month}';
+      final i18n = AppLocalizations.of(context)!;
+      final weekday = DateFormat.E(i18n.localeName).format(dt);
+      final day = DateFormat.Md(i18n.localeName).format(dt);
+      return '$weekday $day';
     } catch (e) {
       return dateStr;
     }
@@ -484,6 +503,7 @@ class _DaySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final manualCount = customers.where((c) => c.isManual).length;
     final wcCount = customers.where((c) => c.isWooCommerce).length;
 
@@ -500,7 +520,7 @@ class _DaySection extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                _formatDate(date),
+                _formatDate(context, date),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -514,7 +534,10 @@ class _DaySection extends StatelessWidget {
                     color: Colors.orange.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text('📞 $manualCount', style: const TextStyle(fontSize: 12)),
+                  child: Text(
+                    i18n.customersManualCount(manualCount),
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ),
               if (wcCount > 0)
                 Container(
@@ -523,7 +546,10 @@ class _DaySection extends StatelessWidget {
                     color: Colors.purple.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text('🛒 $wcCount', style: const TextStyle(fontSize: 12)),
+                  child: Text(
+                    i18n.customersWcCount(wcCount),
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ),
             ],
           ),
@@ -590,6 +616,7 @@ class _CustomerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final borderColor = customer.isManual ? Colors.orange : Colors.purple;
 
@@ -634,18 +661,18 @@ class _CustomerCard extends StatelessWidget {
                   IconButton(
                     onPressed: onEdit,
                     icon: const Icon(Icons.edit, size: 20),
-                    tooltip: 'Editar',
+                    tooltip: i18n.editarEf485e,
                   ),
                   IconButton(
                     onPressed: onDelete,
                     icon: const Icon(Icons.delete, size: 20, color: Colors.red),
-                    tooltip: 'Eliminar',
+                    tooltip: i18n.eliminar5b5c9f,
                   ),
                 ] else ...[
                   IconButton(
                     onPressed: onEditNotes,
                     icon: const Icon(Icons.note_add, size: 20),
-                    tooltip: 'Notas',
+                    tooltip: i18n.notas265b13,
                   ),
                 ],
               ],
@@ -663,7 +690,7 @@ class _CustomerCard extends StatelessWidget {
                       // Botón llamar
                       _ContactButton(
                         icon: Icons.phone,
-                        label: 'Llamar',
+                        label: i18n.llamarC9c110,
                         color: Colors.blue,
                         onTap: () => _launchPhone(customer.phone),
                       ),
@@ -671,7 +698,7 @@ class _CustomerCard extends StatelessWidget {
                       // Botón WhatsApp
                       _ContactButton(
                         icon: Icons.chat,
-                        label: 'WhatsApp',
+                        label: i18n.whatsapp8b777e,
                         color: const Color(0xFF25D366),
                         onTap: () => _launchWhatsApp(customer.phone),
                       ),
@@ -680,7 +707,7 @@ class _CustomerCard extends StatelessWidget {
                     if (customer.email.isNotEmpty)
                       _ContactButton(
                         icon: Icons.email,
-                        label: 'Email',
+                        label: i18n.emailCe8ae9,
                         color: Colors.orange,
                         onTap: () => _launchEmail(customer.email),
                       ),
@@ -755,6 +782,7 @@ class _CustomerFormSheet extends ConsumerStatefulWidget {
 }
 
 class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -790,6 +818,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final ticketsAsync = ref.watch(ticketsProvider);
 
     return DraggableScrollableSheet(
@@ -809,7 +838,9 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                 Row(
                   children: [
                     Text(
-                      widget.customer == null ? 'Añadir Cliente' : 'Editar Cliente',
+                      widget.customer == null
+                          ? i18n.customersAddTitle
+                          : i18n.customersEditTitle,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -826,19 +857,19 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                 // Nombre
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre *',
+                  decoration: InputDecoration(
+                    labelText: i18n.nombre45576f,
                     prefixIcon: Icon(Icons.person),
                   ),
-                  validator: (v) => v?.isEmpty == true ? 'Requerido' : null,
+                  validator: (v) => v?.isEmpty == true ? i18n.commonRequired : null,
                 ),
                 const SizedBox(height: 16),
 
                 // Teléfono
                 TextFormField(
                   controller: _phoneController,
-                  decoration: const InputDecoration(
-                    labelText: 'Teléfono',
+                  decoration: InputDecoration(
+                    labelText: i18n.telFonoD091ea,
                     prefixIcon: Icon(Icons.phone),
                   ),
                   keyboardType: TextInputType.phone,
@@ -848,8 +879,8 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                 // Email
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
+                  decoration: InputDecoration(
+                    labelText: i18n.emailCe8ae9,
                     prefixIcon: Icon(Icons.email),
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -860,8 +891,14 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.calendar_today),
-                  title: const Text('Fecha del evento *'),
-                  subtitle: Text('${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}'),
+                  title: Text(i18n.fechaDelEvento63f6fa),
+                  subtitle: Text(
+                    i18n.commonDateDmy(
+                      _selectedDate.day,
+                      _selectedDate.month,
+                      _selectedDate.year,
+                    ),
+                  ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () async {
                     final date = await showDatePicker(
@@ -879,7 +916,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
 
                 // Tickets
                 Text(
-                  'Tickets',
+                  i18n.ticketsLabel,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -902,15 +939,15 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                     )).toList(),
                   ),
                   loading: () => const CircularProgressIndicator(),
-                  error: (_, __) => const Text('Error al cargar tickets'),
+                  error: (_, __) => Text(i18n.errorAlCargarTicketsAb3af0),
                 ),
                 const SizedBox(height: 16),
 
                 // Notas
                 TextFormField(
                   controller: _notesController,
-                  decoration: const InputDecoration(
-                    labelText: 'Notas',
+                  decoration: InputDecoration(
+                    labelText: i18n.notas265b13,
                     prefixIcon: Icon(Icons.note),
                     alignLabelWithHint: true,
                   ),
@@ -929,7 +966,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                             height: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Guardar'),
+                        : Text(i18n.guardarD3270b),
                   ),
                 ),
 
@@ -977,6 +1014,7 @@ class _TicketRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -1022,6 +1060,7 @@ class _ContactButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),

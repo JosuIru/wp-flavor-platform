@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -10,6 +11,9 @@ import 'core/api/api_client.dart';
 import 'core/providers/providers.dart'; // Importar providers compartidos
 import 'core/providers/sync_provider.dart';
 import 'core/services/app_sync_service.dart';
+import 'core/providers/admin_modules_provider.dart';
+import 'core/modules/lazy/module_lazy_loader.dart';
+import 'core/modules/module_screen_registry.dart';
 import 'features/layouts/layout_config.dart';
 import 'features/admin/dashboard_screen.dart';
 import 'features/admin/admin_reservations_screen.dart';
@@ -20,6 +24,8 @@ import 'features/admin/customers_screen.dart';
 import 'features/admin/manual_customers_screen.dart';
 import 'features/admin/settings/language_screen.dart' show LanguageScreen, languageProvider;
 import 'features/admin/settings/notifications_screen.dart';
+import 'features/modules/module_hub_screen.dart';
+import 'features/admin/modules_admin_screen_dynamic.dart';
 import 'features/admin/settings/support_screen.dart';
 import 'features/admin/settings/server_config_screen.dart';
 import 'features/admin/camps/camps_management_screen.dart';
@@ -42,6 +48,11 @@ void main() async {
 
   final apiClient = ApiClient(baseUrl: apiUrl);
   debugPrint('[ADMIN MAIN] ApiClient creado con baseUrl: ${apiClient.currentBaseUrl}');
+
+  // Registrar todas las pantallas de módulos
+  final registry = ModuleScreenRegistry();
+  registry.registerAllScreens();
+  debugPrint('[ADMIN MAIN] Pantallas de módulos registradas');
 
   runApp(
     ProviderScope(
@@ -203,13 +214,10 @@ class ChatIAAdminApp extends ConsumerWidget {
     return MaterialApp(
       title: appTitle,
       debugShowCheckedModeBanner: AppConfig.isDebug,
-      // Localización en español
       locale: const Locale('es', 'ES'),
-      supportedLocales: const [
-        Locale('es', 'ES'),
-        Locale('en', 'US'),
-      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -362,6 +370,7 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   @override
   void initState() {
     super.initState();
@@ -392,7 +401,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              'Conectando...',
+              i18n.loadingConnecting,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),
@@ -413,6 +422,7 @@ class AdminSetupScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _urlController = TextEditingController();
   bool _isLoading = false;
   String? _error;
@@ -436,13 +446,16 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
       final shouldProceed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('QR Escaneado'),
+          title: Text(i18n.adminSetupQrScannedTitle),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Contenido del QR:', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  i18n.adminSetupQrContentLabel,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.all(12),
@@ -461,11 +474,11 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancelar'),
+              child: Text(i18n.commonCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Conectar'),
+              child: Text(i18n.adminSetupConnect),
             ),
           ],
         ),
@@ -495,7 +508,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
         // Validar que sea QR de admin
         if (qrType != 'admin') {
           setState(() {
-            _error = '⚠️ Este QR es para la app de clientes.\n\nUsa el QR de Admin (amarillo) desde el panel de WordPress.';
+            _error = i18n.adminSetupQrClientOnly;
           });
           return;
         }
@@ -503,7 +516,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
         // Validar que tenga token
         if (adminToken == null || adminToken.isEmpty) {
           setState(() {
-            _error = '❌ QR de Admin inválido.\n\nEl código QR no incluye token de seguridad. Genera uno nuevo desde WordPress.';
+            _error = i18n.adminSetupQrInvalid;
           });
           return;
         }
@@ -522,7 +535,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
     } else {
       // URL directa sin JSON - no permitir para admin
       setState(() {
-        _error = '⚠️ La app Admin requiere escanear el QR seguro.\n\nEncontrarás el QR de Admin (amarillo) en WordPress > Chat IA > Apps Móviles.';
+        _error = i18n.adminSetupRequiresSecureQr;
       });
       return;
     }
@@ -546,7 +559,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
         serverUrl = 'https://$serverUrl';
       } else {
         setState(() {
-          _error = 'QR no reconocido: $url\n\nDebe contener una URL válida';
+          _error = i18n.adminSetupQrNotRecognized(url);
         });
         return;
       }
@@ -565,7 +578,9 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
       final testClient = ApiClient(baseUrl: fullUrl);
       final response = await testClient.getBusinessInfo().timeout(
         const Duration(seconds: 15),
-        onTimeout: () => ApiResponse<Map<String, dynamic>>.error('Timeout - el servidor tardó más de 15 segundos'),
+        onTimeout: () => ApiResponse<Map<String, dynamic>>.error(
+          i18n.adminSetupTimeoutServer,
+        ),
       );
 
       debugPrint('Respuesta: success=${response.success}, error=${response.error}');
@@ -576,13 +591,15 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
           debugPrint('Validando token de admin...');
           final tokenResponse = await testClient.validateAdminSiteToken(adminToken).timeout(
             const Duration(seconds: 10),
-            onTimeout: () => ApiResponse<Map<String, dynamic>>.error('Timeout validando token'),
+            onTimeout: () => ApiResponse<Map<String, dynamic>>.error(
+              i18n.adminSetupTimeoutToken,
+            ),
           );
 
           if (!tokenResponse.success) {
             setState(() {
               _isLoading = false;
-              _error = '❌ Token de seguridad inválido.\n\nEl QR puede estar obsoleto. Genera uno nuevo desde WordPress > Chat IA > Apps Móviles.';
+              _error = i18n.adminSetupInvalidToken;
             });
             return;
           }
@@ -607,22 +624,25 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('✓ Servidor configurado correctamente'),
+            SnackBar(
+              content: Text(i18n.adminSetupServerConfiguredSuccess),
               backgroundColor: Colors.green,
             ),
           );
         }
       } else {
         setState(() {
-          _error = 'Error del servidor: ${response.error ?? "Respuesta inválida"}\n\nURL: $fullUrl';
+          _error = i18n.adminSetupServerError(
+            response.error ?? i18n.commonInvalidResponse,
+            fullUrl,
+          );
         });
       }
     } catch (e, stack) {
       debugPrint('Error de conexión: $e');
       debugPrint('Stack: $stack');
       setState(() {
-        _error = 'Error de conexión:\n$e\n\nURL intentada: $serverUrl';
+        _error = i18n.adminSetupConnectionError(e.toString(), serverUrl);
       });
     } finally {
       setState(() {
@@ -657,7 +677,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
 
               // Título
               Text(
-                'Configurar Servidor',
+                i18n.adminSetupTitle,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -665,7 +685,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Conecta la app con tu servidor WordPress',
+                i18n.adminSetupSubtitle,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.outline,
                     ),
@@ -679,18 +699,18 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
                 child: FilledButton.icon(
                   onPressed: _isLoading ? null : _scanQR,
                   icon: const Icon(Icons.qr_code_scanner, size: 28),
-                  label: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                  label: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Text(
-                      'Escanear código QR',
-                      style: TextStyle(fontSize: 16),
+                      i18n.adminSetupScanQrButton,
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               Text(
-                'Encuentra el QR en WordPress:\nChat IA → Configuración → Apps Móviles',
+                i18n.adminSetupFindQrHint,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.outline,
                     ),
@@ -706,7 +726,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      'o ingresa la URL',
+                      i18n.adminSetupOrEnterUrl,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.outline,
                         fontSize: 12,
@@ -723,8 +743,8 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
               TextField(
                 controller: _urlController,
                 decoration: InputDecoration(
-                  labelText: 'URL del servidor',
-                  hintText: 'https://tu-sitio.com',
+                  labelText: i18n.adminSetupServerUrlLabel,
+                  hintText: i18n.adminSetupServerUrlHint,
                   prefixIcon: const Icon(Icons.language),
                   errorText: _error,
                   suffixIcon: _isLoading
@@ -796,7 +816,7 @@ class _QRScannerSetupScreenState extends State<_QRScannerSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Escanear QR'),
+        title: Text(AppLocalizations.of(context)!.adminSetupScanQrTitle),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
@@ -837,11 +857,11 @@ class _QRScannerSetupScreenState extends State<_QRScannerSetupScreen> {
                   ],
                 ),
               ),
-              child: const Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Apunta al código QR',
+                    AppLocalizations.of(context)!.adminSetupScanQrInstruction,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -850,7 +870,7 @@ class _QRScannerSetupScreenState extends State<_QRScannerSetupScreen> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'Lo encontrarás en el panel de WordPress',
+                    AppLocalizations.of(context)!.adminSetupScanQrSubtitle,
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
@@ -876,6 +896,7 @@ class AdminLoginScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -949,7 +970,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
     if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(ref.read(authStateProvider).error ?? 'Error de login'),
+          content: Text(ref.read(authStateProvider).error ?? i18n.adminLoginError),
           backgroundColor: Colors.red,
         ),
       );
@@ -1020,23 +1041,24 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
 
   Widget _buildSiteName() {
     final siteInfo = ref.watch(siteInfoProvider);
+    final i18n = AppLocalizations.of(context)!;
 
     return siteInfo.when(
       data: (info) {
         final siteName = info?['name'] as String?;
         return Text(
-          siteName ?? AppConfig.adminAppName,
+          siteName ?? i18n.adminAppTitle,
           style: Theme.of(context).textTheme.headlineMedium,
           textAlign: TextAlign.center,
         );
       },
       loading: () => Text(
-        AppConfig.adminAppName,
+        i18n.adminAppTitle,
         style: Theme.of(context).textTheme.headlineMedium,
         textAlign: TextAlign.center,
       ),
       error: (_, __) => Text(
-        AppConfig.adminAppName,
+        i18n.adminAppTitle,
         style: Theme.of(context).textTheme.headlineMedium,
         textAlign: TextAlign.center,
       ),
@@ -1052,7 +1074,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.dns),
-            tooltip: 'Configurar servidor',
+            tooltip: i18n.adminLoginConfigServerTooltip,
             onPressed: () async {
               await Navigator.push(
                 context,
@@ -1081,7 +1103,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                   _buildSiteName(),
                   const SizedBox(height: 8),
                   Text(
-                    'Inicia sesión con tu cuenta de WordPress',
+                    i18n.adminLoginSubtitle,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context)
                               .colorScheme
@@ -1123,7 +1145,9 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    isConfigured ? 'Servidor configurado' : 'Servidor no configurado',
+                                    isConfigured
+                                        ? i18n.adminServerConfiguredStatus
+                                        : i18n.adminServerNotConfiguredStatus,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
@@ -1137,9 +1161,9 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                                       overflow: TextOverflow.ellipsis,
                                     )
                                   else
-                                    const Text(
-                                      'Toca el icono ⚙️ arriba para configurar',
-                                      style: TextStyle(fontSize: 11),
+                                    Text(
+                                      i18n.adminServerConfigureHint,
+                                      style: const TextStyle(fontSize: 11),
                                     ),
                                 ],
                               ),
@@ -1155,14 +1179,14 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                       children: [
                         TextFormField(
                           controller: _usernameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Usuario',
-                            prefixIcon: Icon(Icons.person),
+                          decoration: InputDecoration(
+                            labelText: i18n.adminLoginUsernameLabel,
+                            prefixIcon: const Icon(Icons.person),
                           ),
                           autofillHints: const [AutofillHints.username],
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Introduce tu usuario';
+                              return i18n.adminLoginUsernameRequired;
                             }
                             return null;
                           },
@@ -1172,7 +1196,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                         TextFormField(
                           controller: _passwordController,
                           decoration: InputDecoration(
-                            labelText: 'Contraseña',
+                            labelText: i18n.adminLoginPasswordLabel,
                             prefixIcon: const Icon(Icons.lock),
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -1189,7 +1213,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                           obscureText: _obscurePassword,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Introduce tu contraseña';
+                              return i18n.adminLoginPasswordRequired;
                             }
                             return null;
                           },
@@ -1211,7 +1235,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                         onTap: () {
                           setState(() => _rememberCredentials = !_rememberCredentials);
                         },
-                        child: const Text('Recordar credenciales'),
+                        child: Text(i18n.adminLoginRememberCredentials),
                       ),
                     ],
                   ),
@@ -1224,7 +1248,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Iniciar sesión'),
+                        : Text(i18n.adminLoginButton),
                   ),
                 ],
               ),
@@ -1253,53 +1277,255 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
+
+    // Obtener módulos activos
+    final modulesAsync = ref.watch(adminModulesProvider);
+
+    return modulesAsync.when(
+      loading: () => const Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('Cargando...'),
+            ],
+          ),
+        ),
+      ),
+      error: (error, stack) {
+        debugPrint('❌ Error al cargar módulos: $error');
+        return Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                const SizedBox(height: 16),
+                Text('Error: ${error.toString()}'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => ref.invalidate(adminModulesProvider),
+                  child: const Text('Reintentar'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      data: (modules) => _buildAdminScaffold(context, i18n, modules),
+    );
+  }
+
+  Widget _buildAdminScaffold(
+    BuildContext context,
+    AppLocalizations i18n,
+    List<String> modules,
+  ) {
+    // Construir tabs dinámicamente basados en módulos activos
+    final tabs = <AdminTab>[];
+
+    // 1. Dashboard (siempre presente)
+    tabs.add(AdminTab(
+      id: 'dashboard',
+      label: i18n.adminBottomNavDashboard,
+      icon: Icons.dashboard_outlined,
+      selectedIcon: Icons.dashboard,
+      screen: DashboardScreen(
+        onNavigateToReservations: () {},
+        onNavigateToChat: () {},
+      ),
+    ));
+
+    // 2. Reservas (si está activo)
+    final hasReservations = modules.any((m) =>
+      m == 'reservas' ||
+      m == 'reservations' ||
+      m == 'experiences' ||
+      m == 'eventos' ||
+      m == 'calendar'
+    );
+
+    if (hasReservations) {
+      tabs.add(AdminTab(
+        id: 'reservations',
+        label: i18n.adminBottomNavReservations,
+        icon: Icons.calendar_today_outlined,
+        selectedIcon: Icons.calendar_today,
+        screen: const AdminReservationsScreen(),
+      ));
+    }
+
+    // 3. Chat (si está activo)
+    final hasChat = modules.any((m) => m.contains('chat'));
+
+    if (hasChat) {
+      tabs.add(AdminTab(
+        id: 'chat',
+        label: i18n.adminBottomNavChat,
+        icon: Icons.smart_toy_outlined,
+        selectedIcon: Icons.smart_toy,
+        screen: const AdminChatScreen(),
+      ));
+    }
+
+    // 4. Módulos (si hay módulos con pantallas implementadas)
+    final loader = ModuleLazyLoader();
+    final hasModulesWithScreens = modules.any((m) =>
+      loader.getScreenBuilder(m) != null ||
+      loader.getScreenBuilder(m.replaceAll('_', '-')) != null ||
+      loader.getScreenBuilder(m.replaceAll('-', '_')) != null
+    );
+
+    if (hasModulesWithScreens) {
+      tabs.add(AdminTab(
+        id: 'modules',
+        label: i18n.adminModulesDashboardTitle,
+        icon: Icons.extension_outlined,
+        selectedIcon: Icons.extension,
+        screen: const ModulesAdminScreenDynamic(),
+      ));
+    }
+
+    // 5. Settings (siempre presente)
+    tabs.add(AdminTab(
+      id: 'settings',
+      label: i18n.adminBottomNavSettings,
+      icon: Icons.settings_outlined,
+      selectedIcon: Icons.settings,
+      screen: const AdminSettingsScreen(),
+    ));
+
+    final bottomTabs = tabs.take(4).toList();
+    final extraTabs = tabs.skip(4).toList();
+
+    // Construir drawer items
+    final drawerItems = <AdminDrawerItem>[
+      for (final tab in tabs)
+        AdminDrawerItem(
+          label: tab.label,
+          icon: tab.icon,
+          screen: tab.screen,
+        ),
+      AdminDrawerItem(
+        label: i18n.adminDrawerStats,
+        icon: Icons.query_stats_outlined,
+        screen: const StatsScreen(),
+      ),
+      AdminDrawerItem(
+        label: i18n.adminDrawerCalendar,
+        icon: Icons.calendar_month_outlined,
+        screen: const CalendarViewScreen(),
+      ),
+      AdminDrawerItem(
+        label: i18n.adminDrawerCustomers,
+        icon: Icons.people_outline,
+        screen: const CustomersScreen(),
+      ),
+      AdminDrawerItem(
+        label: i18n.adminDrawerManualCustomers,
+        icon: Icons.person_add_alt_1_outlined,
+        screen: const ManualCustomersScreen(),
+      ),
+      AdminDrawerItem(
+        label: i18n.adminDrawerCamps,
+        icon: Icons.terrain_outlined,
+        screen: const CampsManagementScreen(),
+      ),
+    ];
+
+    final hasDrawer = extraTabs.isNotEmpty || drawerItems.isNotEmpty;
+
     return Scaffold(
+      appBar: hasDrawer
+          ? AppBar(
+              title: Text(i18n.adminAppTitle),
+            )
+          : null,
+      drawer: hasDrawer
+          ? Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                    ),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        i18n.adminAppTitle,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                  ),
+                  ...drawerItems.map((item) {
+                    return ListTile(
+                      leading: Icon(item.icon),
+                      title: Text(item.label),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => item.screen),
+                        );
+                      },
+                    );
+                  }),
+                ],
+              ),
+            )
+          : null,
       body: IndexedStack(
         index: _currentIndex,
-        children: [
-          // Dashboard
-          DashboardScreen(
-            onNavigateToReservations: () => _navigateToTab(1),
-            onNavigateToChat: () => _navigateToTab(2),
-          ),
-          // Reservas
-          const AdminReservationsScreen(),
-          // Chat IA
-          const AdminChatScreen(),
-          // Configuración
-          const AdminSettingsScreen(),
-        ],
+        children: bottomTabs.map((tab) => tab.screen).toList(),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
           setState(() => _currentIndex = index);
         },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.calendar_today_outlined),
-            selectedIcon: Icon(Icons.calendar_today),
-            label: 'Reservas',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.smart_toy_outlined),
-            selectedIcon: Icon(Icons.smart_toy),
-            label: 'Chat IA',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Ajustes',
-          ),
-        ],
+        destinations: bottomTabs
+            .map((tab) => NavigationDestination(
+                  icon: Icon(tab.icon),
+                  selectedIcon: Icon(tab.selectedIcon),
+                  label: tab.label,
+                ))
+            .toList(),
       ),
     );
   }
+}
+
+/// Modelo para un tab del admin
+class AdminTab {
+  final String id;
+  final String label;
+  final IconData icon;
+  final IconData selectedIcon;
+  final Widget screen;
+
+  const AdminTab({
+    required this.id,
+    required this.label,
+    required this.icon,
+    required this.selectedIcon,
+    required this.screen,
+  });
+}
+
+/// Modelo para un item del drawer
+class AdminDrawerItem {
+  final String label;
+  final IconData icon;
+  final Widget screen;
+
+  const AdminDrawerItem({
+    required this.label,
+    required this.icon,
+    required this.screen,
+  });
 }
 
 /// Pantalla de ajustes
@@ -1308,11 +1534,12 @@ class AdminSettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context)!;
     final user = ref.watch(authStateProvider).user;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ajustes'),
+        title: Text(i18n.adminSettingsTitle),
       ),
       body: ListView(
         children: [
@@ -1332,7 +1559,7 @@ class AdminSettingsScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  user?['name'] ?? 'Usuario',
+                  user?['name'] ?? i18n.adminSettingsUserFallback,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1358,7 +1585,7 @@ class AdminSettingsScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'Configuración',
+              i18n.adminSettingsSectionConfig,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.primary,
@@ -1369,16 +1596,16 @@ class AdminSettingsScreen extends ConsumerWidget {
             builder: (context, ref, _) {
               final language = ref.watch(languageProvider);
               final languageNames = {
-                'es': 'Espanol',
-                'eu': 'Euskera',
-                'en': 'English',
-                'fr': 'Francais',
-                'ca': 'Catala',
+                'es': i18n.languageNameEs,
+                'eu': i18n.languageNameEu,
+                'en': i18n.languageNameEn,
+                'fr': i18n.languageNameFr,
+                'ca': i18n.languageNameCa,
               };
               return ListTile(
                 leading: const Icon(Icons.language),
-                title: const Text('Idioma'),
-                subtitle: Text(languageNames[language] ?? 'Espanol'),
+                title: Text(i18n.adminSettingsLanguageTitle),
+                subtitle: Text(languageNames[language] ?? i18n.languageNameEs),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   Navigator.push(
@@ -1391,13 +1618,41 @@ class AdminSettingsScreen extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.notifications),
-            title: const Text('Notificaciones'),
-            subtitle: const Text('Configurar alertas'),
+            title: Text(i18n.adminSettingsNotificationsTitle),
+            subtitle: Text(i18n.adminSettingsNotificationsSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.extension),
+            title: Text(i18n.adminSettingsModulesTitle),
+            subtitle: Text(i18n.adminSettingsModulesSubtitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ModuleHubScreen(isAdmin: true),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.dashboard_customize),
+            title: Text(i18n.adminModulesDashboardTitle),
+            subtitle: Text(i18n.adminModulesDashboardSubtitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ModulesAdminScreenDynamic(),
+                ),
               );
             },
           ),
@@ -1409,11 +1664,11 @@ class AdminSettingsScreen extends ConsumerWidget {
               Icons.dns,
               color: Theme.of(context).colorScheme.secondary,
             ),
-            title: const Text('Servidor'),
+            title: Text(i18n.adminSettingsServerTitle),
             subtitle: FutureBuilder<String>(
               future: ServerConfig.getServerUrl(),
               builder: (context, snapshot) {
-                return Text(snapshot.data ?? 'Cargando...');
+                return Text(snapshot.data ?? i18n.adminSettingsServerLoading);
               },
             ),
             trailing: const Icon(Icons.chevron_right),
@@ -1424,13 +1679,50 @@ class AdminSettingsScreen extends ConsumerWidget {
               );
             },
           ),
+          ListTile(
+            leading: Icon(
+              Icons.sync,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            title: Text(i18n.commonResyncTitle),
+            subtitle: Text(i18n.commonResyncSubtitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(i18n.commonResyncInProgress),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              final result = await ref.read(syncProvider.notifier).refresh();
+              if (!context.mounted) return;
+              if (result.success) {
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(i18n.commonResyncSuccess),
+                    backgroundColor: Colors.green,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              } else {
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(i18n.commonResyncError),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+          ),
           const Divider(),
 
           // App Cliente
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'Aplicaciones',
+              i18n.adminSettingsAppsSection,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.primary,
@@ -1449,15 +1741,15 @@ class AdminSettingsScreen extends ConsumerWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
-            title: const Text('App de Cliente'),
-            subtitle: const Text('Abrir app para clientes'),
+            title: Text(i18n.adminSettingsClientAppTitle),
+            subtitle: Text(i18n.adminSettingsClientAppSubtitle),
             trailing: const Icon(Icons.open_in_new),
             onTap: () async {
               final success = await AppConfig.openClientApp();
               if (!success && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('La app de cliente no está instalada'),
+                  SnackBar(
+                    content: Text(i18n.adminSettingsClientAppMissing),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -1472,8 +1764,8 @@ class AdminSettingsScreen extends ConsumerWidget {
               Icons.support_agent,
               color: Theme.of(context).colorScheme.primary,
             ),
-            title: const Text('Soporte y ayuda'),
-            subtitle: const Text('Contactar con el equipo de desarrollo'),
+            title: Text(i18n.adminSettingsSupportTitle),
+            subtitle: Text(i18n.adminSettingsSupportSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.push(
@@ -1487,12 +1779,12 @@ class AdminSettingsScreen extends ConsumerWidget {
           // Info de la app
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('Version'),
+            title: Text(i18n.adminSettingsVersionTitle),
             subtitle: Text(AppConfig.appVersion),
           ),
           ListTile(
             leading: const Icon(Icons.code),
-            title: const Text('Desarrollado por'),
+            title: Text(i18n.adminSettingsDevelopedByTitle),
             subtitle: Text(AppConfig.developerName),
           ),
           const Divider(),
@@ -1504,19 +1796,19 @@ class AdminSettingsScreen extends ConsumerWidget {
               color: Theme.of(context).colorScheme.error,
             ),
             title: Text(
-              'Cerrar sesión',
+              i18n.adminSettingsLogoutTitle,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('Cerrar sesión'),
-                  content: const Text('¿Seguro que quieres cerrar sesión?'),
+                  title: Text(i18n.adminSettingsLogoutTitle),
+                  content: Text(i18n.adminSettingsLogoutConfirm),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancelar'),
+                      child: Text(i18n.commonCancel),
                     ),
                     FilledButton(
                       onPressed: () {
@@ -1526,7 +1818,7 @@ class AdminSettingsScreen extends ConsumerWidget {
                       style: FilledButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.error,
                       ),
-                      child: const Text('Cerrar sesión'),
+                      child: Text(i18n.adminSettingsLogoutAction),
                     ),
                   ],
                 ),

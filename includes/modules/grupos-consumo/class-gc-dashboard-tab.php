@@ -63,6 +63,10 @@ class Flavor_GC_Dashboard_Tab {
         add_action('wp_ajax_gc_actualizar_cantidad_lista', [$this, 'ajax_actualizar_cantidad']);
         add_action('wp_ajax_gc_vaciar_lista_compra', [$this, 'ajax_vaciar_lista']);
         add_action('wp_ajax_gc_convertir_lista_pedido', [$this, 'ajax_convertir_a_pedido']);
+        add_action('admin_post_gc_exportar_resumen_usuario', [$this, 'exportar_resumen_usuario']);
+        add_action('admin_post_gc_exportar_ciclo_usuario', [$this, 'exportar_ciclo_usuario']);
+        add_action('admin_post_gc_exportar_resumen_usuario_pdf', [$this, 'exportar_resumen_usuario_pdf']);
+        add_action('admin_post_gc_exportar_ciclo_usuario_pdf', [$this, 'exportar_ciclo_usuario_pdf']);
 
         // Assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
@@ -75,6 +79,13 @@ class Flavor_GC_Dashboard_Tab {
      * @return array
      */
     public function registrar_tabs($tabs) {
+        $tabs['gc-resumen'] = [
+            'label' => __('Resumen GC', 'flavor-chat-ia'),
+            'icon' => 'chart-line',
+            'callback' => [$this, 'render_tab_resumen'],
+            'orden' => 24,
+        ];
+
         // Tab: Lista de la Compra
         $tabs['gc-lista-compra'] = [
             'label' => __('Lista de la Compra', 'flavor-chat-ia'),
@@ -101,6 +112,750 @@ class Flavor_GC_Dashboard_Tab {
         ];
 
         return $tabs;
+    }
+
+    /**
+     * Renderiza el tab de resumen
+     */
+    public function render_tab_resumen() {
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            echo '<p>' . __('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+        $tabla_suscripciones = $wpdb->prefix . 'flavor_gc_suscripciones';
+
+        $pedidos_usuario = 0;
+        $gasto_total = 0.0;
+        $ticket_medio = 0.0;
+        $pedidos_mes = 0;
+        $importe_mes = 0.0;
+        $importe_mes_anterior = 0.0;
+        $variacion_mes = 0.0;
+        $ultimo_ciclo = null;
+        $importe_ultimo_ciclo = 0.0;
+        $importe_ciclo_activo = 0.0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            $pedidos_usuario = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
+                $user_id
+            ));
+            $gasto_total = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d",
+                $user_id
+            ));
+            $ticket_medio = $pedidos_usuario > 0 ? ($gasto_total / $pedidos_usuario) : 0.0;
+            $inicio_mes = gmdate('Y-m-01 00:00:00');
+            $pedidos_mes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d AND fecha_pedido >= %s",
+                $user_id,
+                $inicio_mes
+            ));
+            $importe_mes = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND fecha_pedido >= %s",
+                $user_id,
+                $inicio_mes
+            ));
+
+            $inicio_mes_anterior = gmdate('Y-m-01 00:00:00', strtotime('-1 month'));
+            $fin_mes_anterior = gmdate('Y-m-t 23:59:59', strtotime('-1 month'));
+            $importe_mes_anterior = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND fecha_pedido BETWEEN %s AND %s",
+                $user_id,
+                $inicio_mes_anterior,
+                $fin_mes_anterior
+            ));
+
+            if ($importe_mes_anterior > 0) {
+                $variacion_mes = (($importe_mes - $importe_mes_anterior) / $importe_mes_anterior) * 100;
+            } elseif ($importe_mes > 0) {
+                $variacion_mes = 100;
+            }
+
+            $ultimo_ciclo_id = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT ciclo_id FROM {$tabla_pedidos} WHERE usuario_id = %d GROUP BY ciclo_id ORDER BY MAX(fecha_pedido) DESC LIMIT 1",
+                $user_id
+            ));
+            if ($ultimo_ciclo_id) {
+                $ultimo_post = get_post($ultimo_ciclo_id);
+                $ultimo_ciclo = $ultimo_post ? $ultimo_post->post_title : null;
+                $importe_ultimo_ciclo = (float) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
+                    $user_id,
+                    $ultimo_ciclo_id
+                ));
+            }
+        }
+
+        $consumidor_id = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_consumidores} WHERE usuario_id = %d LIMIT 1",
+            $user_id
+        ));
+
+        $suscripciones_usuario = 0;
+        if ($consumidor_id) {
+            $suscripciones_usuario = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_suscripciones} WHERE consumidor_id = %d",
+                $consumidor_id
+            ));
+        }
+
+        $total_productores = wp_count_posts('gc_productor')->publish ?? 0;
+        $total_productos = wp_count_posts('gc_producto')->publish ?? 0;
+
+        $ciclos_disponibles = $this->obtener_ciclos_usuario($user_id);
+        $filtro_ciclo = isset($_GET['gc_ciclo']) ? absint($_GET['gc_ciclo']) : 0;
+        if ($filtro_ciclo && !isset($ciclos_disponibles[$filtro_ciclo])) {
+            $filtro_ciclo = 0;
+        }
+        $ciclo = $this->obtener_ciclo_activo();
+        $alertas = [];
+        if ($ciclo) {
+            $cierre_ts = $ciclo['fecha_cierre'] ? strtotime($ciclo['fecha_cierre']) : 0;
+            $entrega_ts = $ciclo['fecha_entrega'] ? strtotime($ciclo['fecha_entrega']) : 0;
+            $ahora = current_time('timestamp');
+            if ($cierre_ts && ($cierre_ts - $ahora) <= 48 * HOUR_IN_SECONDS && ($cierre_ts - $ahora) > 0) {
+                $alertas[] = __('El ciclo cierra en menos de 48 horas.', 'flavor-chat-ia');
+            }
+            if ($entrega_ts && ($entrega_ts - $ahora) <= 24 * HOUR_IN_SECONDS && ($entrega_ts - $ahora) > 0) {
+                $alertas[] = __('La entrega es en menos de 24 horas.', 'flavor-chat-ia');
+            }
+        }
+        if ($ciclo && Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            $importe_ciclo_activo = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
+                $user_id,
+                $ciclo['id']
+            ));
+        }
+
+        if ($filtro_ciclo && Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            $importe_ciclo_activo = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
+                $user_id,
+                $filtro_ciclo
+            ));
+        }
+
+        $detalle_ciclo = [];
+        if ($filtro_ciclo && Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            $detalle_ciclo = $wpdb->get_results($wpdb->prepare(
+                "SELECT p.producto_id, p.cantidad, p.precio_unitario, (p.cantidad * p.precio_unitario) as total,
+                        pr.post_title as producto
+                 FROM {$tabla_pedidos} p
+                 LEFT JOIN {$wpdb->posts} pr ON pr.ID = p.producto_id
+                 WHERE p.usuario_id = %d AND p.ciclo_id = %d",
+                $user_id,
+                $filtro_ciclo
+            ));
+        }
+
+        ?>
+        <div class="gc-panel">
+            <?php $links_nav = $this->get_gc_page_links(); ?>
+            <?php if (!empty($links_nav)): ?>
+                <nav class="gc-nav" aria-label="<?php echo esc_attr__('Navegación Grupos de Consumo', 'flavor-chat-ia'); ?>">
+                    <?php foreach ($links_nav as $link): ?>
+                        <a class="gc-nav-link <?php echo $link['active'] ? 'is-active' : ''; ?>" href="<?php echo esc_url($link['url']); ?>">
+                            <?php echo esc_html($link['label']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+            <?php endif; ?>
+            <?php if (!empty($alertas)): ?>
+                <div class="gc-panel-alerts">
+                    <?php foreach ($alertas as $alerta): ?>
+                        <div class="gc-panel-alert"><?php echo esc_html($alerta); ?></div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            <div class="gc-panel-kpis">
+                <div class="gc-panel-card">
+                    <span class="gc-panel-label"><?php _e('Productores', 'flavor-chat-ia'); ?></span>
+                    <strong class="gc-panel-value"><?php echo number_format_i18n($total_productores); ?></strong>
+                </div>
+                <div class="gc-panel-card">
+                    <span class="gc-panel-label"><?php _e('Productos', 'flavor-chat-ia'); ?></span>
+                    <strong class="gc-panel-value"><?php echo number_format_i18n($total_productos); ?></strong>
+                </div>
+                <div class="gc-panel-card">
+                    <span class="gc-panel-label"><?php _e('Mis pedidos', 'flavor-chat-ia'); ?></span>
+                    <strong class="gc-panel-value"><?php echo number_format_i18n($pedidos_usuario); ?></strong>
+                </div>
+                <div class="gc-panel-card">
+                    <span class="gc-panel-label"><?php _e('Mis suscripciones', 'flavor-chat-ia'); ?></span>
+                    <strong class="gc-panel-value"><?php echo number_format_i18n($suscripciones_usuario); ?></strong>
+                </div>
+                <div class="gc-panel-card">
+                    <span class="gc-panel-label"><?php _e('Gasto total', 'flavor-chat-ia'); ?></span>
+                    <strong class="gc-panel-value"><?php echo number_format_i18n($gasto_total, 2); ?> €</strong>
+                </div>
+                <div class="gc-panel-card">
+                    <span class="gc-panel-label"><?php _e('Ticket medio', 'flavor-chat-ia'); ?></span>
+                    <strong class="gc-panel-value"><?php echo number_format_i18n($ticket_medio, 2); ?> €</strong>
+                </div>
+                <div class="gc-panel-card">
+                    <span class="gc-panel-label"><?php _e('Pedidos este mes', 'flavor-chat-ia'); ?></span>
+                    <strong class="gc-panel-value"><?php echo number_format_i18n($pedidos_mes); ?></strong>
+                </div>
+                <div class="gc-panel-card">
+                    <span class="gc-panel-label"><?php _e('Facturación este mes', 'flavor-chat-ia'); ?></span>
+                    <strong class="gc-panel-value"><?php echo number_format_i18n($importe_mes, 2); ?> €</strong>
+                </div>
+            </div>
+
+            <div class="gc-panel-section">
+                <h3><?php _e('Filtrar por ciclo', 'flavor-chat-ia'); ?></h3>
+                <form method="get" class="gc-panel-filtro">
+                    <?php if (!empty($_GET['tab'])): ?>
+                        <input type="hidden" name="tab" value="<?php echo esc_attr($_GET['tab']); ?>">
+                    <?php endif; ?>
+                    <select name="gc_ciclo">
+                        <option value="0"><?php _e('Todos los ciclos', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($ciclos_disponibles as $ciclo_id => $ciclo_nombre): ?>
+                            <option value="<?php echo esc_attr($ciclo_id); ?>" <?php selected($filtro_ciclo, $ciclo_id); ?>>
+                                <?php echo esc_html($ciclo_nombre); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="gc-btn gc-btn-secondary"><?php _e('Aplicar', 'flavor-chat-ia'); ?></button>
+                </form>
+            </div>
+
+            <div class="gc-panel-section">
+                <h3><?php _e('Ciclo actual', 'flavor-chat-ia'); ?></h3>
+                <?php if ($ciclo): ?>
+                    <div class="gc-panel-ciclo">
+                        <p><strong><?php echo esc_html($ciclo['titulo']); ?></strong></p>
+                        <p><?php printf(__('Cierre: %s', 'flavor-chat-ia'), esc_html($ciclo['fecha_cierre'])); ?></p>
+                        <p><?php printf(__('Entrega: %s', 'flavor-chat-ia'), esc_html($ciclo['fecha_entrega'])); ?></p>
+                        <?php if (!empty($ciclo['lugar_entrega'])): ?>
+                            <p><?php printf(__('Lugar: %s', 'flavor-chat-ia'), esc_html($ciclo['lugar_entrega'])); ?></p>
+                        <?php endif; ?>
+                    </div>
+                <?php else: ?>
+                    <p class="gc-panel-muted"><?php _e('No hay ciclo abierto en este momento.', 'flavor-chat-ia'); ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="gc-panel-section">
+                <h3><?php _e('Comparativa mensual', 'flavor-chat-ia'); ?></h3>
+                <?php if ($pedidos_usuario > 0): ?>
+                    <p class="gc-panel-muted">
+                        <?php _e('Variación respecto al mes anterior', 'flavor-chat-ia'); ?>:
+                        <strong class="gc-panel-trend <?php echo $variacion_mes >= 0 ? 'gc-trend-up' : 'gc-trend-down'; ?>">
+                            <?php echo number_format_i18n($variacion_mes, 1); ?>%
+                        </strong>
+                    </p>
+                <?php else: ?>
+                    <p class="gc-panel-muted"><?php _e('Aún no hay suficientes datos para comparar.', 'flavor-chat-ia'); ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="gc-panel-section">
+                <h3><?php _e('Último ciclo', 'flavor-chat-ia'); ?></h3>
+                <?php if ($ultimo_ciclo): ?>
+                    <p><strong><?php echo esc_html($ultimo_ciclo); ?></strong></p>
+                    <p><?php printf(__('Importe: %s', 'flavor-chat-ia'), number_format_i18n($importe_ultimo_ciclo, 2) . ' €'); ?></p>
+                <?php else: ?>
+                    <p class="gc-panel-muted"><?php _e('Aún no tienes pedidos cerrados.', 'flavor-chat-ia'); ?></p>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($ciclo || $filtro_ciclo): ?>
+                <div class="gc-panel-section">
+                    <h3><?php _e('Mi pedido en el ciclo seleccionado', 'flavor-chat-ia'); ?></h3>
+                    <p><?php printf(__('Importe: %s', 'flavor-chat-ia'), number_format_i18n($importe_ciclo_activo, 2) . ' €'); ?></p>
+                    <?php if ($filtro_ciclo): ?>
+                        <a class="gc-btn gc-btn-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_ciclo_usuario&ciclo_id=' . $filtro_ciclo), 'gc_exportar_ciclo_usuario')); ?>">
+                            <?php _e('Exportar ciclo CSV', 'flavor-chat-ia'); ?>
+                        </a>
+                        <a class="gc-btn gc-btn-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_ciclo_usuario_pdf&ciclo_id=' . $filtro_ciclo), 'gc_exportar_ciclo_usuario_pdf')); ?>">
+                            <?php _e('Exportar ciclo PDF', 'flavor-chat-ia'); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($filtro_ciclo): ?>
+                <div class="gc-panel-section">
+                    <h3><?php _e('Detalle del ciclo', 'flavor-chat-ia'); ?></h3>
+                    <?php if (empty($detalle_ciclo)): ?>
+                        <p class="gc-panel-muted"><?php _e('No hay productos en este ciclo.', 'flavor-chat-ia'); ?></p>
+                    <?php else: ?>
+                        <div class="gc-panel-table">
+                            <table class="wp-list-table widefat fixed striped">
+                                <thead>
+                                    <tr>
+                                        <th><?php _e('Producto', 'flavor-chat-ia'); ?></th>
+                                        <th class="text-right"><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
+                                        <th class="text-right"><?php _e('Precio', 'flavor-chat-ia'); ?></th>
+                                        <th class="text-right"><?php _e('Total', 'flavor-chat-ia'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($detalle_ciclo as $item): ?>
+                                        <tr>
+                                            <td><?php echo esc_html($item->producto ?: __('Sin nombre', 'flavor-chat-ia')); ?></td>
+                                            <td class="text-right"><?php echo number_format_i18n($item->cantidad, 2); ?></td>
+                                            <td class="text-right"><?php echo number_format_i18n($item->precio_unitario, 2); ?> €</td>
+                                            <td class="text-right"><?php echo number_format_i18n($item->total, 2); ?> €</td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
+            <div class="gc-panel-section">
+                <h3><?php _e('Actividad reciente', 'flavor-chat-ia'); ?></h3>
+                <div class="gc-panel-chart">
+                    <canvas id="gc-user-activity-chart" height="180"></canvas>
+                </div>
+            </div>
+
+            <div class="gc-panel-section">
+                <h3><?php _e('Importe por ciclo', 'flavor-chat-ia'); ?></h3>
+                <div class="gc-panel-chart">
+                    <canvas id="gc-user-cycle-chart" height="180"></canvas>
+                </div>
+            </div>
+
+            <div class="gc-panel-actions">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/grupos-consumo/productos/')); ?>">
+                    <?php _e('Ver catálogo', 'flavor-chat-ia'); ?>
+                </a>
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/grupos-consumo/mi-pedido/')); ?>">
+                    <?php _e('Mi pedido', 'flavor-chat-ia'); ?>
+                </a>
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/grupos-consumo/mis-pedidos/')); ?>">
+                    <?php _e('Mis pedidos', 'flavor-chat-ia'); ?>
+                </a>
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/grupos-consumo/suscripciones/')); ?>">
+                    <?php _e('Suscripciones', 'flavor-chat-ia'); ?>
+                </a>
+                <a class="gc-btn gc-btn-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_resumen_usuario'), 'gc_exportar_resumen_usuario')); ?>">
+                    <?php _e('Exportar CSV', 'flavor-chat-ia'); ?>
+                </a>
+                <a class="gc-btn gc-btn-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_resumen_usuario_pdf'), 'gc_exportar_resumen_usuario_pdf')); ?>">
+                    <?php _e('Exportar PDF', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene enlaces a páginas GC existentes.
+     *
+     * @return array
+     */
+    private function get_gc_page_links() {
+        $items = [
+            ['label' => __('Inicio', 'flavor-chat-ia'), 'path' => 'grupos-consumo'],
+            ['label' => __('Panel', 'flavor-chat-ia'), 'path' => 'grupos-consumo/panel'],
+            ['label' => __('Catálogo', 'flavor-chat-ia'), 'path' => 'grupos-consumo/productos'],
+            ['label' => __('Mi cesta', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mi-cesta'],
+            ['label' => __('Mi pedido', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mi-pedido'],
+            ['label' => __('Mis pedidos', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mis-pedidos'],
+            ['label' => __('Suscripciones', 'flavor-chat-ia'), 'path' => 'grupos-consumo/suscripciones'],
+            ['label' => __('Productores', 'flavor-chat-ia'), 'path' => 'grupos-consumo/productores-cercanos'],
+            ['label' => __('Ciclo', 'flavor-chat-ia'), 'path' => 'grupos-consumo/ciclo'],
+            ['label' => __('Unirme', 'flavor-chat-ia'), 'path' => 'grupos-consumo/unirme'],
+        ];
+
+        $current = trim(parse_url(home_url(add_query_arg([])), PHP_URL_PATH), '/');
+        $links = [];
+        foreach ($items as $item) {
+            $page = get_page_by_path($item['path']);
+            if (!$page) {
+                continue;
+            }
+            $url = get_permalink($page);
+            $links[] = [
+                'label' => $item['label'],
+                'url' => $url,
+                'active' => $current === trim(parse_url($url, PHP_URL_PATH), '/'),
+            ];
+        }
+
+        return $links;
+    }
+
+    /**
+     * Exporta CSV del resumen del usuario.
+     */
+    public function exportar_resumen_usuario() {
+        if (!is_user_logged_in()) {
+            wp_die(__('Debes iniciar sesión.', 'flavor-chat-ia'));
+        }
+        check_admin_referer('gc_exportar_resumen_usuario');
+
+        $user_id = get_current_user_id();
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+        $tabla_suscripciones = $wpdb->prefix . 'flavor_gc_suscripciones';
+
+        $pedidos_usuario = 0;
+        $gasto_total = 0.0;
+        $ticket_medio = 0.0;
+        $pedidos_mes = 0;
+        $importe_mes = 0.0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            $pedidos_usuario = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
+                $user_id
+            ));
+            $gasto_total = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d",
+                $user_id
+            ));
+            $ticket_medio = $pedidos_usuario > 0 ? ($gasto_total / $pedidos_usuario) : 0.0;
+            $inicio_mes = gmdate('Y-m-01 00:00:00');
+            $pedidos_mes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d AND fecha_pedido >= %s",
+                $user_id,
+                $inicio_mes
+            ));
+            $importe_mes = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND fecha_pedido >= %s",
+                $user_id,
+                $inicio_mes
+            ));
+        }
+
+        $consumidor_id = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_consumidores} WHERE usuario_id = %d LIMIT 1",
+            $user_id
+        ));
+        $suscripciones_usuario = 0;
+        if ($consumidor_id) {
+            $suscripciones_usuario = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_suscripciones} WHERE consumidor_id = %d",
+                $consumidor_id
+            ));
+        }
+
+        $total_productores = wp_count_posts('gc_productor')->publish ?? 0;
+        $total_productos = wp_count_posts('gc_producto')->publish ?? 0;
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=gc-resumen-usuario.csv');
+
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ['Metric', 'Value'], ';');
+        fputcsv($output, [__('Productores', 'flavor-chat-ia'), $total_productores], ';');
+        fputcsv($output, [__('Productos', 'flavor-chat-ia'), $total_productos], ';');
+        fputcsv($output, [__('Mis pedidos', 'flavor-chat-ia'), $pedidos_usuario], ';');
+        fputcsv($output, [__('Mis suscripciones', 'flavor-chat-ia'), $suscripciones_usuario], ';');
+        fputcsv($output, [__('Gasto total', 'flavor-chat-ia'), number_format($gasto_total, 2, ',', '.')], ';');
+        fputcsv($output, [__('Ticket medio', 'flavor-chat-ia'), number_format($ticket_medio, 2, ',', '.')], ';');
+        fputcsv($output, [__('Pedidos este mes', 'flavor-chat-ia'), $pedidos_mes], ';');
+        fputcsv($output, [__('Facturación este mes', 'flavor-chat-ia'), number_format($importe_mes, 2, ',', '.')], ';');
+        fclose($output);
+        exit;
+    }
+
+    /**
+     * Exporta CSV de un ciclo del usuario.
+     */
+    public function exportar_ciclo_usuario() {
+        if (!is_user_logged_in()) {
+            wp_die(__('Debes iniciar sesión.', 'flavor-chat-ia'));
+        }
+        check_admin_referer('gc_exportar_ciclo_usuario');
+
+        $user_id = get_current_user_id();
+        $ciclo_id = isset($_GET['ciclo_id']) ? absint($_GET['ciclo_id']) : 0;
+        if (!$ciclo_id) {
+            wp_die(__('Ciclo no válido.', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            wp_die(__('No hay datos disponibles.', 'flavor-chat-ia'));
+        }
+
+        $items = $wpdb->get_results($wpdb->prepare(
+            "SELECT p.producto_id, p.cantidad, p.precio_unitario, (p.cantidad * p.precio_unitario) as total,
+                    pr.post_title as producto
+             FROM {$tabla_pedidos} p
+             LEFT JOIN {$wpdb->posts} pr ON pr.ID = p.producto_id
+             WHERE p.usuario_id = %d AND p.ciclo_id = %d",
+            $user_id,
+            $ciclo_id
+        ));
+
+        $ciclo = get_post($ciclo_id);
+        $nombre_ciclo = $ciclo ? $ciclo->post_title : ('Ciclo ' . $ciclo_id);
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=gc-ciclo-' . $ciclo_id . '.csv');
+
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ['Ciclo', $nombre_ciclo], ';');
+        fputcsv($output, []);
+        fputcsv($output, ['Producto', 'Cantidad', 'Precio', 'Total'], ';');
+
+        if (!empty($items)) {
+            foreach ($items as $item) {
+                fputcsv($output, [
+                    $item->producto ?: __('Sin nombre', 'flavor-chat-ia'),
+                    number_format($item->cantidad, 2, ',', '.'),
+                    number_format($item->precio_unitario, 2, ',', '.'),
+                    number_format($item->total, 2, ',', '.'),
+                ], ';');
+            }
+        }
+
+        fclose($output);
+        exit;
+    }
+
+    /**
+     * Exporta PDF del resumen del usuario.
+     */
+    public function exportar_resumen_usuario_pdf() {
+        if (!is_user_logged_in()) {
+            wp_die(__('Debes iniciar sesión.', 'flavor-chat-ia'));
+        }
+        check_admin_referer('gc_exportar_resumen_usuario_pdf');
+
+        $user_id = get_current_user_id();
+        $user = get_userdata($user_id);
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+        $tabla_suscripciones = $wpdb->prefix . 'flavor_gc_suscripciones';
+
+        $pedidos_usuario = 0;
+        $gasto_total = 0.0;
+        $ticket_medio = 0.0;
+        $pedidos_mes = 0;
+        $importe_mes = 0.0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            $pedidos_usuario = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
+                $user_id
+            ));
+            $gasto_total = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d",
+                $user_id
+            ));
+            $ticket_medio = $pedidos_usuario > 0 ? ($gasto_total / $pedidos_usuario) : 0.0;
+            $inicio_mes = gmdate('Y-m-01 00:00:00');
+            $pedidos_mes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d AND fecha_pedido >= %s",
+                $user_id,
+                $inicio_mes
+            ));
+            $importe_mes = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_unitario), 0) FROM {$tabla_pedidos} WHERE usuario_id = %d AND fecha_pedido >= %s",
+                $user_id,
+                $inicio_mes
+            ));
+        }
+
+        $consumidor_id = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_consumidores} WHERE usuario_id = %d LIMIT 1",
+            $user_id
+        ));
+        $suscripciones_usuario = 0;
+        if ($consumidor_id) {
+            $suscripciones_usuario = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_suscripciones} WHERE consumidor_id = %d",
+                $consumidor_id
+            ));
+        }
+
+        $total_productores = wp_count_posts('gc_productor')->publish ?? 0;
+        $total_productos = wp_count_posts('gc_producto')->publish ?? 0;
+
+        $html = '<html><head><meta charset="utf-8"><style>
+            body{font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#111}
+            h1{font-size:18px;margin-bottom:8px}
+            table{width:100%;border-collapse:collapse;margin-top:10px}
+            th,td{border:1px solid #ddd;padding:6px;text-align:left}
+            th{background:#f3f4f6}
+        </style></head><body>';
+        $html .= '<h1>Resumen GC</h1>';
+        $html .= '<p>Usuario: ' . esc_html($user->display_name ?? '') . '</p>';
+        $html .= '<table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody>';
+        $rows = [
+            ['Productores', $total_productores],
+            ['Productos', $total_productos],
+            ['Mis pedidos', $pedidos_usuario],
+            ['Mis suscripciones', $suscripciones_usuario],
+            ['Gasto total', number_format($gasto_total, 2, ',', '.') . ' €'],
+            ['Ticket medio', number_format($ticket_medio, 2, ',', '.') . ' €'],
+            ['Pedidos este mes', $pedidos_mes],
+            ['Facturación este mes', number_format($importe_mes, 2, ',', '.') . ' €'],
+        ];
+        foreach ($rows as $row) {
+            $html .= '<tr><td>' . esc_html($row[0]) . '</td><td>' . esc_html($row[1]) . '</td></tr>';
+        }
+        $html .= '</tbody></table></body></html>';
+
+        $filename = 'gc-resumen-usuario.pdf';
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename=' . $filename);
+
+        if (class_exists('Dompdf\\Dompdf')) {
+            $dompdf_class = 'Dompdf\\Dompdf';
+            $dompdf = new $dompdf_class();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            echo $dompdf->output();
+            exit;
+        }
+
+        echo $html;
+        exit;
+    }
+
+    /**
+     * Exporta PDF de un ciclo del usuario.
+     */
+    public function exportar_ciclo_usuario_pdf() {
+        if (!is_user_logged_in()) {
+            wp_die(__('Debes iniciar sesión.', 'flavor-chat-ia'));
+        }
+        check_admin_referer('gc_exportar_ciclo_usuario_pdf');
+
+        $user_id = get_current_user_id();
+        $ciclo_id = isset($_GET['ciclo_id']) ? absint($_GET['ciclo_id']) : 0;
+        if (!$ciclo_id) {
+            wp_die(__('Ciclo no válido.', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            wp_die(__('No hay datos disponibles.', 'flavor-chat-ia'));
+        }
+
+        $items = $wpdb->get_results($wpdb->prepare(
+            "SELECT p.producto_id, p.cantidad, p.precio_unitario, (p.cantidad * p.precio_unitario) as total,
+                    pr.post_title as producto
+             FROM {$tabla_pedidos} p
+             LEFT JOIN {$wpdb->posts} pr ON pr.ID = p.producto_id
+             WHERE p.usuario_id = %d AND p.ciclo_id = %d",
+            $user_id,
+            $ciclo_id
+        ));
+
+        $ciclo = get_post($ciclo_id);
+        $nombre_ciclo = $ciclo ? $ciclo->post_title : ('Ciclo ' . $ciclo_id);
+
+        $html = '<html><head><meta charset="utf-8"><style>
+            body{font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#111}
+            h1{font-size:18px;margin-bottom:8px}
+            table{width:100%;border-collapse:collapse;margin-top:10px}
+            th,td{border:1px solid #ddd;padding:6px;text-align:left}
+            th{background:#f3f4f6}
+        </style></head><body>';
+        $html .= '<h1>Pedido por ciclo</h1>';
+        $html .= '<p>Ciclo: ' . esc_html($nombre_ciclo) . '</p>';
+        $html .= '<table><thead><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Total</th></tr></thead><tbody>';
+        foreach ($items as $item) {
+            $html .= '<tr><td>' . esc_html($item->producto ?: '') . '</td><td>' .
+                esc_html(number_format($item->cantidad, 2, ',', '.')) . '</td><td>' .
+                esc_html(number_format($item->precio_unitario, 2, ',', '.')) . ' €</td><td>' .
+                esc_html(number_format($item->total, 2, ',', '.')) . ' €</td></tr>';
+        }
+        $html .= '</tbody></table></body></html>';
+
+        $filename = 'gc-ciclo-' . $ciclo_id . '.pdf';
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename=' . $filename);
+
+        if (class_exists('Dompdf\\Dompdf')) {
+            $dompdf_class = 'Dompdf\\Dompdf';
+            $dompdf = new $dompdf_class();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            echo $dompdf->output();
+            exit;
+        }
+
+        echo $html;
+        exit;
+    }
+
+    /**
+     * Obtiene ciclo activo (abierto) con datos básicos.
+     *
+     * @return array|null
+     */
+    private function obtener_ciclo_activo() {
+        $ciclos = get_posts([
+            'post_type' => 'gc_ciclo',
+            'post_status' => 'gc_abierto',
+            'posts_per_page' => 1,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ]);
+
+        if (empty($ciclos)) {
+            return null;
+        }
+
+        $ciclo = $ciclos[0];
+        return [
+            'id' => $ciclo->ID,
+            'titulo' => $ciclo->post_title,
+            'fecha_cierre' => get_post_meta($ciclo->ID, '_gc_fecha_cierre', true),
+            'fecha_entrega' => get_post_meta($ciclo->ID, '_gc_fecha_entrega', true),
+            'lugar_entrega' => get_post_meta($ciclo->ID, '_gc_lugar_entrega', true),
+        ];
+    }
+
+    /**
+     * Obtiene ciclos disponibles para un usuario.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    private function obtener_ciclos_usuario($user_id) {
+        $user_id = (int) $user_id;
+        if (!$user_id) {
+            return [];
+        }
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            return [];
+        }
+
+        $ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT DISTINCT ciclo_id FROM {$tabla_pedidos} WHERE usuario_id = %d ORDER BY ciclo_id DESC LIMIT 50",
+            $user_id
+        ));
+
+        $ciclos = [];
+        foreach ($ids as $ciclo_id) {
+            $post = get_post((int) $ciclo_id);
+            if ($post) {
+                $ciclos[$post->ID] = $post->post_title;
+            }
+        }
+
+        return $ciclos;
     }
 
     /**
@@ -135,23 +890,159 @@ class Flavor_GC_Dashboard_Tab {
             '1.0.0'
         );
 
+        if (!wp_script_is('chartjs', 'enqueued')) {
+            wp_enqueue_script(
+                'chartjs',
+                'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+                [],
+                '4.4.1',
+                true
+            );
+        }
+
         wp_enqueue_script(
             'gc-dashboard',
             plugins_url('assets/gc-dashboard.js', __FILE__),
-            ['jquery'],
+            ['jquery', 'chartjs'],
             '1.0.0',
             true
         );
 
+        $current_user_id = get_current_user_id();
         wp_localize_script('gc-dashboard', 'gcDashboardData', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('gc_lista_compra_nonce'),
+            'charts' => [
+                'labels' => $this->get_chart_labels_last_months(6),
+                'series' => $this->get_chart_series_user_pedidos(6),
+                'cycleLabels' => $this->get_chart_labels_cycles($current_user_id),
+                'cycleSeries' => $this->get_chart_series_user_pedidos_por_ciclo($current_user_id),
+            ],
             'i18n' => [
                 'confirmar_vaciar' => __('¿Estás seguro de vaciar la lista?', 'flavor-chat-ia'),
                 'confirmar_convertir' => __('¿Convertir la lista de compra en un pedido?', 'flavor-chat-ia'),
                 'error_generico' => __('Ha ocurrido un error.', 'flavor-chat-ia'),
             ],
         ]);
+    }
+
+    /**
+     * Labels para los últimos N meses.
+     *
+     * @param int $months
+     * @return array
+     */
+    private function get_chart_labels_last_months($months) {
+        $labels = [];
+        $months = max(1, (int) $months);
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $ts = strtotime('-' . $i . ' months');
+            $labels[] = date_i18n('M Y', $ts);
+        }
+        return $labels;
+    }
+
+    /**
+     * Serie de pedidos del usuario en los últimos N meses.
+     *
+     * @param int $months
+     * @return array
+     */
+    private function get_chart_series_user_pedidos($months) {
+        $months = max(1, (int) $months);
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return array_fill(0, $months, 0);
+        }
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            return array_fill(0, $months, 0);
+        }
+
+        $inicio = date('Y-m-01 00:00:00', strtotime('-' . ($months - 1) . ' months'));
+        $fin = date('Y-m-t 23:59:59');
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT DATE_FORMAT(fecha_pedido, %s) as periodo, COUNT(*) as total
+             FROM {$tabla_pedidos}
+             WHERE usuario_id = %d AND fecha_pedido BETWEEN %s AND %s
+             GROUP BY periodo",
+            '%Y-%m',
+            $user_id,
+            $inicio,
+            $fin
+        ));
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[$row->periodo] = (int) $row->total;
+        }
+
+        $series = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $key = date('Y-m', strtotime('-' . $i . ' months'));
+            $series[] = $map[$key] ?? 0;
+        }
+        return $series;
+    }
+
+    /**
+     * Labels de ciclos para gráficos por ciclo.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    private function get_chart_labels_cycles($user_id) {
+        $labels = [];
+        $cycles = $this->get_chart_cycles_rows($user_id);
+        foreach ($cycles as $row) {
+            $labels[] = $row->titulo ?: ('#' . $row->ciclo_id);
+        }
+        return $labels;
+    }
+
+    /**
+     * Serie de importe por ciclo.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    private function get_chart_series_user_pedidos_por_ciclo($user_id) {
+        $series = [];
+        $cycles = $this->get_chart_cycles_rows($user_id);
+        foreach ($cycles as $row) {
+            $series[] = (float) $row->importe;
+        }
+        return $series;
+    }
+
+    /**
+     * Datos base de ciclos del usuario.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    private function get_chart_cycles_rows($user_id) {
+        $user_id = (int) $user_id;
+        if (!$user_id) {
+            return [];
+        }
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+            return [];
+        }
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT p.ciclo_id, c.post_title as titulo, COALESCE(SUM(p.cantidad * p.precio_unitario), 0) as importe
+             FROM {$tabla_pedidos} p
+             LEFT JOIN {$wpdb->posts} c ON c.ID = p.ciclo_id
+             WHERE p.usuario_id = %d
+             GROUP BY p.ciclo_id
+             ORDER BY p.ciclo_id DESC
+             LIMIT 8",
+            $user_id
+        ));
     }
 
     // ========================================

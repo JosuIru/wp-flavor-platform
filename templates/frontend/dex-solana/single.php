@@ -16,7 +16,7 @@ $pools_disponibles = $pools_disponibles ?? [];
 <div class="flavor-frontend flavor-dex-solana-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/dex-solana/')); ?>" class="hover:text-cyan-600 transition-colors">DEX</a>
+        <a href="<?php echo esc_url(home_url('/dex-solana/')); ?>" class="hover:text-cyan-600 transition-colors"><?php echo esc_html__('DEX', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
         <span class="text-gray-700"><?php echo esc_html($token['nombre'] ?? 'Token'); ?> (<?php echo esc_html($token['simbolo'] ?? ''); ?>)</span>
     </nav>
@@ -50,11 +50,11 @@ $pools_disponibles = $pools_disponibles ?? [];
                 <!-- Metricas de precio -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div class="bg-gray-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">Precio</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></p>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($token['precio'] ?? '$0.00'); ?></p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">Cambio 24h</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Cambio 24h', 'flavor-chat-ia'); ?></p>
                         <?php
                         $cambio_precio_24h = $token['cambio_24h'] ?? 0;
                         $color_variacion_precio = $cambio_precio_24h >= 0 ? 'text-green-600' : 'text-red-500';
@@ -65,11 +65,11 @@ $pools_disponibles = $pools_disponibles ?? [];
                         </p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">Volumen 24h</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Volumen 24h', 'flavor-chat-ia'); ?></p>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($token['volumen_24h'] ?? '$0'); ?></p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">Market Cap</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Market Cap', 'flavor-chat-ia'); ?></p>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($token['market_cap'] ?? '$0'); ?></p>
                     </div>
                 </div>
@@ -77,15 +77,15 @@ $pools_disponibles = $pools_disponibles ?? [];
                 <!-- Metricas adicionales -->
                 <div class="grid grid-cols-3 gap-4">
                     <div class="text-center p-3 border border-gray-100 rounded-xl">
-                        <p class="text-xs text-gray-500 mb-1">Holders</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Holders', 'flavor-chat-ia'); ?></p>
                         <p class="font-semibold text-gray-800"><?php echo esc_html($token['holders'] ?? '0'); ?></p>
                     </div>
                     <div class="text-center p-3 border border-gray-100 rounded-xl">
-                        <p class="text-xs text-gray-500 mb-1">Supply circulante</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Supply circulante', 'flavor-chat-ia'); ?></p>
                         <p class="font-semibold text-gray-800"><?php echo esc_html($token['supply_circulante'] ?? '0'); ?></p>
                     </div>
                     <div class="text-center p-3 border border-gray-100 rounded-xl">
-                        <p class="text-xs text-gray-500 mb-1">Liquidez total</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Liquidez total', 'flavor-chat-ia'); ?></p>
                         <p class="font-semibold text-gray-800"><?php echo esc_html($token['liquidez_total'] ?? '$0'); ?></p>
                     </div>
                 </div>
@@ -94,7 +94,7 @@ $pools_disponibles = $pools_disponibles ?? [];
             <!-- Grafico de precio (placeholder) -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-gray-800">Grafico de precio</h2>
+                    <h2 class="text-lg font-bold text-gray-800"><?php echo esc_html__('Grafico de precio', 'flavor-chat-ia'); ?></h2>
                     <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
                         <?php
                         $intervalos_tiempo = ['1H', '4H', '1D', '1S', '1M'];
@@ -112,7 +112,7 @@ $pools_disponibles = $pools_disponibles ?? [];
                         <svg class="w-12 h-12 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
                         </svg>
-                        <p class="text-sm">Grafico de precio</p>
+                        <p class="text-sm"><?php echo esc_html__('Grafico de precio', 'flavor-chat-ia'); ?></p>
                         <?php if (!empty($historial_precios)): ?>
                         <p class="text-xs text-gray-400 mt-1"><?php echo esc_html(count($historial_precios)); ?> puntos de datos</p>
                         <?php endif; ?>
@@ -123,16 +123,16 @@ $pools_disponibles = $pools_disponibles ?? [];
             <!-- Pools disponibles -->
             <?php if (!empty($pools_disponibles)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-bold text-gray-800 mb-4">Pools de liquidez</h2>
+                <h2 class="text-lg font-bold text-gray-800 mb-4"><?php echo esc_html__('Pools de liquidez', 'flavor-chat-ia'); ?></h2>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr class="text-xs text-gray-500 border-b border-gray-100">
-                                <th class="text-left pb-3 font-medium">Pool</th>
-                                <th class="text-right pb-3 font-medium">TVL</th>
-                                <th class="text-right pb-3 font-medium">APR</th>
-                                <th class="text-right pb-3 font-medium">Volumen 24h</th>
-                                <th class="text-right pb-3 font-medium">Accion</th>
+                                <th class="text-left pb-3 font-medium"><?php echo esc_html__('Pool', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('TVL', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('APR', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('Volumen 24h', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('Accion', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
@@ -165,7 +165,7 @@ $pools_disponibles = $pools_disponibles ?? [];
                                 <td class="text-right py-3">
                                     <a href="<?php echo esc_url($pool_item['url'] ?? '#'); ?>"
                                        class="text-cyan-600 hover:text-cyan-700 text-sm font-medium">
-                                        Agregar
+                                        <?php echo esc_html__('Agregar', 'flavor-chat-ia'); ?>
                                     </a>
                                 </td>
                             </tr>
@@ -185,7 +185,7 @@ $pools_disponibles = $pools_disponibles ?? [];
                 <div class="space-y-4">
                     <div class="bg-white/10 backdrop-blur rounded-xl p-4">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-cyan-100">De</span>
+                            <span class="text-sm text-cyan-100"><?php echo esc_html__('De', 'flavor-chat-ia'); ?></span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="font-semibold"><?php echo esc_html($token['simbolo'] ?? 'SOL'); ?></span>
@@ -196,25 +196,25 @@ $pools_disponibles = $pools_disponibles ?? [];
                     </div>
                     <div class="bg-white/10 backdrop-blur rounded-xl p-4">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-cyan-100">A</span>
+                            <span class="text-sm text-cyan-100"><?php echo esc_html__('A', 'flavor-chat-ia'); ?></span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="font-semibold">USDC</span>
+                            <span class="font-semibold"><?php echo esc_html__('USDC', 'flavor-chat-ia'); ?></span>
                             <span class="text-xl font-bold" id="swap-cantidad-salida">0.00</span>
                         </div>
                     </div>
                     <button class="w-full bg-white text-teal-700 py-3 px-4 rounded-xl font-semibold hover:bg-cyan-50 transition-colors shadow-md"
                             onclick="flavorDexSolana.ejecutarSwap()">
-                        Ejecutar Swap
+                        <?php echo esc_html__('Ejecutar Swap', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
                 <div class="mt-4 space-y-2 text-xs text-cyan-100">
                     <div class="flex items-center justify-between">
-                        <span>Slippage</span>
+                        <span><?php echo esc_html__('Slippage', 'flavor-chat-ia'); ?></span>
                         <span><?php echo esc_html($token['slippage'] ?? '0.5'); ?>%</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span>Fee estimado</span>
+                        <span><?php echo esc_html__('Fee estimado', 'flavor-chat-ia'); ?></span>
                         <span><?php echo esc_html($token['fee_estimado'] ?? '~0.00025 SOL'); ?></span>
                     </div>
                 </div>
@@ -222,20 +222,20 @@ $pools_disponibles = $pools_disponibles ?? [];
 
             <!-- Informacion del contrato -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Informacion del contrato</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Informacion del contrato', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <div>
-                        <p class="text-xs text-gray-500 mb-1">Direccion del token</p>
+                        <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Direccion del token', 'flavor-chat-ia'); ?></p>
                         <p class="text-sm text-gray-800 font-mono bg-gray-50 px-3 py-2 rounded-lg break-all">
                             <?php echo esc_html($token['direccion_contrato'] ?? ''); ?>
                         </p>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Decimales</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('Decimales', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm text-gray-800 font-medium"><?php echo esc_html($token['decimales'] ?? '9'); ?></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Programa</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('Programa', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm text-gray-800 font-medium"><?php echo esc_html($token['programa'] ?? 'Token Program'); ?></span>
                     </div>
                 </div>
@@ -243,7 +243,7 @@ $pools_disponibles = $pools_disponibles ?? [];
 
             <!-- Enlaces utiles -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Enlaces</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Enlaces', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-2">
                     <?php if (!empty($token['url_explorador'])): ?>
                     <a href="<?php echo esc_url($token['url_explorador']); ?>" target="_blank" rel="noopener noreferrer"
@@ -251,7 +251,7 @@ $pools_disponibles = $pools_disponibles ?? [];
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                         </svg>
-                        Solscan Explorer
+                        <?php echo esc_html__('Solscan Explorer', 'flavor-chat-ia'); ?>
                     </a>
                     <?php endif; ?>
                     <?php if (!empty($token['url_web'])): ?>
@@ -260,7 +260,7 @@ $pools_disponibles = $pools_disponibles ?? [];
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/>
                         </svg>
-                        Sitio web oficial
+                        <?php echo esc_html__('Sitio web oficial', 'flavor-chat-ia'); ?>
                     </a>
                     <?php endif; ?>
                 </div>

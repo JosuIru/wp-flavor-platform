@@ -131,18 +131,18 @@ foreach ($stats_estados as $stat) {
     <!-- Filtros -->
     <div class="card" style="padding: 15px; margin: 20px 0;">
         <form method="get" action="">
-            <input type="hidden" name="page" value="flavor-carpooling-viajes">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-carpooling-viajes', 'flavor-chat-ia'); ?>">
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
 
                 <div>
                     <label for="estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
                     <select name="estado" id="estado" class="regular-text">
-                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></option>
-                        <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
-                        <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('todos', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'activo'); ?>><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('completado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 

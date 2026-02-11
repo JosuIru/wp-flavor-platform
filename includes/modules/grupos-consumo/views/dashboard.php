@@ -83,7 +83,7 @@ $actividad_ciclos = $wpdb->get_results(
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-carrot"></span>
-        Dashboard - Grupos de Consumo
+        <?php echo esc_html__('Dashboard - Grupos de Consumo', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -99,7 +99,7 @@ $actividad_ciclos = $wpdb->get_results(
                 <?php echo number_format($total_pedidos); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Total Pedidos
+                <?php echo esc_html__('Total Pedidos', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -111,7 +111,7 @@ $actividad_ciclos = $wpdb->get_results(
                 <?php echo number_format($pedidos_pendientes); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Pedidos Pendientes
+                <?php echo esc_html__('Pedidos Pendientes', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -123,7 +123,7 @@ $actividad_ciclos = $wpdb->get_results(
                 <?php echo number_format($pedidos_completados); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Pedidos Completados
+                <?php echo esc_html__('Pedidos Completados', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -135,7 +135,7 @@ $actividad_ciclos = $wpdb->get_results(
                 <?php echo number_format($ventas_mes, 2); ?> €
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Ventas Este Mes
+                <?php echo esc_html__('Ventas Este Mes', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -147,7 +147,7 @@ $actividad_ciclos = $wpdb->get_results(
                 <?php echo number_format($total_productos); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Productos Disponibles
+                <?php echo esc_html__('Productos Disponibles', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -159,7 +159,7 @@ $actividad_ciclos = $wpdb->get_results(
                 <?php echo number_format($total_productores); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Productores Activos
+                <?php echo esc_html__('Productores Activos', 'flavor-chat-ia'); ?>
             </div>
         </div>
     </div>
@@ -173,20 +173,20 @@ $actividad_ciclos = $wpdb->get_results(
                 Ciclo Actual: <?php the_title(); ?>
             </h3>
             <p>
-                <strong>Estado:</strong> Abierto |
-                <strong>Fecha Cierre:</strong> <?php echo get_post_meta(get_the_ID(), '_gc_fecha_cierre', true); ?>
+                <strong><?php echo esc_html__('Estado:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Abierto |', 'flavor-chat-ia'); ?>
+                <strong><?php echo esc_html__('Fecha Cierre:', 'flavor-chat-ia'); ?></strong> <?php echo get_post_meta(get_the_ID(), '_gc_fecha_cierre', true); ?>
             </p>
             <a href="<?php echo admin_url('post.php?post=' . get_the_ID() . '&action=edit'); ?>" class="button button-primary">
-                Gestionar Ciclo
+                <?php echo esc_html__('Gestionar Ciclo', 'flavor-chat-ia'); ?>
             </a>
         </div>
         <?php wp_reset_postdata(); ?>
     <?php else: ?>
         <div class="notice notice-warning">
             <p>
-                <strong>No hay ningún ciclo abierto actualmente.</strong>
+                <strong><?php echo esc_html__('No hay ningún ciclo abierto actualmente.', 'flavor-chat-ia'); ?></strong>
                 <a href="<?php echo admin_url('post-new.php?post_type=gc_ciclo'); ?>" class="button">
-                    Crear Nuevo Ciclo
+                    <?php echo esc_html__('Crear Nuevo Ciclo', 'flavor-chat-ia'); ?>
                 </a>
             </p>
         </div>
@@ -197,7 +197,7 @@ $actividad_ciclos = $wpdb->get_results(
 
         <!-- Productos Más Pedidos -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-chart-bar"></span> Productos Más Pedidos</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-chart-bar"></span> <?php echo esc_html__('Productos Más Pedidos', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <canvas id="grafico-productos-top" style="max-height: 300px;"></canvas>
             </div>
@@ -205,7 +205,7 @@ $actividad_ciclos = $wpdb->get_results(
 
         <!-- Ventas por Ciclo -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-chart-line"></span> Actividad por Ciclo</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-chart-line"></span> <?php echo esc_html__('Actividad por Ciclo', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <canvas id="grafico-ciclos" style="max-height: 300px;"></canvas>
             </div>
@@ -214,20 +214,20 @@ $actividad_ciclos = $wpdb->get_results(
 
     <!-- Pedidos Recientes -->
     <div class="postbox" style="margin: 20px 0;">
-        <h2 class="hndle"><span class="dashicons dashicons-update"></span> Pedidos Recientes</h2>
+        <h2 class="hndle"><span class="dashicons dashicons-update"></span> <?php echo esc_html__('Pedidos Recientes', 'flavor-chat-ia'); ?></h2>
         <div class="inside">
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">ID</th>
-                        <th>Producto</th>
-                        <th>Usuario</th>
-                        <th>Ciclo</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unit.</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
+                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Producto', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Ciclo', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Precio Unit.', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -264,7 +264,7 @@ $actividad_ciclos = $wpdb->get_results(
                     <?php if (empty($pedidos_recientes)): ?>
                     <tr>
                         <td colspan="9" style="text-align: center; padding: 20px; color: #646970;">
-                            No hay pedidos registrados
+                            <?php echo esc_html__('No hay pedidos registrados', 'flavor-chat-ia'); ?>
                         </td>
                     </tr>
                     <?php endif; ?>

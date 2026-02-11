@@ -32,7 +32,7 @@ $tendencias = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
-                Comunidad
+                <?php echo esc_html__('Comunidad', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -45,10 +45,10 @@ $tendencias = [
                 <div class="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
                     <div class="flex items-start gap-4">
                         <div class="w-12 h-12 rounded-full bg-gradient-to-br from-sky-400 to-blue-500 flex items-center justify-center text-white font-bold">
-                            TU
+                            <?php echo esc_html__('TU', 'flavor-chat-ia'); ?>
                         </div>
                         <div class="flex-1">
-                            <textarea placeholder="Que esta pasando en tu barrio?" class="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 resize-none" rows="2"></textarea>
+                            <textarea placeholder="<?php echo esc_attr__('Que esta pasando en tu barrio?', 'flavor-chat-ia'); ?>" class="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 resize-none" rows="2"></textarea>
                             <div class="flex items-center justify-between mt-3">
                                 <div class="flex items-center gap-2">
                                     <button class="p-2 rounded-lg text-gray-500 hover:bg-sky-50 hover:text-sky-600 transition-colors">
@@ -63,7 +63,7 @@ $tendencias = [
                                     </button>
                                 </div>
                                 <button class="px-4 py-2 rounded-xl text-white font-semibold transition-all hover:scale-105" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);">
-                                    Publicar
+                                    <?php echo esc_html__('Publicar', 'flavor-chat-ia'); ?>
                                 </button>
                             </div>
                         </div>
@@ -79,11 +79,11 @@ $tendencias = [
                                 <div class="flex items-center gap-2 mb-1">
                                     <span class="font-bold text-gray-900"><?php echo esc_html($post['autor']); ?></span>
                                     <?php if ($post['tipo'] === 'evento'): ?>
-                                        <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-700">Evento</span>
+                                        <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-700"><?php echo esc_html__('Evento', 'flavor-chat-ia'); ?></span>
                                     <?php elseif ($post['tipo'] === 'busqueda'): ?>
-                                        <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700">Busqueda</span>
+                                        <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700"><?php echo esc_html__('Busqueda', 'flavor-chat-ia'); ?></span>
                                     <?php elseif ($post['tipo'] === 'promocion'): ?>
-                                        <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">Promocion</span>
+                                        <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700"><?php echo esc_html__('Promocion', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
                                 </div>
                                 <span class="text-sm text-gray-500"><?php echo esc_html($post['tiempo']); ?></span>
@@ -110,7 +110,7 @@ $tendencias = [
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                                 </svg>
-                                <span class="text-sm font-medium">Compartir</span>
+                                <span class="text-sm font-medium"><?php echo esc_html__('Compartir', 'flavor-chat-ia'); ?></span>
                             </button>
                         </div>
                     </article>
@@ -121,7 +121,7 @@ $tendencias = [
             <div class="space-y-6">
                 <!-- Tendencias -->
                 <div class="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Tendencias</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4"><?php echo esc_html__('Tendencias', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-3">
                         <?php foreach ($tendencias as $tendencia): ?>
                             <a href="#<?php echo sanitize_title($tendencia); ?>" class="block p-3 rounded-xl hover:bg-sky-50 transition-colors">
@@ -133,17 +133,17 @@ $tendencias = [
 
                 <!-- Sugerencias -->
                 <div class="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Conecta con vecinos</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4"><?php echo esc_html__('Conecta con vecinos', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-4">
                         <?php for ($i = 1; $i <= 3; $i++): ?>
                             <div class="flex items-center gap-3">
                                 <img src="https://i.pravatar.cc/150?img=<?php echo $i + 10; ?>" alt="" class="w-10 h-10 rounded-full object-cover">
                                 <div class="flex-1 min-w-0">
                                     <p class="font-medium text-gray-900 truncate">Vecino <?php echo $i; ?></p>
-                                    <p class="text-xs text-gray-500">5 amigos en comun</p>
+                                    <p class="text-xs text-gray-500"><?php echo esc_html__('5 amigos en comun', 'flavor-chat-ia'); ?></p>
                                 </div>
                                 <button class="px-3 py-1 rounded-full text-xs font-semibold text-sky-600 bg-sky-50 hover:bg-sky-100 transition-colors">
-                                    Seguir
+                                    <?php echo esc_html__('Seguir', 'flavor-chat-ia'); ?>
                                 </button>
                             </div>
                         <?php endfor; ?>

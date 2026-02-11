@@ -258,7 +258,7 @@ class Flavor_Frontend_Ayuda_Vecinal_Controller extends Flavor_Frontend_Controlle
      */
     protected function ajax_crear_solicitud($data) {
         if (!is_user_logged_in()) {
-            return ['error' => 'Debes iniciar sesión'];
+            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -278,7 +278,7 @@ class Flavor_Frontend_Ayuda_Vecinal_Controller extends Flavor_Frontend_Controlle
             return ['success' => true, 'id' => $wpdb->insert_id];
         }
 
-        return ['error' => 'Error al crear la solicitud'];
+        return ['error' => __('Error al crear la solicitud', 'flavor-chat-ia')];
     }
 
     /**
@@ -286,10 +286,10 @@ class Flavor_Frontend_Ayuda_Vecinal_Controller extends Flavor_Frontend_Controlle
      */
     protected function ajax_ofrecer_ayuda($data) {
         if (!is_user_logged_in()) {
-            return ['error' => 'Debes iniciar sesión'];
+            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
 
         // Implementar lógica de respuesta
-        return ['success' => true, 'mensaje' => 'Oferta de ayuda enviada'];
+        return ['success' => true, 'mensaje' => __('Oferta de ayuda enviada', 'flavor-chat-ia')];
     }
 }

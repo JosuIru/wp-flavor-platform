@@ -223,9 +223,12 @@
         const $card = $(this).closest('.em-lista-card');
         const id = $card.data('id');
 
-        // TODO: Cargar datos de la lista
         $('#em-modal-lista-titulo').text('Editar lista');
         $('#em-lista-id').val(id);
+        $('#em-lista-nombre').val($card.data('nombre') || '');
+        $('#em-lista-descripcion').val($card.data('descripcion') || '');
+        $('#em-lista-tipo').val($card.data('tipo') || 'newsletter');
+        $('#em-lista-doble-optin').prop('checked', !!$card.data('dobleOptin'));
         openModal('em-modal-lista');
     });
 

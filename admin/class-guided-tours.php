@@ -1,6 +1,6 @@
 <?php
 /**
- * Sistema de Tours Guiados Interactivos
+ * Sistema de Tours Guiados Interactivos Mejorado
  *
  * Tours paso a paso para ayudar a usuarios nuevos a familiarizarse
  * con las funcionalidades de Flavor Platform
@@ -37,6 +37,20 @@ class Flavor_Guided_Tours {
     private $tours = [];
 
     /**
+     * Meta key para guardar tours completados
+     *
+     * @var string
+     */
+    const META_KEY_COMPLETED = 'flavor_completed_tours';
+
+    /**
+     * Meta key para guardar progreso de tours
+     *
+     * @var string
+     */
+    const META_KEY_PROGRESS = 'flavor_tour_progress';
+
+    /**
      * Obtiene la instancia singleton
      *
      * @return Flavor_Guided_Tours
@@ -65,14 +79,19 @@ class Flavor_Guided_Tours {
         // Cargar assets solo en admin
         add_action('admin_enqueue_scripts', [$this, 'enqueue_tour_assets']);
 
-        // AJAX para marcar tour como completado
+        // AJAX handlers
         add_action('wp_ajax_flavor_complete_tour', [$this, 'ajax_complete_tour']);
-
-        // AJAX para reiniciar tour
         add_action('wp_ajax_flavor_reset_tour', [$this, 'ajax_reset_tour']);
+        add_action('wp_ajax_flavor_reset_all_tours', [$this, 'ajax_reset_all_tours']);
+        add_action('wp_ajax_flavor_save_tour_progress', [$this, 'ajax_save_tour_progress']);
+        add_action('wp_ajax_flavor_get_tour_data', [$this, 'ajax_get_tour_data']);
+        add_action('wp_ajax_flavor_dismiss_tour', [$this, 'ajax_dismiss_tour']);
 
         // Mostrar tours disponibles en cada página
         add_action('admin_footer', [$this, 'render_tour_launcher']);
+
+        // NOTA: El menú se registra centralizadamente en class-admin-menu-manager.php
+        // add_action('admin_menu', [$this, 'add_tours_submenu'], 99);
     }
 
     /**
@@ -81,116 +100,372 @@ class Flavor_Guided_Tours {
      * @return void
      */
     private function registrar_tours() {
-        // Tour de bienvenida general
-        $this->tours['welcome'] = [
-            'titulo' => __('Bienvenida a Flavor Platform', 'flavor-chat-ia'),
-            'descripcion' => __('Descubre las funcionalidades principales', 'flavor-chat-ia'),
-            'paginas' => ['flavor-dashboard', 'toplevel_page_flavor-dashboard'],
+        // Tour del Dashboard
+        $this->tours['tour_dashboard'] = [
+            'id' => 'tour_dashboard',
+            'titulo' => __('Tour del Dashboard', 'flavor-chat-ia'),
+            'descripcion' => __('Conoce el panel principal y sus funcionalidades', 'flavor-chat-ia'),
+            'icono' => 'dashicons-dashboard',
+            'duracion' => '2 min',
+            'paginas' => ['toplevel_page_flavor-dashboard', 'flavor-platform_page_flavor-dashboard'],
+            'video_url' => '',
             'pasos' => [
                 [
-                    'elemento' => '.flavor-welcome-panel',
-                    'titulo' => __('¡Bienvenido!', 'flavor-chat-ia'),
-                    'contenido' => __('Esta es tu plataforma modular lista para usar. Desde aquí puedes gestionar todo.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-dashboard-header, .flavor-dashboard-wrapper > h1',
+                    'titulo' => __('Bienvenido al Dashboard', 'flavor-chat-ia'),
+                    'contenido' => __('Este es tu centro de control. Desde aquí puedes ver estadísticas, acceder a configuraciones y gestionar toda la plataforma.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.flavor-dashboard-hero',
+                    'titulo' => __('Tu App Activa', 'flavor-chat-ia'),
+                    'contenido' => __('Aquí ves el perfil de app activo actualmente, con información sobre módulos activos, addons y usuarios.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
-                    'elemento' => '.flavor-stat-grid',
-                    'titulo' => __('Estadísticas en tiempo real', 'flavor-chat-ia'),
-                    'contenido' => __('Ve aquí las estadísticas más importantes de tu plataforma: addons activos, módulos, conversaciones y mensajes.', 'flavor-chat-ia'),
-                    'posicion' => 'top',
+                    'elemento' => '.flavor-metrics-grid, .flavor-widget-metrics',
+                    'titulo' => __('Métricas en Tiempo Real', 'flavor-chat-ia'),
+                    'contenido' => __('Métricas importantes de tu plataforma: usuarios activos, módulos, conversaciones IA y más.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
                 ],
                 [
-                    'elemento' => '.flavor-quick-actions',
-                    'titulo' => __('Acciones rápidas', 'flavor-chat-ia'),
-                    'contenido' => __('Accede rápidamente a las secciones más utilizadas desde estos botones.', 'flavor-chat-ia'),
-                    'posicion' => 'top',
+                    'elemento' => '.flavor-widget-system, .flavor-health-semaphore',
+                    'titulo' => __('Estado del Sistema', 'flavor-chat-ia'),
+                    'contenido' => __('Monitorea la salud de tu sistema, versiones y estado de la API.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
                 ],
                 [
-                    'elemento' => '#menu-posts-flavor_landing',
-                    'titulo' => __('Landing Pages', 'flavor-chat-ia'),
-                    'contenido' => __('Crea landing pages personalizadas para tus aplicaciones móviles.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-widget-alerts, .flavor-alerts-list',
+                    'titulo' => __('Alertas y Notificaciones', 'flavor-chat-ia'),
+                    'contenido' => __('Aquí aparecen las alertas pendientes que requieren tu atención.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '#adminmenu .toplevel_page_flavor-dashboard, #adminmenu [href*="flavor-dashboard"]',
+                    'titulo' => __('Menú de Navegación', 'flavor-chat-ia'),
+                    'contenido' => __('Desde el menú lateral puedes acceder a todas las secciones de Flavor Platform.', 'flavor-chat-ia'),
                     'posicion' => 'right',
                 ],
             ],
         ];
 
-        // Tour de gestión de addons
-        $this->tours['addons'] = [
-            'titulo' => __('Gestión de Addons', 'flavor-chat-ia'),
-            'descripcion' => __('Aprende a activar y configurar addons', 'flavor-chat-ia'),
-            'paginas' => ['flavor-platform_page_flavor-addons'],
+        // Tour de Módulos
+        $this->tours['tour_modulos'] = [
+            'id' => 'tour_modulos',
+            'titulo' => __('Tour de Módulos', 'flavor-chat-ia'),
+            'descripcion' => __('Aprende a activar y configurar módulos especializados', 'flavor-chat-ia'),
+            'icono' => 'dashicons-admin-plugins',
+            'duracion' => '3 min',
+            'paginas' => ['flavor-platform_page_flavor-modules', 'flavor-platform_page_flavor-addons'],
+            'video_url' => '',
             'pasos' => [
                 [
-                    'elemento' => '.flavor-addon-card:first',
-                    'titulo' => __('Tarjetas de Addon', 'flavor-chat-ia'),
-                    'contenido' => __('Cada addon tiene su propia tarjeta con información sobre su estado, versión y requisitos.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-modules-header, .wrap > h1',
+                    'titulo' => __('Gestión de Módulos', 'flavor-chat-ia'),
+                    'contenido' => __('Los módulos extienden las capacidades de tu chat IA. Cada módulo añade funcionalidades específicas como reservas, productos, citas, etc.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.flavor-module-card:first-child, .flavor-addon-card:first-child',
+                    'titulo' => __('Tarjetas de Módulo', 'flavor-chat-ia'),
+                    'contenido' => __('Cada módulo tiene su propia tarjeta con información sobre su estado, descripción y opciones de configuración.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
-                    'elemento' => '.flavor-addon-badge',
-                    'titulo' => __('Estado del Addon', 'flavor-chat-ia'),
-                    'contenido' => __('Este badge muestra si el addon está activo o inactivo.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-module-toggle, .flavor-addon-toggle, .module-status-toggle',
+                    'titulo' => __('Activar/Desactivar', 'flavor-chat-ia'),
+                    'contenido' => __('Usa este interruptor para activar o desactivar módulos. Los requisitos se verifican automáticamente.', 'flavor-chat-ia'),
                     'posicion' => 'left',
                 ],
                 [
-                    'elemento' => '.flavor-addon-actions button:first',
-                    'titulo' => __('Activar/Desactivar', 'flavor-chat-ia'),
-                    'contenido' => __('Usa este botón para activar o desactivar el addon. Los requisitos se verifican automáticamente.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-module-config, .flavor-addon-settings, .module-settings-btn',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'contenido' => __('Accede a la configuración específica de cada módulo para personalizarlo según tus necesidades.', 'flavor-chat-ia'),
                     'posicion' => 'top',
                 ],
-            ],
-        ];
-
-        // Tour de módulos
-        $this->tours['modules'] = [
-            'titulo' => __('Módulos del Chat', 'flavor-chat-ia'),
-            'descripcion' => __('Entiende cómo funcionan los módulos', 'flavor-chat-ia'),
-            'paginas' => ['flavor-platform_page_flavor-modules'],
-            'pasos' => [
                 [
-                    'elemento' => '.flavor-module-card:first',
-                    'titulo' => __('Módulos Especializados', 'flavor-chat-ia'),
-                    'contenido' => __('Cada módulo añade funcionalidades específicas al chat IA.', 'flavor-chat-ia'),
-                    'posicion' => 'bottom',
-                ],
-                [
-                    'elemento' => '.flavor-module-dependencies',
+                    'elemento' => '.flavor-module-dependencies, .module-requirements',
                     'titulo' => __('Dependencias', 'flavor-chat-ia'),
-                    'contenido' => __('Algunos módulos requieren otros módulos o addons para funcionar.', 'flavor-chat-ia'),
-                    'posicion' => 'top',
+                    'contenido' => __('Algunos módulos requieren otros módulos o plugins para funcionar. Aquí se muestran los requisitos.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
                 ],
             ],
         ];
 
-        // Tour de configuración de IA
-        $this->tours['ai-setup'] = [
-            'titulo' => __('Configurar Motor de IA', 'flavor-chat-ia'),
-            'descripcion' => __('Conecta tu motor de IA preferido', 'flavor-chat-ia'),
-            'paginas' => ['flavor-platform_page_flavor-chat-ia'],
+        // Tour de Diseño
+        $this->tours['tour_diseno'] = [
+            'id' => 'tour_diseno',
+            'titulo' => __('Tour de Diseño', 'flavor-chat-ia'),
+            'descripcion' => __('Personaliza colores, tipografías y apariencia del chat', 'flavor-chat-ia'),
+            'icono' => 'dashicons-art',
+            'duracion' => '4 min',
+            'paginas' => ['flavor-platform_page_flavor-design', 'flavor-platform_page_flavor-design-settings'],
+            'video_url' => '',
             'pasos' => [
                 [
-                    'elemento' => 'select[name="flavor_chat_settings[engine]"]',
-                    'titulo' => __('Selecciona el Motor', 'flavor-chat-ia'),
-                    'contenido' => __('Elige entre Claude, OpenAI, DeepSeek o Mistral como tu motor de IA.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-design-header, .wrap > h1',
+                    'titulo' => __('Personalización de Diseño', 'flavor-chat-ia'),
+                    'contenido' => __('Aquí puedes personalizar completamente la apariencia de tu chat y landing pages para que coincidan con tu marca.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.flavor-color-picker, .color-palette-section, input[type="color"]',
+                    'titulo' => __('Paleta de Colores', 'flavor-chat-ia'),
+                    'contenido' => __('Define los colores principales, secundarios y de acento. Puedes usar colores predefinidos o crear tu propia paleta.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '.flavor-typography-section, .typography-settings, select[name*="font"]',
+                    'titulo' => __('Tipografía', 'flavor-chat-ia'),
+                    'contenido' => __('Selecciona las fuentes para títulos y texto. Disponemos de Google Fonts y fuentes del sistema.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
-                    'elemento' => 'input[name="flavor_chat_settings[api_key]"]',
-                    'titulo' => __('API Key', 'flavor-chat-ia'),
-                    'contenido' => __('Ingresa tu API key. Esta se guarda de forma segura y encriptada.', 'flavor-chat-ia'),
-                    'posicion' => 'bottom',
+                    'elemento' => '.flavor-layout-options, .layout-settings, .chat-position-selector',
+                    'titulo' => __('Posición y Layout', 'flavor-chat-ia'),
+                    'contenido' => __('Configura dónde aparecerá el chat, su tamaño y comportamiento en diferentes dispositivos.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
                 ],
                 [
-                    'elemento' => 'select[name="flavor_chat_settings[model]"]',
-                    'titulo' => __('Modelo de IA', 'flavor-chat-ia'),
-                    'contenido' => __('Selecciona qué versión del modelo usar. Los modelos más recientes suelen dar mejores respuestas.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-preview-section, .design-preview, #preview-container',
+                    'titulo' => __('Vista Previa en Vivo', 'flavor-chat-ia'),
+                    'contenido' => __('Ve los cambios en tiempo real antes de guardarlos. La vista previa muestra cómo se verá el chat en tu sitio.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-theme-presets, .preset-themes',
+                    'titulo' => __('Temas Predefinidos', 'flavor-chat-ia'),
+                    'contenido' => __('Usa uno de nuestros temas predefinidos como punto de partida y personalízalo a tu gusto.', 'flavor-chat-ia'),
                     'posicion' => 'top',
                 ],
             ],
         ];
 
-        // Permitir que addons registren sus propios tours
+        // Tour de Landing Pages
+        $this->tours['tour_landing'] = [
+            'id' => 'tour_landing',
+            'titulo' => __('Tour de Landing Pages', 'flavor-chat-ia'),
+            'descripcion' => __('Crea páginas de aterrizaje para tus aplicaciones', 'flavor-chat-ia'),
+            'icono' => 'dashicons-welcome-widgets-menus',
+            'duracion' => '5 min',
+            'paginas' => ['edit-flavor_landing', 'flavor_landing', 'flavor-platform_page_flavor-landing'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap > h1, .page-title-action',
+                    'titulo' => __('Gestión de Landing Pages', 'flavor-chat-ia'),
+                    'contenido' => __('Crea landing pages optimizadas para promocionar tus aplicaciones móviles con descargas directas.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.page-title-action, a[href*="post-new.php"]',
+                    'titulo' => __('Crear Nueva Landing', 'flavor-chat-ia'),
+                    'contenido' => __('Haz clic aquí para crear una nueva landing page. Podrás elegir entre varias plantillas profesionales.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.flavor-template-selector, #template-chooser',
+                    'titulo' => __('Selector de Plantillas', 'flavor-chat-ia'),
+                    'contenido' => __('Elige entre plantillas modernas optimizadas para conversión. Cada una está diseñada para diferentes tipos de apps.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '.flavor-landing-meta, #flavor_landing_metabox',
+                    'titulo' => __('Configuración de la Landing', 'flavor-chat-ia'),
+                    'contenido' => __('Configura los enlaces de descarga, capturas de pantalla, características y toda la información de tu app.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-app-links, .download-buttons-section',
+                    'titulo' => __('Enlaces de Descarga', 'flavor-chat-ia'),
+                    'contenido' => __('Añade los enlaces a App Store, Google Play o descargas directas de APK.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.flavor-screenshots, .gallery-section',
+                    'titulo' => __('Galería de Capturas', 'flavor-chat-ia'),
+                    'contenido' => __('Sube capturas de pantalla de tu app. Se mostrarán en un carrusel atractivo.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+            ],
+        ];
+
+        // Tour de Red de Nodos
+        $this->tours['tour_red_nodos'] = [
+            'id' => 'tour_red_nodos',
+            'titulo' => __('Tour de la Red de Nodos', 'flavor-chat-ia'),
+            'descripcion' => __('Conecta tu sitio a la red distribuida de Flavor', 'flavor-chat-ia'),
+            'icono' => 'dashicons-networking',
+            'duracion' => '3 min',
+            'paginas' => ['flavor-platform_page_flavor-network', 'flavor-platform_page_flavor-nodes'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.flavor-network-header, .wrap > h1',
+                    'titulo' => __('Red de Nodos', 'flavor-chat-ia'),
+                    'contenido' => __('La red de nodos te permite conectar múltiples instalaciones de Flavor Platform, compartir recursos y sincronizar datos.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.flavor-node-status, .network-status-indicator',
+                    'titulo' => __('Estado de Conexión', 'flavor-chat-ia'),
+                    'contenido' => __('Aquí puedes ver si tu nodo está conectado a la red y el estado de la sincronización.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '.flavor-join-network, .network-join-btn',
+                    'titulo' => __('Unirse a la Red', 'flavor-chat-ia'),
+                    'contenido' => __('Conecta tu instalación a la red principal para beneficiarte de recursos compartidos y actualizaciones.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.flavor-node-key, .api-key-section',
+                    'titulo' => __('Clave de Nodo', 'flavor-chat-ia'),
+                    'contenido' => __('Tu clave única de nodo. Mantéela segura ya que identifica tu instalación en la red.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-sync-settings, .sync-options',
+                    'titulo' => __('Opciones de Sincronización', 'flavor-chat-ia'),
+                    'contenido' => __('Configura qué datos sincronizar: prompts, plantillas, configuraciones y más.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
+        // Tour de Configuración de Chat IA
+        $this->tours['tour_chat_ia'] = [
+            'id' => 'tour_chat_ia',
+            'titulo' => __('Tour de Configuración IA', 'flavor-chat-ia'),
+            'descripcion' => __('Configura el motor de IA y personaliza las respuestas', 'flavor-chat-ia'),
+            'icono' => 'dashicons-format-chat',
+            'duracion' => '4 min',
+            'paginas' => ['flavor-platform_page_flavor-chat-ia', 'flavor-platform_page_flavor-chat-settings'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.flavor-chat-header, .wrap > h1',
+                    'titulo' => __('Configuración del Chat IA', 'flavor-chat-ia'),
+                    'contenido' => __('Aquí configuras el cerebro de tu chat: el motor de IA, modelo, personalidad y comportamiento.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => 'select[name*="engine"], .engine-selector, #ai-engine-select',
+                    'titulo' => __('Motor de IA', 'flavor-chat-ia'),
+                    'contenido' => __('Elige entre diferentes proveedores: Claude (Anthropic), OpenAI, DeepSeek, Mistral u Ollama local.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => 'input[name*="api_key"], .api-key-field, #api-key-input',
+                    'titulo' => __('API Key', 'flavor-chat-ia'),
+                    'contenido' => __('Ingresa tu API key del proveedor. Se almacena de forma segura y encriptada.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => 'select[name*="model"], .model-selector, #model-select',
+                    'titulo' => __('Modelo de IA', 'flavor-chat-ia'),
+                    'contenido' => __('Selecciona qué versión del modelo usar. Los modelos más recientes ofrecen mejores respuestas.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => 'textarea[name*="system_prompt"], .system-prompt-field, #system-prompt',
+                    'titulo' => __('Prompt del Sistema', 'flavor-chat-ia'),
+                    'contenido' => __('Define la personalidad y comportamiento del chat. Este texto guía todas las respuestas.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-token-settings, .token-limits, #token-config',
+                    'titulo' => __('Límites de Tokens', 'flavor-chat-ia'),
+                    'contenido' => __('Configura la longitud máxima de respuestas y el contexto de conversación.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
+        // Tour de Perfiles de Apps
+        $this->tours['tour_app_profiles'] = [
+            'id' => 'tour_app_profiles',
+            'titulo' => __('Tour de Perfiles de Apps', 'flavor-chat-ia'),
+            'descripcion' => __('Gestiona perfiles para tus aplicaciones móviles', 'flavor-chat-ia'),
+            'icono' => 'dashicons-smartphone',
+            'duracion' => '3 min',
+            'paginas' => ['flavor-platform_page_flavor-apps', 'flavor-platform_page_flavor-app-profiles'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.flavor-apps-header, .wrap > h1',
+                    'titulo' => __('Perfiles de Aplicaciones', 'flavor-chat-ia'),
+                    'contenido' => __('Crea perfiles que definen cómo se comporta Flavor en diferentes apps o contextos.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.flavor-app-card:first-child, .app-profile-item:first-child',
+                    'titulo' => __('Perfil de App', 'flavor-chat-ia'),
+                    'contenido' => __('Cada perfil tiene su propia configuración de chat, diseño y módulos activos.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '.flavor-app-pairing, .pairing-section',
+                    'titulo' => __('Vincular con App', 'flavor-chat-ia'),
+                    'contenido' => __('Conecta tu app móvil escaneando un código QR o ingresando el código de vinculación.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+            ],
+        ];
+
+        // Permitir que addons/plugins registren sus propios tours
         $this->tours = apply_filters('flavor_guided_tours', $this->tours);
+    }
+
+    /**
+     * Añade submenú para panel de tours
+     *
+     * @return void
+     */
+    public function add_tours_submenu() {
+        add_submenu_page(
+            'flavor-dashboard',
+            __('Tours de Ayuda', 'flavor-chat-ia'),
+            __('Tours', 'flavor-chat-ia'),
+            'manage_options',
+            'flavor-tours',
+            [$this, 'render_tours_panel']
+        );
+    }
+
+    /**
+     * Renderiza el panel de tours
+     *
+     * @return void
+     */
+    public function render_tours_panel() {
+        include FLAVOR_CHAT_IA_PATH . 'admin/views/tours-panel.php';
+    }
+
+    /**
+     * Obtiene todos los tours registrados
+     *
+     * @return array
+     */
+    public function get_all_tours() {
+        return $this->tours;
+    }
+
+    /**
+     * Obtiene un tour específico
+     *
+     * @param string $tour_id ID del tour
+     * @return array|null
+     */
+    public function get_tour($tour_id) {
+        return isset($this->tours[$tour_id]) ? $this->tours[$tour_id] : null;
     }
 
     /**
@@ -200,360 +475,55 @@ class Flavor_Guided_Tours {
      * @return void
      */
     public function enqueue_tour_assets($hook_suffix) {
-        // Shepherd.js - biblioteca para tours guiados
+        // CSS del sistema de onboarding
         wp_enqueue_style(
-            'shepherdjs',
-            'https://cdn.jsdelivr.net/npm/shepherd.js@11.1.1/dist/css/shepherd.css',
+            'flavor-onboarding',
+            FLAVOR_CHAT_IA_URL . 'admin/css/onboarding.css',
             [],
-            '11.1.1'
+            FLAVOR_CHAT_IA_VERSION
         );
 
+        // JavaScript del sistema de onboarding
         wp_enqueue_script(
-            'shepherdjs',
-            'https://cdn.jsdelivr.net/npm/shepherd.js@11.1.1/dist/js/shepherd.min.js',
-            [],
-            '11.1.1',
+            'flavor-onboarding',
+            FLAVOR_CHAT_IA_URL . 'admin/js/onboarding.js',
+            ['jquery'],
+            FLAVOR_CHAT_IA_VERSION,
             true
         );
 
-        // Script personalizado para tours
-        $js_tours = "
-            (function($) {
-                'use strict';
-
-                window.FlavorTours = {
-                    tours: " . json_encode($this->tours) . ",
-                    currentTour: null,
-                    completedTours: " . json_encode($this->get_completed_tours()) . ",
-
-                    init: function() {
-                        this.bindEvents();
-                        this.checkAutoStart();
-                    },
-
-                    bindEvents: function() {
-                        $(document).on('click', '.flavor-tour-start', function(e) {
-                            e.preventDefault();
-                            var tourId = $(this).data('tour-id');
-                            FlavorTours.startTour(tourId);
-                        });
-
-                        $(document).on('click', '.flavor-tour-reset', function(e) {
-                            e.preventDefault();
-                            var tourId = $(this).data('tour-id');
-                            FlavorTours.resetTour(tourId);
-                        });
-                    },
-
-                    checkAutoStart: function() {
-                        var currentPage = '" . $hook_suffix . "';
-                        var self = this;
-
-                        $.each(this.tours, function(tourId, tour) {
-                            if (tour.paginas.indexOf(currentPage) !== -1 &&
-                                self.completedTours.indexOf(tourId) === -1 &&
-                                !localStorage.getItem('flavor_tour_dismissed_' + tourId)) {
-                                self.showTourPromo(tourId, tour);
-                            }
-                        });
-                    },
-
-                    showTourPromo: function(tourId, tour) {
-                        // Verificar que al menos un elemento del tour existe y es visible
-                        var hasValidElements = false;
-                        $.each(tour.pasos || [], function(i, paso) {
-                            try {
-                                var el = $(paso.elemento);
-                                if (el.length > 0 && el.is(':visible') && el.get(0) &&
-                                    typeof el.get(0).getBoundingClientRect === 'function') {
-                                    var rect = el.get(0).getBoundingClientRect();
-                                    if (rect.width > 0 || rect.height > 0) {
-                                        hasValidElements = true;
-                                        return false; // break
-                                    }
-                                }
-                            } catch (e) {}
-                        });
-                        if (!hasValidElements) return;
-
-                        var html = '<div class=\"notice notice-info is-dismissible flavor-tour-promo\">';
-                        html += '<p><strong>' + tour.titulo + ':</strong> ' + tour.descripcion + '</p>';
-                        html += '<p><button class=\"button button-primary flavor-tour-start\" data-tour-id=\"' + tourId + '\">';
-                        html += '" . esc_js(__('Iniciar Tour', 'flavor-chat-ia')) . "</button> ';
-                        html += '<button class=\"button flavor-tour-dismiss\" data-tour-id=\"' + tourId + '\">';
-                        html += '" . esc_js(__('No mostrar de nuevo', 'flavor-chat-ia')) . "</button></p>';
-                        html += '</div>';
-
-                        $('.wrap h1').first().after(html);
-
-                        $(document).on('click', '.flavor-tour-dismiss', function(e) {
-                            e.preventDefault();
-                            var id = $(this).data('tour-id');
-                            localStorage.setItem('flavor_tour_dismissed_' + id, '1');
-                            $(this).closest('.flavor-tour-promo').remove();
-                        });
-                    },
-
-                    startTour: function(tourId) {
-                        var tourConfig = this.tours[tourId];
-                        if (!tourConfig) return;
-
-                        var steps = [];
-                        var validSteps = [];
-
-                        // Filtrar solo los pasos cuyos elementos existen en el DOM y son visibles
-                        $.each(tourConfig.pasos, function(index, paso) {
-                            try {
-                                var elemento = $(paso.elemento);
-                                // Verificar que existe, es visible y tiene getBoundingClientRect
-                                if (elemento.length > 0 &&
-                                    elemento.is(':visible') &&
-                                    elemento.get(0) &&
-                                    typeof elemento.get(0).getBoundingClientRect === 'function') {
-                                    var rect = elemento.get(0).getBoundingClientRect();
-                                    // Verificar que tiene dimensiones
-                                    if (rect.width > 0 || rect.height > 0) {
-                                        validSteps.push(paso);
-                                    }
-                                }
-                            } catch (e) {
-                                console.log('FlavorTours: Elemento no válido', paso.elemento, e);
-                            }
-                        });
-
-                        // Si no hay pasos válidos, no iniciar el tour
-                        if (validSteps.length === 0) {
-                            console.log('FlavorTours: No hay elementos visibles para el tour ' + tourId);
-                            return;
-                        }
-
-                        $.each(validSteps, function(index, paso) {
-                            // Obtener el elemento DOM real, no solo el selector
-                            var elementoDOM = $(paso.elemento).get(0);
-
-                            var step = {
-                                title: paso.titulo,
-                                text: paso.contenido,
-                                buttons: []
-                            };
-
-                            // Solo adjuntar si el elemento existe realmente
-                            if (elementoDOM) {
-                                step.attachTo = {
-                                    element: elementoDOM,
-                                    on: paso.posicion || 'bottom'
-                                };
-                            }
-
-                            if (index > 0) {
-                                step.buttons.push({
-                                    text: '" . esc_js(__('Anterior', 'flavor-chat-ia')) . "',
-                                    action: function() {
-                                        this.back();
-                                    }
-                                });
-                            }
-
-                            if (index < validSteps.length - 1) {
-                                step.buttons.push({
-                                    text: '" . esc_js(__('Siguiente', 'flavor-chat-ia')) . "',
-                                    action: function() {
-                                        this.next();
-                                    }
-                                });
-                            } else {
-                                step.buttons.push({
-                                    text: '" . esc_js(__('Finalizar', 'flavor-chat-ia')) . "',
-                                    action: function() {
-                                        FlavorTours.completeTour(tourId);
-                                        this.complete();
-                                    }
-                                });
-                            }
-
-                            steps.push(step);
-                        });
-
-                        try {
-                            this.currentTour = new Shepherd.Tour({
-                                useModalOverlay: true,
-                                defaultStepOptions: {
-                                    cancelIcon: {
-                                        enabled: true
-                                    },
-                                    classes: 'flavor-tour-step',
-                                    scrollTo: { behavior: 'smooth', block: 'center' },
-                                    // Si el elemento no existe, mostrar como modal centrado
-                                    when: {
-                                        show: function() {
-                                            // Silenciar errores de posicionamiento
-                                        }
-                                    }
-                                },
-                                exitOnEsc: true,
-                                keyboardNavigation: true
-                            });
-
-                            steps.forEach(step => this.currentTour.addStep(step));
-
-                            // Capturar errores durante el tour
-                            this.currentTour.on('error', function(e) {
-                                console.warn('FlavorTours: Error en tour', e);
-                            });
-
-                            this.currentTour.start();
-                        } catch (e) {
-                            console.warn('FlavorTours: No se pudo iniciar el tour', e);
-                        }
-                    },
-
-                    completeTour: function(tourId) {
-                        $.ajax({
-                            url: ajaxurl,
-                            type: 'POST',
-                            data: {
-                                action: 'flavor_complete_tour',
-                                nonce: '" . wp_create_nonce('flavor_tour_nonce') . "',
-                                tour_id: tourId
-                            },
-                            success: function() {
-                                FlavorTours.completedTours.push(tourId);
-                                $('.flavor-tour-promo').remove();
-                            }
-                        });
-                    },
-
-                    resetTour: function(tourId) {
-                        $.ajax({
-                            url: ajaxurl,
-                            type: 'POST',
-                            data: {
-                                action: 'flavor_reset_tour',
-                                nonce: '" . wp_create_nonce('flavor_tour_nonce') . "',
-                                tour_id: tourId
-                            },
-                            success: function() {
-                                var index = FlavorTours.completedTours.indexOf(tourId);
-                                if (index > -1) {
-                                    FlavorTours.completedTours.splice(index, 1);
-                                }
-                                localStorage.removeItem('flavor_tour_dismissed_' + tourId);
-                                location.reload();
-                            }
-                        });
-                    }
-                };
-
-                $(document).ready(function() {
-                    if (typeof Shepherd !== 'undefined') {
-                        FlavorTours.init();
-                    }
-                });
-
-            })(jQuery);
-        ";
-
-        wp_add_inline_script('shepherdjs', $js_tours);
-
-        // Estilos personalizados
-        $css_tours = "
-            .flavor-tour-step {
-                max-width: 400px;
+        // Datos para JavaScript
+        $tours_for_js = [];
+        foreach ($this->tours as $tour_id => $tour) {
+            if (in_array($hook_suffix, $tour['paginas'])) {
+                $tours_for_js[$tour_id] = $tour;
             }
-            .flavor-tour-step .shepherd-content {
-                padding: 20px;
-            }
-            .flavor-tour-step .shepherd-header {
-                padding-bottom: 15px;
-                border-bottom: 1px solid #e5e5e5;
-                margin-bottom: 15px;
-            }
-            .flavor-tour-step .shepherd-title {
-                font-size: 18px;
-                font-weight: 600;
-            }
-            .flavor-tour-step .shepherd-text {
-                font-size: 14px;
-                line-height: 1.6;
-            }
-            .flavor-tour-step .shepherd-footer {
-                padding-top: 15px;
-                border-top: 1px solid #e5e5e5;
-                margin-top: 15px;
-                text-align: right;
-            }
-            .flavor-tour-step button {
-                margin-left: 10px;
-            }
-            .flavor-tour-launcher {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                z-index: 9999;
-            }
-            .flavor-tour-launcher-btn {
-                background: #2271b1;
-                color: #fff;
-                border: none;
-                border-radius: 50%;
-                width: 50px;
-                height: 50px;
-                font-size: 24px;
-                cursor: pointer;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-                transition: all 0.3s;
-            }
-            .flavor-tour-launcher-btn:hover {
-                background: #135e96;
-                transform: scale(1.1);
-            }
-            .flavor-tour-menu {
-                display: none;
-                position: absolute;
-                bottom: 60px;
-                right: 0;
-                background: #fff;
-                border: 1px solid #c3c4c7;
-                border-radius: 4px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                min-width: 250px;
-                max-height: 400px;
-                overflow-y: auto;
-            }
-            .flavor-tour-menu.active {
-                display: block;
-            }
-            .flavor-tour-menu-item {
-                padding: 12px 15px;
-                border-bottom: 1px solid #f0f0f1;
-                cursor: pointer;
-                transition: background 0.2s;
-            }
-            .flavor-tour-menu-item:hover {
-                background: #f6f7f7;
-            }
-            .flavor-tour-menu-item:last-child {
-                border-bottom: none;
-            }
-            .flavor-tour-menu-item h4 {
-                margin: 0 0 5px 0;
-                font-size: 14px;
-            }
-            .flavor-tour-menu-item p {
-                margin: 0;
-                font-size: 12px;
-                color: #646970;
-            }
-            .flavor-tour-menu-item.completed {
-                opacity: 0.6;
-            }
-            .flavor-tour-menu-item .dashicons-yes {
-                color: #00a32a;
-                float: right;
-            }
-        ";
+        }
 
-        wp_add_inline_style('shepherdjs', $css_tours);
+        wp_localize_script('flavor-onboarding', 'FlavorOnboardingData', [
+            'tours' => $tours_for_js,
+            'allTours' => $this->tours,
+            'completedTours' => $this->get_completed_tours(),
+            'tourProgress' => $this->get_tour_progress(),
+            'dismissedTours' => $this->get_dismissed_tours(),
+            'currentPage' => $hook_suffix,
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('flavor_tour_nonce'),
+            'strings' => [
+                'next' => __('Siguiente', 'flavor-chat-ia'),
+                'prev' => __('Anterior', 'flavor-chat-ia'),
+                'finish' => __('Finalizar', 'flavor-chat-ia'),
+                'skip' => __('Saltar tour', 'flavor-chat-ia'),
+                'close' => __('Cerrar', 'flavor-chat-ia'),
+                'stepOf' => __('Paso %1$d de %2$d', 'flavor-chat-ia'),
+                'startTour' => __('Iniciar Tour', 'flavor-chat-ia'),
+                'tourCompleted' => __('Tour Completado', 'flavor-chat-ia'),
+                'dontShowAgain' => __('No mostrar de nuevo', 'flavor-chat-ia'),
+                'restartTour' => __('Reiniciar Tour', 'flavor-chat-ia'),
+                'helpButton' => __('Ayuda', 'flavor-chat-ia'),
+                'watchVideo' => __('Ver Video', 'flavor-chat-ia'),
+            ],
+        ]);
     }
 
     /**
@@ -563,59 +533,112 @@ class Flavor_Guided_Tours {
      */
     public function render_tour_launcher() {
         $screen = get_current_screen();
-        $tours_disponibles = [];
+        if (!$screen) {
+            return;
+        }
 
+        $tours_disponibles = [];
         foreach ($this->tours as $tour_id => $tour) {
             if (!empty($tour['paginas']) && in_array($screen->id, $tour['paginas'])) {
                 $tours_disponibles[$tour_id] = $tour;
             }
         }
 
-        if (empty($tours_disponibles)) {
-            return;
+        $completados = $this->get_completed_tours();
+        $dismissed = $this->get_dismissed_tours();
+
+        // Verificar si hay tours sin completar y no descartados para mostrar promo
+        $tours_pendientes = [];
+        foreach ($tours_disponibles as $tour_id => $tour) {
+            if (!in_array($tour_id, $completados) && !in_array($tour_id, $dismissed)) {
+                $tours_pendientes[$tour_id] = $tour;
+            }
         }
 
-        $completados = $this->get_completed_tours();
-
         ?>
-        <div class="flavor-tour-launcher">
-            <button class="flavor-tour-launcher-btn" title="<?php esc_attr_e('Tours Guiados', 'flavor-chat-ia'); ?>">
-                <span class="dashicons dashicons-info"></span>
+        <!-- Botón flotante de ayuda -->
+        <div id="flavor-help-launcher" class="flavor-help-launcher">
+            <button class="flavor-help-btn" title="<?php esc_attr_e('Ayuda y Tours', 'flavor-chat-ia'); ?>">
+                <span class="dashicons dashicons-editor-help"></span>
             </button>
-            <div class="flavor-tour-menu">
-                <?php foreach ($tours_disponibles as $tour_id => $tour): ?>
-                    <div class="flavor-tour-menu-item <?php echo in_array($tour_id, $completados) ? 'completed' : ''; ?>"
-                         data-tour-id="<?php echo esc_attr($tour_id); ?>">
-                        <?php if (in_array($tour_id, $completados)): ?>
-                            <span class="dashicons dashicons-yes"></span>
-                        <?php endif; ?>
-                        <h4><?php echo esc_html($tour['titulo']); ?></h4>
-                        <p><?php echo esc_html($tour['descripcion']); ?></p>
+            <div class="flavor-help-menu">
+                <div class="flavor-help-menu-header">
+                    <h3><?php esc_html_e('Centro de Ayuda', 'flavor-chat-ia'); ?></h3>
+                </div>
+                <?php if (!empty($tours_disponibles)): ?>
+                    <div class="flavor-help-section">
+                        <h4><?php esc_html_e('Tours Disponibles', 'flavor-chat-ia'); ?></h4>
+                        <?php foreach ($tours_disponibles as $tour_id => $tour):
+                            $is_completed = in_array($tour_id, $completados);
+                        ?>
+                            <div class="flavor-help-item <?php echo $is_completed ? 'completed' : ''; ?>"
+                                 data-tour-id="<?php echo esc_attr($tour_id); ?>">
+                                <span class="dashicons <?php echo esc_attr($tour['icono'] ?? 'dashicons-info'); ?>"></span>
+                                <div class="flavor-help-item-content">
+                                    <span class="flavor-help-item-title"><?php echo esc_html($tour['titulo']); ?></span>
+                                    <span class="flavor-help-item-duration"><?php echo esc_html($tour['duracion'] ?? ''); ?></span>
+                                </div>
+                                <?php if ($is_completed): ?>
+                                    <span class="dashicons dashicons-yes-alt flavor-check"></span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
+                <?php endif; ?>
+
+                <div class="flavor-help-section">
+                    <h4><?php esc_html_e('Recursos', 'flavor-chat-ia'); ?></h4>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-tours')); ?>" class="flavor-help-item">
+                        <span class="dashicons dashicons-welcome-learn-more"></span>
+                        <span class="flavor-help-item-title"><?php esc_html_e('Ver Todos los Tours', 'flavor-chat-ia'); ?></span>
+                    </a>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-docs')); ?>" class="flavor-help-item">
+                        <span class="dashicons dashicons-book"></span>
+                        <span class="flavor-help-item-title"><?php esc_html_e('Documentación', 'flavor-chat-ia'); ?></span>
+                    </a>
+                </div>
             </div>
         </div>
 
-        <script>
-        jQuery(document).ready(function($) {
-            $('.flavor-tour-launcher-btn').on('click', function(e) {
-                e.stopPropagation();
-                $('.flavor-tour-menu').toggleClass('active');
-            });
+        <?php
+        // Mostrar notificación de tour pendiente si es primera visita
+        if (!empty($tours_pendientes)):
+            $first_tour = reset($tours_pendientes);
+            $first_tour_id = key($tours_pendientes);
+        ?>
+        <div id="flavor-tour-notification" class="flavor-tour-notification" data-tour-id="<?php echo esc_attr($first_tour_id); ?>">
+            <div class="flavor-tour-notification-content">
+                <span class="dashicons <?php echo esc_attr($first_tour['icono'] ?? 'dashicons-info'); ?>"></span>
+                <div class="flavor-tour-notification-text">
+                    <strong><?php echo esc_html($first_tour['titulo']); ?></strong>
+                    <p><?php echo esc_html($first_tour['descripcion']); ?></p>
+                </div>
+                <div class="flavor-tour-notification-actions">
+                    <button class="button button-primary flavor-start-tour-btn">
+                        <?php esc_html_e('Iniciar Tour', 'flavor-chat-ia'); ?>
+                    </button>
+                    <button class="button flavor-dismiss-tour-btn">
+                        <?php esc_html_e('Ahora no', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+                <button class="flavor-tour-notification-close" title="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                    <span class="dashicons dashicons-no-alt"></span>
+                </button>
+            </div>
+        </div>
+        <?php endif; ?>
 
-            $('.flavor-tour-menu-item').on('click', function() {
-                var tourId = $(this).data('tour-id');
-                $('.flavor-tour-menu').removeClass('active');
-                FlavorTours.startTour(tourId);
-            });
-
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('.flavor-tour-launcher').length) {
-                    $('.flavor-tour-menu').removeClass('active');
-                }
-            });
-        });
-        </script>
+        <!-- Modal para videos tutoriales -->
+        <div id="flavor-video-modal" class="flavor-video-modal">
+            <div class="flavor-video-modal-content">
+                <button class="flavor-video-modal-close">
+                    <span class="dashicons dashicons-no-alt"></span>
+                </button>
+                <div class="flavor-video-modal-body">
+                    <iframe id="flavor-video-iframe" src="" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
         <?php
     }
 
@@ -628,22 +651,31 @@ class Flavor_Guided_Tours {
         check_ajax_referer('flavor_tour_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(['message' => __('No tienes permisos', 'flavor-chat-ia')]);
         }
 
-        $tour_id = sanitize_text_field($_POST['tour_id']);
+        $tour_id = sanitize_text_field($_POST['tour_id'] ?? '');
+        if (empty($tour_id)) {
+            wp_send_json_error(['message' => __('ID de tour no válido', 'flavor-chat-ia')]);
+        }
+
         $completados = $this->get_completed_tours();
 
         if (!in_array($tour_id, $completados)) {
             $completados[] = $tour_id;
-            update_user_meta(get_current_user_id(), 'flavor_completed_tours', $completados);
+            update_user_meta(get_current_user_id(), self::META_KEY_COMPLETED, $completados);
+
+            // Limpiar progreso del tour completado
+            $progress = $this->get_tour_progress();
+            unset($progress[$tour_id]);
+            update_user_meta(get_current_user_id(), self::META_KEY_PROGRESS, $progress);
         }
 
-        wp_send_json_success();
+        wp_send_json_success(['completed' => $completados]);
     }
 
     /**
-     * AJAX: Reinicia un tour
+     * AJAX: Reinicia un tour específico
      *
      * @return void
      */
@@ -651,19 +683,133 @@ class Flavor_Guided_Tours {
         check_ajax_referer('flavor_tour_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(['message' => __('No tienes permisos', 'flavor-chat-ia')]);
         }
 
-        $tour_id = sanitize_text_field($_POST['tour_id']);
-        $completados = $this->get_completed_tours();
+        $tour_id = sanitize_text_field($_POST['tour_id'] ?? '');
+        if (empty($tour_id)) {
+            wp_send_json_error(['message' => __('ID de tour no válido', 'flavor-chat-ia')]);
+        }
 
+        // Quitar de completados
+        $completados = $this->get_completed_tours();
         $key = array_search($tour_id, $completados);
         if ($key !== false) {
             unset($completados[$key]);
-            update_user_meta(get_current_user_id(), 'flavor_completed_tours', array_values($completados));
+            update_user_meta(get_current_user_id(), self::META_KEY_COMPLETED, array_values($completados));
         }
 
-        wp_send_json_success();
+        // Quitar de descartados
+        $dismissed = $this->get_dismissed_tours();
+        $key = array_search($tour_id, $dismissed);
+        if ($key !== false) {
+            unset($dismissed[$key]);
+            update_user_meta(get_current_user_id(), 'flavor_dismissed_tours', array_values($dismissed));
+        }
+
+        // Limpiar progreso
+        $progress = $this->get_tour_progress();
+        unset($progress[$tour_id]);
+        update_user_meta(get_current_user_id(), self::META_KEY_PROGRESS, $progress);
+
+        wp_send_json_success(['message' => __('Tour reiniciado', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * AJAX: Reinicia todos los tours
+     *
+     * @return void
+     */
+    public function ajax_reset_all_tours() {
+        check_ajax_referer('flavor_tour_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos', 'flavor-chat-ia')]);
+        }
+
+        delete_user_meta(get_current_user_id(), self::META_KEY_COMPLETED);
+        delete_user_meta(get_current_user_id(), self::META_KEY_PROGRESS);
+        delete_user_meta(get_current_user_id(), 'flavor_dismissed_tours');
+
+        wp_send_json_success(['message' => __('Todos los tours han sido reiniciados', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * AJAX: Guarda el progreso de un tour
+     *
+     * @return void
+     */
+    public function ajax_save_tour_progress() {
+        check_ajax_referer('flavor_tour_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos', 'flavor-chat-ia')]);
+        }
+
+        $tour_id = sanitize_text_field($_POST['tour_id'] ?? '');
+        $step = absint($_POST['step'] ?? 0);
+
+        if (empty($tour_id)) {
+            wp_send_json_error(['message' => __('ID de tour no válido', 'flavor-chat-ia')]);
+        }
+
+        $progress = $this->get_tour_progress();
+        $progress[$tour_id] = [
+            'step' => $step,
+            'timestamp' => time(),
+        ];
+        update_user_meta(get_current_user_id(), self::META_KEY_PROGRESS, $progress);
+
+        wp_send_json_success(['progress' => $progress]);
+    }
+
+    /**
+     * AJAX: Obtiene datos de un tour
+     *
+     * @return void
+     */
+    public function ajax_get_tour_data() {
+        check_ajax_referer('flavor_tour_nonce', 'nonce');
+
+        $tour_id = sanitize_text_field($_POST['tour_id'] ?? '');
+        if (empty($tour_id) || !isset($this->tours[$tour_id])) {
+            wp_send_json_error(['message' => __('Tour no encontrado', 'flavor-chat-ia')]);
+        }
+
+        $tour = $this->tours[$tour_id];
+        $progress = $this->get_tour_progress();
+
+        wp_send_json_success([
+            'tour' => $tour,
+            'progress' => $progress[$tour_id] ?? null,
+            'isCompleted' => in_array($tour_id, $this->get_completed_tours()),
+        ]);
+    }
+
+    /**
+     * AJAX: Descarta un tour (no mostrar de nuevo)
+     *
+     * @return void
+     */
+    public function ajax_dismiss_tour() {
+        check_ajax_referer('flavor_tour_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('No tienes permisos', 'flavor-chat-ia')]);
+        }
+
+        $tour_id = sanitize_text_field($_POST['tour_id'] ?? '');
+        if (empty($tour_id)) {
+            wp_send_json_error(['message' => __('ID de tour no válido', 'flavor-chat-ia')]);
+        }
+
+        $dismissed = $this->get_dismissed_tours();
+        if (!in_array($tour_id, $dismissed)) {
+            $dismissed[] = $tour_id;
+            update_user_meta(get_current_user_id(), 'flavor_dismissed_tours', $dismissed);
+        }
+
+        wp_send_json_success(['dismissed' => $dismissed]);
     }
 
     /**
@@ -671,8 +817,56 @@ class Flavor_Guided_Tours {
      *
      * @return array
      */
-    private function get_completed_tours() {
-        $completados = get_user_meta(get_current_user_id(), 'flavor_completed_tours', true);
+    public function get_completed_tours() {
+        $completados = get_user_meta(get_current_user_id(), self::META_KEY_COMPLETED, true);
         return is_array($completados) ? $completados : [];
+    }
+
+    /**
+     * Obtiene el progreso de tours del usuario actual
+     *
+     * @return array
+     */
+    public function get_tour_progress() {
+        $progress = get_user_meta(get_current_user_id(), self::META_KEY_PROGRESS, true);
+        return is_array($progress) ? $progress : [];
+    }
+
+    /**
+     * Obtiene tours descartados del usuario actual
+     *
+     * @return array
+     */
+    public function get_dismissed_tours() {
+        $dismissed = get_user_meta(get_current_user_id(), 'flavor_dismissed_tours', true);
+        return is_array($dismissed) ? $dismissed : [];
+    }
+
+    /**
+     * Verifica si un tour está completado
+     *
+     * @param string $tour_id ID del tour
+     * @return bool
+     */
+    public function is_tour_completed($tour_id) {
+        return in_array($tour_id, $this->get_completed_tours());
+    }
+
+    /**
+     * Obtiene estadísticas de tours
+     *
+     * @return array
+     */
+    public function get_tour_stats() {
+        $total = count($this->tours);
+        $completed = count($this->get_completed_tours());
+        $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
+
+        return [
+            'total' => $total,
+            'completed' => $completed,
+            'remaining' => $total - $completed,
+            'percentage' => $percentage,
+        ];
     }
 }

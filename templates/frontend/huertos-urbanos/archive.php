@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header -->
     <div class="bg-gradient-to-r from-green-500 to-emerald-600 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Huertos Urbanos</h1>
-            <p class="text-white/90 text-lg">Cultiva tus propios alimentos en la comunidad</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Huertos Urbanos', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Cultiva tus propios alimentos en la comunidad', 'flavor-chat-ia'); ?></p>
             <div class="mt-4 flex items-center gap-4 text-white/80 text-sm">
                 <span><?php echo esc_html($total_huertos); ?> parcelas disponibles</span>
             </div>
@@ -37,13 +37,13 @@ $por_pagina = $por_pagina ?? 12;
                 <!-- Ordenacion -->
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-gray-600">
-                        Mostrando <span class="font-semibold"><?php echo count($huertos); ?></span> de <?php echo esc_html($total_huertos); ?> huertos
+                        <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($huertos); ?></span> de <?php echo esc_html($total_huertos); ?> huertos
                     </p>
                     <select class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                        <option>Mas cercanos</option>
-                        <option>Mas parcelas libres</option>
-                        <option>Mas recientes</option>
-                        <option>Mejor valorados</option>
+                        <option><?php echo esc_html__('Mas cercanos', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mas parcelas libres', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mas recientes', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mejor valorados', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -52,8 +52,8 @@ $por_pagina = $por_pagina ?? 12;
                         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
                         </svg>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay huertos disponibles</h3>
-                        <p class="text-gray-500">Prueba a modificar los filtros de busqueda</p>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay huertos disponibles', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-gray-500"><?php echo esc_html__('Prueba a modificar los filtros de busqueda', 'flavor-chat-ia'); ?></p>
                     </div>
                 <?php else: ?>
                     <!-- Grid de huertos -->
@@ -72,7 +72,7 @@ $por_pagina = $por_pagina ?? 12;
                                             <?php echo esc_html($huerto['parcelas_libres']); ?> libres
                                         </span>
                                     <?php else: ?>
-                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-red-500 text-white">Completo</span>
+                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-red-500 text-white"><?php echo esc_html__('Completo', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
 
                                     <!-- Ubicacion -->
@@ -116,7 +116,7 @@ $por_pagina = $por_pagina ?? 12;
                                     <a href="<?php echo esc_url($huerto['url'] ?? '#'); ?>"
                                        class="block w-full py-2.5 rounded-xl text-center font-semibold text-white transition-all hover:scale-105"
                                        style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
-                                        Ver Huerto
+                                        <?php echo esc_html__('Ver Huerto', 'flavor-chat-ia'); ?>
                                     </a>
                                 </div>
                             </article>

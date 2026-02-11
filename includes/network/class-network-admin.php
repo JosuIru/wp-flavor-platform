@@ -27,7 +27,8 @@ class Flavor_Network_Admin {
     }
 
     private function __construct() {
-        add_action('admin_menu', [$this, 'add_admin_menus'], 20);
+        // NOTA: El menú se registra centralizadamente en class-admin-menu-manager.php
+        // add_action('admin_menu', [$this, 'add_admin_menus'], 20);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
@@ -227,11 +228,15 @@ class Flavor_Network_Admin {
         $prefix = Flavor_Network_Installer::get_table_name('');
 
         $total_nodos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}nodes WHERE estado = 'activo'");
+        $total_nodos_inactivos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}nodes WHERE estado != 'activo'");
         $total_conexiones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}connections WHERE estado = 'aprobada'");
+        $total_conexiones_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}connections WHERE estado = 'pendiente'");
         $total_contenido = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}shared_content WHERE estado = 'activo'");
         $total_eventos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}events WHERE estado = 'activo' AND fecha_inicio >= NOW()");
         $total_colaboraciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}collaborations WHERE estado = 'abierta'");
         $mensajes_sin_leer = 0;
+        $ultima_sync = $wpdb->get_var("SELECT MAX(ultima_sincronizacion) FROM {$prefix}nodes");
+        $ultima_sync_local = $nodo_local ? $nodo_local->ultima_sincronizacion : null;
 
         if ($nodo_local) {
             $mensajes_sin_leer = (int) $wpdb->get_var($wpdb->prepare(
@@ -241,6 +246,21 @@ class Flavor_Network_Admin {
         }
         ?>
         <div class="flavor-network-dashboard">
+            <div class="flavor-network-dashboard-header">
+                <div>
+                    <h2><?php _e('Resumen de la red', 'flavor-chat-ia'); ?></h2>
+                    <p class="description">
+                        <?php _e('Estado general de la red, métricas clave y accesos rápidos.', 'flavor-chat-ia'); ?>
+                    </p>
+                </div>
+                <div class="flavor-network-status">
+                    <span class="network-status-indicator <?php echo $nodo_local ? 'is-online' : 'is-offline'; ?>"></span>
+                    <span>
+                        <?php echo $nodo_local ? __('Nodo local activo', 'flavor-chat-ia') : __('Nodo local sin configurar', 'flavor-chat-ia'); ?>
+                    </span>
+                </div>
+            </div>
+
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-groups"></span>
@@ -282,6 +302,58 @@ class Flavor_Network_Admin {
                     <div class="stat-content">
                         <span class="stat-number"><?php echo $mensajes_sin_leer; ?></span>
                         <span class="stat-label"><?php _e('Mensajes sin leer', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flavor-network-dashboard-grid">
+                <div class="flavor-network-card">
+                    <h3><?php _e('Acciones rápidas', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-quick-actions">
+                        <a class="button button-primary" href="<?php echo admin_url('admin.php?page=flavor-network&tab=mi-nodo'); ?>">
+                            <?php _e('Configurar nodo', 'flavor-chat-ia'); ?>
+                        </a>
+                        <a class="button" href="<?php echo admin_url('admin.php?page=flavor-network&tab=directorio'); ?>">
+                            <?php _e('Ver directorio', 'flavor-chat-ia'); ?>
+                        </a>
+                        <a class="button" href="<?php echo admin_url('admin.php?page=flavor-network&tab=mapa'); ?>">
+                            <?php _e('Mapa', 'flavor-chat-ia'); ?>
+                        </a>
+                        <a class="button" href="<?php echo admin_url('admin.php?page=flavor-network&tab=conexiones'); ?>">
+                            <?php _e('Conexiones', 'flavor-chat-ia'); ?>
+                        </a>
+                        <a class="button" href="<?php echo admin_url('admin.php?page=flavor-network&tab=contenido'); ?>">
+                            <?php _e('Contenido', 'flavor-chat-ia'); ?>
+                        </a>
+                        <a class="button" href="<?php echo admin_url('admin.php?page=flavor-network&tab=matching'); ?>">
+                            <?php _e('Matching', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flavor-network-card">
+                    <h3><?php _e('Indicadores clave', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-summary-grid">
+                        <div>
+                            <span class="summary-label"><?php _e('Conexiones pendientes', 'flavor-chat-ia'); ?></span>
+                            <span class="summary-value"><?php echo $total_conexiones_pendientes; ?></span>
+                        </div>
+                        <div>
+                            <span class="summary-label"><?php _e('Nodos inactivos', 'flavor-chat-ia'); ?></span>
+                            <span class="summary-value"><?php echo $total_nodos_inactivos; ?></span>
+                        </div>
+                        <div>
+                            <span class="summary-label"><?php _e('Última sync global', 'flavor-chat-ia'); ?></span>
+                            <span class="summary-value">
+                                <?php echo $ultima_sync ? esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($ultima_sync))) : __('Nunca', 'flavor-chat-ia'); ?>
+                            </span>
+                        </div>
+                        <div>
+                            <span class="summary-label"><?php _e('Última sync local', 'flavor-chat-ia'); ?></span>
+                            <span class="summary-value">
+                                <?php echo $ultima_sync_local ? esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($ultima_sync_local))) : __('Nunca', 'flavor-chat-ia'); ?>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1185,10 +1257,14 @@ class Flavor_Network_Admin {
     private function render_tab_preguntas($nodo_local) {
         global $wpdb;
         $prefix = Flavor_Network_Installer::get_table_name('');
+        $tabla_questions = $prefix . 'questions';
 
-        $total_preguntas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}questions");
-        $sin_responder = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}questions WHERE estado = 'abierta' AND respuestas_count = 0");
-        $respondidas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$prefix}questions WHERE estado = 'respondida'");
+        // Verificar si la tabla existe antes de hacer queries
+        $tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_questions)) === $tabla_questions;
+
+        $total_preguntas = $tabla_existe ? (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_questions}") : 0;
+        $sin_responder = $tabla_existe ? (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_questions} WHERE estado = 'abierta' AND respuestas_count = 0") : 0;
+        $respondidas = $tabla_existe ? (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_questions} WHERE estado = 'respondida'") : 0;
         ?>
         <div class="flavor-network-preguntas">
             <h2><?php _e('Preguntas a la Red', 'flavor-chat-ia'); ?></h2>

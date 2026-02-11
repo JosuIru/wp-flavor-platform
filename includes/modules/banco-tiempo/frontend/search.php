@@ -14,11 +14,11 @@ $busqueda_termino = get_search_query();
 
 <div class="flavor-container py-8">
     <!-- Breadcrumbs -->
-    <nav class="flex mb-6 text-sm" aria-label="Breadcrumb">
+    <nav class="flex mb-6 text-sm" aria-label="<?php echo esc_attr__('Breadcrumb', 'flavor-chat-ia'); ?>">
         <ol class="inline-flex items-center space-x-2">
             <li class="inline-flex items-center">
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="text-gray-600 hover:text-primary transition-colors">
-                    Inicio
+                    <?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?>
                 </a>
             </li>
             <li>
@@ -26,14 +26,14 @@ $busqueda_termino = get_search_query();
             </li>
             <li class="inline-flex items-center">
                 <a href="<?php echo esc_url(get_post_type_archive_link('banco_tiempo')); ?>" class="text-gray-600 hover:text-primary transition-colors">
-                    Banco de Tiempo
+                    <?php echo esc_html__('Banco de Tiempo', 'flavor-chat-ia'); ?>
                 </a>
             </li>
             <li>
                 <span class="mx-2 text-gray-400">/</span>
             </li>
             <li class="text-gray-900 font-medium" aria-current="page">
-                Búsqueda
+                <?php echo esc_html__('Búsqueda', 'flavor-chat-ia'); ?>
             </li>
         </ol>
     </nav>
@@ -55,7 +55,7 @@ $busqueda_termino = get_search_query();
                 type="text"
                 name="s"
                 value="<?php echo esc_attr($busqueda_termino); ?>"
-                placeholder="Buscar servicios..."
+                placeholder="<?php echo esc_attr__('Buscar servicios...', 'flavor-chat-ia'); ?>"
                 class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 autofocus
             />
@@ -63,7 +63,7 @@ $busqueda_termino = get_search_query();
                 type="submit"
                 class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
             >
-                Buscar
+                <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>
@@ -86,7 +86,7 @@ $busqueda_termino = get_search_query();
         <!-- Results Count -->
         <div class="mb-6">
             <p class="text-lg text-gray-700">
-                Se encontraron <strong class="text-primary"><?php echo $busqueda_query->found_posts; ?></strong> servicios
+                <?php echo esc_html__('Se encontraron', 'flavor-chat-ia'); ?> <strong class="text-primary"><?php echo $busqueda_query->found_posts; ?></strong> <?php echo esc_html__('servicios', 'flavor-chat-ia'); ?>
             </p>
         </div>
 
@@ -169,7 +169,7 @@ $busqueda_termino = get_search_query();
                             href="<?php the_permalink(); ?>"
                             class="mt-4 block w-full text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
                         >
-                            Ver Detalles
+                            <?php echo esc_html__('Ver Detalles', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
                 </article>
@@ -178,7 +178,7 @@ $busqueda_termino = get_search_query();
 
         <!-- Pagination -->
         <?php if ($busqueda_query->max_num_pages > 1) : ?>
-            <nav class="flex justify-center items-center gap-2" aria-label="Paginación">
+            <nav class="flex justify-center items-center gap-2" aria-label="<?php echo esc_attr__('Paginación', 'flavor-chat-ia'); ?>">
                 <?php
                 echo paginate_links(array(
                     'total' => $busqueda_query->max_num_pages,
@@ -197,7 +197,7 @@ $busqueda_termino = get_search_query();
             <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">No se encontraron resultados</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2"><?php echo esc_html__('No se encontraron resultados', 'flavor-chat-ia'); ?></h3>
             <p class="text-gray-600 mb-6">
                 No encontramos servicios que coincidan con tu búsqueda
                 <?php if ($busqueda_termino) : ?>
@@ -205,14 +205,14 @@ $busqueda_termino = get_search_query();
                 <?php endif; ?>
             </p>
             <div class="space-y-4">
-                <p class="text-gray-600">Intenta con:</p>
+                <p class="text-gray-600"><?php echo esc_html__('Intenta con:', 'flavor-chat-ia'); ?></p>
                 <ul class="text-gray-600 space-y-2">
-                    <li>Palabras clave diferentes</li>
-                    <li>Términos más generales</li>
-                    <li>Verificar la ortografía</li>
+                    <li><?php echo esc_html__('Palabras clave diferentes', 'flavor-chat-ia'); ?></li>
+                    <li><?php echo esc_html__('Términos más generales', 'flavor-chat-ia'); ?></li>
+                    <li><?php echo esc_html__('Verificar la ortografía', 'flavor-chat-ia'); ?></li>
                 </ul>
                 <a href="<?php echo esc_url(get_post_type_archive_link('banco_tiempo')); ?>" class="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors mt-4">
-                    Ver todos los servicios
+                    <?php echo esc_html__('Ver todos los servicios', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </div>

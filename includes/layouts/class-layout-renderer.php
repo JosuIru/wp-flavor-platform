@@ -93,13 +93,24 @@ class Flavor_Layout_Renderer {
             'cta_position' => 'right',
             'sticky' => true,
             'transparent_on_hero' => false,
+            'menu_state' => 'expanded',
+            'style_normal' => 'light',
+            'style_sticky' => 'light',
+            'actions_order' => ['search', 'user', 'cta'],
         ];
         $settings = array_merge($defaults, $settings);
 
+        if ($settings['style_normal'] === 'transparent') {
+            $settings['transparent_on_hero'] = true;
+        }
+
         $sticky_class = $settings['sticky'] ? 'flavor-menu--sticky' : '';
         $transparent_class = $settings['transparent_on_hero'] ? 'flavor-menu--transparent' : '';
+        $style_class = 'flavor-menu--style-' . $settings['style_normal'];
+        $sticky_style_class = 'flavor-menu--sticky-style-' . $settings['style_sticky'];
+        $state_class = $settings['menu_state'] === 'collapsed' ? 'flavor-menu--collapsed' : '';
         ?>
-        <header class="flavor-header flavor-menu flavor-menu--classic <?php echo esc_attr($sticky_class . ' ' . $transparent_class); ?>">
+        <header class="flavor-header flavor-menu flavor-menu--classic <?php echo esc_attr($sticky_class . ' ' . $transparent_class . ' ' . $style_class . ' ' . $sticky_style_class . ' ' . $state_class); ?>" data-menu-state="<?php echo esc_attr($settings['menu_state']); ?>">
             <div class="flavor-container">
                 <div class="flavor-menu__inner">
                     <!-- Logo -->
@@ -114,9 +125,7 @@ class Flavor_Layout_Renderer {
 
                     <!-- Actions -->
                     <div class="flavor-menu__actions">
-                        <?php $this->render_search_button(); ?>
-                        <?php $this->render_user_menu(); ?>
-                        <?php $this->render_cta_button(); ?>
+                        <?php $this->render_menu_actions($settings, ['search', 'user', 'cta']); ?>
                     </div>
 
                     <!-- Mobile Toggle -->
@@ -148,11 +157,21 @@ class Flavor_Layout_Renderer {
             'show_topbar' => true,
             'sticky' => true,
             'transparent_on_hero' => true,
+            'menu_state' => 'expanded',
+            'style_normal' => 'light',
+            'style_sticky' => 'light',
         ];
         $settings = array_merge($defaults, $settings);
 
+        if ($settings['style_normal'] === 'transparent') {
+            $settings['transparent_on_hero'] = true;
+        }
+
         $sticky_class = $settings['sticky'] ? 'flavor-menu--sticky' : '';
         $transparent_class = $settings['transparent_on_hero'] ? 'flavor-menu--transparent' : '';
+        $style_class = 'flavor-menu--style-' . $settings['style_normal'];
+        $sticky_style_class = 'flavor-menu--sticky-style-' . $settings['style_sticky'];
+        $state_class = $settings['menu_state'] === 'collapsed' ? 'flavor-menu--collapsed' : '';
         ?>
         <?php if ($settings['show_topbar']): ?>
         <div class="flavor-topbar">
@@ -169,7 +188,7 @@ class Flavor_Layout_Renderer {
         </div>
         <?php endif; ?>
 
-        <header class="flavor-header flavor-menu flavor-menu--centered <?php echo esc_attr($sticky_class . ' ' . $transparent_class); ?>">
+        <header class="flavor-header flavor-menu flavor-menu--centered <?php echo esc_attr($sticky_class . ' ' . $transparent_class . ' ' . $style_class . ' ' . $sticky_style_class . ' ' . $state_class); ?>" data-menu-state="<?php echo esc_attr($settings['menu_state']); ?>">
             <div class="flavor-container">
                 <!-- Logo centrado -->
                 <div class="flavor-menu__logo-wrapper">
@@ -202,10 +221,16 @@ class Flavor_Layout_Renderer {
             'sidebar_width' => '280px',
             'show_user_section' => true,
             'sticky' => true,
+            'menu_state' => 'expanded',
+            'style_normal' => 'light',
+            'style_sticky' => 'light',
         ];
         $settings = array_merge($defaults, $settings);
+        $style_class = 'flavor-menu--style-' . $settings['style_normal'];
+        $sticky_style_class = 'flavor-menu--sticky-style-' . $settings['style_sticky'];
+        $state_class = $settings['menu_state'] === 'collapsed' ? 'flavor-menu--collapsed' : '';
         ?>
-        <header class="flavor-header flavor-menu flavor-menu--sidebar <?php echo $settings['sticky'] ? 'flavor-menu--sticky' : ''; ?>">
+        <header class="flavor-header flavor-menu flavor-menu--sidebar <?php echo esc_attr(($settings['sticky'] ? 'flavor-menu--sticky' : '') . ' ' . $style_class . ' ' . $sticky_style_class . ' ' . $state_class); ?>" data-menu-state="<?php echo esc_attr($settings['menu_state']); ?>">
             <div class="flavor-container">
                 <div class="flavor-menu__inner">
                     <!-- Toggle Sidebar -->
@@ -317,10 +342,17 @@ class Flavor_Layout_Renderer {
             'show_featured_image' => true,
             'dropdown_animation' => 'fade',
             'sticky' => true,
+            'menu_state' => 'expanded',
+            'style_normal' => 'light',
+            'style_sticky' => 'light',
+            'actions_order' => ['search', 'user', 'cta'],
         ];
         $settings = array_merge($defaults, $settings);
+        $style_class = 'flavor-menu--style-' . $settings['style_normal'];
+        $sticky_style_class = 'flavor-menu--sticky-style-' . $settings['style_sticky'];
+        $state_class = $settings['menu_state'] === 'collapsed' ? 'flavor-menu--collapsed' : '';
         ?>
-        <header class="flavor-header flavor-menu flavor-menu--mega <?php echo $settings['sticky'] ? 'flavor-menu--sticky' : ''; ?>">
+        <header class="flavor-header flavor-menu flavor-menu--mega <?php echo esc_attr(($settings['sticky'] ? 'flavor-menu--sticky' : '') . ' ' . $style_class . ' ' . $sticky_style_class . ' ' . $state_class); ?>" data-menu-state="<?php echo esc_attr($settings['menu_state']); ?>">
             <div class="flavor-container">
                 <div class="flavor-menu__inner">
                     <!-- Logo -->
@@ -335,9 +367,7 @@ class Flavor_Layout_Renderer {
 
                     <!-- Actions -->
                     <div class="flavor-menu__actions">
-                        <?php $this->render_search_button(); ?>
-                        <?php $this->render_user_menu(); ?>
-                        <?php $this->render_cta_button(); ?>
+                        <?php $this->render_menu_actions($settings, ['search', 'user', 'cta']); ?>
                     </div>
 
                     <!-- Mobile Toggle -->
@@ -361,8 +391,15 @@ class Flavor_Layout_Renderer {
             'fullscreen_menu' => true,
             'transparent_on_hero' => true,
             'sticky' => false,
+            'menu_state' => 'expanded',
+            'style_normal' => 'light',
+            'style_sticky' => 'light',
         ];
         $settings = array_merge($defaults, $settings);
+
+        if ($settings['style_normal'] === 'transparent') {
+            $settings['transparent_on_hero'] = true;
+        }
 
         $classes = [
             'flavor-header',
@@ -371,8 +408,11 @@ class Flavor_Layout_Renderer {
         ];
         if ($settings['sticky']) $classes[] = 'flavor-menu--sticky';
         if ($settings['transparent_on_hero']) $classes[] = 'flavor-menu--transparent';
+        $classes[] = 'flavor-menu--style-' . $settings['style_normal'];
+        $classes[] = 'flavor-menu--sticky-style-' . $settings['style_sticky'];
+        if ($settings['menu_state'] === 'collapsed') $classes[] = 'flavor-menu--collapsed';
         ?>
-        <header class="<?php echo esc_attr(implode(' ', $classes)); ?>">
+        <header class="<?php echo esc_attr(implode(' ', $classes)); ?>" data-menu-state="<?php echo esc_attr($settings['menu_state']); ?>">
             <div class="flavor-container">
                 <div class="flavor-menu__inner">
                     <!-- Logo -->
@@ -441,6 +481,8 @@ class Flavor_Layout_Renderer {
                     </div>
                 </div>
 
+                <?php $this->render_footer_sponsors($settings); ?>
+
                 <!-- Copyright -->
                 <div class="flavor-footer__bottom">
                     <div class="flavor-footer__copyright">
@@ -478,6 +520,8 @@ class Flavor_Layout_Renderer {
                     <div class="flavor-footer__copyright">
                         <?php $this->render_copyright(); ?>
                     </div>
+
+                    <?php $this->render_footer_sponsors($settings); ?>
 
                     <nav class="flavor-footer__nav">
                         <?php $this->render_legal_links(); ?>
@@ -542,6 +586,7 @@ class Flavor_Layout_Renderer {
                 </div>
 
                 <div class="flavor-footer__bottom">
+                    <?php $this->render_footer_sponsors($settings); ?>
                     <?php $this->render_copyright(); ?>
                 </div>
             </div>
@@ -607,6 +652,7 @@ class Flavor_Layout_Renderer {
                     <div class="flavor-footer__social">
                         <?php $this->render_social_icons(); ?>
                     </div>
+                    <?php $this->render_footer_sponsors($settings); ?>
                     <?php $this->render_copyright(); ?>
                 </div>
             </div>
@@ -685,6 +731,7 @@ class Flavor_Layout_Renderer {
                     <div class="flavor-footer__brand">
                         <?php $this->render_logo('footer'); ?>
                     </div>
+                    <?php $this->render_footer_sponsors($settings); ?>
                     <div class="flavor-footer__social">
                         <?php $this->render_social_icons(); ?>
                     </div>
@@ -696,6 +743,47 @@ class Flavor_Layout_Renderer {
     }
 
     // ====== HELPER METHODS ======
+
+    /**
+     * Renderizar logos de patrocinadores en footer
+     */
+    private function render_footer_sponsors($settings = []) {
+        $sponsors = $settings['sponsors'] ?? [];
+        if (empty($sponsors) || !is_array($sponsors)) {
+            return;
+        }
+        ?>
+        <div class="flavor-footer__sponsors">
+            <span class="flavor-footer__sponsors-label"><?php esc_html_e('Patrocinan', 'flavor-chat-ia'); ?></span>
+            <div class="flavor-footer__sponsors-logos">
+                <?php foreach ($sponsors as $sponsor): ?>
+                    <?php
+                    $name = $sponsor['name'] ?? '';
+                    $url = $sponsor['url'] ?? '';
+                    $logo = $sponsor['logo'] ?? '';
+                    ?>
+                    <div class="flavor-footer__sponsor">
+                        <?php if (!empty($url)): ?>
+                            <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener">
+                                <?php if (!empty($logo)): ?>
+                                    <img src="<?php echo esc_url($logo); ?>" alt="<?php echo esc_attr($name ?: 'Sponsor'); ?>">
+                                <?php else: ?>
+                                    <span><?php echo esc_html($name); ?></span>
+                                <?php endif; ?>
+                            </a>
+                        <?php else: ?>
+                            <?php if (!empty($logo)): ?>
+                                <img src="<?php echo esc_url($logo); ?>" alt="<?php echo esc_attr($name ?: 'Sponsor'); ?>">
+                            <?php else: ?>
+                                <span><?php echo esc_html($name); ?></span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+    }
 
     /**
      * Renderizar logo
@@ -758,11 +846,37 @@ class Flavor_Layout_Renderer {
     }
 
     /**
+     * Renderizar acciones del menú con orden configurable
+     */
+    private function render_menu_actions($settings, $available_actions) {
+        $order = $settings['actions_order'] ?? [];
+        $order = array_values(array_filter($order, function($action) use ($available_actions) {
+            return in_array($action, $available_actions, true);
+        }));
+
+        if (empty($order)) {
+            $order = $available_actions;
+        }
+
+        foreach ($order as $action) {
+            if ($action === 'search') {
+                $this->render_search_button();
+            } elseif ($action === 'user') {
+                $this->render_user_menu();
+            } elseif ($action === 'cta') {
+                $this->render_cta_button();
+            }
+        }
+    }
+
+    /**
      * Renderizar menú de usuario
      */
     private function render_user_menu() {
         if (is_user_logged_in()) {
             $current_user = wp_get_current_user();
+            $settings = get_option('flavor_chat_ia_settings', []);
+            $active_modules = $settings['active_modules'] ?? [];
             ?>
             <div class="flavor-user-menu">
                 <button class="flavor-user-menu__toggle">
@@ -778,6 +892,37 @@ class Flavor_Layout_Renderer {
                         <li><a href="<?php echo esc_url(wc_get_account_endpoint_url('dashboard')); ?>"><?php esc_html_e('Mi cuenta', 'flavor-chat-ia'); ?></a></li>
                         <li><a href="<?php echo esc_url(wc_get_account_endpoint_url('orders')); ?>"><?php esc_html_e('Mis pedidos', 'flavor-chat-ia'); ?></a></li>
                         <?php endif; ?>
+                        <?php
+                        $mi_cuenta = get_page_by_path('mi-cuenta');
+                        if (!class_exists('WooCommerce') && $mi_cuenta):
+                        ?>
+                        <li><a href="<?php echo esc_url(get_permalink($mi_cuenta->ID)); ?>"><?php esc_html_e('Mi cuenta', 'flavor-chat-ia'); ?></a></li>
+                        <?php endif; ?>
+                        <?php
+                        $module_links = [
+                            'grupos_consumo' => ['slug' => 'grupos-consumo', 'label' => __('Grupos de Consumo', 'flavor-chat-ia')],
+                            'eventos' => ['slug' => 'eventos', 'label' => __('Eventos', 'flavor-chat-ia')],
+                            'socios' => ['slug' => 'socios', 'label' => __('Socios', 'flavor-chat-ia')],
+                            'marketplace' => ['slug' => 'marketplace', 'label' => __('Marketplace', 'flavor-chat-ia')],
+                            'banco_tiempo' => ['slug' => 'banco-tiempo', 'label' => __('Banco de Tiempo', 'flavor-chat-ia')],
+                            'ayuda_vecinal' => ['slug' => 'ayuda-vecinal', 'label' => __('Ayuda Vecinal', 'flavor-chat-ia')],
+                            'comunidades' => ['slug' => 'comunidades', 'label' => __('Comunidades', 'flavor-chat-ia')],
+                            'incidencias' => ['slug' => 'incidencias', 'label' => __('Incidencias', 'flavor-chat-ia')],
+                        ];
+
+                        foreach ($module_links as $module_id => $link) {
+                            if (!in_array($module_id, $active_modules, true)) {
+                                continue;
+                            }
+                            $page = get_page_by_path($link['slug']);
+                            if (!$page) {
+                                continue;
+                            }
+                            ?>
+                            <li><a href="<?php echo esc_url(get_permalink($page->ID)); ?>"><?php echo esc_html($link['label']); ?></a></li>
+                            <?php
+                        }
+                        ?>
                         <?php if (current_user_can('manage_options')): ?>
                         <li><a href="<?php echo esc_url(admin_url()); ?>"><?php esc_html_e('Administración', 'flavor-chat-ia'); ?></a></li>
                         <?php endif; ?>

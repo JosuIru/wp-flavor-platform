@@ -56,7 +56,7 @@ $inscripciones_por_dia = $wpdb->get_results(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Dashboard - Talleres Prácticos</h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Dashboard - Talleres Prácticos', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Tarjetas de estadísticas -->
@@ -67,7 +67,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($total_talleres); ?></div>
-                <div class="flavor-stat-label">Total Talleres</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Total Talleres', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -77,7 +77,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($talleres_activos); ?></div>
-                <div class="flavor-stat-label">Talleres Activos</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Talleres Activos', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -87,7 +87,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($proximos_talleres); ?></div>
-                <div class="flavor-stat-label">Próximos Talleres</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Próximos Talleres', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -97,7 +97,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($total_participantes); ?></div>
-                <div class="flavor-stat-label">Total Participantes</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Total Participantes', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -107,7 +107,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($inscripciones_mes); ?></div>
-                <div class="flavor-stat-label">Inscripciones (mes)</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Inscripciones (mes)', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -117,7 +117,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($ingresos_mes, 2); ?>€</div>
-                <div class="flavor-stat-label">Ingresos (mes)</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Ingresos (mes)', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
@@ -127,7 +127,7 @@ $inscripciones_por_dia = $wpdb->get_results(
         <div class="flavor-dashboard-col-8">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Inscripciones - Últimos 30 días</h2>
+                    <h2><?php echo esc_html__('Inscripciones - Últimos 30 días', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <canvas id="chartInscripciones" height="80"></canvas>
@@ -138,14 +138,14 @@ $inscripciones_por_dia = $wpdb->get_results(
         <div class="flavor-dashboard-col-4">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Talleres Más Populares</h2>
+                    <h2><?php echo esc_html__('Talleres Más Populares', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <table class="widefat">
                         <thead>
                             <tr>
-                                <th>Taller</th>
-                                <th>Inscritos</th>
+                                <th><?php echo esc_html__('Taller', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Inscritos', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -166,7 +166,7 @@ $inscripciones_por_dia = $wpdb->get_results(
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="2" class="flavor-no-data">No hay datos</td>
+                                    <td colspan="2" class="flavor-no-data"><?php echo esc_html__('No hay datos', 'flavor-chat-ia'); ?></td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -179,17 +179,17 @@ $inscripciones_por_dia = $wpdb->get_results(
     <!-- Próximos talleres -->
     <div class="flavor-card">
         <div class="flavor-card-header">
-            <h2>Próximos Talleres</h2>
+            <h2><?php echo esc_html__('Próximos Talleres', 'flavor-chat-ia'); ?></h2>
         </div>
         <div class="flavor-card-body">
             <table class="widefat striped">
                 <thead>
                     <tr>
-                        <th>Taller</th>
-                        <th>Organizador</th>
-                        <th>Fecha</th>
-                        <th>Participantes</th>
-                        <th>Estado</th>
+                        <th><?php echo esc_html__('Taller', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Organizador', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Participantes', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -209,7 +209,7 @@ $inscripciones_por_dia = $wpdb->get_results(
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="flavor-no-data">No hay talleres próximos</td>
+                            <td colspan="5" class="flavor-no-data"><?php echo esc_html__('No hay talleres próximos', 'flavor-chat-ia'); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

@@ -23,9 +23,9 @@ $resenas = $libro['resenas'] ?? [];
     <div class="bg-gray-50 py-3 px-4">
         <div class="container mx-auto max-w-5xl">
             <nav class="flex items-center gap-2 text-sm text-gray-600">
-                <a href="#" class="hover:text-indigo-600">Inicio</a>
+                <a href="#" class="hover:text-indigo-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
-                <a href="#" class="hover:text-indigo-600">Biblioteca</a>
+                <a href="#" class="hover:text-indigo-600"><?php echo esc_html__('Biblioteca', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-gray-900 font-medium"><?php echo esc_html($titulo); ?></span>
             </nav>
@@ -49,14 +49,14 @@ $resenas = $libro['resenas'] ?? [];
                     <?php if ($disponible): ?>
                         <button class="w-full mt-4 py-4 rounded-xl text-lg font-semibold text-white transition-all hover:scale-105"
                                 style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
-                            Solicitar Prestamo
+                            <?php echo esc_html__('Solicitar Prestamo', 'flavor-chat-ia'); ?>
                         </button>
                     <?php else: ?>
                         <button class="w-full mt-4 py-4 rounded-xl text-lg font-semibold text-white bg-gray-400 cursor-not-allowed">
-                            No Disponible
+                            <?php echo esc_html__('No Disponible', 'flavor-chat-ia'); ?>
                         </button>
                         <p class="text-sm text-gray-500 text-center mt-2">
-                            Disponible en aproximadamente 2 semanas
+                            <?php echo esc_html__('Disponible en aproximadamente 2 semanas', 'flavor-chat-ia'); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -79,7 +79,7 @@ $resenas = $libro['resenas'] ?? [];
 
                 <!-- Propietario -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">Compartido por</h2>
+                    <h2 class="text-lg font-bold text-gray-900 mb-4"><?php echo esc_html__('Compartido por', 'flavor-chat-ia'); ?></h2>
                     <div class="flex items-center gap-4">
                         <img src="<?php echo esc_url($propietario['avatar'] ?? 'https://i.pravatar.cc/150?img=1'); ?>"
                              alt="<?php echo esc_attr($propietario['nombre'] ?? 'Usuario'); ?>"
@@ -89,7 +89,7 @@ $resenas = $libro['resenas'] ?? [];
                             <p class="text-sm text-gray-500"><?php echo esc_html($propietario['libros_compartidos'] ?? 5); ?> libros compartidos</p>
                         </div>
                         <a href="#" class="ml-auto px-4 py-2 rounded-xl text-indigo-600 bg-indigo-50 font-medium hover:bg-indigo-100 transition-colors">
-                            Ver perfil
+                            <?php echo esc_html__('Ver perfil', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
                 </div>
@@ -97,15 +97,15 @@ $resenas = $libro['resenas'] ?? [];
                 <!-- Resenas -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
                     <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-bold text-gray-900">Resenas de vecinos</h2>
+                        <h2 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Resenas de vecinos', 'flavor-chat-ia'); ?></h2>
                         <button class="text-indigo-600 font-medium text-sm hover:text-indigo-700">
-                            Escribir resena
+                            <?php echo esc_html__('Escribir resena', 'flavor-chat-ia'); ?>
                         </button>
                     </div>
 
                     <?php if (empty($resenas)): ?>
                         <div class="bg-gray-50 rounded-xl p-6 text-center">
-                            <p class="text-gray-500">Se el primero en dejar una resena</p>
+                            <p class="text-gray-500"><?php echo esc_html__('Se el primero en dejar una resena', 'flavor-chat-ia'); ?></p>
                         </div>
                     <?php else: ?>
                         <div class="space-y-4">

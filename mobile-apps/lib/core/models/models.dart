@@ -1116,3 +1116,93 @@ class CampStats {
     );
   }
 }
+
+// ==========================================
+// INFO SECTIONS
+// ==========================================
+
+/// Representa una sección configurable de la pantalla Info
+class InfoSection {
+  final String id;
+  final String label;
+  final String icon;
+  final int order;
+  final String type;
+
+  InfoSection({
+    required this.id,
+    required this.label,
+    required this.icon,
+    required this.order,
+    required this.type,
+  });
+
+  factory InfoSection.fromJson(Map<String, dynamic> json) {
+    return InfoSection(
+      id: json['id'] as String? ?? '',
+      label: json['label'] as String? ?? '',
+      icon: json['icon'] as String? ?? 'article',
+      order: json['order'] as int? ?? 0,
+      type: json['type'] as String? ?? 'predefined',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'label': label,
+      'icon': icon,
+      'order': order,
+      'type': type,
+    };
+  }
+}
+
+// ==========================================
+// DRAWER ITEMS
+// ==========================================
+
+/// Representa un item del menú drawer/hamburguesa
+class DrawerItem {
+  final String title;
+  final String url;
+  final String icon;
+  final String contentType;
+  final String contentRef;
+  final int order;
+  final bool enabled;
+
+  DrawerItem({
+    required this.title,
+    required this.url,
+    required this.icon,
+    required this.contentType,
+    required this.contentRef,
+    required this.order,
+    required this.enabled,
+  });
+
+  factory DrawerItem.fromJson(Map<String, dynamic> json) {
+    return DrawerItem(
+      title: json['title'] as String? ?? '',
+      url: json['url'] as String? ?? '',
+      icon: json['icon'] as String? ?? 'public',
+      contentType: json['content_type'] as String? ?? 'page',
+      contentRef: json['content_ref'] as String? ?? '',
+      order: json['order'] as int? ?? 0,
+      enabled: json['enabled'] as bool? ?? true,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'url': url,
+      'icon': icon,
+      'content_type': contentType,
+      'content_ref': contentRef,
+      'order': order,
+      'enabled': enabled,
+    };
+  }
+}

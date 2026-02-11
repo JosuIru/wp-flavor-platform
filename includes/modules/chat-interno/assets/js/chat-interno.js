@@ -325,7 +325,7 @@
             }
 
             html += `
-                <div class="ci-conversacion-item ${noLeidoClase} ${archivadaClase}" data-id="${conv.id}">
+                <div class="ci-conversacion-item ${noLeidoClase} ${archivadaClase}" data-id="${conv.id}" data-silenciado="${conv.silenciado ? 1 : 0}">
                     <div class="ci-conversacion-avatar">
                         <img src="${conv.con_usuario.avatar}" alt="">
                         <span class="ci-estado-indicador ${estadoClase}"></span>
@@ -1384,8 +1384,40 @@
      * Silenciar conversacion
      */
     FlavorChatInterno.silenciarConversacion = function() {
-        // TODO: Implementar
-        console.log('Silenciar conversacion');
+        const self = this;
+        const $item = $(`.ci-conversacion-item[data-id="${this.conversacionActual}"]`);
+        const silenciadoActual = !!$item.data('silenciado');
+        const silenciar = !silenciadoActual;
+
+        $.ajax({
+            url: this.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'flavor_chat_interno_silenciar',
+                nonce: this.nonce,
+                conversacion_id: this.conversacionActual,
+                silenciar: silenciar ? 1 : 0,
+            },
+            success: function(response) {
+                if (response.success) {
+                    const nuevoEstado = !!response.silenciado;
+                    $item.data('silenciado', nuevoEstado ? 1 : 0);
+
+                    const meta = $item.find('.ci-conversacion-meta');
+                    const icono = meta.find('.ci-icono-silenciado');
+                    if (nuevoEstado && !icono.length) {
+                        meta.append('<span class="ci-icono-silenciado dashicons dashicons-controls-volumeoff"></span>');
+                    } else if (!nuevoEstado && icono.length) {
+                        icono.remove();
+                    }
+                } else {
+                    self.mostrarError(response.error || self.strings.error);
+                }
+            },
+            error: function() {
+                self.mostrarError(self.strings.error);
+            }
+        });
     };
 
     /**

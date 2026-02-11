@@ -23,11 +23,11 @@ $sugerencias = $sugerencias ?? ['cliente X', 'factura 2024', 'pendientes enero',
 <div class="flavor-frontend flavor-facturas-search">
     <!-- Buscador -->
     <div class="bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">Buscar facturas</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('Buscar facturas', 'flavor-chat-ia'); ?></h2>
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q" value="<?php echo esc_attr($query); ?>"
-                       placeholder="Buscar por numero, cliente, importe... (ej: FAC-2024, Empresa S.L.)"
+                       placeholder="<?php echo esc_attr__('Buscar por numero, cliente, importe... (ej: FAC-2024, Empresa S.L.)', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-emerald-300">
                 <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@ $sugerencias = $sugerencias ?? ['cliente X', 'factura 2024', 'pendientes enero',
 
         <?php if (!empty($sugerencias) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-emerald-100 text-sm">Populares:</span>
+            <span class="text-emerald-100 text-sm"><?php echo esc_html__('Populares:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias as $sugerencia_factura): ?>
             <a href="?q=<?php echo esc_attr($sugerencia_factura); ?>" class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
                 <?php echo esc_html($sugerencia_factura); ?>
@@ -64,11 +64,11 @@ $sugerencias = $sugerencias ?? ['cliente X', 'factura 2024', 'pendientes enero',
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">&#128196;</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos facturas</h3>
-        <p class="text-gray-500 mb-6">Intenta con otro termino de busqueda o crea una nueva factura</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos facturas', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('Intenta con otro termino de busqueda o crea una nueva factura', 'flavor-chat-ia'); ?></p>
         <a href="<?php echo esc_url(home_url('/facturas/crear/')); ?>"
            class="inline-block bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-600 transition-colors">
-            Nueva Factura
+            <?php echo esc_html__('Nueva Factura', 'flavor-chat-ia'); ?>
         </a>
     </div>
     <?php else: ?>
@@ -121,7 +121,7 @@ $sugerencias = $sugerencias ?? ['cliente X', 'factura 2024', 'pendientes enero',
                     </span>
                     <a href="<?php echo esc_url($resultado_factura['url'] ?? '#'); ?>"
                        class="text-emerald-600 hover:text-emerald-700 font-medium text-sm">
-                        Ver factura &rarr;
+                        <?php echo esc_html__('Ver factura &rarr;', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>

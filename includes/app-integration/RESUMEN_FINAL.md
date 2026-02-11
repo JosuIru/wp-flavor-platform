@@ -4,7 +4,7 @@
 
 ---
 
-## ✅ TODO COMPLETADO
+## ✅ Trabajo completado
 
 ### 🏗️ Sistema de Integración Base
 

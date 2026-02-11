@@ -24,9 +24,9 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
     <div class="bg-gray-50 py-3 px-4">
         <div class="container mx-auto max-w-6xl">
             <nav class="flex items-center gap-2 text-sm text-gray-600">
-                <a href="#" class="hover:text-green-600">Inicio</a>
+                <a href="#" class="hover:text-green-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
-                <a href="#" class="hover:text-green-600">Compostaje</a>
+                <a href="#" class="hover:text-green-600"><?php echo esc_html__('Compostaje', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-gray-900 font-medium"><?php echo esc_html($nombre_compostera); ?></span>
             </nav>
@@ -69,7 +69,7 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
                             <svg class="w-12 h-12 text-green-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                             </svg>
-                            <p class="text-green-400 text-sm">Mapa de ubicacion</p>
+                            <p class="text-green-400 text-sm"><?php echo esc_html__('Mapa de ubicacion', 'flavor-chat-ia'); ?></p>
                         </div>
                     </div>
 
@@ -81,7 +81,7 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
 
                 <!-- Indicador de capacidad -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Capacidad actual</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Capacidad actual', 'flavor-chat-ia'); ?></h2>
                     <div class="relative mb-4">
                         <div class="w-full h-6 bg-gray-200 rounded-full overflow-hidden">
                             <div class="h-full rounded-full transition-all <?php echo $capacidad_compostera > 80 ? 'bg-amber-500' : 'bg-green-500'; ?>"
@@ -102,22 +102,22 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
 
                 <!-- Horario y recogidas -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Horario</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Horario', 'flavor-chat-ia'); ?></h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="p-4 rounded-xl bg-green-50">
-                            <h3 class="font-bold text-green-700 mb-2">Deposito de residuos</h3>
+                            <h3 class="font-bold text-green-700 mb-2"><?php echo esc_html__('Deposito de residuos', 'flavor-chat-ia'); ?></h3>
                             <p class="text-sm text-gray-700"><?php echo esc_html($horario_compostera ?: 'Lunes a sabado: 8:00 - 20:00'); ?></p>
                         </div>
                         <div class="p-4 rounded-xl bg-emerald-50">
-                            <h3 class="font-bold text-emerald-700 mb-2">Recogida de compost</h3>
-                            <p class="text-sm text-gray-700">Primer sabado de cada mes: 10:00 - 13:00</p>
+                            <h3 class="font-bold text-emerald-700 mb-2"><?php echo esc_html__('Recogida de compost', 'flavor-chat-ia'); ?></h3>
+                            <p class="text-sm text-gray-700"><?php echo esc_html__('Primer sabado de cada mes: 10:00 - 13:00', 'flavor-chat-ia'); ?></p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Normas -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Normas de uso</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Normas de uso', 'flavor-chat-ia'); ?></h2>
                     <ul class="space-y-3">
                         <?php
                         $normas_defecto = [
@@ -142,7 +142,7 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
 
                 <!-- Preview participantes -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Participantes</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Participantes', 'flavor-chat-ia'); ?></h2>
                     <div class="flex items-center gap-2 mb-4">
                         <div class="flex -space-x-3">
                             <?php for ($indice_avatar = 1; $indice_avatar <= 5; $indice_avatar++): ?>
@@ -150,9 +150,9 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
                                      class="w-10 h-10 rounded-full border-2 border-white object-cover">
                             <?php endfor; ?>
                         </div>
-                        <span class="text-sm text-gray-500 ml-2">y 23 participantes mas</span>
+                        <span class="text-sm text-gray-500 ml-2"><?php echo esc_html__('y 23 participantes mas', 'flavor-chat-ia'); ?></span>
                     </div>
-                    <a href="#" class="text-green-600 font-medium text-sm hover:text-green-700">Ver todos los participantes</a>
+                    <a href="#" class="text-green-600 font-medium text-sm hover:text-green-700"><?php echo esc_html__('Ver todos los participantes', 'flavor-chat-ia'); ?></a>
                 </div>
             </div>
 
@@ -166,63 +166,63 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                             </svg>
                         </div>
-                        <h3 class="font-bold text-gray-900">Participa en el compostaje</h3>
-                        <p class="text-sm text-gray-500 mt-1">Reduce tu huella de carbono</p>
+                        <h3 class="font-bold text-gray-900"><?php echo esc_html__('Participa en el compostaje', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-sm text-gray-500 mt-1"><?php echo esc_html__('Reduce tu huella de carbono', 'flavor-chat-ia'); ?></p>
                     </div>
                     <button class="w-full py-4 rounded-xl text-lg font-semibold text-white transition-all hover:scale-105"
                             style="background: linear-gradient(135deg, #22c55e 0%, #059669 100%);">
-                        Unirse a Compostera
+                        <?php echo esc_html__('Unirse a Compostera', 'flavor-chat-ia'); ?>
                     </button>
-                    <p class="text-xs text-gray-500 text-center mt-3">Registro gratuito</p>
+                    <p class="text-xs text-gray-500 text-center mt-3"><?php echo esc_html__('Registro gratuito', 'flavor-chat-ia'); ?></p>
                 </div>
 
                 <!-- Estadisticas de la compostera -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Estadisticas</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Estadisticas', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600 text-sm">Participantes</span>
+                            <span class="text-gray-600 text-sm"><?php echo esc_html__('Participantes', 'flavor-chat-ia'); ?></span>
                             <span class="font-semibold text-green-600">28</span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600 text-sm">Kg este mes</span>
-                            <span class="font-semibold">245 kg</span>
+                            <span class="text-gray-600 text-sm"><?php echo esc_html__('Kg este mes', 'flavor-chat-ia'); ?></span>
+                            <span class="font-semibold"><?php echo esc_html__('245 kg', 'flavor-chat-ia'); ?></span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600 text-sm">Kg total</span>
-                            <span class="font-semibold">1.2t</span>
+                            <span class="text-gray-600 text-sm"><?php echo esc_html__('Kg total', 'flavor-chat-ia'); ?></span>
+                            <span class="font-semibold"><?php echo esc_html__('1.2t', 'flavor-chat-ia'); ?></span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-green-50">
-                            <span class="text-gray-600 text-sm">CO2 evitado</span>
-                            <span class="font-bold text-green-600">680 kg</span>
+                            <span class="text-gray-600 text-sm"><?php echo esc_html__('CO2 evitado', 'flavor-chat-ia'); ?></span>
+                            <span class="font-bold text-green-600"><?php echo esc_html__('680 kg', 'flavor-chat-ia'); ?></span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Composteras cercanas -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h3 class="font-bold text-gray-900 mb-4">Composteras cercanas</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Composteras cercanas', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-3">
                         <a href="#" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
                             <div class="flex items-center justify-between mb-1">
-                                <p class="font-medium text-gray-900 text-sm">Compostera Parque Norte</p>
-                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">Activa</span>
+                                <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Compostera Parque Norte', 'flavor-chat-ia'); ?></p>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700"><?php echo esc_html__('Activa', 'flavor-chat-ia'); ?></span>
                             </div>
-                            <p class="text-xs text-gray-500">450m - 45% capacidad</p>
+                            <p class="text-xs text-gray-500"><?php echo esc_html__('450m - 45% capacidad', 'flavor-chat-ia'); ?></p>
                         </a>
                         <a href="#" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
                             <div class="flex items-center justify-between mb-1">
-                                <p class="font-medium text-gray-900 text-sm">Compostera Plaza Mayor</p>
-                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700">Llena</span>
+                                <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Compostera Plaza Mayor', 'flavor-chat-ia'); ?></p>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700"><?php echo esc_html__('Llena', 'flavor-chat-ia'); ?></span>
                             </div>
-                            <p class="text-xs text-gray-500">800m - 95% capacidad</p>
+                            <p class="text-xs text-gray-500"><?php echo esc_html__('800m - 95% capacidad', 'flavor-chat-ia'); ?></p>
                         </a>
                         <a href="#" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
                             <div class="flex items-center justify-between mb-1">
-                                <p class="font-medium text-gray-900 text-sm">Compostera Jardin Sur</p>
-                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">Activa</span>
+                                <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Compostera Jardin Sur', 'flavor-chat-ia'); ?></p>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700"><?php echo esc_html__('Activa', 'flavor-chat-ia'); ?></span>
                             </div>
-                            <p class="text-xs text-gray-500">1.2km - 30% capacidad</p>
+                            <p class="text-xs text-gray-500"><?php echo esc_html__('1.2km - 30% capacidad', 'flavor-chat-ia'); ?></p>
                         </a>
                     </div>
                 </div>

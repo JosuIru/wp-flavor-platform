@@ -25,22 +25,22 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
             <p class="text-xl md:text-2xl mb-12" style="color: rgba(255,255,255,0.9);"><?php echo esc_html($subtitulo ?? 'Contenido original'); ?></p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <a href="#explorar" class="flavor-button flavor-button-primary px-8">Explorar Podcasts</a>
-                <a href="#crear" class="flavor-button px-8">Crear Podcast</a>
+                <a href="#explorar" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Explorar Podcasts', 'flavor-chat-ia'); ?></a>
+                <a href="#crear" class="flavor-button px-8"><?php echo esc_html__('Crear Podcast', 'flavor-chat-ia'); ?></a>
             </div>
 
             <div class="grid grid-cols-3 gap-6">
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">80+</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Episodios</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Episodios', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">25K</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Oyentes</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('25K', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Oyentes', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">4.8★</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Rating</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Rating', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
         </div>

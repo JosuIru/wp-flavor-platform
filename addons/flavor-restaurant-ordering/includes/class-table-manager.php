@@ -58,7 +58,7 @@ class Flavor_Table_Manager {
 
         // Validar número de mesa
         if (empty($data['table_number'])) {
-            return new WP_Error('missing_table_number', 'El número de mesa es obligatorio');
+            return new WP_Error('missing_table_number', __('El número de mesa es obligatorio', 'flavor-restaurant-ordering'));
         }
 
         // Verificar que no exista ya
@@ -68,7 +68,7 @@ class Flavor_Table_Manager {
         ));
 
         if ($exists) {
-            return new WP_Error('duplicate_table', 'Ya existe una mesa con ese número');
+            return new WP_Error('duplicate_table', __('Ya existe una mesa con ese número', 'flavor-restaurant-ordering'));
         }
 
         // Generar QR code si está habilitado
@@ -92,7 +92,7 @@ class Flavor_Table_Manager {
         );
 
         if ($inserted === false) {
-            return new WP_Error('db_error', 'Error al crear la mesa en la base de datos');
+            return new WP_Error('db_error', __('Error al crear la mesa en la base de datos', 'flavor-restaurant-ordering'));
         }
 
         $table_id = $wpdb->insert_id;
@@ -200,7 +200,7 @@ class Flavor_Table_Manager {
 
         $table = $this->get_table($table_id);
         if (!$table) {
-            return new WP_Error('table_not_found', 'Mesa no encontrada');
+            return new WP_Error('table_not_found', __('Mesa no encontrada', 'flavor-restaurant-ordering'));
         }
 
         $allowed_fields = [
@@ -246,7 +246,7 @@ class Flavor_Table_Manager {
         );
 
         if ($updated === false) {
-            return new WP_Error('db_error', 'Error al actualizar la mesa');
+            return new WP_Error('db_error', __('Error al actualizar la mesa', 'flavor-restaurant-ordering'));
         }
 
         do_action('flavor_restaurant_table_updated', $table_id, $data);
@@ -262,13 +262,13 @@ class Flavor_Table_Manager {
 
         $table = $this->get_table($table_id);
         if (!$table) {
-            return new WP_Error('table_not_found', 'Mesa no encontrada');
+            return new WP_Error('table_not_found', __('Mesa no encontrada', 'flavor-restaurant-ordering'));
         }
 
         // Verificar que no tenga pedidos activos
         $active_orders = $this->has_active_orders($table_id);
         if ($active_orders) {
-            return new WP_Error('has_active_orders', 'No se puede eliminar una mesa con pedidos activos');
+            return new WP_Error('has_active_orders', __('No se puede eliminar una mesa con pedidos activos', 'flavor-restaurant-ordering'));
         }
 
         $deleted = $wpdb->delete(
@@ -278,7 +278,7 @@ class Flavor_Table_Manager {
         );
 
         if ($deleted === false) {
-            return new WP_Error('db_error', 'Error al eliminar la mesa');
+            return new WP_Error('db_error', __('Error al eliminar la mesa', 'flavor-restaurant-ordering'));
         }
 
         do_action('flavor_restaurant_table_deleted', $table_id);
@@ -293,7 +293,7 @@ class Flavor_Table_Manager {
         $valid_statuses = ['available', 'occupied', 'reserved', 'cleaning', 'disabled'];
 
         if (!in_array($new_status, $valid_statuses)) {
-            return new WP_Error('invalid_status', 'Estado de mesa inválido');
+            return new WP_Error('invalid_status', __('Estado de mesa inválido', 'flavor-restaurant-ordering'));
         }
 
         return $this->update_table($table_id, ['status' => $new_status]);

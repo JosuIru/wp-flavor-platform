@@ -16,14 +16,14 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-green-500 to-emerald-600 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar Huertos</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar Huertos', 'flavor-chat-ia'); ?></h1>
 
             <!-- Formulario de busqueda -->
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Ubicacion -->
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Ubicacion</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Ubicacion', 'flavor-chat-ia'); ?></label>
                         <div class="relative">
                             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -31,19 +31,19 @@ $total_resultados = $total_resultados ?? 0;
                             <input type="text"
                                    name="q"
                                    value="<?php echo esc_attr($query); ?>"
-                                   placeholder="Tu direccion o barrio..."
+                                   placeholder="<?php echo esc_attr__('Tu direccion o barrio...', 'flavor-chat-ia'); ?>"
                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         </div>
                     </div>
 
                     <!-- Distancia -->
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Radio</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Radio', 'flavor-chat-ia'); ?></label>
                         <select name="distancia" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                            <option value="2000">2 km</option>
-                            <option value="5000">5 km</option>
-                            <option value="10000">10 km</option>
-                            <option value="">Sin limite</option>
+                            <option value="2000"><?php echo esc_html__('2 km', 'flavor-chat-ia'); ?></option>
+                            <option value="5000"><?php echo esc_html__('5 km', 'flavor-chat-ia'); ?></option>
+                            <option value="10000"><?php echo esc_html__('10 km', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Sin limite', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -52,15 +52,15 @@ $total_resultados = $total_resultados ?? 0;
                 <div class="mt-4 flex flex-wrap gap-2">
                     <label class="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 cursor-pointer hover:bg-green-100 transition-colors">
                         <input type="checkbox" name="solo_disponibles" value="1" class="w-4 h-4 rounded text-green-600 focus:ring-green-500">
-                        <span class="text-sm text-gray-700">Con parcelas libres</span>
+                        <span class="text-sm text-gray-700"><?php echo esc_html__('Con parcelas libres', 'flavor-chat-ia'); ?></span>
                     </label>
                     <label class="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 cursor-pointer hover:bg-green-100 transition-colors">
                         <input type="checkbox" name="con_agua" value="1" class="w-4 h-4 rounded text-green-600 focus:ring-green-500">
-                        <span class="text-sm text-gray-700">Con agua de riego</span>
+                        <span class="text-sm text-gray-700"><?php echo esc_html__('Con agua de riego', 'flavor-chat-ia'); ?></span>
                     </label>
                     <label class="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 cursor-pointer hover:bg-green-100 transition-colors">
                         <input type="checkbox" name="con_herramientas" value="1" class="w-4 h-4 rounded text-green-600 focus:ring-green-500">
-                        <span class="text-sm text-gray-700">Con herramientas</span>
+                        <span class="text-sm text-gray-700"><?php echo esc_html__('Con herramientas', 'flavor-chat-ia'); ?></span>
                     </label>
                 </div>
 
@@ -71,7 +71,7 @@ $total_resultados = $total_resultados ?? 0;
                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        Buscar Huertos
+                        <?php echo esc_html__('Buscar Huertos', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -93,9 +93,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos huertos cercanos</h3>
-                <p class="text-gray-500 mb-4">Prueba a ampliar el radio de busqueda</p>
-                <a href="?" class="text-green-600 font-medium hover:text-green-700">Ver todos los huertos</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos huertos cercanos', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba a ampliar el radio de busqueda', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-green-600 font-medium hover:text-green-700"><?php echo esc_html__('Ver todos los huertos', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -123,7 +123,7 @@ $total_resultados = $total_resultados ?? 0;
                             <div class="flex items-center justify-between">
                                 <span class="font-bold text-green-600"><?php echo esc_html($huerto['precio'] ?? '20€'); ?>/mes</span>
                                 <a href="<?php echo esc_url($huerto['url'] ?? '#'); ?>" class="text-green-600 font-medium text-sm hover:text-green-700">
-                                    Ver detalles →
+                                    <?php echo esc_html__('Ver detalles →', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
                         </div>
@@ -132,13 +132,13 @@ $total_resultados = $total_resultados ?? 0;
             </div>
         <?php else: ?>
             <!-- Huertos destacados -->
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Huertos Destacados</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Huertos Destacados', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php for ($i = 1; $i <= 6; $i++): ?>
                     <article class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden">
                         <div class="relative aspect-[16/10] overflow-hidden">
                             <img src="https://picsum.photos/seed/huerto<?php echo $i; ?>/400/250"
-                                 alt="Huerto destacado"
+                                 alt="<?php echo esc_attr__('Huerto destacado', 'flavor-chat-ia'); ?>"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-green-500 text-white">
                                 <?php echo rand(1, 8); ?> libres
@@ -149,12 +149,12 @@ $total_resultados = $total_resultados ?? 0;
                                 Huerto Ejemplo <?php echo $i; ?>
                             </h3>
                             <p class="text-sm text-gray-500 mb-3">
-                                Zona ejemplo · 1.5 km
+                                <?php echo esc_html__('Zona ejemplo · 1.5 km', 'flavor-chat-ia'); ?>
                             </p>
                             <div class="flex items-center justify-between">
-                                <span class="font-bold text-green-600">25€/mes</span>
+                                <span class="font-bold text-green-600"><?php echo esc_html__('25€/mes', 'flavor-chat-ia'); ?></span>
                                 <a href="#" class="text-green-600 font-medium text-sm hover:text-green-700">
-                                    Ver detalles →
+                                    <?php echo esc_html__('Ver detalles →', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
                         </div>

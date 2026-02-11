@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../core/config/app_config.dart';
 
@@ -16,6 +17,7 @@ class CheckoutWebView extends StatefulWidget {
 }
 
 class _CheckoutWebViewState extends State<CheckoutWebView> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   late final WebViewController _controller;
   bool _isLoading = true;
   double _progress = 0;
@@ -52,7 +54,7 @@ class _CheckoutWebViewState extends State<CheckoutWebView> {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Error: ${error.description}'),
+                  content: Text(i18n.commonError(error.description)),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -89,18 +91,15 @@ class _CheckoutWebViewState extends State<CheckoutWebView> {
             color: Colors.green,
             size: 64,
           ),
-          title: const Text('¡Reserva completada!'),
-          content: const Text(
-            'Tu reserva ha sido procesada con éxito. '
-            'Recibirás un email de confirmación.',
-          ),
+          title: Text(i18n.reservationCompletedTitle),
+        content: Text(i18n.checkoutSuccessMessage),
           actions: [
             FilledButton(
               onPressed: () {
                 Navigator.pop(context); // Cerrar diálogo
                 Navigator.pop(context, true); // Volver con éxito
               },
-              child: const Text('Aceptar'),
+              child: Text(i18n.acceptButton),
             ),
           ],
         ),
@@ -110,9 +109,10 @@ class _CheckoutWebViewState extends State<CheckoutWebView> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Finalizar compra'),
+        title: Text(i18n.completePurchaseTitle),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => _showExitConfirmation(),
@@ -132,14 +132,12 @@ class _CheckoutWebViewState extends State<CheckoutWebView> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Cancelar compra?'),
-        content: const Text(
-          'Si sales ahora, perderás los cambios y tendrás que empezar de nuevo.',
-        ),
+        title: Text(i18n.cancelPurchaseConfirm),
+        content: Text(i18n.checkoutExitWarning),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Continuar'),
+            child: Text(i18n.continueButton),
           ),
           FilledButton(
             onPressed: () {
@@ -149,7 +147,7 @@ class _CheckoutWebViewState extends State<CheckoutWebView> {
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Salir'),
+            child: Text(i18n.exitButton),
           ),
         ],
       ),

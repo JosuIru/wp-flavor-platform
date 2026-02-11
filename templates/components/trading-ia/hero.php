@@ -15,7 +15,7 @@ $url_comenzar = $url_comenzar ?? '/trading-ia/comenzar/';
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #06B6D4) 0%, var(--flavor-secondary, #0D9488) 100%); min-height: 500px;">
     <!-- Patron futurista -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22none%22/><line x1=%220%22 y1=%2250%22 x2=%22100%22 y2=%2250%22 stroke=%22white%22 stroke-width=%220.5%22/><line x1=%2250%22 y1=%220%22 x2=%2250%22 y2=%22100%22 stroke=%22white%22 stroke-width=%220.5%22/></svg>'); background-size: 100px 100px;"></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22none%22/><line x1=%220%22 y1=%2250%22 x2=%22100%22 y2=%2250%22 stroke=%22white%22 stroke-width=%220.5%22/><line x1=%2250%22 y1=%220%22 x2=%2250%22 y2=%22100%22 stroke=%22white%22 stroke-width=%220.5%22/></svg><?php echo esc_html__('\'); background-size: 100px 100px;">', 'flavor-chat-ia'); ?></div>
     </div>
     <!-- Efecto de lineas de grafico -->
     <div class="absolute bottom-0 left-0 right-0 h-32 opacity-20">

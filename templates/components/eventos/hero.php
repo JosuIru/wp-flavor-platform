@@ -44,7 +44,7 @@ $tipos_evento = [
 ?>
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #3B82F6) 0%, var(--flavor-secondary, #1E40AF) 100%); min-height: 500px;">
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" fill="none"/><circle cx="40" cy="40" r="2" fill="white"/></svg>'); background-size: 80px 80px;"></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" fill="none"/><circle cx="40" cy="40" r="2" fill="white"/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', 'flavor-chat-ia'); ?></div>
     </div>
     <div class="flavor-container relative z-10 py-16 lg:py-24">
         <div class="max-w-4xl mx-auto text-center mb-12">

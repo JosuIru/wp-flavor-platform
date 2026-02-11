@@ -106,7 +106,7 @@ $resultados_ejemplo = !empty($resultados) ? $resultados : [
                         <p class="text-sm text-gray-600 mt-1 line-clamp-1"><?php echo esc_html($resultado['descripcion']); ?></p>
                         <div class="flex items-center gap-4 mt-2 text-xs text-gray-400">
                             <span><?php printf(esc_html__('%d empleados', 'flavor-chat-ia'), $resultado['empleados']); ?></span>
-                            <span>&middot;</span>
+                            <span><?php echo esc_html__('&middot;', 'flavor-chat-ia'); ?></span>
                             <span><?php echo esc_html($resultado['ubicacion']); ?></span>
                         </div>
                     </div>

@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header con gradiente -->
     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Foros de Discusion</h1>
-            <p class="text-white/90 text-lg">Participa en conversaciones con tu comunidad</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Foros de Discusion', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Participa en conversaciones con tu comunidad', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
 
@@ -27,39 +27,39 @@ $por_pagina = $por_pagina ?? 12;
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-indigo-600">124</span>
-                <span class="text-sm text-gray-500">Temas activos</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Temas activos', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
-                <span class="block text-3xl font-bold text-purple-600">1.8k</span>
-                <span class="text-sm text-gray-500">Respuestas</span>
+                <span class="block text-3xl font-bold text-purple-600"><?php echo esc_html__('1.8k', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Respuestas', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-indigo-600">342</span>
-                <span class="text-sm text-gray-500">Miembros</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Miembros', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-purple-600">37</span>
-                <span class="text-sm text-gray-500">Esta semana</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Esta semana', 'flavor-chat-ia'); ?></span>
             </div>
         </div>
 
         <!-- Categorias -->
         <div class="flex flex-wrap gap-3 mb-8">
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white">Todos</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">General</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Tecnologia</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Cultura</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Deportes</button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white"><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"><?php echo esc_html__('General', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"><?php echo esc_html__('Tecnologia', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"><?php echo esc_html__('Cultura', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"><?php echo esc_html__('Deportes', 'flavor-chat-ia'); ?></button>
         </div>
 
         <!-- CTA Crear Tema -->
         <div class="flex items-center justify-between mb-6">
             <p class="text-gray-600">
-                Mostrando <span class="font-semibold"><?php echo count($temas); ?></span> de <?php echo esc_html($total_temas); ?> temas
+                <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($temas); ?></span> de <?php echo esc_html($total_temas); ?> temas
             </p>
             <a href="/foros/nuevo-tema/" class="inline-flex items-center px-6 py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                style="background: linear-gradient(135deg, #6366f1 0%, #9333ea 100%);">
-                + Crear Tema
+                <?php echo esc_html__('+ Crear Tema', 'flavor-chat-ia'); ?>
             </a>
         </div>
 
@@ -68,8 +68,8 @@ $por_pagina = $por_pagina ?? 12;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay temas de discusion</h3>
-                <p class="text-gray-500">Se el primero en crear un tema</p>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay temas de discusion', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500"><?php echo esc_html__('Se el primero en crear un tema', 'flavor-chat-ia'); ?></p>
             </div>
         <?php else: ?>
             <!-- Lista de temas -->
@@ -85,10 +85,10 @@ $por_pagina = $por_pagina ?? 12;
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-1">
                                     <?php if (!empty($tema['fijado'])): ?>
-                                        <span class="px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-700">Fijado</span>
+                                        <span class="px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-700"><?php echo esc_html__('Fijado', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
                                     <?php if (!empty($tema['popular'])): ?>
-                                        <span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-600">Tema caliente</span>
+                                        <span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-600"><?php echo esc_html__('Tema caliente', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
                                 </div>
 

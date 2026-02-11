@@ -71,7 +71,7 @@ class Chat_IA_Engine_OpenAI extends Chat_IA_Engine_Base {
         if (empty($api_key)) {
             return [
                 'success' => false,
-                'error' => 'API key no configurada',
+                'error' => __('API key no configurada', 'flavor-chat-ia'),
                 'error_code' => 'no_api_key',
             ];
         }
@@ -112,7 +112,7 @@ class Chat_IA_Engine_OpenAI extends Chat_IA_Engine_Base {
         $max_tokens = (int) $this->get_config('max_tokens', 1000);
 
         if (empty($api_key)) {
-            return ['success' => false, 'error' => 'API key no configurada', 'error_code' => 'no_api_key'];
+            return ['success' => false, 'error' => __('API key no configurada', 'flavor-chat-ia'), 'error_code' => 'no_api_key'];
         }
 
         $headers = [

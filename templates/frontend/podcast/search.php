@@ -16,14 +16,14 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-teal-500 to-emerald-500 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar Podcasts</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar Podcasts', 'flavor-chat-ia'); ?></h1>
 
             <!-- Formulario de busqueda -->
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Busqueda -->
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Que quieres escuchar?</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Que quieres escuchar?', 'flavor-chat-ia'); ?></label>
                         <div class="relative">
                             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -31,20 +31,20 @@ $total_resultados = $total_resultados ?? 0;
                             <input type="text"
                                    name="q"
                                    value="<?php echo esc_attr($query); ?>"
-                                   placeholder="Buscar por titulo, tema o creador..."
+                                   placeholder="<?php echo esc_attr__('Buscar por titulo, tema o creador...', 'flavor-chat-ia'); ?>"
                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
                         </div>
                     </div>
 
                     <!-- Categoria -->
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Categoria</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></label>
                         <select name="categoria" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                            <option value="">Todas</option>
-                            <option value="actualidad">Actualidad</option>
-                            <option value="entrevistas">Entrevistas</option>
-                            <option value="historia">Historia</option>
-                            <option value="cultura">Cultura</option>
+                            <option value=""><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('actualidad', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Actualidad', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('entrevistas', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Entrevistas', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('historia', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Historia', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('cultura', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Cultura', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -56,7 +56,7 @@ $total_resultados = $total_resultados ?? 0;
                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        Buscar
+                        <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -78,9 +78,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos podcasts</h3>
-                <p class="text-gray-500 mb-4">Prueba con otros terminos de busqueda</p>
-                <a href="?" class="text-teal-600 font-medium hover:text-teal-700">Ver todos los podcasts</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos podcasts', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba con otros terminos de busqueda', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-teal-600 font-medium hover:text-teal-700"><?php echo esc_html__('Ver todos los podcasts', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -107,13 +107,13 @@ $total_resultados = $total_resultados ?? 0;
             </div>
         <?php else: ?>
             <!-- Podcasts destacados -->
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Podcasts Populares</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Podcasts Populares', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <?php for ($i = 1; $i <= 8; $i++): ?>
                     <article class="group">
                         <div class="relative aspect-square rounded-xl overflow-hidden shadow-md mb-3">
                             <img src="https://picsum.photos/seed/podcast<?php echo $i; ?>/200/200"
-                                 alt="Podcast destacado"
+                                 alt="<?php echo esc_attr__('Podcast destacado', 'flavor-chat-ia'); ?>"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             <button class="absolute bottom-2 right-2 w-10 h-10 rounded-full bg-teal-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                 <svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">

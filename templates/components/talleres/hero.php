@@ -26,37 +26,37 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
 
             <?php if (!empty($mostrar_filtros)): ?>
             <div class="flavor-card max-w-4xl mx-auto mb-8">
-                <h3 class="text-lg font-bold mb-4" style="color: var(--flavor-text);">Explora por Categoría</h3>
+                <h3 class="text-lg font-bold mb-4" style="color: var(--flavor-text);"><?php echo esc_html__('Explora por Categoría', 'flavor-chat-ia'); ?></h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <a href="/talleres/?cat=manualidades" class="flavor-button text-center">Manualidades</a>
-                    <a href="/talleres/?cat=cocina" class="flavor-button text-center">Cocina</a>
-                    <a href="/talleres/?cat=tecnologia" class="flavor-button text-center">Tecnología</a>
-                    <a href="/talleres/?cat=bienestar" class="flavor-button text-center">Bienestar</a>
+                    <a href="/talleres/?cat=manualidades" class="flavor-button text-center"><?php echo esc_html__('Manualidades', 'flavor-chat-ia'); ?></a>
+                    <a href="/talleres/?cat=cocina" class="flavor-button text-center"><?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?></a>
+                    <a href="/talleres/?cat=tecnologia" class="flavor-button text-center"><?php echo esc_html__('Tecnología', 'flavor-chat-ia'); ?></a>
+                    <a href="/talleres/?cat=bienestar" class="flavor-button text-center"><?php echo esc_html__('Bienestar', 'flavor-chat-ia'); ?></a>
                 </div>
             </div>
             <?php endif; ?>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <a href="/talleres/" class="flavor-button flavor-button-primary px-8">Ver Todos los Talleres</a>
-                <a href="/talleres/crear/" class="flavor-button px-8">Organizar Taller</a>
+                <a href="/talleres/" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Ver Todos los Talleres', 'flavor-chat-ia'); ?></a>
+                <a href="/talleres/crear/" class="flavor-button px-8"><?php echo esc_html__('Organizar Taller', 'flavor-chat-ia'); ?></a>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">80+</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Talleres</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Talleres', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">1.2K</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Participantes</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('1.2K', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Participantes', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">45+</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Instructores</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Instructores', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">4.8★</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Valoración</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Valoración', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
         </div>

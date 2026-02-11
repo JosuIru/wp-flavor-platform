@@ -27,9 +27,9 @@ $plazas_disponibles = $curso['plazas_disponibles'] ?? 10;
     <div class="bg-gray-50 py-3 px-4">
         <div class="container mx-auto max-w-6xl">
             <nav class="flex items-center gap-2 text-sm text-gray-600">
-                <a href="#" class="hover:text-purple-600">Inicio</a>
+                <a href="#" class="hover:text-purple-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
-                <a href="#" class="hover:text-purple-600">Cursos</a>
+                <a href="#" class="hover:text-purple-600"><?php echo esc_html__('Cursos', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-gray-900 font-medium"><?php echo esc_html($titulo); ?></span>
             </nav>
@@ -46,7 +46,7 @@ $plazas_disponibles = $curso['plazas_disponibles'] ?? 10;
                          alt="<?php echo esc_attr($titulo); ?>"
                          class="w-full h-full object-cover">
                     <?php if ($gratuito): ?>
-                        <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-bold bg-green-500 text-white">Gratuito</span>
+                        <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-bold bg-green-500 text-white"><?php echo esc_html__('Gratuito', 'flavor-chat-ia'); ?></span>
                     <?php endif; ?>
                 </div>
 
@@ -87,7 +87,7 @@ $plazas_disponibles = $curso['plazas_disponibles'] ?? 10;
                 <!-- Temario -->
                 <?php if (!empty($temario)): ?>
                     <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                        <h2 class="text-xl font-bold text-gray-900 mb-4">Que aprenderas</h2>
+                        <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Que aprenderas', 'flavor-chat-ia'); ?></h2>
                         <ul class="space-y-3">
                             <?php foreach ($temario as $item): ?>
                                 <li class="flex items-start gap-3">
@@ -103,7 +103,7 @@ $plazas_disponibles = $curso['plazas_disponibles'] ?? 10;
 
                 <!-- Instructor -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Instructor</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Instructor', 'flavor-chat-ia'); ?></h2>
                     <div class="flex items-start gap-4">
                         <img src="<?php echo esc_url($instructor['avatar'] ?? 'https://i.pravatar.cc/150?img=1'); ?>"
                              alt="<?php echo esc_attr($instructor['nombre'] ?? 'Instructor'); ?>"
@@ -129,19 +129,19 @@ $plazas_disponibles = $curso['plazas_disponibles'] ?? 10;
                     <!-- Info rapida -->
                     <div class="space-y-3 mb-6">
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600">Fecha</span>
+                            <span class="text-gray-600"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></span>
                             <span class="font-semibold"><?php echo esc_html($fecha); ?></span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600">Horario</span>
+                            <span class="text-gray-600"><?php echo esc_html__('Horario', 'flavor-chat-ia'); ?></span>
                             <span class="font-semibold"><?php echo esc_html($horario); ?></span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600">Duracion</span>
+                            <span class="text-gray-600"><?php echo esc_html__('Duracion', 'flavor-chat-ia'); ?></span>
                             <span class="font-semibold"><?php echo esc_html($duracion); ?></span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-purple-50">
-                            <span class="text-gray-600">Plazas disponibles</span>
+                            <span class="text-gray-600"><?php echo esc_html__('Plazas disponibles', 'flavor-chat-ia'); ?></span>
                             <span class="font-bold text-purple-600"><?php echo esc_html($plazas_disponibles); ?></span>
                         </div>
                     </div>
@@ -149,22 +149,22 @@ $plazas_disponibles = $curso['plazas_disponibles'] ?? 10;
                     <?php if ($plazas_disponibles > 0): ?>
                         <button class="w-full py-4 rounded-xl text-lg font-semibold text-white transition-all hover:scale-105"
                                 style="background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);">
-                            Inscribirse Ahora
+                            <?php echo esc_html__('Inscribirse Ahora', 'flavor-chat-ia'); ?>
                         </button>
                     <?php else: ?>
                         <button class="w-full py-4 rounded-xl text-lg font-semibold text-white bg-gray-400 cursor-not-allowed">
-                            Completo
+                            <?php echo esc_html__('Completo', 'flavor-chat-ia'); ?>
                         </button>
                     <?php endif; ?>
 
                     <p class="text-xs text-gray-500 text-center mt-4">
-                        Cancelacion gratuita hasta 48h antes
+                        <?php echo esc_html__('Cancelacion gratuita hasta 48h antes', 'flavor-chat-ia'); ?>
                     </p>
                 </div>
 
                 <!-- Compartir -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mt-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Compartir curso</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Compartir curso', 'flavor-chat-ia'); ?></h3>
                     <div class="flex items-center gap-3">
                         <button class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200 transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>

@@ -14,13 +14,13 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['empadronamiento', 'licencia o
 <div class="flavor-frontend flavor-tramites-search">
     <!-- Buscador principal -->
     <div class="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">Buscar tramites</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('Buscar tramites', 'flavor-chat-ia'); ?></h2>
 
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q"
                        value="<?php echo esc_attr($query); ?>"
-                       placeholder="Busca el tramite que necesitas..."
+                       placeholder="<?php echo esc_attr__('Busca el tramite que necesitas...', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-orange-300"
                        autocomplete="off">
                 <button type="submit"
@@ -35,7 +35,7 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['empadronamiento', 'licencia o
         <!-- Sugerencias populares -->
         <?php if (!empty($sugerencias_busqueda) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-orange-100 text-sm">Sugerencias:</span>
+            <span class="text-orange-100 text-sm"><?php echo esc_html__('Sugerencias:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias_busqueda as $sugerencia_texto): ?>
             <a href="?q=<?php echo esc_attr($sugerencia_texto); ?>"
                class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
@@ -59,21 +59,21 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['empadronamiento', 'licencia o
         </h3>
         <?php if ($total_resultados > 0): ?>
         <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500">
-            <option value="relevancia">Mas relevantes</option>
-            <option value="nombre">Nombre A-Z</option>
-            <option value="tiempo">Menor tiempo</option>
+            <option value="<?php echo esc_attr__('relevancia', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mas relevantes', 'flavor-chat-ia'); ?></option>
+            <option value="<?php echo esc_attr__('nombre', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Nombre A-Z', 'flavor-chat-ia'); ?></option>
+            <option value="<?php echo esc_attr__('tiempo', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Menor tiempo', 'flavor-chat-ia'); ?></option>
         </select>
         <?php endif; ?>
     </div>
 
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
-        <div class="text-6xl mb-4">&#x1F4CB;</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos ese tramite</h3>
-        <p class="text-gray-500 mb-6">Prueba con otros terminos o revisa el catalogo completo</p>
+        <div class="text-6xl mb-4"><?php echo esc_html__('&#x1F4CB;', 'flavor-chat-ia'); ?></div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos ese tramite', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('Prueba con otros terminos o revisa el catalogo completo', 'flavor-chat-ia'); ?></p>
         <a href="<?php echo esc_url(home_url('/tramites/')); ?>"
            class="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors inline-block">
-            Ver todos los tramites
+            <?php echo esc_html__('Ver todos los tramites', 'flavor-chat-ia'); ?>
         </a>
     </div>
     <?php else: ?>
@@ -100,7 +100,7 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['empadronamiento', 'licencia o
                 <span class="text-gray-500"><?php echo esc_html($resultado_tramite['tiempo_estimado'] ?? ''); ?></span>
                 <a href="<?php echo esc_url($resultado_tramite['url'] ?? '#'); ?>"
                    class="text-orange-600 font-medium hover:text-orange-700 transition-colors">
-                    Iniciar
+                    <?php echo esc_html__('Iniciar', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </article>
@@ -110,9 +110,9 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['empadronamiento', 'licencia o
     <?php if ($total_resultados > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo esc_html(ceil($total_resultados / 12)); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors">Siguiente</button>
+            <button class="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"><?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

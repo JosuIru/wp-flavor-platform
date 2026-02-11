@@ -6,15 +6,15 @@ if (!defined('ABSPATH')) exit;
 get_header();
 ?>
 <div class="flavor-container py-8">
-    <nav class="flex mb-6 text-sm"><ol class="inline-flex items-center space-x-2"><li><a href="<?php echo esc_url(home_url('/')); ?>" class="text-gray-600 hover:text-primary">Inicio</a></li><li><span class="mx-2 text-gray-400">/</span></li><li class="text-gray-900 font-medium">Marketplace</li></ol></nav>
-    <h1 class="text-4xl font-bold mb-4">Marketplace Local</h1>
-    <p class="text-lg text-gray-600 mb-8">Compra y vende artículos de segunda mano en tu comunidad</p>
+    <nav class="flex mb-6 text-sm"><ol class="inline-flex items-center space-x-2"><li><a href="<?php echo esc_url(home_url('/')); ?>" class="text-gray-600 hover:text-primary"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a></li><li><span class="mx-2 text-gray-400">/</span></li><li class="text-gray-900 font-medium"><?php echo esc_html__('Marketplace', 'flavor-chat-ia'); ?></li></ol></nav>
+    <h1 class="text-4xl font-bold mb-4"><?php echo esc_html__('Marketplace Local', 'flavor-chat-ia'); ?></h1>
+    <p class="text-lg text-gray-600 mb-8"><?php echo esc_html__('Compra y vende artículos de segunda mano en tu comunidad', 'flavor-chat-ia'); ?></p>
     <div class="flex flex-col lg:flex-row gap-8">
         <aside class="lg:w-1/4"><?php include dirname(__FILE__) . '/filters.php'; ?></aside>
         <main class="lg:w-3/4">
             <form method="get" class="mb-6 flex gap-2">
-                <input type="text" name="s" value="<?php echo esc_attr(get_search_query()); ?>" placeholder="Buscar artículos..." class="flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary"/>
-                <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark font-medium">Buscar</button>
+                <input type="text" name="s" value="<?php echo esc_attr(get_search_query()); ?>" placeholder="<?php echo esc_attr__('Buscar artículos...', 'flavor-chat-ia'); ?>" class="flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary"/>
+                <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark font-medium"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></button>
             </form>
             <?php
             $query = new WP_Query(array('post_type' => 'marketplace', 'posts_per_page' => 12, 'paged' => get_query_var('paged') ?: 1));

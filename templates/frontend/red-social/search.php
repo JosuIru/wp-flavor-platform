@@ -16,7 +16,7 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-pink-500 to-rose-600 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar personas y publicaciones</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar personas y publicaciones', 'flavor-chat-ia'); ?></h1>
 
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="relative">
@@ -26,24 +26,24 @@ $total_resultados = $total_resultados ?? 0;
                     <input type="text"
                            name="q"
                            value="<?php echo esc_attr($consulta_busqueda); ?>"
-                           placeholder="Buscar personas, publicaciones, grupos..."
+                           placeholder="<?php echo esc_attr__('Buscar personas, publicaciones, grupos...', 'flavor-chat-ia'); ?>"
                            class="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 text-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
                 </div>
 
                 <!-- Sugerencias -->
                 <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="text-sm text-gray-500">Sugerencias:</span>
-                    <a href="?q=eventos" class="px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors">eventos</a>
-                    <a href="?q=proyectos" class="px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors">proyectos</a>
-                    <a href="?q=vecinos" class="px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors">vecinos</a>
-                    <a href="?q=actividades" class="px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors">actividades</a>
+                    <span class="text-sm text-gray-500"><?php echo esc_html__('Sugerencias:', 'flavor-chat-ia'); ?></span>
+                    <a href="?q=eventos" class="px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors"><?php echo esc_html__('eventos', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=proyectos" class="px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors"><?php echo esc_html__('proyectos', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=vecinos" class="px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors"><?php echo esc_html__('vecinos', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=actividades" class="px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors"><?php echo esc_html__('actividades', 'flavor-chat-ia'); ?></a>
                 </div>
 
                 <div class="mt-4 flex justify-center">
                     <button type="submit"
                             class="px-8 py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                             style="background: linear-gradient(135deg, #ec4899 0%, #e11d48 100%);">
-                        Buscar
+                        <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -65,9 +65,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No se encontraron resultados</h3>
-                <p class="text-gray-500 mb-4">Prueba con otros terminos de busqueda</p>
-                <a href="?" class="text-pink-600 font-medium hover:text-pink-700">Explorar la red social</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No se encontraron resultados', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba con otros terminos de busqueda', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-pink-600 font-medium hover:text-pink-700"><?php echo esc_html__('Explorar la red social', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -89,16 +89,16 @@ $total_resultados = $total_resultados ?? 0;
             </div>
         <?php else: ?>
             <!-- Personas sugeridas -->
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Personas sugeridas</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Personas sugeridas', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php for ($indice_persona = 1; $indice_persona <= 6; $indice_persona++): ?>
                     <article class="group bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-shadow text-center">
-                        <img src="https://i.pravatar.cc/150?img=<?php echo $indice_persona * 7; ?>" alt="Persona sugerida"
+                        <img src="https://i.pravatar.cc/150?img=<?php echo $indice_persona * 7; ?>" alt="<?php echo esc_attr__('Persona sugerida', 'flavor-chat-ia'); ?>"
                              class="w-16 h-16 rounded-full object-cover mx-auto mb-3">
                         <h3 class="font-bold text-gray-900 mb-1">Vecino <?php echo $indice_persona; ?></h3>
-                        <p class="text-sm text-gray-500 mb-3">3 conexiones en comun</p>
+                        <p class="text-sm text-gray-500 mb-3"><?php echo esc_html__('3 conexiones en comun', 'flavor-chat-ia'); ?></p>
                         <button class="px-4 py-2 rounded-lg text-sm font-semibold text-pink-600 bg-pink-50 hover:bg-pink-100 transition-colors">
-                            Conectar
+                            <?php echo esc_html__('Conectar', 'flavor-chat-ia'); ?>
                         </button>
                     </article>
                 <?php endfor; ?>

@@ -14,11 +14,11 @@ $sugerencias = $sugerencias ?? ['empadronamiento', 'licencia obra', 'certificado
 <div class="flavor-frontend flavor-ayuntamiento-search">
     <!-- Buscador -->
     <div class="bg-gradient-to-r from-blue-700 to-blue-900 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">🔍 Buscador del Ayuntamiento</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('🔍 Buscador del Ayuntamiento', 'flavor-chat-ia'); ?></h2>
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q" value="<?php echo esc_attr($query); ?>"
-                       placeholder="Buscar trámites, noticias, servicios..."
+                       placeholder="<?php echo esc_attr__('Buscar trámites, noticias, servicios...', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-blue-300">
                 <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@ $sugerencias = $sugerencias ?? ['empadronamiento', 'licencia obra', 'certificado
 
         <?php if (!empty($sugerencias) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-blue-200 text-sm">Búsquedas frecuentes:</span>
+            <span class="text-blue-200 text-sm"><?php echo esc_html__('Búsquedas frecuentes:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias as $sug): ?>
             <a href="?q=<?php echo esc_attr($sug); ?>" class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
                 <?php echo esc_html($sug); ?>
@@ -55,10 +55,10 @@ $sugerencias = $sugerencias ?? ['empadronamiento', 'licencia obra', 'certificado
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">🔍</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos resultados</h3>
-        <p class="text-gray-500 mb-6">Prueba con otros términos o contacta con atención ciudadana</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos resultados', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('Prueba con otros términos o contacta con atención ciudadana', 'flavor-chat-ia'); ?></p>
         <a href="<?php echo esc_url(home_url('/ayuntamiento/contacto/')); ?>" class="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 transition-colors inline-block">
-            Contactar
+            <?php echo esc_html__('Contactar', 'flavor-chat-ia'); ?>
         </a>
     </div>
     <?php else: ?>

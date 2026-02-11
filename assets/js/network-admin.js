@@ -269,8 +269,9 @@
         var nombre = prompt('Nombre del nodo:');
         if (!nombre) return;
         var slug = nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        var siteUrl = prompt('URL del sitio (ej: https://ejemplo.com):') || '';
 
-        apiRequest('/nodes', 'POST', { nombre: nombre, slug: slug, site_url: '' })
+        apiRequest('/nodes', 'POST', { nombre: nombre, slug: slug, site_url: siteUrl })
             .done(function() { showNotice('Nodo añadido'); cargarDirectorio(1); })
             .fail(function(xhr) { showNotice(xhr.responseJSON?.message || I18N.error, 'error'); });
     });

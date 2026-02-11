@@ -14,11 +14,11 @@ $sugerencias = $sugerencias ?? ['tapas', 'italiano', 'terraza', 'menu del dia'];
 <div class="flavor-frontend flavor-bares-search">
     <!-- Buscador -->
     <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">🔍 Buscar bares y restaurantes</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('🔍 Buscar bares y restaurantes', 'flavor-chat-ia'); ?></h2>
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q" value="<?php echo esc_attr($query); ?>"
-                       placeholder="¿Que tipo de local buscas? (ej: tapas, italiano, terraza...)"
+                       placeholder="<?php echo esc_attr__('¿Que tipo de local buscas? (ej: tapas, italiano, terraza...)', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-amber-300">
                 <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-orange-600 text-white p-3 rounded-lg hover:bg-orange-700 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@ $sugerencias = $sugerencias ?? ['tapas', 'italiano', 'terraza', 'menu del dia'];
 
         <?php if (!empty($sugerencias) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-amber-100 text-sm">Populares:</span>
+            <span class="text-amber-100 text-sm"><?php echo esc_html__('Populares:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias as $sugerencia_bar): ?>
             <a href="?q=<?php echo esc_attr($sugerencia_bar); ?>" class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
                 <?php echo esc_html($sugerencia_bar); ?>
@@ -55,11 +55,11 @@ $sugerencias = $sugerencias ?? ['tapas', 'italiano', 'terraza', 'menu del dia'];
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">🍽️</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos locales</h3>
-        <p class="text-gray-500 mb-6">¿Conoces un buen sitio? ¡Registralo!</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos locales', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('¿Conoces un buen sitio? ¡Registralo!', 'flavor-chat-ia'); ?></p>
         <button class="bg-amber-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-amber-600 transition-colors"
                 onclick="flavorBares.registrarLocal()">
-            Registrar Local
+            <?php echo esc_html__('Registrar Local', 'flavor-chat-ia'); ?>
         </button>
     </div>
     <?php else: ?>

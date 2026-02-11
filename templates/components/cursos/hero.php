@@ -33,35 +33,35 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
                 <form class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">¿Qué quieres aprender?</label>
-                            <input type="text" placeholder="Buscar cursos..." class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('¿Qué quieres aprender?', 'flavor-chat-ia'); ?></label>
+                            <input type="text" placeholder="<?php echo esc_attr__('Buscar cursos...', 'flavor-chat-ia'); ?>" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">Categoría</label>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></label>
                             <select class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
-                                <option>Todas las categorías</option>
-                                <option>Tecnología</option>
-                                <option>Idiomas</option>
-                                <option>Arte y Creatividad</option>
-                                <option>Cocina</option>
-                                <option>Salud y Bienestar</option>
+                                <option><?php echo esc_html__('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('Tecnología', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('Idiomas', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('Arte y Creatividad', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('Salud y Bienestar', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="flavor-button flavor-button-primary w-full md:w-auto px-12">Buscar</button>
+                    <button type="submit" class="flavor-button flavor-button-primary w-full md:w-auto px-12"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></button>
                 </form>
                 <div class="grid grid-cols-3 gap-6 mt-8 pt-8 border-t" style="border-color: #e5e7eb;">
                     <div class="text-center">
                         <div class="text-3xl font-bold" style="color: var(--flavor-primary);">150+</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Cursos</div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Cursos', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);">2.5K+</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Estudiantes</div>
+                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('2.5K+', 'flavor-chat-ia'); ?></div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Estudiantes', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold" style="color: var(--flavor-primary);">85+</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Instructores</div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Instructores', 'flavor-chat-ia'); ?></div>
                     </div>
                 </div>
             </div>

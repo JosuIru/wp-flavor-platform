@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header con gradiente -->
     <div class="bg-gradient-to-r from-rose-500 to-red-600 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Colectivos y Asociaciones</h1>
-            <p class="text-white/90 text-lg">Encuentra y unete a grupos de tu comunidad</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Colectivos y Asociaciones', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Encuentra y unete a grupos de tu comunidad', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
 
@@ -27,40 +27,40 @@ $por_pagina = $por_pagina ?? 12;
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-rose-600">48</span>
-                <span class="text-sm text-gray-500">Colectivos registrados</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Colectivos registrados', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
-                <span class="block text-3xl font-bold text-red-600">1.5k</span>
-                <span class="text-sm text-gray-500">Miembros</span>
+                <span class="block text-3xl font-bold text-red-600"><?php echo esc_html__('1.5k', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Miembros', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-rose-600">210</span>
-                <span class="text-sm text-gray-500">Actividades</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Actividades', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-red-600">36</span>
-                <span class="text-sm text-gray-500">Eventos</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Eventos', 'flavor-chat-ia'); ?></span>
             </div>
         </div>
 
         <!-- Categorias -->
         <div class="flex flex-wrap gap-3 mb-8">
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-rose-600 text-white">Todos</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors">Cultural</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors">Deportivo</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors">Social</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors">Medioambiental</button>
-            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors">Vecinal</button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-rose-600 text-white"><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors"><?php echo esc_html__('Cultural', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors"><?php echo esc_html__('Deportivo', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors"><?php echo esc_html__('Social', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors"><?php echo esc_html__('Medioambiental', 'flavor-chat-ia'); ?></button>
+            <button class="px-4 py-2 rounded-full text-sm font-semibold bg-white text-gray-700 border border-gray-200 hover:bg-rose-50 hover:text-rose-600 transition-colors"><?php echo esc_html__('Vecinal', 'flavor-chat-ia'); ?></button>
         </div>
 
         <!-- CTA Registrar Colectivo -->
         <div class="flex items-center justify-between mb-6">
             <p class="text-gray-600">
-                Mostrando <span class="font-semibold"><?php echo count($colectivos); ?></span> de <?php echo esc_html($total_colectivos); ?> colectivos
+                <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($colectivos); ?></span> de <?php echo esc_html($total_colectivos); ?> colectivos
             </p>
             <button class="px-6 py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                     style="background: linear-gradient(135deg, #f43f5e 0%, #dc2626 100%);">
-                + Registrar Colectivo
+                <?php echo esc_html__('+ Registrar Colectivo', 'flavor-chat-ia'); ?>
             </button>
         </div>
 
@@ -69,8 +69,8 @@ $por_pagina = $por_pagina ?? 12;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay colectivos registrados</h3>
-                <p class="text-gray-500">Registra tu colectivo y empieza a conectar</p>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay colectivos registrados', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500"><?php echo esc_html__('Registra tu colectivo y empieza a conectar', 'flavor-chat-ia'); ?></p>
             </div>
         <?php else: ?>
             <!-- Grid de colectivos -->
@@ -119,7 +119,7 @@ $por_pagina = $por_pagina ?? 12;
                             <div class="mt-4 pt-4 border-t border-gray-100">
                                 <a href="<?php echo esc_url($colectivo['url'] ?? '#'); ?>"
                                    class="block w-full py-2 rounded-xl text-center text-rose-600 font-semibold text-sm bg-rose-50 hover:bg-rose-100 transition-colors">
-                                    Ver colectivo
+                                    <?php echo esc_html__('Ver colectivo', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
                         </div>

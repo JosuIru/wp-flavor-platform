@@ -108,6 +108,41 @@
     transition: background-color 0.3s;
 }
 
+.mockup-hamburger {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.mockup-hamburger span {
+    display: block;
+    width: 14px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.mockup-hamburger.is-open span:nth-child(1) {
+    transform: translateY(4px) rotate(45deg);
+}
+
+.mockup-hamburger.is-open span:nth-child(2) {
+    opacity: 0;
+}
+
+.mockup-hamburger.is-open span:nth-child(3) {
+    transform: translateY(-4px) rotate(-45deg);
+}
+
 #mockup-logo-app {
     width: 32px;
     height: 32px;
@@ -159,6 +194,109 @@
     background: #fff;
     border-top: 1px solid #e0e0e0;
     flex-shrink: 0;
+}
+
+/* Drawer mockup */
+#mockup-drawer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.mockup-drawer-panel {
+    transform: translateX(-10%);
+    transition: transform 0.2s ease;
+}
+
+#mockup-drawer.is-open {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+#mockup-drawer.is-open .mockup-drawer-panel {
+    transform: translateX(0);
+}
+
+.mockup-drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.mockup-drawer-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 68%;
+    background: #fff;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+}
+
+.mockup-drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    color: #fff;
+}
+
+.mockup-drawer-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mockup-drawer-avatar .material-icons {
+    font-size: 16px;
+    color: #fff;
+}
+
+.mockup-drawer-user {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mockup-drawer-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.mockup-drawer-app {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.mockup-drawer-items {
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mockup-drawer-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #555;
+}
+
+.mockup-drawer-item .material-icons {
+    font-size: 16px;
+    color: #777;
 }
 
 .mockup-tab-item {
@@ -281,6 +419,50 @@
     outline: none;
     border-color: #0073aa;
     box-shadow: 0 0 0 1px #0073aa;
+}
+
+.flavor-tab-type {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 12px;
+    background: #fff;
+}
+
+.flavor-tab-url-wrapper {
+    flex: 1.4;
+}
+
+.flavor-tab-url-input {
+    width: 100%;
+    min-width: 180px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.flavor-tab-remove {
+    margin-left: 4px;
+    color: #b32d2e;
+}
+
+.flavor-drawer-type,
+.flavor-drawer-target {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 12px;
+    background: #fff;
+}
+
+.flavor-drawer-icon-btn {
+    width: 30px;
+    height: 30px;
+}
+
+#flavor-drawer-sections-sortable .section-drag-handle {
+    margin-right: 4px;
 }
 
 /* Toggle Switch */
@@ -525,6 +707,19 @@
 
 .flavor-module-api-status.unavailable {
     color: #999;
+}
+
+.flavor-module-actions {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.flavor-module-actions .description {
+    font-size: 11px;
+    color: #777;
 }
 
 /* ========================================
@@ -802,6 +997,77 @@ table.widefat tbody tr:hover {
 
 .status-development {
     color: #f56e28;
+}
+
+/* ========================================
+   CONTENT TYPE SELECTORS (Tabs & Drawer)
+   ======================================== */
+
+/* Selectores de tipo de contenido */
+.flavor-tab-content-type,
+.flavor-drawer-content-type {
+    min-width: 140px;
+    padding: 4px 8px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 13px;
+}
+
+/* Selectores de referencia de contenido */
+.flavor-tab-content-ref,
+.flavor-drawer-content-ref {
+    min-width: 150px;
+    padding: 4px 8px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 13px;
+}
+
+/* Items de drawer con nuevo layout */
+.flavor-drawer-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.flavor-drawer-item .section-label {
+    min-width: 120px;
+    font-weight: 500;
+}
+
+/* Ajustes para items de info sections y drawer */
+.flavor-info-section-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.flavor-info-section-item:hover {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+.flavor-info-section-item .section-drag-handle {
+    cursor: move;
+    color: #8c8f94;
+}
+
+.flavor-info-section-item .section-drag-handle:hover {
+    color: #2271b1;
+}
+
+/* Ocultar selectores según tipo seleccionado */
+.flavor-drawer-content-ref[style*="display: none"],
+.flavor-tab-content-ref[style*="display: none"] {
+    display: none !important;
 }
 
 /* ========================================

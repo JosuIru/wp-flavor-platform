@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,7 +48,7 @@ class LanguageScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Idioma'),
+        title: Text(AppLocalizations.of(context)!.languageTitle),
       ),
       body: ListView(
         children: [
@@ -66,7 +67,7 @@ class LanguageScreen extends ConsumerWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'El idioma seleccionado se usara para las comunicaciones con el asistente IA y las notificaciones.',
+                        AppLocalizations.of(context)!.languageDescription,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -101,7 +102,9 @@ class LanguageScreen extends ConsumerWidget {
                 ref.read(languageProvider.notifier).setLanguage(lang.code);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Idioma cambiado a ${lang.name}'),
+                    content: Text(
+                      AppLocalizations.of(context)!.languageChanged(lang.name),
+                    ),
                     duration: const Duration(seconds: 2),
                   ),
                 );

@@ -69,6 +69,85 @@ class Flavor_Network_Manager {
 
         // Assets frontend
         add_action('wp_enqueue_scripts', [$this, 'maybe_enqueue_frontend_assets']);
+
+        // Sincronización federada de nodos (sin servidor central)
+        add_action('flavor_network_sync_peers', [$this, 'sync_with_peers']);
+        if (!wp_next_scheduled('flavor_network_sync_peers')) {
+            wp_schedule_event(time(), 'hourly', 'flavor_network_sync_peers');
+        }
+    }
+
+    public function sync_with_peers() {
+        global $wpdb;
+        $tabla = Flavor_Network_Installer::get_table_name('nodes');
+
+        $peers = $wpdb->get_results(
+            "SELECT id, site_url FROM {$tabla}
+             WHERE es_nodo_local = 0
+               AND estado = 'activo'
+               AND site_url <> ''"
+        );
+
+        if (!$peers) {
+            return;
+        }
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            $page = 1;
+            $max_pages = 5;
+            do {
+                $url = add_query_arg([
+                    'pagina' => $page,
+                    'por_pagina' => 100,
+                ], $site_url . '/wp-json/flavor-network/v1/directory');
+
+                $response = wp_remote_get($url, [
+                    'timeout' => 12,
+                    'headers' => [
+                        'User-Agent' => 'FlavorChatIA/1.0 (+https://flavor-chat-ia)',
+                    ],
+                ]);
+
+                if (is_wp_error($response)) {
+                    break;
+                }
+
+                $body = wp_remote_retrieve_body($response);
+                $data = json_decode($body, true);
+                if (!is_array($data) || empty($data['nodos'])) {
+                    break;
+                }
+
+                foreach ($data['nodos'] as $nodo_data) {
+                    if (empty($nodo_data['site_url'])) {
+                        continue;
+                    }
+                    if (untrailingslashit($nodo_data['site_url']) === untrailingslashit(get_site_url())) {
+                        continue;
+                    }
+                    Flavor_Network_Node::upsert_remote_node($nodo_data);
+                }
+
+                $page++;
+                $total_pages = (int) ($data['paginas'] ?? 1);
+            } while ($page <= $total_pages && $page <= $max_pages);
+        }
+
+        // Marcar nodos no vistos recientemente como inactivos
+        $limite_inactivo = gmdate('Y-m-d H:i:s', time() - (30 * DAY_IN_SECONDS));
+        $wpdb->query($wpdb->prepare(
+            "UPDATE {$tabla}
+             SET estado = 'inactivo'
+             WHERE es_nodo_local = 0
+               AND estado = 'activo'
+               AND (ultima_sincronizacion IS NULL OR ultima_sincronizacion < %s)",
+            $limite_inactivo
+        ));
     }
 
     /**

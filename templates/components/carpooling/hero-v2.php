@@ -121,10 +121,10 @@ $overlay_opacity = flavor_design_get('hero_overlay_opacity', 0.6);
                                     </span>
                                 </label>
                                 <select name="pasajeros" class="w-full px-4 py-3 border rounded-lg focus:outline-none transition-colors" style="border-color: #e5e7eb; font-size: var(--flavor-font-size-base);" onfocus="this.style.borderColor='var(--flavor-primary)'" onblur="this.style.borderColor='#e5e7eb'">
-                                    <option value="1">1 pasajero</option>
-                                    <option value="2">2 pasajeros</option>
-                                    <option value="3">3 pasajeros</option>
-                                    <option value="4">4+ pasajeros</option>
+                                    <option value="1"><?php echo esc_html__('1 pasajero', 'flavor-chat-ia'); ?></option>
+                                    <option value="2"><?php echo esc_html__('2 pasajeros', 'flavor-chat-ia'); ?></option>
+                                    <option value="3"><?php echo esc_html__('3 pasajeros', 'flavor-chat-ia'); ?></option>
+                                    <option value="4"><?php echo esc_html__('4+ pasajeros', 'flavor-chat-ia'); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -151,7 +151,7 @@ $overlay_opacity = flavor_design_get('hero_overlay_opacity', 0.6);
                             <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Usuarios', 'flavor-chat-ia'); ?></div>
                         </div>
                         <div class="text-center">
-                            <div class="text-3xl font-bold" style="color: var(--flavor-primary);">€12.5k</div>
+                            <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('€12.5k', 'flavor-chat-ia'); ?></div>
                             <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Ahorrados', 'flavor-chat-ia'); ?></div>
                         </div>
                     </div>

@@ -23,9 +23,9 @@ $normas = $espacio['normas'] ?? [];
     <div class="bg-gray-50 py-3 px-4">
         <div class="container mx-auto max-w-6xl">
             <nav class="flex items-center gap-2 text-sm text-gray-600">
-                <a href="#" class="hover:text-rose-600">Inicio</a>
+                <a href="#" class="hover:text-rose-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
-                <a href="#" class="hover:text-rose-600">Espacios</a>
+                <a href="#" class="hover:text-rose-600"><?php echo esc_html__('Espacios', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-gray-900 font-medium"><?php echo esc_html($nombre); ?></span>
             </nav>
@@ -44,7 +44,7 @@ $normas = $espacio['normas'] ?? [];
                              alt="<?php echo esc_attr($nombre); ?>"
                              class="w-full h-full object-cover">
                         <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-bold bg-green-500 text-white">
-                            Disponible
+                            <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
                         </span>
                     </div>
                     <?php if (count($imagenes) > 1): ?>
@@ -65,7 +65,7 @@ $normas = $espacio['normas'] ?? [];
                         <h1 class="text-2xl md:text-3xl font-bold text-gray-900"><?php echo esc_html($nombre); ?></h1>
                         <div class="text-right">
                             <span class="text-3xl font-bold text-rose-600"><?php echo esc_html($precio); ?></span>
-                            <span class="text-gray-500">/hora</span>
+                            <span class="text-gray-500"><?php echo esc_html__('/hora', 'flavor-chat-ia'); ?></span>
                         </div>
                     </div>
 
@@ -90,7 +90,7 @@ $normas = $espacio['normas'] ?? [];
                 <!-- Equipamiento -->
                 <?php if (!empty($equipamiento)): ?>
                     <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                        <h2 class="text-xl font-bold text-gray-900 mb-4">Equipamiento Incluido</h2>
+                        <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Equipamiento Incluido', 'flavor-chat-ia'); ?></h2>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                             <?php foreach ($equipamiento as $equipo): ?>
                                 <div class="flex items-center gap-2 p-3 rounded-xl bg-rose-50">
@@ -106,31 +106,31 @@ $normas = $espacio['normas'] ?? [];
 
                 <!-- Normas de uso -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Normas de Uso</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Normas de Uso', 'flavor-chat-ia'); ?></h2>
                     <ul class="space-y-2">
                         <li class="flex items-start gap-2 text-gray-700">
                             <svg class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            Reserva minima de 1 hora
+                            <?php echo esc_html__('Reserva minima de 1 hora', 'flavor-chat-ia'); ?>
                         </li>
                         <li class="flex items-start gap-2 text-gray-700">
                             <svg class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            Cancelacion gratuita hasta 24h antes
+                            <?php echo esc_html__('Cancelacion gratuita hasta 24h antes', 'flavor-chat-ia'); ?>
                         </li>
                         <li class="flex items-start gap-2 text-gray-700">
                             <svg class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            Dejar el espacio tal y como se encontro
+                            <?php echo esc_html__('Dejar el espacio tal y como se encontro', 'flavor-chat-ia'); ?>
                         </li>
                         <li class="flex items-start gap-2 text-gray-700">
                             <svg class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            No superar la capacidad maxima indicada
+                            <?php echo esc_html__('No superar la capacidad maxima indicada', 'flavor-chat-ia'); ?>
                         </li>
                     </ul>
                 </div>
@@ -139,11 +139,11 @@ $normas = $espacio['normas'] ?? [];
             <!-- Sidebar de reserva -->
             <div class="lg:col-span-1">
                 <div class="bg-white rounded-2xl p-6 shadow-md sticky top-4">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Reservar Espacio</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Reservar Espacio', 'flavor-chat-ia'); ?></h2>
 
                     <!-- Selector de fecha -->
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></label>
                         <input type="date"
                                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                                min="<?php echo date('Y-m-d'); ?>">
@@ -152,7 +152,7 @@ $normas = $espacio['normas'] ?? [];
                     <!-- Selector de hora inicio -->
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Hora inicio</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Hora inicio', 'flavor-chat-ia'); ?></label>
                             <select class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
                                 <?php for ($h = 8; $h <= 21; $h++): ?>
                                     <option value="<?php echo $h; ?>:00"><?php echo sprintf('%02d:00', $h); ?></option>
@@ -160,7 +160,7 @@ $normas = $espacio['normas'] ?? [];
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Hora fin</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Hora fin', 'flavor-chat-ia'); ?></label>
                             <select class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
                                 <?php for ($h = 9; $h <= 22; $h++): ?>
                                     <option value="<?php echo $h; ?>:00"><?php echo sprintf('%02d:00', $h); ?></option>
@@ -176,24 +176,24 @@ $normas = $espacio['normas'] ?? [];
                             <span class="font-semibold"><?php echo esc_html($precio); ?></span>
                         </div>
                         <div class="flex items-center justify-between pt-2 border-t border-rose-200">
-                            <span class="font-bold text-gray-900">Total</span>
+                            <span class="font-bold text-gray-900"><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></span>
                             <span class="text-xl font-bold text-rose-600"><?php echo esc_html($precio); ?></span>
                         </div>
                     </div>
 
                     <button class="w-full py-4 rounded-xl text-lg font-semibold text-white transition-all hover:scale-105"
                             style="background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);">
-                        Reservar Ahora
+                        <?php echo esc_html__('Reservar Ahora', 'flavor-chat-ia'); ?>
                     </button>
 
                     <p class="text-xs text-gray-500 text-center mt-4">
-                        No se te cobrara nada hasta confirmar la reserva
+                        <?php echo esc_html__('No se te cobrara nada hasta confirmar la reserva', 'flavor-chat-ia'); ?>
                     </p>
                 </div>
 
                 <!-- Contacto -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mt-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Necesitas ayuda?</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Necesitas ayuda?', 'flavor-chat-ia'); ?></h3>
                     <a href="#contacto" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-rose-50 transition-colors">
                         <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
                             <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,8 +201,8 @@ $normas = $espacio['normas'] ?? [];
                             </svg>
                         </div>
                         <div>
-                            <span class="block font-medium text-gray-900">Contactar</span>
-                            <span class="text-sm text-gray-500">Respuesta en menos de 24h</span>
+                            <span class="block font-medium text-gray-900"><?php echo esc_html__('Contactar', 'flavor-chat-ia'); ?></span>
+                            <span class="text-sm text-gray-500"><?php echo esc_html__('Respuesta en menos de 24h', 'flavor-chat-ia'); ?></span>
                         </div>
                     </a>
                 </div>

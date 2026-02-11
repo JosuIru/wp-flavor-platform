@@ -241,7 +241,7 @@ class Flavor_Banco_Tiempo_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Solicitud enviada correctamente',
+            'message' => __('Solicitud enviada correctamente', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -259,7 +259,7 @@ class Flavor_Banco_Tiempo_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Servicio publicado',
+            'message' => __('Servicio publicado', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -273,7 +273,7 @@ class Flavor_Banco_Tiempo_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Valoración guardada',
+            'message' => __('Valoración guardada', 'flavor-chat-ia'),
         ], 200);
     }
 }

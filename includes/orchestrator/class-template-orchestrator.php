@@ -46,6 +46,7 @@ class Flavor_Template_Orchestrator {
         'modulos',
         'tablas',
         'paginas',
+        'site_transformer',
         'landing',
         'configuracion',
         'demo',
@@ -709,6 +710,10 @@ class Flavor_Template_Orchestrator {
 
             case 'paginas':
                 return ['paginas' => $definicion['paginas'] ?? []];
+
+            case 'site_transformer':
+                // Pasa la definición completa para configurar home, menú y opciones
+                return $definicion;
 
             case 'landing':
                 return $definicion['landing'] ?? [];

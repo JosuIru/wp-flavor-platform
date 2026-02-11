@@ -112,17 +112,17 @@ $puntos_reciclaje = $wpdb->get_results("
                     <input type="text" id="buscar-punto" class="regular-text" placeholder="<?php echo esc_attr__('Buscar punto...', 'flavor-chat-ia'); ?>">
                     <select id="filtro-tipo" class="regular-text">
                         <option value=""><?php echo esc_html__('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                        <option value="punto_limpio"><?php echo esc_html__('Punto Limpio', 'flavor-chat-ia'); ?></option>
-                        <option value="contenedor_comunitario"><?php echo esc_html__('Contenedor Comunitario', 'flavor-chat-ia'); ?></option>
-                        <option value="centro_acopio"><?php echo esc_html__('Centro de Acopio', 'flavor-chat-ia'); ?></option>
-                        <option value="movil"><?php echo esc_html__('Móvil', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('punto_limpio', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Punto Limpio', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('contenedor_comunitario', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Contenedor Comunitario', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('centro_acopio', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Centro de Acopio', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('movil', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Móvil', 'flavor-chat-ia'); ?></option>
                     </select>
                     <select id="filtro-estado" class="regular-text">
                         <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="activo"><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
-                        <option value="lleno"><?php echo esc_html__('Lleno', 'flavor-chat-ia'); ?></option>
-                        <option value="mantenimiento"><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
-                        <option value="inactivo"><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('lleno', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Lleno', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('mantenimiento', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -222,10 +222,10 @@ $puntos_reciclaje = $wpdb->get_results("
                             </th>
                             <td>
                                 <select name="tipo" id="tipo" required>
-                                    <option value="punto_limpio" <?php selected($punto_actual->tipo ?? '', 'punto_limpio'); ?>><?php echo esc_html__('Punto Limpio', 'flavor-chat-ia'); ?></option>
-                                    <option value="contenedor_comunitario" <?php selected($punto_actual->tipo ?? '', 'contenedor_comunitario'); ?>><?php echo esc_html__('Contenedor Comunitario', 'flavor-chat-ia'); ?></option>
-                                    <option value="centro_acopio" <?php selected($punto_actual->tipo ?? '', 'centro_acopio'); ?>><?php echo esc_html__('Centro de Acopio', 'flavor-chat-ia'); ?></option>
-                                    <option value="movil" <?php selected($punto_actual->tipo ?? '', 'movil'); ?>><?php echo esc_html__('Móvil', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('punto_limpio', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->tipo ?? '', 'punto_limpio'); ?>><?php echo esc_html__('Punto Limpio', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('contenedor_comunitario', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->tipo ?? '', 'contenedor_comunitario'); ?>><?php echo esc_html__('Contenedor Comunitario', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('centro_acopio', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->tipo ?? '', 'centro_acopio'); ?>><?php echo esc_html__('Centro de Acopio', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('movil', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->tipo ?? '', 'movil'); ?>><?php echo esc_html__('Móvil', 'flavor-chat-ia'); ?></option>
                                 </select>
                             </td>
                         </tr>
@@ -328,10 +328,10 @@ $puntos_reciclaje = $wpdb->get_results("
                             </th>
                             <td>
                                 <select name="estado" id="estado" required>
-                                    <option value="activo" <?php selected($punto_actual->estado ?? 'activo', 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
-                                    <option value="lleno" <?php selected($punto_actual->estado ?? '', 'lleno'); ?>><?php echo esc_html__('Lleno', 'flavor-chat-ia'); ?></option>
-                                    <option value="mantenimiento" <?php selected($punto_actual->estado ?? '', 'mantenimiento'); ?>><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
-                                    <option value="inactivo" <?php selected($punto_actual->estado ?? '', 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->estado ?? 'activo', 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('lleno', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->estado ?? '', 'lleno'); ?>><?php echo esc_html__('Lleno', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('mantenimiento', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->estado ?? '', 'mantenimiento'); ?>><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->estado ?? '', 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
                                 </select>
                             </td>
                         </tr>

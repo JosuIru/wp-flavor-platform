@@ -444,13 +444,13 @@ class Flavor_Layout_Forms {
         register_rest_route('flavor/v1', '/newsletter/subscribe', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_newsletter_subscribe'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/contact', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_contact_submit'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Admin endpoints
@@ -469,6 +469,12 @@ class Flavor_Layout_Forms {
                 return current_user_can('manage_options');
             },
         ]);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 
     /**

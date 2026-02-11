@@ -80,7 +80,7 @@ $anuncios_mensuales = $wpdb->get_results(
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-megaphone"></span>
-        Dashboard - Marketplace
+        <?php echo esc_html__('Dashboard - Marketplace', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -96,7 +96,7 @@ $anuncios_mensuales = $wpdb->get_results(
                 <?php echo number_format($anuncios_activos); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Anuncios Activos
+                <?php echo esc_html__('Anuncios Activos', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -108,7 +108,7 @@ $anuncios_mensuales = $wpdb->get_results(
                 <?php echo number_format($anuncios_pendientes); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Anuncios Pendientes
+                <?php echo esc_html__('Anuncios Pendientes', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -120,7 +120,7 @@ $anuncios_mensuales = $wpdb->get_results(
                 <?php echo number_format(count($categorias_stats)); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Categorías Activas
+                <?php echo esc_html__('Categorías Activas', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -132,14 +132,14 @@ $anuncios_mensuales = $wpdb->get_results(
                 <?php echo number_format(count($usuarios_activos)); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Vendedores Activos
+                <?php echo esc_html__('Vendedores Activos', 'flavor-chat-ia'); ?>
             </div>
         </div>
     </div>
 
     <!-- Anuncios por Tipo -->
     <div class="postbox" style="margin: 20px 0;">
-        <h2 class="hndle"><span class="dashicons dashicons-tag"></span> Anuncios por Tipo de Transacción</h2>
+        <h2 class="hndle"><span class="dashicons dashicons-tag"></span> <?php echo esc_html__('Anuncios por Tipo de Transacción', 'flavor-chat-ia'); ?></h2>
         <div class="inside">
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 16px;">
                 <?php foreach ($tipos_stats as $tipo): ?>
@@ -161,7 +161,7 @@ $anuncios_mensuales = $wpdb->get_results(
 
         <!-- Anuncios por Categoría -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-chart-pie"></span> Anuncios por Categoría</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-chart-pie"></span> <?php echo esc_html__('Anuncios por Categoría', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <canvas id="grafico-categorias" style="max-height: 300px;"></canvas>
             </div>
@@ -169,7 +169,7 @@ $anuncios_mensuales = $wpdb->get_results(
 
         <!-- Actividad Mensual -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-chart-line"></span> Anuncios por Mes</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-chart-line"></span> <?php echo esc_html__('Anuncios por Mes', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <canvas id="grafico-mensual" style="max-height: 300px;"></canvas>
             </div>
@@ -181,14 +181,14 @@ $anuncios_mensuales = $wpdb->get_results(
 
         <!-- Anuncios Recientes -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-update"></span> Anuncios Recientes</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-update"></span> <?php echo esc_html__('Anuncios Recientes', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th>Anuncio</th>
-                            <th>Autor</th>
-                            <th>Fecha</th>
+                            <th><?php echo esc_html__('Anuncio', 'flavor-chat-ia'); ?></th>
+                            <th><?php echo esc_html__('Autor', 'flavor-chat-ia'); ?></th>
+                            <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -208,7 +208,7 @@ $anuncios_mensuales = $wpdb->get_results(
                         <?php else: ?>
                             <tr>
                                 <td colspan="3" style="text-align: center; padding: 20px; color: #646970;">
-                                    No hay anuncios recientes
+                                    <?php echo esc_html__('No hay anuncios recientes', 'flavor-chat-ia'); ?>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -219,14 +219,14 @@ $anuncios_mensuales = $wpdb->get_results(
 
         <!-- Usuarios Más Activos -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-star-filled"></span> Vendedores Más Activos</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-star-filled"></span> <?php echo esc_html__('Vendedores Más Activos', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Usuario</th>
-                            <th style="text-align: right;">Anuncios</th>
+                            <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: right;"><?php echo esc_html__('Anuncios', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -251,7 +251,7 @@ $anuncios_mensuales = $wpdb->get_results(
                         <?php if (empty($usuarios_activos)): ?>
                         <tr>
                             <td colspan="3" style="text-align: center; padding: 20px; color: #646970;">
-                                No hay datos disponibles
+                                <?php echo esc_html__('No hay datos disponibles', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
                         <?php endif; ?>

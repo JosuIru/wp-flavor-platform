@@ -50,21 +50,21 @@ class Flavor_Layout_API {
         register_rest_route(self::API_NAMESPACE, '/config', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_layout_config'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /flavor-layouts/v1/menus
         register_rest_route(self::API_NAMESPACE, '/menus', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_menus'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /flavor-layouts/v1/menus/{id}
         register_rest_route(self::API_NAMESPACE, '/menus/(?P<id>[a-z0-9-]+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_menu'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -78,14 +78,14 @@ class Flavor_Layout_API {
         register_rest_route(self::API_NAMESPACE, '/footers', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_footers'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /flavor-layouts/v1/footers/{id}
         register_rest_route(self::API_NAMESPACE, '/footers/(?P<id>[a-z0-9-]+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_footer'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -99,7 +99,7 @@ class Flavor_Layout_API {
         register_rest_route(self::API_NAMESPACE, '/navigation', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_navigation'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'location' => [
                     'type' => 'string',
@@ -113,7 +113,7 @@ class Flavor_Layout_API {
         register_rest_route(self::API_NAMESPACE, '/theme', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_theme_config'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // POST /flavor-layouts/v1/config (requiere autenticación)
@@ -415,6 +415,12 @@ class Flavor_Layout_API {
             return wp_get_attachment_image_url($custom_logo_id, 'full');
         }
         return '';
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }
 

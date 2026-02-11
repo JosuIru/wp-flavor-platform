@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
             <button id="btn-prev-period" class="button">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
             </button>
-            <h2 id="period-title">Enero 2026</h2>
+            <h2 id="period-title"><?php echo esc_html__('Enero 2026', 'flavor-chat-ia'); ?></h2>
             <button id="btn-next-period" class="button">
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </button>
@@ -66,10 +66,10 @@ if (!defined('ABSPATH')) {
 
             <div class="flavor-filter-section">
                 <h3><?php _e('Estados', 'flavor-chat-ia'); ?></h3>
-                <label><input type="checkbox" name="estado-filter[]" value="pendiente" checked> <?php _e('Pendiente', 'flavor-chat-ia'); ?></label>
-                <label><input type="checkbox" name="estado-filter[]" value="confirmada" checked> <?php _e('Confirmada', 'flavor-chat-ia'); ?></label>
-                <label><input type="checkbox" name="estado-filter[]" value="completada"> <?php _e('Completada', 'flavor-chat-ia'); ?></label>
-                <label><input type="checkbox" name="estado-filter[]" value="cancelada"> <?php _e('Cancelada', 'flavor-chat-ia'); ?></label>
+                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" checked> <?php _e('Pendiente', 'flavor-chat-ia'); ?></label>
+                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('confirmada', 'flavor-chat-ia'); ?>" checked> <?php _e('Confirmada', 'flavor-chat-ia'); ?></label>
+                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"> <?php _e('Completada', 'flavor-chat-ia'); ?></label>
+                <label><input type="checkbox" name="estado-filter[]" value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"> <?php _e('Cancelada', 'flavor-chat-ia'); ?></label>
             </div>
 
             <div class="flavor-filter-section">
@@ -461,7 +461,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let checkboxes = '';
                     response.data.forEach(espacio => {
-                        checkboxes += `<label><input type="checkbox" name="espacio-filter[]" value="${espacio.id}" checked> ${espacio.nombre}</label>`;
+                        checkboxes += `<label><input type="checkbox" name="espacio-filter[]" value="<?php echo esc_attr__('${espacio.id}', 'flavor-chat-ia'); ?>" checked> ${espacio.nombre}</label>`;
                     });
                     $('#espacios-checkboxes').html(checkboxes);
                 }

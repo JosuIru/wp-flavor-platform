@@ -27,7 +27,7 @@ $categorias = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                 </svg>
-                Categorias
+                <?php echo esc_html__('Categorias', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -73,19 +73,19 @@ $categorias = [
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 <div>
                     <div class="text-4xl font-bold text-amber-600 mb-1">127</div>
-                    <div class="text-sm text-gray-600">Solicitudes activas</div>
+                    <div class="text-sm text-gray-600"><?php echo esc_html__('Solicitudes activas', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div>
                     <div class="text-4xl font-bold text-orange-600 mb-1">83</div>
-                    <div class="text-sm text-gray-600">Voluntarios disponibles</div>
+                    <div class="text-sm text-gray-600"><?php echo esc_html__('Voluntarios disponibles', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div>
                     <div class="text-4xl font-bold text-green-600 mb-1">456</div>
-                    <div class="text-sm text-gray-600">Ayudas completadas</div>
+                    <div class="text-sm text-gray-600"><?php echo esc_html__('Ayudas completadas', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div>
                     <div class="text-4xl font-bold text-purple-600 mb-1">4.9</div>
-                    <div class="text-sm text-gray-600">Valoracion media</div>
+                    <div class="text-sm text-gray-600"><?php echo esc_html__('Valoracion media', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
         </div>

@@ -12,11 +12,11 @@ $categorias = $categorias ?? [];
 <div class="flavor-frontend flavor-tramites-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-800">Filtrar tramites</h3>
+            <h3 class="text-lg font-bold text-gray-800"><?php echo esc_html__('Filtrar tramites', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
             <button class="text-sm text-orange-600 hover:text-orange-700 font-medium"
                     onclick="flavorTramites.limpiarFiltros()">
-                Limpiar filtros
+                <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -24,7 +24,7 @@ $categorias = $categorias ?? [];
         <form id="filtros-tramites" class="space-y-6">
             <!-- Categoria -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_categoria_tramite = [
@@ -46,7 +46,7 @@ $categorias = $categorias ?? [];
 
             <!-- Modalidad -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Modalidad', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_modalidad = [
@@ -67,31 +67,31 @@ $categorias = $categorias ?? [];
 
             <!-- Tiempo estimado -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tiempo estimado</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Tiempo estimado', 'flavor-chat-ia'); ?></label>
                 <select name="tiempo_estimado" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                    <option value="">Cualquier duracion</option>
-                    <option value="inmediato" <?php echo ($filtros_activos['tiempo_estimado'] ?? '') === 'inmediato' ? 'selected' : ''; ?>>Inmediato</option>
-                    <option value="1-dia" <?php echo ($filtros_activos['tiempo_estimado'] ?? '') === '1-dia' ? 'selected' : ''; ?>>1 dia</option>
-                    <option value="1-semana" <?php echo ($filtros_activos['tiempo_estimado'] ?? '') === '1-semana' ? 'selected' : ''; ?>>Hasta 1 semana</option>
-                    <option value="1-mes" <?php echo ($filtros_activos['tiempo_estimado'] ?? '') === '1-mes' ? 'selected' : ''; ?>>Hasta 1 mes</option>
+                    <option value=""><?php echo esc_html__('Cualquier duracion', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('inmediato', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['tiempo_estimado'] ?? '') === 'inmediato' ? 'selected' : ''; ?>><?php echo esc_html__('Inmediato', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('1-dia', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['tiempo_estimado'] ?? '') === '1-dia' ? 'selected' : ''; ?>><?php echo esc_html__('1 dia', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('1-semana', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['tiempo_estimado'] ?? '') === '1-semana' ? 'selected' : ''; ?>><?php echo esc_html__('Hasta 1 semana', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('1-mes', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['tiempo_estimado'] ?? '') === '1-mes' ? 'selected' : ''; ?>><?php echo esc_html__('Hasta 1 mes', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <!-- Requiere cita previa -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Cita previa</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Cita previa', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
                         <input type="checkbox" name="requiere_cita" value="1"
                                <?php echo !empty($filtros_activos['requiere_cita']) ? 'checked' : ''; ?>
                                class="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500">
-                        <span class="text-gray-700">Requiere cita previa</span>
+                        <span class="text-gray-700"><?php echo esc_html__('Requiere cita previa', 'flavor-chat-ia'); ?></span>
                     </label>
                     <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
                         <input type="checkbox" name="sin_cita" value="1"
                                <?php echo !empty($filtros_activos['sin_cita']) ? 'checked' : ''; ?>
                                class="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500">
-                        <span class="text-gray-700">Sin cita previa</span>
+                        <span class="text-gray-700"><?php echo esc_html__('Sin cita previa', 'flavor-chat-ia'); ?></span>
                     </label>
                 </div>
             </div>
@@ -99,7 +99,7 @@ $categorias = $categorias ?? [];
             <!-- Boton aplicar -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-md">
-                Aplicar filtros
+                <?php echo esc_html__('Aplicar filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

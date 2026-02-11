@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
@@ -48,6 +50,7 @@ class CustomersScreen extends ConsumerStatefulWidget {
 }
 
 class _CustomersScreenState extends ConsumerState<CustomersScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _searchController = TextEditingController();
   String _searchQuery = '';
   DateTime? _startDate;
@@ -108,11 +111,12 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final customersAsync = ref.watch(customersSearchProvider(_params));
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clientes'),
+        title: Text(i18n.clientesA374d1),
         actions: [
           IconButton(
             onPressed: () => ref.invalidate(customersSearchProvider(_params)),
@@ -141,7 +145,7 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
                 TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Buscar por nombre, email o teléfono...',
+                    hintText: i18n.buscarPorNombreEmailOTelFono63ad57,
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
@@ -176,8 +180,8 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
                         icon: const Icon(Icons.date_range, size: 18),
                         label: Text(
                           _startDate != null && _endDate != null
-                              ? '${_startDate!.day}/${_startDate!.month} - ${_endDate!.day}/${_endDate!.month}'
-                              : 'Filtrar por fecha',
+                              ? _formatRangeLabel(_startDate!, _endDate!, i18n.localeName)
+                              : i18n.customersFilterByDate,
                         ),
                       ),
                     ),
@@ -186,7 +190,7 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
                       IconButton(
                         onPressed: _clearDateFilter,
                         icon: const Icon(Icons.clear),
-                        tooltip: 'Quitar filtro',
+                        tooltip: i18n.quitarFiltro9c7d57,
                       ),
                     ],
                   ],
@@ -200,9 +204,9 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
             child: customersAsync.when(
               data: (customers) {
                 if (customers.isEmpty) {
-                  return const EmptyScreen(
-                    message: 'No hay clientes',
-                    subtitle: 'No se encontraron clientes con los filtros actuales',
+                  return EmptyScreen(
+                    message: i18n.customersEmptyTitle,
+                    subtitle: i18n.customersEmptySubtitle,
                     icon: Icons.people_outline,
                   );
                 }
@@ -223,9 +227,9 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
                   ),
                 );
               },
-              loading: () => const LoadingScreen(message: 'Cargando clientes...'),
+              loading: () => LoadingScreen(message: i18n.loadingCustomers),
               error: (error, _) => ErrorScreen(
-                message: 'Error al cargar clientes',
+                message: i18n.customersLoadError,
                 onRetry: () => ref.invalidate(customersSearchProvider(_params)),
               ),
             ),
@@ -245,6 +249,12 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
       builder: (context) => _CustomerDetailsSheet(customer: customer),
     );
   }
+
+  String _formatRangeLabel(DateTime start, DateTime end, String localeName) {
+    final startLabel = DateFormat.Md(localeName).format(start);
+    final endLabel = DateFormat.Md(localeName).format(end);
+    return '$startLabel - $endLabel';
+  }
 }
 
 class _CustomerCard extends StatelessWidget {
@@ -258,6 +268,7 @@ class _CustomerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
@@ -315,7 +326,7 @@ class _CustomerCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${customer.totalReservations} reservas',
+                    i18n.customersReservationsCount(customer.totalReservations!),
                     style: TextStyle(
                       color: colorScheme.onPrimaryContainer,
                       fontSize: 12,
@@ -345,6 +356,7 @@ class _CustomerDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return DraggableScrollableSheet(
@@ -401,7 +413,7 @@ class _CustomerDetailsSheet extends StatelessWidget {
                           ),
                           if (customer.totalReservations != null)
                             Text(
-                              '${customer.totalReservations} reservas',
+                              i18n.customersReservationsCount(customer.totalReservations!),
                               style: TextStyle(color: colorScheme.primary),
                             ),
                         ],
@@ -415,7 +427,7 @@ class _CustomerDetailsSheet extends StatelessWidget {
                 if (customer.email.isNotEmpty)
                   _ContactTile(
                     icon: Icons.email,
-                    title: 'Email',
+                    title: i18n.reservationsLabelEmail,
                     value: customer.email,
                     onTap: () => _launchUrl('mailto:${customer.email}'),
                   ),
@@ -423,7 +435,7 @@ class _CustomerDetailsSheet extends StatelessWidget {
                 if (customer.phone.isNotEmpty)
                   _ContactTile(
                     icon: Icons.phone,
-                    title: 'Teléfono',
+                    title: i18n.reservationsLabelPhone,
                     value: customer.phone,
                     onTap: () => _launchUrl('tel:${customer.phone}'),
                   ),
@@ -432,7 +444,7 @@ class _CustomerDetailsSheet extends StatelessWidget {
                 if (customer.firstReservation != null || customer.lastReservation != null) ...[
                   const Divider(height: 32),
                   Text(
-                    'Historial',
+                    i18n.customersHistoryTitle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -442,14 +454,14 @@ class _CustomerDetailsSheet extends StatelessWidget {
                   if (customer.firstReservation != null)
                     _InfoTile(
                       icon: Icons.event,
-                      label: 'Primera reserva',
+                      label: i18n.customersFirstReservation,
                       value: customer.firstReservation!,
                     ),
 
                   if (customer.lastReservation != null)
                     _InfoTile(
                       icon: Icons.event_repeat,
-                      label: 'Última reserva',
+                      label: i18n.customersLastReservation,
                       value: customer.lastReservation!,
                     ),
                 ],
@@ -465,13 +477,13 @@ class _CustomerDetailsSheet extends StatelessWidget {
                       OutlinedButton.icon(
                         onPressed: () => _launchUrl('mailto:${customer.email}'),
                         icon: const Icon(Icons.email),
-                        label: const Text('Email'),
+                        label: Text(i18n.emailCe8ae9),
                       ),
                     if (customer.phone.isNotEmpty)
                       FilledButton.icon(
                         onPressed: () => _launchUrl('tel:${customer.phone}'),
                         icon: const Icon(Icons.phone),
-                        label: const Text('Llamar'),
+                        label: Text(i18n.llamarC9c110),
                       ),
                     if (customer.phone.isNotEmpty)
                       FilledButton.icon(
@@ -480,7 +492,7 @@ class _CustomerDetailsSheet extends StatelessWidget {
                           _launchUrl('https://wa.me/$phone');
                         },
                         icon: const Icon(Icons.chat),
-                        label: const Text('WhatsApp'),
+                        label: Text(i18n.whatsapp8b777e),
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFF25D366),
                         ),
@@ -511,6 +523,7 @@ class _ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
@@ -535,6 +548,7 @@ class _InfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(

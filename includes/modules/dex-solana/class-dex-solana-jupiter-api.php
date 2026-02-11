@@ -95,7 +95,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error Jupiter Quote API: ' . $mensaje_error, 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Error al conectar con Jupiter Quote API: ' . $mensaje_error,
+                'error' => __('', 'flavor-chat-ia') . $mensaje_error,
             );
         }
 
@@ -105,7 +105,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error Jupiter Quote HTTP ' . $codigo_respuesta, 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Jupiter Quote API respondio con codigo HTTP: ' . $codigo_respuesta,
+                'error' => __('', 'flavor-chat-ia') . $codigo_respuesta,
             );
         }
 
@@ -116,7 +116,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error al decodificar respuesta de Jupiter Quote API', 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Respuesta invalida de Jupiter Quote API',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 
@@ -124,7 +124,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Jupiter Quote API error: ' . $datos_cotizacion['error'], 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Jupiter Quote API: ' . $datos_cotizacion['error'],
+                'error' => __('', 'flavor-chat-ia') . $datos_cotizacion['error'],
             );
         }
 
@@ -174,7 +174,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error Jupiter Swap API: ' . $mensaje_error, 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Error al conectar con Jupiter Swap API: ' . $mensaje_error,
+                'error' => __('', 'flavor-chat-ia') . $mensaje_error,
             );
         }
 
@@ -184,7 +184,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error Jupiter Swap HTTP ' . $codigo_respuesta, 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Jupiter Swap API respondio con codigo HTTP: ' . $codigo_respuesta,
+                'error' => __('', 'flavor-chat-ia') . $codigo_respuesta,
             );
         }
 
@@ -195,7 +195,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error al decodificar respuesta de Jupiter Swap API', 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Respuesta invalida de Jupiter Swap API',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 
@@ -203,7 +203,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Jupiter Swap API error: ' . $datos_swap['error'], 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Jupiter Swap API: ' . $datos_swap['error'],
+                'error' => __('', 'flavor-chat-ia') . $datos_swap['error'],
             );
         }
 
@@ -214,7 +214,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Jupiter Swap API no devolvio transaccion serializada', 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Jupiter no devolvio una transaccion de swap valida',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 
@@ -237,7 +237,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         if (empty($mints_array) || !is_array($mints_array)) {
             return array(
                 'success' => false,
-                'error'   => 'Se requiere un array de direcciones mint',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 
@@ -271,7 +271,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error Jupiter Price API: ' . $mensaje_error, 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Error al conectar con Jupiter Price API: ' . $mensaje_error,
+                'error' => __('', 'flavor-chat-ia') . $mensaje_error,
             );
         }
 
@@ -281,7 +281,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error Jupiter Price HTTP ' . $codigo_respuesta, 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Jupiter Price API respondio con codigo HTTP: ' . $codigo_respuesta,
+                'error' => __('', 'flavor-chat-ia') . $codigo_respuesta,
             );
         }
 
@@ -292,7 +292,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error al decodificar respuesta de Jupiter Price API', 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Respuesta invalida de Jupiter Price API',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 
@@ -336,7 +336,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error Jupiter Token List API: ' . $mensaje_error, 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Error al conectar con Jupiter Token List: ' . $mensaje_error,
+                'error' => __('', 'flavor-chat-ia') . $mensaje_error,
             );
         }
 
@@ -346,7 +346,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error Jupiter Token List HTTP ' . $codigo_respuesta, 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Jupiter Token List respondio con codigo HTTP: ' . $codigo_respuesta,
+                'error' => __('', 'flavor-chat-ia') . $codigo_respuesta,
             );
         }
 
@@ -357,7 +357,7 @@ class Flavor_Dex_Solana_Jupiter_API {
             flavor_chat_ia_log('Error al decodificar respuesta de Jupiter Token List', 'dex_solana');
             return array(
                 'success' => false,
-                'error'   => 'Respuesta invalida de Jupiter Token List',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 
@@ -379,7 +379,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         if (empty($busqueda) || !is_string($busqueda)) {
             return array(
                 'success' => false,
-                'error'   => 'Se requiere un texto de busqueda',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 
@@ -388,7 +388,7 @@ class Flavor_Dex_Solana_Jupiter_API {
         if (!is_array($lista_completa_tokens) || isset($lista_completa_tokens['error'])) {
             return array(
                 'success' => false,
-                'error'   => 'No se pudo obtener la lista de tokens de Jupiter',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 

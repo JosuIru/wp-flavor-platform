@@ -248,8 +248,8 @@ class Flavor_Frontend_Reciclaje_Controller extends Flavor_Frontend_Controller_Ba
 
     protected function ajax_reportar_incidencia($data) {
         if (!is_user_logged_in()) {
-            return ['error' => 'Debes iniciar sesión'];
+            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
-        return ['success' => true, 'mensaje' => 'Incidencia reportada'];
+        return ['success' => true, 'mensaje' => __('Incidencia reportada', 'flavor-chat-ia')];
     }
 }

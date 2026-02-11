@@ -278,7 +278,7 @@ $nombres_meses = [
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
             <h2><?php echo esc_html__('Programar Recogida', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="flavor-modal-close" onclick="cerrarModalRecogida()">&times;</button>
+            <button type="button" class="flavor-modal-close" onclick="cerrarModalRecogida()"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
         </div>
         <form method="post" action="">
             <?php wp_nonce_field('flavor_reciclaje_recogida_action'); ?>
@@ -288,9 +288,9 @@ $nombres_meses = [
                         <th><label for="tipo_recogida"><?php echo esc_html__('Tipo de Recogida', 'flavor-chat-ia'); ?></label></th>
                         <td>
                             <select name="tipo_recogida" id="tipo_recogida" required>
-                                <option value="programada"><?php echo esc_html__('Programada', 'flavor-chat-ia'); ?></option>
-                                <option value="a_demanda"><?php echo esc_html__('A Demanda', 'flavor-chat-ia'); ?></option>
-                                <option value="urgente"><?php echo esc_html__('Urgente', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('programada', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Programada', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('a_demanda', 'flavor-chat-ia'); ?>"><?php echo esc_html__('A Demanda', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('urgente', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Urgente', 'flavor-chat-ia'); ?></option>
                             </select>
                         </td>
                     </tr>

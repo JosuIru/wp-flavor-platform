@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Biblioteca Comunitaria</h1>
-            <p class="text-white/90 text-lg">Comparte y descubre libros con tus vecinos</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Biblioteca Comunitaria', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Comparte y descubre libros con tus vecinos', 'flavor-chat-ia'); ?></p>
             <div class="mt-4 flex items-center gap-4 text-white/80 text-sm">
                 <span><?php echo esc_html($total_libros); ?> libros disponibles</span>
             </div>
@@ -37,13 +37,13 @@ $por_pagina = $por_pagina ?? 12;
                 <!-- Ordenacion -->
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-gray-600">
-                        Mostrando <span class="font-semibold"><?php echo count($libros); ?></span> de <?php echo esc_html($total_libros); ?> libros
+                        <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($libros); ?></span> de <?php echo esc_html($total_libros); ?> libros
                     </p>
                     <select class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option>Mas recientes</option>
-                        <option>Titulo A-Z</option>
-                        <option>Autor A-Z</option>
-                        <option>Mejor valorados</option>
+                        <option><?php echo esc_html__('Mas recientes', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Titulo A-Z', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Autor A-Z', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mejor valorados', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -52,8 +52,8 @@ $por_pagina = $por_pagina ?? 12;
                         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay libros disponibles</h3>
-                        <p class="text-gray-500">Prueba a modificar los filtros de busqueda</p>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay libros disponibles', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-gray-500"><?php echo esc_html__('Prueba a modificar los filtros de busqueda', 'flavor-chat-ia'); ?></p>
                     </div>
                 <?php else: ?>
                     <!-- Grid de libros -->
@@ -67,9 +67,9 @@ $por_pagina = $por_pagina ?? 12;
 
                                     <!-- Badge disponibilidad -->
                                     <?php if (!empty($libro['disponible'])): ?>
-                                        <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500 text-white">Disponible</span>
+                                        <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500 text-white"><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></span>
                                     <?php else: ?>
-                                        <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold bg-orange-500 text-white">Prestado</span>
+                                        <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold bg-orange-500 text-white"><?php echo esc_html__('Prestado', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
                                 </div>
 

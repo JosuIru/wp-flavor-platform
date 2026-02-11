@@ -30,7 +30,7 @@ $espacios = ['Salon de Actos', 'Sala de Reuniones A', 'Sala de Reuniones B', 'Au
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
-                Reservas
+                <?php echo esc_html__('Reservas', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
         </div>
@@ -38,7 +38,7 @@ $espacios = ['Salon de Actos', 'Sala de Reuniones A', 'Sala de Reuniones B', 'Au
         <!-- Selector de espacio y controles -->
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
             <div class="flex items-center gap-4">
-                <label class="text-sm font-medium text-gray-700">Espacio:</label>
+                <label class="text-sm font-medium text-gray-700"><?php echo esc_html__('Espacio:', 'flavor-chat-ia'); ?></label>
                 <select class="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-white">
                     <?php foreach ($espacios as $espacio): ?>
                         <option <?php echo $espacio === $espacio_seleccionado ? 'selected' : ''; ?>><?php echo esc_html($espacio); ?></option>
@@ -51,7 +51,7 @@ $espacios = ['Salon de Actos', 'Sala de Reuniones A', 'Sala de Reuniones B', 'Au
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                 </button>
-                <span class="px-4 py-2 font-semibold text-gray-900">Febrero 2024</span>
+                <span class="px-4 py-2 font-semibold text-gray-900"><?php echo esc_html__('Febrero 2024', 'flavor-chat-ia'); ?></span>
                 <button class="p-2 rounded-lg bg-gray-100 hover:bg-rose-100 text-gray-600 hover:text-rose-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -64,15 +64,15 @@ $espacios = ['Salon de Actos', 'Sala de Reuniones A', 'Sala de Reuniones B', 'Au
         <div class="flex items-center justify-center gap-6 mb-6">
             <div class="flex items-center gap-2">
                 <span class="w-4 h-4 rounded bg-green-100 border border-green-300"></span>
-                <span class="text-sm text-gray-600">Disponible</span>
+                <span class="text-sm text-gray-600"><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="flex items-center gap-2">
                 <span class="w-4 h-4 rounded bg-rose-200 border border-rose-300"></span>
-                <span class="text-sm text-gray-600">Reservado</span>
+                <span class="text-sm text-gray-600"><?php echo esc_html__('Reservado', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="flex items-center gap-2">
                 <span class="w-4 h-4 rounded bg-gray-200 border border-gray-300"></span>
-                <span class="text-sm text-gray-600">No disponible</span>
+                <span class="text-sm text-gray-600"><?php echo esc_html__('No disponible', 'flavor-chat-ia'); ?></span>
             </div>
         </div>
 
@@ -82,7 +82,7 @@ $espacios = ['Salon de Actos', 'Sala de Reuniones A', 'Sala de Reuniones B', 'Au
                 <table class="w-full min-w-[800px]">
                     <thead>
                         <tr class="bg-gray-50">
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600 border-b border-r border-gray-200">Hora</th>
+                            <th class="p-4 text-left text-sm font-semibold text-gray-600 border-b border-r border-gray-200"><?php echo esc_html__('Hora', 'flavor-chat-ia'); ?></th>
                             <?php foreach ($dias as $dia): ?>
                                 <th class="p-4 text-center text-sm font-semibold text-gray-900 border-b border-r border-gray-200 last:border-r-0">
                                     <?php echo esc_html($dia); ?>
@@ -108,7 +108,7 @@ $espacios = ['Salon de Actos', 'Sala de Reuniones A', 'Sala de Reuniones B', 'Au
                                             </div>
                                         <?php else: ?>
                                             <button class="w-full p-2 rounded-lg bg-green-50 border border-green-200 hover:bg-green-100 transition-colors group">
-                                                <span class="text-xs text-green-600 group-hover:font-medium">Disponible</span>
+                                                <span class="text-xs text-green-600 group-hover:font-medium"><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></span>
                                             </button>
                                         <?php endif; ?>
                                     </td>
@@ -125,13 +125,13 @@ $espacios = ['Salon de Actos', 'Sala de Reuniones A', 'Sala de Reuniones B', 'Au
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 mb-1"><?php echo esc_html($espacio_seleccionado); ?></h3>
-                    <p class="text-sm text-gray-600">Capacidad: 100 personas · Precio: 50€/hora · Equipamiento: Proyector, Microfono, WiFi</p>
+                    <p class="text-sm text-gray-600"><?php echo esc_html__('Capacidad: 100 personas · Precio: 50€/hora · Equipamiento: Proyector, Microfono, WiFi', 'flavor-chat-ia'); ?></p>
                 </div>
                 <a href="#nueva-reserva" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-105" style="background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>
-                    Nueva Reserva
+                    <?php echo esc_html__('Nueva Reserva', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </div>

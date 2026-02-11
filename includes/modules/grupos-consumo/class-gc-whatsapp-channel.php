@@ -136,7 +136,7 @@ class Flavor_GC_WhatsApp_Channel {
      */
     public function enviar($evento, $destinatarios, $datos) {
         if (!$this->esta_configurado()) {
-            return ['error' => 'WhatsApp no está configurado'];
+            return ['error' => __('WhatsApp no está configurado', 'flavor-chat-ia')];
         }
 
         $resultados = [
@@ -235,7 +235,7 @@ class Flavor_GC_WhatsApp_Channel {
      */
     private function enviar_texto($telefono, $mensaje) {
         if (empty($mensaje)) {
-            return ['success' => false, 'error' => 'Mensaje vacío'];
+            return ['success' => false, 'error' => __('Mensaje vacío', 'flavor-chat-ia')];
         }
 
         $telefono_formateado = $this->formatear_telefono($telefono);
@@ -558,7 +558,7 @@ class Flavor_GC_WhatsApp_Channel {
         if (!$this->esta_configurado()) {
             return [
                 'configurado' => false,
-                'mensaje' => 'WhatsApp no está configurado',
+                'mensaje' => __('WhatsApp no está configurado', 'flavor-chat-ia'),
             ];
         }
 
@@ -575,7 +575,7 @@ class Flavor_GC_WhatsApp_Channel {
             return [
                 'configurado' => true,
                 'conectado' => false,
-                'mensaje' => 'Error de conexión: ' . $response->get_error_message(),
+                'mensaje' => __('Error de conexión: ', 'flavor-chat-ia') . $response->get_error_message(),
             ];
         }
 
@@ -585,7 +585,7 @@ class Flavor_GC_WhatsApp_Channel {
             return [
                 'configurado' => true,
                 'conectado' => false,
-                'mensaje' => 'Error de autenticación',
+                'mensaje' => __('Error de autenticación', 'flavor-chat-ia'),
             ];
         }
 
@@ -596,7 +596,7 @@ class Flavor_GC_WhatsApp_Channel {
             'conectado' => true,
             'phone_number' => $body['display_phone_number'] ?? '',
             'quality_rating' => $body['quality_rating'] ?? '',
-            'mensaje' => 'Conectado correctamente',
+            'mensaje' => __('Conectado correctamente', 'flavor-chat-ia'),
         ];
     }
 
@@ -608,12 +608,12 @@ class Flavor_GC_WhatsApp_Channel {
             [
                 'methods' => 'GET',
                 'callback' => [$this, 'webhook_verificacion'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ],
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'webhook_recepcion'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ],
         ]);
     }
@@ -643,5 +643,11 @@ class Flavor_GC_WhatsApp_Channel {
         $payload = $request->get_json_params();
         $resultado = $this->procesar_webhook($payload);
         return new WP_REST_Response($resultado, 200);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

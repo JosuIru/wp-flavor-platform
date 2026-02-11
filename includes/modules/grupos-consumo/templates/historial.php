@@ -34,10 +34,10 @@ $filtros = $args['filtros'] ?? [];
                     <label for="gc-filtro-estado"><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
                     <select id="gc-filtro-estado" name="estado">
                         <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="pendiente" <?php selected($filtros['estado'] ?? '', 'pendiente'); ?>><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="pagado" <?php selected($filtros['estado'] ?? '', 'pagado'); ?>><?php _e('Pagado', 'flavor-chat-ia'); ?></option>
-                        <option value="recogido" <?php selected($filtros['estado'] ?? '', 'recogido'); ?>><?php _e('Recogido', 'flavor-chat-ia'); ?></option>
-                        <option value="cancelado" <?php selected($filtros['estado'] ?? '', 'cancelado'); ?>><?php _e('Cancelado', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'] ?? '', 'pendiente'); ?>><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pagado', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'] ?? '', 'pagado'); ?>><?php _e('Pagado', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('recogido', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'] ?? '', 'recogido'); ?>><?php _e('Recogido', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'] ?? '', 'cancelado'); ?>><?php _e('Cancelado', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -45,9 +45,9 @@ $filtros = $args['filtros'] ?? [];
                     <label for="gc-filtro-fecha"><?php _e('Período:', 'flavor-chat-ia'); ?></label>
                     <select id="gc-filtro-fecha" name="periodo">
                         <option value=""><?php _e('Todo el tiempo', 'flavor-chat-ia'); ?></option>
-                        <option value="mes" <?php selected($filtros['periodo'] ?? '', 'mes'); ?>><?php _e('Último mes', 'flavor-chat-ia'); ?></option>
-                        <option value="trimestre" <?php selected($filtros['periodo'] ?? '', 'trimestre'); ?>><?php _e('Último trimestre', 'flavor-chat-ia'); ?></option>
-                        <option value="ano" <?php selected($filtros['periodo'] ?? '', 'ano'); ?>><?php _e('Último año', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('mes', 'flavor-chat-ia'); ?>" <?php selected($filtros['periodo'] ?? '', 'mes'); ?>><?php _e('Último mes', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('trimestre', 'flavor-chat-ia'); ?>" <?php selected($filtros['periodo'] ?? '', 'trimestre'); ?>><?php _e('Último trimestre', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('ano', 'flavor-chat-ia'); ?>" <?php selected($filtros['periodo'] ?? '', 'ano'); ?>><?php _e('Último año', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -187,7 +187,7 @@ $filtros = $args['filtros'] ?? [];
     <!-- Modal de detalle de pedido -->
     <div class="gc-modal gc-modal-pedido" id="gc-modal-pedido" style="display: none;">
         <div class="gc-modal-content gc-modal-lg">
-            <button type="button" class="gc-modal-close">&times;</button>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
             <div class="gc-modal-body">
                 <div class="gc-modal-loading">
                     <span class="gc-spinner"></span>

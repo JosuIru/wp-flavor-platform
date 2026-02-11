@@ -143,14 +143,14 @@ $accesos_rapidos = [
                 <span class="dashicons dashicons-email-alt"></span>
                 <div>
                     <strong><?php esc_html_e('Correo electrónico', 'flavor-chat-ia'); ?></strong>
-                    <span>atencion@ayuntamiento.es</span>
+                    <span><?php echo esc_html__('atencion@ayuntamiento.es', 'flavor-chat-ia'); ?></span>
                 </div>
             </div>
             <div class="flavor-contacto-item">
                 <span class="dashicons dashicons-clock"></span>
                 <div>
                     <strong><?php esc_html_e('Horario de atención', 'flavor-chat-ia'); ?></strong>
-                    <span>L-V 9:00 - 14:00</span>
+                    <span><?php echo esc_html__('L-V 9:00 - 14:00', 'flavor-chat-ia'); ?></span>
                 </div>
             </div>
         </div>

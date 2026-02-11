@@ -14,7 +14,7 @@ $relacionados = $relacionados ?? [];
 <div class="flavor-frontend flavor-ayuntamiento-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/ayuntamiento/')); ?>" class="hover:text-blue-600 transition-colors">Ayuntamiento</a>
+        <a href="<?php echo esc_url(home_url('/ayuntamiento/')); ?>" class="hover:text-blue-600 transition-colors"><?php echo esc_html__('Ayuntamiento', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <span class="text-gray-700"><?php echo esc_html($item['titulo'] ?? 'Detalle'); ?></span>
     </nav>
@@ -57,7 +57,7 @@ $relacionados = $relacionados ?? [];
             <!-- Requisitos -->
             <?php if (!empty($item['requisitos'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📋 Requisitos</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📋 Requisitos', 'flavor-chat-ia'); ?></h2>
                 <ul class="space-y-2">
                     <?php foreach ($item['requisitos'] as $req): ?>
                     <li class="flex items-start gap-2">
@@ -72,7 +72,7 @@ $relacionados = $relacionados ?? [];
             <!-- Pasos -->
             <?php if (!empty($item['pasos'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">🔢 Pasos a seguir</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('🔢 Pasos a seguir', 'flavor-chat-ia'); ?></h2>
                 <ol class="space-y-4">
                     <?php foreach ($item['pasos'] as $i => $paso): ?>
                     <li class="flex items-start gap-4">
@@ -92,7 +92,7 @@ $relacionados = $relacionados ?? [];
             <!-- Documentos adjuntos -->
             <?php if (!empty($documentos)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📎 Documentos</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📎 Documentos', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-3">
                     <?php foreach ($documentos as $doc): ?>
                     <a href="<?php echo esc_url($doc['url']); ?>"
@@ -118,38 +118,38 @@ $relacionados = $relacionados ?? [];
             <?php if ($tipo === 'tramite'): ?>
             <!-- Acciones trámite -->
             <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold mb-4">Iniciar trámite</h3>
+                <h3 class="font-semibold mb-4"><?php echo esc_html__('Iniciar trámite', 'flavor-chat-ia'); ?></h3>
                 <?php if (!empty($item['tramite_online'])): ?>
                 <a href="<?php echo esc_url($item['url_tramite']); ?>"
                    class="block w-full bg-white text-blue-700 py-3 px-4 rounded-xl font-semibold text-center hover:bg-blue-50 transition-colors mb-3">
-                    💻 Tramitar online
+                    <?php echo esc_html__('💻 Tramitar online', 'flavor-chat-ia'); ?>
                 </a>
                 <?php endif; ?>
                 <a href="<?php echo esc_url(home_url('/ayuntamiento/cita-previa/')); ?>"
                    class="block w-full bg-blue-500 text-white py-3 px-4 rounded-xl font-semibold text-center hover:bg-blue-400 transition-colors">
-                    📅 Pedir cita presencial
+                    <?php echo esc_html__('📅 Pedir cita presencial', 'flavor-chat-ia'); ?>
                 </a>
             </div>
 
             <!-- Info trámite -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">ℹ️ Información</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('ℹ️ Información', 'flavor-chat-ia'); ?></h3>
                 <dl class="space-y-3 text-sm">
                     <?php if (!empty($item['plazo'])): ?>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Plazo resolución</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Plazo resolución', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800 font-medium"><?php echo esc_html($item['plazo']); ?></dd>
                     </div>
                     <?php endif; ?>
                     <?php if (!empty($item['coste'])): ?>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Coste</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Coste', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800 font-medium"><?php echo esc_html($item['coste']); ?></dd>
                     </div>
                     <?php endif; ?>
                     <?php if (!empty($item['departamento'])): ?>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Departamento</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Departamento', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800 font-medium"><?php echo esc_html($item['departamento']); ?></dd>
                     </div>
                     <?php endif; ?>
@@ -159,13 +159,13 @@ $relacionados = $relacionados ?? [];
 
             <!-- Contacto -->
             <div class="bg-blue-50 rounded-2xl p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">¿Necesitas ayuda?</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('¿Necesitas ayuda?', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3 text-sm">
                     <a href="tel:900000000" class="flex items-center gap-2 text-blue-600 hover:underline">
-                        📞 Atención ciudadana
+                        <?php echo esc_html__('📞 Atención ciudadana', 'flavor-chat-ia'); ?>
                     </a>
                     <a href="<?php echo esc_url(home_url('/ayuntamiento/contacto/')); ?>" class="flex items-center gap-2 text-blue-600 hover:underline">
-                        ✉️ Enviar consulta
+                        <?php echo esc_html__('✉️ Enviar consulta', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
@@ -173,7 +173,7 @@ $relacionados = $relacionados ?? [];
             <!-- Relacionados -->
             <?php if (!empty($relacionados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Relacionados</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Relacionados', 'flavor-chat-ia'); ?></h3>
                 <ul class="space-y-3">
                     <?php foreach ($relacionados as $rel): ?>
                     <li>

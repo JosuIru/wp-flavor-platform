@@ -62,7 +62,7 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-groups"></span>
-        Gestión de Suscriptores
+        <?php echo esc_html__('Gestión de Suscriptores', 'flavor-chat-ia'); ?>
     </h1>
 
     <!-- Estadísticas rápidas -->
@@ -71,7 +71,7 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Total Suscriptores</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Suscriptores', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #2271b1;"><?php echo number_format($total_suscriptores); ?></h2>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 48px; color: #2271b1; opacity: 0.3;"></span>
@@ -81,7 +81,7 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Con Notificaciones</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Con Notificaciones', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #00a32a;"><?php echo number_format($con_notificaciones); ?></h2>
                     <p style="margin: 0; color: #666; font-size: 12px;">
                         <?php echo $total_suscriptores > 0 ? round(($con_notificaciones / $total_suscriptores) * 100, 1) : 0; ?>%
@@ -94,7 +94,7 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Nuevos (30 días)</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Nuevos (30 días)', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #8c49d8;"><?php echo number_format($nuevos_ultimos_30_dias); ?></h2>
                     <p style="margin: 0; color: #666; font-size: 12px;">
                         <?php echo $total_suscriptores > 0 ? round(($nuevos_ultimos_30_dias / $total_suscriptores) * 100, 1) : 0; ?>%
@@ -112,9 +112,9 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
             <div style="flex: 1; min-width: 250px;">
-                <label for="podcast_id" style="display: block; margin-bottom: 5px; font-weight: 600;">Filtrar por Podcast:</label>
+                <label for="podcast_id" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Filtrar por Podcast:', 'flavor-chat-ia'); ?></label>
                 <select name="podcast_id" id="podcast_id" class="regular-text" style="width: 100%;">
-                    <option value="0">Todos los podcasts</option>
+                    <option value="0"><?php echo esc_html__('Todos los podcasts', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($podcasts as $podcast): ?>
                         <option value="<?php echo $podcast->id; ?>" <?php selected($podcast_seleccionado, $podcast->id); ?>>
                             <?php echo esc_html($podcast->titulo); ?>
@@ -124,21 +124,21 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
             </div>
 
             <button type="submit" class="button button-primary">
-                <span class="dashicons dashicons-filter"></span> Filtrar
+                <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
             </button>
 
             <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button">
-                <span class="dashicons dashicons-no"></span> Limpiar
+                <span class="dashicons dashicons-no"></span> <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
             </a>
 
             <div style="flex: 1;"></div>
 
             <button type="button" class="button button-primary" onclick="enviarNotificacion()">
-                <span class="dashicons dashicons-email"></span> Enviar Notificación
+                <span class="dashicons dashicons-email"></span> <?php echo esc_html__('Enviar Notificación', 'flavor-chat-ia'); ?>
             </button>
 
             <button type="button" class="button" onclick="exportarSuscriptores()">
-                <span class="dashicons dashicons-download"></span> Exportar CSV
+                <span class="dashicons dashicons-download"></span> <?php echo esc_html__('Exportar CSV', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>
@@ -152,13 +152,13 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
                     <th style="width: 50px;">
                         <input type="checkbox" id="seleccionar-todos" onclick="seleccionarTodos(this)">
                     </th>
-                    <th style="width: 60px;">ID</th>
-                    <th>Usuario</th>
-                    <th>Email</th>
-                    <th>Podcast</th>
-                    <th style="width: 150px;">Notificaciones</th>
-                    <th style="width: 150px;">Fecha Suscripción</th>
-                    <th style="width: 120px;">Acciones</th>
+                    <th style="width: 60px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Podcast', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Notificaciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Fecha Suscripción', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -192,12 +192,12 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
                                 <?php if ($suscriptor->notificaciones_activas): ?>
                                     <span style="color: #00a32a;">
                                         <span class="dashicons dashicons-bell"></span>
-                                        Activas
+                                        <?php echo esc_html__('Activas', 'flavor-chat-ia'); ?>
                                     </span>
                                 <?php else: ?>
                                     <span style="color: #999;">
                                         <span class="dashicons dashicons-bell" style="opacity: 0.3;"></span>
-                                        Desactivadas
+                                        <?php echo esc_html__('Desactivadas', 'flavor-chat-ia'); ?>
                                     </span>
                                 <?php endif; ?>
                             </td>
@@ -205,15 +205,15 @@ $nuevos_ultimos_30_dias = count($suscriptores_recientes);
                                 <?php echo date_i18n('d/m/Y H:i', strtotime($suscriptor->fecha_suscripcion)); ?>
                                 <?php if (strtotime($suscriptor->fecha_suscripcion) > strtotime('-7 days')): ?>
                                     <span style="display: inline-block; padding: 2px 6px; background: #00a32a; color: #fff; border-radius: 3px; font-size: 10px; margin-left: 5px;">
-                                        NUEVO
+                                        <?php echo esc_html__('NUEVO', 'flavor-chat-ia'); ?>
                                     </span>
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <button class="button button-small" onclick="toggleNotificaciones(<?php echo $suscriptor->id; ?>, <?php echo $suscriptor->notificaciones_activas ? 0 : 1; ?>)" title="Cambiar notificaciones">
+                                <button class="button button-small" onclick="toggleNotificaciones(<?php echo $suscriptor->id; ?>, <?php echo $suscriptor->notificaciones_activas ? 0 : 1; ?>)" title="<?php echo esc_attr__('Cambiar notificaciones', 'flavor-chat-ia'); ?>">
                                     <span class="dashicons dashicons-bell"></span>
                                 </button>
-                                <button class="button button-small button-link-delete" onclick="eliminarSuscripcion(<?php echo $suscriptor->id; ?>)" title="Eliminar suscripción">
+                                <button class="button button-small button-link-delete" onclick="eliminarSuscripcion(<?php echo $suscriptor->id; ?>)" title="<?php echo esc_attr__('Eliminar suscripción', 'flavor-chat-ia'); ?>">
                                     <span class="dashicons dashicons-trash"></span>
                                 </button>
                             </td>

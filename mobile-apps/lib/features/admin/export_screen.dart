@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -21,6 +22,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   DateTimeRange? _dateRange;
   bool _isLoading = false;
   String? _lastExportPath;
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -39,10 +41,10 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
       initialDateRange: _dateRange,
       firstDate: DateTime.now().subtract(const Duration(days: 365 * 2)),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      helpText: 'Selecciona el rango de fechas',
-      cancelText: 'Cancelar',
-      confirmText: 'Aceptar',
-      saveText: 'Guardar',
+      helpText: i18n.exportSelectDateRangeHelp,
+      cancelText: i18n.commonCancel,
+      confirmText: i18n.commonAccept,
+      saveText: i18n.commonSave,
     );
 
     if (range != null) {
@@ -55,7 +57,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   Future<void> _viewData() async {
     if (_dateRange == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona un rango de fechas')),
+        SnackBar(content: Text(i18n.exportSelectDateRange)),
       );
       return;
     }
@@ -85,7 +87,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
       if (data.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No hay datos para mostrar')),
+          SnackBar(content: Text(i18n.exportNoDataToShow)),
         );
         return;
       }
@@ -106,7 +108,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.error ?? 'Error al obtener datos')),
+        SnackBar(content: Text(response.error ?? i18n.exportErrorFetchingData)),
       );
     }
   }
@@ -114,7 +116,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   Future<void> _exportData() async {
     if (_dateRange == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona un rango de fechas')),
+        SnackBar(content: Text(i18n.exportSelectDateRange)),
       );
       return;
     }
@@ -154,19 +156,19 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         } catch (e) {
           setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al guardar archivo: $e')),
+            SnackBar(content: Text(i18n.exportFileSaveError(e.toString()))),
           );
         }
       } else {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No hay datos para exportar')),
+          SnackBar(content: Text(i18n.exportNoDataToExport)),
         );
       }
     } else {
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.error ?? 'Error al exportar')),
+        SnackBar(content: Text(response.error ?? i18n.exportErrorExporting)),
       );
     }
   }
@@ -189,7 +191,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Exportación completada',
+              i18n.exportCompletedTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -209,11 +211,11 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   Navigator.pop(context);
                   Share.shareXFiles(
                     [XFile(filePath)],
-                    subject: 'Exportación $filename',
+                    subject: i18n.exportShareSubject(filename),
                   );
                 },
                 icon: const Icon(Icons.share),
-                label: const Text('Compartir archivo'),
+                label: Text(i18n.exportShareFile),
               ),
             ),
             const SizedBox(height: 12),
@@ -221,7 +223,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cerrar'),
+                child: Text(i18n.commonClose),
               ),
             ),
           ],
@@ -245,7 +247,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ver y exportar resúmenes'),
+        title: Text(i18n.exportTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -265,7 +267,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Visualiza o exporta los datos de reservas, clientes o ingresos.',
+                        i18n.exportDescription,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -278,7 +280,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
             // Tipo de exportacion
             Text(
-              'Tipo de datos',
+              i18n.exportDataTypeTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -301,7 +303,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             if (_selectedType == 'reservations') ...[
               const SizedBox(height: 24),
               Text(
-                'Filtrar por tipo de ticket',
+                i18n.exportFilterTicketTypeTitle,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -330,7 +332,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                       children: [
                         Icon(Icons.warning, color: colorScheme.error),
                         const SizedBox(width: 12),
-                        const Text('Error al cargar tipos de ticket'),
+                        Text(i18n.exportErrorLoadingTicketTypes),
                       ],
                     ),
                   ),
@@ -342,7 +344,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
             // Rango de fechas
             Text(
-              'Rango de fechas',
+              i18n.exportDateRangeTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -368,12 +370,12 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                             Text(
                               _dateRange != null
                                   ? '${_formatDisplayDate(_dateRange!.start)} - ${_formatDisplayDate(_dateRange!.end)}'
-                                  : 'Seleccionar fechas',
+                                  : i18n.exportSelectDates,
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             if (_dateRange != null)
                               Text(
-                                '${_dateRange!.duration.inDays + 1} días',
+                                i18n.exportDaysCount(_dateRange!.duration.inDays + 1),
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: colorScheme.onSurface.withOpacity(0.7),
                                     ),
@@ -395,7 +397,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
             // Atajos de rango
             Text(
-              'Rangos rápidos',
+              i18n.exportQuickRangesTitle,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: colorScheme.onSurface.withOpacity(0.7),
                   ),
@@ -406,7 +408,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
               runSpacing: 8,
               children: [
                 _QuickRangeChip(
-                  label: 'Hoy',
+                  label: i18n.exportQuickToday,
                   onTap: () {
                     final now = DateTime.now();
                     setState(() {
@@ -415,7 +417,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   },
                 ),
                 _QuickRangeChip(
-                  label: 'Esta semana',
+                  label: i18n.exportQuickWeek,
                   onTap: () {
                     final now = DateTime.now();
                     final start = now.subtract(Duration(days: now.weekday - 1));
@@ -425,7 +427,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   },
                 ),
                 _QuickRangeChip(
-                  label: 'Este mes',
+                  label: i18n.exportQuickMonth,
                   onTap: () {
                     final now = DateTime.now();
                     final start = DateTime(now.year, now.month, 1);
@@ -435,7 +437,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   },
                 ),
                 _QuickRangeChip(
-                  label: 'Últimos 30 días',
+                  label: i18n.exportQuickLast30,
                   onTap: () {
                     final now = DateTime.now();
                     final start = now.subtract(const Duration(days: 30));
@@ -445,7 +447,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   },
                 ),
                 _QuickRangeChip(
-                  label: 'Este año',
+                  label: i18n.exportQuickYear,
                   onTap: () {
                     final now = DateTime.now();
                     final start = DateTime(now.year, 1, 1);
@@ -466,7 +468,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   child: OutlinedButton.icon(
                     onPressed: _isLoading ? null : _viewData,
                     icon: const Icon(Icons.visibility),
-                    label: const Text('Ver datos'),
+                    label: Text(i18n.exportViewData),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -483,7 +485,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                             ),
                           )
                         : const Icon(Icons.file_download),
-                    label: Text(_isLoading ? 'Cargando...' : 'Exportar CSV'),
+                    label: Text(_isLoading ? i18n.commonLoading : i18n.exportCsv),
                   ),
                 ),
               ],
@@ -517,8 +519,8 @@ class _TicketTypeFilter extends StatelessWidget {
           children: [
             // Opción "Todos"
             RadioListTile<String?>(
-              title: const Text('Todos los tickets'),
-              subtitle: const Text('Sin filtro de tipo'),
+              title: Text(AppLocalizations.of(context)!.exportAllTickets),
+              subtitle: Text(AppLocalizations.of(context)!.exportNoTicketFilter),
               value: null,
               groupValue: selectedTicketType,
               onChanged: onTicketTypeChanged,
@@ -564,11 +566,11 @@ class _DataViewScreen extends StatelessWidget {
   String get _typeLabel {
     switch (type) {
       case 'reservations':
-        return 'Reservas';
+        return 'reservations';
       case 'customers':
-        return 'Clientes';
+        return 'customers';
       case 'revenue':
-        return 'Ingresos';
+        return 'revenue';
       default:
         return type;
     }
@@ -576,15 +578,22 @@ class _DataViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
+    final typeLabel = switch (_typeLabel) {
+      'reservations' => i18n.exportTypeReservations,
+      'customers' => i18n.exportTypeCustomers,
+      'revenue' => i18n.exportTypeRevenue,
+      _ => _typeLabel,
+    };
     return Scaffold(
       appBar: AppBar(
-        title: Text(_typeLabel),
+        title: Text(typeLabel),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: Center(
               child: Text(
-                '$total registros',
+                i18n.exportTotalRecords(total),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
@@ -614,7 +623,7 @@ class _DataViewScreen extends StatelessWidget {
                     children: [
                       const Icon(Icons.confirmation_number, size: 16),
                       const SizedBox(width: 8),
-                      Text('Ticket: $ticketType'),
+                      Text(i18n.exportTicketLabel(ticketType!)),
                     ],
                   ),
                 ],
@@ -635,7 +644,7 @@ class _DataViewScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'No hay datos',
+                          i18n.exportNoData,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
@@ -736,24 +745,25 @@ class _ExportTypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final types = [
       (
         type: 'reservations',
         icon: Icons.calendar_today,
-        label: 'Reservas',
-        description: 'Todas las reservas con datos del cliente',
+        label: i18n.exportTypeReservations,
+        description: i18n.exportTypeReservationsDesc,
       ),
       (
         type: 'customers',
         icon: Icons.people,
-        label: 'Clientes',
-        description: 'Lista de clientes con historial',
+        label: i18n.exportTypeCustomers,
+        description: i18n.exportTypeCustomersDesc,
       ),
       (
         type: 'revenue',
         icon: Icons.euro,
-        label: 'Ingresos',
-        description: 'Resumen de ingresos por día',
+        label: i18n.exportTypeRevenue,
+        description: i18n.exportTypeRevenueDesc,
       ),
     ];
 

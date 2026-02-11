@@ -46,6 +46,14 @@
             // Exportar para móvil
             $(document).on('click', '#flavor-export-mobile', this.handleMobileExport.bind(this));
 
+            // Sponsors footer
+            $(document).on('change', '.flavor-footer-sponsors-select', this.handleFooterSponsorsChange.bind(this));
+            $(document).on('click', '.flavor-add-sponsor', this.handleAddSponsor.bind(this));
+            $(document).on('click', '.flavor-remove-sponsor', this.handleRemoveSponsor.bind(this));
+
+            // Menu settings
+            $(document).on('change', '.flavor-menu-settings-select', this.handleMenuSettingsChange.bind(this));
+
             // Keyboard events
             $(document).on('keydown', this.handleKeyboard.bind(this));
         },
@@ -331,6 +339,59 @@
                     $submitBtn.prop('disabled', false).html(originalText);
                 }
             });
+        },
+
+        /**
+         * Cambiar footer a configurar en sponsors
+         */
+        handleFooterSponsorsChange(event) {
+            const footerId = $(event.currentTarget).val();
+            $('.flavor-footer-sponsors').hide();
+            $(`.flavor-footer-sponsors[data-footer="${footerId}"]`).show();
+        },
+
+        /**
+         * Cambiar menú a configurar
+         */
+        handleMenuSettingsChange(event) {
+            const menuId = $(event.currentTarget).val();
+            $('.flavor-menu-settings').hide();
+            $(`.flavor-menu-settings[data-menu="${menuId}"]`).show();
+        },
+
+        /**
+         * Añadir sponsor
+         */
+        handleAddSponsor(event) {
+            event.preventDefault();
+            const $button = $(event.currentTarget);
+            const footerId = $button.data('footer');
+            const $container = $(`.flavor-footer-sponsors[data-footer="${footerId}"]`);
+            const $list = $container.find('.flavor-sponsors-list');
+            let index = parseInt($list.attr('data-next-index'), 10);
+            if (Number.isNaN(index)) {
+                index = 0;
+            }
+
+            const row = `
+                <div class="flavor-sponsor-row">
+                    <input type="text" name="footer_sponsors[${footerId}][${index}][name]" placeholder="${flavorLayoutAdmin.strings.sponsor_name || 'Nombre'}">
+                    <input type="url" name="footer_sponsors[${footerId}][${index}][url]" placeholder="https://">
+                    <input type="url" name="footer_sponsors[${footerId}][${index}][logo]" placeholder="${flavorLayoutAdmin.strings.sponsor_logo || 'URL del logo'}">
+                    <button type="button" class="button flavor-remove-sponsor">${flavorLayoutAdmin.strings.remove || 'Eliminar'}</button>
+                </div>
+            `;
+
+            $list.append(row);
+            $list.attr('data-next-index', index + 1);
+        },
+
+        /**
+         * Eliminar sponsor
+         */
+        handleRemoveSponsor(event) {
+            event.preventDefault();
+            $(event.currentTarget).closest('.flavor-sponsor-row').remove();
         },
 
         /**

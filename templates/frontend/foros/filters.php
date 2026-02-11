@@ -12,16 +12,16 @@ $filtros_activos = $filtros_activos ?? [];
 
 <div class="flavor-filters foros bg-white rounded-2xl p-5 shadow-md">
     <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+        <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
         <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-indigo-600 hover:text-indigo-700">Limpiar</a>
+            <a href="?" class="text-sm text-indigo-600 hover:text-indigo-700"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
         <?php endif; ?>
     </div>
 
     <form method="get" class="space-y-6">
         <!-- Categoria -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Categoria</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $categorias_foro = [
@@ -49,31 +49,31 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Ordenar por -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Ordenar por</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?></h4>
             <select name="ordenar"
                     class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-indigo-500">
-                <option value="recientes" <?php echo ($filtros_activos['ordenar'] ?? '') === 'recientes' ? 'selected' : ''; ?>>Mas recientes</option>
-                <option value="populares" <?php echo ($filtros_activos['ordenar'] ?? '') === 'populares' ? 'selected' : ''; ?>>Mas populares</option>
-                <option value="sin_respuesta" <?php echo ($filtros_activos['ordenar'] ?? '') === 'sin_respuesta' ? 'selected' : ''; ?>>Sin respuesta</option>
+                <option value="<?php echo esc_attr__('recientes', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'recientes' ? 'selected' : ''; ?>><?php echo esc_html__('Mas recientes', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('populares', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'populares' ? 'selected' : ''; ?>><?php echo esc_html__('Mas populares', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('sin_respuesta', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'sin_respuesta' ? 'selected' : ''; ?>><?php echo esc_html__('Sin respuesta', 'flavor-chat-ia'); ?></option>
             </select>
         </div>
 
         <!-- Fecha -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Fecha</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></h4>
             <select name="fecha"
                     class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-indigo-500">
-                <option value="">Cualquier fecha</option>
-                <option value="hoy" <?php echo ($filtros_activos['fecha'] ?? '') === 'hoy' ? 'selected' : ''; ?>>Hoy</option>
-                <option value="semana" <?php echo ($filtros_activos['fecha'] ?? '') === 'semana' ? 'selected' : ''; ?>>Esta semana</option>
-                <option value="mes" <?php echo ($filtros_activos['fecha'] ?? '') === 'mes' ? 'selected' : ''; ?>>Este mes</option>
-                <option value="ano" <?php echo ($filtros_activos['fecha'] ?? '') === 'ano' ? 'selected' : ''; ?>>Este ano</option>
+                <option value=""><?php echo esc_html__('Cualquier fecha', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('hoy', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'hoy' ? 'selected' : ''; ?>><?php echo esc_html__('Hoy', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('semana', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'semana' ? 'selected' : ''; ?>><?php echo esc_html__('Esta semana', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('mes', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'mes' ? 'selected' : ''; ?>><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('ano', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'ano' ? 'selected' : ''; ?>><?php echo esc_html__('Este ano', 'flavor-chat-ia'); ?></option>
             </select>
         </div>
 
         <!-- Solo temas sin resolver -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Estado</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></h4>
             <label class="flex items-center gap-3 cursor-pointer group">
                 <input type="checkbox"
                        name="sin_resolver"
@@ -81,7 +81,7 @@ $filtros_activos = $filtros_activos ?? [];
                        <?php echo !empty($filtros_activos['sin_resolver']) ? 'checked' : ''; ?>
                        class="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                 <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition-colors">
-                    Solo temas sin resolver
+                    <?php echo esc_html__('Solo temas sin resolver', 'flavor-chat-ia'); ?>
                 </span>
             </label>
         </div>
@@ -90,7 +90,7 @@ $filtros_activos = $filtros_activos ?? [];
         <button type="submit"
                 class="w-full py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                 style="background: linear-gradient(135deg, #6366f1 0%, #9333ea 100%);">
-            Aplicar Filtros
+            <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
         </button>
     </form>
 </div>

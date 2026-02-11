@@ -326,14 +326,14 @@ class Flavor_App_Layouts_API {
         register_rest_route(self::API_NAMESPACE, '/layouts/schema', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_component_schema'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Plantillas disponibles
         register_rest_route(self::API_NAMESPACE, '/layouts/templates', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_templates'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'sector' => [
                     'type' => 'string',
@@ -346,35 +346,35 @@ class Flavor_App_Layouts_API {
         register_rest_route(self::API_NAMESPACE, '/layouts/templates/(?P<template_id>[a-z0-9_-]+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_template'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Layout de una landing publicada
         register_rest_route(self::API_NAMESPACE, '/layouts/landing/(?P<id>\d+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_landing_layout'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Layout por slug
         register_rest_route(self::API_NAMESPACE, '/layouts/landing/slug/(?P<slug>[a-z0-9-]+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_landing_by_slug'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Layouts de un módulo específico
         register_rest_route(self::API_NAMESPACE, '/layouts/module/(?P<module_id>[a-z0-9_-]+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_module_layouts'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Componentes disponibles
         register_rest_route(self::API_NAMESPACE, '/layouts/components', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_available_components'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'category' => [
                     'type' => 'string',
@@ -387,7 +387,7 @@ class Flavor_App_Layouts_API {
         register_rest_route(self::API_NAMESPACE, '/layouts/component-data/(?P<component_id>[a-z0-9_-]+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_component_data'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'context' => [
                     'type' => 'object',
@@ -1217,6 +1217,12 @@ class Flavor_App_Layouts_API {
         ];
 
         return apply_filters('flavor_app_generic_component_data', $data, $component_id, $context);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }
 

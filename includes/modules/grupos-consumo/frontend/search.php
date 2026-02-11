@@ -9,8 +9,8 @@ $busqueda = get_search_query();
 <div class="flavor-container py-8">
     <h1 class="text-4xl font-bold mb-6">Resultados: "<?php echo esc_html($busqueda); ?>"</h1>
     <form method="get" class="mb-8 max-w-2xl flex gap-2">
-        <input type="text" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="Buscar productos..." class="flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary" autofocus/>
-        <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark font-medium">Buscar</button>
+        <input type="text" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php echo esc_attr__('Buscar productos...', 'flavor-chat-ia'); ?>" class="flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary" autofocus/>
+        <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark font-medium"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></button>
     </form>
     <?php
     $query = new WP_Query(array('post_type' => 'grupo_consumo', 's' => $busqueda, 'posts_per_page' => 12));

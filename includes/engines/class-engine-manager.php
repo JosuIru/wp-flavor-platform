@@ -287,7 +287,7 @@ class Flavor_Engine_Manager {
         if (!$engine) {
             return [
                 'success' => false,
-                'error' => 'No hay motor de IA configurado',
+                'error' => __('No hay motor de IA configurado', 'flavor-chat-ia'),
                 'error_code' => 'no_engine',
             ];
         }
@@ -351,7 +351,7 @@ class Flavor_Engine_Manager {
         if (!$engine) {
             return [
                 'valid' => false,
-                'error' => 'Proveedor no encontrado',
+                'error' => __('Proveedor no encontrado', 'flavor-chat-ia'),
             ];
         }
 

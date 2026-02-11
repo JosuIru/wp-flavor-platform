@@ -22,17 +22,17 @@ $vendedores = $wpdb->get_results(
 ?>
 
 <div class="wrap">
-    <h1><span class="dashicons dashicons-groups"></span> Vendedores del Marketplace</h1>
+    <h1><span class="dashicons dashicons-groups"></span> <?php echo esc_html__('Vendedores del Marketplace', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
                 <th>#</th>
-                <th>Vendedor</th>
-                <th>Email</th>
-                <th style="text-align: center;">Total Anuncios</th>
-                <th>Acciones</th>
+                <th><?php echo esc_html__('Vendedor', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Total Anuncios', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -56,14 +56,14 @@ $vendedores = $wpdb->get_results(
                 <td>
                     <a href="<?php echo admin_url('edit.php?post_type=marketplace_item&author=' . $vendedor->ID); ?>"
                        class="button button-small">
-                        Ver Anuncios
+                        <?php echo esc_html__('Ver Anuncios', 'flavor-chat-ia'); ?>
                     </a>
                 </td>
             </tr>
             <?php endforeach; ?>
             <?php if (empty($vendedores)): ?>
             <tr>
-                <td colspan="5" style="text-align: center; padding: 40px;">No hay vendedores registrados</td>
+                <td colspan="5" style="text-align: center; padding: 40px;"><?php echo esc_html__('No hay vendedores registrados', 'flavor-chat-ia'); ?></td>
             </tr>
             <?php endif; ?>
         </tbody>

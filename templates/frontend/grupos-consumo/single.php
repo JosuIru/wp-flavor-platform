@@ -15,7 +15,7 @@ $es_miembro = $es_miembro ?? false;
 <div class="flavor-frontend flavor-grupos-consumo-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/grupos-consumo/')); ?>" class="hover:text-lime-600 transition-colors">Grupos de Consumo</a>
+        <a href="<?php echo esc_url(home_url('/grupos-consumo/')); ?>" class="hover:text-lime-600 transition-colors"><?php echo esc_html__('Grupos de Consumo', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <span class="text-gray-700"><?php echo esc_html($grupo['nombre'] ?? 'Grupo'); ?></span>
     </nav>
@@ -30,7 +30,7 @@ $es_miembro = $es_miembro ?? false;
                 <div class="flex items-center gap-3 mb-2">
                     <h1 class="text-3xl font-bold"><?php echo esc_html($grupo['nombre']); ?></h1>
                     <?php if ($grupo['verificado'] ?? false): ?>
-                    <span class="bg-white/20 px-3 py-1 rounded-full text-sm">✓ Verificado</span>
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-sm"><?php echo esc_html__('✓ Verificado', 'flavor-chat-ia'); ?></span>
                     <?php endif; ?>
                 </div>
                 <p class="text-lime-100 mb-4"><?php echo esc_html($grupo['descripcion']); ?></p>
@@ -42,14 +42,14 @@ $es_miembro = $es_miembro ?? false;
             </div>
             <div class="flex flex-col gap-2">
                 <?php if ($es_miembro): ?>
-                <span class="bg-white/20 px-4 py-2 rounded-xl text-center">✓ Eres miembro</span>
+                <span class="bg-white/20 px-4 py-2 rounded-xl text-center"><?php echo esc_html__('✓ Eres miembro', 'flavor-chat-ia'); ?></span>
                 <a href="#pedido" class="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all text-center">
-                    🛒 Hacer pedido
+                    <?php echo esc_html__('🛒 Hacer pedido', 'flavor-chat-ia'); ?>
                 </a>
                 <?php else: ?>
                 <button class="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all"
                         onclick="flavorGruposConsumo.unirse(<?php echo esc_attr($grupo['id']); ?>)">
-                    Unirme al grupo
+                    <?php echo esc_html__('Unirme al grupo', 'flavor-chat-ia'); ?>
                 </button>
                 <?php endif; ?>
             </div>
@@ -62,9 +62,9 @@ $es_miembro = $es_miembro ?? false;
             <!-- Próximo pedido -->
             <?php if (!empty($grupo['proximo_pedido'])): ?>
             <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
-                <h2 class="text-lg font-semibold text-yellow-800 mb-2">📦 Próximo pedido</h2>
+                <h2 class="text-lg font-semibold text-yellow-800 mb-2"><?php echo esc_html__('📦 Próximo pedido', 'flavor-chat-ia'); ?></h2>
                 <p class="text-yellow-700">
-                    Fecha límite: <strong><?php echo esc_html($grupo['proximo_pedido']['fecha_limite']); ?></strong>
+                    <?php echo esc_html__('Fecha límite:', 'flavor-chat-ia'); ?> <strong><?php echo esc_html($grupo['proximo_pedido']['fecha_limite']); ?></strong>
                 </p>
                 <p class="text-yellow-600 text-sm mt-1">
                     Recogida: <?php echo esc_html($grupo['proximo_pedido']['fecha_recogida']); ?>
@@ -76,7 +76,7 @@ $es_miembro = $es_miembro ?? false;
             <!-- Productores -->
             <?php if (!empty($productores)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">🌾 Nuestros productores</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('🌾 Nuestros productores', 'flavor-chat-ia'); ?></h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <?php foreach ($productores as $prod): ?>
                     <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
@@ -96,9 +96,9 @@ $es_miembro = $es_miembro ?? false;
 
             <!-- Productos disponibles -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" id="pedido">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">🥬 Productos disponibles</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('🥬 Productos disponibles', 'flavor-chat-ia'); ?></h2>
                 <?php if (empty($productos)): ?>
-                <p class="text-gray-500 text-center py-8">No hay productos disponibles en este momento.</p>
+                <p class="text-gray-500 text-center py-8"><?php echo esc_html__('No hay productos disponibles en este momento.', 'flavor-chat-ia'); ?></p>
                 <?php else: ?>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <?php foreach ($productos as $prod): ?>
@@ -115,7 +115,7 @@ $es_miembro = $es_miembro ?? false;
                         <?php if ($es_miembro): ?>
                         <button class="w-full mt-2 bg-lime-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-lime-600 transition-colors"
                                 onclick="flavorGruposConsumo.agregarProducto(<?php echo esc_attr($prod['id']); ?>)">
-                            + Añadir
+                            <?php echo esc_html__('+ Añadir', 'flavor-chat-ia'); ?>
                         </button>
                         <?php endif; ?>
                     </div>
@@ -126,14 +126,14 @@ $es_miembro = $es_miembro ?? false;
 
             <!-- Información del grupo -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">ℹ️ Sobre este grupo</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('ℹ️ Sobre este grupo', 'flavor-chat-ia'); ?></h2>
                 <div class="prose prose-lime max-w-none">
                     <?php echo wp_kses_post($grupo['descripcion_larga'] ?? $grupo['descripcion']); ?>
                 </div>
 
                 <?php if (!empty($grupo['normas'])): ?>
                 <div class="mt-6 p-4 bg-gray-50 rounded-xl">
-                    <h3 class="font-semibold text-gray-800 mb-2">📋 Normas del grupo</h3>
+                    <h3 class="font-semibold text-gray-800 mb-2"><?php echo esc_html__('📋 Normas del grupo', 'flavor-chat-ia'); ?></h3>
                     <ul class="text-sm text-gray-600 space-y-1">
                         <?php foreach ($grupo['normas'] as $norma): ?>
                         <li>• <?php echo esc_html($norma); ?></li>
@@ -148,26 +148,26 @@ $es_miembro = $es_miembro ?? false;
         <div class="space-y-6">
             <!-- Info rápida -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">📊 Información</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('📊 Información', 'flavor-chat-ia'); ?></h3>
                 <dl class="space-y-3 text-sm">
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Creado</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Creado', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800"><?php echo esc_html($grupo['fecha_creacion'] ?? ''); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Coordinador</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Coordinador', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800"><?php echo esc_html($grupo['coordinador'] ?? ''); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Día de pedido</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Día de pedido', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800"><?php echo esc_html($grupo['dia_pedido'] ?? 'Semanal'); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Punto de recogida</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Punto de recogida', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800"><?php echo esc_html($grupo['punto_recogida'] ?? ''); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Cuota mensual</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Cuota mensual', 'flavor-chat-ia'); ?></dt>
                         <dd class="text-gray-800 font-semibold"><?php echo $grupo['cuota'] > 0 ? esc_html($grupo['cuota']) . '€' : 'Gratuito'; ?></dd>
                     </div>
                 </dl>
@@ -194,7 +194,7 @@ $es_miembro = $es_miembro ?? false;
 
             <!-- Contacto -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">📬 Contacto</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('📬 Contacto', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php if (!empty($grupo['email'])): ?>
                     <a href="mailto:<?php echo esc_attr($grupo['email']); ?>" class="flex items-center gap-2 text-gray-600 hover:text-lime-600 transition-colors">
@@ -213,7 +213,7 @@ $es_miembro = $es_miembro ?? false;
             <?php if (!$es_miembro): ?>
             <button class="w-full bg-gradient-to-r from-lime-500 to-green-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-lime-600 hover:to-green-600 transition-all shadow-lg"
                     onclick="flavorGruposConsumo.unirse(<?php echo esc_attr($grupo['id']); ?>)">
-                🤝 Unirme a este grupo
+                <?php echo esc_html__('🤝 Unirme a este grupo', 'flavor-chat-ia'); ?>
             </button>
             <?php endif; ?>
         </div>

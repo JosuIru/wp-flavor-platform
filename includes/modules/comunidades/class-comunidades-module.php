@@ -83,6 +83,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
@@ -2168,5 +2169,27 @@ KNOWLEDGE;
                 'template' => 'comunidades/como-unirse',
             ],
         ];
+    }
+
+    /**
+     * Crea páginas frontend automáticamente
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('comunidades');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen
+        $pagina = get_page_by_path('comunidades');
+        if (!$pagina && !get_option('flavor_comunidades_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['comunidades']);
+            update_option('flavor_comunidades_pages_created', 1, false);
+        }
     }
 }

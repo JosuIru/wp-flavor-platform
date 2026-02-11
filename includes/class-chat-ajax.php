@@ -69,7 +69,7 @@ class Chat_IA_Ajax {
         check_ajax_referer('chat_ia_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'No autorizado']);
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         // Regenerar el token
@@ -77,7 +77,7 @@ class Chat_IA_Ajax {
         Chat_IA_Mobile_API::get_admin_site_secret(true);
 
         wp_send_json_success([
-            'message' => 'Token regenerado correctamente',
+            'message' => __('Token regenerado correctamente', 'flavor-chat-ia'),
             'qr_data' => Chat_IA_Mobile_API::get_admin_qr_data(),
         ]);
     }
@@ -87,7 +87,7 @@ class Chat_IA_Ajax {
      */
     public static function handle_debug_calendario() {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'No autorizado']);
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -359,8 +359,8 @@ class Chat_IA_Ajax {
         $assistant_name = $settings['assistant_name'] ?? __('Asistente Virtual', 'chat-ia-addon');
 
         $messages = [
-            'es' => "¡Hola! Soy {$assistant_name}. Estoy aquí para ayudarte a hacer tu reserva, responder tus preguntas o darte información sobre nuestras experiencias. ¿En qué puedo ayudarte?",
-            'eu' => "Kaixo! {$assistant_name} naiz. Hemen nago zure erreserba egiten laguntzeko, zure galderak erantzuteko edo gure esperientziei buruzko informazioa emateko. Zertan lagun dezaket?",
+            'es' => sprintf(__('¡Hola! Soy %s. Estoy aquí para ayudarte a hacer tu reserva, responder tus preguntas o darte información sobre nuestras experiencias. ¿En qué puedo ayudarte?', 'flavor-chat-ia'), $assistant_name),
+            'eu' => sprintf(__('Kaixo! %s naiz. Hemen nago zure erreserba egiten laguntzeko, zure galderak erantzuteko edo gure esperientziei buruzko informazioa emateko. Zertan lagun dezaket?', 'flavor-chat-ia'), $assistant_name),
         ];
 
         return $messages[$language] ?? $messages['es'];
@@ -372,27 +372,27 @@ class Chat_IA_Ajax {
     public static function handle_verify_api_key() {
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Acceso denegado']);
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         // Verificar nonce
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'chat_ia_admin_nonce')) {
-            wp_send_json_error(['error' => 'Nonce inválido']);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
         }
 
         $api_key = sanitize_text_field($_POST['api_key'] ?? '');
 
         if (empty($api_key)) {
-            wp_send_json_error(['error' => 'API key vacía']);
+            wp_send_json_error(['error' => __('API key vacía', 'flavor-chat-ia')]);
         }
 
         $engine = Chat_IA_Claude_Engine::get_instance();
         $valid = $engine->verify_api_key($api_key);
 
         if ($valid) {
-            wp_send_json_success(['message' => 'API key válida']);
+            wp_send_json_success(['message' => __('API key válida', 'flavor-chat-ia')]);
         } else {
-            wp_send_json_error(['error' => 'API key no válida']);
+            wp_send_json_error(['error' => __('API key no válida', 'flavor-chat-ia')]);
         }
     }
 
@@ -402,12 +402,12 @@ class Chat_IA_Ajax {
     public static function handle_get_stats() {
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Acceso denegado']);
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         // Verificar nonce
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'chat_ia_admin_nonce')) {
-            wp_send_json_error(['error' => 'Nonce inválido']);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
         }
 
         $periodo = sanitize_text_field($_POST['periodo'] ?? 'week');
@@ -456,12 +456,12 @@ class Chat_IA_Ajax {
     public static function handle_update_escalation() {
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Acceso denegado']);
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         // Verificar nonce
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'chat_ia_admin_nonce')) {
-            wp_send_json_error(['error' => 'Nonce inválido']);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
         }
 
         $ticket_id = intval($_POST['ticket_id'] ?? 0);
@@ -469,21 +469,21 @@ class Chat_IA_Ajax {
         $notes = sanitize_textarea_field($_POST['notes'] ?? '');
 
         if (!$ticket_id) {
-            wp_send_json_error(['error' => 'ID de ticket no válido']);
+            wp_send_json_error(['error' => __('ID de ticket no válido', 'flavor-chat-ia')]);
         }
 
         $allowed_statuses = ['pending', 'contacted', 'resolved'];
         if (!in_array($status, $allowed_statuses)) {
-            wp_send_json_error(['error' => 'Estado no válido']);
+            wp_send_json_error(['error' => __('Estado no válido', 'flavor-chat-ia')]);
         }
 
         $escalation = Chat_IA_Escalation::get_instance();
         $result = $escalation->actualizar_ticket($ticket_id, $status, $notes);
 
         if ($result) {
-            wp_send_json_success(['message' => 'Ticket actualizado']);
+            wp_send_json_success(['message' => __('Ticket actualizado', 'flavor-chat-ia')]);
         } else {
-            wp_send_json_error(['error' => 'Error al actualizar el ticket']);
+            wp_send_json_error(['error' => __('Error al actualizar el ticket', 'flavor-chat-ia')]);
         }
     }
 
@@ -496,12 +496,12 @@ class Chat_IA_Ajax {
     public static function handle_autoconfig() {
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'No tienes permisos suficientes']);
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         // Verificar nonce
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'chat_ia_admin_nonce')) {
-            wp_send_json_error(['error' => 'Nonce inválido']);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
         }
 
         // Parámetro para forzar regeneración (skip cache)
@@ -520,19 +520,19 @@ class Chat_IA_Ajax {
 
         // Verificar que hay un motor de IA configurado
         if (!class_exists('Chat_IA_Engine_Manager')) {
-            wp_send_json_error(['error' => 'Sistema de IA no disponible']);
+            wp_send_json_error(['error' => __('Sistema de IA no disponible', 'flavor-chat-ia')]);
         }
 
         $engine_manager = Chat_IA_Engine_Manager::get_instance();
         $active_engine = $engine_manager->get_active_engine();
 
         if (!$active_engine) {
-            wp_send_json_error(['error' => 'No hay proveedor de IA seleccionado. Ve a Proveedores IA y configura uno.']);
+            wp_send_json_error(['error' => __('No hay proveedor de IA seleccionado. Ve a Proveedores IA y configura uno.', 'flavor-chat-ia')]);
         }
 
         if (!$active_engine->is_configured()) {
             $engine_name = $active_engine->get_name();
-            wp_send_json_error(['error' => "El proveedor {$engine_name} no está configurado. Añade la API key en Proveedores IA."]);
+            wp_send_json_error(['error' => sprintf(__('El proveedor %s no está configurado. Añade la API key en Proveedores IA.', 'flavor-chat-ia'), $engine_name)]);
         }
 
         try {
@@ -540,7 +540,7 @@ class Chat_IA_Ajax {
             $site_content = self::get_site_content();
 
             if (empty($site_content)) {
-                wp_send_json_error(['error' => 'No se pudo obtener contenido del sitio']);
+                wp_send_json_error(['error' => __('No se pudo obtener contenido del sitio', 'flavor-chat-ia')]);
             }
 
             // Intentar análisis con reintento en caso de overload
@@ -567,7 +567,7 @@ class Chat_IA_Ajax {
             }
 
             if (!$result || !is_array($result)) {
-                wp_send_json_error(['error' => 'Error al analizar con IA - respuesta vacía o inválida']);
+                wp_send_json_error(['error' => __('Error al analizar con IA - respuesta vacía o inválida', 'flavor-chat-ia')]);
             }
 
             // Guardar en caché por 24 horas
@@ -842,19 +842,19 @@ IMPORTANTE:
         if (!$response['success']) {
             $error_msg = $response['error'] ?? 'Error desconocido de la API';
             error_log('Chat IA Autoconfig API Error: ' . $error_msg);
-            return ['error' => 'Error de la API: ' . $error_msg];
+            return ['error' => sprintf(__('Error de la API: %s', 'flavor-chat-ia'), $error_msg)];
         }
 
         $text = $response['response'] ?? '';
 
         if (empty($text)) {
             error_log('Chat IA Autoconfig: Empty response from API');
-            return ['error' => 'La IA no devolvió ninguna respuesta'];
+            return ['error' => __('La IA no devolvió ninguna respuesta', 'flavor-chat-ia')];
         }
 
         // Detectar si la respuesta contiene error de overload
         if (stripos($text, 'overload') !== false || stripos($text, 'rate limit') !== false) {
-            return ['error' => 'El servicio de IA está temporalmente sobrecargado. Espera unos segundos e inténtalo de nuevo.'];
+            return ['error' => __('El servicio de IA está temporalmente sobrecargado. Espera unos segundos e inténtalo de nuevo.', 'flavor-chat-ia')];
         }
 
         // Log para debug
@@ -866,7 +866,7 @@ IMPORTANTE:
         if (empty($json_text)) {
             error_log('Chat IA Autoconfig: Could not extract JSON from response');
             error_log('Chat IA Autoconfig: Raw text (first 1000 chars) - ' . substr($text, 0, 1000));
-            return ['error' => 'No se pudo extraer JSON de la respuesta de la IA. Inténtalo de nuevo.'];
+            return ['error' => __('No se pudo extraer JSON de la respuesta de la IA. Inténtalo de nuevo.', 'flavor-chat-ia')];
         }
 
         $analysis = json_decode($json_text, true);
@@ -877,7 +877,7 @@ IMPORTANTE:
 
             // Dar un mensaje más descriptivo
             $json_error = json_last_error_msg();
-            return ['error' => "Error al procesar la respuesta de la IA. JSON inválido: {$json_error}. Inténtalo de nuevo."];
+            return ['error' => sprintf(__('Error al procesar la respuesta de la IA. JSON inválido: %s. Inténtalo de nuevo.', 'flavor-chat-ia'), $json_error)];
         }
 
         // Normalizar estructura si la IA devolvió formato plano

@@ -93,6 +93,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        add_action('init', [$this, 'maybe_create_pages']);
         $this->cargar_clases_auxiliares();
         $this->inicializar_componentes();
 
@@ -2449,5 +2450,27 @@ KNOWLEDGE;
 
         $codigo_respuesta = $resultado_cotizacion['success'] ? 200 : 400;
         return new \WP_REST_Response($resultado_cotizacion, $codigo_respuesta);
+    }
+
+    /**
+     * Crea páginas frontend automáticamente
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('dex_solana');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen
+        $pagina = get_page_by_path('dex-solana');
+        if (!$pagina && !get_option('flavor_dex_solana_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['dex_solana']);
+            update_option('flavor_dex_solana_pages_created', 1, false);
+        }
     }
 }

@@ -9,19 +9,19 @@ $tabla_herramientas = $wpdb->prefix . 'flavor_huertos_herramientas';
         <div class="flavor-recurso-card">
             <h3><?php echo esc_html__('Herramientas Disponibles', 'flavor-chat-ia'); ?></h3>
             <ul>
-                <li>Palas - 5 unidades</li>
-                <li>Azadas - 3 unidades</li>
-                <li>Regaderas - 8 unidades</li>
-                <li>Tijeras de poda - 4 unidades</li>
+                <li><?php echo esc_html__('Palas - 5 unidades', 'flavor-chat-ia'); ?></li>
+                <li><?php echo esc_html__('Azadas - 3 unidades', 'flavor-chat-ia'); ?></li>
+                <li><?php echo esc_html__('Regaderas - 8 unidades', 'flavor-chat-ia'); ?></li>
+                <li><?php echo esc_html__('Tijeras de poda - 4 unidades', 'flavor-chat-ia'); ?></li>
             </ul>
         </div>
         <div class="flavor-recurso-card">
             <h3><?php echo esc_html__('Recursos Comunes', 'flavor-chat-ia'); ?></h3>
             <ul>
-                <li>Sistema de riego automático</li>
-                <li>Composteras comunitarias</li>
-                <li>Almacén de herramientas</li>
-                <li>Zona de descanso</li>
+                <li><?php echo esc_html__('Sistema de riego automático', 'flavor-chat-ia'); ?></li>
+                <li><?php echo esc_html__('Composteras comunitarias', 'flavor-chat-ia'); ?></li>
+                <li><?php echo esc_html__('Almacén de herramientas', 'flavor-chat-ia'); ?></li>
+                <li><?php echo esc_html__('Zona de descanso', 'flavor-chat-ia'); ?></li>
             </ul>
         </div>
     </div>

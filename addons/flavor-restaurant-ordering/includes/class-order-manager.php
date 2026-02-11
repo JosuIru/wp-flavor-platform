@@ -51,7 +51,7 @@ class Flavor_Order_Manager {
 
         // Validar datos requeridos
         if (empty($data['items']) || !is_array($data['items'])) {
-            return new WP_Error('missing_items', 'El pedido debe contener al menos un item');
+            return new WP_Error('missing_items', __('El pedido debe contener al menos un item', 'flavor-restaurant-ordering'));
         }
 
         // Datos del pedido
@@ -68,7 +68,7 @@ class Flavor_Order_Manager {
         if ($order_data['table_id']) {
             $table = Flavor_Table_Manager::get_instance()->get_table($order_data['table_id']);
             if (!$table) {
-                return new WP_Error('invalid_table', 'Mesa no válida');
+                return new WP_Error('invalid_table', __('Mesa no válida', 'flavor-restaurant-ordering'));
             }
         }
 
@@ -99,7 +99,7 @@ class Flavor_Order_Manager {
             );
 
             if ($inserted === false) {
-                throw new Exception('Error al crear el pedido');
+                throw new Exception(__('Error al crear el pedido', 'flavor-restaurant-ordering'));
             }
 
             $order_id = $wpdb->insert_id;
@@ -147,7 +147,7 @@ class Flavor_Order_Manager {
         $post = get_post($post_id);
 
         if (!$post) {
-            return new WP_Error('invalid_item', 'Item no encontrado: ' . $post_id);
+            return new WP_Error('invalid_item', sprintf(__('Item no encontrado: %s', 'flavor-restaurant-ordering'), $post_id));
         }
 
         // Obtener información del item
@@ -155,7 +155,7 @@ class Flavor_Order_Manager {
         $category = $restaurant_manager->get_cpt_category($post->post_type);
 
         if ($category === false) {
-            return new WP_Error('invalid_menu_item', 'El item no forma parte del menú');
+            return new WP_Error('invalid_menu_item', __('El item no forma parte del menú', 'flavor-restaurant-ordering'));
         }
 
         $unit_price = $restaurant_manager->get_item_price($post_id);
@@ -179,7 +179,7 @@ class Flavor_Order_Manager {
         );
 
         if ($inserted === false) {
-            return new WP_Error('item_insert_failed', 'Error al agregar item al pedido');
+            return new WP_Error('item_insert_failed', __('Error al agregar item al pedido', 'flavor-restaurant-ordering'));
         }
 
         return $wpdb->insert_id;
@@ -201,7 +201,7 @@ class Flavor_Order_Manager {
                 // Permitir items gratuitos pero verificar que el post exista
                 $post = get_post($post_id);
                 if (!$post) {
-                    return new WP_Error('invalid_item', 'Item no encontrado: ' . $post_id);
+                    return new WP_Error('invalid_item', sprintf(__('Item no encontrado: %s', 'flavor-restaurant-ordering'), $post_id));
                 }
             }
 
@@ -334,12 +334,12 @@ class Flavor_Order_Manager {
         $restaurant_manager = Flavor_Restaurant_Manager::get_instance();
 
         if (!$restaurant_manager->is_valid_status($new_status)) {
-            return new WP_Error('invalid_status', 'Estado de pedido inválido');
+            return new WP_Error('invalid_status', __('Estado de pedido inválido', 'flavor-restaurant-ordering'));
         }
 
         $order = $this->get_order($order_id);
         if (!$order) {
-            return new WP_Error('order_not_found', 'Pedido no encontrado');
+            return new WP_Error('order_not_found', __('Pedido no encontrado', 'flavor-restaurant-ordering'));
         }
 
         $old_status = $order['status'];
@@ -361,7 +361,7 @@ class Flavor_Order_Manager {
         );
 
         if ($updated === false) {
-            return new WP_Error('update_failed', 'Error al actualizar el estado');
+            return new WP_Error('update_failed', __('Error al actualizar el estado', 'flavor-restaurant-ordering'));
         }
 
         // Registrar en historial

@@ -30,20 +30,20 @@ if (!defined('ABSPATH')) {
             <label><?php _e('Tipo:', 'flavor-chat-ia'); ?></label>
             <select id="filtro-tipo" class="flavor-select">
                 <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="salon"><?php _e('Salón', 'flavor-chat-ia'); ?></option>
-                <option value="oficina"><?php _e('Oficina', 'flavor-chat-ia'); ?></option>
-                <option value="terraza"><?php _e('Terraza', 'flavor-chat-ia'); ?></option>
-                <option value="deportivo"><?php _e('Deportivo', 'flavor-chat-ia'); ?></option>
-                <option value="otro"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('salon', 'flavor-chat-ia'); ?>"><?php _e('Salón', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('oficina', 'flavor-chat-ia'); ?>"><?php _e('Oficina', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('terraza', 'flavor-chat-ia'); ?>"><?php _e('Terraza', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('deportivo', 'flavor-chat-ia'); ?>"><?php _e('Deportivo', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
             </select>
         </div>
         <div class="flavor-filter-group">
             <label><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
             <select id="filtro-estado" class="flavor-select">
                 <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="activo"><?php _e('Activo', 'flavor-chat-ia'); ?></option>
-                <option value="mantenimiento"><?php _e('Mantenimiento', 'flavor-chat-ia'); ?></option>
-                <option value="inactivo"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>"><?php _e('Activo', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('mantenimiento', 'flavor-chat-ia'); ?>"><?php _e('Mantenimiento', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
             </select>
         </div>
     </div>
@@ -82,13 +82,13 @@ if (!defined('ABSPATH')) {
                             <div class="flavor-form-group">
                                 <label for="espacio-tipo"><?php _e('Tipo', 'flavor-chat-ia'); ?> *</label>
                                 <select id="espacio-tipo" name="tipo" required class="widefat">
-                                    <option value="salon"><?php _e('Salón', 'flavor-chat-ia'); ?></option>
-                                    <option value="oficina"><?php _e('Oficina', 'flavor-chat-ia'); ?></option>
-                                    <option value="terraza"><?php _e('Terraza', 'flavor-chat-ia'); ?></option>
-                                    <option value="deportivo"><?php _e('Deportivo', 'flavor-chat-ia'); ?></option>
-                                    <option value="cocina"><?php _e('Cocina', 'flavor-chat-ia'); ?></option>
-                                    <option value="sala_reuniones"><?php _e('Sala de reuniones', 'flavor-chat-ia'); ?></option>
-                                    <option value="otro"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('salon', 'flavor-chat-ia'); ?>"><?php _e('Salón', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('oficina', 'flavor-chat-ia'); ?>"><?php _e('Oficina', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('terraza', 'flavor-chat-ia'); ?>"><?php _e('Terraza', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('deportivo', 'flavor-chat-ia'); ?>"><?php _e('Deportivo', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('cocina', 'flavor-chat-ia'); ?>"><?php _e('Cocina', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('sala_reuniones', 'flavor-chat-ia'); ?>"><?php _e('Sala de reuniones', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
                                 </select>
                             </div>
 
@@ -121,15 +121,15 @@ if (!defined('ABSPATH')) {
                             <div class="flavor-form-group">
                                 <label><?php _e('Equipamiento disponible', 'flavor-chat-ia'); ?></label>
                                 <div class="flavor-checkboxes-grid">
-                                    <label><input type="checkbox" name="equipamiento[]" value="wifi"> WiFi</label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="proyector"> Proyector</label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="television"> Televisión</label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="audio"> Sistema de audio</label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="pizarra"> Pizarra</label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="cocina"> Cocina</label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="aire"> Aire acondicionado</label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="calefaccion"> Calefacción</label>
-                                    <label><input type="checkbox" name="equipamiento[]" value="accesible"> Accesible PMR</label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('wifi', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('WiFi', 'flavor-chat-ia'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('proyector', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('Proyector', 'flavor-chat-ia'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('television', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('Televisión', 'flavor-chat-ia'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('audio', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('Sistema de audio', 'flavor-chat-ia'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('pizarra', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('Pizarra', 'flavor-chat-ia'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('cocina', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('aire', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('Aire acondicionado', 'flavor-chat-ia'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('calefaccion', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('Calefacción', 'flavor-chat-ia'); ?></label>
+                                    <label><input type="checkbox" name="equipamiento[]" value="<?php echo esc_attr__('accesible', 'flavor-chat-ia'); ?>"> <?php echo esc_html__('Accesible PMR', 'flavor-chat-ia'); ?></label>
                                 </div>
                             </div>
                         </div>
@@ -143,9 +143,9 @@ if (!defined('ABSPATH')) {
                             <div class="flavor-form-group">
                                 <label for="espacio-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
                                 <select id="espacio-estado" name="estado" class="widefat">
-                                    <option value="activo"><?php _e('Activo', 'flavor-chat-ia'); ?></option>
-                                    <option value="mantenimiento"><?php _e('En mantenimiento', 'flavor-chat-ia'); ?></option>
-                                    <option value="inactivo"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>"><?php _e('Activo', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('mantenimiento', 'flavor-chat-ia'); ?>"><?php _e('En mantenimiento', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
                                 </select>
                             </div>
 
@@ -570,7 +570,7 @@ jQuery(document).ready(function($) {
         let html = '';
         espacios.forEach(espacio => {
             const imagen = espacio.imagen_url ?
-                `<img src="${espacio.imagen_url}" alt="${espacio.nombre}" class="flavor-espacio-image">` :
+                `<img src="${espacio.imagen_url}" alt="<?php echo esc_attr__('${espacio.nombre}', 'flavor-chat-ia'); ?>" class="flavor-espacio-image">` :
                 '<div class="flavor-espacio-image"><span class="dashicons dashicons-admin-home"></span></div>';
 
             const equipamiento = espacio.equipamiento ? JSON.parse(espacio.equipamiento).map(eq =>
@@ -672,14 +672,14 @@ jQuery(document).ready(function($) {
         if (espacio.equipamiento) {
             const equipamiento = JSON.parse(espacio.equipamiento);
             equipamiento.forEach(eq => {
-                $(`input[name="equipamiento[]"][value="${eq}"]`).prop('checked', true);
+                $(`input[name="equipamiento[]"][value="<?php echo esc_attr__('${eq}', 'flavor-chat-ia'); ?>"]`).prop('checked', true);
             });
         }
 
         if (espacio.dias_disponibles) {
             const dias = JSON.parse(espacio.dias_disponibles);
             dias.forEach(dia => {
-                $(`input[name="dias_disponibles[]"][value="${dia}"]`).prop('checked', true);
+                $(`input[name="dias_disponibles[]"][value="<?php echo esc_attr__('${dia}', 'flavor-chat-ia'); ?>"]`).prop('checked', true);
             });
         }
     }

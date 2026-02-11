@@ -20,7 +20,7 @@ $url_primera_factura = $url_primera_factura ?? '/facturas/crear/';
                         <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
                             <div>
                                 <div class="w-10 h-10 rounded-lg bg-teal-500 flex items-center justify-center mb-2">
-                                    <span class="text-white font-bold text-sm">FC</span>
+                                    <span class="text-white font-bold text-sm"><?php echo esc_html__('FC', 'flavor-chat-ia'); ?></span>
                                 </div>
                                 <p class="text-xs text-gray-400"><?php echo esc_html__('Mi Empresa S.L.', 'flavor-chat-ia'); ?></p>
                             </div>
@@ -33,29 +33,29 @@ $url_primera_factura = $url_primera_factura ?? '/facturas/crear/';
                         <div class="space-y-2 mb-4">
                             <div class="flex justify-between text-xs">
                                 <span class="text-gray-600"><?php echo esc_html__('Servicio de diseno web', 'flavor-chat-ia'); ?></span>
-                                <span class="font-medium text-gray-800">1.200&euro;</span>
+                                <span class="font-medium text-gray-800"><?php echo esc_html__('1.200&euro;', 'flavor-chat-ia'); ?></span>
                             </div>
                             <div class="flex justify-between text-xs">
                                 <span class="text-gray-600"><?php echo esc_html__('Mantenimiento mensual', 'flavor-chat-ia'); ?></span>
-                                <span class="font-medium text-gray-800">300&euro;</span>
+                                <span class="font-medium text-gray-800"><?php echo esc_html__('300&euro;', 'flavor-chat-ia'); ?></span>
                             </div>
                             <div class="flex justify-between text-xs">
                                 <span class="text-gray-600"><?php echo esc_html__('Hosting anual', 'flavor-chat-ia'); ?></span>
-                                <span class="font-medium text-gray-800">150&euro;</span>
+                                <span class="font-medium text-gray-800"><?php echo esc_html__('150&euro;', 'flavor-chat-ia'); ?></span>
                             </div>
                         </div>
                         <div class="border-t border-gray-100 pt-3">
                             <div class="flex justify-between text-xs text-gray-500 mb-1">
                                 <span><?php echo esc_html__('Subtotal', 'flavor-chat-ia'); ?></span>
-                                <span>1.650&euro;</span>
+                                <span><?php echo esc_html__('1.650&euro;', 'flavor-chat-ia'); ?></span>
                             </div>
                             <div class="flex justify-between text-xs text-gray-500 mb-2">
                                 <span><?php echo esc_html__('IVA 21%', 'flavor-chat-ia'); ?></span>
-                                <span>346,50&euro;</span>
+                                <span><?php echo esc_html__('346,50&euro;', 'flavor-chat-ia'); ?></span>
                             </div>
                             <div class="flex justify-between text-sm font-bold text-gray-800">
                                 <span><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></span>
-                                <span class="text-teal-600">1.996,50&euro;</span>
+                                <span class="text-teal-600"><?php echo esc_html__('1.996,50&euro;', 'flavor-chat-ia'); ?></span>
                             </div>
                         </div>
                         <!-- Estado -->

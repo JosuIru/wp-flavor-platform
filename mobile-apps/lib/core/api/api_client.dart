@@ -154,6 +154,17 @@ class ApiClient {
     }
   }
 
+  /// Obtener configuración completa de la app cliente
+  /// Incluye tabs, features, info_sections, colores, etc.
+  Future<ApiResponse<Map<String, dynamic>>> getClientAppConfig() async {
+    try {
+      final response = await _dio.get('/client-app-config');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
   /// Validar token de seguridad para app Admin
   Future<ApiResponse<Map<String, dynamic>>> validateAdminSiteToken(String siteToken) async {
     try {
@@ -1240,6 +1251,1752 @@ class ApiClient {
             'Accept': 'application/json',
           },
         ),
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: pedidos públicos
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoPedidos({
+    String estado = 'abierto',
+    int perPage = 10,
+    int page = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await Dio().get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/pedidos',
+        queryParameters: {
+          'estado': estado,
+          'per_page': perPage,
+          'page': page,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: mis pedidos (auth)
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoMisPedidos() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/mis-pedidos',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: perfil
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoPerfil() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/perfil',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: suscripciones
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoSuscripciones() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/suscripciones',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: crear suscripción
+  Future<ApiResponse<Map<String, dynamic>>> createGruposConsumoSuscripcion({
+    required int productoId,
+    String frecuencia = 'semanal',
+    double cantidad = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/suscripciones',
+        data: {
+          'producto_id': productoId,
+          'frecuencia': frecuencia,
+          'cantidad': cantidad,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: pausar suscripción
+  Future<ApiResponse<Map<String, dynamic>>> pauseGruposConsumoSuscripcion(int id) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/suscripciones/$id/pausar',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: cancelar suscripción
+  Future<ApiResponse<Map<String, dynamic>>> cancelGruposConsumoSuscripcion(int id) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/suscripciones/$id/cancelar',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: historial de pedidos
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoHistorial() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/pedidos/historial',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: calendario de ciclos
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoCiclos() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/ciclos/calendario',
+        queryParameters: {
+          'include_productores': '1',
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: productores cercanos
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoProductoresCercanos() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/productores-cercanos',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: productores
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoProductores({
+    bool soloEco = false,
+    bool conEntrega = false,
+    int perPage = 50,
+    int page = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/productores',
+        queryParameters: {
+          'eco': soloEco ? '1' : '0',
+          'con_entrega': conEntrega ? '1' : '0',
+          'per_page': perPage,
+          'page': page,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: productos
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoProductos({
+    String? categoria,
+    int? productorId,
+    String? busqueda,
+    int perPage = 50,
+    int page = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/productos',
+        queryParameters: {
+          if (categoria != null && categoria.isNotEmpty) 'categoria': categoria,
+          if (productorId != null && productorId > 0) 'productor_id': productorId,
+          if (busqueda != null && busqueda.isNotEmpty) 'busqueda': busqueda,
+          'per_page': perPage,
+          'page': page,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: lista compra
+  Future<ApiResponse<Map<String, dynamic>>> getGruposConsumoListaCompra() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/lista-compra',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: agregar a lista compra
+  Future<ApiResponse<Map<String, dynamic>>> addGruposConsumoListaCompra({
+    required int productoId,
+    double cantidad = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/lista-compra/agregar',
+        data: {
+          'producto_id': productoId,
+          'cantidad': cantidad,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: quitar de lista compra
+  Future<ApiResponse<Map<String, dynamic>>> removeGruposConsumoListaCompra(int itemId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.delete(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/gc/lista-compra/$itemId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Banco de tiempo: servicios públicos
+  Future<ApiResponse<Map<String, dynamic>>> getBancoTiempoServicios({
+    String categoria = 'todos',
+    int limite = 10,
+    int pagina = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await Dio().get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios',
+        queryParameters: {
+          'categoria': categoria,
+          'limite': limite,
+          'pagina': pagina,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Banco de tiempo: mis servicios (auth)
+  Future<ApiResponse<Map<String, dynamic>>> getBancoTiempoMisServicios() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/mis-servicios',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Marketplace: anuncios públicos
+  Future<ApiResponse<Map<String, dynamic>>> getMarketplaceAnuncios({
+    String categoria = 'todos',
+    String tipo = 'todos',
+    int limite = 10,
+    int pagina = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await Dio().get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios',
+        queryParameters: {
+          'categoria': categoria,
+          'tipo': tipo,
+          'limite': limite,
+          'pagina': pagina,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Marketplace: mis anuncios (auth)
+  Future<ApiResponse<Map<String, dynamic>>> getMarketplaceMisAnuncios() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/mis-anuncios',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: unirse a pedido
+  Future<ApiResponse<Map<String, dynamic>>> joinGruposConsumoPedido({
+    required int pedidoId,
+    required double cantidad,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/pedidos/$pedidoId/unirse',
+        data: {
+          'cantidad': cantidad,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: marcar pagado (auth)
+  Future<ApiResponse<Map<String, dynamic>>> markGruposConsumoPagado(int pedidoId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/pedidos/$pedidoId/marcar-pagado',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Grupos de consumo: marcar recogido (auth)
+  Future<ApiResponse<Map<String, dynamic>>> markGruposConsumoRecogido(int pedidoId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/pedidos/$pedidoId/marcar-recogido',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Banco de tiempo: crear servicio
+  Future<ApiResponse<Map<String, dynamic>>> createBancoTiempoServicio({
+    required String titulo,
+    required String descripcion,
+    required String categoria,
+    required double horasEstimadas,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios',
+        data: {
+          'titulo': titulo,
+          'descripcion': descripcion,
+          'categoria': categoria,
+          'horas_estimadas': horasEstimadas,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Banco Tiempo: editar servicio
+  Future<ApiResponse<Map<String, dynamic>>> updateBancoTiempoServicio({
+    required int servicioId,
+    String? titulo,
+    String? descripcion,
+    String? categoria,
+    double? horasEstimadas,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.put(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios/$servicioId',
+        data: {
+          if (titulo != null) 'titulo': titulo,
+          if (descripcion != null) 'descripcion': descripcion,
+          if (categoria != null) 'categoria': categoria,
+          if (horasEstimadas != null) 'horas_estimadas': horasEstimadas,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Banco Tiempo: eliminar servicio
+  Future<ApiResponse<Map<String, dynamic>>> deleteBancoTiempoServicio(int servicioId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.delete(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/banco-tiempo/servicios/$servicioId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Marketplace: crear anuncio
+  Future<ApiResponse<Map<String, dynamic>>> createMarketplaceAnuncio({
+    required String titulo,
+    required String descripcion,
+    required String tipo,
+    required String categoria,
+    double? precio,
+    String? estado,
+    String? ubicacion,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios',
+        data: {
+          'titulo': titulo,
+          'descripcion': descripcion,
+          'tipo': tipo,
+          'categoria': categoria,
+          'precio': precio,
+          'estado': estado,
+          'ubicacion': ubicacion,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Marketplace: marcar anuncio como vendido (auth)
+  /// Marketplace: editar anuncio
+  Future<ApiResponse<Map<String, dynamic>>> updateMarketplaceAnuncio({
+    required int anuncioId,
+    String? titulo,
+    String? descripcion,
+    String? tipo,
+    String? categoria,
+    double? precio,
+    String? ubicacion,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.put(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios/$anuncioId',
+        data: {
+          if (titulo != null) 'titulo': titulo,
+          if (descripcion != null) 'descripcion': descripcion,
+          if (tipo != null) 'tipo': tipo,
+          if (categoria != null) 'categoria': categoria,
+          if (precio != null) 'precio': precio,
+          if (ubicacion != null) 'ubicacion': ubicacion,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> markMarketplaceSold(int anuncioId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios/$anuncioId/marcar-vendido',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Marketplace: eliminar anuncio (auth)
+  Future<ApiResponse<Map<String, dynamic>>> deleteMarketplaceAnuncio(int anuncioId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.delete(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/marketplace/anuncios/$anuncioId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // INCIDENCIAS
+  // ==========================================
+
+  /// Incidencias: obtener todas las incidencias
+  Future<ApiResponse<Map<String, dynamic>>> getIncidencias({
+    String? estado,
+    String? prioridad,
+    String? categoria,
+    int limite = 50,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias',
+        queryParameters: {
+          if (estado != null) 'estado': estado,
+          if (prioridad != null) 'prioridad': prioridad,
+          if (categoria != null) 'categoria': categoria,
+          'limite': limite,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Incidencias: obtener mis incidencias (auth)
+  Future<ApiResponse<Map<String, dynamic>>> getMisIncidencias() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias/mis-incidencias',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Incidencias: obtener detalle de una incidencia
+  Future<ApiResponse<Map<String, dynamic>>> getIncidencia(int incidenciaId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias/$incidenciaId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Incidencias: crear nueva incidencia (auth)
+  Future<ApiResponse<Map<String, dynamic>>> createIncidencia({
+    required String titulo,
+    required String descripcion,
+    required String categoria,
+    String? ubicacion,
+    String prioridad = 'media',
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias',
+        data: {
+          'titulo': titulo,
+          'descripcion': descripcion,
+          'categoria': categoria,
+          'ubicacion': ubicacion,
+          'prioridad': prioridad,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Incidencias: agregar comentario (auth)
+  Future<ApiResponse<Map<String, dynamic>>> addIncidenciaComment({
+    required int incidenciaId,
+    required String comentario,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias/$incidenciaId/comentarios',
+        data: {
+          'comentario': comentario,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Incidencias: actualizar estado (generalmente solo admin)
+  Future<ApiResponse<Map<String, dynamic>>> updateIncidenciaEstado({
+    required int incidenciaId,
+    required String estado,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.put(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/incidencias/$incidenciaId/estado',
+        data: {
+          'estado': estado,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // EVENTOS
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getEventos({
+    String? tipo,
+    String? categoria,
+    String? desde,
+    String? hasta,
+    int limite = 20,
+    String? estado,
+    bool soloGratuitos = false,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await Dio().get(
+        '$serverUrl/wp-json/flavor/v1/eventos',
+        queryParameters: {
+          if (tipo != null) 'tipo': tipo,
+          if (categoria != null) 'categoria': categoria,
+          if (desde != null) 'desde': desde,
+          if (hasta != null) 'hasta': hasta,
+          'limite': limite,
+          if (estado != null) 'estado': estado,
+          'solo_gratuitos': soloGratuitos ? '1' : '0',
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> getEvento(int id) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await Dio().get(
+        '$serverUrl/wp-json/flavor/v1/eventos/$id',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> inscribirseEvento({
+    required int eventoId,
+    int numPlazas = 1,
+    String? nombre,
+    String? email,
+    String? telefono,
+    String? notas,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor/v1/eventos/$eventoId/inscribirse',
+        data: {
+          'num_plazas': numPlazas,
+          if (nombre != null) 'nombre': nombre,
+          if (email != null) 'email': email,
+          if (telefono != null) 'telefono': telefono,
+          if (notas != null) 'notas': notas,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> getMisEventos({int limite = 20}) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor/v1/eventos/mis',
+        queryParameters: {'limite': limite},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> getMisInscripciones({int limite = 20}) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor/v1/eventos/mis-inscripciones',
+        queryParameters: {'limite': limite},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // CURSOS
+  // ==========================================
+
+  /// Cursos: obtener catálogo
+  Future<ApiResponse<Map<String, dynamic>>> getCursos({
+    String? categoria,
+    String? nivel,
+    int limite = 50,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final queryParams = <String, dynamic>{
+        'limite': limite,
+        if (categoria != null && categoria.isNotEmpty) 'categoria': categoria,
+        if (nivel != null && nivel.isNotEmpty) 'nivel': nivel,
+      };
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/cursos',
+        queryParameters: queryParams,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Cursos: obtener mis cursos inscritos
+  Future<ApiResponse<Map<String, dynamic>>> getMisCursos() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/cursos/mis-cursos',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Cursos: obtener detalle de un curso
+  Future<ApiResponse<Map<String, dynamic>>> getCurso(int cursoId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/cursos/$cursoId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Cursos: inscribirse a un curso
+  Future<ApiResponse<Map<String, dynamic>>> inscribirseCurso({
+    required int cursoId,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/cursos/$cursoId/inscripcion',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // BIBLIOTECA
+  // ==========================================
+
+  /// Biblioteca: obtener catálogo de libros
+  Future<ApiResponse<Map<String, dynamic>>> getBibliotecaCatalogo({
+    String? genero,
+    String? autor,
+    bool? disponible,
+    int limite = 50,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final queryParams = <String, dynamic>{
+        'limite': limite,
+        if (genero != null && genero.isNotEmpty) 'genero': genero,
+        if (autor != null && autor.isNotEmpty) 'autor': autor,
+        if (disponible != null) 'disponible': disponible ? 1 : 0,
+      };
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/catalogo',
+        queryParameters: queryParams,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Biblioteca: obtener mis préstamos
+  Future<ApiResponse<Map<String, dynamic>>> getBibliotecaMisPrestamos() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/mis-prestamos',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Biblioteca: obtener mis reservas
+  Future<ApiResponse<Map<String, dynamic>>> getBibliotecaReservas() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/reservas',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Biblioteca: obtener detalle de un libro
+  Future<ApiResponse<Map<String, dynamic>>> getBibliotecaLibro(int libroId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/libros/$libroId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Biblioteca: solicitar préstamo de un libro
+  Future<ApiResponse<Map<String, dynamic>>> solicitarBibliotecaPrestamo(int libroId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/prestamos',
+        data: {'libro_id': libroId},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Biblioteca: reservar un libro
+  Future<ApiResponse<Map<String, dynamic>>> reservarBibliotecaLibro(int libroId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/reservas',
+        data: {'libro_id': libroId},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Biblioteca: renovar préstamo
+  Future<ApiResponse<Map<String, dynamic>>> renovarBibliotecaPrestamo(int prestamoId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/prestamos/$prestamoId/renovar',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Biblioteca: cancelar reserva
+  Future<ApiResponse<Map<String, dynamic>>> cancelarBibliotecaReserva(int reservaId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.delete(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/biblioteca/reservas/$reservaId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // ESPACIOS COMUNES
+  // ==========================================
+
+  /// Espacios Comunes: obtener lista de espacios
+  Future<ApiResponse<Map<String, dynamic>>> getEspaciosComunes({
+    String? tipo,
+    bool? disponible,
+    int limite = 50,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final queryParams = <String, dynamic>{
+        'limite': limite,
+        if (tipo != null && tipo.isNotEmpty) 'tipo': tipo,
+        if (disponible != null) 'disponible': disponible ? 1 : 0,
+      };
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes',
+        queryParameters: queryParams,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Espacios Comunes: obtener mis reservas
+  Future<ApiResponse<Map<String, dynamic>>> getMisReservasEspacios() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes/mis-reservas',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Espacios Comunes: obtener detalle de un espacio
+  Future<ApiResponse<Map<String, dynamic>>> getEspacioComun(int espacioId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes/$espacioId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Espacios Comunes: crear reserva
+  Future<ApiResponse<Map<String, dynamic>>> crearReservaEspacio({
+    required int espacioId,
+    required String fecha,
+    required String horaInicio,
+    required String horaFin,
+    String? motivo,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes/reservas',
+        data: {
+          'espacio_id': espacioId,
+          'fecha': fecha,
+          'hora_inicio': horaInicio,
+          'hora_fin': horaFin,
+          if (motivo != null && motivo.isNotEmpty) 'motivo': motivo,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Espacios Comunes: cancelar reserva
+  Future<ApiResponse<Map<String, dynamic>>> cancelarReservaEspacio(int reservaId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.delete(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/espacios-comunes/reservas/$reservaId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // TALLERES
+  // ==========================================
+
+  /// Talleres: obtener catálogo
+  Future<ApiResponse<Map<String, dynamic>>> getTalleres({
+    String? categoria,
+    String? nivel,
+    int limite = 50,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final queryParams = <String, dynamic>{
+        'limite': limite,
+        if (categoria != null && categoria.isNotEmpty) 'categoria': categoria,
+        if (nivel != null && nivel.isNotEmpty) 'nivel': nivel,
+      };
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres',
+        queryParameters: queryParams,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Talleres: obtener mis talleres inscritos
+  Future<ApiResponse<Map<String, dynamic>>> getMisTalleres() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres/mis-talleres',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Talleres: obtener detalle de un taller
+  Future<ApiResponse<Map<String, dynamic>>> getTaller(int tallerId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres/$tallerId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Talleres: inscribirse a un taller
+  Future<ApiResponse<Map<String, dynamic>>> inscribirseTaller(int tallerId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres/$tallerId/inscripcion',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Talleres: cancelar inscripción
+  Future<ApiResponse<Map<String, dynamic>>> cancelarInscripcionTaller(int inscripcionId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.delete(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/talleres/inscripciones/$inscripcionId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // TRÁMITES
+  // ==========================================
+
+  /// Trámites: obtener catálogo
+  Future<ApiResponse<Map<String, dynamic>>> getTramites({
+    String? categoria,
+    bool? online,
+    int limite = 50,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final queryParams = <String, dynamic>{
+        'limite': limite,
+        if (categoria != null && categoria.isNotEmpty) 'categoria': categoria,
+        if (online != null) 'online': online ? 1 : 0,
+      };
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites',
+        queryParameters: queryParams,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Trámites: obtener mis solicitudes
+  Future<ApiResponse<Map<String, dynamic>>> getMisSolicitudesTramites() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites/mis-solicitudes',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Trámites: obtener detalle de un trámite
+  Future<ApiResponse<Map<String, dynamic>>> getTramite(int tramiteId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites/$tramiteId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Trámites: iniciar solicitud
+  Future<ApiResponse<Map<String, dynamic>>> iniciarSolicitudTramite({
+    required int tramiteId,
+    String? observaciones,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites/$tramiteId/solicitud',
+        data: {
+          if (observaciones != null && observaciones.isNotEmpty) 'observaciones': observaciones,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Trámites: obtener detalle de una solicitud
+  Future<ApiResponse<Map<String, dynamic>>> getSolicitudTramite(int solicitudId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/tramites/solicitudes/$solicitudId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // HUERTOS URBANOS
+  // ==========================================
+
+  /// Huertos Urbanos: obtener dashboard
+  Future<ApiResponse<Map<String, dynamic>>> getHuertosUrbanosDashboard() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/huertos-urbanos/dashboard',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Huertos Urbanos: solicitar parcela
+  Future<ApiResponse<Map<String, dynamic>>> solicitarParcelaHuerto({
+    required String tamanio,
+    String? observaciones,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/huertos-urbanos/solicitar-parcela',
+        data: {
+          'tamanio': tamanio,
+          if (observaciones != null && observaciones.isNotEmpty) 'observaciones': observaciones,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Huertos Urbanos: completar tarea
+  Future<ApiResponse<Map<String, dynamic>>> completarTareaHuerto(int tareaId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/huertos-urbanos/tareas/$tareaId/completar',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Huertos Urbanos: contactar para intercambio
+  Future<ApiResponse<Map<String, dynamic>>> contactarIntercambioHuerto({
+    required int intercambioId,
+    required String mensaje,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/huertos-urbanos/intercambios/$intercambioId/contactar',
+        data: {'mensaje': mensaje},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // RECICLAJE
+  // ==========================================
+
+  /// Reciclaje: obtener dashboard
+  Future<ApiResponse<Map<String, dynamic>>> getReciclajeDashboard() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/reciclaje/dashboard',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // BICICLETAS COMPARTIDAS
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getBicicletasCompartidas() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get('$serverUrl/wp-json/flavor-chat-ia/v1/bicicletas-compartidas');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> alquilarBicicleta(int estacionId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post('$serverUrl/wp-json/flavor-chat-ia/v1/bicicletas-compartidas/alquilar', data: {'estacion_id': estacionId});
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> finalizarAlquilerBicicleta() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post('$serverUrl/wp-json/flavor-chat-ia/v1/bicicletas-compartidas/finalizar');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // PARKINGS
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getParkings() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get('$serverUrl/wp-json/flavor-chat-ia/v1/parkings');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> reservarParking({
+    required int parkingId,
+    required String fechaEntrada,
+    required String fechaSalida,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/parkings/reservar',
+        data: {'parking_id': parkingId, 'fecha_entrada': fechaEntrada, 'fecha_salida': fechaSalida},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> extenderReservaParking(int reservaId, int horas) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/parkings/reservas/$reservaId/extender',
+        data: {'horas': horas},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> cancelarReservaParking(int reservaId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.delete('$serverUrl/wp-json/flavor-chat-ia/v1/parkings/reservas/$reservaId');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // AVISOS MUNICIPALES
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getAvisosMunicipales({String? categoria}) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final queryParams = categoria != null ? {'categoria': categoria} : null;
+      final response = await _dio.get('$serverUrl/wp-json/flavor-chat-ia/v1/avisos-municipales', queryParameters: queryParams);
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> marcarAvisoLeido(int avisoId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post('$serverUrl/wp-json/flavor-chat-ia/v1/avisos-municipales/$avisoId/leer');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> actualizarSuscripcionesAvisos(List<String> categorias) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post('$serverUrl/wp-json/flavor-chat-ia/v1/avisos-municipales/suscripciones', data: {'categorias': categorias});
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // AYUDA VECINAL
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getAyudaVecinal() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get('$serverUrl/wp-json/flavor-chat-ia/v1/ayuda-vecinal');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> crearSolicitudAyuda({
+    required String titulo,
+    required String descripcion,
+    required String categoria,
+    String urgencia = 'normal',
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor-chat-ia/v1/ayuda-vecinal/solicitudes',
+        data: {'titulo': titulo, 'descripcion': descripcion, 'categoria': categoria, 'urgencia': urgencia},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> ofrecerAyuda(int solicitudId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post('$serverUrl/wp-json/flavor-chat-ia/v1/ayuda-vecinal/solicitudes/$solicitudId/ofrecer');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> cancelarSolicitudAyuda(int solicitudId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.delete('$serverUrl/wp-json/flavor-chat-ia/v1/ayuda-vecinal/solicitudes/$solicitudId');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // SOCIOS
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getSociosPerfil() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor/v1/socios/perfil',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> getSociosCuotas({
+    String? estado,
+    int limite = 12,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor/v1/socios/cuotas',
+        queryParameters: {
+          if (estado != null) 'estado': estado,
+          'limite': limite,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> updateSociosDatos({
+    String? telefono,
+    String? direccion,
+    String? iban,
+    String? notas,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor/v1/socios/actualizar',
+        data: {
+          if (telefono != null) 'telefono': telefono,
+          if (direccion != null) 'direccion': direccion,
+          if (iban != null) 'iban': iban,
+          if (notas != null) 'notas': notas,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> pagarSociosCuota({
+    required int cuotaId,
+    String? metodoPago,
+    String? referencia,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor/v1/socios/cuotas/pagar',
+        data: {
+          'cuota_id': cuotaId,
+          if (metodoPago != null) 'metodo_pago': metodoPago,
+          if (referencia != null) 'referencia': referencia,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // FACTURAS
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getFacturas({
+    String? estado,
+    int limite = 50,
+    int pagina = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat/v1/facturas',
+        queryParameters: {
+          if (estado != null) 'estado': estado,
+          'limite': limite,
+          'pagina': pagina,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> getFactura(int id) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat/v1/facturas/$id',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> getFacturaPagos(int id) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor-chat/v1/facturas/$id/pagos',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<String> getFacturaPdfUrl(int id) async {
+    final serverUrl = await ServerConfig.getServerUrl();
+    return '$serverUrl/wp-json/flavor-chat/v1/facturas/$id/pdf';
+  }
+
+  // ==========================================
+  // CHAT GRUPOS
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getChatGrupos() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get('$serverUrl/wp-json/flavor/v1/chat-grupos');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> explorarChatGrupos({
+    String? categoria,
+    String? busqueda,
+    int pagina = 1,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await Dio().get(
+        '$serverUrl/wp-json/flavor/v1/chat-grupos/explorar',
+        queryParameters: {
+          if (categoria != null) 'categoria': categoria,
+          if (busqueda != null) 'busqueda': busqueda,
+          'pagina': pagina,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> getChatGrupoMensajes({
+    required int grupoId,
+    int limite = 50,
+    String? antesDe,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await Dio().get(
+        '$serverUrl/wp-json/flavor/v1/chat-grupos/$grupoId/mensajes',
+        queryParameters: {
+          'limite': limite,
+          if (antesDe != null) 'antes_de': antesDe,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> sendChatGrupoMensaje({
+    required int grupoId,
+    required String mensaje,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor/v1/chat-grupos/$grupoId/mensajes',
+        data: {'mensaje': mensaje},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // CHAT INTERNO
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getChatInternoConversaciones() async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get('$serverUrl/wp-json/flavor/v1/chat-interno');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> getChatInternoMensajes({
+    required int conversacionId,
+    int limite = 50,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor/v1/chat-interno/conversacion/$conversacionId/mensajes',
+        queryParameters: {'limite': limite},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  Future<ApiResponse<Map<String, dynamic>>> sendChatInternoMensaje({
+    required int conversacionId,
+    required String mensaje,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor/v1/chat-interno/conversacion/$conversacionId/enviar',
+        data: {'mensaje': mensaje},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
+  // MÓDULOS
+  // ==========================================
+
+  /// Obtiene información de un módulo específico
+  Future<ApiResponse<Map<String, dynamic>>> getModuleInfo(String moduleId) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor/v1/modules/$moduleId',
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Ejecuta una acción de un módulo
+  Future<ApiResponse<Map<String, dynamic>>> executeModuleAction({
+    required String moduleId,
+    required String actionName,
+    Map<String, dynamic>? params,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor/v1/modules/$moduleId/actions/$actionName',
+        data: params,
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {

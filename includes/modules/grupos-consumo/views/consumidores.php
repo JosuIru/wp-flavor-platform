@@ -105,17 +105,17 @@ $todos_los_grupos = get_posts([
     <!-- Filtros -->
     <div class="gc-filtros-wrapper">
         <form method="get" class="gc-filtros-form">
-            <input type="hidden" name="page" value="gc-consumidores">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-consumidores', 'flavor-chat-ia'); ?>">
             <input type="hidden" name="grupo_id" value="<?php echo esc_attr($grupo_id); ?>">
 
             <div class="gc-filtro">
                 <label for="filtro-estado"><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
                 <select id="filtro-estado" name="estado">
                     <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="pendiente" <?php selected($filtros['estado'], 'pendiente'); ?>><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                    <option value="activo" <?php selected($filtros['estado'], 'activo'); ?>><?php _e('Activo', 'flavor-chat-ia'); ?></option>
-                    <option value="suspendido" <?php selected($filtros['estado'], 'suspendido'); ?>><?php _e('Suspendido', 'flavor-chat-ia'); ?></option>
-                    <option value="baja" <?php selected($filtros['estado'], 'baja'); ?>><?php _e('Baja', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'], 'pendiente'); ?>><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'], 'activo'); ?>><?php _e('Activo', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('suspendido', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'], 'suspendido'); ?>><?php _e('Suspendido', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('baja', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'], 'baja'); ?>><?php _e('Baja', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
@@ -123,9 +123,9 @@ $todos_los_grupos = get_posts([
                 <label for="filtro-rol"><?php _e('Rol:', 'flavor-chat-ia'); ?></label>
                 <select id="filtro-rol" name="rol">
                     <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="consumidor" <?php selected($filtros['rol'], 'consumidor'); ?>><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
-                    <option value="coordinador" <?php selected($filtros['rol'], 'coordinador'); ?>><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
-                    <option value="productor" <?php selected($filtros['rol'], 'productor'); ?>><?php _e('Productor', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('consumidor', 'flavor-chat-ia'); ?>" <?php selected($filtros['rol'], 'consumidor'); ?>><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('coordinador', 'flavor-chat-ia'); ?>" <?php selected($filtros['rol'], 'coordinador'); ?>><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('productor', 'flavor-chat-ia'); ?>" <?php selected($filtros['rol'], 'productor'); ?>><?php _e('Productor', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
@@ -177,9 +177,9 @@ $todos_los_grupos = get_posts([
                         </td>
                         <td class="column-rol">
                             <select class="gc-cambiar-rol" data-consumidor-id="<?php echo esc_attr($consumidor->id); ?>">
-                                <option value="consumidor" <?php selected($consumidor->rol, 'consumidor'); ?>><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
-                                <option value="coordinador" <?php selected($consumidor->rol, 'coordinador'); ?>><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
-                                <option value="productor" <?php selected($consumidor->rol, 'productor'); ?>><?php _e('Productor', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('consumidor', 'flavor-chat-ia'); ?>" <?php selected($consumidor->rol, 'consumidor'); ?>><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('coordinador', 'flavor-chat-ia'); ?>" <?php selected($consumidor->rol, 'coordinador'); ?>><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('productor', 'flavor-chat-ia'); ?>" <?php selected($consumidor->rol, 'productor'); ?>><?php _e('Productor', 'flavor-chat-ia'); ?></option>
                             </select>
                         </td>
                         <td class="column-estado">
@@ -267,7 +267,7 @@ $todos_los_grupos = get_posts([
     <div class="gc-modal-content">
         <div class="gc-modal-header">
             <h2><?php _e('Añadir Consumidor', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close">&times;</button>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
         </div>
         <div class="gc-modal-body">
             <form id="form-nuevo-consumidor">
@@ -285,9 +285,9 @@ $todos_los_grupos = get_posts([
                 <div class="gc-form-field">
                     <label for="nuevo-rol"><?php _e('Rol', 'flavor-chat-ia'); ?></label>
                     <select id="nuevo-rol" name="rol">
-                        <option value="consumidor"><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
-                        <option value="coordinador"><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
-                        <option value="productor"><?php _e('Productor', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('consumidor', 'flavor-chat-ia'); ?>"><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('coordinador', 'flavor-chat-ia'); ?>"><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('productor', 'flavor-chat-ia'); ?>"><?php _e('Productor', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -314,7 +314,7 @@ $todos_los_grupos = get_posts([
     <div class="gc-modal-content">
         <div class="gc-modal-header">
             <h2><?php _e('Detalles del Consumidor', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close">&times;</button>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
         </div>
         <div class="gc-modal-body">
             <div id="gc-detalles-contenido">

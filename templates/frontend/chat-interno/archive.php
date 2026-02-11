@@ -15,8 +15,8 @@ $estadisticas = $estadisticas ?? [];
     <div class="bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">✉️ Chat Interno</h1>
-                <p class="text-sky-100">Mensajeria directa entre miembros de la comunidad</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('✉️ Chat Interno', 'flavor-chat-ia'); ?></h1>
+                <p class="text-sky-100"><?php echo esc_html__('Mensajeria directa entre miembros de la comunidad', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -24,7 +24,7 @@ $estadisticas = $estadisticas ?? [];
                 </span>
                 <button class="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-sky-50 transition-all shadow-md"
                         onclick="flavorChatInterno.nuevaConversacion()">
-                    ➕ Nuevo Mensaje
+                    <?php echo esc_html__('➕ Nuevo Mensaje', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>
@@ -36,17 +36,17 @@ $estadisticas = $estadisticas ?? [];
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">💬</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['conversaciones'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Conversaciones</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Conversaciones', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">🔔</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['no_leidos'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">No leidos</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('No leidos', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">👤</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['contactos'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Contactos</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Contactos', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
     <?php endif; ?>
@@ -55,7 +55,7 @@ $estadisticas = $estadisticas ?? [];
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-4 border-b border-gray-100">
             <div class="relative">
-                <input type="text" placeholder="Buscar conversaciones..."
+                <input type="text" placeholder="<?php echo esc_attr__('Buscar conversaciones...', 'flavor-chat-ia'); ?>"
                        class="w-full px-4 py-3 pl-10 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                        id="buscar-conversaciones">
                 <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,11 +67,11 @@ $estadisticas = $estadisticas ?? [];
         <?php if (empty($conversaciones)): ?>
         <div class="text-center py-16">
             <div class="text-6xl mb-4">✉️</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">Sin conversaciones</h3>
-            <p class="text-gray-500 mb-6">Inicia una conversacion con alguien de la comunidad</p>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('Sin conversaciones', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-6"><?php echo esc_html__('Inicia una conversacion con alguien de la comunidad', 'flavor-chat-ia'); ?></p>
             <button class="bg-sky-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-sky-600 transition-colors"
                     onclick="flavorChatInterno.nuevaConversacion()">
-                Nuevo Mensaje
+                <?php echo esc_html__('Nuevo Mensaje', 'flavor-chat-ia'); ?>
             </button>
         </div>
         <?php else: ?>
@@ -118,9 +118,9 @@ $estadisticas = $estadisticas ?? [];
     <?php if ($total_conversaciones > 20): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">← Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo ceil($total_conversaciones / 20); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-sky-500 text-white hover:bg-sky-600 transition-colors">Siguiente →</button>
+            <button class="px-4 py-2 rounded-lg bg-sky-500 text-white hover:bg-sky-600 transition-colors"><?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

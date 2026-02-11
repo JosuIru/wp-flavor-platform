@@ -14,7 +14,7 @@ $es_miembro = $es_miembro ?? false;
 <div class="flavor-frontend flavor-chat-grupos-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/chat-grupos/')); ?>" class="hover:text-purple-600 transition-colors">Chat Grupos</a>
+        <a href="<?php echo esc_url(home_url('/chat-grupos/')); ?>" class="hover:text-purple-600 transition-colors"><?php echo esc_html__('Chat Grupos', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <?php if (!empty($grupo['categoria'])): ?>
         <a href="<?php echo esc_url(home_url('/chat-grupos/?cat=' . ($grupo['categoria_slug'] ?? ''))); ?>" class="hover:text-purple-600 transition-colors">
@@ -41,10 +41,10 @@ $es_miembro = $es_miembro ?? false;
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="Buscar en el grupo">
+                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="<?php echo esc_attr__('Buscar en el grupo', 'flavor-chat-ia'); ?>">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         </button>
-                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="Configuracion del grupo">
+                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="<?php echo esc_attr__('Configuracion del grupo', 'flavor-chat-ia'); ?>">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
                         </button>
                     </div>
@@ -57,8 +57,8 @@ $es_miembro = $es_miembro ?? false;
                     <?php if (empty($mensajes)): ?>
                     <div class="text-center py-16">
                         <div class="text-6xl mb-4">💬</div>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Inicio de la conversacion</h3>
-                        <p class="text-gray-500">¡Se el primero en enviar un mensaje!</p>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php echo esc_html__('Inicio de la conversacion', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-gray-500"><?php echo esc_html__('¡Se el primero en enviar un mensaje!', 'flavor-chat-ia'); ?></p>
                     </div>
                     <?php else: ?>
                     <?php foreach ($mensajes as $mensaje_grupo): ?>
@@ -84,10 +84,10 @@ $es_miembro = $es_miembro ?? false;
                 <?php if ($es_miembro): ?>
                 <div class="p-4 border-t border-gray-100">
                     <div class="flex items-center gap-3">
-                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="Adjuntar archivo">
+                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="<?php echo esc_attr__('Adjuntar archivo', 'flavor-chat-ia'); ?>">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                         </button>
-                        <input type="text" placeholder="Escribe un mensaje..."
+                        <input type="text" placeholder="<?php echo esc_attr__('Escribe un mensaje...', 'flavor-chat-ia'); ?>"
                                class="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent text-sm"
                                id="input-mensaje-grupo">
                         <button class="bg-violet-500 text-white p-3 rounded-xl hover:bg-violet-600 transition-colors"
@@ -98,10 +98,10 @@ $es_miembro = $es_miembro ?? false;
                 </div>
                 <?php else: ?>
                 <div class="p-4 border-t border-gray-100 text-center">
-                    <p class="text-gray-500 text-sm mb-3">Unete al grupo para participar en la conversacion</p>
+                    <p class="text-gray-500 text-sm mb-3"><?php echo esc_html__('Unete al grupo para participar en la conversacion', 'flavor-chat-ia'); ?></p>
                     <button class="bg-violet-500 text-white px-6 py-2 rounded-xl font-medium hover:bg-violet-600 transition-colors"
                             onclick="flavorChatGrupos.unirse(<?php echo esc_attr($grupo['id'] ?? 0); ?>)">
-                        Unirse al grupo
+                        <?php echo esc_html__('Unirse al grupo', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
                 <?php endif; ?>
@@ -112,19 +112,19 @@ $es_miembro = $es_miembro ?? false;
         <div class="space-y-6">
             <!-- Info del grupo -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-3">Sobre el grupo</h3>
+                <h3 class="font-semibold text-gray-800 mb-3"><?php echo esc_html__('Sobre el grupo', 'flavor-chat-ia'); ?></h3>
                 <p class="text-sm text-gray-600 mb-4"><?php echo esc_html($grupo['descripcion'] ?? ''); ?></p>
                 <div class="space-y-2 text-sm">
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Creado</span>
+                        <span class="text-gray-500"><?php echo esc_html__('Creado', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium text-gray-800"><?php echo esc_html($grupo['fecha_creacion'] ?? ''); ?></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Tipo</span>
+                        <span class="text-gray-500"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium text-gray-800"><?php echo esc_html(ucfirst($grupo['tipo'] ?? 'publico')); ?></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Categoria</span>
+                        <span class="text-gray-500"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium text-gray-800"><?php echo esc_html($grupo['categoria'] ?? 'General'); ?></span>
                     </div>
                 </div>
@@ -153,7 +153,7 @@ $es_miembro = $es_miembro ?? false;
 
             <!-- Archivos compartidos -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-3">📎 Archivos compartidos</h3>
+                <h3 class="font-semibold text-gray-800 mb-3"><?php echo esc_html__('📎 Archivos compartidos', 'flavor-chat-ia'); ?></h3>
                 <p class="text-sm text-gray-500"><?php echo esc_html($grupo['archivos_compartidos'] ?? 0); ?> archivos</p>
             </div>
         </div>

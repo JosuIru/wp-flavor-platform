@@ -22,11 +22,11 @@ while (have_posts()) : the_post();
 
 <div class="flavor-container py-8">
     <!-- Breadcrumbs -->
-    <nav class="flex mb-6 text-sm" aria-label="Breadcrumb">
+    <nav class="flex mb-6 text-sm" aria-label="<?php echo esc_attr__('Breadcrumb', 'flavor-chat-ia'); ?>">
         <ol class="inline-flex items-center space-x-2">
             <li class="inline-flex items-center">
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="text-gray-600 hover:text-primary transition-colors">
-                    Inicio
+                    <?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?>
                 </a>
             </li>
             <li>
@@ -34,7 +34,7 @@ while (have_posts()) : the_post();
             </li>
             <li class="inline-flex items-center">
                 <a href="<?php echo esc_url(get_post_type_archive_link('banco_tiempo')); ?>" class="text-gray-600 hover:text-primary transition-colors">
-                    Banco de Tiempo
+                    <?php echo esc_html__('Banco de Tiempo', 'flavor-chat-ia'); ?>
                 </a>
             </li>
             <li>
@@ -52,7 +52,7 @@ while (have_posts()) : the_post();
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Volver al listado
+            <?php echo esc_html__('Volver al listado', 'flavor-chat-ia'); ?>
         </a>
     </div>
 
@@ -111,30 +111,30 @@ while (have_posts()) : the_post();
 
                     <!-- Content -->
                     <div class="prose max-w-none mb-8">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Descripción del servicio</h2>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Descripción del servicio', 'flavor-chat-ia'); ?></h2>
                         <?php the_content(); ?>
                     </div>
 
                     <!-- Additional Details -->
                     <?php if ($servicio_ofrecido || $disponibilidad || $ubicacion) : ?>
                         <div class="bg-gray-50 rounded-lg p-6 mb-6">
-                            <h3 class="text-xl font-bold text-gray-900 mb-4">Detalles adicionales</h3>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Detalles adicionales', 'flavor-chat-ia'); ?></h3>
                             <dl class="space-y-4">
                                 <?php if ($servicio_ofrecido) : ?>
                                     <div>
-                                        <dt class="text-sm font-semibold text-gray-700 mb-1">Servicio ofrecido</dt>
+                                        <dt class="text-sm font-semibold text-gray-700 mb-1"><?php echo esc_html__('Servicio ofrecido', 'flavor-chat-ia'); ?></dt>
                                         <dd class="text-gray-600"><?php echo esc_html($servicio_ofrecido); ?></dd>
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($disponibilidad) : ?>
                                     <div>
-                                        <dt class="text-sm font-semibold text-gray-700 mb-1">Disponibilidad</dt>
+                                        <dt class="text-sm font-semibold text-gray-700 mb-1"><?php echo esc_html__('Disponibilidad', 'flavor-chat-ia'); ?></dt>
                                         <dd class="text-gray-600"><?php echo esc_html($disponibilidad); ?></dd>
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($ubicacion) : ?>
                                     <div>
-                                        <dt class="text-sm font-semibold text-gray-700 mb-1">Ubicación</dt>
+                                        <dt class="text-sm font-semibold text-gray-700 mb-1"><?php echo esc_html__('Ubicación', 'flavor-chat-ia'); ?></dt>
                                         <dd class="text-gray-600 flex items-center gap-2">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
@@ -150,7 +150,7 @@ while (have_posts()) : the_post();
 
                     <!-- Share Buttons -->
                     <div class="border-t pt-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Compartir</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3"><?php echo esc_html__('Compartir', 'flavor-chat-ia'); ?></h3>
                         <div class="flex gap-3">
                             <a
                                 href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>"
@@ -161,7 +161,7 @@ while (have_posts()) : the_post();
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                                 </svg>
-                                Facebook
+                                <?php echo esc_html__('Facebook', 'flavor-chat-ia'); ?>
                             </a>
                             <a
                                 href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode(get_the_title()); ?>"
@@ -172,7 +172,7 @@ while (have_posts()) : the_post();
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
                                 </svg>
-                                Twitter
+                                <?php echo esc_html__('Twitter', 'flavor-chat-ia'); ?>
                             </a>
                             <button
                                 onclick="navigator.clipboard.writeText('<?php echo esc_js(get_permalink()); ?>'); alert('Enlace copiado al portapapeles');"
@@ -181,7 +181,7 @@ while (have_posts()) : the_post();
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
-                                Copiar enlace
+                                <?php echo esc_html__('Copiar enlace', 'flavor-chat-ia'); ?>
                             </button>
                         </div>
                     </div>
@@ -193,12 +193,12 @@ while (have_posts()) : the_post();
         <aside class="lg:col-span-1">
             <!-- Contact Card -->
             <div class="flavor-component bg-white rounded-xl shadow-lg p-6 mb-6 sticky top-6">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Contactar</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Contactar', 'flavor-chat-ia'); ?></h3>
                 <div class="flex items-center gap-3 mb-4">
                     <?php echo get_avatar($autor_id, 60, '', '', array('class' => 'rounded-full')); ?>
                     <div>
                         <p class="font-semibold text-gray-900"><?php echo esc_html($autor_nombre); ?></p>
-                        <p class="text-sm text-gray-600">Miembro de la comunidad</p>
+                        <p class="text-sm text-gray-600"><?php echo esc_html__('Miembro de la comunidad', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
                 <p class="text-gray-600 text-sm mb-4">
@@ -209,14 +209,14 @@ while (have_posts()) : the_post();
                         href="mailto:<?php echo esc_attr($autor_email); ?>?subject=Solicitud%20de%20servicio:%20<?php echo rawurlencode(get_the_title()); ?>"
                         class="block w-full text-center px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
                     >
-                        Enviar mensaje
+                        <?php echo esc_html__('Enviar mensaje', 'flavor-chat-ia'); ?>
                     </a>
                 <?php else : ?>
                     <a
                         href="<?php echo esc_url(wp_login_url(get_permalink())); ?>"
                         class="block w-full text-center px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
                     >
-                        Inicia sesión para contactar
+                        <?php echo esc_html__('Inicia sesión para contactar', 'flavor-chat-ia'); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -245,7 +245,7 @@ while (have_posts()) : the_post();
                 if ($related_query->have_posts()) :
             ?>
                 <div class="flavor-component bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Servicios relacionados</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Servicios relacionados', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-4">
                         <?php while ($related_query->have_posts()) : $related_query->the_post(); ?>
                             <article class="border-b pb-4 last:border-b-0 last:pb-0">
@@ -257,7 +257,7 @@ while (have_posts()) : the_post();
                                         <?php echo esc_html(get_the_excerpt()); ?>
                                     </p>
                                     <span class="text-primary text-sm font-medium inline-flex items-center gap-1">
-                                        Ver detalles
+                                        <?php echo esc_html__('Ver detalles', 'flavor-chat-ia'); ?>
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                         </svg>

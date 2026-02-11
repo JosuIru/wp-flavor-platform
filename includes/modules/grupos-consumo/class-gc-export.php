@@ -42,6 +42,7 @@ class Flavor_GC_Export {
     private function init() {
         add_action('admin_post_gc_exportar_consolidado', [$this, 'exportar_consolidado']);
         add_action('admin_post_gc_exportar_pedidos', [$this, 'exportar_pedidos']);
+        add_action('admin_post_gc_exportar_pedidos_filtrado', [$this, 'exportar_pedidos_filtrado']);
         add_action('admin_post_gc_exportar_consumidores', [$this, 'exportar_consumidores']);
         add_action('admin_post_gc_exportar_suscripciones', [$this, 'exportar_suscripciones']);
 
@@ -50,11 +51,84 @@ class Flavor_GC_Export {
     }
 
     /**
+     * Exportar pedidos con filtros (ciclo/productor/periodo)
+     */
+    public function exportar_pedidos_filtrado() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('No autorizado', 'flavor-chat-ia'));
+        }
+
+        check_admin_referer('gc_exportar_pedidos_filtrado');
+
+        $ciclo_id = absint($_GET['ciclo_id'] ?? 0);
+        $productor_id = absint($_GET['productor_id'] ?? 0);
+        $desde = sanitize_text_field($_GET['desde'] ?? '');
+        $hasta = sanitize_text_field($_GET['hasta'] ?? '');
+
+        $where = [];
+        $params = [];
+
+        if ($desde) {
+            $where[] = 'p.fecha_pedido >= %s';
+            $params[] = $desde . ' 00:00:00';
+        }
+        if ($hasta) {
+            $where[] = 'p.fecha_pedido <= %s';
+            $params[] = $hasta . ' 23:59:59';
+        }
+        if ($ciclo_id) {
+            $where[] = 'p.ciclo_id = %d';
+            $params[] = $ciclo_id;
+        }
+        if ($productor_id) {
+            $where[] = 'pm.meta_value = %d';
+            $params[] = $productor_id;
+        }
+
+        $where_sql = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+        $sql = "SELECT p.*, pr.post_title as producto_nombre, u.display_name as consumidor
+                FROM {$tabla_pedidos} p
+                LEFT JOIN {$wpdb->posts} pr ON pr.ID = p.producto_id
+                LEFT JOIN {$wpdb->users} u ON u.ID = p.usuario_id
+                LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.producto_id AND pm.meta_key = '_gc_productor_id'
+                {$where_sql}
+                ORDER BY p.fecha_pedido DESC";
+
+        $rows = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=gc-pedidos-filtrado.csv');
+
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ['Ciclo', 'Consumidor', 'Producto', 'Cantidad', 'Precio', 'Total', 'Fecha'], ';');
+
+        foreach ($rows as $row) {
+            $ciclo = get_post($row->ciclo_id);
+            fputcsv($output, [
+                $ciclo ? $ciclo->post_title : ('#' . $row->ciclo_id),
+                $row->consumidor ?: '',
+                $row->producto_nombre ?: '',
+                number_format($row->cantidad, 2, ',', '.'),
+                number_format($row->precio_unitario, 2, ',', '.'),
+                number_format($row->cantidad * $row->precio_unitario, 2, ',', '.'),
+                $row->fecha_pedido,
+            ], ';');
+        }
+
+        fclose($output);
+        exit;
+    }
+
+    /**
      * Exportar consolidado de pedidos por ciclo
      */
     public function exportar_consolidado() {
         if (!current_user_can('manage_options')) {
-            wp_die('No autorizado');
+            wp_die(__('No autorizado', 'flavor-chat-ia'));
         }
 
         check_admin_referer('gc_exportar_consolidado');
@@ -63,7 +137,7 @@ class Flavor_GC_Export {
         $formato = sanitize_text_field($_GET['formato'] ?? 'excel');
 
         if (!$ciclo_id) {
-            wp_die('Ciclo no especificado');
+            wp_die(__('Ciclo no especificado', 'flavor-chat-ia'));
         }
 
         $datos = $this->obtener_datos_consolidado($ciclo_id);
@@ -223,7 +297,7 @@ class Flavor_GC_Export {
             <div class="header">
                 <h1><?php echo esc_html($sitio_nombre); ?></h1>
                 <p class="meta">
-                    <strong>Consolidado de Pedidos</strong><br>
+                    <strong><?php echo esc_html__('Consolidado de Pedidos', 'flavor-chat-ia'); ?></strong><br>
                     Ciclo: <?php echo esc_html($datos['ciclo']->post_title); ?><br>
                     Fecha de exportación: <?php echo date_i18n('d/m/Y H:i'); ?>
                 </p>
@@ -238,11 +312,11 @@ class Flavor_GC_Export {
                 <table>
                     <thead>
                         <tr>
-                            <th>Producto</th>
-                            <th class="text-right">Cantidad</th>
-                            <th>Unidad</th>
-                            <th class="text-right">Precio Unit.</th>
-                            <th class="text-right">Total</th>
+                            <th><?php echo esc_html__('Producto', 'flavor-chat-ia'); ?></th>
+                            <th class="text-right"><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
+                            <th><?php echo esc_html__('Unidad', 'flavor-chat-ia'); ?></th>
+                            <th class="text-right"><?php echo esc_html__('Precio Unit.', 'flavor-chat-ia'); ?></th>
+                            <th class="text-right"><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -268,7 +342,7 @@ class Flavor_GC_Export {
 
             <table>
                 <tr class="grand-total">
-                    <td colspan="4"><strong>TOTAL GENERAL</strong></td>
+                    <td colspan="4"><strong><?php echo esc_html__('TOTAL GENERAL', 'flavor-chat-ia'); ?></strong></td>
                     <td class="text-right"><strong><?php echo number_format($total_general, 2, ',', '.'); ?>€</strong></td>
                 </tr>
             </table>
@@ -287,7 +361,7 @@ class Flavor_GC_Export {
      */
     public function exportar_pedidos() {
         if (!current_user_can('manage_options')) {
-            wp_die('No autorizado');
+            wp_die(__('No autorizado', 'flavor-chat-ia'));
         }
 
         check_admin_referer('gc_exportar_pedidos');
@@ -397,7 +471,7 @@ class Flavor_GC_Export {
      */
     public function exportar_consumidores() {
         if (!current_user_can('manage_options')) {
-            wp_die('No autorizado');
+            wp_die(__('No autorizado', 'flavor-chat-ia'));
         }
 
         check_admin_referer('gc_exportar_consumidores');
@@ -462,7 +536,7 @@ class Flavor_GC_Export {
      */
     public function exportar_suscripciones() {
         if (!current_user_can('manage_options')) {
-            wp_die('No autorizado');
+            wp_die(__('No autorizado', 'flavor-chat-ia'));
         }
 
         check_admin_referer('gc_exportar_suscripciones');
@@ -523,7 +597,7 @@ class Flavor_GC_Export {
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'No autorizado']);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
         }
 
         $tipo = sanitize_text_field($_POST['tipo'] ?? '');

@@ -21,7 +21,7 @@ $horario = $estacion['horario'] ?? '24 horas';
     <div class="bg-gradient-to-r from-lime-500 to-green-500 py-8 px-4">
         <div class="container mx-auto max-w-4xl">
             <nav class="flex items-center gap-2 text-sm text-white/80 mb-4">
-                <a href="#" class="hover:text-white">Bicicletas</a>
+                <a href="#" class="hover:text-white"><?php echo esc_html__('Bicicletas', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-white"><?php echo esc_html($nombre); ?></span>
             </nav>
@@ -34,16 +34,16 @@ $horario = $estacion['horario'] ?? '24 horas';
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Disponibilidad -->
             <div class="bg-white rounded-2xl p-6 shadow-md">
-                <h2 class="text-lg font-bold text-gray-900 mb-6">Disponibilidad Actual</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-6"><?php echo esc_html__('Disponibilidad Actual', 'flavor-chat-ia'); ?></h2>
 
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <div class="bg-lime-50 rounded-xl p-4 text-center">
                         <span class="text-4xl font-bold text-lime-600"><?php echo esc_html($bicis_disponibles); ?></span>
-                        <p class="text-sm text-gray-600 mt-1">Bicis disponibles</p>
+                        <p class="text-sm text-gray-600 mt-1"><?php echo esc_html__('Bicis disponibles', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-4 text-center">
                         <span class="text-4xl font-bold text-gray-600"><?php echo esc_html($huecos_libres); ?></span>
-                        <p class="text-sm text-gray-600 mt-1">Huecos libres</p>
+                        <p class="text-sm text-gray-600 mt-1"><?php echo esc_html__('Huecos libres', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
 
@@ -60,11 +60,11 @@ $horario = $estacion['horario'] ?? '24 horas';
                 <?php if ($bicis_disponibles > 0): ?>
                     <button class="w-full py-4 rounded-xl text-lg font-semibold text-white transition-all hover:scale-105"
                             style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);">
-                        Reservar Bicicleta
+                        <?php echo esc_html__('Reservar Bicicleta', 'flavor-chat-ia'); ?>
                     </button>
                 <?php else: ?>
                     <button class="w-full py-4 rounded-xl text-lg font-semibold text-white bg-gray-400 cursor-not-allowed">
-                        Sin Bicicletas
+                        <?php echo esc_html__('Sin Bicicletas', 'flavor-chat-ia'); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -76,7 +76,7 @@ $horario = $estacion['horario'] ?? '24 horas';
                         <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         </svg>
-                        <p class="text-sm">Ubicacion en mapa</p>
+                        <p class="text-sm"><?php echo esc_html__('Ubicacion en mapa', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
                 <div class="p-4">
@@ -84,7 +84,7 @@ $horario = $estacion['horario'] ?? '24 horas';
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                         </svg>
-                        Como llegar
+                        <?php echo esc_html__('Como llegar', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
@@ -93,22 +93,22 @@ $horario = $estacion['horario'] ?? '24 horas';
         <!-- Info adicional -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
             <div class="bg-white rounded-xl p-5 shadow-md">
-                <h3 class="font-bold text-gray-900 mb-2">Horario</h3>
+                <h3 class="font-bold text-gray-900 mb-2"><?php echo esc_html__('Horario', 'flavor-chat-ia'); ?></h3>
                 <p class="text-gray-600"><?php echo esc_html($horario); ?></p>
             </div>
             <div class="bg-white rounded-xl p-5 shadow-md">
-                <h3 class="font-bold text-gray-900 mb-2">Tiempo maximo</h3>
-                <p class="text-gray-600">30 minutos gratuitos</p>
+                <h3 class="font-bold text-gray-900 mb-2"><?php echo esc_html__('Tiempo maximo', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-600"><?php echo esc_html__('30 minutos gratuitos', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="bg-white rounded-xl p-5 shadow-md">
-                <h3 class="font-bold text-gray-900 mb-2">Tipo de bicis</h3>
-                <p class="text-gray-600">Mecanicas y electricas</p>
+                <h3 class="font-bold text-gray-900 mb-2"><?php echo esc_html__('Tipo de bicis', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-600"><?php echo esc_html__('Mecanicas y electricas', 'flavor-chat-ia'); ?></p>
             </div>
         </div>
 
         <!-- Estaciones cercanas -->
         <div class="mt-8">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">Estaciones Cercanas</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Estaciones Cercanas', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <?php for ($i = 1; $i <= 3; $i++): ?>
                     <a href="#" class="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow flex items-center gap-4">

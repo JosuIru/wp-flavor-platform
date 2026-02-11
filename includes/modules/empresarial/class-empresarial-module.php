@@ -445,6 +445,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      * Inicializar el módulo
      */
     public function init() {
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('wp_ajax_empresarial_contacto', [$this, 'ajax_contacto_form']);
         add_action('wp_ajax_nopriv_empresarial_contacto', [$this, 'ajax_contacto_form']);
@@ -2153,5 +2154,27 @@ KNOWLEDGE;
      */
     protected function format_price($precio) {
         return number_format($precio, 2, ',', '.') . ' €';
+    }
+
+    /**
+     * Crea páginas frontend automáticamente
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('empresarial');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen
+        $pagina = get_page_by_path('empresarial');
+        if (!$pagina && !get_option('flavor_empresarial_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['empresarial']);
+            update_option('flavor_empresarial_pages_created', 1, false);
+        }
     }
 }

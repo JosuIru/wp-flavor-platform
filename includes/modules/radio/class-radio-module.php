@@ -88,6 +88,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en panel de administración unificado
         $this->registrar_en_panel_unificado();
 
@@ -2466,5 +2467,27 @@ KNOWLEDGE;
         $method = strtoupper($request->get_method());
         $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
         return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+
+    /**
+     * Crea páginas frontend automáticamente
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('radio');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen
+        $pagina = get_page_by_path('radio');
+        if (!$pagina && !get_option('flavor_radio_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['radio']);
+            update_option('flavor_radio_pages_created', 1, false);
+        }
     }
 }

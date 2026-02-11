@@ -44,42 +44,42 @@ $ciclos = get_posts(['post_type' => 'gc_ciclo', 'posts_per_page' => -1, 'orderby
 ?>
 
 <div class="wrap">
-    <h1><span class="dashicons dashicons-clipboard"></span> Gestión de Pedidos</h1>
+    <h1><span class="dashicons dashicons-clipboard"></span> <?php echo esc_html__('Gestión de Pedidos', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <div class="tablenav top">
         <form method="get" style="display: inline-flex; gap: 8px;">
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
             <select name="estado">
-                <option value="">Todos los estados</option>
-                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>>Pendiente</option>
-                <option value="confirmado" <?php selected($filtro_estado, 'confirmado'); ?>>Confirmado</option>
-                <option value="completado" <?php selected($filtro_estado, 'completado'); ?>>Completado</option>
-                <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>>Cancelado</option>
+                <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('confirmado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'confirmado'); ?>><?php echo esc_html__('Confirmado', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('completado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelado'); ?>><?php echo esc_html__('Cancelado', 'flavor-chat-ia'); ?></option>
             </select>
             <select name="ciclo">
-                <option value="0">Todos los ciclos</option>
+                <option value="0"><?php echo esc_html__('Todos los ciclos', 'flavor-chat-ia'); ?></option>
                 <?php foreach ($ciclos as $ciclo): ?>
                     <option value="<?php echo $ciclo->ID; ?>" <?php selected($filtro_ciclo, $ciclo->ID); ?>>
                         <?php echo esc_html($ciclo->post_title); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
-            <button type="submit" class="button">Filtrar</button>
+            <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
         </form>
     </div>
 
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Producto</th>
-                <th>Usuario</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Fecha</th>
+                <th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Producto', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
             </tr>
         </thead>
         <tbody>

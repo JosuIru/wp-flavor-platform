@@ -14,11 +14,11 @@ $sugerencias = $sugerencias ?? ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'B
 <div class="flavor-frontend flavor-carpooling-search">
     <!-- Buscador -->
     <div class="bg-gradient-to-r from-lime-500 to-green-600 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">🔍 Buscar viajes</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center">🔍 <?php echo esc_html__('Buscar viajes', 'flavor-chat-ia'); ?></h2>
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q" value="<?php echo esc_attr($query); ?>"
-                       placeholder="¿A donde quieres ir? (ej: Madrid, Barcelona, centro...)"
+                       placeholder="<?php echo esc_attr__('¿A donde quieres ir? (ej: Madrid, Barcelona, centro...)', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-lime-300">
                 <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@ $sugerencias = $sugerencias ?? ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'B
 
         <?php if (!empty($sugerencias) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-lime-100 text-sm">Destinos populares:</span>
+            <span class="text-lime-100 text-sm"><?php echo esc_html__('Destinos populares:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias as $sugerencia_destino): ?>
             <a href="?q=<?php echo esc_attr($sugerencia_destino); ?>" class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
                 <?php echo esc_html($sugerencia_destino); ?>
@@ -44,10 +44,31 @@ $sugerencias = $sugerencias ?? ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'B
     <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-800">
             <?php if ($total_resultados > 0): ?>
-                <?php echo esc_html($total_resultados); ?> viaje<?php echo $total_resultados !== 1 ? 's' : ''; ?>
-                para "<span class="text-green-600"><?php echo esc_html($query); ?></span>"
+                <?php
+                echo esc_html(
+                    sprintf(
+                        _n('%d viaje', '%d viajes', $total_resultados, 'flavor-chat-ia'),
+                        (int) $total_resultados
+                    )
+                );
+                ?>
+                <?php
+                echo ' ' . esc_html(
+                    sprintf(
+                        __('para "%s"', 'flavor-chat-ia'),
+                        $query
+                    )
+                );
+                ?>
             <?php else: ?>
-                Sin resultados para "<span class="text-green-600"><?php echo esc_html($query); ?></span>"
+                <?php
+                echo esc_html(
+                    sprintf(
+                        __('Sin resultados para "%s"', 'flavor-chat-ia'),
+                        $query
+                    )
+                );
+                ?>
             <?php endif; ?>
         </h3>
     </div>
@@ -55,11 +76,11 @@ $sugerencias = $sugerencias ?? ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'B
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">🚗</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos viajes</h3>
-        <p class="text-gray-500 mb-6">¿Por que no ofreces tu un viaje a ese destino?</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos viajes', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('¿Por que no ofreces tu un viaje a ese destino?', 'flavor-chat-ia'); ?></p>
         <button class="bg-lime-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-lime-600 transition-colors"
                 onclick="flavorCarpooling.ofrecerViaje()">
-            Ofrecer Viaje
+            <?php echo esc_html__('Ofrecer Viaje', 'flavor-chat-ia'); ?>
         </button>
     </div>
     <?php else: ?>
@@ -88,7 +109,7 @@ $sugerencias = $sugerencias ?? ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'B
                         🕐 <?php echo esc_html($resultado_viaje['hora'] ?? ''); ?>
                     </span>
                     <span class="bg-lime-100 text-lime-700 text-xs px-3 py-1 rounded-full">
-                        💺 <?php echo esc_html($resultado_viaje['plazas_libres'] ?? 0); ?> plazas
+                        💺 <?php echo esc_html($resultado_viaje['plazas_libres'] ?? 0); ?> <?php echo esc_html__('plazas', 'flavor-chat-ia'); ?>
                     </span>
                 </div>
                 <div class="flex items-center justify-between pt-3 border-t border-gray-100">

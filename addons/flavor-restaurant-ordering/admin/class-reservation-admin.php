@@ -47,8 +47,8 @@ class Flavor_Reservation_Admin {
     public function add_menu_pages() {
         add_submenu_page(
             'flavor-platform',
-            'Reservas del Restaurante',
-            'Reservas',
+            __('Reservas del Restaurante', 'flavor-restaurant-ordering'),
+            __('Reservas', 'flavor-restaurant-ordering'),
             'manage_options',
             'flavor-restaurant-reservations',
             [$this, 'render_reservations_page']
@@ -83,6 +83,44 @@ class Flavor_Reservation_Admin {
         wp_localize_script('flavor-restaurant-reservations', 'flavorReservationAdmin', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_reservation_admin'),
+            'strings' => [
+                'loading_reservations' => __('Cargando reservas...', 'flavor-restaurant-ordering'),
+                'error_load_reservations' => __('Error al cargar reservas', 'flavor-restaurant-ordering'),
+                'loading_details' => __('Cargando detalles...', 'flavor-restaurant-ordering'),
+                'error_load_details' => __('Error al cargar detalles de la reserva', 'flavor-restaurant-ordering'),
+                'confirm_reservation' => __('¿Confirmar esta reserva?', 'flavor-restaurant-ordering'),
+                'reservation_confirmed' => __('Reserva confirmada correctamente', 'flavor-restaurant-ordering'),
+                'reservation_cancelled' => __('Reserva cancelada correctamente', 'flavor-restaurant-ordering'),
+                'error_confirm_reservation' => __('Error al confirmar la reserva', 'flavor-restaurant-ordering'),
+                'error_cancel_reservation' => __('Error al cancelar la reserva', 'flavor-restaurant-ordering'),
+                'error_prefix' => __('Error', 'flavor-restaurant-ordering'),
+                'status_label' => __('Estado', 'flavor-restaurant-ordering'),
+                'people_label' => __('personas', 'flavor-restaurant-ordering'),
+                'confirm_reservation_label' => __('Confirmar Reserva', 'flavor-restaurant-ordering'),
+                'cancel_reservation_label' => __('Cancelar Reserva', 'flavor-restaurant-ordering'),
+                'reservation_info' => __('Información de la Reserva', 'flavor-restaurant-ordering'),
+                'code_label' => __('Código', 'flavor-restaurant-ordering'),
+                'datetime_label' => __('Fecha y Hora', 'flavor-restaurant-ordering'),
+                'at_time' => __('a las', 'flavor-restaurant-ordering'),
+                'duration_label' => __('Duración', 'flavor-restaurant-ordering'),
+                'minutes_label' => __('minutos', 'flavor-restaurant-ordering'),
+                'guests_label' => __('Número de Personas', 'flavor-restaurant-ordering'),
+                'table_label' => __('Mesa', 'flavor-restaurant-ordering'),
+                'unassigned' => __('Por asignar', 'flavor-restaurant-ordering'),
+                'customer_info' => __('Información del Cliente', 'flavor-restaurant-ordering'),
+                'name_label' => __('Nombre', 'flavor-restaurant-ordering'),
+                'phone_label' => __('Teléfono', 'flavor-restaurant-ordering'),
+                'email_label' => __('Email', 'flavor-restaurant-ordering'),
+                'special_requests' => __('Solicitudes Especiales', 'flavor-restaurant-ordering'),
+                'internal_notes' => __('Notas Internas', 'flavor-restaurant-ordering'),
+                'dates_label' => __('Fechas', 'flavor-restaurant-ordering'),
+                'created_label' => __('Creada', 'flavor-restaurant-ordering'),
+                'confirmed_label' => __('Confirmada', 'flavor-restaurant-ordering'),
+                'cancelled_label' => __('Cancelada', 'flavor-restaurant-ordering'),
+                'cancel_reason_prompt' => __('Motivo de cancelación (opcional):', 'flavor-restaurant-ordering'),
+                'confirm' => __('Confirmar', 'flavor-restaurant-ordering'),
+                'cancel' => __('Cancelar', 'flavor-restaurant-ordering'),
+            ],
         ]);
     }
 
@@ -94,14 +132,14 @@ class Flavor_Reservation_Admin {
         <div class="wrap flavor-restaurant-reservations">
             <h1>
                 <span class="dashicons dashicons-calendar-alt"></span>
-                Gestión de Reservas
+                <?php esc_html_e('Gestión de Reservas', 'flavor-restaurant-ordering'); ?>
             </h1>
 
             <div class="flavor-restaurant-toolbar">
                 <div class="filter-group">
-                    <label>Estado:</label>
+                    <label><?php esc_html_e('Estado:', 'flavor-restaurant-ordering'); ?></label>
                     <select id="filter-status" class="status-filter">
-                        <option value="">Todos</option>
+                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
                         <option value="pending">Pendientes</option>
                         <option value="confirmed">Confirmadas</option>
                         <option value="cancelled">Canceladas</option>
@@ -111,12 +149,12 @@ class Flavor_Reservation_Admin {
                 </div>
 
                 <div class="filter-group">
-                    <label>Fecha:</label>
+                    <label><?php esc_html_e('Fecha:', 'flavor-restaurant-ordering'); ?></label>
                     <input type="date" id="filter-date" class="date-filter">
                 </div>
 
                 <div class="filter-group">
-                    <label>Mesa:</label>
+                    <label><?php esc_html_e('Mesa:', 'flavor-restaurant-ordering'); ?></label>
                     <select id="filter-table" class="table-filter">
                         <option value="">Todas las mesas</option>
                     </select>
@@ -131,12 +169,12 @@ class Flavor_Reservation_Admin {
 
                 <button type="button" id="refresh-reservations" class="button">
                     <span class="dashicons dashicons-update"></span>
-                    Actualizar
+                    <?php esc_html_e('Actualizar', 'flavor-restaurant-ordering'); ?>
                 </button>
 
                 <button type="button" id="show-statistics" class="button">
                     <span class="dashicons dashicons-chart-bar"></span>
-                    Estadísticas
+                    <?php esc_html_e('Estadísticas', 'flavor-restaurant-ordering'); ?>
                 </button>
             </div>
 
@@ -180,13 +218,13 @@ class Flavor_Reservation_Admin {
                 <div id="reservations-list" class="reservations-grid">
                     <div class="loading-indicator">
                         <span class="spinner is-active"></span>
-                        Cargando reservas...
+                        <?php esc_html_e('Cargando reservas...', 'flavor-restaurant-ordering'); ?>
                     </div>
                 </div>
 
                 <div id="no-reservations" class="no-results" style="display: none;">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p>No hay reservas que coincidan con los filtros seleccionados.</p>
+                    <p><?php esc_html_e('No hay reservas que coincidan con los filtros seleccionados.', 'flavor-restaurant-ordering'); ?></p>
                 </div>
             </div>
         </div>
@@ -195,7 +233,7 @@ class Flavor_Reservation_Admin {
         <div id="reservation-details-modal" class="flavor-modal" style="display: none;">
             <div class="flavor-modal-content">
                 <div class="flavor-modal-header">
-                    <h2 id="modal-reservation-title">Reserva #</h2>
+                    <h2 id="modal-reservation-title"><?php esc_html_e('Reserva #', 'flavor-restaurant-ordering'); ?></h2>
                     <button type="button" class="flavor-modal-close">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
@@ -204,12 +242,12 @@ class Flavor_Reservation_Admin {
                 <div class="flavor-modal-body" id="reservation-details-content">
                     <div class="loading-indicator">
                         <span class="spinner is-active"></span>
-                        Cargando detalles...
+                        <?php esc_html_e('Cargando detalles...', 'flavor-restaurant-ordering'); ?>
                     </div>
                 </div>
 
                 <div class="flavor-modal-footer">
-                    <button type="button" class="button button-secondary flavor-modal-close">Cerrar</button>
+                    <button type="button" class="button button-secondary flavor-modal-close"><?php esc_html_e('Cerrar', 'flavor-restaurant-ordering'); ?></button>
                 </div>
             </div>
         </div>
@@ -218,7 +256,7 @@ class Flavor_Reservation_Admin {
         <div id="statistics-modal" class="flavor-modal" style="display: none;">
             <div class="flavor-modal-content">
                 <div class="flavor-modal-header">
-                    <h2>Estadísticas de Reservas</h2>
+                    <h2><?php esc_html_e('Estadísticas de Reservas', 'flavor-restaurant-ordering'); ?></h2>
                     <button type="button" class="flavor-modal-close">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
@@ -227,12 +265,12 @@ class Flavor_Reservation_Admin {
                 <div class="flavor-modal-body" id="statistics-content">
                     <div class="loading-indicator">
                         <span class="spinner is-active"></span>
-                        Cargando estadísticas...
+                        <?php esc_html_e('Cargando estadísticas...', 'flavor-restaurant-ordering'); ?>
                     </div>
                 </div>
 
                 <div class="flavor-modal-footer">
-                    <button type="button" class="button button-secondary flavor-modal-close">Cerrar</button>
+                    <button type="button" class="button button-secondary flavor-modal-close"><?php esc_html_e('Cerrar', 'flavor-restaurant-ordering'); ?></button>
                 </div>
             </div>
         </div>
@@ -246,7 +284,7 @@ class Flavor_Reservation_Admin {
         check_ajax_referer('flavor_reservation_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $args = [
@@ -278,7 +316,7 @@ class Flavor_Reservation_Admin {
         check_ajax_referer('flavor_reservation_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $reservation_id = absint($_POST['reservation_id']);
@@ -287,7 +325,7 @@ class Flavor_Reservation_Admin {
         $reservation = $reservation_manager->get_reservation($reservation_id);
 
         if (!$reservation) {
-            wp_send_json_error(['message' => 'Reserva no encontrada']);
+            wp_send_json_error(['message' => __('Reserva no encontrada', 'flavor-restaurant-ordering')]);
         }
 
         wp_send_json_success([
@@ -302,7 +340,7 @@ class Flavor_Reservation_Admin {
         check_ajax_referer('flavor_reservation_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $reservation_id = absint($_POST['reservation_id']);
@@ -317,7 +355,7 @@ class Flavor_Reservation_Admin {
         }
 
         wp_send_json_success([
-            'message' => 'Estado actualizado correctamente',
+            'message' => __('Estado actualizado correctamente', 'flavor-restaurant-ordering'),
             'reservation' => $result,
         ]);
     }
@@ -329,7 +367,7 @@ class Flavor_Reservation_Admin {
         check_ajax_referer('flavor_reservation_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $reservation_id = absint($_POST['reservation_id']);
@@ -343,7 +381,7 @@ class Flavor_Reservation_Admin {
         }
 
         wp_send_json_success([
-            'message' => 'Reserva cancelada correctamente',
+            'message' => __('Reserva cancelada correctamente', 'flavor-restaurant-ordering'),
             'reservation' => $result,
         ]);
     }
@@ -355,7 +393,7 @@ class Flavor_Reservation_Admin {
         check_ajax_referer('flavor_reservation_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $date = sanitize_text_field($_POST['date']);
@@ -367,7 +405,7 @@ class Flavor_Reservation_Admin {
 
         wp_send_json_success([
             'available' => true,
-            'message' => 'Hay mesas disponibles para esa fecha y hora',
+            'message' => __('Hay mesas disponibles para esa fecha y hora', 'flavor-restaurant-ordering'),
         ]);
     }
 }

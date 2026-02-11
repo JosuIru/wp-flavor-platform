@@ -17,25 +17,25 @@ $filtros_activos = $filtros_activos ?? [];
 <div class="flavor-frontend flavor-fichaje-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+            <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">Limpiar</a>
+            <a href="?" class="text-sm text-indigo-600 hover:text-indigo-700 font-medium"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
             <?php endif; ?>
         </div>
 
         <form method="get" class="space-y-6">
             <!-- Rango de fechas -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Rango de fechas</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Rango de fechas', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-3">
                     <div>
-                        <label for="filtro_fecha_desde" class="block text-xs text-gray-500 mb-1">Fecha desde</label>
+                        <label for="filtro_fecha_desde" class="block text-xs text-gray-500 mb-1"><?php echo esc_html__('Fecha desde', 'flavor-chat-ia'); ?></label>
                         <input type="date" id="filtro_fecha_desde" name="fecha_desde"
                                value="<?php echo esc_attr($filtros_activos['fecha_desde'] ?? ''); ?>"
                                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
                     <div>
-                        <label for="filtro_fecha_hasta" class="block text-xs text-gray-500 mb-1">Fecha hasta</label>
+                        <label for="filtro_fecha_hasta" class="block text-xs text-gray-500 mb-1"><?php echo esc_html__('Fecha hasta', 'flavor-chat-ia'); ?></label>
                         <input type="date" id="filtro_fecha_hasta" name="fecha_hasta"
                                value="<?php echo esc_attr($filtros_activos['fecha_hasta'] ?? ''); ?>"
                                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
@@ -45,7 +45,7 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Tipo de registro -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Tipo de registro</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Tipo de registro', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $tipos_registro_fichaje = [
@@ -71,7 +71,7 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Estado de validacion -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Estado</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $estados_validacion_fichaje = [
@@ -97,7 +97,7 @@ $filtros_activos = $filtros_activos ?? [];
             <!-- Boton aplicar -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md">
-                Aplicar Filtros
+                <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

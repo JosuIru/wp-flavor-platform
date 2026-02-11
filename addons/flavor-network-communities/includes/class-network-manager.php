@@ -323,12 +323,29 @@ class Flavor_Network_Manager {
      */
     public function is_modulo_activo($modulo_id) {
         $activos = $this->get_modulos_activos();
-        return in_array($modulo_id, $activos);
+        if (empty($activos)) {
+            return true;
+        }
+        return in_array($modulo_id, $activos, true);
+    }
+
+    /**
+     * Renderiza un aviso cuando el módulo no está activo en la red.
+     */
+    private function render_modulo_inactivo($modulo_id) {
+        $modulo = $this->modulos_registrados[$modulo_id] ?? null;
+        $nombre = $modulo['nombre'] ?? $modulo_id;
+        return '<div class="notice notice-warning" style="padding:12px;margin:15px 0;">' .
+            esc_html(sprintf(__('El módulo "%s" no está activo en tu nodo de red.', 'flavor-chat-ia'), $nombre)) .
+            '</div>';
     }
 
     // ─── Shortcodes ───
 
     public function shortcode_directory($atts) {
+        if (!$this->is_modulo_activo('perfil_publico')) {
+            return $this->render_modulo_inactivo('perfil_publico');
+        }
         $atts = shortcode_atts([
             'tipo'   => '',
             'pais'   => '',
@@ -342,6 +359,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_map($atts) {
+        if (!$this->is_modulo_activo('geolocalizacion')) {
+            return $this->render_modulo_inactivo('geolocalizacion');
+        }
         $atts = shortcode_atts([
             'altura' => '500px',
             'tipo'   => '',
@@ -356,6 +376,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_board($atts) {
+        if (!$this->is_modulo_activo('tablon_red')) {
+            return $this->render_modulo_inactivo('tablon_red');
+        }
         $atts = shortcode_atts([
             'tipo'   => '',
             'limite' => 15,
@@ -368,6 +391,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_events($atts) {
+        if (!$this->is_modulo_activo('eventos')) {
+            return $this->render_modulo_inactivo('eventos');
+        }
         $atts = shortcode_atts([
             'limite' => 10,
         ], $atts);
@@ -379,6 +405,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_alerts($atts) {
+        if (!$this->is_modulo_activo('alertas_solidarias')) {
+            return $this->render_modulo_inactivo('alertas_solidarias');
+        }
         $atts = shortcode_atts([
             'limite' => 10,
         ], $atts);
@@ -390,6 +419,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_catalog($atts) {
+        if (!$this->is_modulo_activo('catalogo_publico')) {
+            return $this->render_modulo_inactivo('catalogo_publico');
+        }
         $atts = shortcode_atts([
             'nodo' => '',
             'tipo' => '',
@@ -402,6 +434,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_collaborations($atts) {
+        if (!$this->is_modulo_activo('proyectos')) {
+            return $this->render_modulo_inactivo('proyectos');
+        }
         $atts = shortcode_atts([
             'tipo'   => '',
             'limite' => 10,
@@ -414,6 +449,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_time_offers($atts) {
+        if (!$this->is_modulo_activo('banco_tiempo')) {
+            return $this->render_modulo_inactivo('banco_tiempo');
+        }
         $atts = shortcode_atts([
             'tipo'   => '',
             'limite' => 10,
@@ -426,6 +464,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_node_profile($atts) {
+        if (!$this->is_modulo_activo('perfil_publico')) {
+            return $this->render_modulo_inactivo('perfil_publico');
+        }
         $atts = shortcode_atts([
             'slug' => '',
         ], $atts);
@@ -441,6 +482,9 @@ class Flavor_Network_Manager {
     }
 
     public function shortcode_network_questions($atts) {
+        if (!$this->is_modulo_activo('preguntas_red')) {
+            return $this->render_modulo_inactivo('preguntas_red');
+        }
         $atts = shortcode_atts([
             'categoria' => '',
             'limite'    => 10,

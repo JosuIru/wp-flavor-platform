@@ -86,7 +86,7 @@ class Flavor_Chat_Claude_Engine {
             if (!$active_engine) {
                 return [
                     'success' => false,
-                    'error' => 'No hay motor de IA configurado',
+                    'error' => __('No hay motor de IA configurado', 'flavor-chat-ia'),
                     'error_code' => 'no_engine',
                 ];
             }
@@ -104,7 +104,7 @@ class Flavor_Chat_Claude_Engine {
             if (empty($api_key)) {
                 return [
                     'success' => false,
-                    'error' => 'API key no configurada',
+                    'error' => __('API key no configurada', 'flavor-chat-ia'),
                     'error_code' => 'no_api_key',
                 ];
             }
@@ -198,7 +198,7 @@ class Flavor_Chat_Claude_Engine {
 
         return [
             'success' => false,
-            'error' => 'Formato de respuesta desconocido',
+            'error' => __('Formato de respuesta desconocido', 'flavor-chat-ia'),
             'error_code' => 'unknown_format',
         ];
     }
@@ -559,7 +559,7 @@ PROMPT,
             flavor_chat_ia_log('Error API: ' . $response->get_error_message(), 'error');
             return [
                 'success' => false,
-                'error' => 'Error de conexión con la API',
+                'error' => __('Error de conexión con la API', 'flavor-chat-ia'),
                 'error_code' => 'connection_error',
             ];
         }
@@ -683,7 +683,7 @@ PROMPT,
 
         return [
             'success' => false,
-            'error' => 'Sistema de módulos no disponible',
+            'error' => __('Sistema de módulos no disponible', 'flavor-chat-ia'),
         ];
     }
 
@@ -703,7 +703,7 @@ PROMPT,
         if ($this->recursion_depth > self::MAX_RECURSION_DEPTH) {
             return [
                 'success' => false,
-                'error' => 'Demasiadas llamadas a herramientas',
+                'error' => __('Demasiadas llamadas a herramientas', 'flavor-chat-ia'),
                 'error_code' => 'max_recursion',
             ];
         }
@@ -713,7 +713,7 @@ PROMPT,
         if (!$engine_manager) {
             return [
                 'success' => false,
-                'error' => 'Engine Manager no disponible',
+                'error' => __('Engine Manager no disponible', 'flavor-chat-ia'),
                 'error_code' => 'no_engine_manager',
             ];
         }
@@ -788,7 +788,7 @@ PROMPT,
         if ($this->recursion_depth > self::MAX_RECURSION_DEPTH) {
             return [
                 'success' => false,
-                'error' => 'Demasiadas llamadas a herramientas',
+                'error' => __('Demasiadas llamadas a herramientas', 'flavor-chat-ia'),
                 'error_code' => 'max_recursion',
             ];
         }

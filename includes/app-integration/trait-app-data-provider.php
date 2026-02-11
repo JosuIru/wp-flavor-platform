@@ -51,7 +51,7 @@ trait Flavor_App_Data_Provider {
         register_rest_route($namespace, "/modules/{$module_id}/items", [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'api_get_items'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'page' => ['type' => 'integer', 'default' => 1],
                 'per_page' => ['type' => 'integer', 'default' => 10],
@@ -66,28 +66,28 @@ trait Flavor_App_Data_Provider {
         register_rest_route($namespace, "/modules/{$module_id}/items/(?P<id>\d+)", [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'api_get_item'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Endpoint de categorías
         register_rest_route($namespace, "/modules/{$module_id}/categories", [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'api_get_categories'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Endpoint de estadísticas
         register_rest_route($namespace, "/modules/{$module_id}/stats", [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'api_get_stats'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Endpoint de ubicaciones para mapa
         register_rest_route($namespace, "/modules/{$module_id}/locations", [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'api_get_locations'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'bounds' => ['type' => 'string', 'default' => ''], // formato: lat1,lng1,lat2,lng2
                 'category' => ['type' => 'string', 'default' => ''],
@@ -138,11 +138,12 @@ trait Flavor_App_Data_Provider {
         ];
 
         $result = $this->get_items_for_app($params);
+        $items_publicos = $this->sanitize_public_payload($result['items'] ?? []);
 
         return rest_ensure_response([
             'success' => true,
             'module' => $this->get_module_id(),
-            'items' => $result['items'],
+            'items' => $items_publicos,
             'pagination' => [
                 'page' => $params['page'],
                 'per_page' => $params['per_page'],
@@ -166,7 +167,7 @@ trait Flavor_App_Data_Provider {
         return rest_ensure_response([
             'success' => true,
             'module' => $this->get_module_id(),
-            'item' => $item,
+            'item' => $this->sanitize_public_payload($item),
         ]);
     }
 
@@ -216,7 +217,9 @@ trait Flavor_App_Data_Provider {
             }
         }
 
-        $locations = $this->get_locations_for_app($bounds_array, $category);
+        $locations = $this->sanitize_public_payload(
+            $this->get_locations_for_app($bounds_array, $category)
+        );
 
         return rest_ensure_response([
             'success' => true,
@@ -240,7 +243,7 @@ trait Flavor_App_Data_Provider {
         return rest_ensure_response([
             'success' => true,
             'module' => $this->get_module_id(),
-            'item' => $result,
+            'item' => $this->sanitize_public_payload($result),
         ]);
     }
 
@@ -254,7 +257,11 @@ trait Flavor_App_Data_Provider {
             'category' => $context['category'] ?? '',
         ];
 
-        return $this->get_items_for_app($params);
+        $result = $this->get_items_for_app($params);
+        if (isset($result['items'])) {
+            $result['items'] = $this->sanitize_public_payload($result['items']);
+        }
+        return $result;
     }
 
     /**
@@ -269,7 +276,9 @@ trait Flavor_App_Data_Provider {
      */
     public function provide_map_data($data, $context) {
         return [
-            'markers' => $this->get_locations_for_app(null, $context['category'] ?? ''),
+            'markers' => $this->sanitize_public_payload(
+                $this->get_locations_for_app(null, $context['category'] ?? '')
+            ),
             'center' => $this->get_map_center(),
             'zoom' => $context['zoom'] ?? 14,
         ];
@@ -290,7 +299,9 @@ trait Flavor_App_Data_Provider {
         $end = $context['end'] ?? date('Y-m-t');
 
         return [
-            'events' => $this->get_events_for_app($start, $end),
+            'events' => $this->sanitize_public_payload(
+                $this->get_events_for_app($start, $end)
+            ),
         ];
     }
 
@@ -304,6 +315,58 @@ trait Flavor_App_Data_Provider {
             'endpoints' => $this->get_module_endpoints(),
             'capabilities' => $this->get_module_capabilities(),
         ];
+    }
+
+    /**
+     * Elimina claves sensibles en payloads públicos (apps/REST)
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    protected function sanitize_public_payload($data) {
+        $blocked = [
+            'email', 'e_mail', 'correo', 'mail', 'user_email', 'customer_email', 'contact_email', 'owner_email',
+            'phone', 'telefono', 'tel', 'mobile', 'movil', 'whatsapp', 'customer_phone', 'contact_phone', 'owner_phone',
+            'address', 'direccion', 'street', 'full_address', 'postal_code', 'postcode', 'zip',
+            'dni', 'nif', 'passport', 'document', 'documento',
+            'api_key', 'api_secret', 'token', 'secret', 'nonce',
+            'ip', 'ip_address',
+            'password', 'pass', 'pwd',
+        ];
+
+        $clean = $this->sanitize_public_payload_recursive($data, $blocked);
+
+        return apply_filters('flavor_app_public_payload', $clean, $this->get_module_id());
+    }
+
+    private function sanitize_public_payload_recursive($data, $blocked) {
+        if (is_array($data)) {
+            $output = [];
+            foreach ($data as $key => $value) {
+                if (is_string($key) && $this->is_blocked_key($key, $blocked)) {
+                    continue;
+                }
+                $output[$key] = $this->sanitize_public_payload_recursive($value, $blocked);
+            }
+            return $output;
+        }
+
+        if (is_object($data)) {
+            $output = [];
+            foreach (get_object_vars($data) as $key => $value) {
+                if (is_string($key) && $this->is_blocked_key($key, $blocked)) {
+                    continue;
+                }
+                $output[$key] = $this->sanitize_public_payload_recursive($value, $blocked);
+            }
+            return $output;
+        }
+
+        return $data;
+    }
+
+    private function is_blocked_key($key, $blocked) {
+        return in_array(strtolower($key), $blocked, true);
     }
 
     // =====================================================
@@ -511,5 +574,11 @@ trait Flavor_App_Data_Provider {
             'end' => $end,
             'all_day' => empty($end),
         ], $extra);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

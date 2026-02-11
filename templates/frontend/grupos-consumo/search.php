@@ -14,11 +14,11 @@ $sugerencias = $sugerencias ?? ['verduras', 'fruta', 'huevos', 'pan', 'carne'];
 <div class="flavor-frontend flavor-grupos-consumo-search">
     <!-- Buscador -->
     <div class="bg-gradient-to-r from-lime-500 to-green-500 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">🔍 Buscar grupos de consumo</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('🔍 Buscar grupos de consumo', 'flavor-chat-ia'); ?></h2>
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q" value="<?php echo esc_attr($query); ?>"
-                       placeholder="Busca por nombre, zona o tipo de productos..."
+                       placeholder="<?php echo esc_attr__('Busca por nombre, zona o tipo de productos...', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-lime-300">
                 <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-lime-600 text-white p-3 rounded-lg hover:bg-lime-700 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@ $sugerencias = $sugerencias ?? ['verduras', 'fruta', 'huevos', 'pan', 'carne'];
 
         <?php if (!empty($sugerencias) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-lime-100 text-sm">Populares:</span>
+            <span class="text-lime-100 text-sm"><?php echo esc_html__('Populares:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias as $sug): ?>
             <a href="?q=<?php echo esc_attr($sug); ?>" class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
                 <?php echo esc_html($sug); ?>
@@ -55,11 +55,11 @@ $sugerencias = $sugerencias ?? ['verduras', 'fruta', 'huevos', 'pan', 'carne'];
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">🔍</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos grupos</h3>
-        <p class="text-gray-500 mb-6">Prueba con otros términos o crea tu propio grupo</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos grupos', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('Prueba con otros términos o crea tu propio grupo', 'flavor-chat-ia'); ?></p>
         <button class="bg-lime-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-lime-600 transition-colors"
                 onclick="flavorGruposConsumo.crearGrupo()">
-            Crear grupo de consumo
+            <?php echo esc_html__('Crear grupo de consumo', 'flavor-chat-ia'); ?>
         </button>
     </div>
     <?php else: ?>

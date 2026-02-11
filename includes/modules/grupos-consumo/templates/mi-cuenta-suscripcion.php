@@ -190,7 +190,7 @@ $historial_entregas = $args['historial'] ?? [];
 <!-- Modal de suscripción -->
 <div class="gc-modal gc-modal-suscripcion" id="gc-modal-suscripcion" style="display: none;">
     <div class="gc-modal-content">
-        <button type="button" class="gc-modal-close">&times;</button>
+        <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
         <div class="gc-modal-header">
             <h3><?php _e('Suscribirse a cesta', 'flavor-chat-ia'); ?></h3>
         </div>
@@ -201,9 +201,9 @@ $historial_entregas = $args['historial'] ?? [];
                 <div class="gc-form-grupo">
                     <label for="gc-suscripcion-frecuencia"><?php _e('Frecuencia de entrega:', 'flavor-chat-ia'); ?></label>
                     <select name="frecuencia" id="gc-suscripcion-frecuencia" required>
-                        <option value="semanal"><?php _e('Semanal', 'flavor-chat-ia'); ?></option>
-                        <option value="quincenal"><?php _e('Quincenal', 'flavor-chat-ia'); ?></option>
-                        <option value="mensual"><?php _e('Mensual', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('semanal', 'flavor-chat-ia'); ?>"><?php _e('Semanal', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('quincenal', 'flavor-chat-ia'); ?>"><?php _e('Quincenal', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('mensual', 'flavor-chat-ia'); ?>"><?php _e('Mensual', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 

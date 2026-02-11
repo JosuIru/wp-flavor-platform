@@ -62,10 +62,10 @@ $garantias_compra = $garantias_compra ?? [
 
             <!-- Metodos de pago -->
             <div class="flex items-center justify-center gap-4 mb-8">
-                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600">Visa</div>
-                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600">MasterCard</div>
-                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600">PayPal</div>
-                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600">Bizum</div>
+                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('Visa', 'flavor-chat-ia'); ?></div>
+                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('MasterCard', 'flavor-chat-ia'); ?></div>
+                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('PayPal', 'flavor-chat-ia'); ?></div>
+                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('Bizum', 'flavor-chat-ia'); ?></div>
             </div>
 
             <!-- Boton CTA -->

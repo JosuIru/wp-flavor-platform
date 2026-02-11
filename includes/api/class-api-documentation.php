@@ -484,7 +484,8 @@ class Flavor_API_Documentation {
      */
     private function init_hooks() {
         add_action('rest_api_init', [$this, 'register_documentation_route']);
-        add_action('admin_menu', [$this, 'add_documentation_page']);
+        // NOTA: El menú se registra centralizadamente en class-admin-menu-manager.php
+        // add_action('admin_menu', [$this, 'add_documentation_page']);
     }
 
     /**
@@ -494,13 +495,13 @@ class Flavor_API_Documentation {
         register_rest_route('flavor/v1', '/docs', [
             'methods' => 'GET',
             'callback' => [$this, 'get_openapi_spec'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/docs/endpoints', [
             'methods' => 'GET',
             'callback' => [$this, 'get_endpoints_list'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -696,5 +697,11 @@ class Flavor_API_Documentation {
      */
     public function get_schemas() {
         return $this->schemas;
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header con gradiente -->
     <div class="bg-gradient-to-r from-green-500 to-emerald-600 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Compostaje Comunitario</h1>
-            <p class="text-white/90 text-lg">Transforma residuos organicos en recursos para la comunidad</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Compostaje Comunitario', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Transforma residuos organicos en recursos para la comunidad', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
 
@@ -27,25 +27,25 @@ $por_pagina = $por_pagina ?? 12;
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-green-600">12</span>
-                <span class="text-sm text-gray-500">Composteras activas</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Composteras activas', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
-                <span class="block text-3xl font-bold text-emerald-600">3.2t</span>
-                <span class="text-sm text-gray-500">Kg compostados</span>
+                <span class="block text-3xl font-bold text-emerald-600"><?php echo esc_html__('3.2t', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Kg compostados', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-green-600">186</span>
-                <span class="text-sm text-gray-500">Participantes</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Participantes', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
-                <span class="block text-3xl font-bold text-emerald-600">1.8t</span>
-                <span class="text-sm text-gray-500">CO2 evitado</span>
+                <span class="block text-3xl font-bold text-emerald-600"><?php echo esc_html__('1.8t', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('CO2 evitado', 'flavor-chat-ia'); ?></span>
             </div>
         </div>
 
         <!-- Como funciona -->
         <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 mb-8">
-            <h2 class="text-lg font-bold text-gray-900 mb-4 text-center">Como funciona</h2>
+            <h2 class="text-lg font-bold text-gray-900 mb-4 text-center"><?php echo esc_html__('Como funciona', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="text-center">
                     <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
@@ -53,8 +53,8 @@ $por_pagina = $por_pagina ?? 12;
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-gray-900 mb-1">1. Separa organico</h3>
-                    <p class="text-sm text-gray-600">Separa tus residuos organicos en casa</p>
+                    <h3 class="font-bold text-gray-900 mb-1"><?php echo esc_html__('1. Separa organico', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-sm text-gray-600"><?php echo esc_html__('Separa tus residuos organicos en casa', 'flavor-chat-ia'); ?></p>
                 </div>
                 <div class="text-center">
                     <div class="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-3">
@@ -63,8 +63,8 @@ $por_pagina = $por_pagina ?? 12;
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-gray-900 mb-1">2. Llevalo a compostera</h3>
-                    <p class="text-sm text-gray-600">Deposita en la compostera mas cercana</p>
+                    <h3 class="font-bold text-gray-900 mb-1"><?php echo esc_html__('2. Llevalo a compostera', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-sm text-gray-600"><?php echo esc_html__('Deposita en la compostera mas cercana', 'flavor-chat-ia'); ?></p>
                 </div>
                 <div class="text-center">
                     <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
@@ -72,8 +72,8 @@ $por_pagina = $por_pagina ?? 12;
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-gray-900 mb-1">3. Recoge compost</h3>
-                    <p class="text-sm text-gray-600">Utiliza el compost en tu jardin o huerto</p>
+                    <h3 class="font-bold text-gray-900 mb-1"><?php echo esc_html__('3. Recoge compost', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-sm text-gray-600"><?php echo esc_html__('Utiliza el compost en tu jardin o huerto', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@ $por_pagina = $por_pagina ?? 12;
         <!-- Barra de herramientas -->
         <div class="flex items-center justify-between mb-6">
             <p class="text-gray-600">
-                Mostrando <span class="font-semibold"><?php echo count($composteras); ?></span> de <?php echo esc_html($total_composteras); ?> composteras
+                <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($composteras); ?></span> de <?php echo esc_html($total_composteras); ?> composteras
             </p>
         </div>
 
@@ -90,8 +90,8 @@ $por_pagina = $por_pagina ?? 12;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay composteras registradas</h3>
-                <p class="text-gray-500">Pronto se anunciaran nuevas composteras comunitarias</p>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay composteras registradas', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500"><?php echo esc_html__('Pronto se anunciaran nuevas composteras comunitarias', 'flavor-chat-ia'); ?></p>
             </div>
         <?php else: ?>
             <!-- Grid de composteras -->
@@ -133,7 +133,7 @@ $por_pagina = $por_pagina ?? 12;
                             <!-- Barra de capacidad -->
                             <div class="mb-4">
                                 <div class="flex items-center justify-between text-sm mb-1">
-                                    <span class="text-gray-600">Capacidad</span>
+                                    <span class="text-gray-600"><?php echo esc_html__('Capacidad', 'flavor-chat-ia'); ?></span>
                                     <span class="font-bold <?php echo $capacidad_compostera > 80 ? 'text-amber-600' : 'text-green-600'; ?>">
                                         <?php echo esc_html($capacidad_compostera); ?>%
                                     </span>
@@ -163,7 +163,7 @@ $por_pagina = $por_pagina ?? 12;
                             <div class="mt-4 pt-4 border-t border-gray-100">
                                 <a href="<?php echo esc_url($compostera['url'] ?? '#'); ?>"
                                    class="block w-full py-2 rounded-xl text-center text-green-600 font-semibold text-sm bg-green-50 hover:bg-green-100 transition-colors">
-                                    Ver compostera
+                                    <?php echo esc_html__('Ver compostera', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
                         </div>

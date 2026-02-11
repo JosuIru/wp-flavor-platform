@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
@@ -20,41 +22,58 @@ class MessageTemplate {
     required this.icon,
   });
 
-  String format(Reservation reservation) {
+  String format(Reservation reservation, {required String defaultCustomerName}) {
     return template
-        .replaceAll('{nombre}', reservation.customer?.name ?? 'Cliente')
+        .replaceAll('{nombre}', reservation.customer?.name ?? defaultCustomerName)
         .replaceAll('{fecha}', reservation.date)
         .replaceAll('{ticket}', reservation.ticketName)
         .replaceAll('{codigo}', reservation.ticketCode);
   }
 }
 
-const List<MessageTemplate> messageTemplates = [
-  MessageTemplate(
-    id: 'confirmacion',
-    name: 'Confirmación',
-    template: 'Hola {nombre}! Tu reserva para {ticket} el día {fecha} está confirmada. Código: {codigo}. ¡Te esperamos!',
-    icon: Icons.check_circle,
-  ),
-  MessageTemplate(
-    id: 'recordatorio',
-    name: 'Recordatorio',
-    template: 'Hola {nombre}! Te recordamos que tienes una reserva para {ticket} el día {fecha}. Código: {codigo}. ¡Te esperamos!',
-    icon: Icons.alarm,
-  ),
-  MessageTemplate(
-    id: 'cambio',
-    name: 'Cambio/Aviso',
-    template: 'Hola {nombre}! Te informamos sobre tu reserva de {ticket} del día {fecha}. ',
-    icon: Icons.info,
-  ),
-  MessageTemplate(
-    id: 'agradecimiento',
-    name: 'Agradecimiento',
-    template: 'Hola {nombre}! Gracias por visitarnos. Esperamos que hayas disfrutado de {ticket}. ¡Esperamos verte pronto!',
-    icon: Icons.favorite,
-  ),
-];
+List<MessageTemplate> _messageTemplates(AppLocalizations i18n) => [
+      MessageTemplate(
+        id: 'confirmacion',
+        name: i18n.reservationsTemplateNameConfirmation,
+        template: i18n.reservationsTemplateTextConfirmation(
+          '{nombre}',
+          '{ticket}',
+          '{fecha}',
+          '{codigo}',
+        ),
+        icon: Icons.check_circle,
+      ),
+      MessageTemplate(
+        id: 'recordatorio',
+        name: i18n.reservationsTemplateNameReminder,
+        template: i18n.reservationsTemplateTextReminder(
+          '{nombre}',
+          '{ticket}',
+          '{fecha}',
+          '{codigo}',
+        ),
+        icon: Icons.alarm,
+      ),
+      MessageTemplate(
+        id: 'cambio',
+        name: i18n.reservationsTemplateNameChange,
+        template: i18n.reservationsTemplateTextChange(
+          '{nombre}',
+          '{ticket}',
+          '{fecha}',
+        ),
+        icon: Icons.info,
+      ),
+      MessageTemplate(
+        id: 'agradecimiento',
+        name: i18n.reservationsTemplateNameThanks,
+        template: i18n.reservationsTemplateTextThanks(
+          '{nombre}',
+          '{ticket}',
+        ),
+        icon: Icons.favorite,
+      ),
+    ];
 
 /// Pantalla de gestión de reservas para admin con dos vistas
 class AdminReservationsScreen extends ConsumerStatefulWidget {
@@ -67,6 +86,7 @@ class AdminReservationsScreen extends ConsumerStatefulWidget {
 
 class _AdminReservationsScreenState
     extends ConsumerState<AdminReservationsScreen> with SingleTickerProviderStateMixin {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   late TabController _tabController;
 
   // Modo de filtro: fecha única o rango
@@ -212,16 +232,16 @@ class _AdminReservationsScreenState
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Check-in masivo'),
-        content: Text('¿Realizar check-in de ${_selectedIds.length} reservas?'),
+        title: Text(i18n.checkInMasivo074798),
+        content: Text(i18n.reservationsCheckinConfirm(_selectedIds.length)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Confirmar'),
+            child: Text(i18n.confirmar848793),
           ),
         ],
       ),
@@ -245,7 +265,7 @@ class _AdminReservationsScreenState
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Check-in: $successCount exitosos, $errorCount errores'),
+          content: Text(i18n.reservationsCheckinResult(successCount, errorCount)),
           backgroundColor: errorCount == 0 ? Colors.green : Colors.orange,
         ),
       );
@@ -263,17 +283,17 @@ class _AdminReservationsScreenState
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Cancelación masiva'),
-        content: Text('¿Cancelar ${_selectedIds.length} reservas? Esta acción no se puede deshacer.'),
+        title: Text(i18n.cancelaciNMasiva9b9f47),
+        content: Text(i18n.reservationsCancelConfirm(_selectedIds.length)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('No'),
+            child: Text(i18n.noBafd73),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Sí, cancelar'),
+            child: Text(i18n.sCancelarA16a02),
           ),
         ],
       ),
@@ -297,7 +317,7 @@ class _AdminReservationsScreenState
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Canceladas: $successCount exitosas, $errorCount errores'),
+          content: Text(i18n.reservationsCancelResult(successCount, errorCount)),
           backgroundColor: errorCount == 0 ? Colors.orange : Colors.red,
         ),
       );
@@ -326,8 +346,7 @@ class _AdminReservationsScreenState
 
     if (withPhone.isEmpty && withEmail.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ninguna reserva seleccionada tiene datos de contacto'),
+        SnackBar(content: Text(i18n.ningunaReservaSeleccionadaTieneDatosB33ea0),
           backgroundColor: Colors.orange,
         ),
       );
@@ -350,13 +369,14 @@ class _AdminReservationsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final reservationsAsync = ref.watch(adminReservationsProvider(_params));
 
     return Scaffold(
       appBar: AppBar(
         title: _isSelectionMode
-            ? Text('${_selectedIds.length} seleccionadas')
-            : const Text('Reservas'),
+            ? Text(i18n.reservationsSelectedCount(_selectedIds.length))
+            : Text(i18n.reservas843a17),
         leading: _isSelectionMode
             ? IconButton(
                 onPressed: _toggleSelectionMode,
@@ -368,12 +388,12 @@ class _AdminReservationsScreenState
                 IconButton(
                   onPressed: _selectedIds.isNotEmpty ? _bulkCheckin : null,
                   icon: const Icon(Icons.check_circle),
-                  tooltip: 'Check-in masivo',
+                  tooltip: i18n.checkInMasivo074798,
                 ),
                 IconButton(
                   onPressed: _selectedIds.isNotEmpty ? _bulkCancel : null,
                   icon: const Icon(Icons.cancel),
-                  tooltip: 'Cancelar masivo',
+                  tooltip: i18n.cancelarMasivo3df6df,
                 ),
                 Builder(
                   builder: (context) {
@@ -384,7 +404,7 @@ class _AdminReservationsScreenState
                             ? () => _bulkMessage(reservations)
                             : null,
                         icon: const Icon(Icons.message),
-                        tooltip: 'Enviar mensaje',
+                        tooltip: i18n.enviarMensaje66679f,
                       ),
                       orElse: () => const SizedBox.shrink(),
                     );
@@ -395,7 +415,7 @@ class _AdminReservationsScreenState
                 IconButton(
                   onPressed: _toggleSelectionMode,
                   icon: const Icon(Icons.checklist),
-                  tooltip: 'Selección múltiple',
+                  tooltip: i18n.selecciNMLtipleE97c53,
                 ),
                 IconButton(
                   onPressed: () {
@@ -406,9 +426,9 @@ class _AdminReservationsScreenState
               ],
         bottom: _isSelectionMode ? null : TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.confirmation_number), text: 'Reservas'),
-            Tab(icon: Icon(Icons.people), text: 'Clientes'),
+          tabs: [
+            Tab(icon: const Icon(Icons.confirmation_number), text: i18n.reservas843a17),
+            Tab(icon: const Icon(Icons.people), text: i18n.clientesA374d1),
           ],
         ),
       ),
@@ -463,9 +483,9 @@ class _AdminReservationsScreenState
             child: reservationsAsync.when(
               data: (reservations) {
                 if (reservations.isEmpty) {
-                  return const EmptyScreen(
-                    message: 'No hay reservas',
-                    subtitle: 'No se encontraron reservas para los filtros seleccionados',
+                  return EmptyScreen(
+                    message: i18n.reservationsEmptyTitle,
+                    subtitle: i18n.reservationsEmptySubtitle,
                     icon: Icons.event_busy,
                   );
                 }
@@ -485,11 +505,13 @@ class _AdminReservationsScreenState
                               TextButton.icon(
                                 onPressed: () => _selectAll(reservations),
                                 icon: const Icon(Icons.select_all),
-                                label: const Text('Seleccionar pendientes'),
+                                label: Text(i18n.seleccionarPendientesC4afe1),
                               ),
                               const Spacer(),
                               Text(
-                                '${reservations.where((r) => r.isPending).length} pendientes',
+                                i18n.reservationsPendingCount(
+                                  reservations.where((r) => r.isPending).length,
+                                ),
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
@@ -522,9 +544,9 @@ class _AdminReservationsScreenState
                   ),
                 );
               },
-              loading: () => const LoadingScreen(message: 'Cargando reservas...'),
+              loading: () => LoadingScreen(message: i18n.loadingReservations),
               error: (error, stack) => ErrorScreen(
-                message: 'Error al cargar reservas',
+                message: i18n.reservationsLoadError,
                 onRetry: () => ref.invalidate(adminReservationsProvider(_params)),
               ),
             ),
@@ -592,6 +614,7 @@ class _FiltersSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context)!;
     // Obtener disponibilidad del mes seleccionado para saber el estado del día
     final monthKey = _getMonthKey(selectedDate);
     final availabilityAsync = ref.watch(availabilityProvider(monthKey));
@@ -633,7 +656,7 @@ class _FiltersSection extends ConsumerWidget {
           TextField(
             controller: searchController,
             decoration: InputDecoration(
-              hintText: 'Buscar por nombre, email o código...',
+              hintText: i18n.buscarPorNombreEmailOCDigo1c88c2,
               prefixIcon: const Icon(Icons.search),
               suffixIcon: searchController.text.isNotEmpty
                   ? IconButton(
@@ -658,9 +681,9 @@ class _FiltersSection extends ConsumerWidget {
             children: [
               // Toggle
               SegmentedButton<bool>(
-                segments: const [
-                  ButtonSegment(value: false, label: Text('Día')),
-                  ButtonSegment(value: true, label: Text('Rango')),
+                segments: [
+                  ButtonSegment(value: false, label: Text(i18n.dA734300)),
+                  ButtonSegment(value: true, label: Text(i18n.rango10f7ce)),
                 ],
                 selected: {useDateRange},
                 onSelectionChanged: (_) => onDateModeTap(),
@@ -679,8 +702,8 @@ class _FiltersSection extends ConsumerWidget {
                   ),
                   label: Text(
                     useDateRange
-                        ? _formatDateRange(startDate, endDate)
-                        : _formatDate(selectedDate),
+                        ? _formatDateRange(context, startDate, endDate, i18n.localeName)
+                        : _formatDate(selectedDate, i18n.localeName),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -701,12 +724,12 @@ class _FiltersSection extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  hint: const Text('Estado'),
-                  items: const [
-                    DropdownMenuItem(value: null, child: Text('Todos')),
-                    DropdownMenuItem(value: 'pendiente', child: Text('Pendiente')),
-                    DropdownMenuItem(value: 'usado', child: Text('Usado')),
-                    DropdownMenuItem(value: 'cancelado', child: Text('Cancelado')),
+                  hint: Text(i18n.estado3397e6),
+                  items: [
+                    DropdownMenuItem(value: null, child: Text(i18n.todos32630c)),
+                    DropdownMenuItem(value: 'pendiente', child: Text(i18n.pendiente17fd63)),
+                    DropdownMenuItem(value: 'usado', child: Text(i18n.usadoC277c8)),
+                    DropdownMenuItem(value: 'cancelado', child: Text(i18n.cancelado04b0f5)),
                   ],
                   onChanged: onStatusChanged,
                 ),
@@ -734,10 +757,10 @@ class _FiltersSection extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      hint: const Text('Ticket'),
+                      hint: Text(i18n.ticketC75143),
                       isExpanded: true,
                       items: [
-                        const DropdownMenuItem(value: null, child: Text('Todos')),
+                        DropdownMenuItem(value: null, child: Text(i18n.todos32630c)),
                         ...tickets.map((t) => DropdownMenuItem(
                               value: t.slug,
                               child: Text(
@@ -763,13 +786,20 @@ class _FiltersSection extends ConsumerWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
+  String _formatDate(DateTime date, String localeName) {
+    return DateFormat.yMd(localeName).format(date);
   }
 
-  String _formatDateRange(DateTime? start, DateTime? end) {
-    if (start == null || end == null) return 'Seleccionar';
-    return '${start.day}/${start.month} - ${end.day}/${end.month}';
+  String _formatDateRange(
+    BuildContext context,
+    DateTime? start,
+    DateTime? end,
+    String localeName,
+  ) {
+    if (start == null || end == null) return AppLocalizations.of(context)!.commonSelect;
+    final startLabel = DateFormat.Md(localeName).format(start);
+    final endLabel = DateFormat.Md(localeName).format(end);
+    return '$startLabel - $endLabel';
   }
 }
 
@@ -790,6 +820,7 @@ class _ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
@@ -826,7 +857,7 @@ class _ReservationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      reservation.customer?.name ?? 'Sin nombre',
+                      reservation.customer?.name ?? i18n.reservationsNoName,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -913,6 +944,7 @@ class _ReservationDetailsSheet extends ConsumerStatefulWidget {
 }
 
 class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsSheet> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   bool _isLoading = false;
 
   Future<void> _launchUrl(String urlString) async {
@@ -923,7 +955,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('No se puede abrir: $urlString'),
+            content: Text(i18n.commonCannotOpenUrl(urlString)),
             backgroundColor: Colors.red,
           ),
         );
@@ -943,15 +975,14 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
       Navigator.pop(context);
       widget.onStatusChanged?.call();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Check-in realizado correctamente'),
+        SnackBar(content: Text(i18n.checkInRealizadoCorrectamente74e5cd),
           backgroundColor: Colors.green,
         ),
       );
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.error ?? 'Error al realizar check-in'),
+          content: Text(response.error ?? i18n.reservationsCheckinError),
           backgroundColor: Colors.red,
         ),
       );
@@ -962,17 +993,17 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Cancelar reserva'),
-        content: const Text('¿Seguro que quieres cancelar esta reserva? Esta acción no se puede deshacer.'),
+        title: Text(i18n.cancelarReserva8c43c1),
+        content: Text(i18n.seguroQueQuieresCancelarEstaReservaC7d487),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('No'),
+            child: Text(i18n.noBafd73),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Sí, cancelar'),
+            child: Text(i18n.sCancelarA16a02),
           ),
         ],
       ),
@@ -991,15 +1022,14 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
       Navigator.pop(context);
       widget.onStatusChanged?.call();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Reserva cancelada'),
+        SnackBar(content: Text(i18n.reservaCanceladaB25309),
           backgroundColor: Colors.orange,
         ),
       );
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.error ?? 'Error al cancelar'),
+          content: Text(response.error ?? i18n.reservationsCancelError),
           backgroundColor: Colors.red,
         ),
       );
@@ -1008,6 +1038,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.4,
@@ -1035,8 +1066,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                 const SizedBox(height: 24),
 
                 // Título
-                Text(
-                  'Detalles de la reserva',
+                Text(AppLocalizations.of(context)!.detallesDeLaReserva,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1046,7 +1076,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                 // Código de ticket
                 _DetailRow(
                   icon: Icons.confirmation_number,
-                  label: 'Código',
+                  label: i18n.reservationsLabelCode,
                   value: widget.reservation.ticketCode,
                   isCode: true,
                 ),
@@ -1054,21 +1084,21 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                 // Tipo de ticket
                 _DetailRow(
                   icon: Icons.category,
-                  label: 'Ticket',
+                  label: i18n.reservationsLabelTicket,
                   value: widget.reservation.ticketName,
                 ),
 
                 // Fecha
                 _DetailRow(
                   icon: Icons.calendar_today,
-                  label: 'Fecha',
+                  label: i18n.reservationsLabelDate,
                   value: widget.reservation.date,
                 ),
 
                 // Estado
                 _DetailRow(
                   icon: Icons.flag,
-                  label: 'Estado',
+                  label: i18n.reservationsLabelStatus,
                   value: widget.reservation.statusDisplay,
                   valueColor: _getStatusColor(),
                 ),
@@ -1076,8 +1106,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                 // Cliente
                 if (widget.reservation.customer != null) ...[
                   const Divider(height: 32),
-                  Text(
-                    'Cliente',
+                  Text(AppLocalizations.of(context)!.cliente,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -1085,19 +1114,19 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                   const SizedBox(height: 12),
                   _DetailRow(
                     icon: Icons.person,
-                    label: 'Nombre',
+                    label: i18n.reservationsLabelName,
                     value: widget.reservation.customer!.name,
                   ),
                   if (widget.reservation.customer!.email.isNotEmpty)
                     _DetailRow(
                       icon: Icons.email,
-                      label: 'Email',
+                      label: i18n.reservationsLabelEmail,
                       value: widget.reservation.customer!.email,
                     ),
                   if (widget.reservation.customer!.phone.isNotEmpty)
                     _DetailRow(
                       icon: Icons.phone,
-                      label: 'Teléfono',
+                      label: i18n.reservationsLabelPhone,
                       value: widget.reservation.customer!.phone,
                     ),
                 ],
@@ -1107,7 +1136,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                   const Divider(height: 32),
                   _DetailRow(
                     icon: Icons.check_circle,
-                    label: 'Check-in',
+                    label: i18n.reservationsLabelCheckin,
                     value: widget.reservation.checkin!,
                     valueColor: Colors.green,
                   ),
@@ -1120,8 +1149,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                     (widget.reservation.customer!.phone.isNotEmpty ||
                         widget.reservation.customer!.email.isNotEmpty)) ...[
                   const Divider(height: 32),
-                  Text(
-                    'Contactar cliente',
+                  Text(AppLocalizations.of(context)!.contactarCliente,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -1135,7 +1163,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                         FilledButton.icon(
                           onPressed: () => _launchUrl('tel:${widget.reservation.customer!.phone}'),
                           icon: const Icon(Icons.phone),
-                          label: const Text('Llamar'),
+                          label: Text(i18n.llamarC9c110),
                         ),
                         OutlinedButton.icon(
                           onPressed: () => _showMessageDialog(
@@ -1144,7 +1172,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                             isWhatsApp: true,
                           ),
                           icon: const Icon(Icons.chat),
-                          label: const Text('WhatsApp'),
+                          label: Text(i18n.whatsapp8b777e),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: const Color(0xFF25D366),
                           ),
@@ -1158,7 +1186,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                             isWhatsApp: false,
                           ),
                           icon: const Icon(Icons.email),
-                          label: const Text('Email'),
+                          label: Text(i18n.emailCe8ae9),
                         ),
                     ],
                   ),
@@ -1175,7 +1203,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                         child: OutlinedButton.icon(
                           onPressed: _cancelReservation,
                           icon: const Icon(Icons.cancel),
-                          label: const Text('Cancelar'),
+                          label: Text(i18n.commonCancel),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.red,
                           ),
@@ -1186,7 +1214,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                         child: FilledButton.icon(
                           onPressed: _doCheckin,
                           icon: const Icon(Icons.check),
-                          label: const Text('Check-in'),
+                          label: Text(i18n.checkInEc86d6),
                         ),
                       ),
                     ],
@@ -1240,6 +1268,7 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -1286,6 +1315,7 @@ class _MessageDialog extends StatefulWidget {
 }
 
 class _MessageDialogState extends State<_MessageDialog> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _messageController = TextEditingController();
   MessageTemplate? _selectedTemplate;
 
@@ -1298,7 +1328,10 @@ class _MessageDialogState extends State<_MessageDialog> {
   void _applyTemplate(MessageTemplate template) {
     setState(() {
       _selectedTemplate = template;
-      _messageController.text = template.format(widget.reservation);
+      _messageController.text = template.format(
+        widget.reservation,
+        defaultCustomerName: i18n.commonCustomer,
+      );
     });
   }
 
@@ -1318,7 +1351,9 @@ class _MessageDialogState extends State<_MessageDialog> {
       }
     } else {
       final email = widget.reservation.customer!.email;
-      final subject = Uri.encodeComponent('Reserva ${widget.reservation.ticketCode}');
+      final subject = Uri.encodeComponent(
+        i18n.reservationsEmailSubject(widget.reservation.ticketCode),
+      );
       final url = 'mailto:$email?subject=$subject&body=$encodedMessage';
       final uri = Uri.parse(url);
       if (await canLaunchUrl(uri)) {
@@ -1330,6 +1365,7 @@ class _MessageDialogState extends State<_MessageDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -1346,7 +1382,7 @@ class _MessageDialogState extends State<_MessageDialog> {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  widget.isWhatsApp ? 'Enviar WhatsApp' : 'Enviar Email',
+                  widget.isWhatsApp ? i18n.reservationsSendWhatsApp : i18n.reservationsSendEmail,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1355,21 +1391,22 @@ class _MessageDialogState extends State<_MessageDialog> {
             ),
             const SizedBox(height: 8),
             Text(
-              'A: ${widget.reservation.customer?.name ?? "Cliente"}',
+              i18n.reservationsTo(
+                widget.reservation.customer?.name ?? i18n.commonCustomer,
+              ),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
 
             // Plantillas
-            Text(
-              'Plantillas rápidas:',
+            Text(AppLocalizations.of(context)!.plantillasRapidas,
               style: Theme.of(context).textTheme.labelMedium,
             ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: messageTemplates.map((template) {
+              children: _messageTemplates(i18n).map((template) {
                 final isSelected = _selectedTemplate?.id == template.id;
                 return FilterChip(
                   selected: isSelected,
@@ -1386,7 +1423,7 @@ class _MessageDialogState extends State<_MessageDialog> {
               controller: _messageController,
               maxLines: 5,
               decoration: InputDecoration(
-                hintText: 'Escribe tu mensaje...',
+                hintText: i18n.escribeTuMensajeA97d6f,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -1400,7 +1437,7 @@ class _MessageDialogState extends State<_MessageDialog> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancelar'),
+                    child: Text(i18n.commonCancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -1408,7 +1445,7 @@ class _MessageDialogState extends State<_MessageDialog> {
                   child: FilledButton.icon(
                     onPressed: _sendMessage,
                     icon: Icon(widget.isWhatsApp ? Icons.send : Icons.email),
-                    label: const Text('Enviar'),
+                    label: Text(i18n.enviar30cc00),
                   ),
                 ),
               ],
@@ -1437,6 +1474,7 @@ class _BulkMessageSheet extends StatefulWidget {
 }
 
 class _BulkMessageSheetState extends State<_BulkMessageSheet> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _messageController = TextEditingController();
   MessageTemplate? _selectedTemplate;
   bool _sendWhatsApp = true;
@@ -1470,7 +1508,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
     for (final reservation in targetList) {
       // Formatear mensaje con datos del cliente
       final message = _messageController.text
-          .replaceAll('{nombre}', reservation.customer?.name ?? 'Cliente')
+          .replaceAll('{nombre}', reservation.customer?.name ?? i18n.commonCustomer)
           .replaceAll('{fecha}', reservation.date)
           .replaceAll('{ticket}', reservation.ticketName)
           .replaceAll('{codigo}', reservation.ticketCode);
@@ -1485,7 +1523,9 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
         } else {
           final email = reservation.customer!.email;
-          final subject = Uri.encodeComponent('Reserva ${reservation.ticketCode}');
+          final subject = Uri.encodeComponent(
+            i18n.reservationsEmailSubject(reservation.ticketCode),
+          );
           final url = 'mailto:$email?subject=$subject&body=$encodedMessage';
           final uri = Uri.parse(url);
           await launchUrl(uri);
@@ -1505,7 +1545,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Enviados $_sentCount de ${targetList.length} mensajes'),
+          content: Text(i18n.reservationsMessagesSent(_sentCount, targetList.length)),
           backgroundColor: Colors.green,
         ),
       );
@@ -1515,6 +1555,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return DraggableScrollableSheet(
       initialChildSize: 0.8,
       minChildSize: 0.5,
@@ -1541,15 +1582,14 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                 ),
                 const SizedBox(height: 24),
 
-                Text(
-                  'Enviar mensaje masivo',
+                Text(AppLocalizations.of(context)!.enviarMensajeMasivo,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${widget.reservations.length} reservas seleccionadas',
+                  i18n.reservationsSelectedCount(widget.reservations.length),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -1557,8 +1597,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                 const SizedBox(height: 24),
 
                 // Selector de canal
-                Text(
-                  'Enviar por:',
+                Text(AppLocalizations.of(context)!.enviarPor,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1568,12 +1607,12 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                   segments: [
                     ButtonSegment(
                       value: true,
-                      label: Text('WhatsApp (${widget.withPhone.length})'),
+                      label: Text(i18n.reservationsChannelWhatsApp(widget.withPhone.length)),
                       icon: const Icon(Icons.chat, color: Colors.green),
                     ),
                     ButtonSegment(
                       value: false,
-                      label: Text('Email (${widget.withEmail.length})'),
+                      label: Text(i18n.reservationsChannelEmail(widget.withEmail.length)),
                       icon: const Icon(Icons.email, color: Colors.blue),
                     ),
                   ],
@@ -1585,8 +1624,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                 const SizedBox(height: 24),
 
                 // Plantillas
-                Text(
-                  'Plantillas:',
+                Text(AppLocalizations.of(context)!.plantillas,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1595,7 +1633,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: messageTemplates.map((template) {
+                  children: _messageTemplates(i18n).map((template) {
                     final isSelected = _selectedTemplate?.id == template.id;
                     return FilterChip(
                       selected: isSelected,
@@ -1623,8 +1661,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                               color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
-                            Text(
-                              'Variables disponibles:',
+                            Text(AppLocalizations.of(context)!.variablesDisponibles,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.primary,
@@ -1634,10 +1671,12 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '{nombre} - Nombre del cliente\n'
-                          '{fecha} - Fecha de la reserva\n'
-                          '{ticket} - Tipo de ticket\n'
-                          '{codigo} - Código de reserva',
+                          i18n.adminMessageVariablesTemplate(
+                            '{nombre}',
+                            '{fecha}',
+                            '{ticket}',
+                            '{codigo}',
+                          ),
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
@@ -1651,7 +1690,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                   controller: _messageController,
                   maxLines: 6,
                   decoration: InputDecoration(
-                    hintText: 'Escribe tu mensaje...\nUsa las variables para personalizar cada mensaje.',
+                    hintText: i18n.escribeTuMensajeNusaLasVariablesPaE2f1ec,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -1667,7 +1706,12 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                         value: _sentCount / (_sendWhatsApp ? widget.withPhone.length : widget.withEmail.length),
                       ),
                       const SizedBox(height: 8),
-                      Text('Enviando $_sentCount de ${_sendWhatsApp ? widget.withPhone.length : widget.withEmail.length}...'),
+                      Text(
+                        i18n.reservationsSendingProgress(
+                          _sentCount,
+                          _sendWhatsApp ? widget.withPhone.length : widget.withEmail.length,
+                        ),
+                      ),
                     ],
                   )
                 else
@@ -1680,7 +1724,9 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                           : _sendBulkMessages,
                       icon: Icon(_sendWhatsApp ? Icons.chat : Icons.email),
                       label: Text(
-                        'Enviar a ${_sendWhatsApp ? widget.withPhone.length : widget.withEmail.length} clientes',
+                        i18n.reservationsSendToClients(
+                          _sendWhatsApp ? widget.withPhone.length : widget.withEmail.length,
+                        ),
                       ),
                     ),
                   ),
@@ -1688,8 +1734,8 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                 const SizedBox(height: 16),
                 Text(
                   _sendWhatsApp
-                      ? 'Se abrirá WhatsApp para cada mensaje. Deberás confirmar el envío de cada uno.'
-                      : 'Se abrirá tu app de email para cada mensaje.',
+                      ? i18n.reservationsOpenWhatsAppEach
+                      : i18n.reservationsOpenEmailEach,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                       ),
@@ -1713,6 +1759,7 @@ class _WeeklyCustomersView extends ConsumerStatefulWidget {
 }
 
 class _WeeklyCustomersViewState extends ConsumerState<_WeeklyCustomersView> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   String _filterOrigin = 'all';
@@ -1752,6 +1799,7 @@ class _WeeklyCustomersViewState extends ConsumerState<_WeeklyCustomersView> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final customersAsync = ref.watch(unifiedCustomersProvider(_cachedParams));
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -1787,7 +1835,11 @@ class _WeeklyCustomersViewState extends ConsumerState<_WeeklyCustomersView> {
                       Icon(Icons.date_range, color: colorScheme.primary),
                       const SizedBox(width: 12),
                       Text(
-                        '${_startDate.day}/${_startDate.month} - ${_endDate.day}/${_endDate.month}/${_endDate.year}',
+                        _formatRangeLabel(
+                          _startDate,
+                          _endDate,
+                          i18n.localeName,
+                        ),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const Spacer(),
@@ -1802,20 +1854,20 @@ class _WeeklyCustomersViewState extends ConsumerState<_WeeklyCustomersView> {
               Row(
                 children: [
                   _OriginFilterChip(
-                    label: 'Todos',
+                    label: i18n.reservationsOriginAll,
                     selected: _filterOrigin == 'all',
                     onSelected: () => setState(() => _filterOrigin = 'all'),
                   ),
                   const SizedBox(width: 8),
                   _OriginFilterChip(
-                    label: '📞 Manual',
+                    label: i18n.reservationsOriginManual,
                     selected: _filterOrigin == 'manual',
                     onSelected: () => setState(() => _filterOrigin = 'manual'),
                     color: Colors.orange,
                   ),
                   const SizedBox(width: 8),
                   _OriginFilterChip(
-                    label: '🛒 WooCommerce',
+                    label: i18n.reservationsOriginWooCommerce,
                     selected: _filterOrigin == 'woocommerce',
                     onSelected: () => setState(() => _filterOrigin = 'woocommerce'),
                     color: Colors.purple,
@@ -1836,10 +1888,12 @@ class _WeeklyCustomersViewState extends ConsumerState<_WeeklyCustomersView> {
 
               if (filtered.isEmpty) {
                 return EmptyScreen(
-                  message: 'No hay clientes',
+                  message: i18n.reservationsNoCustomers,
                   subtitle: _filterOrigin == 'all'
-                      ? 'No hay clientes en el rango seleccionado'
-                      : 'No hay clientes ${_filterOrigin == 'manual' ? 'manuales' : 'de WooCommerce'}',
+                      ? i18n.reservationsNoCustomersInRange
+                      : _filterOrigin == 'manual'
+                          ? i18n.reservationsNoCustomersManual
+                          : i18n.reservationsNoCustomersWooCommerce,
                   icon: Icons.people_outline,
                 );
               }
@@ -1866,15 +1920,21 @@ class _WeeklyCustomersViewState extends ConsumerState<_WeeklyCustomersView> {
                 ),
               );
             },
-            loading: () => const LoadingScreen(message: 'Cargando clientes...'),
+            loading: () => LoadingScreen(message: i18n.loadingCustomers),
             error: (error, _) => ErrorScreen(
-              message: 'Error al cargar clientes',
+              message: i18n.reservationsLoadCustomersError,
               onRetry: () => ref.invalidate(unifiedCustomersProvider(_cachedParams)),
             ),
           ),
         ),
       ],
     );
+  }
+
+  String _formatRangeLabel(DateTime start, DateTime end, String localeName) {
+    final startLabel = DateFormat.Md(localeName).format(start);
+    final endLabel = DateFormat.yMd(localeName).format(end);
+    return '$startLabel - $endLabel';
   }
 }
 
@@ -1893,6 +1953,7 @@ class _OriginFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return FilterChip(
       label: Text(label),
       selected: selected,
@@ -1912,11 +1973,13 @@ class _CustomerDaySection extends StatelessWidget {
     required this.customers,
   });
 
-  String _formatDate(String dateStr) {
+  String _formatDate(BuildContext context, String dateStr) {
     try {
       final dt = DateTime.parse(dateStr);
-      final weekdays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-      return '${weekdays[dt.weekday - 1]} ${dt.day}/${dt.month}';
+      final i18n = AppLocalizations.of(context)!;
+      final weekday = DateFormat.E(i18n.localeName).format(dt);
+      final day = DateFormat.Md(i18n.localeName).format(dt);
+      return '$weekday $day';
     } catch (e) {
       return dateStr;
     }
@@ -1924,6 +1987,7 @@ class _CustomerDaySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final manualCount = customers.where((c) => c.origin == 'manual').length;
     final wcCount = customers.where((c) => c.origin == 'woocommerce').length;
 
@@ -1940,7 +2004,7 @@ class _CustomerDaySection extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                _formatDate(date),
+                _formatDate(context, date),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -1954,7 +2018,10 @@ class _CustomerDaySection extends StatelessWidget {
                     color: Colors.orange.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text('📞 $manualCount', style: const TextStyle(fontSize: 12)),
+                  child: Text(
+                    i18n.reservationsManualCount(manualCount),
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ),
               if (wcCount > 0)
                 Container(
@@ -1963,7 +2030,10 @@ class _CustomerDaySection extends StatelessWidget {
                     color: Colors.purple.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text('🛒 $wcCount', style: const TextStyle(fontSize: 12)),
+                  child: Text(
+                    i18n.reservationsWcCount(wcCount),
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ),
             ],
           ),
@@ -2004,6 +2074,7 @@ class _CompactCustomerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isManual = customer.origin == 'manual';
     final borderColor = isManual ? Colors.orange : Colors.purple;
@@ -2052,13 +2123,13 @@ class _CompactCustomerCard extends StatelessWidget {
                 onPressed: () => _launchPhone(customer.phone),
                 icon: const Icon(Icons.phone, size: 20),
                 color: Colors.blue,
-                tooltip: 'Llamar',
+                tooltip: i18n.llamarC9c110,
               ),
               IconButton(
                 onPressed: () => _launchWhatsApp(customer.phone),
                 icon: const Icon(Icons.chat, size: 20),
                 color: const Color(0xFF25D366),
-                tooltip: 'WhatsApp',
+                tooltip: i18n.whatsapp8b777e,
               ),
             ],
           ],

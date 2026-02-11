@@ -44,7 +44,8 @@ class Flavor_Deep_Link_Manager {
      */
     private function __construct() {
         add_action('rest_api_init', [$this, 'register_routes']);
-        add_action('admin_menu', [$this, 'add_admin_menu'], 20);
+        // NOTA: El menú se registra centralizadamente en class-admin-menu-manager.php
+        // add_action('admin_menu', [$this, 'add_admin_menu'], 20);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
@@ -84,7 +85,7 @@ class Flavor_Deep_Link_Manager {
         register_rest_route(self::API_NAMESPACE, '/config/(?P<slug>[a-z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_company_config'],
-            'permission_callback' => '__return_true', // Público
+            'permission_callback' => [$this, 'public_permission_check'], // Público
             'args' => [
                 'slug' => [
                     'required' => true,
@@ -99,7 +100,7 @@ class Flavor_Deep_Link_Manager {
         register_rest_route(self::API_NAMESPACE, '/companies', [
             'methods' => 'GET',
             'callback' => [$this, 'get_active_companies'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // POST /flavor-app/v1/config (crear/actualizar - solo admin)
@@ -464,6 +465,12 @@ class Flavor_Deep_Link_Manager {
             "SELECT * FROM {$table_name} WHERE slug = %s AND activo = 1",
             $slug
         ));
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }
 

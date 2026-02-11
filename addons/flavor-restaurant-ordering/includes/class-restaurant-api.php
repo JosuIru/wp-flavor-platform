@@ -46,14 +46,14 @@ class Flavor_Restaurant_API {
         register_rest_route($this->namespace, '/menu', [
             'methods' => 'GET',
             'callback' => [$this, 'get_menu'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Obtener items por categoría
         register_rest_route($this->namespace, '/menu/(?P<category>[a-z_]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_menu_category'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'category' => [
                     'required' => true,
@@ -69,7 +69,7 @@ class Flavor_Restaurant_API {
             [
                 'methods' => 'GET',
                 'callback' => [$this, 'get_tables'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ],
             [
                 'methods' => 'POST',
@@ -82,7 +82,7 @@ class Flavor_Restaurant_API {
             [
                 'methods' => 'GET',
                 'callback' => [$this, 'get_table'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ],
             [
                 'methods' => 'PUT',
@@ -113,7 +113,7 @@ class Flavor_Restaurant_API {
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'create_order'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ]
         ]);
 
@@ -126,7 +126,7 @@ class Flavor_Restaurant_API {
         register_rest_route($this->namespace, '/orders/number/(?P<number>[A-Z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_order_by_number'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Actualizar estado del pedido
@@ -154,7 +154,7 @@ class Flavor_Restaurant_API {
         register_rest_route($this->namespace, '/order-statuses', [
             'methods' => 'GET',
             'callback' => [$this, 'get_order_statuses'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Gestión de reservas
@@ -167,7 +167,7 @@ class Flavor_Restaurant_API {
             [
                 'methods' => 'POST',
                 'callback' => [$this, 'create_reservation'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ]
         ]);
 
@@ -192,7 +192,7 @@ class Flavor_Restaurant_API {
         register_rest_route($this->namespace, '/reservations/code/(?P<code>[A-Z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_reservation_by_code'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($this->namespace, '/reservations/(?P<id>\d+)/confirm', [
@@ -210,7 +210,7 @@ class Flavor_Restaurant_API {
         register_rest_route($this->namespace, '/reservations/availability', [
             'methods' => 'GET',
             'callback' => [$this, 'check_availability'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($this->namespace, '/reservations/statistics', [
@@ -243,7 +243,7 @@ class Flavor_Restaurant_API {
         $menu_cpts = $restaurant_manager->get_menu_cpts();
 
         if (!isset($menu_cpts[$category])) {
-            return new WP_Error('category_not_found', 'Categoría no encontrada', ['status' => 404]);
+            return new WP_Error('category_not_found', __('Categoría no encontrada', 'flavor-restaurant-ordering'), ['status' => 404]);
         }
 
         $items = [];
@@ -290,7 +290,7 @@ class Flavor_Restaurant_API {
         $table = $table_manager->get_table($table_id);
 
         if (!$table) {
-            return new WP_Error('table_not_found', 'Mesa no encontrada', ['status' => 404]);
+            return new WP_Error('table_not_found', __('Mesa no encontrada', 'flavor-restaurant-ordering'), ['status' => 404]);
         }
 
         return rest_ensure_response([
@@ -320,7 +320,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Mesa creada exitosamente',
+            'message' => __('Mesa creada exitosamente', 'flavor-restaurant-ordering'),
             'table' => $result,
         ]);
     }
@@ -350,7 +350,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Mesa actualizada exitosamente',
+            'message' => __('Mesa actualizada exitosamente', 'flavor-restaurant-ordering'),
             'table' => $result,
         ]);
     }
@@ -369,7 +369,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Mesa eliminada exitosamente',
+            'message' => __('Mesa eliminada exitosamente', 'flavor-restaurant-ordering'),
         ]);
     }
 
@@ -419,7 +419,7 @@ class Flavor_Restaurant_API {
         $order = $order_manager->get_order($order_id);
 
         if (!$order) {
-            return new WP_Error('order_not_found', 'Pedido no encontrado', ['status' => 404]);
+            return new WP_Error('order_not_found', __('Pedido no encontrado', 'flavor-restaurant-ordering'), ['status' => 404]);
         }
 
         return rest_ensure_response([
@@ -432,13 +432,20 @@ class Flavor_Restaurant_API {
      * Obtener pedido por número
      */
     public function get_order_by_number($request) {
+        $rate_limit = Flavor_API_Rate_Limiter::check_rate_limit('get');
+        if (is_wp_error($rate_limit)) {
+            return $rate_limit;
+        }
+
         $order_number = $request->get_param('number');
         $order_manager = Flavor_Order_Manager::get_instance();
         $order = $order_manager->get_order_by_number($order_number);
 
         if (!$order) {
-            return new WP_Error('order_not_found', 'Pedido no encontrado', ['status' => 404]);
+            return new WP_Error('order_not_found', __('Pedido no encontrado', 'flavor-restaurant-ordering'), ['status' => 404]);
         }
+
+        $order = $this->filter_public_order($order);
 
         return rest_ensure_response([
             'success' => true,
@@ -468,7 +475,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Pedido creado exitosamente',
+            'message' => __('Pedido creado exitosamente', 'flavor-restaurant-ordering'),
             'order' => $result,
         ]);
     }
@@ -490,7 +497,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Estado actualizado exitosamente',
+            'message' => __('Estado actualizado exitosamente', 'flavor-restaurant-ordering'),
             'order' => $result,
         ]);
     }
@@ -505,7 +512,7 @@ class Flavor_Restaurant_API {
         // Verificar que el pedido existe
         $order = $order_manager->get_order($order_id);
         if (!$order) {
-            return new WP_Error('order_not_found', 'Pedido no encontrado', ['status' => 404]);
+            return new WP_Error('order_not_found', __('Pedido no encontrado', 'flavor-restaurant-ordering'), ['status' => 404]);
         }
 
         $history = $order_manager->get_status_history($order_id);
@@ -629,7 +636,7 @@ class Flavor_Restaurant_API {
         $reservation = $reservation_manager->get_reservation($reservation_id);
 
         if (!$reservation) {
-            return new WP_Error('reservation_not_found', 'Reserva no encontrada', ['status' => 404]);
+            return new WP_Error('reservation_not_found', __('Reserva no encontrada', 'flavor-restaurant-ordering'), ['status' => 404]);
         }
 
         return rest_ensure_response([
@@ -642,18 +649,88 @@ class Flavor_Restaurant_API {
      * Obtener reserva por código
      */
     public function get_reservation_by_code($request) {
+        $rate_limit = Flavor_API_Rate_Limiter::check_rate_limit('get');
+        if (is_wp_error($rate_limit)) {
+            return $rate_limit;
+        }
+
         $code = $request->get_param('code');
         $reservation_manager = Flavor_Reservation_Manager::get_instance();
         $reservation = $reservation_manager->get_reservation_by_code($code);
 
         if (!$reservation) {
-            return new WP_Error('reservation_not_found', 'Reserva no encontrada', ['status' => 404]);
+            return new WP_Error('reservation_not_found', __('Reserva no encontrada', 'flavor-restaurant-ordering'), ['status' => 404]);
         }
+
+        $reservation = $this->filter_public_reservation($reservation);
 
         return rest_ensure_response([
             'success' => true,
             'reservation' => $reservation,
         ]);
+    }
+
+    /**
+     * Filtra campos sensibles en pedidos públicos
+     *
+     * @param array|object $order
+     * @return array
+     */
+    private function filter_public_order($order) {
+        $allowed = [
+            'id',
+            'order_id',
+            'order_number',
+            'status',
+            'items',
+            'total',
+            'created_at',
+            'table_id',
+        ];
+
+        if (is_array($order)) {
+            return array_intersect_key($order, array_flip($allowed));
+        }
+
+        $filtered = [];
+        foreach ($allowed as $key) {
+            if (is_object($order) && isset($order->$key)) {
+                $filtered[$key] = $order->$key;
+            }
+        }
+        return $filtered;
+    }
+
+    /**
+     * Filtra campos sensibles en reservas públicas
+     *
+     * @param array|object $reservation
+     * @return array
+     */
+    private function filter_public_reservation($reservation) {
+        $allowed = [
+            'id',
+            'reservation_id',
+            'code',
+            'reservation_code',
+            'status',
+            'reservation_date',
+            'reservation_time',
+            'guests_count',
+            'table_id',
+        ];
+
+        if (is_array($reservation)) {
+            return array_intersect_key($reservation, array_flip($allowed));
+        }
+
+        $filtered = [];
+        foreach ($allowed as $key) {
+            if (is_object($reservation) && isset($reservation->$key)) {
+                $filtered[$key] = $reservation->$key;
+            }
+        }
+        return $filtered;
     }
 
     /**
@@ -681,7 +758,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Reserva creada exitosamente',
+            'message' => __('Reserva creada exitosamente', 'flavor-restaurant-ordering'),
             'reservation' => $result,
         ]);
     }
@@ -715,7 +792,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Reserva actualizada exitosamente',
+            'message' => __('Reserva actualizada exitosamente', 'flavor-restaurant-ordering'),
             'reservation' => $result,
         ]);
     }
@@ -736,7 +813,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Reserva confirmada exitosamente',
+            'message' => __('Reserva confirmada exitosamente', 'flavor-restaurant-ordering'),
             'reservation' => $result,
         ]);
     }
@@ -757,7 +834,7 @@ class Flavor_Restaurant_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Reserva cancelada exitosamente',
+            'message' => __('Reserva cancelada exitosamente', 'flavor-restaurant-ordering'),
             'reservation' => $result,
         ]);
     }
@@ -772,7 +849,7 @@ class Flavor_Restaurant_API {
         $duration = absint($request->get_param('duration') ?: 120);
 
         if (!$date || !$time) {
-            return new WP_Error('missing_params', 'Fecha y hora son requeridos', ['status' => 400]);
+            return new WP_Error('missing_params', __('Fecha y hora son requeridos', 'flavor-restaurant-ordering'), ['status' => 400]);
         }
 
         $table_manager = Flavor_Table_Manager::get_instance();
@@ -882,5 +959,11 @@ class Flavor_Restaurant_API {
         // Solo puede cancelar si es suya y está pendiente o confirmada
         return (int) $reservation['user_id'] === get_current_user_id() &&
                in_array($reservation['status'], ['pending', 'confirmed']);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

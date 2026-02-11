@@ -18,8 +18,8 @@ void main() {
     // Verify that the app title is displayed
     expect(find.text('Basabere'), findsOneWidget);
 
-    // Verify that both app options are displayed
-    expect(find.text('Reservar Experiencia'), findsOneWidget);
-    expect(find.text('Administración'), findsOneWidget);
+    // Verify that both app options are displayed (default locale: en)
+    expect(find.text('Book Experience'), findsOneWidget);
+    expect(find.text('Administration'), findsOneWidget);
   });
 }

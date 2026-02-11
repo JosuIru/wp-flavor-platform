@@ -15,12 +15,12 @@ $categorias = $categorias ?? [];
     <div class="bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">🏘️ Comunidades</h1>
-                <p class="text-rose-100">Encuentra tu comunidad y conecta con tus vecinos</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('🏘️ Comunidades', 'flavor-chat-ia'); ?></h1>
+                <p class="text-rose-100"><?php echo esc_html__('Encuentra tu comunidad y conecta con tus vecinos', 'flavor-chat-ia'); ?></p>
             </div>
             <button class="bg-white text-rose-600 px-6 py-3 rounded-xl font-semibold hover:bg-rose-50 transition-all shadow-md"
                     onclick="flavorComunidades.crearComunidad()">
-                ➕ Crear comunidad
+                <?php echo esc_html__('➕ Crear comunidad', 'flavor-chat-ia'); ?>
             </button>
         </div>
     </div>
@@ -30,19 +30,19 @@ $categorias = $categorias ?? [];
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl font-bold text-rose-600"><?php echo esc_html($estadisticas['total_comunidades'] ?? 0); ?></div>
-            <div class="text-gray-600 text-sm">Comunidades</div>
+            <div class="text-gray-600 text-sm"><?php echo esc_html__('Comunidades', 'flavor-chat-ia'); ?></div>
         </div>
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl font-bold text-pink-600"><?php echo esc_html($estadisticas['total_miembros'] ?? 0); ?></div>
-            <div class="text-gray-600 text-sm">Miembros</div>
+            <div class="text-gray-600 text-sm"><?php echo esc_html__('Miembros', 'flavor-chat-ia'); ?></div>
         </div>
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl font-bold text-fuchsia-600"><?php echo esc_html($estadisticas['eventos_mes'] ?? 0); ?></div>
-            <div class="text-gray-600 text-sm">Eventos este mes</div>
+            <div class="text-gray-600 text-sm"><?php echo esc_html__('Eventos este mes', 'flavor-chat-ia'); ?></div>
         </div>
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl font-bold text-purple-600"><?php echo esc_html($estadisticas['publicaciones_semana'] ?? 0); ?></div>
-            <div class="text-gray-600 text-sm">Publicaciones/semana</div>
+            <div class="text-gray-600 text-sm"><?php echo esc_html__('Publicaciones/semana', 'flavor-chat-ia'); ?></div>
         </div>
     </div>
     <?php endif; ?>
@@ -50,7 +50,7 @@ $categorias = $categorias ?? [];
     <!-- Filtros rápidos por tipo -->
     <div class="flex flex-wrap gap-2 mb-6">
         <a href="?tipo=" class="px-4 py-2 rounded-full text-sm font-medium <?php echo empty($_GET['tipo']) ? 'bg-rose-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition-colors">
-            Todas
+            <?php echo esc_html__('Todas', 'flavor-chat-ia'); ?>
         </a>
         <?php
         $tipos_comunidad = [
@@ -73,11 +73,11 @@ $categorias = $categorias ?? [];
     <?php if (empty($comunidades)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">🏘️</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay comunidades todavía</h3>
-        <p class="text-gray-500 mb-6">Sé el primero en crear una comunidad en tu zona</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay comunidades todavía', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('Sé el primero en crear una comunidad en tu zona', 'flavor-chat-ia'); ?></p>
         <button class="bg-rose-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-rose-600 transition-colors"
                 onclick="flavorComunidades.crearComunidad()">
-            Crear comunidad
+            <?php echo esc_html__('Crear comunidad', 'flavor-chat-ia'); ?>
         </button>
     </div>
     <?php else: ?>
@@ -101,7 +101,7 @@ $categorias = $categorias ?? [];
                         <?php echo esc_html($comunidad['tipo'] ?? 'Vecinal'); ?>
                     </span>
                     <?php if (!empty($comunidad['verificada'])): ?>
-                    <span class="text-green-500" title="Comunidad verificada">✓</span>
+                    <span class="text-green-500" title="<?php echo esc_attr__('Comunidad verificada', 'flavor-chat-ia'); ?>">✓</span>
                     <?php endif; ?>
                 </div>
 
@@ -119,7 +119,7 @@ $categorias = $categorias ?? [];
                         <span>📍 <?php echo esc_html($comunidad['ubicacion'] ?? 'Local'); ?></span>
                     </div>
                     <?php if (!empty($comunidad['activa'])): ?>
-                    <span class="w-2 h-2 bg-green-500 rounded-full" title="Comunidad activa"></span>
+                    <span class="w-2 h-2 bg-green-500 rounded-full" title="<?php echo esc_attr__('Comunidad activa', 'flavor-chat-ia'); ?>"></span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -131,7 +131,7 @@ $categorias = $categorias ?? [];
     <!-- Comunidades destacadas -->
     <?php if (!empty($comunidades_destacadas)): ?>
     <div class="mt-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">⭐ Comunidades destacadas</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6"><?php echo esc_html__('⭐ Comunidades destacadas', 'flavor-chat-ia'); ?></h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <?php foreach ($comunidades_destacadas as $destacada): ?>
             <div class="bg-gradient-to-r from-rose-50 to-pink-50 rounded-2xl p-6 border border-rose-100">

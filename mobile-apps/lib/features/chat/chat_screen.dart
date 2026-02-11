@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
 import '../../core/widgets/chat_widgets.dart';
@@ -12,6 +13,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _scrollController = ScrollController();
 
   @override
@@ -41,6 +43,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final chatState = ref.watch(chatProvider);
 
     // Scroll cuando hay nuevos mensajes
@@ -54,7 +57,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: Text(i18n.chat55dcdf),
         actions: [
           if (chatState.messages.isNotEmpty)
             IconButton(
@@ -62,26 +65,26 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text('Limpiar chat'),
-                    content: const Text('¿Seguro que quieres borrar el historial de mensajes?'),
+                    title: Text(i18n.limpiarChatE7dfdf),
+                    content: Text(i18n.seguroQueQuieresBorrarElHistorialDE3b015),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancelar'),
+                        child: Text(i18n.commonCancel),
                       ),
                       FilledButton(
                         onPressed: () {
                           Navigator.pop(context);
                           ref.read(chatProvider.notifier).clearChat();
                         },
-                        child: const Text('Borrar'),
+                        child: Text(i18n.borrarA96f30),
                       ),
                     ],
                   ),
                 );
               },
               icon: const Icon(Icons.delete_outline),
-              tooltip: 'Limpiar chat',
+              tooltip: i18n.limpiarChatE7dfdf,
             ),
         ],
       ),
@@ -127,6 +130,7 @@ class _QuickSuggestions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final suggestions = [
       '¿Qué horarios tienen disponibles?',
       '¿Cuánto cuestan las entradas?',

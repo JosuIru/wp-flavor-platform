@@ -13,7 +13,7 @@ $plazas_cercanas = $plazas_cercanas ?? [];
 <div class="flavor-frontend flavor-parkings-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/parkings/')); ?>" class="hover:text-slate-600 transition-colors">Parkings</a>
+        <a href="<?php echo esc_url(home_url('/parkings/')); ?>" class="hover:text-slate-600 transition-colors"><?php echo esc_html__('Parkings', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <?php if (!empty($plaza['zona'])): ?>
         <a href="<?php echo esc_url(home_url('/parkings/?zona=' . ($plaza['zona_slug'] ?? ''))); ?>" class="hover:text-slate-600 transition-colors">
@@ -33,7 +33,7 @@ $plazas_cercanas = $plazas_cercanas ?? [];
                     <div class="w-full h-full bg-gradient-to-br from-slate-400 to-gray-600 flex items-center justify-center">
                         <div class="text-center text-white">
                             <span class="text-6xl block mb-2">🗺️</span>
-                            <p class="text-lg font-medium">Ubicacion de la plaza</p>
+                            <p class="text-lg font-medium"><?php echo esc_html__('Ubicacion de la plaza', 'flavor-chat-ia'); ?></p>
                         </div>
                     </div>
                     <div class="absolute top-4 left-4">
@@ -64,28 +64,28 @@ $plazas_cercanas = $plazas_cercanas ?? [];
                     <div class="flex items-center gap-3">
                         <span class="text-xl">📍</span>
                         <div>
-                            <p class="text-sm text-gray-500">Direccion</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Direccion', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($plaza['direccion'] ?? ''); ?></p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="text-xl">🏢</span>
                         <div>
-                            <p class="text-sm text-gray-500">Planta / Numero</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Planta / Numero', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($plaza['planta'] ?? ''); ?> - N.<?php echo esc_html($plaza['numero'] ?? ''); ?></p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="text-xl">🕐</span>
                         <div>
-                            <p class="text-sm text-gray-500">Horario disponible</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Horario disponible', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($plaza['horario'] ?? 'Flexible'); ?></p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="text-xl">🚗</span>
                         <div>
-                            <p class="text-sm text-gray-500">Tipo de vehiculo</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Tipo de vehiculo', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($plaza['tipo_vehiculo'] ?? 'Coche'); ?></p>
                         </div>
                     </div>
@@ -99,7 +99,7 @@ $plazas_cercanas = $plazas_cercanas ?? [];
                 <!-- Normas de uso -->
                 <?php if (!empty($plaza['normas'])): ?>
                 <div class="mb-4">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-3">📋 Normas de uso</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3"><?php echo esc_html__('📋 Normas de uso', 'flavor-chat-ia'); ?></h2>
                     <div class="prose prose-slate max-w-none">
                         <?php echo wp_kses_post($plaza['normas']); ?>
                     </div>
@@ -109,25 +109,25 @@ $plazas_cercanas = $plazas_cercanas ?? [];
                 <!-- Caracteristicas -->
                 <div class="flex flex-wrap gap-2">
                     <?php if (!empty($plaza['techado'])): ?>
-                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">🏗️ Techado</span>
+                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full"><?php echo esc_html__('🏗️ Techado', 'flavor-chat-ia'); ?></span>
                     <?php endif; ?>
                     <?php if (!empty($plaza['vigilancia'])): ?>
-                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">📹 Vigilancia</span>
+                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full"><?php echo esc_html__('📹 Vigilancia', 'flavor-chat-ia'); ?></span>
                     <?php endif; ?>
                     <?php if (!empty($plaza['acceso_24h'])): ?>
-                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">🔑 Acceso 24h</span>
+                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full"><?php echo esc_html__('🔑 Acceso 24h', 'flavor-chat-ia'); ?></span>
                     <?php endif; ?>
                     <?php if (!empty($plaza['cargador_electrico'])): ?>
-                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">⚡ Cargador electrico</span>
+                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full"><?php echo esc_html__('⚡ Cargador electrico', 'flavor-chat-ia'); ?></span>
                     <?php endif; ?>
                 </div>
             </div>
 
             <!-- Horario semanal -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📅 Disponibilidad semanal</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📅 Disponibilidad semanal', 'flavor-chat-ia'); ?></h2>
                 <div class="bg-gray-100 rounded-xl h-48 flex items-center justify-center text-gray-400">
-                    <span class="text-lg">Calendario de disponibilidad</span>
+                    <span class="text-lg"><?php echo esc_html__('Calendario de disponibilidad', 'flavor-chat-ia'); ?></span>
                 </div>
             </div>
         </div>
@@ -136,20 +136,20 @@ $plazas_cercanas = $plazas_cercanas ?? [];
         <div class="space-y-6">
             <!-- CTA Reservar -->
             <div class="bg-gradient-to-br from-slate-500 to-gray-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold mb-2">Reserva esta plaza</h3>
+                <h3 class="font-semibold mb-2"><?php echo esc_html__('Reserva esta plaza', 'flavor-chat-ia'); ?></h3>
                 <p class="text-slate-200 text-sm mb-2">
                     Precio: <?php echo esc_html($plaza['precio'] ?? '0'); ?> €/<?php echo esc_html($plaza['periodo_precio'] ?? 'mes'); ?>
                 </p>
                 <?php if (($plaza['disponible'] ?? true)): ?>
-                <p class="text-slate-200 text-sm mb-4">Plaza disponible para reservar</p>
+                <p class="text-slate-200 text-sm mb-4"><?php echo esc_html__('Plaza disponible para reservar', 'flavor-chat-ia'); ?></p>
                 <button class="w-full bg-white text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
                         onclick="flavorParkings.reservarPlaza(<?php echo esc_attr($plaza['id'] ?? 0); ?>)">
-                    🅿️ Reservar Plaza
+                    <?php echo esc_html__('🅿️ Reservar Plaza', 'flavor-chat-ia'); ?>
                 </button>
                 <?php else: ?>
-                <p class="text-slate-200 text-sm mb-4">Plaza no disponible en este momento</p>
+                <p class="text-slate-200 text-sm mb-4"><?php echo esc_html__('Plaza no disponible en este momento', 'flavor-chat-ia'); ?></p>
                 <button class="w-full bg-white/20 text-white py-3 px-4 rounded-xl font-semibold cursor-not-allowed" disabled>
-                    Plaza ocupada
+                    <?php echo esc_html__('Plaza ocupada', 'flavor-chat-ia'); ?>
                 </button>
                 <?php endif; ?>
             </div>
@@ -159,34 +159,34 @@ $plazas_cercanas = $plazas_cercanas ?? [];
                 <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 text-3xl font-bold mx-auto mb-4">
                     <?php echo esc_html(mb_substr($propietario['nombre'] ?? 'P', 0, 1)); ?>
                 </div>
-                <p class="text-xs text-gray-500 mb-1">Propietario</p>
+                <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Propietario', 'flavor-chat-ia'); ?></p>
                 <h3 class="text-lg font-semibold text-gray-800"><?php echo esc_html($propietario['nombre'] ?? 'Propietario'); ?></h3>
                 <p class="text-sm text-gray-500 mb-4"><?php echo esc_html($propietario['plazas_publicadas'] ?? 0); ?> plazas publicadas</p>
                 <?php if (!empty($propietario['verificado'])): ?>
                 <span class="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full mb-4">
-                    ✓ Vecino verificado
+                    <?php echo esc_html__('✓ Vecino verificado', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
                 <button class="w-full bg-slate-100 text-slate-700 py-2 px-4 rounded-xl text-sm font-medium hover:bg-slate-200 transition-colors"
                         onclick="flavorParkings.contactarPropietario(<?php echo esc_attr($propietario['id'] ?? 0); ?>)">
-                    💬 Contactar
+                    <?php echo esc_html__('💬 Contactar', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- Precio desglosado -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">💰 Precio</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('💰 Precio', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">Por hora</span>
+                        <span class="text-sm text-gray-600"><?php echo esc_html__('Por hora', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm font-medium text-gray-800"><?php echo esc_html($plaza['precio_hora'] ?? '-'); ?> €</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">Por dia</span>
+                        <span class="text-sm text-gray-600"><?php echo esc_html__('Por dia', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm font-medium text-gray-800"><?php echo esc_html($plaza['precio_dia'] ?? '-'); ?> €</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">Por mes</span>
+                        <span class="text-sm text-gray-600"><?php echo esc_html__('Por mes', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm font-medium text-gray-800"><?php echo esc_html($plaza['precio_mes'] ?? '-'); ?> €</span>
                     </div>
                 </div>
@@ -195,7 +195,7 @@ $plazas_cercanas = $plazas_cercanas ?? [];
             <!-- Plazas cercanas -->
             <?php if (!empty($plazas_cercanas)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Plazas cercanas</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Plazas cercanas', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($plazas_cercanas as $plaza_cercana): ?>
                     <a href="<?php echo esc_url($plaza_cercana['url'] ?? '#'); ?>" class="block p-3 rounded-xl hover:bg-gray-50 transition-colors">

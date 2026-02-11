@@ -53,7 +53,7 @@ $contenedores = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                 </svg>
-                Guia
+                <?php echo esc_html__('Guia', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -84,7 +84,7 @@ $contenedores = [
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                         </svg>
                                     </span>
-                                    <span class="font-bold text-green-700">SI depositar</span>
+                                    <span class="font-bold text-green-700"><?php echo esc_html__('SI depositar', 'flavor-chat-ia'); ?></span>
                                 </div>
                                 <ul class="space-y-2">
                                     <?php foreach ($cont['si'] as $item): ?>
@@ -104,7 +104,7 @@ $contenedores = [
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
                                     </span>
-                                    <span class="font-bold text-red-700">NO depositar</span>
+                                    <span class="font-bold text-red-700"><?php echo esc_html__('NO depositar', 'flavor-chat-ia'); ?></span>
                                 </div>
                                 <ul class="space-y-2">
                                     <?php foreach ($cont['no'] as $item): ?>
@@ -123,8 +123,8 @@ $contenedores = [
 
         <!-- Residuos especiales -->
         <div class="mt-12 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-8">
-            <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Residuos Especiales</h3>
-            <p class="text-center text-gray-600 mb-8">Estos residuos requieren tratamiento especial. Llevalos al Punto Limpio</p>
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center"><?php echo esc_html__('Residuos Especiales', 'flavor-chat-ia'); ?></h3>
+            <p class="text-center text-gray-600 mb-8"><?php echo esc_html__('Estos residuos requieren tratamiento especial. Llevalos al Punto Limpio', 'flavor-chat-ia'); ?></p>
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 <?php
                 $especiales = [
@@ -149,7 +149,7 @@ $contenedores = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
-                <span>Descargar Guia PDF</span>
+                <span><?php echo esc_html__('Descargar Guia PDF', 'flavor-chat-ia'); ?></span>
             </a>
         </div>
     </div>

@@ -82,7 +82,7 @@ $resueltas_semana = $wpdb->get_results("
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-warning" style="color: #d63638;"></span>
-        Dashboard de Incidencias Urbanas
+        <?php echo esc_html__('Dashboard de Incidencias Urbanas', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -94,7 +94,7 @@ $resueltas_semana = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Total Incidencias</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Total Incidencias', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($total_incidencias); ?></h2>
                 </div>
                 <span class="dashicons dashicons-analytics" style="font-size: 40px; color: #2271b1; opacity: 0.3;"></span>
@@ -105,7 +105,7 @@ $resueltas_semana = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #d63638; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Abiertas</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Abiertas', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($incidencias_abiertas); ?></h2>
                     <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
                         <?php echo $incidencias_sin_asignar; ?> sin asignar
@@ -119,7 +119,7 @@ $resueltas_semana = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Resueltas este mes</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Resueltas este mes', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($incidencias_resueltas_mes); ?></h2>
                 </div>
                 <span class="dashicons dashicons-yes-alt" style="font-size: 40px; color: #00a32a; opacity: 0.3;"></span>
@@ -130,11 +130,11 @@ $resueltas_semana = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #f0b849; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Tiempo Promedio</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Tiempo Promedio', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;">
                         <?php echo $tiempo_promedio_resolucion ? round($tiempo_promedio_resolucion) : '0'; ?>h
                     </h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">de resolución</p>
+                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;"><?php echo esc_html__('de resolución', 'flavor-chat-ia'); ?></p>
                 </div>
                 <span class="dashicons dashicons-clock" style="font-size: 40px; color: #f0b849; opacity: 0.3;"></span>
             </div>
@@ -149,7 +149,7 @@ $resueltas_semana = $wpdb->get_results("
         <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
                 <span class="dashicons dashicons-chart-bar"></span>
-                Distribución por Estado
+                <?php echo esc_html__('Distribución por Estado', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="chart-estado" style="max-height: 300px;"></canvas>
         </div>
@@ -158,7 +158,7 @@ $resueltas_semana = $wpdb->get_results("
         <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
                 <span class="dashicons dashicons-chart-pie"></span>
-                Por Prioridad
+                <?php echo esc_html__('Por Prioridad', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="chart-prioridad" style="max-height: 300px;"></canvas>
         </div>
@@ -172,7 +172,7 @@ $resueltas_semana = $wpdb->get_results("
         <div class="flavor-table-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
                 <span class="dashicons dashicons-category"></span>
-                Categorías Más Reportadas
+                <?php echo esc_html__('Categorías Más Reportadas', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="chart-categorias" style="max-height: 300px;"></canvas>
         </div>
@@ -181,16 +181,16 @@ $resueltas_semana = $wpdb->get_results("
         <div class="flavor-table-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
                 <span class="dashicons dashicons-thumbs-up"></span>
-                Incidencias Más Votadas
+                <?php echo esc_html__('Incidencias Más Votadas', 'flavor-chat-ia'); ?>
             </h3>
             <?php if (!empty($incidencias_votadas)): ?>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th>Número</th>
-                            <th>Título</th>
-                            <th>Categoría</th>
-                            <th>Votos</th>
+                            <th><?php echo esc_html__('Número', 'flavor-chat-ia'); ?></th>
+                            <th><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></th>
+                            <th><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></th>
+                            <th><?php echo esc_html__('Votos', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -212,7 +212,7 @@ $resueltas_semana = $wpdb->get_results("
                     </tbody>
                 </table>
             <?php else: ?>
-                <p style="color: #646970; text-align: center; padding: 40px 0;">No hay incidencias con votos</p>
+                <p style="color: #646970; text-align: center; padding: 40px 0;"><?php echo esc_html__('No hay incidencias con votos', 'flavor-chat-ia'); ?></p>
             <?php endif; ?>
         </div>
 
@@ -222,7 +222,7 @@ $resueltas_semana = $wpdb->get_results("
     <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin: 20px 0;">
         <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
             <span class="dashicons dashicons-chart-line"></span>
-            Tendencia de Resolución (Últimos 7 Días)
+            <?php echo esc_html__('Tendencia de Resolución (Últimos 7 Días)', 'flavor-chat-ia'); ?>
         </h3>
         <canvas id="chart-tendencia" style="max-height: 250px;"></canvas>
     </div>

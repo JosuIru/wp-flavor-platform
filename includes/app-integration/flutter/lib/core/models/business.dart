@@ -4,6 +4,7 @@ class Business {
   final String name;
   final String description;
   final String? logoUrl;
+  final String? apiToken;
   final String region;
   final String category;
   final List<String> systems;
@@ -16,6 +17,7 @@ class Business {
     required this.name,
     required this.description,
     this.logoUrl,
+    this.apiToken,
     required this.region,
     required this.category,
     required this.systems,
@@ -31,6 +33,7 @@ class Business {
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       logoUrl: json['logo'] ?? json['logo_url'],
+      apiToken: json['api_token'] ?? json['token'],
       region: json['region'] ?? '',
       category: json['category'] ?? '',
       systems: (json['systems'] as List<dynamic>?)
@@ -53,6 +56,7 @@ class Business {
       'name': name,
       'description': description,
       'logo_url': logoUrl,
+      'api_token': apiToken,
       'region': region,
       'category': category,
       'systems': systems,

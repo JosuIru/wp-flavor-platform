@@ -274,6 +274,20 @@ class Flavor_Chat_Settings {
                 ? array_values(array_intersect($input['active_modules'], $valid_modules))
                 : [];
 
+            // Auto-asignar rol admin del modulo al usuario que activa
+            $prev_modules = isset($existing['active_modules']) && is_array($existing['active_modules'])
+                ? $existing['active_modules']
+                : [];
+            $activated = array_diff($sanitized['active_modules'], $prev_modules);
+            if (!empty($activated) && class_exists('Flavor_Permission_Helper')) {
+                $user_id = get_current_user_id();
+                if ($user_id) {
+                    foreach ($activated as $module_slug) {
+                        Flavor_Permission_Helper::assign_module_admin_to_user($user_id, $module_slug);
+                    }
+                }
+            }
+
             // Guardar configuraciones específicas de cada módulo
             if (isset($_POST['flavor_chat_ia_module_banco_tiempo'])) {
                 $banco_tiempo_config = [
@@ -3234,7 +3248,7 @@ class Flavor_Chat_Settings {
         check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Sin permisos']);
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $section = sanitize_text_field($_POST['section'] ?? 'all');
@@ -3244,14 +3258,14 @@ class Flavor_Chat_Settings {
 
         // Obtener el motor de IA activo
         if (!class_exists('Flavor_Engine_Manager')) {
-            wp_send_json_error(['error' => 'Motor de IA no disponible']);
+            wp_send_json_error(['error' => __('Motor de IA no disponible', 'flavor-chat-ia')]);
         }
 
         $engine_manager = Flavor_Engine_Manager::get_instance();
         $engine = $engine_manager->get_active_engine();
 
         if (!$engine || !$engine->is_configured()) {
-            wp_send_json_error(['error' => 'Configura primero un proveedor de IA en la pestaña Proveedores']);
+            wp_send_json_error(['error' => __('Configura primero un proveedor de IA en la pestaña Proveedores', 'flavor-chat-ia')]);
         }
 
         // Construir el prompt según la sección
@@ -3263,7 +3277,7 @@ class Flavor_Chat_Settings {
         $response = $engine->send_message($messages, $system_prompt, []);
 
         if (!$response['success']) {
-            wp_send_json_error(['error' => $response['error'] ?? 'Error al generar configuración']);
+            wp_send_json_error(['error' => $response['error'] ?? __('Error al generar configuración', 'flavor-chat-ia')]);
         }
 
         // Parsear la respuesta JSON
@@ -3275,7 +3289,7 @@ class Flavor_Chat_Settings {
         $config = json_decode(trim($json_response), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            wp_send_json_error(['error' => 'Error al parsear respuesta de IA', 'raw' => $json_response]);
+            wp_send_json_error(['error' => __('Error al parsear respuesta de IA', 'flavor-chat-ia'), 'raw' => $json_response]);
         }
 
         wp_send_json_success($config);
@@ -3463,7 +3477,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => 'Sin permisos']);
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $period = sanitize_text_field($_POST['period'] ?? 'week');

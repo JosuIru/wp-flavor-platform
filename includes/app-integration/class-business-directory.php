@@ -69,7 +69,7 @@ class Flavor_Business_Directory {
         register_rest_route('app-discovery/v1', '/businesses', [
             'methods' => 'GET',
             'callback' => [$this, 'get_public_businesses'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'region' => [
                     'description' => 'Filtrar por región',
@@ -107,7 +107,7 @@ class Flavor_Business_Directory {
         register_rest_route('app-discovery/v1', '/businesses/verify', [
             'methods' => 'POST',
             'callback' => [$this, 'verify_business'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'url' => [
                     'description' => 'URL del negocio a verificar',
@@ -119,6 +119,12 @@ class Flavor_Business_Directory {
                 ],
             ],
         ]);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 
     /**
@@ -278,6 +284,12 @@ class Flavor_Business_Directory {
             'logo' => $this->get_logo_url(),
             'region' => isset($config['business_region']) ? $config['business_region'] : '',
             'category' => isset($config['business_category']) ? $config['business_category'] : '',
+            'address' => isset($config['business_address']) ? $config['business_address'] : '',
+            'city' => isset($config['business_city']) ? $config['business_city'] : '',
+            'country' => isset($config['business_country']) ? $config['business_country'] : '',
+            'postal_code' => isset($config['business_postal_code']) ? $config['business_postal_code'] : '',
+            'lat' => isset($config['business_lat']) ? floatval($config['business_lat']) : null,
+            'lng' => isset($config['business_lng']) ? floatval($config['business_lng']) : null,
             'systems' => array_column($systems, 'id'),
             'modules' => $modules,
             'language' => get_locale(),
@@ -335,11 +347,17 @@ class Flavor_Business_Directory {
             $businesses[] = $this->get_current_business_data();
         }
 
-        // TODO: Consultar servidor central real
-        // $response = wp_remote_get(self::DIRECTORY_SERVER . '/api/businesses');
+        $peer_urls = $this->get_directory_peer_urls();
+        foreach ($peer_urls as $peer_url) {
+            $remote_businesses = $this->fetch_remote_businesses($peer_url);
+            if (!empty($remote_businesses)) {
+                $businesses = array_merge($businesses, $remote_businesses);
+            }
+        }
 
         // Cachear por 1 hora
         set_transient('flavor_businesses_cache', $businesses, HOUR_IN_SECONDS);
+        update_option('flavor_business_last_sync', time());
 
         return $businesses;
     }
@@ -348,17 +366,63 @@ class Flavor_Business_Directory {
      * Registra en servidor central
      */
     private function register_in_central_server($business_data) {
-        // TODO: Implementar registro en servidor central real
-        // Por ahora, solo simular éxito
-
-        // $response = wp_remote_post(self::DIRECTORY_SERVER . '/api/businesses/register', [
-        //     'body' => json_encode($business_data),
-        //     'headers' => ['Content-Type' => 'application/json'],
-        // ]);
-
-        // return !is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200;
-
+        // En red descentralizada no hay registro central.
+        // Cada nodo publica su propio endpoint y los peers se sincronizan.
         return true;
+    }
+
+    private function get_directory_peer_urls() {
+        $peers = get_option('flavor_directory_peer_urls', []);
+        if (is_string($peers)) {
+            $peers = array_filter(array_map('trim', preg_split('/\r\n|\r|\n|,/', $peers)));
+        }
+        if (!is_array($peers)) {
+            return [];
+        }
+
+        $peers = array_values(array_filter(array_map(function($url) {
+            $url = is_string($url) ? trim($url) : '';
+            if ($url === '') {
+                return '';
+            }
+            return untrailingslashit($url);
+        }, $peers)));
+
+        return $peers;
+    }
+
+    private function fetch_remote_businesses($server_url) {
+        $endpoints = [
+            trailingslashit($server_url) . 'app-discovery/v1/businesses',
+            trailingslashit($server_url) . 'api/businesses',
+        ];
+
+        foreach ($endpoints as $endpoint) {
+            $response = wp_remote_get($endpoint, ['timeout' => 15]);
+            if (is_wp_error($response)) {
+                continue;
+            }
+            $code = wp_remote_retrieve_response_code($response);
+            if ($code < 200 || $code >= 300) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+            if (is_array($data)) {
+                if (isset($data['businesses']) && is_array($data['businesses'])) {
+                    return $data['businesses'];
+                }
+                if (isset($data['data']) && is_array($data['data'])) {
+                    return $data['data'];
+                }
+                if (isset($data[0])) {
+                    return $data;
+                }
+            }
+        }
+
+        return [];
     }
 
     /**

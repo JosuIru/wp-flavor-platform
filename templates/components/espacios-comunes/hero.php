@@ -25,22 +25,22 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
             <p class="text-xl md:text-2xl mb-12" style="color: rgba(255,255,255,0.9);"><?php echo esc_html($subtitulo ?? 'Reserva fácil y rápido'); ?></p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <a href="#ver-espacios" class="flavor-button flavor-button-primary px-8">Explorar Espacios</a>
-                <a href="#mis-reservas" class="flavor-button px-8">Mis Reservas</a>
+                <a href="#ver-espacios" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Explorar Espacios', 'flavor-chat-ia'); ?></a>
+                <a href="#mis-reservas" class="flavor-button px-8"><?php echo esc_html__('Mis Reservas', 'flavor-chat-ia'); ?></a>
             </div>
 
             <div class="grid grid-cols-3 gap-6">
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">5</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Espacios</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Espacios', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">450</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Reservas/mes</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Reservas/mes', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">Gratis</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Para vecinos</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Para vecinos', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
         </div>

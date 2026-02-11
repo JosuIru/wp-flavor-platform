@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../core/providers/providers.dart';
@@ -108,6 +109,7 @@ class StatsScreen extends ConsumerStatefulWidget {
 }
 
 class _StatsScreenState extends ConsumerState<StatsScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime _endDate = DateTime.now();
 
@@ -150,11 +152,12 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final statsAsync = ref.watch(statsProvider(_params));
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Estadísticas'),
+        title: Text(i18n.estadSticasF66aff),
         actions: [
           IconButton(
             onPressed: () => ref.invalidate(statsProvider(_params)),
@@ -179,7 +182,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
           Expanded(
             child: statsAsync.when(
               data: (stats) => _StatsContent(stats: stats),
-              loading: () => const LoadingScreen(message: 'Cargando estadísticas...'),
+              loading: () => LoadingScreen(message: i18n.loadingStats),
               error: (error, _) => ErrorScreen(
                 message: 'Error al cargar estadísticas',
                 onRetry: () => ref.invalidate(statsProvider(_params)),
@@ -199,6 +202,7 @@ class _StatsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -210,8 +214,7 @@ class _StatsContent extends StatelessWidget {
 
           // Gráfico de reservas por día
           if (stats.dailyStats.isNotEmpty) ...[
-            Text(
-              'Reservas por día',
+            Text(AppLocalizations.of(context)!.reservasPorDia,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -226,8 +229,7 @@ class _StatsContent extends StatelessWidget {
 
           // Gráfico de ingresos
           if (stats.dailyStats.isNotEmpty) ...[
-            Text(
-              'Ingresos por día',
+            Text(AppLocalizations.of(context)!.ingresosPorDia,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -242,8 +244,7 @@ class _StatsContent extends StatelessWidget {
 
           // Gráfico por tipo de ticket
           if (stats.byTicketType.isNotEmpty) ...[
-            Text(
-              'Reservas por tipo de ticket',
+            Text(AppLocalizations.of(context)!.reservasPorTipoDeTicket,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -258,8 +259,7 @@ class _StatsContent extends StatelessWidget {
 
           // Gráfico de ingresos por tipo de ticket
           if (stats.revenueByTicket.isNotEmpty) ...[
-            Text(
-              'Ingresos por tipo de ticket',
+            Text(AppLocalizations.of(context)!.ingresosPorTipoDeTicket,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -283,6 +283,7 @@ class _SummaryCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -292,25 +293,25 @@ class _SummaryCards extends StatelessWidget {
       childAspectRatio: 1.5,
       children: [
         StatCard(
-          title: 'Reservas',
+          title: i18n.statsSummaryReservations,
           value: '${stats.totalReservations}',
           icon: Icons.calendar_today,
           color: Colors.blue,
         ),
         StatCard(
-          title: 'Check-ins',
+          title: i18n.statsSummaryCheckins,
           value: '${stats.totalCheckins}',
           icon: Icons.check_circle,
           color: Colors.green,
         ),
         StatCard(
-          title: 'Canceladas',
+          title: i18n.statsSummaryCancelled,
           value: '${stats.totalCancelled}',
           icon: Icons.cancel,
           color: Colors.red,
         ),
         StatCard(
-          title: 'Ingresos',
+          title: i18n.statsSummaryRevenue,
           value: '${stats.totalRevenue.toStringAsFixed(2)}€',
           icon: Icons.euro,
           color: Colors.amber,
@@ -327,6 +328,7 @@ class _ReservationsChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return LineChart(
@@ -355,15 +357,12 @@ class _ReservationsChart extends StatelessWidget {
                 final index = value.toInt();
                 if (index >= 0 && index < dailyStats.length) {
                   final date = dailyStats[index].date;
-                  final parts = date.split('-');
-                  if (parts.length >= 3) {
-                    return Text(
-                      '${parts[2]}/${parts[1]}',
-                      style: const TextStyle(fontSize: 10),
-                    );
-                  }
+                  return Text(
+                    i18n.commonShortDate(date),
+                    style: const TextStyle(fontSize: 10),
+                  );
                 }
-                return const Text('');
+                return const SizedBox.shrink();
               },
             ),
           ),
@@ -409,6 +408,7 @@ class _RevenueChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return BarChart(
@@ -436,15 +436,12 @@ class _RevenueChart extends StatelessWidget {
                 final index = value.toInt();
                 if (index >= 0 && index < dailyStats.length && index % 5 == 0) {
                   final date = dailyStats[index].date;
-                  final parts = date.split('-');
-                  if (parts.length >= 3) {
-                    return Text(
-                      '${parts[2]}/${parts[1]}',
-                      style: const TextStyle(fontSize: 10),
-                    );
-                  }
+                  return Text(
+                    i18n.commonShortDate(date),
+                    style: const TextStyle(fontSize: 10),
+                  );
                 }
-                return const Text('');
+                return const SizedBox.shrink();
               },
             ),
           ),
@@ -454,7 +451,7 @@ class _RevenueChart extends StatelessWidget {
               reservedSize: 40,
               getTitlesWidget: (value, meta) {
                 return Text(
-                  '${value.toInt()}€',
+                  i18n.commonPriceEur(value.toInt().toString()),
                   style: const TextStyle(fontSize: 10),
                 );
               },
@@ -487,6 +484,7 @@ class _TicketTypePieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colors = [
       Colors.blue,
       Colors.green,
@@ -570,6 +568,7 @@ class _RevenueByTicketPieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colors = [
       Colors.green,
       Colors.blue,

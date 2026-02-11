@@ -32,9 +32,9 @@ $locutores = $wpdb->get_results("SELECT id, nombre FROM $tabla_locutores WHERE e
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-microphone"></span>
-        Gestión de Programas
+        <?php echo esc_html__('Gestión de Programas', 'flavor-chat-ia'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalNuevoPrograma(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> Nuevo Programa
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nuevo Programa', 'flavor-chat-ia'); ?>
         </a>
     </h1>
 
@@ -44,17 +44,17 @@ $locutores = $wpdb->get_results("SELECT id, nombre FROM $tabla_locutores WHERE e
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
             <div style="flex: 1;">
-                <label for="estado">Estado:</label>
+                <label for="estado"><?php echo esc_html__('Estado:', 'flavor-chat-ia'); ?></label>
                 <select name="estado" id="estado" class="regular-text">
-                    <option value="">Todos</option>
-                    <option value="activo" <?php selected($estado_filtro, 'activo'); ?>>Activo</option>
-                    <option value="inactivo" <?php selected($estado_filtro, 'inactivo'); ?>>Inactivo</option>
-                    <option value="pausado" <?php selected($estado_filtro, 'pausado'); ?>>Pausado</option>
+                    <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('pausado', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'pausado'); ?>><?php echo esc_html__('Pausado', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
-            <button type="submit" class="button button-primary">Filtrar</button>
-            <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button">Limpiar</a>
+            <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+            <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
         </form>
     </div>
 
@@ -63,13 +63,13 @@ $locutores = $wpdb->get_results("SELECT id, nombre FROM $tabla_locutores WHERE e
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 60px;">ID</th>
-                    <th>Programa</th>
-                    <th>Locutor Principal</th>
-                    <th style="width: 100px;">Frecuencia</th>
-                    <th style="width: 120px;">Horario</th>
-                    <th style="width: 100px;">Estado</th>
-                    <th style="width: 150px;">Acciones</th>
+                    <th style="width: 60px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Programa', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Locutor Principal', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Frecuencia', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Horario', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -77,7 +77,7 @@ $locutores = $wpdb->get_results("SELECT id, nombre FROM $tabla_locutores WHERE e
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-microphone" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666;">No hay programas registrados</p>
+                            <p style="color: #666;"><?php echo esc_html__('No hay programas registrados', 'flavor-chat-ia'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -103,7 +103,7 @@ $locutores = $wpdb->get_results("SELECT id, nombre FROM $tabla_locutores WHERE e
                             </td>
                             <td>
                                 <button class="button button-small" onclick="editarPrograma(<?php echo $programa->id; ?>)">
-                                    <span class="dashicons dashicons-edit"></span> Editar
+                                    <span class="dashicons dashicons-edit"></span> <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
                                 </button>
                             </td>
                         </tr>
@@ -120,24 +120,24 @@ $locutores = $wpdb->get_results("SELECT id, nombre FROM $tabla_locutores WHERE e
     <div style="background-color: #fff; margin: 5% auto; padding: 30px; width: 90%; max-width: 700px; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
         <h2>
             <span class="dashicons dashicons-plus-alt"></span>
-            Nuevo Programa
+            <?php echo esc_html__('Nuevo Programa', 'flavor-chat-ia'); ?>
         </h2>
 
         <form id="form-nuevo-programa">
             <div style="margin-bottom: 20px;">
-                <label>Nombre del Programa:</label>
+                <label><?php echo esc_html__('Nombre del Programa:', 'flavor-chat-ia'); ?></label>
                 <input type="text" name="nombre" class="regular-text" required style="width: 100%;">
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label>Descripción:</label>
+                <label><?php echo esc_html__('Descripción:', 'flavor-chat-ia'); ?></label>
                 <textarea name="descripcion" rows="4" class="large-text" style="width: 100%;"></textarea>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label>Locutor Principal:</label>
+                <label><?php echo esc_html__('Locutor Principal:', 'flavor-chat-ia'); ?></label>
                 <select name="locutor_principal_id" class="regular-text">
-                    <option value="">Sin asignar</option>
+                    <option value=""><?php echo esc_html__('Sin asignar', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($locutores as $locutor): ?>
                         <option value="<?php echo $locutor->id; ?>"><?php echo esc_html($locutor->nombre); ?></option>
                     <?php endforeach; ?>
@@ -145,23 +145,23 @@ $locutores = $wpdb->get_results("SELECT id, nombre FROM $tabla_locutores WHERE e
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label>Frecuencia:</label>
+                <label><?php echo esc_html__('Frecuencia:', 'flavor-chat-ia'); ?></label>
                 <select name="frecuencia" class="regular-text">
-                    <option value="diario">Diario</option>
-                    <option value="semanal">Semanal</option>
-                    <option value="quincenal">Quincenal</option>
-                    <option value="mensual">Mensual</option>
+                    <option value="<?php echo esc_attr__('diario', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Diario', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('semanal', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Semanal', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('quincenal', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Quincenal', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('mensual', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mensual', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label>Horario:</label>
-                <input type="text" name="horario" class="regular-text" placeholder="Ej: Lunes 20:00">
+                <label><?php echo esc_html__('Horario:', 'flavor-chat-ia'); ?></label>
+                <input type="text" name="horario" class="regular-text" placeholder="<?php echo esc_attr__('Ej: Lunes 20:00', 'flavor-chat-ia'); ?>">
             </div>
 
             <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
-                <button type="button" onclick="cerrarModalNuevoPrograma()" class="button button-large">Cancelar</button>
-                <button type="submit" class="button button-primary button-large">Crear Programa</button>
+                <button type="button" onclick="cerrarModalNuevoPrograma()" class="button button-large"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary button-large"><?php echo esc_html__('Crear Programa', 'flavor-chat-ia'); ?></button>
             </div>
         </form>
     </div>

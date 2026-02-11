@@ -11,16 +11,16 @@ $filtros_activos = $filtros_activos ?? [];
 <div class="flavor-frontend flavor-bares-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+            <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-orange-600 hover:text-orange-700 font-medium">Limpiar</a>
+            <a href="?" class="text-sm text-orange-600 hover:text-orange-700 font-medium"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
             <?php endif; ?>
         </div>
 
         <form method="get" class="space-y-6">
             <!-- Tipo de cocina -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Tipo de cocina</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Tipo de cocina', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $tipos_cocina = [
@@ -50,30 +50,30 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Rango de precio -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Rango de precio</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Rango de precio', 'flavor-chat-ia'); ?></h4>
                 <select name="precio" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-orange-500">
-                    <option value="">Cualquier precio</option>
-                    <option value="1" <?php echo ($filtros_activos['precio'] ?? '') === '1' ? 'selected' : ''; ?>>€ - Economico</option>
-                    <option value="2" <?php echo ($filtros_activos['precio'] ?? '') === '2' ? 'selected' : ''; ?>>€€ - Moderado</option>
-                    <option value="3" <?php echo ($filtros_activos['precio'] ?? '') === '3' ? 'selected' : ''; ?>>€€€ - Premium</option>
+                    <option value=""><?php echo esc_html__('Cualquier precio', 'flavor-chat-ia'); ?></option>
+                    <option value="1" <?php echo ($filtros_activos['precio'] ?? '') === '1' ? 'selected' : ''; ?>><?php echo esc_html__('€ - Economico', 'flavor-chat-ia'); ?></option>
+                    <option value="2" <?php echo ($filtros_activos['precio'] ?? '') === '2' ? 'selected' : ''; ?>><?php echo esc_html__('€€ - Moderado', 'flavor-chat-ia'); ?></option>
+                    <option value="3" <?php echo ($filtros_activos['precio'] ?? '') === '3' ? 'selected' : ''; ?>><?php echo esc_html__('€€€ - Premium', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <!-- Distancia -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Distancia</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Distancia', 'flavor-chat-ia'); ?></h4>
                 <select name="distancia" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-orange-500">
-                    <option value="">Cualquier distancia</option>
-                    <option value="500" <?php echo ($filtros_activos['distancia'] ?? '') === '500' ? 'selected' : ''; ?>>Menos de 500m</option>
-                    <option value="1000" <?php echo ($filtros_activos['distancia'] ?? '') === '1000' ? 'selected' : ''; ?>>Menos de 1 km</option>
-                    <option value="3000" <?php echo ($filtros_activos['distancia'] ?? '') === '3000' ? 'selected' : ''; ?>>Menos de 3 km</option>
-                    <option value="5000" <?php echo ($filtros_activos['distancia'] ?? '') === '5000' ? 'selected' : ''; ?>>Menos de 5 km</option>
+                    <option value=""><?php echo esc_html__('Cualquier distancia', 'flavor-chat-ia'); ?></option>
+                    <option value="500" <?php echo ($filtros_activos['distancia'] ?? '') === '500' ? 'selected' : ''; ?>><?php echo esc_html__('Menos de 500m', 'flavor-chat-ia'); ?></option>
+                    <option value="1000" <?php echo ($filtros_activos['distancia'] ?? '') === '1000' ? 'selected' : ''; ?>><?php echo esc_html__('Menos de 1 km', 'flavor-chat-ia'); ?></option>
+                    <option value="3000" <?php echo ($filtros_activos['distancia'] ?? '') === '3000' ? 'selected' : ''; ?>><?php echo esc_html__('Menos de 3 km', 'flavor-chat-ia'); ?></option>
+                    <option value="5000" <?php echo ($filtros_activos['distancia'] ?? '') === '5000' ? 'selected' : ''; ?>><?php echo esc_html__('Menos de 5 km', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <!-- Servicios -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Servicios</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Servicios', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $servicios_local = [
@@ -101,11 +101,11 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Valoracion minima -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Valoracion minima</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Valoracion minima', 'flavor-chat-ia'); ?></h4>
                 <select name="valoracion" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-orange-500">
-                    <option value="">Cualquiera</option>
-                    <option value="3" <?php echo ($filtros_activos['valoracion'] ?? '') === '3' ? 'selected' : ''; ?>>⭐⭐⭐ o mas</option>
-                    <option value="4" <?php echo ($filtros_activos['valoracion'] ?? '') === '4' ? 'selected' : ''; ?>>⭐⭐⭐⭐ o mas</option>
+                    <option value=""><?php echo esc_html__('Cualquiera', 'flavor-chat-ia'); ?></option>
+                    <option value="3" <?php echo ($filtros_activos['valoracion'] ?? '') === '3' ? 'selected' : ''; ?>><?php echo esc_html__('⭐⭐⭐ o mas', 'flavor-chat-ia'); ?></option>
+                    <option value="4" <?php echo ($filtros_activos['valoracion'] ?? '') === '4' ? 'selected' : ''; ?>><?php echo esc_html__('⭐⭐⭐⭐ o mas', 'flavor-chat-ia'); ?></option>
                     <option value="5" <?php echo ($filtros_activos['valoracion'] ?? '') === '5' ? 'selected' : ''; ?>>⭐⭐⭐⭐⭐</option>
                 </select>
             </div>
@@ -113,7 +113,7 @@ $filtros_activos = $filtros_activos ?? [];
             <!-- Boton aplicar -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-amber-600 hover:to-orange-700 transition-all shadow-md">
-                Aplicar Filtros
+                <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
@@ -16,6 +17,7 @@ class ReservationsScreen extends ConsumerStatefulWidget {
 }
 
 class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   String _currentMonth = '';
   String? _selectedDate;
   AvailabilityDay? _selectedDay;
@@ -110,12 +112,13 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final availabilityAsync = ref.watch(availabilityProvider(_currentMonth));
     final cartState = ref.watch(cartProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reservar'),
+        title: Text(i18n.reserveCta),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -129,14 +132,14 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
                 onDateSelected: _onDateSelected,
                 onMonthChanged: _onMonthChanged,
               ),
-              loading: () => const SizedBox(
+              loading: () => SizedBox(
                 height: 350,
-                child: LoadingScreen(message: 'Cargando disponibilidad...'),
+                child: LoadingScreen(message: i18n.loadingAvailability),
               ),
               error: (error, stack) => SizedBox(
                 height: 350,
                 child: ErrorScreen(
-                  message: 'Error al cargar disponibilidad',
+                  message: i18n.reservationsAvailabilityError,
                   onRetry: () => ref.invalidate(availabilityProvider(_currentMonth)),
                 ),
               ),
@@ -194,14 +197,14 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
                       ),
                   ],
                 ),
-                loading: () => const Padding(
+                loading: () => Padding(
                   padding: EdgeInsets.all(32),
-                  child: LoadingScreen(message: 'Cargando tickets...'),
+                  child: LoadingScreen(message: i18n.loadingTickets),
                 ),
                 error: (error, stack) => Padding(
                   padding: const EdgeInsets.all(32),
                   child: ErrorScreen(
-                    message: 'Error al cargar tickets',
+                    message: i18n.reservationsTicketsError,
                     onRetry: () => ref.invalidate(ticketsProvider),
                   ),
                 ),

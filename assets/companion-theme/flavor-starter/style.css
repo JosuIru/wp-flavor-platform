@@ -1,0 +1,226 @@
+/*
+Theme Name: Flavor Starter
+Theme URI: https://flavor.dev
+Author: Flavor
+Author URI: https://flavor.dev
+Description: Tema minimalista optimizado para el plugin Flavor Chat IA. Proporciona la estructura HTML necesaria y delega los estilos y layouts al plugin.
+Version: 1.0.0
+Requires at least: 5.8
+Tested up to: 6.4
+Requires PHP: 7.4
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: flavor-starter
+Tags: flavor, chat, ia, minimal, tailwind
+
+Flavor Starter es un tema companion para el plugin Flavor Chat IA.
+Diseñado para funcionar perfectamente con las landing pages y el sistema de layouts del plugin.
+*/
+
+/* Reset y estilos base mínimos */
+:root {
+    --flavor-primary: #3b82f6;
+    --flavor-secondary: #64748b;
+    --flavor-success: #22c55e;
+    --flavor-warning: #f59e0b;
+    --flavor-danger: #ef4444;
+    --flavor-dark: #1e293b;
+    --flavor-light: #f8fafc;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #1e293b;
+    background-color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estilos para contenido de WordPress */
+.entry-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.entry-content a {
+    color: var(--flavor-primary);
+}
+
+.entry-content a:hover {
+    text-decoration: underline;
+}
+
+/* Alineaciones de WordPress */
+.alignleft {
+    float: left;
+    margin-right: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.alignright {
+    float: right;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.aligncenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.alignwide {
+    max-width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+}
+
+.alignfull {
+    max-width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    width: 100vw;
+}
+
+/* Screen reader text */
+.screen-reader-text {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+.screen-reader-text:focus {
+    background-color: #f1f1f1;
+    border-radius: 3px;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+    clip: auto !important;
+    clip-path: none;
+    color: #21759b;
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    height: auto;
+    left: 5px;
+    line-height: normal;
+    padding: 15px 23px 14px;
+    text-decoration: none;
+    top: 5px;
+    width: auto;
+    z-index: 100000;
+}
+
+/* Estilos para páginas sin header/footer del plugin */
+.flavor-starter-minimal {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-starter-minimal main {
+    flex: 1;
+}
+
+/* Template Landing - sin márgenes */
+.page-template-template-landing .entry-content,
+.page-template-template-landing .flavor-landing {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Line clamp utilities */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Paginación de WordPress */
+.navigation.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.navigation.pagination .nav-links {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.navigation.pagination .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border-radius: 0.5rem;
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.navigation.pagination .page-numbers:hover {
+    background-color: #e2e8f0;
+}
+
+.navigation.pagination .page-numbers.current {
+    background-color: var(--flavor-primary);
+    color: white;
+}
+
+/* Menú de navegación fallback */
+.flavor-starter-minimal nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.flavor-starter-minimal nav ul li {
+    display: inline-block;
+}
+
+.flavor-starter-minimal nav ul li a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #475569;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.flavor-starter-minimal nav ul li a:hover {
+    color: var(--flavor-primary);
+}

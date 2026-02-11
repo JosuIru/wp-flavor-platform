@@ -12,16 +12,16 @@ $filtros_activos = $filtros_activos ?? [];
 
 <div class="flavor-filters podcast bg-white rounded-2xl p-5 shadow-md">
     <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+        <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
         <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-teal-600 hover:text-teal-700">Limpiar</a>
+            <a href="?" class="text-sm text-teal-600 hover:text-teal-700"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
         <?php endif; ?>
     </div>
 
     <form method="get" class="space-y-6">
         <!-- Categoria -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Categoria</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $categorias = [
@@ -53,7 +53,7 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Duracion -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Duracion episodios</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Duracion episodios', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $duraciones = [
@@ -81,7 +81,7 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Idioma -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Idioma</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Idioma', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $idiomas = [
@@ -110,7 +110,7 @@ $filtros_activos = $filtros_activos ?? [];
         <button type="submit"
                 class="w-full py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                 style="background: linear-gradient(135deg, #14b8a6 0%, #10b981 100%);">
-            Aplicar Filtros
+            <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
         </button>
     </form>
 </div>

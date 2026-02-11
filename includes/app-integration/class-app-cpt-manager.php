@@ -133,14 +133,14 @@ class Flavor_App_CPT_Manager {
         register_rest_route('app-discovery/v1', '/custom-post-types', [
             'methods' => 'GET',
             'callback' => [$this, 'get_configured_cpts'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Endpoint para obtener posts de un CPT
         register_rest_route('app-discovery/v1', '/cpt/(?P<post_type>[a-zA-Z0-9_-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_cpt_posts'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'post_type' => [
                     'required' => true,
@@ -161,7 +161,7 @@ class Flavor_App_CPT_Manager {
         register_rest_route('app-discovery/v1', '/cpt/(?P<post_type>[a-zA-Z0-9_-]+)/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_single_cpt_post'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'post_type' => [
                     'required' => true,
@@ -283,7 +283,7 @@ class Flavor_App_CPT_Manager {
         if (!isset($config[$post_type]) || !$config[$post_type]['enabled']) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => 'Este tipo de contenido no está habilitado en la app',
+                'message' => __('Este tipo de contenido no está habilitado en la app', 'flavor-chat-ia'),
             ], 403);
         }
 
@@ -344,7 +344,7 @@ class Flavor_App_CPT_Manager {
         if (!isset($config[$post_type]) || !$config[$post_type]['enabled']) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => 'Este tipo de contenido no está habilitado en la app',
+                'message' => __('Este tipo de contenido no está habilitado en la app', 'flavor-chat-ia'),
             ], 403);
         }
 
@@ -353,7 +353,7 @@ class Flavor_App_CPT_Manager {
         if (!$post || $post->post_type !== $post_type || $post->post_status !== 'publish') {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => 'Contenido no encontrado',
+                'message' => __('Contenido no encontrado', 'flavor-chat-ia'),
             ], 404);
         }
 
@@ -396,6 +396,11 @@ class Flavor_App_CPT_Manager {
                 'name' => $author->display_name,
                 'avatar' => get_avatar_url($post->post_author),
             ];
+
+            if (!is_user_logged_in()) {
+                unset($data['author']['id']);
+                $data['author']['avatar'] = '';
+            }
         }
 
         // Imagen destacada
@@ -510,7 +515,7 @@ class Flavor_App_CPT_Manager {
         check_ajax_referer('flavor_app_cpts_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $config = isset($_POST['config']) ? json_decode(stripslashes($_POST['config']), true) : [];
@@ -520,7 +525,7 @@ class Flavor_App_CPT_Manager {
                 'message' => __('Configuración guardada correctamente', 'flavor-chat-ia'),
             ]);
         } else {
-            wp_send_json_error('Error al guardar configuración');
+            wp_send_json_error(__('Error al guardar configuración', 'flavor-chat-ia'));
         }
     }
 
@@ -533,13 +538,13 @@ class Flavor_App_CPT_Manager {
         check_ajax_referer('flavor_app_cpts_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $post_type = sanitize_text_field($_POST['post_type'] ?? '');
 
         if (!post_type_exists($post_type)) {
-            wp_send_json_error('Tipo de contenido no existe');
+            wp_send_json_error(__('Tipo de contenido no existe', 'flavor-chat-ia'));
         }
 
         // Obtener algunos posts de ejemplo
@@ -562,5 +567,11 @@ class Flavor_App_CPT_Manager {
             'posts' => $preview,
             'total' => wp_count_posts($post_type)->publish,
         ]);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

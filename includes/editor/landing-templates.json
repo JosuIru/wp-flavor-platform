@@ -1,0 +1,584 @@
+{
+    "templates": [
+        {
+            "id": "startup-saas",
+            "name": "Startup SaaS",
+            "category": "negocio",
+            "description": "Landing perfecta para startups y productos SaaS",
+            "thumbnail": "",
+            "sections": [
+                {
+                    "type": "hero",
+                    "variant": "centrado",
+                    "data": {
+                        "titulo": "Tu producto SaaS que cambiará todo",
+                        "subtitulo": "Simplifica tu flujo de trabajo con nuestra solución innovadora. Más de 10,000 empresas ya confían en nosotros.",
+                        "cta_texto": "Empezar gratis",
+                        "cta_url": "#pricing",
+                        "cta_secundario_texto": "Ver demo",
+                        "cta_secundario_url": "#demo",
+                        "color_fondo": "#ffffff",
+                        "color_texto": "#1e293b"
+                    }
+                },
+                {
+                    "type": "logos",
+                    "variant": "simple",
+                    "data": {
+                        "titulo": "Empresas que confían en nosotros",
+                        "logos": [],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "features",
+                    "variant": "grid_3",
+                    "data": {
+                        "titulo": "Todo lo que necesitas",
+                        "subtitulo": "Características diseñadas para hacer tu vida más fácil",
+                        "items": [
+                            {"icono": "performance", "titulo": "Rápido", "descripcion": "Optimizado para velocidad máxima"},
+                            {"icono": "shield", "titulo": "Seguro", "descripcion": "Tus datos siempre protegidos"},
+                            {"icono": "chart-line", "titulo": "Analíticas", "descripcion": "Insights en tiempo real"},
+                            {"icono": "groups", "titulo": "Colaboración", "descripcion": "Trabaja en equipo fácilmente"},
+                            {"icono": "cloud", "titulo": "En la nube", "descripcion": "Accede desde cualquier lugar"},
+                            {"icono": "update", "titulo": "Actualizaciones", "descripcion": "Siempre la última versión"}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "stats",
+                    "variant": "horizontal",
+                    "data": {
+                        "titulo": "",
+                        "items": [
+                            {"numero": "10K", "sufijo": "+", "etiqueta": "Usuarios activos"},
+                            {"numero": "99.9", "sufijo": "%", "etiqueta": "Uptime garantizado"},
+                            {"numero": "50", "sufijo": "M", "etiqueta": "Tareas completadas"},
+                            {"numero": "24", "sufijo": "/7", "etiqueta": "Soporte disponible"}
+                        ],
+                        "color_fondo": "#3b82f6"
+                    }
+                },
+                {
+                    "type": "pricing",
+                    "variant": "destacado_central",
+                    "data": {
+                        "titulo": "Planes simples y transparentes",
+                        "subtitulo": "Sin sorpresas, sin costes ocultos",
+                        "items": [
+                            {
+                                "nombre": "Starter",
+                                "precio": "0€",
+                                "periodo": "/mes",
+                                "descripcion": "Perfecto para empezar",
+                                "caracteristicas": "Hasta 3 proyectos\n1 usuario\n1GB almacenamiento\nSoporte por email",
+                                "cta_texto": "Comenzar gratis",
+                                "cta_url": "#"
+                            },
+                            {
+                                "nombre": "Pro",
+                                "precio": "29€",
+                                "periodo": "/mes",
+                                "descripcion": "Para equipos en crecimiento",
+                                "caracteristicas": "Proyectos ilimitados\n10 usuarios\n50GB almacenamiento\nSoporte prioritario\nIntegraciones",
+                                "destacado": true,
+                                "cta_texto": "Elegir Pro",
+                                "cta_url": "#"
+                            },
+                            {
+                                "nombre": "Enterprise",
+                                "precio": "99€",
+                                "periodo": "/mes",
+                                "descripcion": "Para grandes organizaciones",
+                                "caracteristicas": "Todo lo de Pro\nUsuarios ilimitados\nAlmacenamiento ilimitado\nSoporte 24/7\nSLA garantizado",
+                                "cta_texto": "Contactar ventas",
+                                "cta_url": "#"
+                            }
+                        ],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "testimonios",
+                    "variant": "carrusel",
+                    "data": {
+                        "titulo": "Lo que dicen nuestros clientes",
+                        "items": [
+                            {
+                                "texto": "Esta herramienta ha transformado completamente cómo trabajamos. La productividad de nuestro equipo ha aumentado un 40%.",
+                                "nombre": "María García",
+                                "cargo": "CEO, TechStartup",
+                                "valoracion": 5
+                            },
+                            {
+                                "texto": "Fácil de usar y con un soporte increíble. La mejor inversión que hemos hecho este año.",
+                                "nombre": "Carlos Rodríguez",
+                                "cargo": "CTO, InnovaLab",
+                                "valoracion": 5
+                            }
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "faq",
+                    "variant": "acordeon",
+                    "data": {
+                        "titulo": "Preguntas frecuentes",
+                        "items": [
+                            {"pregunta": "¿Puedo probar antes de pagar?", "respuesta": "Sí, ofrecemos un plan gratuito con funcionalidades básicas. También puedes solicitar una demo personalizada."},
+                            {"pregunta": "¿Cómo funciona la facturación?", "respuesta": "Facturamos mensualmente o anualmente (con 2 meses gratis). Puedes cancelar en cualquier momento."},
+                            {"pregunta": "¿Mis datos están seguros?", "respuesta": "Utilizamos encriptación de grado bancario y cumplimos con GDPR. Tus datos son siempre tuyos."},
+                            {"pregunta": "¿Ofrecen soporte técnico?", "respuesta": "Todos los planes incluyen soporte por email. Los planes Pro y Enterprise tienen soporte prioritario."}
+                        ],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "cta",
+                    "variant": "centrado",
+                    "data": {
+                        "titulo": "¿Listo para empezar?",
+                        "descripcion": "Únete a miles de empresas que ya usan nuestra plataforma",
+                        "boton_texto": "Crear cuenta gratis",
+                        "boton_url": "#",
+                        "boton_secundario_texto": "Contactar ventas",
+                        "boton_secundario_url": "#",
+                        "color_fondo": "#3b82f6",
+                        "color_texto": "#ffffff"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "portfolio-creativo",
+            "name": "Portfolio Creativo",
+            "category": "portfolio",
+            "description": "Muestra tu trabajo de forma elegante",
+            "thumbnail": "",
+            "sections": [
+                {
+                    "type": "hero",
+                    "variant": "minimalista",
+                    "data": {
+                        "titulo": "Diseñador & Desarrollador",
+                        "subtitulo": "Creo experiencias digitales memorables que conectan marcas con personas.",
+                        "cta_texto": "Ver proyectos",
+                        "cta_url": "#proyectos",
+                        "cta_secundario_texto": "Contactar",
+                        "cta_secundario_url": "#contacto",
+                        "color_fondo": "#0f172a",
+                        "color_texto": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "galeria",
+                    "variant": "masonry",
+                    "data": {
+                        "titulo": "Proyectos destacados",
+                        "subtitulo": "Una selección de mis trabajos más recientes",
+                        "imagenes": [],
+                        "columnas": "3",
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "features",
+                    "variant": "alternado",
+                    "data": {
+                        "titulo": "Servicios",
+                        "items": [
+                            {"icono": "art", "titulo": "Diseño UI/UX", "descripcion": "Interfaces intuitivas y atractivas que mejoran la experiencia de usuario"},
+                            {"icono": "code-standards", "titulo": "Desarrollo Web", "descripcion": "Sitios web modernos, rápidos y optimizados para SEO"},
+                            {"icono": "format-image", "titulo": "Branding", "descripcion": "Identidad visual que comunica la esencia de tu marca"}
+                        ],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "testimonios",
+                    "variant": "destacado",
+                    "data": {
+                        "titulo": "Clientes satisfechos",
+                        "items": [
+                            {
+                                "texto": "Trabajar con este profesional fue una experiencia increíble. El resultado superó todas nuestras expectativas.",
+                                "nombre": "Ana Martínez",
+                                "cargo": "Directora de Marketing, BrandCo",
+                                "valoracion": 5
+                            }
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "contacto",
+                    "variant": "split",
+                    "data": {
+                        "titulo": "Hablemos de tu proyecto",
+                        "subtitulo": "Estoy disponible para nuevos proyectos y colaboraciones",
+                        "email": "hola@ejemplo.com",
+                        "mostrar_formulario": true,
+                        "color_fondo": "#0f172a"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "landing-app",
+            "name": "Landing App Móvil",
+            "category": "app",
+            "description": "Promociona tu aplicación móvil",
+            "thumbnail": "",
+            "sections": [
+                {
+                    "type": "hero",
+                    "variant": "split",
+                    "data": {
+                        "titulo": "Tu vida más simple con nuestra app",
+                        "subtitulo": "Descarga la app que está cambiando la forma de organizar tu día a día. Disponible en iOS y Android.",
+                        "cta_texto": "Descargar para iOS",
+                        "cta_url": "#",
+                        "cta_secundario_texto": "Descargar para Android",
+                        "cta_secundario_url": "#",
+                        "color_fondo": "#6366f1",
+                        "color_texto": "#ffffff"
+                    }
+                },
+                {
+                    "type": "features",
+                    "variant": "iconos_grandes",
+                    "data": {
+                        "titulo": "Características principales",
+                        "items": [
+                            {"icono": "smartphone", "titulo": "Diseño intuitivo", "descripcion": "Interfaz fácil de usar desde el primer momento"},
+                            {"icono": "cloud-saved", "titulo": "Sincronización", "descripcion": "Tus datos siempre disponibles en todos tus dispositivos"},
+                            {"icono": "lock", "titulo": "Privacidad", "descripcion": "Tus datos personales siempre protegidos"}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "video",
+                    "variant": "centrado",
+                    "data": {
+                        "titulo": "Mira cómo funciona",
+                        "video_url": "",
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "stats",
+                    "variant": "tarjetas",
+                    "data": {
+                        "titulo": "Números que hablan",
+                        "items": [
+                            {"numero": "1M", "sufijo": "+", "etiqueta": "Descargas"},
+                            {"numero": "4.8", "sufijo": "", "etiqueta": "Valoración App Store"},
+                            {"numero": "50", "sufijo": "+", "etiqueta": "Países"}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "testimonios",
+                    "variant": "grid",
+                    "data": {
+                        "titulo": "Lo que dicen los usuarios",
+                        "items": [
+                            {"texto": "La mejor app de productividad que he usado nunca.", "nombre": "Pedro L.", "valoracion": 5},
+                            {"texto": "Simple, elegante y funcional. La uso todos los días.", "nombre": "Laura M.", "valoracion": 5}
+                        ],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "cta",
+                    "variant": "banner",
+                    "data": {
+                        "titulo": "Descarga ahora",
+                        "descripcion": "Empieza a organizar tu vida hoy mismo",
+                        "boton_texto": "Descargar gratis",
+                        "boton_url": "#",
+                        "color_fondo": "#6366f1",
+                        "color_texto": "#ffffff"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "negocio-local",
+            "name": "Negocio Local",
+            "category": "servicios",
+            "description": "Para restaurantes, tiendas y servicios locales",
+            "thumbnail": "",
+            "sections": [
+                {
+                    "type": "hero",
+                    "variant": "con_imagen_fondo",
+                    "data": {
+                        "titulo": "Bienvenidos a nuestro restaurante",
+                        "subtitulo": "Cocina tradicional con los mejores ingredientes de la región. Reserva tu mesa ahora.",
+                        "cta_texto": "Reservar mesa",
+                        "cta_url": "#reservas",
+                        "cta_secundario_texto": "Ver menú",
+                        "cta_secundario_url": "#menu",
+                        "color_fondo": "#1c1917",
+                        "color_texto": "#ffffff"
+                    }
+                },
+                {
+                    "type": "features",
+                    "variant": "grid_3",
+                    "data": {
+                        "titulo": "Por qué elegirnos",
+                        "items": [
+                            {"icono": "carrot", "titulo": "Ingredientes frescos", "descripcion": "Productos locales de primera calidad"},
+                            {"icono": "groups", "titulo": "Ambiente acogedor", "descripcion": "Perfecto para familia y amigos"},
+                            {"icono": "awards", "titulo": "Chef premiado", "descripcion": "Cocina de autor con tradición"}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "galeria",
+                    "variant": "grid",
+                    "data": {
+                        "titulo": "Nuestros platos",
+                        "imagenes": [],
+                        "columnas": "4",
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "testimonios",
+                    "variant": "simple",
+                    "data": {
+                        "titulo": "Opiniones de clientes",
+                        "items": [
+                            {"texto": "La mejor comida de la ciudad. Volveremos seguro.", "nombre": "José García", "valoracion": 5},
+                            {"texto": "Servicio excelente y ambiente muy agradable.", "nombre": "María López", "valoracion": 5}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "contacto",
+                    "variant": "con_mapa",
+                    "data": {
+                        "titulo": "Encuéntranos",
+                        "subtitulo": "Estamos en el centro de la ciudad",
+                        "direccion": "Calle Principal 123, Ciudad",
+                        "telefono": "+34 912 345 678",
+                        "email": "reservas@ejemplo.com",
+                        "mostrar_formulario": true,
+                        "color_fondo": "#f8fafc"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "consultoria",
+            "name": "Consultoría Profesional",
+            "category": "servicios",
+            "description": "Para consultores y profesionales",
+            "thumbnail": "",
+            "sections": [
+                {
+                    "type": "hero",
+                    "variant": "split",
+                    "data": {
+                        "titulo": "Impulsa tu negocio al siguiente nivel",
+                        "subtitulo": "Consultoría estratégica para empresas que quieren crecer. Más de 15 años de experiencia transformando negocios.",
+                        "cta_texto": "Agendar consulta",
+                        "cta_url": "#consulta",
+                        "cta_secundario_texto": "Ver casos de éxito",
+                        "cta_secundario_url": "#casos",
+                        "color_fondo": "#ffffff",
+                        "color_texto": "#1e293b"
+                    }
+                },
+                {
+                    "type": "stats",
+                    "variant": "horizontal",
+                    "data": {
+                        "titulo": "",
+                        "items": [
+                            {"numero": "15", "sufijo": "+", "etiqueta": "Años de experiencia"},
+                            {"numero": "200", "sufijo": "+", "etiqueta": "Clientes satisfechos"},
+                            {"numero": "95", "sufijo": "%", "etiqueta": "Tasa de éxito"}
+                        ],
+                        "color_fondo": "#1e40af"
+                    }
+                },
+                {
+                    "type": "features",
+                    "variant": "lista",
+                    "data": {
+                        "titulo": "Nuestros servicios",
+                        "subtitulo": "Soluciones adaptadas a tus necesidades",
+                        "items": [
+                            {"icono": "chart-bar", "titulo": "Estrategia de negocio", "descripcion": "Definimos el camino hacia tus objetivos con un plan sólido y medible"},
+                            {"icono": "groups", "titulo": "Desarrollo organizacional", "descripcion": "Optimizamos la estructura y procesos de tu empresa"},
+                            {"icono": "trending-up", "titulo": "Crecimiento y escalabilidad", "descripcion": "Preparamos tu negocio para crecer de forma sostenible"}
+                        ],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "testimonios",
+                    "variant": "carrusel",
+                    "data": {
+                        "titulo": "Casos de éxito",
+                        "items": [
+                            {"texto": "Gracias a su consultoría, aumentamos nuestros ingresos un 150% en un año.", "nombre": "Roberto Sánchez", "cargo": "CEO, TechCorp", "valoracion": 5},
+                            {"texto": "La mejor inversión que hemos hecho. Su visión estratégica fue clave.", "nombre": "Elena Ruiz", "cargo": "Directora, InnovaGroup", "valoracion": 5}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "equipo",
+                    "variant": "grid",
+                    "data": {
+                        "titulo": "Nuestro equipo",
+                        "items": [
+                            {"nombre": "Carlos Fernández", "cargo": "Socio Director", "descripcion": "MBA, 20 años de experiencia"},
+                            {"nombre": "Ana Martín", "cargo": "Consultora Senior", "descripcion": "Especialista en transformación digital"}
+                        ],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "cta",
+                    "variant": "con_imagen",
+                    "data": {
+                        "titulo": "¿Listo para transformar tu negocio?",
+                        "descripcion": "Agenda una consulta gratuita de 30 minutos",
+                        "boton_texto": "Reservar consulta",
+                        "boton_url": "#",
+                        "color_fondo": "#1e40af",
+                        "color_texto": "#ffffff"
+                    }
+                },
+                {
+                    "type": "contacto",
+                    "variant": "con_info",
+                    "data": {
+                        "titulo": "Contacta con nosotros",
+                        "email": "info@consultoria.com",
+                        "telefono": "+34 911 222 333",
+                        "direccion": "Paseo de la Castellana 100, Madrid",
+                        "mostrar_formulario": true,
+                        "color_fondo": "#ffffff"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "evento",
+            "name": "Evento o Conferencia",
+            "category": "negocio",
+            "description": "Para eventos, conferencias y webinars",
+            "thumbnail": "",
+            "sections": [
+                {
+                    "type": "hero",
+                    "variant": "centrado",
+                    "data": {
+                        "titulo": "Conferencia Tech 2025",
+                        "subtitulo": "El evento más importante del año para profesionales de tecnología. 15-16 de Marzo, Madrid.",
+                        "cta_texto": "Reservar entrada",
+                        "cta_url": "#tickets",
+                        "cta_secundario_texto": "Ver programa",
+                        "cta_secundario_url": "#programa",
+                        "color_fondo": "#7c3aed",
+                        "color_texto": "#ffffff"
+                    }
+                },
+                {
+                    "type": "stats",
+                    "variant": "horizontal",
+                    "data": {
+                        "titulo": "",
+                        "items": [
+                            {"numero": "30", "sufijo": "+", "etiqueta": "Ponentes"},
+                            {"numero": "2", "sufijo": "", "etiqueta": "Días"},
+                            {"numero": "1000", "sufijo": "+", "etiqueta": "Asistentes"},
+                            {"numero": "50", "sufijo": "+", "etiqueta": "Sesiones"}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "features",
+                    "variant": "grid_4",
+                    "data": {
+                        "titulo": "Qué incluye tu entrada",
+                        "items": [
+                            {"icono": "microphone", "titulo": "Ponencias", "descripcion": "Acceso a todas las charlas"},
+                            {"icono": "coffee", "titulo": "Networking", "descripcion": "Coffee breaks y comidas"},
+                            {"icono": "media-document", "titulo": "Material", "descripcion": "Presentaciones y recursos"},
+                            {"icono": "tickets-alt", "titulo": "Certificado", "descripcion": "Certificado de asistencia"}
+                        ],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "equipo",
+                    "variant": "grid",
+                    "data": {
+                        "titulo": "Ponentes destacados",
+                        "items": [
+                            {"nombre": "Dr. Juan Pérez", "cargo": "CTO, Google Spain", "descripcion": "IA y el futuro del trabajo"},
+                            {"nombre": "Laura Gómez", "cargo": "Fundadora, TechStartup", "descripcion": "Emprendimiento tech"},
+                            {"nombre": "Miguel Ángel Torres", "cargo": "VP Engineering, Meta", "descripcion": "Escalando equipos"}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "pricing",
+                    "variant": "columnas",
+                    "data": {
+                        "titulo": "Entradas",
+                        "subtitulo": "Elige tu tipo de entrada",
+                        "items": [
+                            {"nombre": "Early Bird", "precio": "99€", "descripcion": "Hasta el 1 de Febrero", "caracteristicas": "Acceso completo\nMaterial digital\nCertificado", "cta_texto": "Comprar"},
+                            {"nombre": "General", "precio": "149€", "descripcion": "Precio regular", "caracteristicas": "Acceso completo\nMaterial digital\nCertificado", "destacado": true, "cta_texto": "Comprar"},
+                            {"nombre": "VIP", "precio": "299€", "descripcion": "Experiencia premium", "caracteristicas": "Todo lo anterior\nAsiento preferente\nCena con ponentes\nMeet & Greet", "cta_texto": "Comprar"}
+                        ],
+                        "color_fondo": "#f8fafc"
+                    }
+                },
+                {
+                    "type": "faq",
+                    "variant": "dos_columnas",
+                    "data": {
+                        "titulo": "Preguntas frecuentes",
+                        "items": [
+                            {"pregunta": "¿Dónde se celebra el evento?", "respuesta": "En el Palacio de Congresos de Madrid, con fácil acceso en transporte público."},
+                            {"pregunta": "¿Puedo cambiar la fecha de mi entrada?", "respuesta": "Las entradas son transferibles a otras personas, pero no reembolsables."},
+                            {"pregunta": "¿Habrá streaming online?", "respuesta": "Sí, todas las ponencias se transmitirán en directo para asistentes remotos."}
+                        ],
+                        "color_fondo": "#ffffff"
+                    }
+                },
+                {
+                    "type": "cta",
+                    "variant": "banner",
+                    "data": {
+                        "titulo": "No te quedes sin tu plaza",
+                        "descripcion": "Las entradas Early Bird tienen disponibilidad limitada",
+                        "boton_texto": "Reservar ahora",
+                        "boton_url": "#",
+                        "color_fondo": "#7c3aed",
+                        "color_texto": "#ffffff"
+                    }
+                }
+            ]
+        }
+    ]
+}

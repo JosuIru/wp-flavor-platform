@@ -105,7 +105,7 @@ $pasos_tramitacion = [
                     <div class="text-gray-700"><?php echo esc_html__('Disponible siempre', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="bg-green-50 rounded-xl p-6 text-center">
-                    <div class="text-3xl font-bold text-green-600 mb-2">3 dias</div>
+                    <div class="text-3xl font-bold text-green-600 mb-2"><?php echo esc_html__('3 dias', 'flavor-chat-ia'); ?></div>
                     <div class="text-gray-700"><?php echo esc_html__('Resolucion media', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>

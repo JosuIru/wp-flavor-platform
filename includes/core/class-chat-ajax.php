@@ -29,12 +29,12 @@ class Flavor_Chat_Ajax {
     public static function handle_send_message() {
         // Verificar nonce
         if (!check_ajax_referer('flavor_chat_nonce', 'nonce', false)) {
-            wp_send_json_error(['error' => 'Nonce inválido'], 403);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')], 403);
         }
 
         // Rate limiting básico
         if (!self::check_rate_limit()) {
-            wp_send_json_error(['error' => 'Demasiadas solicitudes. Espera un momento.'], 429);
+            wp_send_json_error(['error' => __('Demasiadas solicitudes. Espera un momento.', 'flavor-chat-ia')], 429);
         }
 
         $message = sanitize_textarea_field($_POST['message'] ?? '');
@@ -50,11 +50,11 @@ class Flavor_Chat_Ajax {
         }
 
         if (empty($message)) {
-            wp_send_json_error(['error' => 'Mensaje vacío']);
+            wp_send_json_error(['error' => __('Mensaje vacío', 'flavor-chat-ia')]);
         }
 
         if (strlen($message) > 2000) {
-            wp_send_json_error(['error' => 'Mensaje demasiado largo']);
+            wp_send_json_error(['error' => __('Mensaje demasiado largo', 'flavor-chat-ia')]);
         }
 
         // Sistema Antispam
@@ -90,7 +90,7 @@ class Flavor_Chat_Ajax {
             // Respuesta de fallback
             $fallback = self::get_fallback_response($language);
             wp_send_json_error([
-                'error' => $response['error'] ?? 'Error al procesar mensaje',
+                'error' => $response['error'] ?? __('Error al procesar mensaje', 'flavor-chat-ia'),
                 'fallback' => $fallback,
             ]);
         }
@@ -108,7 +108,7 @@ class Flavor_Chat_Ajax {
     public static function handle_start_session() {
         // Verificar nonce
         if (!check_ajax_referer('flavor_chat_nonce', 'nonce', false)) {
-            wp_send_json_error(['error' => 'Nonce inválido'], 403);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')], 403);
         }
 
         $language = sanitize_text_field($_POST['language'] ?? 'es');

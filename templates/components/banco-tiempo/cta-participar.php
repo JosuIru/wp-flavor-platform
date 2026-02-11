@@ -37,7 +37,7 @@ $beneficios_participar = $beneficios_participar ?? [
                         <!-- Cabecera perfil miembro -->
                         <div class="flex items-center gap-3 mb-5 pb-4 border-b border-gray-100">
                             <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-yellow-600 rounded-full flex items-center justify-center text-white font-bold">
-                                BT
+                                <?php echo esc_html__('BT', 'flavor-chat-ia'); ?>
                             </div>
                             <div>
                                 <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Miembro Activo', 'flavor-chat-ia'); ?></p>
@@ -48,7 +48,7 @@ $beneficios_participar = $beneficios_participar ?? [
                         <div class="space-y-3 mb-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs text-gray-500"><?php echo esc_html__('Creditos disponibles', 'flavor-chat-ia'); ?></span>
-                                <span class="text-sm font-bold text-amber-600">24h</span>
+                                <span class="text-sm font-bold text-amber-600"><?php echo esc_html__('24h', 'flavor-chat-ia'); ?></span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-xs text-gray-500"><?php echo esc_html__('Servicios ofrecidos', 'flavor-chat-ia'); ?></span>

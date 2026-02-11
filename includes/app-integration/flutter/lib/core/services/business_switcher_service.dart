@@ -68,8 +68,10 @@ class BusinessSwitcherService {
       _currentSiteConfig = siteConfig;
 
       // 3. Actualizar ApiConfig
-      ApiConfig.baseUrl = business.url;
-      // TODO: Aquí deberías actualizar el token de API si cada negocio tiene su propio token
+      ApiConfig.configure(
+        newBaseUrl: business.url,
+        newApiToken: business.apiToken,
+      );
 
       // 4. Añadir a la lista de negocios guardados si no existe
       if (!_savedBusinesses.contains(business)) {

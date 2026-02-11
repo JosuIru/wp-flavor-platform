@@ -79,7 +79,7 @@ $actividad_mensual = $wpdb->get_results(
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-clock"></span>
-        Dashboard - Banco de Tiempo
+        <?php echo esc_html__('Dashboard - Banco de Tiempo', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -95,7 +95,7 @@ $actividad_mensual = $wpdb->get_results(
                 <?php echo number_format($total_servicios_activos); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Servicios Activos
+                <?php echo esc_html__('Servicios Activos', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -107,7 +107,7 @@ $actividad_mensual = $wpdb->get_results(
                 <?php echo number_format($total_intercambios_completados); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Intercambios Completados
+                <?php echo esc_html__('Intercambios Completados', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -119,7 +119,7 @@ $actividad_mensual = $wpdb->get_results(
                 <?php echo number_format($total_intercambios_pendientes); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Intercambios Pendientes
+                <?php echo esc_html__('Intercambios Pendientes', 'flavor-chat-ia'); ?>
             </div>
         </div>
 
@@ -131,7 +131,7 @@ $actividad_mensual = $wpdb->get_results(
                 <?php echo number_format($total_horas_intercambiadas, 1); ?>
             </div>
             <div class="stat-label" style="color: #646970; font-size: 14px;">
-                Horas Totales Intercambiadas
+                <?php echo esc_html__('Horas Totales Intercambiadas', 'flavor-chat-ia'); ?>
             </div>
         </div>
     </div>
@@ -141,7 +141,7 @@ $actividad_mensual = $wpdb->get_results(
 
         <!-- Servicios por Categoría -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-chart-pie"></span> Servicios por Categoría</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-chart-pie"></span> <?php echo esc_html__('Servicios por Categoría', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <canvas id="grafico-categorias" style="max-height: 300px;"></canvas>
             </div>
@@ -149,7 +149,7 @@ $actividad_mensual = $wpdb->get_results(
 
         <!-- Actividad Mensual -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-chart-line"></span> Actividad Últimos 6 Meses</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-chart-line"></span> <?php echo esc_html__('Actividad Últimos 6 Meses', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <canvas id="grafico-actividad" style="max-height: 300px;"></canvas>
             </div>
@@ -161,14 +161,14 @@ $actividad_mensual = $wpdb->get_results(
 
         <!-- Top Usuarios - Horas Ganadas -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-star-filled"></span> Top Usuarios - Horas Ganadas</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-star-filled"></span> <?php echo esc_html__('Top Usuarios - Horas Ganadas', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th>Usuario</th>
-                            <th style="text-align: right;">Horas</th>
+                            <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: right;"><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -193,7 +193,7 @@ $actividad_mensual = $wpdb->get_results(
                         <?php if (empty($top_usuarios_ganados)): ?>
                         <tr>
                             <td colspan="3" style="text-align: center; padding: 20px; color: #646970;">
-                                No hay datos disponibles
+                                <?php echo esc_html__('No hay datos disponibles', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
                         <?php endif; ?>
@@ -204,14 +204,14 @@ $actividad_mensual = $wpdb->get_results(
 
         <!-- Top Usuarios - Horas Gastadas -->
         <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-money-alt"></span> Top Usuarios - Horas Gastadas</h2>
+            <h2 class="hndle"><span class="dashicons dashicons-money-alt"></span> <?php echo esc_html__('Top Usuarios - Horas Gastadas', 'flavor-chat-ia'); ?></h2>
             <div class="inside">
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th>Usuario</th>
-                            <th style="text-align: right;">Horas</th>
+                            <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: right;"><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -236,7 +236,7 @@ $actividad_mensual = $wpdb->get_results(
                         <?php if (empty($top_usuarios_gastados)): ?>
                         <tr>
                             <td colspan="3" style="text-align: center; padding: 20px; color: #646970;">
-                                No hay datos disponibles
+                                <?php echo esc_html__('No hay datos disponibles', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
                         <?php endif; ?>
@@ -248,18 +248,18 @@ $actividad_mensual = $wpdb->get_results(
 
     <!-- Intercambios Recientes -->
     <div class="postbox" style="margin: 20px 0;">
-        <h2 class="hndle"><span class="dashicons dashicons-update"></span> Intercambios Recientes</h2>
+        <h2 class="hndle"><span class="dashicons dashicons-update"></span> <?php echo esc_html__('Intercambios Recientes', 'flavor-chat-ia'); ?></h2>
         <div class="inside">
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">ID</th>
-                        <th>Servicio</th>
-                        <th>Solicitante</th>
-                        <th>Proveedor</th>
-                        <th>Horas</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
+                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Servicio', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Solicitante', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Proveedor', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -306,7 +306,7 @@ $actividad_mensual = $wpdb->get_results(
                     <?php if (empty($intercambios_recientes)): ?>
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 20px; color: #646970;">
-                            No hay intercambios registrados
+                            <?php echo esc_html__('No hay intercambios registrados', 'flavor-chat-ia'); ?>
                         </td>
                     </tr>
                     <?php endif; ?>

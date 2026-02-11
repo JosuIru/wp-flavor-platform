@@ -41,34 +41,34 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
                 <form class="space-y-4">
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="flex-1">
-                            <input type="text" placeholder="Buscar por título, autor o ISBN..." class="w-full px-6 py-4 border rounded-lg" style="border-color: #e5e7eb;">
+                            <input type="text" placeholder="<?php echo esc_attr__('Buscar por título, autor o ISBN...', 'flavor-chat-ia'); ?>" class="w-full px-6 py-4 border rounded-lg" style="border-color: #e5e7eb;">
                         </div>
-                        <button type="submit" class="flavor-button flavor-button-primary px-8">Buscar</button>
+                        <button type="submit" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></button>
                     </div>
 
                     <div class="flex flex-wrap gap-2 justify-center">
-                        <span class="text-sm" style="color: var(--flavor-text-muted);">Popular:</span>
-                        <a href="?genero=novela" class="px-3 py-1 rounded-full text-sm transition-colors" style="background: rgba(var(--flavor-primary-rgb, 99, 102, 241), 0.1); color: var(--flavor-primary);">Novela</a>
-                        <a href="?genero=ciencia-ficcion" class="px-3 py-1 rounded-full text-sm transition-colors" style="background: rgba(var(--flavor-primary-rgb, 99, 102, 241), 0.1); color: var(--flavor-primary);">Ciencia Ficción</a>
-                        <a href="?genero=historia" class="px-3 py-1 rounded-full text-sm transition-colors" style="background: rgba(var(--flavor-primary-rgb, 99, 102, 241), 0.1); color: var(--flavor-primary);">Historia</a>
-                        <a href="?genero=infantil" class="px-3 py-1 rounded-full text-sm transition-colors" style="background: rgba(var(--flavor-primary-rgb, 99, 102, 241), 0.1); color: var(--flavor-primary);">Infantil</a>
+                        <span class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Popular:', 'flavor-chat-ia'); ?></span>
+                        <a href="?genero=novela" class="px-3 py-1 rounded-full text-sm transition-colors" style="background: rgba(var(--flavor-primary-rgb, 99, 102, 241), 0.1); color: var(--flavor-primary);"><?php echo esc_html__('Novela', 'flavor-chat-ia'); ?></a>
+                        <a href="?genero=ciencia-ficcion" class="px-3 py-1 rounded-full text-sm transition-colors" style="background: rgba(var(--flavor-primary-rgb, 99, 102, 241), 0.1); color: var(--flavor-primary);"><?php echo esc_html__('Ciencia Ficción', 'flavor-chat-ia'); ?></a>
+                        <a href="?genero=historia" class="px-3 py-1 rounded-full text-sm transition-colors" style="background: rgba(var(--flavor-primary-rgb, 99, 102, 241), 0.1); color: var(--flavor-primary);"><?php echo esc_html__('Historia', 'flavor-chat-ia'); ?></a>
+                        <a href="?genero=infantil" class="px-3 py-1 rounded-full text-sm transition-colors" style="background: rgba(var(--flavor-primary-rgb, 99, 102, 241), 0.1); color: var(--flavor-primary);"><?php echo esc_html__('Infantil', 'flavor-chat-ia'); ?></a>
                     </div>
                 </form>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8 pt-8 border-t" style="border-color: #e5e7eb;">
                     <div class="text-center">
-                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);">3.5K</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Libros</div>
+                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('3.5K', 'flavor-chat-ia'); ?></div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Libros', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold" style="color: var(--flavor-primary);">850</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Miembros</div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Miembros', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold" style="color: var(--flavor-primary);">30</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Días préstamo</div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Días préstamo', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);">Gratis</div>
+                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></div>
                         <div class="text-sm" style="color: var(--flavor-text-muted);">100%</div>
                     </div>
                 </div>

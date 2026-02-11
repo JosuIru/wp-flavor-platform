@@ -12,9 +12,9 @@ $similares = $similares ?? [];
 <div class="flavor-frontend flavor-presupuestos-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-amber-600 transition-colors">Inicio</a>
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-amber-600 transition-colors"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
-        <a href="<?php echo esc_url(home_url('/presupuestos-participativos/')); ?>" class="hover:text-amber-600 transition-colors">Presupuestos</a>
+        <a href="<?php echo esc_url(home_url('/presupuestos-participativos/')); ?>" class="hover:text-amber-600 transition-colors"><?php echo esc_html__('Presupuestos', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
         <span class="text-gray-700"><?php echo esc_html($proyecto['titulo'] ?? 'Proyecto'); ?></span>
     </nav>
@@ -54,7 +54,7 @@ $similares = $similares ?? [];
             <!-- Evaluacion tecnica -->
             <?php if (!empty($proyecto['evaluacion_tecnica'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Evaluacion tecnica</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Evaluacion tecnica', 'flavor-chat-ia'); ?></h2>
                 <div class="prose max-w-none text-gray-700">
                     <?php echo wp_kses_post($proyecto['evaluacion_tecnica']); ?>
                 </div>
@@ -70,7 +70,7 @@ $similares = $similares ?? [];
 
             <!-- Seccion de votacion -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Votacion del proyecto</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Votacion del proyecto', 'flavor-chat-ia'); ?></h2>
                 <?php
                 $votos_proyecto = intval($proyecto['votos'] ?? 0);
                 $umbral_votos = intval($proyecto['umbral'] ?? 100);
@@ -89,14 +89,14 @@ $similares = $similares ?? [];
 
                 <button class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white py-3 rounded-xl font-semibold hover:from-amber-600 hover:to-yellow-600 transition-all shadow-md"
                         onclick="flavorPresupuestos.votar(<?php echo esc_attr($proyecto['id'] ?? 0); ?>)">
-                    Votar por este proyecto
+                    <?php echo esc_html__('Votar por este proyecto', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- Cronograma de ejecucion -->
             <?php if (!empty($proyecto['cronograma'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Cronograma de ejecucion</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Cronograma de ejecucion', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-4">
                     <?php foreach ($proyecto['cronograma'] as $etapa_cronograma): ?>
                     <div class="flex items-start gap-4 p-3 rounded-xl <?php echo !empty($etapa_cronograma['completada']) ? 'bg-green-50' : 'bg-gray-50'; ?>">
@@ -118,36 +118,36 @@ $similares = $similares ?? [];
         <div class="space-y-6">
             <!-- CTA de voto -->
             <div class="bg-gradient-to-br from-amber-500 to-yellow-500 rounded-2xl p-6 text-white">
-                <h3 class="font-bold text-lg mb-2">Apoya este proyecto</h3>
-                <p class="text-amber-100 text-sm mb-4">Tu voto ayuda a que este proyecto se haga realidad</p>
+                <h3 class="font-bold text-lg mb-2"><?php echo esc_html__('Apoya este proyecto', 'flavor-chat-ia'); ?></h3>
+                <p class="text-amber-100 text-sm mb-4"><?php echo esc_html__('Tu voto ayuda a que este proyecto se haga realidad', 'flavor-chat-ia'); ?></p>
                 <button class="w-full bg-white text-amber-600 py-3 rounded-xl font-semibold hover:bg-amber-50 transition-colors"
                         onclick="flavorPresupuestos.votar(<?php echo esc_attr($proyecto['id'] ?? 0); ?>)">
-                    Votar ahora
+                    <?php echo esc_html__('Votar ahora', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- Estadisticas del proyecto -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Datos del proyecto</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Datos del proyecto', 'flavor-chat-ia'); ?></h3>
                 <dl class="space-y-3 text-sm">
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Presupuesto</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Presupuesto', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-bold text-amber-600"><?php echo esc_html($proyecto['presupuesto'] ?? '0'); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Categoria</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($proyecto['categoria'] ?? ''); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Distrito</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Distrito', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($proyecto['distrito'] ?? ''); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Fecha propuesta</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Fecha propuesta', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($proyecto['fecha'] ?? ''); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Proponente</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Proponente', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($proyecto['autor'] ?? 'Anonimo'); ?></dd>
                     </div>
                 </dl>
@@ -156,7 +156,7 @@ $similares = $similares ?? [];
             <!-- Proyectos similares -->
             <?php if (!empty($similares)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Proyectos similares</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Proyectos similares', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($similares as $proyecto_similar): ?>
                     <a href="<?php echo esc_url($proyecto_similar['url'] ?? '#'); ?>"

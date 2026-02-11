@@ -29,23 +29,23 @@ if (!defined('ABSPATH')) {
             <label><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
             <select id="filtro-estado" class="flavor-select">
                 <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="pendiente"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                <option value="asignada"><?php _e('Asignada', 'flavor-chat-ia'); ?></option>
-                <option value="en_proceso"><?php _e('En proceso', 'flavor-chat-ia'); ?></option>
-                <option value="completada"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
-                <option value="cancelada"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('asignada', 'flavor-chat-ia'); ?>"><?php _e('Asignada', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('en_proceso', 'flavor-chat-ia'); ?>"><?php _e('En proceso', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
             </select>
         </div>
         <div class="flavor-filter-group">
             <label><?php _e('Categoría:', 'flavor-chat-ia'); ?></label>
             <select id="filtro-categoria" class="flavor-select">
                 <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                <option value="compras"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
-                <option value="transporte"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
-                <option value="companía"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
-                <option value="tramites"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
-                <option value="tecnologia"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
-                <option value="otro"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('companía', 'flavor-chat-ia'); ?>"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('tramites', 'flavor-chat-ia'); ?>"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('tecnologia', 'flavor-chat-ia'); ?>"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
             </select>
         </div>
         <div class="flavor-filter-group">
@@ -108,12 +108,12 @@ if (!defined('ABSPATH')) {
                     <div class="flavor-form-group">
                         <label for="solicitud-categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?> *</label>
                         <select id="solicitud-categoria" name="categoria" required class="widefat">
-                            <option value="compras"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
-                            <option value="transporte"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
-                            <option value="companía"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
-                            <option value="tramites"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
-                            <option value="tecnologia"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
-                            <option value="otro"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('companía', 'flavor-chat-ia'); ?>"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('tramites', 'flavor-chat-ia'); ?>"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('tecnologia', 'flavor-chat-ia'); ?>"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
 
@@ -140,11 +140,11 @@ if (!defined('ABSPATH')) {
                 <div class="flavor-form-group">
                     <label for="solicitud-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
                     <select id="solicitud-estado" name="estado" class="widefat">
-                        <option value="pendiente"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="asignada"><?php _e('Asignada', 'flavor-chat-ia'); ?></option>
-                        <option value="en_proceso"><?php _e('En proceso', 'flavor-chat-ia'); ?></option>
-                        <option value="completada"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
-                        <option value="cancelada"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('asignada', 'flavor-chat-ia'); ?>"><?php _e('Asignada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('en_proceso', 'flavor-chat-ia'); ?>"><?php _e('En proceso', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -267,7 +267,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
                     response.data.forEach(usuario => {
-                        options += `<option value="${usuario.id}">${usuario.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${usuario.id}', 'flavor-chat-ia'); ?>">${usuario.nombre}</option>`;
                     });
                     $('#solicitud-solicitante').html(options);
                 }
@@ -284,7 +284,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Sin asignar', 'flavor-chat-ia'); ?></option>';
                     response.data.forEach(voluntario => {
-                        options += `<option value="${voluntario.id}">${voluntario.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${voluntario.id}', 'flavor-chat-ia'); ?>">${voluntario.nombre}</option>`;
                     });
                     $('#solicitud-voluntario').html(options);
                 }

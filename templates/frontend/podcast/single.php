@@ -37,10 +37,10 @@ $categoria = $podcast['categoria'] ?? 'General';
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z"/>
                             </svg>
-                            Reproducir
+                            <?php echo esc_html__('Reproducir', 'flavor-chat-ia'); ?>
                         </button>
                         <button class="px-6 py-3 rounded-xl bg-white/20 text-white font-semibold hover:bg-white/30 transition-colors">
-                            Suscribirse
+                            <?php echo esc_html__('Suscribirse', 'flavor-chat-ia'); ?>
                         </button>
                     </div>
                 </div>
@@ -56,7 +56,7 @@ $categoria = $podcast['categoria'] ?? 'General';
 
                 <?php if (empty($episodios)): ?>
                     <div class="bg-gray-50 rounded-xl p-8 text-center">
-                        <p class="text-gray-500">Aun no hay episodios publicados</p>
+                        <p class="text-gray-500"><?php echo esc_html__('Aun no hay episodios publicados', 'flavor-chat-ia'); ?></p>
                     </div>
                 <?php else: ?>
                     <div class="space-y-4">
@@ -92,13 +92,13 @@ $categoria = $podcast['categoria'] ?? 'General';
             <div class="lg:col-span-1">
                 <!-- Sobre el podcast -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Sobre el podcast</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Sobre el podcast', 'flavor-chat-ia'); ?></h3>
                     <p class="text-gray-700 text-sm"><?php echo esc_html($descripcion); ?></p>
                 </div>
 
                 <!-- Creador -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Creador</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Creador', 'flavor-chat-ia'); ?></h3>
                     <div class="flex items-center gap-4">
                         <img src="<?php echo esc_url($autor['avatar'] ?? 'https://i.pravatar.cc/150?img=1'); ?>"
                              alt="<?php echo esc_attr($autor['nombre'] ?? 'Creador'); ?>"
@@ -112,7 +112,7 @@ $categoria = $podcast['categoria'] ?? 'General';
 
                 <!-- Compartir -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h3 class="font-bold text-gray-900 mb-4">Compartir</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Compartir', 'flavor-chat-ia'); ?></h3>
                     <div class="flex items-center gap-3">
                         <button class="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center hover:bg-teal-200 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

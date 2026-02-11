@@ -16,14 +16,14 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-emerald-500 to-green-600 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Donde reciclar?</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Donde reciclar?', 'flavor-chat-ia'); ?></h1>
 
             <!-- Formulario de busqueda -->
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Busqueda -->
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Que quieres reciclar?</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Que quieres reciclar?', 'flavor-chat-ia'); ?></label>
                         <div class="relative">
                             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -31,20 +31,20 @@ $total_resultados = $total_resultados ?? 0;
                             <input type="text"
                                    name="q"
                                    value="<?php echo esc_attr($query); ?>"
-                                   placeholder="Ej: botellas de plastico, pilas, ropa vieja..."
+                                   placeholder="<?php echo esc_attr__('Ej: botellas de plastico, pilas, ropa vieja...', 'flavor-chat-ia'); ?>"
                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                         </div>
                     </div>
 
                     <!-- Tipo -->
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Contenedor</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Contenedor', 'flavor-chat-ia'); ?></label>
                         <select name="contenedor" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                            <option value="">Todos</option>
-                            <option value="amarillo">Amarillo (plasticos)</option>
-                            <option value="azul">Azul (papel)</option>
-                            <option value="verde">Verde (vidrio)</option>
-                            <option value="marron">Marron (organico)</option>
+                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('amarillo', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Amarillo (plasticos)', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('azul', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Azul (papel)', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('verde', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Verde (vidrio)', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('marron', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Marron (organico)', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -56,7 +56,7 @@ $total_resultados = $total_resultados ?? 0;
                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        Buscar
+                        <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -77,8 +77,8 @@ $total_resultados = $total_resultados ?? 0;
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 rounded-xl bg-yellow-400 flex-shrink-0"></div>
                     <div>
-                        <h3 class="font-bold text-gray-900 mb-1">Contenedor Amarillo</h3>
-                        <p class="text-gray-700">Las botellas de plastico van al contenedor amarillo. Recuerda vaciarlas y aplastarlas antes de tirarlas.</p>
+                        <h3 class="font-bold text-gray-900 mb-1"><?php echo esc_html__('Contenedor Amarillo', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-gray-700"><?php echo esc_html__('Las botellas de plastico van al contenedor amarillo. Recuerda vaciarlas y aplastarlas antes de tirarlas.', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
             </div>
@@ -89,13 +89,13 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos informacion</h3>
-                <p class="text-gray-500 mb-4">Prueba con otros terminos o consulta la guia de reciclaje</p>
-                <a href="?" class="text-emerald-600 font-medium hover:text-emerald-700">Ver guia completa</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos informacion', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba con otros terminos o consulta la guia de reciclaje', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-emerald-600 font-medium hover:text-emerald-700"><?php echo esc_html__('Ver guia completa', 'flavor-chat-ia'); ?></a>
             </div>
         <?php else: ?>
             <!-- Puntos cercanos -->
-            <h3 class="text-lg font-bold text-gray-900 mb-4">Puntos de reciclaje cercanos</h3>
+            <h3 class="text-lg font-bold text-gray-900 mb-4"><?php echo esc_html__('Puntos de reciclaje cercanos', 'flavor-chat-ia'); ?></h3>
             <div class="space-y-4">
                 <?php for ($i = 1; $i <= 3; $i++): ?>
                     <article class="bg-white rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow flex items-center gap-4">

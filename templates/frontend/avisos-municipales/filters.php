@@ -12,11 +12,11 @@ $barrios = $barrios ?? [];
 <div class="flavor-frontend flavor-avisos-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-800">Filtrar avisos</h3>
+            <h3 class="text-lg font-bold text-gray-800"><?php echo esc_html__('Filtrar avisos', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
             <button class="text-sm text-sky-600 hover:text-sky-700 font-medium"
                     onclick="flavorAvisos.limpiarFiltros()">
-                Limpiar filtros
+                <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -24,7 +24,7 @@ $barrios = $barrios ?? [];
         <form id="filtros-avisos" class="space-y-6">
             <!-- Urgencia -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Urgencia</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Urgencia', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_urgencia = [
@@ -48,9 +48,9 @@ $barrios = $barrios ?? [];
 
             <!-- Barrio / Zona -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Barrio / Zona</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Barrio / Zona', 'flavor-chat-ia'); ?></label>
                 <select name="barrio" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
-                    <option value="">Todos los barrios</option>
+                    <option value=""><?php echo esc_html__('Todos los barrios', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($barrios as $barrio_opcion): ?>
                     <option value="<?php echo esc_attr($barrio_opcion['id'] ?? ''); ?>"
                             <?php echo ($filtros_activos['barrio'] ?? '') == ($barrio_opcion['id'] ?? '') ? 'selected' : ''; ?>>
@@ -62,7 +62,7 @@ $barrios = $barrios ?? [];
 
             <!-- Categoria -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_categoria_aviso = [
@@ -85,20 +85,20 @@ $barrios = $barrios ?? [];
 
             <!-- Fecha -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></label>
                 <select name="fecha" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
-                    <option value="">Cualquier fecha</option>
-                    <option value="hoy" <?php echo ($filtros_activos['fecha'] ?? '') === 'hoy' ? 'selected' : ''; ?>>Hoy</option>
-                    <option value="semana" <?php echo ($filtros_activos['fecha'] ?? '') === 'semana' ? 'selected' : ''; ?>>Esta semana</option>
-                    <option value="mes" <?php echo ($filtros_activos['fecha'] ?? '') === 'mes' ? 'selected' : ''; ?>>Este mes</option>
-                    <option value="trimestre" <?php echo ($filtros_activos['fecha'] ?? '') === 'trimestre' ? 'selected' : ''; ?>>Ultimos 3 meses</option>
+                    <option value=""><?php echo esc_html__('Cualquier fecha', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('hoy', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'hoy' ? 'selected' : ''; ?>><?php echo esc_html__('Hoy', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('semana', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'semana' ? 'selected' : ''; ?>><?php echo esc_html__('Esta semana', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('mes', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'mes' ? 'selected' : ''; ?>><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('trimestre', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'trimestre' ? 'selected' : ''; ?>><?php echo esc_html__('Ultimos 3 meses', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <!-- Boton aplicar -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-sky-600 hover:to-blue-700 transition-all shadow-md">
-                Aplicar filtros
+                <?php echo esc_html__('Aplicar filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

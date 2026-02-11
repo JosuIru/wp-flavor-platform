@@ -5,6 +5,8 @@
 (function($) {
     'use strict';
 
+    const strings = (typeof flavorReservationAdmin !== 'undefined' && flavorReservationAdmin.strings) ? flavorReservationAdmin.strings : {};
+
     const ReservationAdmin = {
         refreshInterval: null,
 
@@ -67,7 +69,7 @@
             const $noReservations = $('#no-reservations');
 
             if (!silent) {
-                $list.html('<div class="loading-indicator"><span class="spinner is-active"></span> Cargando reservas...</div>');
+                $list.html(`<div class="loading-indicator"><span class="spinner is-active"></span> ${strings.loading_reservations || 'Cargando reservas...'}</div>`);
             }
 
             const data = {
@@ -87,7 +89,7 @@
                     }
                 })
                 .fail(() => {
-                    $list.html('<div class="notice notice-error"><p>Error al cargar reservas</p></div>');
+                    $list.html(`<div class="notice notice-error"><p>${strings.error_load_reservations || 'Error al cargar reservas'}</p></div>`);
                 });
         },
 
@@ -134,7 +136,7 @@
                         </div>
                         <div class="detail-row">
                             <span class="dashicons dashicons-groups"></span>
-                            <span>${reservation.guests_count} personas</span>
+                            <span>${reservation.guests_count} ${strings.people_label || 'personas'}</span>
                         </div>
                         ${reservation.table ? `
                         <div class="detail-row">
@@ -148,13 +150,13 @@
                         ${reservation.status === 'pending' ? `
                             <button class="button button-small change-reservation-status"
                                     data-reservation-id="${reservation.id}">
-                                <span class="dashicons dashicons-yes"></span> Confirmar
+                                <span class="dashicons dashicons-yes"></span> ${strings.confirm || 'Confirmar'}
                             </button>
                         ` : ''}
                         ${['pending', 'confirmed'].includes(reservation.status) ? `
                             <button class="button button-small cancel-reservation"
                                     data-reservation-id="${reservation.id}">
-                                <span class="dashicons dashicons-no"></span> Cancelar
+                                <span class="dashicons dashicons-no"></span> ${strings.cancel || 'Cancelar'}
                             </button>
                         ` : ''}
                     </div>
@@ -187,7 +189,7 @@
             const $content = $('#reservation-details-content');
 
             $modal.fadeIn(300);
-            $content.html('<div class="loading-indicator"><span class="spinner is-active"></span> Cargando detalles...</div>');
+            $content.html(`<div class="loading-indicator"><span class="spinner is-active"></span> ${strings.loading_details || 'Cargando detalles...'}</div>`);
 
             $.post(flavorReservationAdmin.ajax_url, {
                 action: 'get_reservation_details',
@@ -200,7 +202,7 @@
                     }
                 })
                 .fail(() => {
-                    $content.html('<p>Error al cargar detalles de la reserva</p>');
+                    $content.html(`<p>${strings.error_load_details || 'Error al cargar detalles de la reserva'}</p>`);
                 });
         },
 
@@ -221,63 +223,63 @@
 
             let html = `
                 <div class="reservation-detail-section">
-                    <h3>Estado: <span class="reservation-status ${reservation.status}">${reservation.status_label}</span></h3>
+                    <h3>${strings.status_label || 'Estado'}: <span class="reservation-status ${reservation.status}">${reservation.status_label}</span></h3>
 
                     <div class="reservation-actions" style="margin: 15px 0;">
                         ${reservation.status === 'pending' ? `
                             <button class="button button-primary change-reservation-status"
                                     data-reservation-id="${reservation.id}">
-                                Confirmar Reserva
+                                ${strings.confirm_reservation_label || 'Confirmar Reserva'}
                             </button>
                         ` : ''}
                         ${['pending', 'confirmed'].includes(reservation.status) ? `
                             <button class="button button-secondary cancel-reservation"
                                     data-reservation-id="${reservation.id}">
-                                Cancelar Reserva
+                                ${strings.cancel_reservation_label || 'Cancelar Reserva'}
                             </button>
                         ` : ''}
                     </div>
                 </div>
 
                 <div class="reservation-detail-section">
-                    <h3>Información de la Reserva</h3>
+                    <h3>${strings.reservation_info || 'Información de la Reserva'}</h3>
                     <table class="widefat">
                         <tr>
-                            <th>Código:</th>
+                            <th>${strings.code_label || 'Código'}:</th>
                             <td><code>${reservation.reservation_code}</code></td>
                         </tr>
                         <tr>
-                            <th>Fecha y Hora:</th>
-                            <td>${dateStr} a las ${timeStr}</td>
+                            <th>${strings.datetime_label || 'Fecha y Hora'}:</th>
+                            <td>${dateStr} ${strings.at_time || 'a las'} ${timeStr}</td>
                         </tr>
                         <tr>
-                            <th>Duración:</th>
-                            <td>${reservation.duration} minutos</td>
+                            <th>${strings.duration_label || 'Duración'}:</th>
+                            <td>${reservation.duration} ${strings.minutes_label || 'minutos'}</td>
                         </tr>
                         <tr>
-                            <th>Número de Personas:</th>
+                            <th>${strings.guests_label || 'Número de Personas'}:</th>
                             <td>${reservation.guests_count}</td>
                         </tr>
                         <tr>
-                            <th>Mesa:</th>
-                            <td>${reservation.table ? reservation.table.table_name : 'Por asignar'}</td>
+                            <th>${strings.table_label || 'Mesa'}:</th>
+                            <td>${reservation.table ? reservation.table.table_name : (strings.unassigned || 'Por asignar')}</td>
                         </tr>
                     </table>
                 </div>
 
                 <div class="reservation-detail-section">
-                    <h3>Información del Cliente</h3>
+                    <h3>${strings.customer_info || 'Información del Cliente'}</h3>
                     <table class="widefat">
                         <tr>
-                            <th>Nombre:</th>
+                            <th>${strings.name_label || 'Nombre'}:</th>
                             <td>${reservation.customer.name}</td>
                         </tr>
                         <tr>
-                            <th>Teléfono:</th>
+                            <th>${strings.phone_label || 'Teléfono'}:</th>
                             <td><a href="tel:${reservation.customer.phone}">${reservation.customer.phone}</a></td>
                         </tr>
                         <tr>
-                            <th>Email:</th>
+                            <th>${strings.email_label || 'Email'}:</th>
                             <td>${reservation.customer.email ? `<a href="mailto:${reservation.customer.email}">${reservation.customer.email}</a>` : '-'}</td>
                         </tr>
                     </table>
@@ -285,34 +287,34 @@
 
                 ${reservation.special_requests ? `
                 <div class="reservation-detail-section">
-                    <h3>Solicitudes Especiales</h3>
+                    <h3>${strings.special_requests || 'Solicitudes Especiales'}</h3>
                     <p>${reservation.special_requests}</p>
                 </div>
                 ` : ''}
 
                 ${reservation.notes ? `
                 <div class="reservation-detail-section">
-                    <h3>Notas Internas</h3>
+                    <h3>${strings.internal_notes || 'Notas Internas'}</h3>
                     <p>${reservation.notes}</p>
                 </div>
                 ` : ''}
 
                 <div class="reservation-detail-section">
-                    <h3>Fechas</h3>
+                    <h3>${strings.dates_label || 'Fechas'}</h3>
                     <table class="widefat">
                         <tr>
-                            <th>Creada:</th>
+                            <th>${strings.created_label || 'Creada'}:</th>
                             <td>${new Date(reservation.created_at).toLocaleString('es-ES')}</td>
                         </tr>
                         ${reservation.confirmed_at ? `
                         <tr>
-                            <th>Confirmada:</th>
+                            <th>${strings.confirmed_label || 'Confirmada'}:</th>
                             <td>${new Date(reservation.confirmed_at).toLocaleString('es-ES')}</td>
                         </tr>
                         ` : ''}
                         ${reservation.cancelled_at ? `
                         <tr>
-                            <th>Cancelada:</th>
+                            <th>${strings.cancelled_label || 'Cancelada'}:</th>
                             <td>${new Date(reservation.cancelled_at).toLocaleString('es-ES')}</td>
                         </tr>
                         ` : ''}
@@ -326,7 +328,7 @@
         changeReservationStatus(reservationId) {
             const newStatus = 'confirmed';
 
-            if (!confirm('¿Confirmar esta reserva?')) {
+            if (!confirm(strings.confirm_reservation || '¿Confirmar esta reserva?')) {
                 return;
             }
 
@@ -339,20 +341,20 @@
             })
                 .done((response) => {
                     if (response.success) {
-                        alert('Reserva confirmada correctamente');
+                        alert(strings.reservation_confirmed || 'Reserva confirmada correctamente');
                         this.loadReservations();
                         $('.flavor-modal').fadeOut(300);
                     } else {
-                        alert('Error: ' + response.data.message);
+                        alert((strings.error_prefix || 'Error') + ': ' + response.data.message);
                     }
                 })
                 .fail(() => {
-                    alert('Error al confirmar la reserva');
+                    alert(strings.error_confirm_reservation || 'Error al confirmar la reserva');
                 });
         },
 
         cancelReservation(reservationId) {
-            const reason = prompt('Motivo de cancelación (opcional):');
+            const reason = prompt(strings.cancel_reason_prompt || 'Motivo de cancelación (opcional):');
 
             if (reason === null) {
                 return; // Usuario canceló
@@ -366,15 +368,15 @@
             })
                 .done((response) => {
                     if (response.success) {
-                        alert('Reserva cancelada correctamente');
+                        alert(strings.reservation_cancelled || 'Reserva cancelada correctamente');
                         this.loadReservations();
                         $('.flavor-modal').fadeOut(300);
                     } else {
-                        alert('Error: ' + response.data.message);
+                        alert((strings.error_prefix || 'Error') + ': ' + response.data.message);
                     }
                 })
                 .fail(() => {
-                    alert('Error al cancelar la reserva');
+                    alert(strings.error_cancel_reservation || 'Error al cancelar la reserva');
                 });
         }
     };

@@ -485,38 +485,121 @@ class Flavor_Page_Creator {
                 'parent' => 'banco-tiempo',
             ],
 
-            // GRUPOS DE CONSUMO - 4 páginas
+            // GRUPOS DE CONSUMO - 6 páginas
             [
                 'title' => 'Grupos de Consumo',
                 'slug' => 'grupos-consumo',
                 'content' => '<h1>Grupos de Consumo</h1>
-<p>Pedidos colectivos de productos locales y ecológicos</p>
+[gc_nav]
+<p>Consume local, apoya a productores cercanos y forma parte de una comunidad sostenible.</p>
 
-[flavor_module_listing module="grupos_consumo" action="listar_productos" columnas="3" limite="12"]',
+<div class="gc-home-cta">
+    <a href="/grupos-consumo/productos/" class="flavor-button flavor-button-primary">Ver catálogo</a>
+    <a href="/grupos-consumo/panel/" class="flavor-button">Panel GC</a>
+    <a href="/grupos-consumo/mi-cesta/" class="flavor-button">Mi cesta</a>
+    <a href="/grupos-consumo/unirme/" class="flavor-button">Unirme a un grupo</a>
+</div>
+
+<h2>Ciclo actual</h2>
+[gc_ciclo_actual]
+
+<h2>Panel rápido</h2>
+[gc_panel]
+
+<h2>Catálogo destacado</h2>
+[gc_catalogo mostrar_filtros="0" columnas="3" limite="6"]
+
+<h2>Productores cercanos</h2>
+[gc_productores_cercanos]
+
+<h2>Grupos activos</h2>
+[gc_grupos_lista columnas="3" limite="12"]',
                 'parent' => 0,
+            ],
+            [
+                'title' => 'Panel GC',
+                'slug' => 'panel',
+                'content' => '<h1>Panel Grupos de Consumo</h1>
+[gc_nav]
+
+[gc_panel]',
+                'parent' => 'grupos-consumo',
+            ],
+            [
+                'title' => 'Catálogo de Productos',
+                'slug' => 'productos',
+                'content' => '<h1>Catálogo de Productos</h1>
+[gc_nav]
+<p>Productos frescos y locales de nuestros productores.</p>
+
+[gc_catalogo mostrar_filtros="1" columnas="3" limite="12"]',
+                'parent' => 'grupos-consumo',
             ],
             [
                 'title' => 'Mi Pedido',
                 'slug' => 'mi-pedido',
                 'content' => '<h1>Mi Pedido</h1>
+[gc_nav]
 
-[flavor_module_form module="grupos_consumo" action="hacer_pedido"]',
+[gc_carrito]',
+                'parent' => 'grupos-consumo',
+            ],
+            [
+                'title' => 'Mis Pedidos',
+                'slug' => 'mis-pedidos',
+                'content' => '<h1>Historial de Pedidos</h1>
+[gc_nav]
+
+[gc_historial limite="20"]',
+                'parent' => 'grupos-consumo',
+            ],
+            [
+                'title' => 'Mi Cesta',
+                'slug' => 'mi-cesta',
+                'content' => '<h1>Mi Cesta</h1>
+[gc_nav]
+
+[gc_mi_cesta]',
+                'parent' => 'grupos-consumo',
+            ],
+            [
+                'title' => 'Suscripciones',
+                'slug' => 'suscripciones',
+                'content' => '<h1>Suscripciones</h1>
+[gc_nav]
+
+[gc_suscripciones]',
                 'parent' => 'grupos-consumo',
             ],
             [
                 'title' => 'Ciclo Actual',
                 'slug' => 'ciclo',
                 'content' => '<h1>Ciclo de Pedidos Actual</h1>
+[gc_nav]
 
-[flavor_module_listing module="grupos_consumo" action="ciclo_actual"]',
+[gc_ciclo_actual]
+
+[gc_calendario meses="3"]',
                 'parent' => 'grupos-consumo',
             ],
             [
-                'title' => 'Mis Pedidos',
-                'slug' => 'mis-pedidos',
-                'content' => '<h1>Mis Pedidos</h1>
+                'title' => 'Productores Cercanos',
+                'slug' => 'productores-cercanos',
+                'content' => '<h1>Productores Cercanos</h1>
+[gc_nav]
+<p>Descubre productores que entregan en tu zona.</p>
 
-[flavor_module_dashboard module="grupos_consumo"]',
+[gc_productores_cercanos]',
+                'parent' => 'grupos-consumo',
+            ],
+            [
+                'title' => 'Unirme a un Grupo',
+                'slug' => 'unirme',
+                'content' => '<h1>Unirme a un Grupo de Consumo</h1>
+[gc_nav]
+<p>Completa el formulario para solicitar tu incorporación.</p>
+
+[gc_formulario_union]',
                 'parent' => 'grupos-consumo',
             ],
 
@@ -1101,20 +1184,271 @@ class Flavor_Page_Creator {
     }
 
     /**
-     * Crea todas las páginas
+     * Obtiene páginas filtradas por módulos.
+     *
+     * @param array $module_ids
+     * @return array
      */
-    public static function create_all_pages() {
+    private static function get_pages_for_modules($module_ids) {
+        $all_pages = self::get_pages_to_create();
+        $modules = array_values(array_unique(array_map([__CLASS__, 'normalize_module_id'], (array) $module_ids)));
+        if (empty($modules)) {
+            return $all_pages;
+        }
+
+        $filtered = [];
+        foreach ($all_pages as $page) {
+            $page_modules = self::extract_modules_from_page($page);
+            if (empty($page_modules)) {
+                $filtered[] = $page;
+                continue;
+            }
+            $matches = array_intersect($modules, $page_modules);
+            if (!empty($matches)) {
+                $filtered[] = $page;
+            }
+        }
+
+        return self::ensure_parent_pages($filtered, $all_pages);
+    }
+
+    /**
+     * Normaliza ID de módulo.
+     */
+    private static function normalize_module_id($module_id) {
+        $module_id = is_string($module_id) ? $module_id : '';
+        $module_id = trim(str_replace('-', '_', $module_id));
+        return $module_id;
+    }
+
+    /**
+     * Extrae módulos a partir de un array de página.
+     *
+     * @param array $page
+     * @return array
+     */
+    private static function extract_modules_from_page($page) {
+        if (!empty($page['module'])) {
+            return [self::normalize_module_id($page['module'])];
+        }
+        if (!empty($page['modules']) && is_array($page['modules'])) {
+            return array_values(array_unique(array_map([__CLASS__, 'normalize_module_id'], $page['modules'])));
+        }
+        $content = $page['content'] ?? '';
+        return self::extract_modules_from_content($content);
+    }
+
+    /**
+     * Extrae módulos desde el contenido (shortcodes).
+     *
+     * @param string $content
+     * @return array
+     */
+    private static function extract_modules_from_content($content) {
+        if (!is_string($content) || $content === '') {
+            return [];
+        }
+        $modules = [];
+        if (preg_match_all('/module=\"([a-z0-9_\\-]+)\"/i', $content, $matches)) {
+            foreach ($matches[1] as $module_id) {
+                $module_id = self::normalize_module_id($module_id);
+                if ($module_id !== '') {
+                    $modules[] = $module_id;
+                }
+            }
+        }
+        if (preg_match('/\\[gc_[a-z0-9_]+/i', $content)) {
+            $modules[] = 'grupos_consumo';
+        }
+        return array_values(array_unique($modules));
+    }
+
+    /**
+     * Asegura que los padres necesarios estén incluidos.
+     *
+     * @param array $filtered
+     * @param array $all_pages
+     * @return array
+     */
+    private static function ensure_parent_pages($filtered, $all_pages) {
+        $by_slug = [];
+        foreach ($all_pages as $page) {
+            if (!empty($page['slug'])) {
+                $by_slug[$page['slug']] = $page;
+            }
+        }
+        $slugs = array_column($filtered, 'slug');
+        $added = true;
+        while ($added) {
+            $added = false;
+            foreach ($filtered as $page) {
+                $parent = $page['parent'] ?? 0;
+                if (is_string($parent) && $parent !== '' && !in_array($parent, $slugs, true)) {
+                    if (isset($by_slug[$parent])) {
+                        $filtered[] = $by_slug[$parent];
+                        $slugs[] = $parent;
+                        $added = true;
+                    }
+                }
+            }
+        }
+        return $filtered;
+    }
+
+    /**
+     * Busca una página existente a partir de su definición.
+     *
+     * @param array $page_data
+     * @return WP_Post|null
+     */
+    private static function find_existing_page($page_data) {
+        $page = null;
+        if (!empty($page_data['parent']) && is_string($page_data['parent'])) {
+            $parent_page = get_page_by_path($page_data['parent']);
+            $parent_id = $parent_page ? $parent_page->ID : 0;
+            $args = [
+                'name' => $page_data['slug'],
+                'post_type' => 'page',
+                'post_status' => 'publish',
+                'posts_per_page' => 1,
+                'post_parent' => $parent_id,
+            ];
+            $pages = get_posts($args);
+            if (!empty($pages)) {
+                $page = $pages[0];
+            }
+        } else {
+            $page = get_page_by_path($page_data['slug']);
+        }
+
+        return $page;
+    }
+
+    /**
+     * Determina si se puede actualizar el contenido existente.
+     *
+     * @param string $module_id
+     * @param WP_Post $page
+     * @return bool
+     */
+    private static function should_update_page($module_id, $page) {
+        $flag = get_post_meta($page->ID, '_flavor_auto_page', true);
+        if ($flag) {
+            return true;
+        }
+        $content = $page->post_content ?? '';
+        if ($module_id === 'grupos_consumo') {
+            return strpos($content, '[gc_') !== false;
+        }
+        return false;
+    }
+
+    /**
+     * Actualiza o crea páginas para un módulo específico.
+     *
+     * @param string $module_id
+     * @return array
+     */
+    public static function refresh_module_pages($module_id) {
+        $module_id = self::normalize_module_id($module_id);
+        self::ensure_wp_post_revisions_constant();
+        $pages_data = self::get_pages_for_modules([$module_id]);
+        $created = [];
+        $updated = [];
+        $skipped = [];
+
+        foreach ($pages_data as $page_data) {
+            $page = self::find_existing_page($page_data);
+            if ($page) {
+                if (self::should_update_page($module_id, $page)) {
+                    wp_update_post([
+                        'ID' => $page->ID,
+                        'post_title' => $page_data['title'],
+                        'post_content' => $page_data['content'],
+                    ]);
+                    update_post_meta($page->ID, '_flavor_auto_page', 1);
+                    update_post_meta($page->ID, '_flavor_auto_page_modules', implode(',', self::extract_modules_from_page($page_data)));
+                    $updated[] = $page_data['title'];
+                } else {
+                    $skipped[] = $page_data['title'];
+                }
+                continue;
+            }
+
+            $parent_id = 0;
+            if (!empty($page_data['parent']) && is_string($page_data['parent'])) {
+                $parent_page = get_page_by_path($page_data['parent']);
+                $parent_id = $parent_page ? $parent_page->ID : 0;
+            }
+
+            $page_id = wp_insert_post([
+                'post_title'    => $page_data['title'],
+                'post_name'     => $page_data['slug'],
+                'post_content'  => $page_data['content'],
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_parent'   => $parent_id,
+                'post_author'   => get_current_user_id(),
+            ]);
+
+            if (!is_wp_error($page_id)) {
+                update_post_meta($page_id, '_flavor_auto_page', 1);
+                update_post_meta($page_id, '_flavor_auto_page_modules', implode(',', self::extract_modules_from_page($page_data)));
+                $created[] = $page_data['title'];
+            }
+        }
+
+        if (!empty($created) || !empty($updated)) {
+            flush_rewrite_rules();
+        }
+
+        return [
+            'created' => $created,
+            'updated' => $updated,
+            'skipped' => $skipped,
+        ];
+    }
+
+    /**
+     * Crea páginas solo para módulos indicados.
+     *
+     * @param array $module_ids
+     * @return array
+     */
+    public static function create_pages_for_modules($module_ids) {
+        self::ensure_wp_post_revisions_constant();
+        $pages_data = self::get_pages_for_modules($module_ids);
+        return self::create_pages_from_list($pages_data);
+    }
+
+    /**
+     * Asegura que la constante WP_POST_REVISIONS exista para evitar errores fatales.
+     *
+     * @return void
+     */
+    private static function ensure_wp_post_revisions_constant() {
+        if (!defined('WP_POST_REVISIONS')) {
+            define('WP_POST_REVISIONS', true);
+        }
+    }
+
+    /**
+     * Crea páginas a partir de una lista de definiciones.
+     *
+     * @param array $pages_data
+     * @return array
+     */
+    private static function create_pages_from_list($pages_data) {
         $pages_created = [];
         $pages_skipped = [];
-        $pages_data = self::get_pages_to_create();
-        $parent_ids = []; // Cache de IDs de padres
+        $parent_ids = [];
 
         // Separar páginas padre e hijas para crear en orden correcto
         $parent_pages = [];
         $child_pages = [];
 
         foreach ($pages_data as $page_data) {
-            if ($page_data['parent'] === 0) {
+            if (($page_data['parent'] ?? 0) === 0) {
                 $parent_pages[] = $page_data;
             } else {
                 $child_pages[] = $page_data;
@@ -1128,10 +1462,8 @@ class Flavor_Page_Creator {
 
             if ($existing_page) {
                 $pages_skipped[] = $page_data['title'];
-                // Guardar en cache aunque ya exista
                 $parent_ids[$page_data['slug']] = $existing_page->ID;
 
-                // También agregar a created para el reporte (aunque no la creamos ahora)
                 $pages_created[] = [
                     'id' => $existing_page->ID,
                     'title' => $page_data['title'],
@@ -1142,7 +1474,6 @@ class Flavor_Page_Creator {
                 continue;
             }
 
-            // Crear la página
             $page_id = wp_insert_post([
                 'post_title'    => $page_data['title'],
                 'post_name'     => $page_data['slug'],
@@ -1161,21 +1492,19 @@ class Flavor_Page_Creator {
                     'url' => get_permalink($page_id),
                 ];
 
-                // Guardar en cache para páginas hijas
                 $parent_ids[$page_data['slug']] = $page_id;
+                update_post_meta($page_id, '_flavor_auto_page', 1);
+                update_post_meta($page_id, '_flavor_auto_page_modules', implode(',', self::extract_modules_from_page($page_data)));
             }
         }
 
         // PASO 2: Crear páginas hijas
         foreach ($child_pages as $page_data) {
-            // Determinar parent_id primero
             $parent_id = 0;
             if (!empty($page_data['parent']) && is_string($page_data['parent'])) {
-                // Buscar el ID del padre en cache
                 if (isset($parent_ids[$page_data['parent']])) {
                     $parent_id = $parent_ids[$page_data['parent']];
                 } else {
-                    // Si no está en cache, buscar en BD
                     $parent_page = get_page_by_path($page_data['parent']);
                     if ($parent_page) {
                         $parent_id = $parent_page->ID;
@@ -1184,7 +1513,6 @@ class Flavor_Page_Creator {
                 }
             }
 
-            // Verificar si la página ya existe (búsqueda robusta por slug y parent)
             $existing_page = null;
             $args = [
                 'name' => $page_data['slug'],
@@ -1203,7 +1531,6 @@ class Flavor_Page_Creator {
                 continue;
             }
 
-            // Crear la página (parent_id ya fue determinado arriba)
             $page_id = wp_insert_post([
                 'post_title'    => $page_data['title'],
                 'post_name'     => $page_data['slug'],
@@ -1221,10 +1548,11 @@ class Flavor_Page_Creator {
                     'slug' => $page_data['slug'],
                     'url' => get_permalink($page_id),
                 ];
+                update_post_meta($page_id, '_flavor_auto_page', 1);
+                update_post_meta($page_id, '_flavor_auto_page_modules', implode(',', self::extract_modules_from_page($page_data)));
             }
         }
 
-        // Flush rewrite rules para que las URLs funcionen
         flush_rewrite_rules();
 
         return [
@@ -1232,6 +1560,14 @@ class Flavor_Page_Creator {
             'skipped' => $pages_skipped,
             'total' => count($pages_created),
         ];
+    }
+
+    /**
+     * Crea todas las páginas
+     */
+    public static function create_all_pages() {
+        $pages_data = self::get_pages_to_create();
+        return self::create_pages_from_list($pages_data);
     }
 
     /**

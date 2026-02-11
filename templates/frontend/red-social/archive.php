@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header con gradiente -->
     <div class="bg-gradient-to-r from-pink-500 to-rose-600 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Red Social</h1>
-            <p class="text-white/90 text-lg">Conecta con tu comunidad y comparte experiencias</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Red Social', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Conecta con tu comunidad y comparte experiencias', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
 
@@ -26,31 +26,31 @@ $por_pagina = $por_pagina ?? 12;
         <!-- Estadisticas -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
-                <span class="block text-3xl font-bold text-pink-600">1.2k</span>
-                <span class="text-sm text-gray-500">Miembros</span>
+                <span class="block text-3xl font-bold text-pink-600"><?php echo esc_html__('1.2k', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Miembros', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
-                <span class="block text-3xl font-bold text-rose-600">3.4k</span>
-                <span class="text-sm text-gray-500">Publicaciones</span>
+                <span class="block text-3xl font-bold text-rose-600"><?php echo esc_html__('3.4k', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Publicaciones', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-pink-600">56</span>
-                <span class="text-sm text-gray-500">Grupos</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Grupos', 'flavor-chat-ia'); ?></span>
             </div>
             <div class="bg-white rounded-2xl p-5 shadow-md text-center">
                 <span class="block text-3xl font-bold text-rose-600">892</span>
-                <span class="text-sm text-gray-500">Conexiones</span>
+                <span class="text-sm text-gray-500"><?php echo esc_html__('Conexiones', 'flavor-chat-ia'); ?></span>
             </div>
         </div>
 
         <!-- CTA Crear Publicacion -->
         <div class="flex items-center justify-between mb-6">
             <p class="text-gray-600">
-                Mostrando <span class="font-semibold"><?php echo count($publicaciones); ?></span> de <?php echo esc_html($total_publicaciones); ?> publicaciones
+                <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($publicaciones); ?></span> de <?php echo esc_html($total_publicaciones); ?> publicaciones
             </p>
             <button class="px-6 py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                     style="background: linear-gradient(135deg, #ec4899 0%, #e11d48 100%);">
-                + Crear Publicacion
+                <?php echo esc_html__('+ Crear Publicacion', 'flavor-chat-ia'); ?>
             </button>
         </div>
 
@@ -59,8 +59,8 @@ $por_pagina = $por_pagina ?? 12;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay publicaciones todavia</h3>
-                <p class="text-gray-500">Se el primero en compartir algo con la comunidad</p>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay publicaciones todavia', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500"><?php echo esc_html__('Se el primero en compartir algo con la comunidad', 'flavor-chat-ia'); ?></p>
             </div>
         <?php else: ?>
             <!-- Feed de publicaciones -->

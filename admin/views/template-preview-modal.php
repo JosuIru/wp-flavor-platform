@@ -26,12 +26,13 @@ if (!defined('ABSPATH')) {
      @keydown.escape.window="cerrarPreviewModal()"
      role="dialog"
      aria-modal="true"
-     aria-labelledby="modal-titulo-plantilla">
+     aria-labelledby="<?php echo esc_attr__('modal-titulo-plantilla', 'flavor-chat-ia'); ?>">
 
     <div class="flavor-template-modal-backdrop" @click="cerrarPreviewModal()"></div>
 
     <div class="flavor-template-modal-content"
          x-trap.noscroll="mostrarPreviewModal"
+         x-init="if (!window.AlpineFocus) { $el.removeAttribute('x-trap.noscroll'); }"
          @click.stop>
 
         <!-- Template para mostrar contenido solo cuando haya datos -->
@@ -40,13 +41,17 @@ if (!defined('ABSPATH')) {
                 <!-- Header -->
                 <header class="flavor-template-modal-header">
                     <div class="flavor-template-modal-header-info">
-                        <div class="flavor-template-modal-icon" :style="'background: ' + (plantillaSeleccionadaData.color || '#2271b1') + '15;'">
-                            <span class="dashicons" :class="plantillaSeleccionadaData.icono || 'dashicons-admin-generic'"
-                                  :style="'color: ' + (plantillaSeleccionadaData.color || '#2271b1') + ';'"></span>
-                        </div>
+        <div class="flavor-template-modal-icon"
+             :style="plantillaSeleccionadaData
+                 ? 'background: ' + (plantillaSeleccionadaData.color || '#2271b1') + '15;'
+                 : ''">
+            <span class="dashicons"
+                  :class="plantillaSeleccionadaData ? (plantillaSeleccionadaData.icono || 'dashicons-admin-generic') : 'dashicons-admin-generic'"
+                  :style="plantillaSeleccionadaData ? 'color: ' + (plantillaSeleccionadaData.color || '#2271b1') + ';' : ''"></span>
+        </div>
                         <div>
-                            <h2 id="modal-titulo-plantilla" x-text="plantillaSeleccionadaData.nombre"></h2>
-                            <p class="description" x-text="plantillaSeleccionadaData.descripcion"></p>
+                            <h2 id="modal-titulo-plantilla" x-text="plantillaSeleccionadaData ? plantillaSeleccionadaData.nombre : ''"></h2>
+                            <p class="description" x-text="plantillaSeleccionadaData ? plantillaSeleccionadaData.descripcion : ''"></p>
                         </div>
                     </div>
                     <button type="button"
@@ -69,12 +74,12 @@ if (!defined('ABSPATH')) {
 
                         <ul class="flavor-template-modules">
                             <!-- Módulos requeridos -->
-                            <template x-if="plantillaSeleccionadaData.modulos_requeridos && plantillaSeleccionadaData.modulos_requeridos.length > 0">
-                                <template x-for="modulo in plantillaSeleccionadaData.modulos_requeridos" :key="modulo">
+                            <template x-if="obtenerModulosRequeridosPreview().length > 0">
+                                <template x-for="modulo in obtenerModulosRequeridosPreview()" :key="modulo">
                                     <li class="modulo-item requerido">
                                         <label>
                                             <input type="checkbox" checked disabled>
-                                            <span class="modulo-nombre" x-text="modulo.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())"></span>
+                                            <span class="modulo-nombre" x-text="modulo.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase())"></span>
                                             <span class="modulo-badge requerido"><?php _e('Requerido', 'flavor-chat-ia'); ?></span>
                                         </label>
                                     </li>
@@ -82,14 +87,24 @@ if (!defined('ABSPATH')) {
                             </template>
 
                             <!-- Módulos opcionales -->
-                            <template x-if="plantillaSeleccionadaData.modulos_opcionales && plantillaSeleccionadaData.modulos_opcionales.length > 0">
-                                <template x-for="modulo in plantillaSeleccionadaData.modulos_opcionales" :key="modulo">
+                            <template x-if="obtenerModulosOpcionalesPreview().length > 0">
+                                <li class="modulo-item opcional" style="background: #f6f7f7; border: 1px solid #dcdcde; margin-bottom: 10px;">
+                                    <label>
+                                        <input type="checkbox"
+                                               :checked="todosOpcionalesSeleccionados()"
+                                               @change="toggleTodosOpcionales($event.target.checked)">
+                                        <span class="modulo-nombre"><?php _e('Seleccionar todos los módulos opcionales', 'flavor-chat-ia'); ?></span>
+                                    </label>
+                                </li>
+                            </template>
+                            <template x-if="obtenerModulosOpcionalesPreview().length > 0">
+                                <template x-for="modulo in obtenerModulosOpcionalesPreview()" :key="modulo">
                                     <li class="modulo-item opcional">
                                         <label>
                                             <input type="checkbox"
                                                    :value="modulo"
                                                    x-model="modulosSeleccionados">
-                                            <span class="modulo-nombre" x-text="modulo.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())"></span>
+                                            <span class="modulo-nombre" x-text="modulo.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase())"></span>
                                             <span class="modulo-badge opcional"><?php _e('Opcional', 'flavor-chat-ia'); ?></span>
                                         </label>
                                     </li>
@@ -99,7 +114,7 @@ if (!defined('ABSPATH')) {
                     </section>
 
                     <!-- Seccion de Paginas -->
-                    <template x-if="plantillaSeleccionadaData.paginas && plantillaSeleccionadaData.paginas.length > 0">
+                    <template x-if="plantillaSeleccionadaData?.paginas?.length > 0">
                         <section class="flavor-template-section">
                             <h3>
                                 <span class="dashicons dashicons-admin-page"></span>
@@ -117,7 +132,7 @@ if (!defined('ABSPATH')) {
                     </template>
 
                     <!-- Seccion de Landing Page -->
-                    <template x-if="plantillaSeleccionadaData.landing">
+                    <template x-if="plantillaSeleccionadaData?.landing">
                         <section class="flavor-template-section">
                             <h3>
                                 <span class="dashicons dashicons-welcome-view-site"></span>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// Pantalla de contacto con WebView
@@ -17,6 +18,7 @@ class ContactWebViewScreen extends StatefulWidget {
 }
 
 class _ContactWebViewScreenState extends State<ContactWebViewScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   late final WebViewController _controller;
   bool _isLoading = true;
   String? _errorMessage;
@@ -61,6 +63,7 @@ class _ContactWebViewScreenState extends State<ContactWebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -71,7 +74,7 @@ class _ContactWebViewScreenState extends State<ContactWebViewScreen> {
             onPressed: () {
               _controller.reload();
             },
-            tooltip: 'Recargar',
+            tooltip: i18n.recargar3a9786,
           ),
         ],
       ),
@@ -105,7 +108,7 @@ class _ContactWebViewScreenState extends State<ContactWebViewScreen> {
                         _initializeWebView();
                       },
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Reintentar'),
+                      label: Text(i18n.reintentar179654),
                     ),
                   ],
                 ),
@@ -127,7 +130,7 @@ class _ContactWebViewScreenState extends State<ContactWebViewScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Cargando...',
+                      i18n.commonLoading,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],

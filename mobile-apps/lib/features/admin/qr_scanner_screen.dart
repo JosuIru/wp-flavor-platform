@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -16,6 +17,7 @@ class QRScannerScreen extends ConsumerStatefulWidget {
 }
 
 class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   late MobileScannerController _scannerController;
   bool _isProcessing = false;
   String? _lastScannedCode;
@@ -183,21 +185,22 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Escanear QR'),
+        title: Text(i18n.serverConfigQrScanTitle),
         actions: [
           IconButton(
             onPressed: _toggleTorch,
             icon: Icon(_torchEnabled ? Icons.flash_on : Icons.flash_off),
-            tooltip: 'Linterna',
+            tooltip: i18n.linterna8f3689,
           ),
           IconButton(
             onPressed: _switchCamera,
             icon: Icon(_frontCamera ? Icons.camera_front : Icons.camera_rear),
-            tooltip: 'Cambiar camara',
+            tooltip: i18n.cambiarCamara5a36e3,
           ),
         ],
       ),
@@ -242,7 +245,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
                     color: colorScheme.surface.withOpacity(0.9),
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(
@@ -251,7 +254,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
                       SizedBox(width: 12),
-                      Text('Procesando...'),
+                      Text(i18n.procesandoF16b30),
                     ],
                   ),
                 ),
@@ -271,6 +274,7 @@ class _ScannerOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return CustomPaint(
       painter: _ScannerOverlayPainter(
         borderColor: isProcessing
@@ -341,6 +345,7 @@ class _ScanResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isSuccess = result.success;
 
@@ -425,6 +430,7 @@ class _DetailItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(

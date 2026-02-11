@@ -71,7 +71,7 @@ class Flavor_Module_Actions_API {
         register_rest_route(self::NAMESPACE, '/modules/(?P<module_id>[a-zA-Z0-9_-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_module_info'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'module_id' => [
                     'required' => true,
@@ -85,8 +85,17 @@ class Flavor_Module_Actions_API {
         register_rest_route(self::NAMESPACE, '/modules', [
             'methods' => 'GET',
             'callback' => [$this, 'list_modules'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
+    }
+
+    /**
+     * Permisos publicos con rate limit
+     */
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 
     /**
@@ -95,16 +104,6 @@ class Flavor_Module_Actions_API {
     public function check_permissions($request) {
         $module_id = $request->get_param('module_id');
         $action_name = $request->get_param('action_name');
-
-        // Verificar nonce
-        $nonce = $request->get_header('X-WP-Nonce');
-        if (!$nonce || !wp_verify_nonce($nonce, 'wp_rest')) {
-            return new WP_Error(
-                'invalid_nonce',
-                __('Nonce inválido', 'flavor-chat-ia'),
-                ['status' => 403]
-            );
-        }
 
         // Acciones públicas - no requieren login
         $acciones_publicas = apply_filters('flavor_public_actions', [
@@ -220,12 +219,34 @@ class Flavor_Module_Actions_API {
             'mapa_bicicletas',
         ]);
 
-        if (!in_array($action_name, $acciones_publicas) && !is_user_logged_in()) {
+        $es_publica = in_array($action_name, $acciones_publicas, true);
+
+        // Rate limit siempre en acciones públicas
+        if ($es_publica) {
+            $rate_limit = Flavor_API_Rate_Limiter::check_rate_limit('post');
+            if (is_wp_error($rate_limit)) {
+                return $rate_limit;
+            }
+        }
+
+        if (!$es_publica && !is_user_logged_in()) {
             return new WP_Error(
                 'unauthorized',
                 __('Debes iniciar sesión para realizar esta acción', 'flavor-chat-ia'),
                 ['status' => 401]
             );
+        }
+
+        // Para acciones no públicas, exigir nonce válido
+        if (!$es_publica) {
+            $nonce = $request->get_header('X-WP-Nonce');
+            if (!$nonce || !wp_verify_nonce($nonce, 'wp_rest')) {
+                return new WP_Error(
+                    'invalid_nonce',
+                    __('Nonce inválido', 'flavor-chat-ia'),
+                    ['status' => 403]
+                );
+            }
         }
 
         // Acciones solo para administradores
@@ -263,7 +284,7 @@ class Flavor_Module_Actions_API {
         if (in_array($action_name, $acciones_admin) && !current_user_can('manage_options')) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => 'No tienes permisos de administrador para esta acción.',
+                'error' => __('No tienes permisos de administrador para esta acción.', 'flavor-chat-ia'),
             ], 403);
         }
 

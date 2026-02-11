@@ -83,7 +83,7 @@ class Flavor_GC_Telegram_Channel {
      */
     public function enviar($evento, $destinatarios, $datos) {
         if (!$this->esta_configurado()) {
-            return ['error' => 'Telegram no está configurado'];
+            return ['error' => __('Telegram no está configurado', 'flavor-chat-ia')];
         }
 
         $resultados = [
@@ -439,7 +439,7 @@ class Flavor_GC_Telegram_Channel {
         register_rest_route('flavor-chat-ia/v1', '/gc/telegram/webhook', [
             'methods' => 'POST',
             'callback' => [$this, 'procesar_webhook'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -750,7 +750,7 @@ class Flavor_GC_Telegram_Channel {
         if (!$this->esta_configurado()) {
             return [
                 'configurado' => false,
-                'mensaje' => 'Telegram no está configurado',
+                'mensaje' => __('Telegram no está configurado', 'flavor-chat-ia'),
             ];
         }
 
@@ -760,7 +760,7 @@ class Flavor_GC_Telegram_Channel {
             return [
                 'configurado' => true,
                 'conectado' => false,
-                'mensaje' => 'Error de conexión: ' . ($info['error'] ?? 'Desconocido'),
+                'mensaje' => __('Error de conexión: ', 'flavor-chat-ia') . ($info['error'] ?? 'Desconocido'),
             ];
         }
 
@@ -772,7 +772,13 @@ class Flavor_GC_Telegram_Channel {
             'bot_username' => $info['result']['username'],
             'bot_nombre' => $info['result']['first_name'],
             'webhook_url' => $webhook_info['success'] ? ($webhook_info['result']['url'] ?? 'No configurado') : 'Error',
-            'mensaje' => 'Conectado correctamente',
+            'mensaje' => __('Conectado correctamente', 'flavor-chat-ia'),
         ];
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

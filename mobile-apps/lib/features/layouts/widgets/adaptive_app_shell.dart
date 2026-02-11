@@ -9,6 +9,7 @@
 /// - Configurar los items de navegación
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../layouts/layout_config.dart';
 import '../../../core/providers/sync_provider.dart';
@@ -52,6 +53,7 @@ class AdaptiveAppShell extends ConsumerStatefulWidget {
 }
 
 class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   late int _currentIndex;
   late PageController _pageController;
 
@@ -83,6 +85,7 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final syncState = ref.watch(syncProvider);
     final layoutConfig = ref.watch(layoutConfigProvider);
     final useBottomNav = ref.watch(useBottomNavigationProvider);
@@ -106,7 +109,8 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
   }
 
   PreferredSizeWidget? _buildAppBar(SyncState syncState, LayoutConfig config) {
-    final title = widget.title ?? syncState.siteName ?? 'Mi App';
+    final title =
+        widget.title ?? syncState.siteName ?? i18n.defaultAppName;
     final useBottomNav = config.menu.useBottomNavigation;
 
     return AppBar(
@@ -149,7 +153,7 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      ref.read(syncProvider).siteName ?? 'Mi App',
+                      ref.read(syncProvider).siteName ?? i18n.defaultAppName,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
@@ -165,7 +169,7 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
                   final item = config.navigationItems[index];
                   return ListTile(
                     leading: Icon(item.iconData),
-                    title: Text(item.title),
+                    title: Text(_localizeNavTitle(i18n, item.title)),
                     selected: _currentIndex == index,
                     onTap: () {
                       Navigator.pop(context);
@@ -179,6 +183,24 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
         ),
       ),
     );
+  }
+
+  String _localizeNavTitle(AppLocalizations i18n, String title) {
+    switch (title.toLowerCase()) {
+      case 'inicio':
+      case 'home':
+        return i18n.navHome;
+      case 'explorar':
+      case 'explore':
+        return i18n.navExplore;
+      case 'chat':
+        return i18n.navChat;
+      case 'perfil':
+      case 'profile':
+        return i18n.navProfile;
+      default:
+        return title;
+    }
   }
 
   Widget _buildBottomNavigationBar(LayoutConfig config) {
@@ -226,14 +248,14 @@ class _AppSearchDelegate extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     return Center(
-      child: Text('Resultados para: $query'),
+      child: Text(i18n.commonResultsFor(query)),
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     return const Center(
-      child: Text('Escribe para buscar'),
+      child: Text(i18n.escribeParaBuscar633b34),
     );
   }
 }
@@ -251,6 +273,7 @@ class FloatingBottomNavigation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context)!;
     final layoutConfig = ref.watch(layoutConfigProvider);
     final items = layoutConfig.navigationItems.take(5).toList();
     final theme = Theme.of(context);

@@ -101,7 +101,7 @@ class Chat_IA_Admin_Backup {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => 'No se pudo crear el archivo de backup',
+                'error' => __('No se pudo crear el archivo de backup', 'flavor-chat-ia'),
             ];
         }
 
@@ -154,7 +154,7 @@ class Chat_IA_Admin_Backup {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => 'No se pudo crear el archivo de backup',
+                'error' => __('No se pudo crear el archivo de backup', 'flavor-chat-ia'),
             ];
         }
 
@@ -163,7 +163,7 @@ class Chat_IA_Admin_Backup {
         return [
             'success' => true,
             'backup_id' => $backup_id,
-            'mensaje' => 'Backup creado correctamente',
+            'mensaje' => __('Backup creado correctamente', 'chat-ia-addon'),
             'fecha' => $backup_data['fecha'],
         ];
     }
@@ -244,7 +244,7 @@ class Chat_IA_Admin_Backup {
         if (!$backup_data || empty($backup_data['datos'])) {
             return [
                 'success' => false,
-                'error' => 'Archivo de backup corrupto o vacío',
+                'error' => __('Archivo de backup corrupto o vacío', 'flavor-chat-ia'),
             ];
         }
 
@@ -272,7 +272,7 @@ class Chat_IA_Admin_Backup {
 
         return [
             'success' => empty($errores),
-            'mensaje' => 'Backup restaurado correctamente',
+            'mensaje' => __('Backup restaurado correctamente', 'chat-ia-addon'),
             'backup_restaurado' => $backup_id,
             'fecha_backup' => $backup_data['fecha'],
             'opciones_restauradas' => $opciones_restauradas,
@@ -304,7 +304,7 @@ class Chat_IA_Admin_Backup {
         if (!$backup_data) {
             return [
                 'success' => false,
-                'error' => 'Archivo de backup corrupto',
+                'error' => __('Archivo de backup corrupto', 'flavor-chat-ia'),
             ];
         }
 
@@ -356,7 +356,7 @@ class Chat_IA_Admin_Backup {
             if (time() - $fecha_backup < 86400) {
                 return [
                     'success' => false,
-                    'error' => 'No se pueden eliminar backups automáticos de las últimas 24 horas',
+                    'error' => __('No se pueden eliminar backups automáticos de las últimas 24 horas', 'flavor-chat-ia'),
                 ];
             }
         }
@@ -371,7 +371,7 @@ class Chat_IA_Admin_Backup {
 
         return [
             'success' => false,
-            'error' => 'No se pudo eliminar el archivo',
+            'error' => __('No se pudo eliminar el archivo', 'flavor-chat-ia'),
         ];
     }
 

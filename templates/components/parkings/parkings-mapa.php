@@ -26,7 +26,7 @@ $parkings = [
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                Parkings
+                <?php echo esc_html__('Parkings', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -42,7 +42,7 @@ $parkings = [
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                             </svg>
                         </div>
-                        <p class="text-slate-700 font-medium">Mapa de parkings</p>
+                        <p class="text-slate-700 font-medium"><?php echo esc_html__('Mapa de parkings', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
                 <!-- Marcadores simulados -->
@@ -104,7 +104,7 @@ $parkings = [
 
                 <div class="text-center pt-4">
                     <a href="#todos-parkings" class="inline-flex items-center gap-2 text-slate-600 font-semibold hover:text-slate-800">
-                        Ver todos los parkings
+                        <?php echo esc_html__('Ver todos los parkings', 'flavor-chat-ia'); ?>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>

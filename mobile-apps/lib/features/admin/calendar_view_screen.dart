@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/providers/providers.dart';
@@ -14,6 +15,7 @@ class CalendarViewScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarViewScreenState extends ConsumerState<CalendarViewScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -138,6 +140,7 @@ class _CalendarViewScreenState extends ConsumerState<CalendarViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final selectedDayReservations = _selectedDay != null
         ? _getReservationsForDay(_selectedDay!)
@@ -145,7 +148,7 @@ class _CalendarViewScreenState extends ConsumerState<CalendarViewScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calendario'),
+        title: Text(i18n.calendarioB0743a),
         actions: [
           IconButton(
             onPressed: () {
@@ -156,7 +159,7 @@ class _CalendarViewScreenState extends ConsumerState<CalendarViewScreen> {
               _loadReservationsForMonth(DateTime.now());
             },
             icon: const Icon(Icons.today),
-            tooltip: 'Hoy',
+            tooltip: i18n.hoy6368f5,
           ),
         ],
       ),
@@ -170,8 +173,8 @@ class _CalendarViewScreenState extends ConsumerState<CalendarViewScreen> {
                 // Buscador
                 TextField(
                   decoration: InputDecoration(
-                    labelText: 'Buscar cliente',
-                    hintText: 'Nombre, email o teléfono...',
+                    labelText: i18n.buscarCliente5a2444,
+                    hintText: i18n.nombreEmailOTelFonoC50094,
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -194,7 +197,7 @@ class _CalendarViewScreenState extends ConsumerState<CalendarViewScreen> {
                         child: DropdownButtonFormField<String?>(
                           value: _selectedTicketType,
                           decoration: InputDecoration(
-                            labelText: 'Tipo ticket',
+                            labelText: i18n.tipoTicket402ee5,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -202,9 +205,9 @@ class _CalendarViewScreenState extends ConsumerState<CalendarViewScreen> {
                             isDense: true,
                           ),
                           items: [
-                            const DropdownMenuItem<String?>(
+                            DropdownMenuItem<String?>(
                               value: null,
-                              child: Text('Todos'),
+                              child: Text(i18n.todos32630c),
                             ),
                             ..._ticketTypes.map((ticket) => DropdownMenuItem<String?>(
                                   value: ticket.slug,
@@ -225,29 +228,29 @@ class _CalendarViewScreenState extends ConsumerState<CalendarViewScreen> {
                       child: DropdownButtonFormField<String?>(
                         value: _selectedStatus,
                         decoration: InputDecoration(
-                          labelText: 'Estado',
+                          labelText: i18n.estado3397e6,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                           isDense: true,
                         ),
-                        items: const [
+                        items: [
                           DropdownMenuItem<String?>(
                             value: null,
-                            child: Text('Todos'),
+                            child: Text(i18n.todos32630c),
                           ),
                           DropdownMenuItem<String?>(
                             value: 'pending',
-                            child: Text('Pendiente'),
+                            child: Text(i18n.pendiente17fd63),
                           ),
                           DropdownMenuItem<String?>(
                             value: 'used',
-                            child: Text('Usado'),
+                            child: Text(i18n.usadoC277c8),
                           ),
                           DropdownMenuItem<String?>(
                             value: 'cancelled',
-                            child: Text('Cancelado'),
+                            child: Text(i18n.cancelado04b0f5),
                           ),
                         ],
                         onChanged: (value) {
@@ -411,6 +414,7 @@ class _ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(

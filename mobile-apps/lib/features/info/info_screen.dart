@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -10,8 +11,9 @@ import '../../core/config/app_config.dart';
 import '../../core/config/dynamic_config.dart';
 import '../../core/config/server_config.dart';
 import '../../core/api/api_client.dart';
+import '../../core/providers/sync_provider.dart';
 import '../../main_client.dart' show siteInfoProvider, clientAppConfigProvider;
-import 'contact_webview_screen.dart';
+import 'directory_screen.dart';
 
 /// Provider para contenido inteligente del sitio
 final siteContentProvider = FutureProvider<Map<String, dynamic>?>((ref) async {
@@ -34,12 +36,15 @@ class InfoScreen extends ConsumerStatefulWidget {
 }
 
 class _InfoScreenState extends ConsumerState<InfoScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   @override
   Widget build(BuildContext context) {
     final siteContentAsync = ref.watch(siteContentProvider);
     final siteInfo = ref.watch(siteInfoProvider);
+    final appConfigAsync = ref.watch(clientAppConfigProvider);
 
-    final siteName = siteInfo.valueOrNull?['name'] as String? ?? AppConfig.businessName;
+    final siteName = siteInfo.valueOrNull?['name'] as String? ??
+        AppLocalizations.of(context)!.defaultBusinessName;
     final logoUrl = siteInfo.valueOrNull?['logo_url'] as String?;
 
     return Scaffold(
@@ -47,11 +52,266 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
         onRefresh: () async {
           ref.invalidate(siteContentProvider);
           ref.invalidate(siteInfoProvider);
+          ref.invalidate(clientAppConfigProvider);
         },
-        child: siteContentAsync.when(
-          data: (content) => _buildContent(context, content, siteName, logoUrl),
-          loading: () => const LoadingScreen(message: 'Cargando información...'),
-          error: (error, _) => _buildFallbackContent(context, siteName, logoUrl),
+        child: appConfigAsync.when(
+          data: (appConfig) {
+            // Parsear info_sections de la configuración
+            final infoSectionsData = appConfig?['info_sections'] as List<dynamic>?;
+            final infoSections = infoSectionsData
+                ?.map((s) => s as Map<String, dynamic>)
+                .toList() ?? [];
+
+            return siteContentAsync.when(
+              data: (content) => _buildContentWithSections(
+                context,
+                content,
+                siteName,
+                logoUrl,
+                infoSections,
+              ),
+              loading: () => LoadingScreen(message: i18n.loadingInfo),
+              error: (error, _) => _buildFallbackContent(context, siteName, logoUrl),
+            );
+          },
+          loading: () => LoadingScreen(message: i18n.loadingInfo),
+          error: (error, _) => siteContentAsync.when(
+            data: (content) => _buildContent(context, content, siteName, logoUrl),
+            loading: () => LoadingScreen(message: i18n.loadingInfo),
+            error: (error, _) => _buildFallbackContent(context, siteName, logoUrl),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContentWithSections(
+    BuildContext context,
+    Map<String, dynamic>? content,
+    String siteName,
+    String? logoUrl,
+    List<Map<String, dynamic>> configuredSections,
+  ) {
+    if (content == null) {
+      return _buildFallbackContent(context, siteName, logoUrl);
+    }
+
+    // Ordenar secciones por orden configurado
+    final sortedSections = List<Map<String, dynamic>>.from(configuredSections);
+    sortedSections.sort((a, b) {
+      final orderA = a['order'] as int? ?? 0;
+      final orderB = b['order'] as int? ?? 0;
+      return orderA.compareTo(orderB);
+    });
+
+    final site = content['site'] as Map<String, dynamic>? ?? {};
+    final sections = (content['sections'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final quickLinks = (content['quick_links'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final socialLinks = (content['social_links'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final contact = content['contact'] as Map<String, dynamic>? ?? {};
+    final gallery = (content['gallery'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final news = (content['news'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final services = (content['services'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final schedule = content['schedule'] as Map<String, dynamic>? ?? {};
+    final location = content['location'] as Map<String, dynamic>? ?? {};
+
+    final displayName = site['name'] as String? ?? siteName;
+    final tagline = site['tagline'] as String? ?? '';
+    final siteLogoUrl = site['logo'] as String? ?? logoUrl;
+
+    // Obtener logo dinámico según brillo del tema
+    final brightness = Theme.of(context).brightness;
+    final dynamicConfig = DynamicConfig();
+    final dynamicLogoUrl = dynamicConfig.isLoaded
+        ? dynamicConfig.getLogoForBrightness(brightness)
+        : null;
+    final finalLogoUrl = dynamicLogoUrl ?? siteLogoUrl ?? logoUrl;
+
+    return CustomScrollView(
+      slivers: [
+        // Header con logo
+        SliverAppBar(
+          expandedHeight: 220,
+          pinned: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(
+              displayName,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+              ),
+            ),
+            background: _buildHeader(context, finalLogoUrl, tagline),
+          ),
+        ),
+
+        // Contenido dinámico basado en secciones configuradas
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Acciones principales de la app (siempre visible)
+              _buildAppActions(context),
+
+              // Renderizar secciones configuradas en orden
+              ...sortedSections.map((sectionConfig) {
+                final sectionId = sectionConfig['id'] as String? ?? '';
+                return _buildConfiguredSection(
+                  context,
+                  sectionId,
+                  sectionConfig,
+                  content: content,
+                  quickLinks: quickLinks,
+                  services: services,
+                  sections: sections,
+                  gallery: gallery,
+                  news: news,
+                  schedule: schedule,
+                  location: location,
+                  contact: contact,
+                  socialLinks: socialLinks,
+                );
+              }).whereType<Widget>(),
+
+              // Sección de ajustes (siempre visible)
+              _buildSettingsSection(context),
+
+              const SizedBox(height: 32),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget? _buildConfiguredSection(
+    BuildContext context,
+    String sectionId,
+    Map<String, dynamic> sectionConfig, {
+    required Map<String, dynamic> content,
+    required List<Map<String, dynamic>> quickLinks,
+    required List<Map<String, dynamic>> services,
+    required List<Map<String, dynamic>> sections,
+    required List<Map<String, dynamic>> gallery,
+    required List<Map<String, dynamic>> news,
+    required Map<String, dynamic> schedule,
+    required Map<String, dynamic> location,
+    required Map<String, dynamic> contact,
+    required List<Map<String, dynamic>> socialLinks,
+  }) {
+    switch (sectionId) {
+      case 'header':
+        // Header ya se muestra en el SliverAppBar
+        return null;
+
+      case 'quick_links':
+        if (quickLinks.isNotEmpty) {
+          return _buildQuickLinks(context, quickLinks);
+        }
+        return null;
+
+      case 'about':
+      case 'services':
+        if (services.isNotEmpty) {
+          return _buildServicesSection(context, services);
+        }
+        return null;
+
+      case 'content':
+        if (sections.isNotEmpty) {
+          return _buildSections(context, sections);
+        }
+        return null;
+
+      case 'gallery':
+        if (gallery.isNotEmpty) {
+          return _buildGallery(context, gallery);
+        }
+        return null;
+
+      case 'news':
+        if (news.isNotEmpty) {
+          return _buildNews(context, news);
+        }
+        return null;
+
+      case 'hours':
+      case 'schedule':
+        if (schedule['text'] != null && schedule['text'].toString().isNotEmpty) {
+          return _buildSchedule(context, schedule);
+        }
+        return null;
+
+      case 'location':
+        if (location['address'] != null || location['coordinates'] != null) {
+          return _buildLocation(context, location);
+        }
+        return null;
+
+      case 'contact':
+        if (contact.values.any((v) => v != null && v.toString().isNotEmpty)) {
+          return _buildContact(context, contact);
+        }
+        return null;
+
+      case 'social':
+        if (socialLinks.isNotEmpty) {
+          return _buildSocialLinks(context, socialLinks);
+        }
+        return null;
+
+      case 'team':
+      case 'faq':
+      default:
+        // Secciones custom o no implementadas
+        return _buildCustomSection(context, sectionConfig);
+    }
+  }
+
+  Widget _buildCustomSection(BuildContext context, Map<String, dynamic> sectionConfig) {
+    final label = sectionConfig['label'] as String? ?? 'Sección';
+    final iconName = sectionConfig['icon'] as String? ?? 'article';
+
+    // Map simple de iconos
+    final iconMap = {
+      'info': Icons.info_outline,
+      'article': Icons.article_outlined,
+      'help': Icons.help_outline,
+      'people': Icons.people_outline,
+      'groups': Icons.groups_outlined,
+    };
+
+    final icon = iconMap[iconName] ?? Icons.article_outlined;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(icon, color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Contenido de $label próximamente disponible',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -174,10 +434,44 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
         children: [
           ListTile(
             leading: Icon(Icons.swap_horiz, color: Theme.of(context).colorScheme.primary),
-            title: const Text('Cambiar negocio'),
-            subtitle: const Text('Conectar a otro sitio'),
+            title: Text(i18n.infoChangeBusinessTitle),
+            subtitle: Text(i18n.infoConnectOtherSiteSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showChangeBusinessDialog(context),
+          ),
+          ListTile(
+            leading: Icon(Icons.sync, color: Theme.of(context).colorScheme.primary),
+            title: Text(i18n.commonResyncTitle),
+            subtitle: Text(i18n.commonResyncSubtitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(i18n.commonResyncInProgress),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              final result = await ref.read(syncProvider.notifier).refresh();
+              if (!mounted) return;
+              if (result.success) {
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(i18n.commonResyncSuccess),
+                    backgroundColor: Colors.green,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              } else {
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(i18n.commonResyncError),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),
@@ -188,19 +482,16 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Cambiar de negocio'),
-        content: const Text(
-          '¿Quieres conectar esta app a otro negocio?\n\n'
-          'Podrás escanear el código QR de configuración del nuevo sitio.',
-        ),
+        title: Text(i18n.infoChangeBusinessDialogTitle),
+        content: Text(i18n.infoChangeBusinessDialogBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Cambiar'),
+            child: Text(i18n.commonChange),
           ),
         ],
       ),
@@ -211,7 +502,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => _ChangeBusinessScreen(
+          builder: (context) => ChangeBusinessScreen(
             onComplete: () {
               Navigator.pop(context);
               // Recargar la app
@@ -319,7 +610,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Accesos rápidos',
+            i18n.infoQuickLinks,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
@@ -350,7 +641,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
               Icon(Icons.star, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 8),
               Text(
-                'Nuestras experiencias',
+                i18n.infoOurExperiences,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
@@ -359,7 +650,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'No hay experiencias disponibles en los próximos 2 meses',
+                i18n.infoNoExperiencesNextMonths,
                 style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
               ),
             )
@@ -434,7 +725,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                         ],
                         if (nextDates.isNotEmpty) ...[
                           Text(
-                            'Próximas fechas disponibles:',
+                            i18n.infoUpcomingDates,
                             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -458,7 +749,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Text(
-                                '+ ${totalDays - nextDates.length} fechas más disponibles',
+                                i18n.infoMoreDatesCount(totalDays - nextDates.length),
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
@@ -473,7 +764,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                             widget.onNavigateToTab?.call(1); // Tab de reservas
                           },
                           icon: const Icon(Icons.calendar_month),
-                          label: const Text('Reservar'),
+                          label: Text(i18n.reserveCta),
                         ),
                       ],
                     ),
@@ -519,7 +810,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Información',
+            i18n.infoSectionTitle,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
@@ -556,7 +847,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                         OutlinedButton.icon(
                           onPressed: () => _openUrl(section['url']),
                           icon: const Icon(Icons.open_in_browser),
-                          label: const Text('Ver más en la web'),
+                          label: Text(i18n.infoSeeMoreOnWeb),
                         ),
                       ],
                     ),
@@ -581,7 +872,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
               Icon(Icons.photo_library, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 8),
               Text(
-                'Galería',
+                i18n.infoGalleryTitle,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
@@ -635,7 +926,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
               Icon(Icons.newspaper, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 8),
               Text(
-                'Noticias',
+                i18n.infoNewsTitle,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
@@ -697,7 +988,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Horarios', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(i18n.infoSchedulesLabel, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
                     Text(schedule['text'] ?? '', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8))),
                   ],
@@ -734,7 +1025,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Ubicación', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(i18n.infoLocationLabel, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                         if (location['address'] != null) ...[
                           const SizedBox(height: 4),
                           Text(location['address'], style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8))),
@@ -752,7 +1043,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                       child: OutlinedButton.icon(
                         onPressed: () => _openUrl(location['map_url']),
                         icon: const Icon(Icons.map),
-                        label: const Text('Ver mapa'),
+                        label: Text(i18n.infoViewMap),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -760,7 +1051,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                       child: FilledButton.icon(
                         onPressed: () => _openUrl(location['directions_url']),
                         icon: const Icon(Icons.directions),
-                        label: const Text('Cómo llegar'),
+                        label: Text(i18n.infoHowToGetThere),
                       ),
                     ),
                   ],
@@ -783,7 +1074,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Contacto',
+            i18n.infoContactTitle,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
@@ -801,30 +1092,20 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                 FilledButton.icon(
                   onPressed: () => _openUrl('https://wa.me/${contact['whatsapp'].toString().replaceAll(RegExp(r'[^\d]'), '')}'),
                   icon: const Icon(Icons.chat),
-                  label: const Text('WhatsApp'),
+                  label: Text(i18n.infoWhatsAppLabel),
                   style: FilledButton.styleFrom(backgroundColor: const Color(0xFF25D366)),
                 ),
               if (contact['email'] != null && contact['email'].toString().isNotEmpty)
                 OutlinedButton.icon(
                   onPressed: () => _openUrl('mailto:${contact['email']}'),
                   icon: const Icon(Icons.email),
-                  label: const Text('Email'),
+                  label: Text(i18n.infoEmailLabel),
                 ),
               // Botón para abrir formulario de contacto web
               OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ContactWebViewScreen(
-                        url: '$serverUrl/contacto',
-                        title: 'Formulario de Contacto',
-                      ),
-                    ),
-                  );
-                },
+                onPressed: () => _openUrl('$serverUrl/contacto'),
                 icon: const Icon(Icons.contact_mail),
-                label: const Text('Formulario Web'),
+                label: Text(i18n.infoWebFormLabel),
               ),
             ],
           ),
@@ -862,7 +1143,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Síguenos',
+            i18n.infoFollowUsTitle,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
@@ -942,9 +1223,9 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                   padding: EdgeInsets.all(32),
                   child: Center(child: CircularProgressIndicator()),
                 ),
-                error: (_, __) => const Padding(
+                error: (_, __) => Padding(
                   padding: EdgeInsets.all(32),
-                  child: Center(child: Text('Error al cargar información')),
+                  child: Center(child: Text(i18n.infoLoadError)),
                 ),
               ),
             ],
@@ -970,7 +1251,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
               ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cerrar'),
+              child: Text(i18n.commonClose),
             ),
           ],
         ),
@@ -1055,19 +1336,70 @@ class _ActionCard extends StatelessWidget {
 }
 
 /// Pantalla para cambiar de negocio (escanear otro QR)
-class _ChangeBusinessScreen extends ConsumerStatefulWidget {
+class ChangeBusinessScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
 
-  const _ChangeBusinessScreen({required this.onComplete});
+  const ChangeBusinessScreen({required this.onComplete});
 
   @override
-  ConsumerState<_ChangeBusinessScreen> createState() => _ChangeBusinessScreenState();
+  ConsumerState<ChangeBusinessScreen> createState() => _ChangeBusinessScreenState();
 }
 
-class _ChangeBusinessScreenState extends ConsumerState<_ChangeBusinessScreen> {
+class _ChangeBusinessScreenState extends ConsumerState<ChangeBusinessScreen> {
   bool _isScanning = false;
   bool _isLoading = false;
   String? _error;
+  bool _isLoadingSaved = false;
+  String _savedQuery = '';
+  List<SavedBusiness> _savedBusinesses = [];
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedBusinesses();
+  }
+
+  Future<void> _loadSavedBusinesses() async {
+    setState(() => _isLoadingSaved = true);
+    final businesses = await ServerConfig.getBusinesses();
+    if (mounted) {
+      setState(() {
+        _savedBusinesses = businesses;
+        _isLoadingSaved = false;
+      });
+    }
+  }
+
+  Future<void> _connectSavedBusiness(SavedBusiness business) async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      await ref.read(serverConfigProvider.notifier).setCurrentBusiness(business);
+      ref.read(apiClientProvider).updateBaseUrl('${business.serverUrl}${business.apiNamespace}');
+      await ref.read(syncProvider.notifier).syncWithSite(business.serverUrl);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(i18n.commonConnectedTo(business.name.isNotEmpty ? business.name : business.serverUrl)),
+            backgroundColor: Colors.green,
+          ),
+        );
+        widget.onComplete();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _error = 'No se pudo conectar al negocio';
+        });
+      }
+    }
+  }
 
   Future<void> _processQR(String code) async {
     setState(() {
@@ -1083,7 +1415,7 @@ class _ChangeBusinessScreenState extends ConsumerState<_ChangeBusinessScreen> {
       if (serverUrl.isEmpty) {
         setState(() {
           _isLoading = false;
-          _error = 'QR no válido: no contiene URL';
+          _error = i18n.infoInvalidQrMissingUrl;
         });
         return;
       }
@@ -1106,11 +1438,12 @@ class _ChangeBusinessScreenState extends ConsumerState<_ChangeBusinessScreen> {
 
         // Actualizar API client
         ref.read(apiClientProvider).updateBaseUrl(fullUrl);
+        await ref.read(syncProvider.notifier).syncWithSite(serverUrl);
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('✓ Conectado a ${jsonData['name'] ?? serverUrl}'),
+              content: Text(i18n.infoConnectedTo(jsonData['name'] ?? serverUrl)),
               backgroundColor: Colors.green,
             ),
           );
@@ -1132,107 +1465,177 @@ class _ChangeBusinessScreenState extends ConsumerState<_ChangeBusinessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isScanning) {
-      return Scaffold(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
         appBar: AppBar(
-          title: const Text('Escanear QR'),
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
+          title: Text(i18n.infoChangeBusinessTitle),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: i18n.infoScanQrTitle),
+              Tab(text: i18n.directorioDf7b92),
+            ],
+          ),
         ),
-        body: Stack(
+        body: TabBarView(
           children: [
-            MobileScanner(
-              onDetect: (capture) {
-                final code = capture.barcodes.firstOrNull?.rawValue;
-                if (code != null && code.isNotEmpty) {
-                  setState(() => _isScanning = false);
-                  _processQR(code);
-                }
-              },
-            ),
-            Center(
-              child: Container(
-                width: 280,
-                height: 280,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white.withOpacity(0.5), width: 3),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.9)],
-                  ),
-                ),
-                child: const Text(
-                  'Escanea el código QR del nuevo negocio',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            _buildScanTab(),
+            DirectoryScreen(
+              embedded: true,
+              closeOnConnect: false,
+              onConnected: widget.onComplete,
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildScanTab() {
+    if (_isScanning) {
+      return Stack(
+        children: [
+          MobileScanner(
+            onDetect: (capture) {
+              final code = capture.barcodes.firstOrNull?.rawValue;
+              if (code != null && code.isNotEmpty) {
+                setState(() => _isScanning = false);
+                _processQR(code);
+              }
+            },
+          ),
+          Center(
+            child: Container(
+              width: 280,
+              height: 280,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white.withOpacity(0.5), width: 3),
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.9)],
+                ),
+              ),
+              child: Text(
+                i18n.infoScanNewBusinessHint,
+                style: const TextStyle(color: Colors.white70, fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ],
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Cambiar negocio')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.qr_code_scanner,
-              size: 80,
-              color: Theme.of(context).colorScheme.primary,
+    final filteredBusinesses = _savedQuery.isEmpty
+        ? _savedBusinesses
+        : _savedBusinesses.where((b) {
+            final query = _savedQuery.toLowerCase();
+            return b.name.toLowerCase().contains(query) || b.serverUrl.toLowerCase().contains(query);
+          }).toList();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Icon(
+            Icons.qr_code_scanner,
+            size: 80,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            i18n.infoConnectAnotherBusinessTitle,
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            i18n.infoScanConfigQrHint,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
             ),
-            const SizedBox(height: 24),
-            Text(
-              'Conectar a otro negocio',
-              style: Theme.of(context).textTheme.headlineSmall,
-              textAlign: TextAlign.center,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+          if (_error != null) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(_error!, style: TextStyle(color: Colors.red.shade700)),
             ),
-            const SizedBox(height: 12),
-            Text(
-              'Escanea el código QR de configuración del nuevo sitio web.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            if (_error != null) ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(_error!, style: TextStyle(color: Colors.red.shade700)),
-              ),
-              const SizedBox(height: 16),
-            ],
-            if (_isLoading)
-              const CircularProgressIndicator()
-            else
-              FilledButton.icon(
-                onPressed: () => setState(() => _isScanning = true),
-                icon: const Icon(Icons.qr_code_scanner),
-                label: const Text('Escanear QR'),
-              ),
+            const SizedBox(height: 16),
           ],
-        ),
+          if (_isLoading)
+            const Center(child: CircularProgressIndicator())
+          else
+            FilledButton.icon(
+              onPressed: () => setState(() => _isScanning = true),
+              icon: const Icon(Icons.qr_code_scanner),
+              label: Text(i18n.infoScanQrButton),
+            ),
+          const SizedBox(height: 24),
+          Text(
+            i18n.sitiosGuardados13e63b,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            decoration: InputDecoration(
+              labelText: i18n.buscar113f74,
+              prefixIcon: const Icon(Icons.search),
+              border: const OutlineInputBorder(),
+            ),
+            onChanged: (value) => setState(() => _savedQuery = value),
+          ),
+          const SizedBox(height: 12),
+          if (_isLoadingSaved)
+            const Center(child: CircularProgressIndicator())
+          else if (filteredBusinesses.isEmpty)
+            Text(
+              i18n.noHaySitiosGuardados5a9b5e,
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            )
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: filteredBusinesses.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final business = filteredBusinesses[index];
+                final title = business.name.isNotEmpty ? business.name : business.serverUrl;
+                final subtitle = business.name.isNotEmpty ? business.serverUrl : business.apiNamespace;
+                return Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.public),
+                    title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    trailing: TextButton(
+                      onPressed: _isLoading ? null : () => _connectSavedBusiness(business),
+                      child: Text(i18n.conectar4b2e15),
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
     );
   }

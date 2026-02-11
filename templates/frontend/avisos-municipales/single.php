@@ -12,9 +12,9 @@ $relacionados = $relacionados ?? [];
 <div class="flavor-frontend flavor-avisos-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-sky-600 transition-colors">Inicio</a>
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-sky-600 transition-colors"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
-        <a href="<?php echo esc_url(home_url('/avisos-municipales/')); ?>" class="hover:text-sky-600 transition-colors">Avisos</a>
+        <a href="<?php echo esc_url(home_url('/avisos-municipales/')); ?>" class="hover:text-sky-600 transition-colors"><?php echo esc_html__('Avisos', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
         <span class="text-gray-700"><?php echo esc_html($aviso['titulo'] ?? 'Aviso'); ?></span>
     </nav>
@@ -57,17 +57,17 @@ $relacionados = $relacionados ?? [];
             <!-- Fechas afectadas -->
             <?php if (!empty($aviso['fecha_inicio']) || !empty($aviso['fecha_fin'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Fechas afectadas</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Fechas afectadas', 'flavor-chat-ia'); ?></h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <?php if (!empty($aviso['fecha_inicio'])): ?>
                     <div class="p-4 bg-sky-50 rounded-xl border border-sky-100">
-                        <p class="text-xs text-sky-600 font-medium mb-1">Fecha inicio</p>
+                        <p class="text-xs text-sky-600 font-medium mb-1"><?php echo esc_html__('Fecha inicio', 'flavor-chat-ia'); ?></p>
                         <p class="text-gray-800 font-semibold"><?php echo esc_html($aviso['fecha_inicio']); ?></p>
                     </div>
                     <?php endif; ?>
                     <?php if (!empty($aviso['fecha_fin'])): ?>
                     <div class="p-4 bg-sky-50 rounded-xl border border-sky-100">
-                        <p class="text-xs text-sky-600 font-medium mb-1">Fecha fin</p>
+                        <p class="text-xs text-sky-600 font-medium mb-1"><?php echo esc_html__('Fecha fin', 'flavor-chat-ia'); ?></p>
                         <p class="text-gray-800 font-semibold"><?php echo esc_html($aviso['fecha_fin']); ?></p>
                     </div>
                     <?php endif; ?>
@@ -78,11 +78,11 @@ $relacionados = $relacionados ?? [];
             <!-- Zonas afectadas - placeholder de mapa -->
             <?php if (!empty($aviso['zonas_afectadas'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Zonas afectadas</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Zonas afectadas', 'flavor-chat-ia'); ?></h2>
                 <div class="aspect-video bg-gray-100 rounded-xl mb-4 flex items-center justify-center" id="mapa-zonas-aviso">
                     <div class="text-center text-gray-400">
                         <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-                        <p class="text-sm">Mapa de zonas afectadas</p>
+                        <p class="text-sm"><?php echo esc_html__('Mapa de zonas afectadas', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
@@ -98,7 +98,7 @@ $relacionados = $relacionados ?? [];
             <!-- Adjuntos -->
             <?php if (!empty($aviso['adjuntos'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Documentos adjuntos</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Documentos adjuntos', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-3">
                     <?php foreach ($aviso['adjuntos'] as $adjunto_archivo): ?>
                     <a href="<?php echo esc_url($adjunto_archivo['url'] ?? '#'); ?>"
@@ -124,29 +124,29 @@ $relacionados = $relacionados ?? [];
         <div class="space-y-6">
             <!-- Informacion del aviso -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Informacion del aviso</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Informacion del aviso', 'flavor-chat-ia'); ?></h3>
                 <dl class="space-y-3 text-sm">
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Urgencia</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Urgencia', 'flavor-chat-ia'); ?></dt>
                         <dd class="<?php echo esc_attr($color_urgencia['text']); ?> font-medium"><?php echo esc_html($color_urgencia['label']); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Categoria</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($aviso['categoria'] ?? ''); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Publicado</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Publicado', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($aviso['fecha'] ?? ''); ?></dd>
                     </div>
                     <?php if (!empty($aviso['zona_afectada'])): ?>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Zona</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Zona', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($aviso['zona_afectada']); ?></dd>
                     </div>
                     <?php endif; ?>
                     <?php if (!empty($aviso['departamento'])): ?>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Departamento</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Departamento', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($aviso['departamento']); ?></dd>
                     </div>
                     <?php endif; ?>
@@ -155,19 +155,19 @@ $relacionados = $relacionados ?? [];
 
             <!-- Compartir -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Compartir aviso</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Compartir aviso', 'flavor-chat-ia'); ?></h3>
                 <div class="flex gap-3">
                     <button class="flex-1 bg-sky-100 text-sky-700 py-2 rounded-lg text-sm font-medium hover:bg-sky-200 transition-colors"
                             onclick="flavorAvisos.compartir('twitter', <?php echo esc_attr($aviso['id'] ?? 0); ?>)">
-                        Twitter
+                        <?php echo esc_html__('Twitter', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="flex-1 bg-blue-100 text-blue-700 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors"
                             onclick="flavorAvisos.compartir('facebook', <?php echo esc_attr($aviso['id'] ?? 0); ?>)">
-                        Facebook
+                        <?php echo esc_html__('Facebook', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="flex-1 bg-green-100 text-green-700 py-2 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors"
                             onclick="flavorAvisos.compartir('whatsapp', <?php echo esc_attr($aviso['id'] ?? 0); ?>)">
-                        WhatsApp
+                        <?php echo esc_html__('WhatsApp', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </div>
@@ -175,7 +175,7 @@ $relacionados = $relacionados ?? [];
             <!-- Avisos relacionados -->
             <?php if (!empty($relacionados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Avisos relacionados</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Avisos relacionados', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($relacionados as $aviso_relacionado): ?>
                     <?php
@@ -199,11 +199,11 @@ $relacionados = $relacionados ?? [];
 
             <!-- CTA suscripcion -->
             <div class="bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl p-6 text-white">
-                <h3 class="font-bold text-lg mb-2">No te pierdas nada</h3>
-                <p class="text-sky-100 text-sm mb-4">Recibe los avisos directamente en tu correo o movil</p>
+                <h3 class="font-bold text-lg mb-2"><?php echo esc_html__('No te pierdas nada', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sky-100 text-sm mb-4"><?php echo esc_html__('Recibe los avisos directamente en tu correo o movil', 'flavor-chat-ia'); ?></p>
                 <button class="w-full bg-white text-blue-600 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-colors"
                         onclick="flavorAvisos.suscribirse()">
-                    Suscribirse a Avisos
+                    <?php echo esc_html__('Suscribirse a Avisos', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>

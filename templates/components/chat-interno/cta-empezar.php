@@ -24,7 +24,7 @@ $url_comenzar = $url_comenzar ?? '#comenzar';
                             <!-- Cabecera del chat -->
                             <div class="flex items-center gap-3 pb-3 border-b border-gray-100 mb-3">
                                 <div class="w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center">
-                                    <span class="text-white text-xs font-bold">MG</span>
+                                    <span class="text-white text-xs font-bold"><?php echo esc_html__('MG', 'flavor-chat-ia'); ?></span>
                                 </div>
                                 <div>
                                     <p class="text-xs font-semibold text-gray-800"><?php echo esc_html__('Mi Grupo', 'flavor-chat-ia'); ?></p>

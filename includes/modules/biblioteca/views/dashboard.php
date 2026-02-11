@@ -72,7 +72,7 @@ $generos_populares = $wpdb->get_results(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Dashboard - Biblioteca Comunitaria</h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Dashboard - Biblioteca Comunitaria', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Tarjetas de estadísticas -->
@@ -83,7 +83,7 @@ $generos_populares = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($total_libros); ?></div>
-                <div class="flavor-stat-label">Total Libros</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Total Libros', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -93,7 +93,7 @@ $generos_populares = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($libros_disponibles); ?></div>
-                <div class="flavor-stat-label">Disponibles</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Disponibles', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -103,7 +103,7 @@ $generos_populares = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($libros_prestados); ?></div>
-                <div class="flavor-stat-label">Prestados</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Prestados', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -113,7 +113,7 @@ $generos_populares = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($total_lectores); ?></div>
-                <div class="flavor-stat-label">Lectores Activos</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Lectores Activos', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -123,7 +123,7 @@ $generos_populares = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($prestamos_retrasados); ?></div>
-                <div class="flavor-stat-label">Préstamos Retrasados</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Préstamos Retrasados', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -133,7 +133,7 @@ $generos_populares = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($reservas_pendientes); ?></div>
-                <div class="flavor-stat-label">Reservas Pendientes</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Reservas Pendientes', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
@@ -143,7 +143,7 @@ $generos_populares = $wpdb->get_results(
         <div class="flavor-dashboard-col-8">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Préstamos - Últimos 30 días</h2>
+                    <h2><?php echo esc_html__('Préstamos - Últimos 30 días', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <canvas id="chartPrestamos" height="80"></canvas>
@@ -154,7 +154,7 @@ $generos_populares = $wpdb->get_results(
         <div class="flavor-dashboard-col-4">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Géneros Populares</h2>
+                    <h2><?php echo esc_html__('Géneros Populares', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <canvas id="chartGeneros" height="200"></canvas>
@@ -168,15 +168,15 @@ $generos_populares = $wpdb->get_results(
         <div class="flavor-dashboard-col-6">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Libros Más Prestados</h2>
+                    <h2><?php echo esc_html__('Libros Más Prestados', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <table class="widefat">
                         <thead>
                             <tr>
-                                <th>Libro</th>
-                                <th>Autor</th>
-                                <th>Préstamos</th>
+                                <th><?php echo esc_html__('Libro', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Autor', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Préstamos', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -196,7 +196,7 @@ $generos_populares = $wpdb->get_results(
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="3" class="flavor-no-data">No hay datos disponibles</td>
+                                    <td colspan="3" class="flavor-no-data"><?php echo esc_html__('No hay datos disponibles', 'flavor-chat-ia'); ?></td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -208,15 +208,15 @@ $generos_populares = $wpdb->get_results(
         <div class="flavor-dashboard-col-6">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Préstamos Recientes</h2>
+                    <h2><?php echo esc_html__('Préstamos Recientes', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <table class="widefat">
                         <thead>
                             <tr>
-                                <th>Libro</th>
-                                <th>Prestatario</th>
-                                <th>Estado</th>
+                                <th><?php echo esc_html__('Libro', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Prestatario', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -243,7 +243,7 @@ $generos_populares = $wpdb->get_results(
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="3" class="flavor-no-data">No hay préstamos recientes</td>
+                                    <td colspan="3" class="flavor-no-data"><?php echo esc_html__('No hay préstamos recientes', 'flavor-chat-ia'); ?></td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>

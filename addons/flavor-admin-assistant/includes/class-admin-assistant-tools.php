@@ -1049,7 +1049,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $estado = sanitize_text_field($args['estado'] ?? 'todos');
 
         if (empty($fecha)) {
-            return ['success' => false, 'error' => 'Fecha requerida'];
+            return ['success' => false, 'error' => __('Fecha requerida', 'flavor-chat-ia')];
         }
 
         $where = ["fecha = %s"];
@@ -1101,7 +1101,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $tipo_ticket_filtro = sanitize_text_field($args['tipo_ticket'] ?? '');
 
         if (empty($fecha)) {
-            return ['success' => false, 'error' => 'Fecha requerida'];
+            return ['success' => false, 'error' => __('Fecha requerida', 'flavor-chat-ia')];
         }
 
         $tipos = get_option('calendario_experiencias_ticket_types', []);
@@ -1179,7 +1179,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $limite = intval($args['limite'] ?? 20);
 
         if (empty($termino)) {
-            return ['success' => false, 'error' => 'Término de búsqueda requerido'];
+            return ['success' => false, 'error' => __('Término de búsqueda requerido', 'flavor-chat-ia')];
         }
 
         $like = '%' . $wpdb->esc_like($termino) . '%';
@@ -1220,7 +1220,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $modo = sanitize_text_field($args['modo'] ?? 'normal');
 
         if (empty($fecha_inicio) || empty($fecha_fin)) {
-            return ['success' => false, 'error' => 'Fechas de inicio y fin requeridas'];
+            return ['success' => false, 'error' => __('Fechas de inicio y fin requeridas', 'flavor-chat-ia')];
         }
 
         $tipos = get_option('calendario_experiencias_ticket_types', []);
@@ -1334,7 +1334,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $incluir_iva = $args['incluir_iva'] ?? true;
 
         if (empty($fecha_inicio) || empty($fecha_fin)) {
-            return ['success' => false, 'error' => 'Fechas requeridas'];
+            return ['success' => false, 'error' => __('Fechas requeridas', 'flavor-chat-ia')];
         }
 
         $tipos = get_option('calendario_experiencias_ticket_types', []);
@@ -1448,7 +1448,7 @@ class Chat_IA_Admin_Assistant_Tools {
         ]);
 
         if (!$periodo1['success'] || !$periodo2['success']) {
-            return ['success' => false, 'error' => 'Error al obtener datos de períodos'];
+            return ['success' => false, 'error' => __('Error al obtener datos de períodos', 'flavor-chat-ia')];
         }
 
         $reservas_diff = $periodo2['total_reservas'] - $periodo1['total_reservas'];
@@ -1488,7 +1488,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $fecha_fin = sanitize_text_field($args['fecha_fin'] ?? '');
 
         if (empty($fecha_inicio) || empty($fecha_fin)) {
-            return ['success' => false, 'error' => 'Fechas requeridas'];
+            return ['success' => false, 'error' => __('Fechas requeridas', 'flavor-chat-ia')];
         }
 
         $tipos = get_option('calendario_experiencias_ticket_types', []);
@@ -1542,7 +1542,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $nuevo_limite = intval($args['nuevo_limite'] ?? 0);
 
         if (empty($fecha) || empty($tipo_ticket)) {
-            return ['success' => false, 'error' => 'Fecha y tipo de ticket requeridos'];
+            return ['success' => false, 'error' => __('Fecha y tipo de ticket requeridos', 'flavor-chat-ia')];
         }
 
         // Verificar que el tipo de ticket existe
@@ -1597,7 +1597,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $razon = sanitize_text_field($args['razon'] ?? '');
 
         if (empty($codigo)) {
-            return ['success' => false, 'error' => 'Código de ticket requerido'];
+            return ['success' => false, 'error' => __('Código de ticket requerido', 'flavor-chat-ia')];
         }
 
         $ticket = $wpdb->get_row($wpdb->prepare(
@@ -1610,7 +1610,7 @@ class Chat_IA_Admin_Assistant_Tools {
         }
 
         if ($ticket['blocked']) {
-            return ['success' => false, 'error' => 'El ticket ya está bloqueado'];
+            return ['success' => false, 'error' => __('El ticket ya está bloqueado', 'flavor-chat-ia')];
         }
 
         $wpdb->update(
@@ -1646,7 +1646,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $codigo = sanitize_text_field($args['codigo_ticket'] ?? '');
 
         if (empty($codigo)) {
-            return ['success' => false, 'error' => 'Código de ticket requerido'];
+            return ['success' => false, 'error' => __('Código de ticket requerido', 'flavor-chat-ia')];
         }
 
         $ticket = $wpdb->get_row($wpdb->prepare(
@@ -1659,7 +1659,7 @@ class Chat_IA_Admin_Assistant_Tools {
         }
 
         if (!$ticket['blocked']) {
-            return ['success' => false, 'error' => 'El ticket no está bloqueado'];
+            return ['success' => false, 'error' => __('El ticket no está bloqueado', 'flavor-chat-ia')];
         }
 
         $wpdb->update(
@@ -2252,7 +2252,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $incluir_historial = $args['incluir_historial'] ?? true;
 
         if (empty($email)) {
-            return ['success' => false, 'error' => 'Email requerido'];
+            return ['success' => false, 'error' => __('Email requerido', 'flavor-chat-ia')];
         }
 
         // Buscar por email en el campo cliente JSON
@@ -2266,7 +2266,7 @@ class Chat_IA_Admin_Assistant_Tools {
         if (empty($reservas)) {
             return [
                 'success' => false,
-                'error' => 'No se encontró cliente con ese email',
+                'error' => __('No se encontró cliente con ese email', 'flavor-chat-ia'),
             ];
         }
 
@@ -2333,7 +2333,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $incluir_cabeceras = $args['incluir_cabeceras'] ?? true;
 
         if (empty($tipo_datos) || empty($fecha_inicio) || empty($fecha_fin)) {
-            return ['success' => false, 'error' => 'Faltan parámetros requeridos'];
+            return ['success' => false, 'error' => __('Faltan parámetros requeridos', 'flavor-chat-ia')];
         }
 
         // Obtener datos según tipo
@@ -2366,11 +2366,11 @@ class Chat_IA_Admin_Assistant_Tools {
                 break;
 
             default:
-                return ['success' => false, 'error' => 'Tipo de datos no válido'];
+                return ['success' => false, 'error' => __('Tipo de datos no válido', 'flavor-chat-ia')];
         }
 
         if (empty($datos)) {
-            return ['success' => false, 'error' => 'No hay datos para el período seleccionado'];
+            return ['success' => false, 'error' => __('No hay datos para el período seleccionado', 'flavor-chat-ia')];
         }
 
         // Generar CSV
@@ -2567,7 +2567,7 @@ class Chat_IA_Admin_Assistant_Tools {
         if (empty($fecha) && (empty($fecha_inicio) || empty($fecha_fin))) {
             return [
                 'success' => false,
-                'error' => 'Debes especificar una fecha única o un rango (fecha_inicio y fecha_fin)',
+                'error' => __('Debes especificar una fecha única o un rango (fecha_inicio y fecha_fin)', 'flavor-chat-ia'),
             ];
         }
 
@@ -2654,7 +2654,7 @@ class Chat_IA_Admin_Assistant_Tools {
         if (!$confirmar) {
             return [
                 'success' => false,
-                'error' => 'Debes confirmar el reseteo estableciendo confirmar=true',
+                'error' => __('Debes confirmar el reseteo estableciendo confirmar=true', 'flavor-chat-ia'),
             ];
         }
 
@@ -2717,7 +2717,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $descripcion = sanitize_text_field($args['descripcion'] ?? '');
 
         if (empty($slug) || empty($nombre)) {
-            return ['success' => false, 'error' => 'Slug y nombre son requeridos'];
+            return ['success' => false, 'error' => __('Slug y nombre son requeridos', 'flavor-chat-ia')];
         }
 
         $estados = get_option('calendario_experiencias_estados', []);
@@ -2764,7 +2764,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $slug = sanitize_title($args['slug'] ?? '');
 
         if (empty($slug)) {
-            return ['success' => false, 'error' => 'Slug requerido'];
+            return ['success' => false, 'error' => __('Slug requerido', 'flavor-chat-ia')];
         }
 
         $estados = get_option('calendario_experiencias_estados', []);
@@ -2815,11 +2815,11 @@ class Chat_IA_Admin_Assistant_Tools {
         $confirmar = $args['confirmar'] ?? false;
 
         if (empty($slug)) {
-            return ['success' => false, 'error' => 'Slug requerido'];
+            return ['success' => false, 'error' => __('Slug requerido', 'flavor-chat-ia')];
         }
 
         if (!$confirmar) {
-            return ['success' => false, 'error' => 'Debes confirmar la eliminación'];
+            return ['success' => false, 'error' => __('Debes confirmar la eliminación', 'flavor-chat-ia')];
         }
 
         $estados = get_option('calendario_experiencias_estados', []);
@@ -2882,15 +2882,15 @@ class Chat_IA_Admin_Assistant_Tools {
         $estados_validos = sanitize_text_field($args['estados_validos'] ?? '');
 
         if (empty($slug) || empty($nombre)) {
-            return ['success' => false, 'error' => 'Slug y nombre son requeridos'];
+            return ['success' => false, 'error' => __('Slug y nombre son requeridos', 'flavor-chat-ia')];
         }
 
         if ($precio < 0) {
-            return ['success' => false, 'error' => 'El precio no puede ser negativo'];
+            return ['success' => false, 'error' => __('El precio no puede ser negativo', 'flavor-chat-ia')];
         }
 
         if ($plazas < 0) {
-            return ['success' => false, 'error' => 'Las plazas no pueden ser negativas'];
+            return ['success' => false, 'error' => __('Las plazas no pueden ser negativas', 'flavor-chat-ia')];
         }
 
         $tipos = get_option('calendario_experiencias_ticket_types', []);
@@ -2943,7 +2943,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $slug = sanitize_title($args['slug'] ?? '');
 
         if (empty($slug)) {
-            return ['success' => false, 'error' => 'Slug requerido'];
+            return ['success' => false, 'error' => __('Slug requerido', 'flavor-chat-ia')];
         }
 
         $tipos = get_option('calendario_experiencias_ticket_types', []);
@@ -3002,11 +3002,11 @@ class Chat_IA_Admin_Assistant_Tools {
         $confirmar = $args['confirmar'] ?? false;
 
         if (empty($slug)) {
-            return ['success' => false, 'error' => 'Slug requerido'];
+            return ['success' => false, 'error' => __('Slug requerido', 'flavor-chat-ia')];
         }
 
         if (!$confirmar) {
-            return ['success' => false, 'error' => 'Debes confirmar la eliminación'];
+            return ['success' => false, 'error' => __('Debes confirmar la eliminación', 'flavor-chat-ia')];
         }
 
         $tipos = get_option('calendario_experiencias_ticket_types', []);
@@ -3090,7 +3090,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $backup_id = sanitize_text_field($args['backup_id'] ?? '');
 
         if (empty($backup_id)) {
-            return ['success' => false, 'error' => 'backup_id requerido'];
+            return ['success' => false, 'error' => __('backup_id requerido', 'flavor-chat-ia')];
         }
 
         $backup = Chat_IA_Admin_Backup::get_instance();
@@ -3159,7 +3159,7 @@ class Chat_IA_Admin_Assistant_Tools {
         $texto = $args['texto'] ?? '';
 
         if (empty($texto)) {
-            return ['success' => false, 'error' => 'Texto requerido'];
+            return ['success' => false, 'error' => __('Texto requerido', 'flavor-chat-ia')];
         }
 
         // Validar estados disponibles
@@ -3201,7 +3201,7 @@ class Chat_IA_Admin_Assistant_Tools {
         if (empty($importaciones)) {
             return [
                 'success' => false,
-                'error' => 'No se encontraron entradas validas',
+                'error' => __('No se encontraron entradas validas', 'flavor-chat-ia'),
                 'errores' => $errores,
             ];
         }
@@ -3223,7 +3223,7 @@ class Chat_IA_Admin_Assistant_Tools {
 
         return [
             'success' => true,
-            'mensaje' => 'Importacion completada',
+            'mensaje' => __('Importacion completada', 'chat-ia-addon'),
             'dias_importados' => count($importaciones),
             'errores' => $errores,
             'preview' => array_slice($importaciones, 0, 5, true),
@@ -3249,11 +3249,11 @@ class Chat_IA_Admin_Assistant_Tools {
         $iva = intval($args['iva'] ?? 21);
 
         if (empty($nombre)) {
-            return ['success' => false, 'error' => 'Nombre requerido'];
+            return ['success' => false, 'error' => __('Nombre requerido', 'flavor-chat-ia')];
         }
 
         if ($precio < 0) {
-            return ['success' => false, 'error' => 'El precio no puede ser negativo'];
+            return ['success' => false, 'error' => __('El precio no puede ser negativo', 'flavor-chat-ia')];
         }
 
         // Generar slug automaticamente
@@ -3288,11 +3288,11 @@ class Chat_IA_Admin_Assistant_Tools {
         $precio = floatval($args['precio'] ?? 0);
 
         if (empty($ticket_slug)) {
-            return ['success' => false, 'error' => 'ticket_slug requerido'];
+            return ['success' => false, 'error' => __('ticket_slug requerido', 'flavor-chat-ia')];
         }
 
         if ($precio < 0) {
-            return ['success' => false, 'error' => 'El precio no puede ser negativo'];
+            return ['success' => false, 'error' => __('El precio no puede ser negativo', 'flavor-chat-ia')];
         }
 
         $tipos = get_option('calendario_experiencias_ticket_types', []);
@@ -3480,7 +3480,7 @@ class Chat_IA_Admin_Assistant_Tools {
                 break;
 
             default:
-                return ['success' => false, 'error' => 'Tipo de comparativa no valido'];
+                return ['success' => false, 'error' => __('Tipo de comparativa no valido', 'flavor-chat-ia')];
         }
 
         // Usar herramienta existente

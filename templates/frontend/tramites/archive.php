@@ -16,8 +16,8 @@ $categorias = $categorias ?? [];
     <div class="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">Tramites Online</h1>
-                <p class="text-orange-100">Realiza tus gestiones municipales desde cualquier lugar</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('Tramites Online', 'flavor-chat-ia'); ?></h1>
+                <p class="text-orange-100"><?php echo esc_html__('Realiza tus gestiones municipales desde cualquier lugar', 'flavor-chat-ia'); ?></p>
             </div>
             <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
                 <?php echo esc_html($total); ?> tramites disponibles
@@ -27,7 +27,7 @@ $categorias = $categorias ?? [];
         <!-- Buscador destacado -->
         <form action="" method="get" class="mt-6 max-w-2xl">
             <div class="relative">
-                <input type="text" name="q" placeholder="Busca tu tramite (ej: empadronamiento, licencia de obra...)"
+                <input type="text" name="q" placeholder="<?php echo esc_attr__('Busca tu tramite (ej: empadronamiento, licencia de obra...)', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg text-gray-800 border-0 shadow-lg focus:ring-4 focus:ring-orange-300"
                        autocomplete="off">
                 <button type="submit"
@@ -45,28 +45,28 @@ $categorias = $categorias ?? [];
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 font-bold">T</div>
+                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 font-bold"><?php echo esc_html__('T', 'flavor-chat-ia'); ?></div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['tramites_disponibles'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">Tramites disponibles</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Tramites disponibles', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600 font-bold">S</div>
+                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600 font-bold"><?php echo esc_html__('S', 'flavor-chat-ia'); ?></div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['solicitudes_procesadas'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">Solicitudes procesadas</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Solicitudes procesadas', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">R</div>
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold"><?php echo esc_html__('R', 'flavor-chat-ia'); ?></div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['tiempo_medio'] ?? '0d'); ?></p>
-                    <p class="text-xs text-gray-500">Tiempo medio</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Tiempo medio', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@ $categorias = $categorias ?? [];
                 <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 font-bold">%</div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['satisfaccion'] ?? '0%'); ?></p>
-                    <p class="text-xs text-gray-500">Satisfaccion</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Satisfaccion', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
@@ -86,7 +86,7 @@ $categorias = $categorias ?? [];
     <div class="flex flex-wrap gap-2 mb-6">
         <button class="px-4 py-2 rounded-full bg-orange-100 text-orange-700 font-medium hover:bg-orange-200 transition-colors filter-active"
                 data-categoria="todos">
-            Todos
+            <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
         </button>
         <?php
         $categorias_tramites = ['Empadronamiento', 'Licencias', 'Impuestos', 'Certificados'];
@@ -102,9 +102,9 @@ $categorias = $categorias ?? [];
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php if (empty($items)): ?>
         <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
-            <div class="text-6xl mb-4">&#x1F4CB;</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay tramites disponibles</h3>
-            <p class="text-gray-500">Los tramites se actualizaran proximamente</p>
+            <div class="text-6xl mb-4"><?php echo esc_html__('&#x1F4CB;', 'flavor-chat-ia'); ?></div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay tramites disponibles', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500"><?php echo esc_html__('Los tramites se actualizaran proximamente', 'flavor-chat-ia'); ?></p>
         </div>
         <?php else: ?>
         <?php foreach ($items as $tramite): ?>
@@ -153,7 +153,7 @@ $categorias = $categorias ?? [];
                 <a href="<?php echo esc_url($tramite['url'] ?? '#'); ?>"
                    class="w-full inline-flex items-center justify-center gap-2 bg-orange-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-orange-600 transition-colors text-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    Iniciar tramite
+                    <?php echo esc_html__('Iniciar tramite', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </article>
@@ -165,9 +165,9 @@ $categorias = $categorias ?? [];
     <?php if ($total > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo esc_html(ceil($total / 12)); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors">Siguiente</button>
+            <button class="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"><?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

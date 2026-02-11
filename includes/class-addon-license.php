@@ -354,14 +354,14 @@ class Flavor_Addon_License {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $addon_slug = sanitize_text_field($_POST['addon_slug'] ?? '');
         $license_key = sanitize_text_field($_POST['license_key'] ?? '');
 
         if (empty($addon_slug) || empty($license_key)) {
-            wp_send_json_error('Datos incompletos');
+            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
         }
 
         $result = $this->activate_license($addon_slug, $license_key);
@@ -385,13 +385,13 @@ class Flavor_Addon_License {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $addon_slug = sanitize_text_field($_POST['addon_slug'] ?? '');
 
         if (empty($addon_slug)) {
-            wp_send_json_error('Datos incompletos');
+            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
         }
 
         $result = $this->deactivate_license($addon_slug);
@@ -414,13 +414,13 @@ class Flavor_Addon_License {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $addon_slug = sanitize_text_field($_POST['addon_slug'] ?? '');
 
         if (empty($addon_slug)) {
-            wp_send_json_error('Datos incompletos');
+            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
         }
 
         $result = $this->verify_license($addon_slug);

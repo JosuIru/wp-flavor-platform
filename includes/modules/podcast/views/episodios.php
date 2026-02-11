@@ -84,9 +84,9 @@ function formatear_tamano_archivo($bytes) {
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-playlist-audio"></span>
-        Gestión de Episodios
+        <?php echo esc_html__('Gestión de Episodios', 'flavor-chat-ia'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalNuevoEpisodio(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> Subir Episodio
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Subir Episodio', 'flavor-chat-ia'); ?>
         </a>
     </h1>
 
@@ -96,9 +96,9 @@ function formatear_tamano_archivo($bytes) {
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
             <div style="flex: 1; min-width: 200px;">
-                <label for="podcast_id" style="display: block; margin-bottom: 5px; font-weight: 600;">Podcast:</label>
+                <label for="podcast_id" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Podcast:', 'flavor-chat-ia'); ?></label>
                 <select name="podcast_id" id="podcast_id" class="regular-text">
-                    <option value="0">Todos los podcasts</option>
+                    <option value="0"><?php echo esc_html__('Todos los podcasts', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($podcasts_disponibles as $podcast): ?>
                         <option value="<?php echo $podcast->id; ?>" <?php selected($podcast_seleccionado, $podcast->id); ?>>
                             <?php echo esc_html($podcast->titulo); ?>
@@ -108,21 +108,21 @@ function formatear_tamano_archivo($bytes) {
             </div>
 
             <div style="flex: 1; min-width: 150px;">
-                <label for="estado" style="display: block; margin-bottom: 5px; font-weight: 600;">Estado:</label>
+                <label for="estado" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Estado:', 'flavor-chat-ia'); ?></label>
                 <select name="estado" id="estado" class="regular-text">
-                    <option value="">Todos los estados</option>
-                    <option value="publicado" <?php selected($estado_filtro, 'publicado'); ?>>Publicado</option>
-                    <option value="borrador" <?php selected($estado_filtro, 'borrador'); ?>>Borrador</option>
-                    <option value="programado" <?php selected($estado_filtro, 'programado'); ?>>Programado</option>
+                    <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('publicado', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'publicado'); ?>><?php echo esc_html__('Publicado', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('borrador', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'borrador'); ?>><?php echo esc_html__('Borrador', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('programado', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'programado'); ?>><?php echo esc_html__('Programado', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <div>
                 <button type="submit" class="button button-primary">
-                    <span class="dashicons dashicons-filter"></span> Filtrar
+                    <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
                 </button>
                 <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button">
-                    <span class="dashicons dashicons-no"></span> Limpiar
+                    <span class="dashicons dashicons-no"></span> <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </form>
@@ -134,15 +134,15 @@ function formatear_tamano_archivo($bytes) {
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 60px;">ID</th>
-                    <th>Episodio</th>
-                    <th>Podcast</th>
-                    <th style="width: 100px;">Duración</th>
-                    <th style="width: 100px;">Tamaño</th>
-                    <th style="width: 120px;">Reproducciones</th>
-                    <th style="width: 100px;">Estado</th>
-                    <th style="width: 150px;">Fecha</th>
-                    <th style="width: 150px;">Acciones</th>
+                    <th style="width: 60px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Episodio', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Podcast', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Duración', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Tamaño', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Reproducciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -150,7 +150,7 @@ function formatear_tamano_archivo($bytes) {
                     <tr>
                         <td colspan="9" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-admin-media" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666;">No se encontraron episodios con los filtros seleccionados</p>
+                            <p style="color: #666;"><?php echo esc_html__('No se encontraron episodios con los filtros seleccionados', 'flavor-chat-ia'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -166,7 +166,7 @@ function formatear_tamano_archivo($bytes) {
                                     <div style="margin-top: 5px;">
                                         <audio controls style="width: 100%; max-width: 300px; height: 30px;">
                                             <source src="<?php echo esc_url($episodio->archivo_url); ?>" type="audio/mpeg">
-                                            Tu navegador no soporta audio HTML5.
+                                            <?php echo esc_html__('Tu navegador no soporta audio HTML5.', 'flavor-chat-ia'); ?>
                                         </audio>
                                     </div>
                                 <?php endif; ?>
@@ -204,7 +204,7 @@ function formatear_tamano_archivo($bytes) {
                             </td>
                             <td>
                                 <button class="button button-small" onclick="editarEpisodio(<?php echo $episodio->id; ?>)">
-                                    <span class="dashicons dashicons-edit"></span> Editar
+                                    <span class="dashicons dashicons-edit"></span> <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
                                 </button>
                                 <button class="button button-small button-link-delete" onclick="eliminarEpisodio(<?php echo $episodio->id; ?>)">
                                     <span class="dashicons dashicons-trash"></span>
@@ -226,17 +226,17 @@ function formatear_tamano_archivo($bytes) {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2 style="margin: 0;">
                 <span class="dashicons dashicons-upload"></span>
-                Subir Nuevo Episodio
+                <?php echo esc_html__('Subir Nuevo Episodio', 'flavor-chat-ia'); ?>
             </h2>
-            <button onclick="cerrarModalNuevoEpisodio()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            <button onclick="cerrarModalNuevoEpisodio()" style="background: none; border: none; font-size: 24px; cursor: pointer;"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
         </div>
 
         <form id="form-nuevo-episodio" method="post" enctype="multipart/form-data">
 
             <div style="margin-bottom: 20px;">
-                <label for="episodio_podcast_id" style="display: block; margin-bottom: 5px; font-weight: 600;">Podcast:</label>
+                <label for="episodio_podcast_id" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Podcast:', 'flavor-chat-ia'); ?></label>
                 <select name="podcast_id" id="episodio_podcast_id" class="regular-text" required>
-                    <option value="">Seleccionar podcast...</option>
+                    <option value=""><?php echo esc_html__('Seleccionar podcast...', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($podcasts_disponibles as $podcast): ?>
                         <option value="<?php echo $podcast->id; ?>"><?php echo esc_html($podcast->titulo); ?></option>
                     <?php endforeach; ?>
@@ -244,49 +244,49 @@ function formatear_tamano_archivo($bytes) {
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="episodio_titulo" style="display: block; margin-bottom: 5px; font-weight: 600;">Título del Episodio:</label>
+                <label for="episodio_titulo" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Título del Episodio:', 'flavor-chat-ia'); ?></label>
                 <input type="text" name="titulo" id="episodio_titulo" class="regular-text" required style="width: 100%;">
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="episodio_numero" style="display: block; margin-bottom: 5px; font-weight: 600;">Número de Episodio:</label>
+                <label for="episodio_numero" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Número de Episodio:', 'flavor-chat-ia'); ?></label>
                 <input type="number" name="numero_episodio" id="episodio_numero" class="regular-text" required min="1" value="1">
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="episodio_descripcion" style="display: block; margin-bottom: 5px; font-weight: 600;">Descripción / Show Notes:</label>
+                <label for="episodio_descripcion" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Descripción / Show Notes:', 'flavor-chat-ia'); ?></label>
                 <textarea name="descripcion" id="episodio_descripcion" rows="6" class="large-text" style="width: 100%;"></textarea>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="episodio_archivo" style="display: block; margin-bottom: 5px; font-weight: 600;">Archivo de Audio:</label>
+                <label for="episodio_archivo" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Archivo de Audio:', 'flavor-chat-ia'); ?></label>
                 <input type="file" name="archivo_audio" id="episodio_archivo" accept=".mp3,.mp4,.ogg" required>
-                <p class="description">Formatos permitidos: MP3, MP4, OGG. Tamaño máximo: 100 MB</p>
+                <p class="description"><?php echo esc_html__('Formatos permitidos: MP3, MP4, OGG. Tamaño máximo: 100 MB', 'flavor-chat-ia'); ?></p>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="episodio_imagen" style="display: block; margin-bottom: 5px; font-weight: 600;">Imagen del Episodio (opcional):</label>
+                <label for="episodio_imagen" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Imagen del Episodio (opcional):', 'flavor-chat-ia'); ?></label>
                 <input type="file" name="imagen_episodio" id="episodio_imagen" accept="image/*">
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="episodio_estado" style="display: block; margin-bottom: 5px; font-weight: 600;">Estado:</label>
+                <label for="episodio_estado" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Estado:', 'flavor-chat-ia'); ?></label>
                 <select name="estado" id="episodio_estado" class="regular-text">
-                    <option value="publicado">Publicar ahora</option>
-                    <option value="borrador">Guardar como borrador</option>
-                    <option value="programado">Programar publicación</option>
+                    <option value="<?php echo esc_attr__('publicado', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Publicar ahora', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('borrador', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Guardar como borrador', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('programado', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Programar publicación', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <div id="fecha-programacion-container" style="margin-bottom: 20px; display: none;">
-                <label for="episodio_fecha_programacion" style="display: block; margin-bottom: 5px; font-weight: 600;">Fecha de Programación:</label>
+                <label for="episodio_fecha_programacion" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Fecha de Programación:', 'flavor-chat-ia'); ?></label>
                 <input type="datetime-local" name="fecha_programacion" id="episodio_fecha_programacion" class="regular-text">
             </div>
 
             <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
-                <button type="button" onclick="cerrarModalNuevoEpisodio()" class="button button-large">Cancelar</button>
+                <button type="button" onclick="cerrarModalNuevoEpisodio()" class="button button-large"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
                 <button type="submit" class="button button-primary button-large">
-                    <span class="dashicons dashicons-upload"></span> Subir Episodio
+                    <span class="dashicons dashicons-upload"></span> <?php echo esc_html__('Subir Episodio', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 

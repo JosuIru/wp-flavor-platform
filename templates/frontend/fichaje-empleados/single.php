@@ -21,8 +21,8 @@ $resumen_dia = $resumen_dia ?? [];
 <div class="flavor-frontend flavor-fichaje-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/fichaje/')); ?>" class="hover:text-indigo-600 transition-colors">Fichaje</a>
-        <span>&rsaquo;</span>
+        <a href="<?php echo esc_url(home_url('/fichaje/')); ?>" class="hover:text-indigo-600 transition-colors"><?php echo esc_html__('Fichaje', 'flavor-chat-ia'); ?></a>
+        <span><?php echo esc_html__('&rsaquo;', 'flavor-chat-ia'); ?></span>
         <span class="text-gray-700">Dia <?php echo esc_html($fichaje['fecha_formateada'] ?? ''); ?></span>
     </nav>
 
@@ -34,7 +34,7 @@ $resumen_dia = $resumen_dia ?? [];
                 <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-blue-100 text-sm mb-1">Detalle del dia</p>
+                            <p class="text-blue-100 text-sm mb-1"><?php echo esc_html__('Detalle del dia', 'flavor-chat-ia'); ?></p>
                             <h1 class="text-2xl font-bold"><?php echo esc_html($fichaje['fecha_formateada'] ?? ''); ?></h1>
                             <p class="text-blue-100 text-sm mt-1"><?php echo esc_html($fichaje['dia_semana'] ?? ''); ?></p>
                         </div>
@@ -57,19 +57,19 @@ $resumen_dia = $resumen_dia ?? [];
                 <!-- Info rapida -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-blue-50">
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Primera entrada</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Primera entrada', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800 font-mono"><?php echo esc_html($fichaje['primera_entrada'] ?? '--:--'); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Ultima salida</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Ultima salida', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800 font-mono"><?php echo esc_html($fichaje['ultima_salida'] ?? '--:--'); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Total pausas</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Total pausas', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($resumen_dia['total_pausas'] ?? '0m'); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Horas netas</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Horas netas', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-indigo-600 font-bold"><?php echo esc_html($resumen_dia['horas_netas'] ?? '0h 0m'); ?></p>
                     </div>
                 </div>
@@ -77,13 +77,13 @@ $resumen_dia = $resumen_dia ?? [];
 
             <!-- Linea temporal de registros -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-6">Linea temporal del dia</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-6"><?php echo esc_html__('Linea temporal del dia', 'flavor-chat-ia'); ?></h2>
 
                 <?php if (empty($registros_dia)): ?>
                 <div class="text-center py-12 bg-gray-50 rounded-xl">
                     <div class="text-5xl mb-3">&#128337;</div>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Sin registros</h3>
-                    <p class="text-gray-500">No hay registros de fichaje para este dia</p>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php echo esc_html__('Sin registros', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-gray-500"><?php echo esc_html__('No hay registros de fichaje para este dia', 'flavor-chat-ia'); ?></p>
                 </div>
                 <?php else: ?>
                 <div class="relative">
@@ -135,7 +135,7 @@ $resumen_dia = $resumen_dia ?? [];
             <!-- Observaciones -->
             <?php if (!empty($fichaje['observaciones'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Observaciones</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Observaciones', 'flavor-chat-ia'); ?></h2>
                 <div class="prose prose-blue max-w-none">
                     <?php echo wp_kses_post($fichaje['observaciones']); ?>
                 </div>
@@ -148,24 +148,24 @@ $resumen_dia = $resumen_dia ?? [];
             <!-- Resumen del dia -->
             <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 text-white">
                 <div class="text-center mb-4">
-                    <p class="text-blue-100 text-sm mb-1">Horas netas trabajadas</p>
+                    <p class="text-blue-100 text-sm mb-1"><?php echo esc_html__('Horas netas trabajadas', 'flavor-chat-ia'); ?></p>
                     <p class="text-4xl font-bold"><?php echo esc_html($resumen_dia['horas_netas'] ?? '0h 0m'); ?></p>
                 </div>
                 <div class="space-y-3 border-t border-white/20 pt-4">
                     <div class="flex justify-between text-sm">
-                        <span class="text-blue-100">Horas brutas</span>
+                        <span class="text-blue-100"><?php echo esc_html__('Horas brutas', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium"><?php echo esc_html($resumen_dia['horas_brutas'] ?? '0h 0m'); ?></span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-blue-100">Tiempo en pausas</span>
+                        <span class="text-blue-100"><?php echo esc_html__('Tiempo en pausas', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium"><?php echo esc_html($resumen_dia['total_pausas'] ?? '0m'); ?></span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-blue-100">Numero de pausas</span>
+                        <span class="text-blue-100"><?php echo esc_html__('Numero de pausas', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium"><?php echo esc_html($resumen_dia['numero_pausas'] ?? 0); ?></span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-blue-100">Registros totales</span>
+                        <span class="text-blue-100"><?php echo esc_html__('Registros totales', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium"><?php echo esc_html(count($registros_dia)); ?></span>
                     </div>
                 </div>
@@ -185,7 +185,7 @@ $resumen_dia = $resumen_dia ?? [];
                 <div class="w-16 h-16 <?php echo esc_attr($configuracion_estado_dia['color_fondo']); ?> rounded-full flex items-center justify-center text-3xl mx-auto mb-3">
                     <?php echo $configuracion_estado_dia['icono']; ?>
                 </div>
-                <p class="text-xs text-gray-500 mb-1">Estado del dia</p>
+                <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Estado del dia', 'flavor-chat-ia'); ?></p>
                 <h3 class="text-lg font-semibold <?php echo esc_attr($configuracion_estado_dia['color_texto']); ?>">
                     <?php echo esc_html($configuracion_estado_dia['etiqueta']); ?>
                 </h3>
@@ -198,7 +198,7 @@ $resumen_dia = $resumen_dia ?? [];
 
                 <?php if ($estado_dia_fichaje === 'rechazado' && !empty($fichaje['motivo_rechazo'])): ?>
                 <div class="mt-3 bg-red-50 text-red-700 text-sm p-3 rounded-lg text-left">
-                    <p class="font-medium mb-1">Motivo del rechazo:</p>
+                    <p class="font-medium mb-1"><?php echo esc_html__('Motivo del rechazo:', 'flavor-chat-ia'); ?></p>
                     <p><?php echo esc_html($fichaje['motivo_rechazo']); ?></p>
                 </div>
                 <?php endif; ?>
@@ -206,15 +206,15 @@ $resumen_dia = $resumen_dia ?? [];
 
             <!-- Acciones -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Acciones</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <a href="<?php echo esc_url(home_url('/fichaje/solicitar-correccion/?fecha=' . ($fichaje['fecha'] ?? ''))); ?>"
                        class="block w-full text-center bg-blue-50 text-blue-700 py-3 px-4 rounded-xl font-medium hover:bg-blue-100 transition-colors text-sm">
-                        Solicitar correccion
+                        <?php echo esc_html__('Solicitar correccion', 'flavor-chat-ia'); ?>
                     </a>
                     <a href="<?php echo esc_url(home_url('/fichaje/')); ?>"
                        class="block w-full text-center bg-gray-50 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-100 transition-colors text-sm">
-                        Volver al panel
+                        <?php echo esc_html__('Volver al panel', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
@@ -222,11 +222,11 @@ $resumen_dia = $resumen_dia ?? [];
             <!-- Dias cercanos -->
             <?php if (!empty($fichaje['dia_anterior']) || !empty($fichaje['dia_siguiente'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Navegacion</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Navegacion', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php if (!empty($fichaje['dia_anterior'])): ?>
                     <a href="<?php echo esc_url($fichaje['dia_anterior']['url'] ?? '#'); ?>" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
-                        <span class="text-gray-400">&larr;</span>
+                        <span class="text-gray-400"><?php echo esc_html__('&larr;', 'flavor-chat-ia'); ?></span>
                         <div>
                             <p class="font-medium text-gray-800 text-sm"><?php echo esc_html($fichaje['dia_anterior']['fecha'] ?? ''); ?></p>
                             <p class="text-xs text-gray-500"><?php echo esc_html($fichaje['dia_anterior']['horas'] ?? '0h'); ?> trabajadas</p>
@@ -239,7 +239,7 @@ $resumen_dia = $resumen_dia ?? [];
                             <p class="font-medium text-gray-800 text-sm"><?php echo esc_html($fichaje['dia_siguiente']['fecha'] ?? ''); ?></p>
                             <p class="text-xs text-gray-500"><?php echo esc_html($fichaje['dia_siguiente']['horas'] ?? '0h'); ?> trabajadas</p>
                         </div>
-                        <span class="text-gray-400">&rarr;</span>
+                        <span class="text-gray-400"><?php echo esc_html__('&rarr;', 'flavor-chat-ia'); ?></span>
                     </a>
                     <?php endif; ?>
                 </div>

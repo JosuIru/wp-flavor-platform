@@ -92,7 +92,7 @@ $clase_columnas = $grid_columnas[$columnas] ?? $grid_columnas['3'];
                 <button class="portfolio-filter active px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:transform hover:scale-105"
                         data-filter="all"
                         style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%); color: white;">
-                    Todos
+                    <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
                 </button>
                 <?php foreach ($categorias as $categoria): ?>
                     <button class="portfolio-filter px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:transform hover:scale-105"
@@ -121,7 +121,7 @@ $clase_columnas = $grid_columnas[$columnas] ?? $grid_columnas['3'];
                                      style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);">
                                     <a href="#" class="px-6 py-3 bg-white rounded-full font-semibold transition-transform duration-300 hover:scale-110"
                                        style="color: var(--flavor-primary, #667eea);">
-                                        Ver Proyecto
+                                        <?php echo esc_html__('Ver Proyecto', 'flavor-chat-ia'); ?>
                                     </a>
                                 </div>
                             </div>
@@ -218,7 +218,7 @@ $clase_columnas = $grid_columnas[$columnas] ?? $grid_columnas['3'];
                                      style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);">
                                     <a href="#" class="px-6 py-3 bg-white rounded-full font-semibold transition-transform duration-300 hover:scale-110"
                                        style="color: var(--flavor-primary, #667eea);">
-                                        Ver Proyecto
+                                        <?php echo esc_html__('Ver Proyecto', 'flavor-chat-ia'); ?>
                                     </a>
                                 </div>
                             </div>
@@ -261,12 +261,12 @@ $clase_columnas = $grid_columnas[$columnas] ?? $grid_columnas['3'];
         <!-- Call to action -->
         <div class="text-center mt-16">
             <p class="text-2xl font-semibold mb-6" style="color: var(--flavor-text-primary, #1a1a1a);">
-                ¿Listo para ser nuestro próximo caso de éxito?
+                <?php echo esc_html__('¿Listo para ser nuestro próximo caso de éxito?', 'flavor-chat-ia'); ?>
             </p>
             <a href="#contacto"
                class="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl"
                style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%); color: white;">
-                <span>Hablemos de Tu Proyecto</span>
+                <span><?php echo esc_html__('Hablemos de Tu Proyecto', 'flavor-chat-ia'); ?></span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>

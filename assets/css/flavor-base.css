@@ -199,6 +199,12 @@
     color: var(--flavor-bg);
 }
 
+.flavor-btn--primary:visited,
+.flavor-btn--primary:active,
+a.flavor-btn--primary {
+    color: var(--flavor-bg);
+}
+
 .flavor-btn--primary:hover {
     background: var(--flavor-primary-hover);
     border-color: var(--flavor-primary-hover);

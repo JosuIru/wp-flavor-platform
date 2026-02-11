@@ -29,9 +29,9 @@ $programacion = $wpdb->get_results("
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-calendar-alt"></span>
-        Programación / Parrilla Horaria
+        <?php echo esc_html__('Programación / Parrilla Horaria', 'flavor-chat-ia'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalAgregarSlot(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> Agregar Slot
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Agregar Slot', 'flavor-chat-ia'); ?>
         </a>
     </h1>
 
@@ -40,7 +40,7 @@ $programacion = $wpdb->get_results("
         <table class="flavor-parrilla" style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th style="padding: 10px; border: 1px solid #ddd; background: #f0f0f1; min-width: 80px;">Hora</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; background: #f0f0f1; min-width: 80px;"><?php echo esc_html__('Hora', 'flavor-chat-ia'); ?></th>
                     <?php foreach ($dias_semana as $dia): ?>
                         <th style="padding: 10px; border: 1px solid #ddd; background: #f0f0f1;"><?php echo $dia; ?></th>
                     <?php endforeach; ?>

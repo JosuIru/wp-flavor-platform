@@ -1,0 +1,321 @@
+/**
+ * Panel de Gestión Unificado - Estilos
+ *
+ * @package FlavorChatIA
+ * @since 3.2.0
+ */
+
+/* Dashboard Principal */
+.flavor-gestion-dashboard {
+    max-width: 1400px;
+}
+
+.flavor-gestion-dashboard h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 23px;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.flavor-gestion-dashboard h1 .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #2271b1;
+}
+
+/* Grid de estadísticas */
+.flavor-gestion-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.flavor-gestion-stat-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.flavor-gestion-stat-card:hover {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-color: #2271b1;
+}
+
+.flavor-gestion-stat-card .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f1;
+}
+
+.flavor-gestion-stat-card .stat-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #50575e;
+}
+
+.flavor-gestion-stat-card.blue .stat-icon { background: #e7f3ff; }
+.flavor-gestion-stat-card.blue .stat-icon .dashicons { color: #2271b1; }
+.flavor-gestion-stat-card.green .stat-icon { background: #e7f7e7; }
+.flavor-gestion-stat-card.green .stat-icon .dashicons { color: #00a32a; }
+.flavor-gestion-stat-card.orange .stat-icon { background: #fff3e7; }
+.flavor-gestion-stat-card.orange .stat-icon .dashicons { color: #dba617; }
+.flavor-gestion-stat-card.red .stat-icon { background: #ffe7e7; }
+.flavor-gestion-stat-card.red .stat-icon .dashicons { color: #d63638; }
+.flavor-gestion-stat-card.purple .stat-icon { background: #f3e7ff; }
+.flavor-gestion-stat-card.purple .stat-icon .dashicons { color: #8c5eff; }
+
+.flavor-gestion-stat-card .stat-content {
+    flex: 1;
+}
+
+.flavor-gestion-stat-card .stat-value {
+    display: block;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1d2327;
+}
+
+.flavor-gestion-stat-card .stat-label {
+    display: block;
+    font-size: 13px;
+    color: #646970;
+}
+
+.flavor-gestion-stat-card .stat-link {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 12px;
+    text-decoration: none;
+    color: #2271b1;
+}
+
+.flavor-gestion-stat-card .stat-link:hover {
+    text-decoration: underline;
+}
+
+/* Grid de categorías */
+.flavor-gestion-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.flavor-gestion-categoria h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2271b1;
+    color: #1d2327;
+}
+
+.flavor-gestion-categoria h2 .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #2271b1;
+}
+
+.flavor-gestion-modulos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+/* Cards de módulos */
+.flavor-gestion-modulo-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 16px;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.flavor-gestion-modulo-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.flavor-gestion-modulo-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: #1d2327;
+}
+
+.flavor-gestion-modulo-card h3 .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #2271b1;
+}
+
+/* Lista de enlaces */
+.flavor-gestion-enlaces {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.flavor-gestion-enlaces li {
+    margin: 0;
+    padding: 0;
+}
+
+.flavor-gestion-enlaces a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    margin: 0 -10px;
+    text-decoration: none;
+    color: #2271b1;
+    border-radius: 3px;
+    transition: background 0.15s;
+}
+
+.flavor-gestion-enlaces a:hover {
+    background: #f0f6fc;
+}
+
+/* Badge de notificaciones */
+.flavor-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: #d63638;
+    border-radius: 9px;
+}
+
+/* Widget dentro del card */
+.flavor-gestion-widget {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f1;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .flavor-gestion-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-gestion-modulos {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-gestion-stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .flavor-gestion-stat-card .stat-link {
+        position: static;
+        margin-top: 8px;
+    }
+}
+
+/* Estilos para páginas individuales de módulos */
+.flavor-modulo-page {
+    max-width: 1200px;
+}
+
+.flavor-modulo-page .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.flavor-modulo-page .page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.flavor-modulo-page .page-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Tablas mejoradas */
+.flavor-modulo-page .wp-list-table {
+    border-collapse: collapse;
+}
+
+.flavor-modulo-page .wp-list-table th,
+.flavor-modulo-page .wp-list-table td {
+    vertical-align: middle;
+}
+
+/* Formularios */
+.flavor-modulo-form {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.flavor-modulo-form .form-row {
+    margin-bottom: 15px;
+}
+
+.flavor-modulo-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.flavor-modulo-form .description {
+    margin-top: 4px;
+    color: #646970;
+    font-size: 13px;
+}
+
+/* Estados */
+.flavor-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.flavor-estado.pendiente { background: #fff3cd; color: #856404; }
+.flavor-estado.activo, .flavor-estado.completado { background: #d4edda; color: #155724; }
+.flavor-estado.cancelado, .flavor-estado.rechazado { background: #f8d7da; color: #721c24; }
+.flavor-estado.procesando { background: #cce5ff; color: #004085; }

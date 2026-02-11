@@ -343,11 +343,14 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
             ];
         }
 
-        // Preparar datos de la pagina
+        // Preparar datos de la pagina (soporta 'titulo'/'title' y 'contenido'/'content')
+        $titulo_pagina = $pagina_data['titulo'] ?? $pagina_data['title'] ?? 'Sin título';
+        $contenido_pagina = $pagina_data['contenido'] ?? $pagina_data['content'] ?? '';
+
         $datos_post = [
-            'post_title'    => sanitize_text_field($pagina_data['title']),
+            'post_title'    => sanitize_text_field($titulo_pagina),
             'post_name'     => sanitize_title($pagina_data['slug']),
-            'post_content'  => wp_kses_post($pagina_data['content'] ?? ''),
+            'post_content'  => wp_kses_post($contenido_pagina),
             'post_status'   => 'publish',
             'post_type'     => 'page',
             'post_parent'   => $id_padre,

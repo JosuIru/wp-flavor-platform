@@ -32,7 +32,7 @@ $stats = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                 </svg>
-                Huertos
+                <?php echo esc_html__('Huertos', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -77,11 +77,11 @@ $stats = [
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <span class="text-sm text-gray-500">Tamano parcela</span>
+                                <span class="text-sm text-gray-500"><?php echo esc_html__('Tamano parcela', 'flavor-chat-ia'); ?></span>
                                 <p class="text-lg font-bold text-gray-900"><?php echo esc_html($huerto['tamano']); ?></p>
                             </div>
                             <div class="text-right">
-                                <span class="text-sm text-gray-500">Precio</span>
+                                <span class="text-sm text-gray-500"><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></span>
                                 <p class="text-lg font-bold text-green-600"><?php echo esc_html($huerto['precio']); ?></p>
                             </div>
                         </div>
@@ -89,7 +89,7 @@ $stats = [
                         <!-- Barra de ocupacion -->
                         <div class="mb-4">
                             <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
-                                <span>Ocupacion</span>
+                                <span><?php echo esc_html__('Ocupacion', 'flavor-chat-ia'); ?></span>
                                 <span><?php echo $huerto['parcelas_total'] - $huerto['parcelas_disponibles']; ?>/<?php echo esc_html($huerto['parcelas_total']); ?> parcelas</span>
                             </div>
                             <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -121,7 +121,7 @@ $stats = [
 
         <div class="text-center mt-12">
             <a href="#todos-huertos" class="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-105" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white;">
-                <span>Ver Todos los Huertos</span>
+                <span><?php echo esc_html__('Ver Todos los Huertos', 'flavor-chat-ia'); ?></span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>

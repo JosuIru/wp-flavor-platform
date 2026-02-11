@@ -420,16 +420,21 @@
             busqueda: $('#contenido-busqueda').val() || '',
         };
 
+        console.log('[Network Debug] Cargando contenido...', parametros);
+
         apiRequest('/content', 'GET', parametros)
             .done(function(respuesta) {
+                console.log('[Network Debug] Respuesta contenido:', respuesta);
                 var $lista = $('#contenido-lista');
                 $lista.empty();
 
-                if (!respuesta.contenidos.length) {
+                if (!respuesta.contenidos || !respuesta.contenidos.length) {
+                    console.log('[Network Debug] No hay contenidos en la respuesta');
                     $lista.html('<p>' + I18N.sin_resultados + '</p>');
                     return;
                 }
 
+                console.log('[Network Debug] Renderizando ' + respuesta.contenidos.length + ' contenidos');
                 respuesta.contenidos.forEach(function(contenido) {
                     var precioTexto = contenido.precio > 0 ? contenido.precio + ' ' + (contenido.moneda || 'EUR') : 'Gratuito';
                     var htmlItem = '<div class="flavor-content-card" data-id="' + contenido.id + '">' +
@@ -447,6 +452,11 @@
                         '</div></div>';
                     $lista.append(htmlItem);
                 });
+            })
+            .fail(function(xhr, status, error) {
+                console.error('[Network Debug] Error al cargar contenido:', {xhr: xhr, status: status, error: error});
+                var $lista = $('#contenido-lista');
+                $lista.html('<p style="color:red;">Error al cargar: ' + (xhr.responseJSON?.message || error) + '</p>');
             });
     }
 
@@ -516,15 +526,20 @@
 
     // ─── Eventos (con editar/eliminar) ───
     function cargarEventos() {
+        console.log('[Network Debug] Cargando eventos...');
         apiRequest('/events')
             .done(function(respuesta) {
+                console.log('[Network Debug] Respuesta eventos:', respuesta);
                 var $lista = $('#eventos-lista');
                 $lista.empty();
 
-                if (!respuesta.eventos.length) {
+                if (!respuesta.eventos || !respuesta.eventos.length) {
+                    console.log('[Network Debug] No hay eventos en la respuesta');
                     $lista.html('<p>' + I18N.sin_resultados + '</p>');
                     return;
                 }
+
+                console.log('[Network Debug] Renderizando ' + respuesta.eventos.length + ' eventos');
 
                 var meses = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
                 respuesta.eventos.forEach(function(evento) {

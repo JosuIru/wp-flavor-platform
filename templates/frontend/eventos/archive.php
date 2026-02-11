@@ -17,8 +17,8 @@ $vista_activa = $vista_activa ?? 'lista';
     <div class="bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">🎉 Eventos</h1>
-                <p class="text-rose-100">Descubre y participa en los eventos de tu comunidad</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('🎉 Eventos', 'flavor-chat-ia'); ?></h1>
+                <p class="text-rose-100"><?php echo esc_html__('Descubre y participa en los eventos de tu comunidad', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -26,7 +26,7 @@ $vista_activa = $vista_activa ?? 'lista';
                 </span>
                 <button class="bg-white text-pink-600 px-6 py-3 rounded-xl font-semibold hover:bg-rose-50 transition-all shadow-md"
                         onclick="flavorEventos.crearEvento()">
-                    ➕ Crear Evento
+                    <?php echo esc_html__('➕ Crear Evento', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>
@@ -38,44 +38,44 @@ $vista_activa = $vista_activa ?? 'lista';
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">📅</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['eventos_activos'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Eventos activos</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Eventos activos', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">👥</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['asistentes'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Asistentes</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Asistentes', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">🎤</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['organizadores'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Organizadores</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Organizadores', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">🗓️</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['este_mes'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Este mes</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
     <?php endif; ?>
 
     <!-- Como funciona -->
     <div class="bg-rose-50 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">💡 ¿Como funciona?</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('💡 ¿Como funciona?', 'flavor-chat-ia'); ?></h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="text-center">
                 <div class="w-16 h-16 bg-rose-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🔍</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Descubre</h3>
-                <p class="text-sm text-gray-600">Encuentra eventos cerca de ti por categoria y fecha</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Descubre', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Encuentra eventos cerca de ti por categoria y fecha', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-rose-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">✅</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Inscribete</h3>
-                <p class="text-sm text-gray-600">Reserva tu plaza facilmente con un solo clic</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Inscribete', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Reserva tu plaza facilmente con un solo clic', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-rose-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎊</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Participa</h3>
-                <p class="text-sm text-gray-600">Disfruta del evento y comparte tu experiencia</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Participa', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Disfruta del evento y comparte tu experiencia', 'flavor-chat-ia'); ?></p>
             </div>
         </div>
     </div>
@@ -84,19 +84,19 @@ $vista_activa = $vista_activa ?? 'lista';
     <div class="flex items-center justify-between mb-6">
         <div class="flex flex-wrap gap-2">
             <button class="px-4 py-2 rounded-full bg-rose-100 text-rose-700 font-medium hover:bg-rose-200 transition-colors filter-active" data-categoria="todos">
-                Todos
+                <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="musica">
-                🎵 Musica
+                <?php echo esc_html__('🎵 Musica', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="deporte">
-                ⚽ Deporte
+                <?php echo esc_html__('⚽ Deporte', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="cultura">
-                🎭 Cultura
+                <?php echo esc_html__('🎭 Cultura', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="infantil">
-                👶 Infantil
+                <?php echo esc_html__('👶 Infantil', 'flavor-chat-ia'); ?>
             </button>
             <?php foreach ($categorias as $categoria_evento): ?>
             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="<?php echo esc_attr($categoria_evento['slug']); ?>">
@@ -105,10 +105,10 @@ $vista_activa = $vista_activa ?? 'lista';
             <?php endforeach; ?>
         </div>
         <div class="flex items-center gap-2 ml-4">
-            <button class="p-2 rounded-lg <?php echo $vista_activa === 'lista' ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-500'; ?> hover:bg-rose-100 transition-colors" data-vista="lista" title="Vista lista">
+            <button class="p-2 rounded-lg <?php echo $vista_activa === 'lista' ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-500'; ?> hover:bg-rose-100 transition-colors" data-vista="lista" title="<?php echo esc_attr__('Vista lista', 'flavor-chat-ia'); ?>">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
-            <button class="p-2 rounded-lg <?php echo $vista_activa === 'calendario' ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-500'; ?> hover:bg-rose-100 transition-colors" data-vista="calendario" title="Vista calendario">
+            <button class="p-2 rounded-lg <?php echo $vista_activa === 'calendario' ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-500'; ?> hover:bg-rose-100 transition-colors" data-vista="calendario" title="<?php echo esc_attr__('Vista calendario', 'flavor-chat-ia'); ?>">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </button>
         </div>
@@ -119,11 +119,11 @@ $vista_activa = $vista_activa ?? 'lista';
         <?php if (empty($eventos)): ?>
         <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
             <div class="text-6xl mb-4">🎉</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay eventos programados</h3>
-            <p class="text-gray-500 mb-6">¡Crea el primer evento de la comunidad!</p>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay eventos programados', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Crea el primer evento de la comunidad!', 'flavor-chat-ia'); ?></p>
             <button class="bg-rose-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-rose-600 transition-colors"
                     onclick="flavorEventos.crearEvento()">
-                Crear Evento
+                <?php echo esc_html__('Crear Evento', 'flavor-chat-ia'); ?>
             </button>
         </div>
         <?php else: ?>
@@ -164,7 +164,7 @@ $vista_activa = $vista_activa ?? 'lista';
                     </span>
                     <a href="<?php echo esc_url($evento['url'] ?? '#'); ?>"
                        class="bg-rose-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-rose-600 transition-colors">
-                        Inscribirse
+                        <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
@@ -177,9 +177,9 @@ $vista_activa = $vista_activa ?? 'lista';
     <?php if ($total_eventos > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">← Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo ceil($total_eventos / 12); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 transition-colors">Siguiente →</button>
+            <button class="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 transition-colors"><?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

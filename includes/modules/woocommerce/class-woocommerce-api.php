@@ -52,7 +52,7 @@ class Flavor_WooCommerce_API {
         register_rest_route(self::NAMESPACE, '/woocommerce/productos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_productos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'busqueda' => [
                     'type' => 'string',
@@ -87,7 +87,7 @@ class Flavor_WooCommerce_API {
         register_rest_route(self::NAMESPACE, '/woocommerce/productos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_producto'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /woocommerce/carrito - Ver carrito
@@ -182,7 +182,7 @@ class Flavor_WooCommerce_API {
         register_rest_route(self::NAMESPACE, '/woocommerce/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // GET /woocommerce/checkout-url - URL de checkout
@@ -381,7 +381,7 @@ class Flavor_WooCommerce_API {
         return new WP_REST_Response([
             'success' => true,
             'cart_item_key' => $cart_item_key,
-            'mensaje' => 'Producto agregado al carrito',
+            'mensaje' => __('Producto agregado al carrito', 'flavor-chat-ia'),
             'total_items' => WC()->cart->get_cart_contents_count(),
         ], 200);
     }
@@ -422,7 +422,7 @@ class Flavor_WooCommerce_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Carrito actualizado',
+            'mensaje' => __('Carrito actualizado', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -453,7 +453,7 @@ class Flavor_WooCommerce_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Producto eliminado del carrito',
+            'mensaje' => __('Producto eliminado del carrito', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -474,7 +474,7 @@ class Flavor_WooCommerce_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Carrito vaciado',
+            'mensaje' => __('Carrito vaciado', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -536,7 +536,7 @@ class Flavor_WooCommerce_API {
         if (!$order) {
             return new WP_Error(
                 'pedido_no_encontrado',
-                'Pedido no encontrado',
+                __('Pedido no encontrado', 'flavor-chat-ia'),
                 ['status' => 404]
             );
         }
@@ -714,5 +714,11 @@ class Flavor_WooCommerce_API {
      */
     public function check_authentication($request) {
         return is_user_logged_in();
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

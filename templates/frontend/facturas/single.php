@@ -23,8 +23,8 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
 <div class="flavor-frontend flavor-facturas-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/facturas/')); ?>" class="hover:text-emerald-600 transition-colors">Facturas</a>
-        <span>&rsaquo;</span>
+        <a href="<?php echo esc_url(home_url('/facturas/')); ?>" class="hover:text-emerald-600 transition-colors"><?php echo esc_html__('Facturas', 'flavor-chat-ia'); ?></a>
+        <span><?php echo esc_html__('&rsaquo;', 'flavor-chat-ia'); ?></span>
         <span class="text-gray-700"><?php echo esc_html($factura['numero_factura'] ?? 'Factura'); ?></span>
     </nav>
 
@@ -36,7 +36,7 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
                 <div class="bg-gradient-to-br from-emerald-400 to-green-600 p-6 text-white">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <p class="text-emerald-100 text-sm mb-1">Factura</p>
+                            <p class="text-emerald-100 text-sm mb-1"><?php echo esc_html__('Factura', 'flavor-chat-ia'); ?></p>
                             <h1 class="text-2xl font-bold"><?php echo esc_html($factura['numero_factura'] ?? ''); ?></h1>
                         </div>
                         <?php
@@ -61,41 +61,41 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
                 <!-- Info rapida -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-emerald-50 rounded-xl">
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Fecha emision</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Fecha emision', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($factura['fecha_emision'] ?? ''); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Fecha vencimiento</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Fecha vencimiento', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($factura['fecha_vencimiento'] ?? ''); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Metodo de pago</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Metodo de pago', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($factura['metodo_pago'] ?? 'Transferencia'); ?></p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Moneda</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('Moneda', 'flavor-chat-ia'); ?></p>
                         <p class="font-medium text-gray-800"><?php echo esc_html($factura['moneda'] ?? 'EUR'); ?></p>
                     </div>
                 </div>
 
                 <!-- Datos del cliente en factura -->
                 <div class="border-b border-gray-100 pb-6 mb-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-3">Datos del cliente</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3"><?php echo esc_html__('Datos del cliente', 'flavor-chat-ia'); ?></h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <p class="text-sm text-gray-500">Nombre / Razon social</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Nombre / Razon social', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($cliente['nombre'] ?? ''); ?></p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">NIF / CIF</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('NIF / CIF', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($cliente['nif'] ?? ''); ?></p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">Direccion</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Direccion', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($cliente['direccion'] ?? ''); ?></p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">Email</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($cliente['email'] ?? ''); ?></p>
                         </div>
                     </div>
@@ -103,16 +103,16 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
 
                 <!-- Lineas de factura -->
                 <div class="mb-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Conceptos</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Conceptos', 'flavor-chat-ia'); ?></h2>
                     <?php if (!empty($lineas_factura)): ?>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="border-b border-gray-200">
-                                    <th class="text-left py-3 px-2 text-gray-500 font-medium">Concepto</th>
-                                    <th class="text-right py-3 px-2 text-gray-500 font-medium">Cantidad</th>
-                                    <th class="text-right py-3 px-2 text-gray-500 font-medium">Precio unitario</th>
-                                    <th class="text-right py-3 px-2 text-gray-500 font-medium">Importe</th>
+                                    <th class="text-left py-3 px-2 text-gray-500 font-medium"><?php echo esc_html__('Concepto', 'flavor-chat-ia'); ?></th>
+                                    <th class="text-right py-3 px-2 text-gray-500 font-medium"><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
+                                    <th class="text-right py-3 px-2 text-gray-500 font-medium"><?php echo esc_html__('Precio unitario', 'flavor-chat-ia'); ?></th>
+                                    <th class="text-right py-3 px-2 text-gray-500 font-medium"><?php echo esc_html__('Importe', 'flavor-chat-ia'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -133,7 +133,7 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
                         </table>
                     </div>
                     <?php else: ?>
-                    <p class="text-gray-500 text-sm">No hay conceptos registrados en esta factura.</p>
+                    <p class="text-gray-500 text-sm"><?php echo esc_html__('No hay conceptos registrados en esta factura.', 'flavor-chat-ia'); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -141,7 +141,7 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
                 <div class="bg-gray-50 rounded-xl p-4">
                     <div class="space-y-2">
                         <div class="flex justify-between text-sm">
-                            <span class="text-gray-500">Subtotal</span>
+                            <span class="text-gray-500"><?php echo esc_html__('Subtotal', 'flavor-chat-ia'); ?></span>
                             <span class="text-gray-800 font-medium"><?php echo esc_html($factura['subtotal'] ?? '0') . ' &euro;'; ?></span>
                         </div>
                         <div class="flex justify-between text-sm">
@@ -155,7 +155,7 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
                         </div>
                         <?php endif; ?>
                         <div class="flex justify-between pt-3 border-t border-gray-200">
-                            <span class="text-lg font-bold text-gray-800">Total</span>
+                            <span class="text-lg font-bold text-gray-800"><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></span>
                             <span class="text-lg font-bold text-emerald-600"><?php echo esc_html($factura['importe_total'] ?? '0') . ' &euro;'; ?></span>
                         </div>
                     </div>
@@ -165,7 +165,7 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
             <!-- Notas de la factura -->
             <?php if (!empty($factura['notas'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-3">Notas</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-3"><?php echo esc_html__('Notas', 'flavor-chat-ia'); ?></h2>
                 <div class="prose prose-emerald max-w-none text-sm text-gray-600">
                     <?php echo wp_kses_post($factura['notas']); ?>
                 </div>
@@ -175,7 +175,7 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
             <!-- Historial de actividad -->
             <?php if (!empty($factura['historial'])): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Historial de actividad</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Historial de actividad', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-4">
                     <?php foreach ($factura['historial'] as $entrada_historial): ?>
                     <div class="flex items-start gap-3 border-b border-gray-100 pb-3 last:border-0">
@@ -211,16 +211,16 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
                 <?php if ($estado_factura_actual === 'pendiente' || $estado_factura_actual === 'vencida'): ?>
                 <button class="w-full bg-white text-green-600 py-3 px-4 rounded-xl font-semibold hover:bg-emerald-50 transition-colors"
                         onclick="flavorFacturas.registrarPago(<?php echo esc_attr($factura['id'] ?? 0); ?>)">
-                    Registrar pago
+                    <?php echo esc_html__('Registrar pago', 'flavor-chat-ia'); ?>
                 </button>
                 <?php elseif ($estado_factura_actual === 'borrador'): ?>
                 <button class="w-full bg-white text-green-600 py-3 px-4 rounded-xl font-semibold hover:bg-emerald-50 transition-colors"
                         onclick="flavorFacturas.enviarFactura(<?php echo esc_attr($factura['id'] ?? 0); ?>)">
-                    Enviar factura
+                    <?php echo esc_html__('Enviar factura', 'flavor-chat-ia'); ?>
                 </button>
                 <?php elseif ($estado_factura_actual === 'pagada'): ?>
                 <div class="bg-white/20 backdrop-blur rounded-xl py-3 px-4 text-center font-medium">
-                    Factura cobrada
+                    <?php echo esc_html__('Factura cobrada', 'flavor-chat-ia'); ?>
                 </div>
                 <?php endif; ?>
             </div>
@@ -230,7 +230,7 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
                 <div class="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 text-3xl font-bold mx-auto mb-4">
                     <?php echo esc_html(mb_substr($cliente['nombre'] ?? 'C', 0, 1)); ?>
                 </div>
-                <p class="text-xs text-gray-500 mb-1">Cliente</p>
+                <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Cliente', 'flavor-chat-ia'); ?></p>
                 <h3 class="text-lg font-semibold text-gray-800"><?php echo esc_html($cliente['nombre'] ?? 'Cliente'); ?></h3>
 
                 <?php if (!empty($cliente['empresa'])): ?>
@@ -244,21 +244,21 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
                 <div class="grid grid-cols-3 gap-2 mt-4 mb-4 text-center">
                     <div>
                         <p class="text-xl font-bold text-emerald-600"><?php echo esc_html($cliente['total_facturas'] ?? 0); ?></p>
-                        <p class="text-xs text-gray-500">Facturas</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Facturas', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($cliente['facturas_pagadas'] ?? 0); ?></p>
-                        <p class="text-xs text-gray-500">Pagadas</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Pagadas', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div>
                         <p class="text-xl font-bold text-amber-500"><?php echo esc_html($cliente['facturas_pendientes'] ?? 0); ?></p>
-                        <p class="text-xs text-gray-500">Pendientes</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
 
                 <?php if (!empty($cliente['verificado'])): ?>
                 <span class="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                    &#10003; Cliente verificado
+                    <?php echo esc_html__('&#10003; Cliente verificado', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -266,7 +266,7 @@ $facturas_relacionadas = $facturas_relacionadas ?? [];
             <!-- Facturas relacionadas -->
             <?php if (!empty($facturas_relacionadas)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Otras facturas del cliente</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Otras facturas del cliente', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($facturas_relacionadas as $factura_relacionada): ?>
                     <a href="<?php echo esc_url($factura_relacionada['url'] ?? '#'); ?>" class="flex gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">

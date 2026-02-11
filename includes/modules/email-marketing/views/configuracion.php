@@ -122,10 +122,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['em_settings_nonce']))
                     <th><label for="proveedor_smtp"><?php _e('Proveedor', 'flavor-chat-ia'); ?></label></th>
                     <td>
                         <select name="proveedor_smtp" id="proveedor_smtp">
-                            <option value="wp_mail" <?php selected($settings['proveedor_smtp'], 'wp_mail'); ?>>
+                            <option value="<?php echo esc_attr__('wp_mail', 'flavor-chat-ia'); ?>" <?php selected($settings['proveedor_smtp'], 'wp_mail'); ?>>
                                 <?php _e('WordPress (wp_mail)', 'flavor-chat-ia'); ?>
                             </option>
-                            <option value="smtp" <?php selected($settings['proveedor_smtp'], 'smtp'); ?>>
+                            <option value="<?php echo esc_attr__('smtp', 'flavor-chat-ia'); ?>" <?php selected($settings['proveedor_smtp'], 'smtp'); ?>>
                                 <?php _e('SMTP personalizado', 'flavor-chat-ia'); ?>
                             </option>
                         </select>
@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['em_settings_nonce']))
                         <td>
                             <input type="text" name="smtp_host" id="smtp_host" class="regular-text"
                                    value="<?php echo esc_attr($settings['smtp_host']); ?>"
-                                   placeholder="smtp.ejemplo.com">
+                                   placeholder="<?php echo esc_attr__('smtp.ejemplo.com', 'flavor-chat-ia'); ?>">
                         </td>
                     </tr>
                     <tr>
@@ -170,8 +170,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['em_settings_nonce']))
                         <td>
                             <select name="smtp_encriptacion" id="smtp_encriptacion">
                                 <option value="" <?php selected($settings['smtp_encriptacion'], ''); ?>><?php _e('Ninguna', 'flavor-chat-ia'); ?></option>
-                                <option value="tls" <?php selected($settings['smtp_encriptacion'], 'tls'); ?>>TLS</option>
-                                <option value="ssl" <?php selected($settings['smtp_encriptacion'], 'ssl'); ?>>SSL</option>
+                                <option value="<?php echo esc_attr__('tls', 'flavor-chat-ia'); ?>" <?php selected($settings['smtp_encriptacion'], 'tls'); ?>><?php echo esc_html__('TLS', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('ssl', 'flavor-chat-ia'); ?>" <?php selected($settings['smtp_encriptacion'], 'ssl'); ?>><?php echo esc_html__('SSL', 'flavor-chat-ia'); ?></option>
                             </select>
                         </td>
                     </tr>
@@ -233,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['em_settings_nonce']))
                         ]);
                         ?>
                         <p class="description">
-                            <?php _e('Shortcode:', 'flavor-chat-ia'); ?> <code>[em_confirmar_suscripcion]</code>
+                            <?php _e('Shortcode:', 'flavor-chat-ia'); ?> <code><?php echo esc_html__('[em_confirmar_suscripcion]', 'flavor-chat-ia'); ?></code>
                         </p>
                     </td>
                 </tr>
@@ -248,7 +248,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['em_settings_nonce']))
                         ]);
                         ?>
                         <p class="description">
-                            <?php _e('Shortcode:', 'flavor-chat-ia'); ?> <code>[em_preferencias]</code>
+                            <?php _e('Shortcode:', 'flavor-chat-ia'); ?> <code><?php echo esc_html__('[em_preferencias]', 'flavor-chat-ia'); ?></code>
                         </p>
                     </td>
                 </tr>
@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['em_settings_nonce']))
                         ]);
                         ?>
                         <p class="description">
-                            <?php _e('Shortcode:', 'flavor-chat-ia'); ?> <code>[em_darse_baja]</code>
+                            <?php _e('Shortcode:', 'flavor-chat-ia'); ?> <code><?php echo esc_html__('[em_darse_baja]', 'flavor-chat-ia'); ?></code>
                         </p>
                     </td>
                 </tr>

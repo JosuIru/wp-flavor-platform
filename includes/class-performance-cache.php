@@ -220,7 +220,7 @@ class Flavor_Performance_Cache {
     }
 
     /**
-     * Limpia TODO el cache
+     * Limpia todo el cache
      *
      * @return bool
      */

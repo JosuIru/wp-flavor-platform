@@ -16,8 +16,8 @@ $categorias = $categorias ?? [];
     <div class="bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">Avisos Municipales</h1>
-                <p class="text-sky-100">Mantente informado sobre las novedades de tu municipio</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('Avisos Municipales', 'flavor-chat-ia'); ?></h1>
+                <p class="text-sky-100"><?php echo esc_html__('Mantente informado sobre las novedades de tu municipio', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -25,7 +25,7 @@ $categorias = $categorias ?? [];
                 </span>
                 <button class="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all shadow-md"
                         onclick="flavorAvisos.suscribirse()">
-                    Suscribirse a Avisos
+                    <?php echo esc_html__('Suscribirse a Avisos', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>
@@ -36,37 +36,37 @@ $categorias = $categorias ?? [];
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-sky-100 rounded-lg flex items-center justify-center text-sky-600 font-bold">A</div>
+                <div class="w-10 h-10 bg-sky-100 rounded-lg flex items-center justify-center text-sky-600 font-bold"><?php echo esc_html__('A', 'flavor-chat-ia'); ?></div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['avisos_activos'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">Avisos activos</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Avisos activos', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">M</div>
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold"><?php echo esc_html__('M', 'flavor-chat-ia'); ?></div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['este_mes'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">Este mes</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-red-600 font-bold">U</div>
+                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-red-600 font-bold"><?php echo esc_html__('U', 'flavor-chat-ia'); ?></div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['urgentes'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">Urgentes</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Urgentes', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 font-bold">B</div>
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 font-bold"><?php echo esc_html__('B', 'flavor-chat-ia'); ?></div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['barrios'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">Barrios informados</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Barrios informados', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
@@ -77,7 +77,7 @@ $categorias = $categorias ?? [];
     <div class="flex flex-wrap gap-2 mb-6">
         <button class="px-4 py-2 rounded-full bg-sky-100 text-sky-700 font-medium hover:bg-sky-200 transition-colors filter-active"
                 data-categoria="todos">
-            Todos
+            <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
         </button>
         <?php
         $categorias_avisos = ['Obras', 'Servicios', 'Trafico', 'Medio Ambiente', 'Cultural'];
@@ -93,12 +93,12 @@ $categorias = $categorias ?? [];
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php if (empty($items)): ?>
         <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
-            <div class="text-6xl mb-4">&#x1F4E2;</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay avisos activos</h3>
-            <p class="text-gray-500 mb-6">No hay avisos municipales en este momento</p>
+            <div class="text-6xl mb-4"><?php echo esc_html__('&#x1F4E2;', 'flavor-chat-ia'); ?></div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay avisos activos', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-6"><?php echo esc_html__('No hay avisos municipales en este momento', 'flavor-chat-ia'); ?></p>
             <button class="bg-sky-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-sky-600 transition-colors"
                     onclick="flavorAvisos.suscribirse()">
-                Suscribirse a Avisos
+                <?php echo esc_html__('Suscribirse a Avisos', 'flavor-chat-ia'); ?>
             </button>
         </div>
         <?php else: ?>
@@ -157,7 +157,7 @@ $categorias = $categorias ?? [];
             <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
                 <span class="text-xs text-gray-500"><?php echo esc_html($aviso['categoria'] ?? ''); ?></span>
                 <a href="<?php echo esc_url($aviso['url'] ?? '#'); ?>" class="text-sky-600 text-sm font-medium hover:text-sky-700 transition-colors">
-                    Leer mas
+                    <?php echo esc_html__('Leer mas', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </article>
@@ -169,9 +169,9 @@ $categorias = $categorias ?? [];
     <?php if ($total > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo esc_html(ceil($total / 12)); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-sky-500 text-white hover:bg-sky-600 transition-colors">Siguiente</button>
+            <button class="px-4 py-2 rounded-lg bg-sky-500 text-white hover:bg-sky-600 transition-colors"><?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

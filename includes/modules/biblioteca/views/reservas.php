@@ -26,20 +26,20 @@ $reservas = $wpdb->get_results(
 ?>
 
 <div class="wrap">
-    <h1>Gestión de Reservas</h1>
+    <h1><?php echo esc_html__('Gestión de Reservas', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <div class="flavor-card">
         <table class="wp-list-table widefat striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Libro</th>
-                    <th>Usuario</th>
-                    <th>Fecha Solicitud</th>
-                    <th>Expira</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Libro', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Fecha Solicitud', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Expira', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -59,14 +59,14 @@ $reservas = $wpdb->get_results(
                                 </span>
                             </td>
                             <td>
-                                <button class="button button-small">Confirmar</button>
-                                <button class="button button-small">Cancelar</button>
+                                <button class="button button-small"><?php echo esc_html__('Confirmar', 'flavor-chat-ia'); ?></button>
+                                <button class="button button-small"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="7" class="flavor-no-data">No hay reservas pendientes</td>
+                        <td colspan="7" class="flavor-no-data"><?php echo esc_html__('No hay reservas pendientes', 'flavor-chat-ia'); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>

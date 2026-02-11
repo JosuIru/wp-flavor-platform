@@ -16,14 +16,14 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-lime-500 to-green-500 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar Estaciones</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar Estaciones', 'flavor-chat-ia'); ?></h1>
 
             <!-- Formulario de busqueda -->
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Busqueda -->
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Direccion o zona</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Direccion o zona', 'flavor-chat-ia'); ?></label>
                         <div class="relative">
                             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -31,18 +31,18 @@ $total_resultados = $total_resultados ?? 0;
                             <input type="text"
                                    name="q"
                                    value="<?php echo esc_attr($query); ?>"
-                                   placeholder="Buscar cerca de..."
+                                   placeholder="<?php echo esc_attr__('Buscar cerca de...', 'flavor-chat-ia'); ?>"
                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-lime-500 focus:border-lime-500">
                         </div>
                     </div>
 
                     <!-- Distancia -->
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Radio</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Radio', 'flavor-chat-ia'); ?></label>
                         <select name="distancia" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-lime-500 focus:border-lime-500">
-                            <option value="500">500m</option>
-                            <option value="1000">1 km</option>
-                            <option value="2000">2 km</option>
+                            <option value="500"><?php echo esc_html__('500m', 'flavor-chat-ia'); ?></option>
+                            <option value="1000"><?php echo esc_html__('1 km', 'flavor-chat-ia'); ?></option>
+                            <option value="2000"><?php echo esc_html__('2 km', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -51,11 +51,11 @@ $total_resultados = $total_resultados ?? 0;
                 <div class="mt-4 flex flex-wrap gap-2">
                     <label class="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 cursor-pointer hover:bg-lime-100 transition-colors">
                         <input type="checkbox" name="con_bicis" value="1" class="w-4 h-4 rounded text-lime-600 focus:ring-lime-500">
-                        <span class="text-sm text-gray-700">Con bicis disponibles</span>
+                        <span class="text-sm text-gray-700"><?php echo esc_html__('Con bicis disponibles', 'flavor-chat-ia'); ?></span>
                     </label>
                     <label class="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 cursor-pointer hover:bg-lime-100 transition-colors">
                         <input type="checkbox" name="electricas" value="1" class="w-4 h-4 rounded text-lime-600 focus:ring-lime-500">
-                        <span class="text-sm text-gray-700">Con bicis electricas</span>
+                        <span class="text-sm text-gray-700"><?php echo esc_html__('Con bicis electricas', 'flavor-chat-ia'); ?></span>
                     </label>
                 </div>
 
@@ -66,7 +66,7 @@ $total_resultados = $total_resultados ?? 0;
                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        Buscar
+                        <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -88,9 +88,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos estaciones</h3>
-                <p class="text-gray-500 mb-4">Prueba a ampliar el radio de busqueda</p>
-                <a href="?" class="text-lime-600 font-medium hover:text-lime-700">Ver todas las estaciones</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos estaciones', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba a ampliar el radio de busqueda', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-lime-600 font-medium hover:text-lime-700"><?php echo esc_html__('Ver todas las estaciones', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="space-y-4">
@@ -106,7 +106,7 @@ $total_resultados = $total_resultados ?? 0;
                         <a href="<?php echo esc_url($estacion['url'] ?? '#'); ?>"
                            class="px-4 py-2 rounded-xl text-white font-semibold text-sm transition-all hover:scale-105 flex-shrink-0"
                            style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);">
-                            Reservar
+                            <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
                         </a>
                     </article>
                 <?php endforeach; ?>

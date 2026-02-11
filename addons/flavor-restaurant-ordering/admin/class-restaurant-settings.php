@@ -42,8 +42,8 @@ class Flavor_Restaurant_Settings {
     public function add_menu_page() {
         add_submenu_page(
             'flavor-platform',
-            'Configuración de Restaurante',
-            'Restaurante',
+            __('Configuración de Restaurante', 'flavor-restaurant-ordering'),
+            __('Restaurante', 'flavor-restaurant-ordering'),
             'manage_options',
             'flavor-restaurant-settings',
             [$this, 'render_settings_page']
@@ -78,6 +78,11 @@ class Flavor_Restaurant_Settings {
         wp_localize_script('flavor-restaurant-settings', 'flavorRestaurantSettings', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_restaurant_settings'),
+            'strings' => [
+                'save_success' => __('Configuración guardada exitosamente', 'flavor-restaurant-ordering'),
+                'save_error' => __('Error al guardar la configuración', 'flavor-restaurant-ordering'),
+                'save_error_connection' => __('Error de conexión al guardar', 'flavor-restaurant-ordering'),
+            ],
         ]);
     }
 
@@ -93,7 +98,7 @@ class Flavor_Restaurant_Settings {
         <div class="wrap flavor-restaurant-settings">
             <h1>
                 <span class="dashicons dashicons-food" style="font-size: 32px; width: 32px; height: 32px;"></span>
-                Configuración de Restaurante
+                <?php esc_html_e('Configuración de Restaurante', 'flavor-restaurant-ordering'); ?>
             </h1>
 
             <div class="flavor-restaurant-container">
@@ -101,11 +106,11 @@ class Flavor_Restaurant_Settings {
                 <div class="flavor-card">
                     <h2>
                         <span class="dashicons dashicons-menu"></span>
-                        Configurar Menú
+                        <?php esc_html_e('Configurar Menú', 'flavor-restaurant-ordering'); ?>
                     </h2>
                     <p class="description">
-                        Selecciona qué Custom Post Types de tu WordPress formarán parte del menú del restaurante.
-                        Organízalos en categorías para que aparezcan correctamente en la app.
+                        <?php esc_html_e('Selecciona qué Custom Post Types de tu WordPress formarán parte del menú del restaurante.', 'flavor-restaurant-ordering'); ?>
+                        <?php esc_html_e('Organízalos en categorías para que aparezcan correctamente en la app.', 'flavor-restaurant-ordering'); ?>
                     </p>
 
                     <div class="menu-categories">
@@ -171,7 +176,7 @@ class Flavor_Restaurant_Settings {
                 <div class="flavor-card">
                     <h2>
                         <span class="dashicons dashicons-admin-settings"></span>
-                        Configuración General
+                        <?php esc_html_e('Configuración General', 'flavor-restaurant-ordering'); ?>
                     </h2>
 
                     <table class="form-table">
@@ -303,7 +308,7 @@ class Flavor_Restaurant_Settings {
                     <p>
                         <button type="button" class="button" id="add-order-status">
                             <span class="dashicons dashicons-plus-alt"></span>
-                            Agregar Estado
+                            <?php esc_html_e('Agregar Estado', 'flavor-restaurant-ordering'); ?>
                         </button>
                     </p>
                 </div>
@@ -361,7 +366,7 @@ class Flavor_Restaurant_Settings {
             <div class="flavor-floating-save">
                 <button type="button" id="save-restaurant-settings" class="button button-primary button-large">
                     <span class="dashicons dashicons-saved"></span>
-                    Guardar Cambios
+                    <?php esc_html_e('Guardar Cambios', 'flavor-restaurant-ordering'); ?>
                 </button>
             </div>
 
@@ -446,7 +451,7 @@ class Flavor_Restaurant_Settings {
         check_ajax_referer('flavor_restaurant_settings', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $settings = [
@@ -473,9 +478,9 @@ class Flavor_Restaurant_Settings {
 
         // Asegurar estados mínimos requeridos
         $required_statuses = [
-            'pending' => 'Pendiente',
-            'completed' => 'Completado',
-            'cancelled' => 'Cancelado',
+            'pending' => __('Pendiente', 'flavor-restaurant-ordering'),
+            'completed' => __('Completado', 'flavor-restaurant-ordering'),
+            'cancelled' => __('Cancelado', 'flavor-restaurant-ordering'),
         ];
 
         $settings['order_statuses'] = array_merge($required_statuses, $settings['order_statuses']);
@@ -483,7 +488,7 @@ class Flavor_Restaurant_Settings {
         update_option('flavor_restaurant_settings', $settings);
 
         wp_send_json_success([
-            'message' => 'Configuración guardada exitosamente',
+            'message' => __('Configuración guardada exitosamente', 'flavor-restaurant-ordering'),
             'settings' => $settings,
         ]);
     }
@@ -495,7 +500,7 @@ class Flavor_Restaurant_Settings {
         check_ajax_referer('flavor_restaurant_settings', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permisos insuficientes']);
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-restaurant-ordering')]);
         }
 
         $post_types = get_post_types([

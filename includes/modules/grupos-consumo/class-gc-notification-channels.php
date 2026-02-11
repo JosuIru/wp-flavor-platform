@@ -204,7 +204,7 @@ class Flavor_GC_Notification_Channels {
      */
     public function enviar($evento, $destinatarios, $datos, $canales_especificos = null) {
         if (!isset(self::EVENTOS[$evento])) {
-            return ['error' => 'Evento no registrado'];
+            return ['error' => __('Evento no registrado', 'flavor-chat-ia')];
         }
 
         $evento_config = self::EVENTOS[$evento];
@@ -252,7 +252,7 @@ class Flavor_GC_Notification_Channels {
                 return $this->enviar_push($evento, $destinatarios, $datos);
         }
 
-        return ['error' => 'Canal no implementado'];
+        return ['error' => __('Canal no implementado', 'flavor-chat-ia')];
     }
 
     /**
@@ -298,7 +298,7 @@ class Flavor_GC_Notification_Channels {
      */
     private function enviar_push($evento, $destinatarios, $datos) {
         if (!class_exists('Flavor_Push_Notifications')) {
-            return ['error' => 'Push notifications no disponibles'];
+            return ['error' => __('Push notifications no disponibles', 'flavor-chat-ia')];
         }
 
         $push = Flavor_Push_Notifications::get_instance();
@@ -569,7 +569,7 @@ class Flavor_GC_Notification_Channels {
             'entrega_id' => $entrega_id,
             'ciclo_nombre' => $entrega->ciclo_nombre,
             'titulo' => 'Tu entrega está lista',
-            'mensaje' => 'Tu pedido está preparado y listo para recoger.',
+            'mensaje' => __('Tu pedido está preparado y listo para recoger.', 'flavor-chat-ia'),
             'enlace' => home_url('/mi-cuenta/?tab=gc-mis-pedidos'),
             'enlace_texto' => 'Ver detalles de entrega',
         ];

@@ -49,147 +49,233 @@ class Flavor_App_Profiles {
     private function definir_perfiles() {
         $this->perfiles_disponibles = [
             'tienda' => [
-                'nombre' => __('Tienda Online', 'flavor-chat-ia'),
-                'descripcion' => __('Tienda online con carrito, productos y chat de atención al cliente.', 'flavor-chat-ia'),
+                'nombre' => 'Tienda Online',
+                'descripcion' => 'Tienda online con carrito, productos y chat de atención al cliente.',
                 'icono' => 'dashicons-store',
                 'modulos_requeridos' => ['woocommerce'],
                 'modulos_opcionales' => ['marketplace', 'facturas', 'advertising', 'chat_interno'],
+                'tipo_organizacion' => ['empresa'],
+                'impacto_social' => [],
                 'color' => '#00a0d2',
             ],
             'grupo_consumo' => [
-                'nombre' => __('Grupo de Consumo', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión de pedidos colectivos, productores locales y repartos.', 'flavor-chat-ia'),
+                'nombre' => 'Grupo de Consumo',
+                'descripcion' => 'Gestión de pedidos colectivos, productores locales y repartos.',
                 'icono' => 'dashicons-carrot',
                 'modulos_requeridos' => ['grupos_consumo'],
                 'modulos_opcionales' => ['eventos', 'socios', 'marketplace', 'chat_grupos'],
+                'tipo_organizacion' => ['comunidad', 'cooperativa'],
+                'impacto_social' => ['consumo_local', 'economia_circular'],
                 'color' => '#46b450',
             ],
             'restaurante' => [
-                'nombre' => __('Restaurante', 'flavor-chat-ia'),
-                'descripcion' => __('Menús, reservas de mesas, pedidos online y gestión de comensales.', 'flavor-chat-ia'),
+                'nombre' => 'Restaurante',
+                'descripcion' => 'Menús, reservas de mesas, pedidos online y gestión de comensales.',
                 'icono' => 'dashicons-food',
                 'modulos_requeridos' => ['woocommerce', 'reservas'],
                 'modulos_opcionales' => ['eventos', 'multimedia', 'facturas', 'fichaje_empleados'],
+                'tipo_organizacion' => ['empresa', 'hosteleria'],
+                'impacto_social' => [],
                 'color' => '#f56e28',
             ],
             'banco_tiempo' => [
-                'nombre' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                'descripcion' => __('Intercambio de servicios por horas entre miembros de la comunidad.', 'flavor-chat-ia'),
+                'nombre' => 'Banco de Tiempo',
+                'descripcion' => 'Intercambio de servicios por horas entre miembros de la comunidad.',
                 'icono' => 'dashicons-clock',
                 'modulos_requeridos' => ['banco_tiempo', 'socios'],
                 'modulos_opcionales' => ['eventos', 'talleres', 'ayuda_vecinal', 'chat_grupos'],
+                'tipo_organizacion' => ['comunidad', 'asociacion'],
+                'impacto_social' => ['solidaridad', 'intercambio'],
                 'color' => '#9b59b6',
             ],
             'comunidad' => [
-                'nombre' => __('Comunidad/Asociación', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión de socios, eventos, foro y recursos compartidos.', 'flavor-chat-ia'),
+                'nombre' => 'Comunidad/Asociación',
+                'descripcion' => 'Gestión de socios, eventos, foro y recursos compartidos.',
                 'icono' => 'dashicons-groups',
                 'modulos_requeridos' => ['socios', 'eventos'],
                 'modulos_opcionales' => ['talleres', 'marketplace', 'participacion', 'chat_grupos', 'chat_interno', 'multimedia', 'cursos', 'red_social', 'reservas'],
+                'tipo_organizacion' => ['comunidad', 'asociacion'],
+                'impacto_social' => ['cohesion_social'],
                 'color' => '#e91e63',
             ],
             'coworking' => [
-                'nombre' => __('Coworking', 'flavor-chat-ia'),
-                'descripcion' => __('Reservas de espacios, control de acceso, membresías y comunidad.', 'flavor-chat-ia'),
+                'nombre' => 'Coworking',
+                'descripcion' => 'Reservas de espacios, control de acceso, membresías y comunidad.',
                 'icono' => 'dashicons-building',
                 'modulos_requeridos' => ['espacios_comunes', 'socios', 'fichaje_empleados', 'reservas'],
                 'modulos_opcionales' => ['eventos', 'chat_interno', 'facturas', 'chat_grupos'],
+                'tipo_organizacion' => ['empresa', 'espacios'],
+                'impacto_social' => ['economia_colaborativa'],
                 'color' => '#00bcd4',
             ],
             'marketplace' => [
-                'nombre' => __('Marketplace Comunitario', 'flavor-chat-ia'),
-                'descripcion' => __('Plataforma para regalo, venta, cambio y alquiler entre usuarios.', 'flavor-chat-ia'),
+                'nombre' => 'Marketplace Comunitario',
+                'descripcion' => 'Plataforma para regalo, venta, cambio y alquiler entre usuarios.',
                 'icono' => 'dashicons-megaphone',
                 'modulos_requeridos' => ['marketplace'],
                 'modulos_opcionales' => ['advertising', 'chat_interno', 'multimedia'],
+                'tipo_organizacion' => ['empresa', 'comunidad'],
+                'impacto_social' => ['economia_circular'],
                 'color' => '#ff9800',
             ],
             'ayuntamiento' => [
-                'nombre' => __('Ayuntamiento / Portal Ciudadano', 'flavor-chat-ia'),
-                'descripcion' => __('Portal de servicios municipales: trámites, noticias, cita previa y atención ciudadana.', 'flavor-chat-ia'),
+                'nombre' => 'Ayuntamiento / Portal Ciudadano',
+                'descripcion' => 'Portal de servicios municipales: trámites, noticias, cita previa y atención ciudadana.',
                 'icono' => 'dashicons-building',
                 'modulos_requeridos' => ['avisos_municipales', 'incidencias'],
                 'modulos_opcionales' => ['participacion', 'presupuestos_participativos', 'eventos', 'espacios_comunes', 'biblioteca', 'tramites', 'transparencia'],
+                'tipo_organizacion' => ['publico', 'administracion'],
+                'impacto_social' => ['transparencia', 'participacion'],
                 'color' => '#1d4ed8',
             ],
             'barrio' => [
-                'nombre' => __('Barrio / Vecindario', 'flavor-chat-ia'),
-                'descripcion' => __('Plataforma vecinal completa con ayuda mutua, huertos, bicicletas y recursos compartidos.', 'flavor-chat-ia'),
+                'nombre' => 'Barrio / Vecindario',
+                'descripcion' => 'Plataforma vecinal completa con ayuda mutua, huertos, bicicletas y recursos compartidos.',
                 'icono' => 'dashicons-location',
                 'modulos_requeridos' => ['ayuda_vecinal'],
                 'modulos_opcionales' => ['huertos_urbanos', 'bicicletas_compartidas', 'espacios_comunes', 'banco_tiempo', 'incidencias', 'reciclaje', 'compostaje', 'carpooling', 'talleres', 'eventos', 'chat_grupos', 'reservas'],
+                'tipo_organizacion' => ['comunidad'],
+                'impacto_social' => ['cohesion_social', 'sostenibilidad'],
                 'color' => '#22c55e',
             ],
             'academia' => [
-                'nombre' => __('Academia Online', 'flavor-chat-ia'),
-                'descripcion' => __('Plataforma de formación online con cursos, talleres y certificados.', 'flavor-chat-ia'),
+                'nombre' => 'Academia Online',
+                'descripcion' => 'Plataforma de formación online con cursos, talleres y certificados.',
                 'icono' => 'dashicons-welcome-learn-more',
                 'modulos_requeridos' => ['cursos', 'talleres'],
                 'modulos_opcionales' => ['eventos', 'multimedia', 'socios', 'chat_grupos', 'biblioteca'],
+                'tipo_organizacion' => ['educacion', 'empresa'],
+                'impacto_social' => ['educacion'],
                 'color' => '#7c3aed',
             ],
             'radio_comunitaria' => [
-                'nombre' => __('Radio Comunitaria', 'flavor-chat-ia'),
-                'descripcion' => __('Emisora de radio y podcast comunitaria con programación y participación vecinal.', 'flavor-chat-ia'),
+                'nombre' => 'Radio Comunitaria',
+                'descripcion' => 'Emisora de radio y podcast comunitaria con programación y participación vecinal.',
                 'icono' => 'dashicons-controls-volumeon',
                 'modulos_requeridos' => ['radio', 'podcast'],
                 'modulos_opcionales' => ['eventos', 'multimedia', 'socios', 'chat_grupos'],
+                'tipo_organizacion' => ['comunidad', 'medios'],
+                'impacto_social' => ['cultura'],
                 'color' => '#dc2626',
             ],
             'cooperativa' => [
-                'nombre' => __('Cooperativa', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión cooperativa con gobernanza democrática, transparencia y participación.', 'flavor-chat-ia'),
+                'nombre' => 'Cooperativa',
+                'descripcion' => 'Gestión cooperativa con gobernanza democrática, transparencia y participación.',
                 'icono' => 'dashicons-admin-users',
                 'modulos_requeridos' => ['socios', 'transparencia', 'participacion'],
                 'modulos_opcionales' => ['eventos', 'presupuestos_participativos', 'chat_grupos', 'chat_interno', 'talleres'],
+                'tipo_organizacion' => ['cooperativa', 'empresa'],
+                'impacto_social' => ['gobernanza', 'transparencia'],
                 'color' => '#059669',
             ],
             'hosteleria' => [
-                'nombre' => __('Hostelería', 'flavor-chat-ia'),
-                'descripcion' => __('Bar, cafetería o restaurante con carta digital, pedidos y reservas.', 'flavor-chat-ia'),
+                'nombre' => 'Hostelería',
+                'descripcion' => 'Bar, cafetería o restaurante con carta digital, pedidos y reservas.',
                 'icono' => 'dashicons-food',
                 'modulos_requeridos' => ['bares', 'woocommerce', 'reservas'],
                 'modulos_opcionales' => ['eventos', 'facturas', 'fichaje_empleados', 'multimedia'],
+                'tipo_organizacion' => ['empresa', 'hosteleria'],
+                'impacto_social' => [],
                 'color' => '#ea580c',
             ],
+            'empresa_profesional' => [
+                'nombre' => 'Empresa Profesional',
+                'descripcion' => 'Empresa con CRM, facturación, clientes y presencia corporativa.',
+                'icono' => 'dashicons-briefcase',
+                'modulos_requeridos' => ['empresarial', 'clientes', 'facturas'],
+                'modulos_opcionales' => ['marketplace', 'woocommerce', 'reservas', 'eventos', 'chat_interno', 'multimedia'],
+                'tipo_organizacion' => ['empresa'],
+                'impacto_social' => [],
+                'color' => '#1f2937',
+            ],
+            'empresa_saas' => [
+                'nombre' => 'Empresa SaaS',
+                'descripcion' => 'Producto digital con ventas online, soporte y marketing.',
+                'icono' => 'dashicons-cloud',
+                'modulos_requeridos' => ['empresarial', 'clientes', 'woocommerce'],
+                'modulos_opcionales' => ['facturas', 'chat_interno', 'eventos', 'multimedia', 'marketplace'],
+                'tipo_organizacion' => ['empresa', 'tecnologia'],
+                'impacto_social' => [],
+                'color' => '#0ea5e9',
+            ],
+            'empresa_operaciones' => [
+                'nombre' => 'Empresa Operativa',
+                'descripcion' => 'Equipos, turnos, reservas y espacios para operaciones diarias.',
+                'icono' => 'dashicons-businessperson',
+                'modulos_requeridos' => ['fichaje_empleados', 'espacios_comunes', 'reservas'],
+                'modulos_opcionales' => ['facturas', 'incidencias', 'eventos', 'chat_interno', 'clientes'],
+                'tipo_organizacion' => ['empresa', 'operaciones'],
+                'impacto_social' => [],
+                'color' => '#2563eb',
+            ],
+            'empresa_etica' => [
+                'nombre' => 'Empresa Ética y Consciente',
+                'descripcion' => 'Empresa con impacto social, transparencia y participación.',
+                'icono' => 'dashicons-heart',
+                'modulos_requeridos' => ['empresarial', 'transparencia', 'participacion'],
+                'modulos_opcionales' => ['presupuestos_participativos', 'ayuda_vecinal', 'grupos_consumo', 'reciclaje', 'compostaje', 'eventos', 'chat_grupos'],
+                'tipo_organizacion' => ['empresa', 'cooperativa'],
+                'impacto_social' => ['impacto_social', 'transparencia', 'sostenibilidad'],
+                'color' => '#16a34a',
+            ],
+            'red_empresas' => [
+                'nombre' => 'Red de Empresas y Cooperativas',
+                'descripcion' => 'Empresas interconectadas con marketplace, comunidad y nodos.',
+                'icono' => 'dashicons-networking',
+                'modulos_requeridos' => ['comunidades', 'marketplace', 'clientes'],
+                'modulos_opcionales' => ['empresarial', 'transparencia', 'participacion', 'chat_grupos', 'eventos', 'grupos_consumo'],
+                'tipo_organizacion' => ['empresa', 'cooperativa', 'red'],
+                'impacto_social' => ['intercooperacion', 'economia_circular'],
+                'color' => '#7c3aed',
+            ],
             'smart_village' => [
-                'nombre' => __('Smart Village', 'flavor-chat-ia'),
-                'descripcion' => __('Pueblo inteligente con avisos, ayuda vecinal, huertos y movilidad sostenible.', 'flavor-chat-ia'),
+                'nombre' => 'Smart Village',
+                'descripcion' => 'Pueblo inteligente con avisos, ayuda vecinal, huertos y movilidad sostenible.',
                 'icono' => 'dashicons-location',
                 'modulos_requeridos' => ['avisos_municipales', 'ayuda_vecinal'],
                 'modulos_opcionales' => ['huertos_urbanos', 'bicicletas_compartidas', 'incidencias', 'espacios_comunes', 'eventos', 'chat_grupos', 'carpooling'],
+                'tipo_organizacion' => ['comunidad', 'publico'],
+                'impacto_social' => ['sostenibilidad', 'movilidad'],
                 'color' => '#16a34a',
             ],
             'reciclaje_comunitario' => [
-                'nombre' => __('Reciclaje Comunitario', 'flavor-chat-ia'),
-                'descripcion' => __('Sistema completo de reciclaje con puntos limpios, gamificación, recompensas y economía circular.', 'flavor-chat-ia'),
+                'nombre' => 'Reciclaje Comunitario',
+                'descripcion' => 'Sistema completo de reciclaje con puntos limpios, gamificación, recompensas y economía circular.',
                 'icono' => 'dashicons-admin-site',
                 'modulos_requeridos' => ['reciclaje'],
                 'modulos_opcionales' => ['socios', 'eventos', 'compostaje', 'huertos_urbanos', 'marketplace', 'chat_grupos', 'talleres', 'transparencia'],
+                'tipo_organizacion' => ['comunidad', 'cooperativa'],
+                'impacto_social' => ['sostenibilidad', 'economia_circular'],
                 'color' => '#10b981',
             ],
             'club_deportivo' => [
-                'nombre' => __('Club Deportivo', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión de un club deportivo con socios, eventos, cuotas y comunicación.', 'flavor-chat-ia'),
+                'nombre' => 'Club Deportivo',
+                'descripcion' => 'Gestión de un club deportivo con socios, eventos, cuotas y comunicación.',
                 'icono' => 'dashicons-universal-access',
                 'modulos_requeridos' => ['socios', 'eventos', 'reservas'],
                 'modulos_opcionales' => ['talleres', 'chat_grupos', 'multimedia', 'espacios_comunes', 'fichaje_empleados'],
+                'tipo_organizacion' => ['deporte', 'asociacion'],
+                'impacto_social' => ['salud'],
                 'color' => '#2563eb',
             ],
             'ong' => [
-                'nombre' => __('ONG / Fundación', 'flavor-chat-ia'),
-                'descripcion' => __('Organización sin ánimo de lucro con transparencia, socios y proyectos.', 'flavor-chat-ia'),
+                'nombre' => 'ONG / Fundación',
+                'descripcion' => 'Organización sin ánimo de lucro con transparencia, socios y proyectos.',
                 'icono' => 'dashicons-heart',
                 'modulos_requeridos' => ['socios', 'transparencia'],
                 'modulos_opcionales' => ['eventos', 'participacion', 'chat_grupos', 'multimedia', 'cursos'],
+                'tipo_organizacion' => ['ong', 'fundacion'],
+                'impacto_social' => ['impacto_social', 'transparencia'],
                 'color' => '#be185d',
             ],
             'personalizado' => [
-                'nombre' => __('Personalizado', 'flavor-chat-ia'),
-                'descripcion' => __('Selecciona manualmente los módulos que necesitas.', 'flavor-chat-ia'),
+                'nombre' => 'Personalizado',
+                'descripcion' => 'Selecciona manualmente los módulos que necesitas.',
                 'icono' => 'dashicons-admin-generic',
                 'modulos_requeridos' => [],
                 'modulos_opcionales' => [],
+                'tipo_organizacion' => [],
+                'impacto_social' => [],
                 'color' => '#95a5a6',
             ],
         ];
@@ -258,6 +344,11 @@ class Flavor_App_Profiles {
         // Limpiar cache de opciones para asegurar que se lee el valor actualizado
         wp_cache_delete('alloptions', 'options');
 
+        // Crear tablas de los módulos del perfil
+        if ($perfil_id !== 'personalizado' && !empty($modulos_activos)) {
+            $this->crear_tablas_modulos($modulos_activos);
+        }
+
         return true;
     }
 
@@ -308,6 +399,141 @@ class Flavor_App_Profiles {
     }
 
     /**
+     * Obtiene los perfiles activos (soporta múltiples)
+     *
+     * @return array
+     */
+    public function obtener_perfiles_activos() {
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+
+        // Verificar si hay múltiples perfiles activos
+        if (isset($configuracion['app_profiles']) && is_array($configuracion['app_profiles'])) {
+            return $configuracion['app_profiles'];
+        }
+
+        // Compatibilidad con perfil único
+        $perfil_unico = $configuracion['app_profile'] ?? 'personalizado';
+        return [$perfil_unico];
+    }
+
+    /**
+     * Establece múltiples perfiles activos
+     *
+     * @param array $perfiles_ids Array de IDs de perfiles
+     * @return bool
+     */
+    public function establecer_perfiles($perfiles_ids) {
+        if (!is_array($perfiles_ids) || empty($perfiles_ids)) {
+            return false;
+        }
+
+        // Validar que todos los perfiles existen
+        foreach ($perfiles_ids as $perfil_id) {
+            if (!isset($this->perfiles_disponibles[$perfil_id])) {
+                return false;
+            }
+        }
+
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+
+        // Guardar perfiles activos
+        $configuracion['app_profiles'] = $perfiles_ids;
+        $configuracion['app_profile'] = $perfiles_ids[0]; // Mantener compatibilidad
+
+        // Combinar módulos de todos los perfiles
+        $modulos_combinados = $this->combinar_modulos_de_perfiles($perfiles_ids);
+        $configuracion['active_modules'] = $modulos_combinados;
+
+        update_option('flavor_chat_ia_settings', $configuracion);
+
+        // Limpiar cache
+        wp_cache_delete('alloptions', 'options');
+
+        // Crear tablas de los módulos combinados
+        if (!empty($modulos_combinados)) {
+            $this->crear_tablas_modulos($modulos_combinados);
+        }
+
+        return true;
+    }
+
+    /**
+     * Combina módulos de múltiples perfiles
+     *
+     * @param array $perfiles_ids
+     * @return array
+     */
+    private function combinar_modulos_de_perfiles($perfiles_ids) {
+        $modulos_combinados = [];
+
+        foreach ($perfiles_ids as $perfil_id) {
+            if ($perfil_id === 'personalizado') {
+                continue; // Personalizado no tiene módulos predefinidos
+            }
+
+            $perfil = $this->obtener_perfil($perfil_id);
+            if ($perfil) {
+                $modulos_combinados = array_merge(
+                    $modulos_combinados,
+                    $perfil['modulos_requeridos'] ?? [],
+                    $perfil['modulos_opcionales'] ?? []
+                );
+            }
+        }
+
+        // Eliminar duplicados y reindexar
+        return array_values(array_unique($modulos_combinados));
+    }
+
+    /**
+     * Verifica si un perfil específico está activo
+     *
+     * @param string $perfil_id
+     * @return bool
+     */
+    public function es_perfil_activo($perfil_id) {
+        $perfiles_activos = $this->obtener_perfiles_activos();
+        return in_array($perfil_id, $perfiles_activos, true);
+    }
+
+    /**
+     * Añade un perfil a los activos sin eliminar los existentes
+     *
+     * @param string $perfil_id
+     * @return bool
+     */
+    public function anadir_perfil($perfil_id) {
+        $perfiles_activos = $this->obtener_perfiles_activos();
+
+        if (in_array($perfil_id, $perfiles_activos, true)) {
+            return true; // Ya está activo
+        }
+
+        $perfiles_activos[] = $perfil_id;
+        return $this->establecer_perfiles($perfiles_activos);
+    }
+
+    /**
+     * Quita un perfil de los activos
+     *
+     * @param string $perfil_id
+     * @return bool
+     */
+    public function quitar_perfil($perfil_id) {
+        $perfiles_activos = $this->obtener_perfiles_activos();
+
+        $perfiles_activos = array_filter($perfiles_activos, function($id) use ($perfil_id) {
+            return $id !== $perfil_id;
+        });
+
+        if (empty($perfiles_activos)) {
+            $perfiles_activos = ['personalizado']; // Al menos uno debe estar activo
+        }
+
+        return $this->establecer_perfiles(array_values($perfiles_activos));
+    }
+
+    /**
      * Activa un módulo opcional
      *
      * @param string $modulo_id
@@ -325,9 +551,59 @@ class Flavor_App_Profiles {
             $modulos_activos[] = $modulo_id;
             $configuracion['active_modules'] = $modulos_activos;
             update_option('flavor_chat_ia_settings', $configuracion);
+
+            // Crear tablas del módulo automáticamente
+            $this->crear_tablas_modulo($modulo_id);
         }
 
         return true;
+    }
+
+    /**
+     * Crea las tablas de un módulo
+     *
+     * @param string $modulo_id
+     * @return bool
+     */
+    private function crear_tablas_modulo($modulo_id) {
+        return $this->crear_tablas_modulos([$modulo_id]);
+    }
+
+    /**
+     * Crea las tablas de múltiples módulos
+     *
+     * @param array $modulos_ids
+     * @return bool
+     */
+    private function crear_tablas_modulos($modulos_ids) {
+        if (empty($modulos_ids)) {
+            return false;
+        }
+
+        // Verificar si existe el instalador de tablas
+        $installer_path = FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/components/class-table-installer.php';
+
+        if (!file_exists($installer_path)) {
+            return false;
+        }
+
+        require_once $installer_path;
+
+        if (!class_exists('Flavor_Table_Installer')) {
+            return false;
+        }
+
+        try {
+            $installer = new Flavor_Table_Installer();
+            $resultado = $installer->instalar('auto_activacion', [
+                'modulos' => $modulos_ids
+            ]);
+
+            return $resultado['success'] ?? false;
+        } catch (Exception $e) {
+            error_log('[Flavor] Error creando tablas: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -338,35 +614,87 @@ class Flavor_App_Profiles {
     public function obtener_categorias_modulos() {
         return [
             'comercio' => [
-                'nombre' => __('Comercio', 'flavor-chat-ia'),
+                'nombre' => 'Comercio',
                 'icono'  => 'dashicons-store',
                 'modulos' => ['woocommerce', 'marketplace', 'facturas', 'advertising'],
             ],
             'comunidad' => [
-                'nombre' => __('Comunidad', 'flavor-chat-ia'),
+                'nombre' => 'Comunidad',
                 'icono'  => 'dashicons-groups',
                 'modulos' => ['socios', 'foros', 'red_social', 'chat_grupos', 'chat_interno', 'comunidades', 'colectivos'],
             ],
             'gobernanza' => [
-                'nombre' => __('Gobernanza', 'flavor-chat-ia'),
+                'nombre' => 'Gobernanza',
                 'icono'  => 'dashicons-building',
                 'modulos' => ['participacion', 'presupuestos_participativos', 'transparencia', 'avisos_municipales', 'tramites'],
             ],
             'sostenibilidad' => [
-                'nombre' => __('Sostenibilidad', 'flavor-chat-ia'),
+                'nombre' => 'Sostenibilidad',
                 'icono'  => 'dashicons-palmtree',
                 'modulos' => ['huertos_urbanos', 'bicicletas_compartidas', 'compostaje', 'reciclaje', 'carpooling'],
             ],
             'contenido' => [
-                'nombre' => __('Contenido', 'flavor-chat-ia'),
+                'nombre' => 'Contenido',
                 'icono'  => 'dashicons-media-interactive',
                 'modulos' => ['cursos', 'podcast', 'radio', 'multimedia', 'biblioteca', 'talleres', 'eventos'],
             ],
             'operaciones' => [
-                'nombre' => __('Operaciones', 'flavor-chat-ia'),
+                'nombre' => 'Operaciones',
                 'icono'  => 'dashicons-admin-tools',
                 'modulos' => ['fichaje_empleados', 'incidencias', 'espacios_comunes', 'parkings', 'banco_tiempo', 'ayuda_vecinal', 'empresarial', 'clientes', 'bares', 'grupos_consumo'],
             ],
+        ];
+    }
+
+    /**
+     * Obtiene los tipos de organizacion disponibles para filtros.
+     *
+     * @return array
+     */
+    public function obtener_tipos_organizacion() {
+        return [
+            'empresa' => 'Empresa',
+            'cooperativa' => 'Cooperativa',
+            'comunidad' => 'Comunidad',
+            'asociacion' => 'Asociación',
+            'ong' => 'ONG',
+            'fundacion' => 'Fundación',
+            'publico' => 'Administración Pública',
+            'administracion' => 'Administración',
+            'hosteleria' => 'Hostelería',
+            'educacion' => 'Educación',
+            'medios' => 'Medios',
+            'deporte' => 'Deporte',
+            'tecnologia' => 'Tecnología',
+            'espacios' => 'Espacios',
+            'operaciones' => 'Operaciones',
+            'red' => 'Red',
+        ];
+    }
+
+    /**
+     * Obtiene etiquetas de impacto social disponibles para filtros.
+     *
+     * @return array
+     */
+    public function obtener_impactos_sociales() {
+        return [
+            'impacto_social' => 'Impacto Social',
+            'transparencia' => 'Transparencia',
+            'participacion' => 'Participación',
+            'gobernanza' => 'Gobernanza',
+            'sostenibilidad' => 'Sostenibilidad',
+            'economia_colaborativa' => 'Economía Colaborativa',
+            'economia_circular' => 'Economía Circular',
+            'consumo_local' => 'Consumo Local',
+            'cohesion_social' => 'Cohesión Social',
+            'intercooperacion' => 'Intercooperación',
+            'solidaridad' => 'Solidaridad',
+            'intercambio' => 'Intercambio',
+            'educacion' => 'Educación',
+            'cultura' => 'Cultura',
+            'movilidad' => 'Movilidad',
+            'salud' => 'Salud',
         ];
     }
 

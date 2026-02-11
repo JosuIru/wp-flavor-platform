@@ -16,14 +16,14 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-rose-500 to-pink-600 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar Espacios</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar Espacios', 'flavor-chat-ia'); ?></h1>
 
             <!-- Formulario de busqueda -->
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <!-- Que buscas -->
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Que buscas?</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Que buscas?', 'flavor-chat-ia'); ?></label>
                         <div class="relative">
                             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -31,14 +31,14 @@ $total_resultados = $total_resultados ?? 0;
                             <input type="text"
                                    name="q"
                                    value="<?php echo esc_attr($query); ?>"
-                                   placeholder="Salon de actos, sala de reuniones..."
+                                   placeholder="<?php echo esc_attr__('Salon de actos, sala de reuniones...', 'flavor-chat-ia'); ?>"
                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
                         </div>
                     </div>
 
                     <!-- Fecha -->
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Fecha</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></label>
                         <input type="date"
                                name="fecha"
                                min="<?php echo date('Y-m-d'); ?>"
@@ -47,14 +47,14 @@ $total_resultados = $total_resultados ?? 0;
 
                     <!-- Capacidad -->
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Personas</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Personas', 'flavor-chat-ia'); ?></label>
                         <select name="capacidad" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
-                            <option value="">Cualquiera</option>
-                            <option value="1-10">1-10 personas</option>
-                            <option value="11-25">11-25 personas</option>
-                            <option value="26-50">26-50 personas</option>
-                            <option value="51-100">51-100 personas</option>
-                            <option value="100+">Mas de 100</option>
+                            <option value=""><?php echo esc_html__('Cualquiera', 'flavor-chat-ia'); ?></option>
+                            <option value="1-10"><?php echo esc_html__('1-10 personas', 'flavor-chat-ia'); ?></option>
+                            <option value="11-25"><?php echo esc_html__('11-25 personas', 'flavor-chat-ia'); ?></option>
+                            <option value="26-50"><?php echo esc_html__('26-50 personas', 'flavor-chat-ia'); ?></option>
+                            <option value="51-100"><?php echo esc_html__('51-100 personas', 'flavor-chat-ia'); ?></option>
+                            <option value="100+"><?php echo esc_html__('Mas de 100', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -62,46 +62,46 @@ $total_resultados = $total_resultados ?? 0;
                 <!-- Filtros avanzados -->
                 <details class="mt-4">
                     <summary class="text-sm text-rose-600 font-medium cursor-pointer hover:text-rose-700">
-                        Filtros avanzados
+                        <?php echo esc_html__('Filtros avanzados', 'flavor-chat-ia'); ?>
                     </summary>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-gray-100">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Tipo de espacio</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Tipo de espacio', 'flavor-chat-ia'); ?></label>
                             <select name="tipo" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-rose-500">
-                                <option value="">Todos</option>
-                                <option value="salon">Salon de actos</option>
-                                <option value="sala">Sala de reuniones</option>
-                                <option value="aula">Aula de formacion</option>
-                                <option value="cocina">Cocina</option>
-                                <option value="exterior">Espacio exterior</option>
+                                <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('salon', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Salon de actos', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('sala', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Sala de reuniones', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('aula', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Aula de formacion', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('cocina', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('exterior', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Espacio exterior', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Precio maximo</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Precio maximo', 'flavor-chat-ia'); ?></label>
                             <select name="precio_max" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-rose-500">
-                                <option value="">Sin limite</option>
-                                <option value="20">Hasta 20€/h</option>
-                                <option value="50">Hasta 50€/h</option>
-                                <option value="100">Hasta 100€/h</option>
+                                <option value=""><?php echo esc_html__('Sin limite', 'flavor-chat-ia'); ?></option>
+                                <option value="20"><?php echo esc_html__('Hasta 20€/h', 'flavor-chat-ia'); ?></option>
+                                <option value="50"><?php echo esc_html__('Hasta 50€/h', 'flavor-chat-ia'); ?></option>
+                                <option value="100"><?php echo esc_html__('Hasta 100€/h', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Hora inicio</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Hora inicio', 'flavor-chat-ia'); ?></label>
                             <select name="hora_inicio" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-rose-500">
-                                <option value="">Cualquiera</option>
+                                <option value=""><?php echo esc_html__('Cualquiera', 'flavor-chat-ia'); ?></option>
                                 <?php for ($h = 8; $h <= 20; $h++): ?>
                                     <option value="<?php echo $h; ?>"><?php echo sprintf('%02d:00', $h); ?></option>
                                 <?php endfor; ?>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Equipamiento</label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1"><?php echo esc_html__('Equipamiento', 'flavor-chat-ia'); ?></label>
                             <select name="equipamiento" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-rose-500">
-                                <option value="">Cualquiera</option>
-                                <option value="proyector">Proyector</option>
-                                <option value="wifi">WiFi</option>
-                                <option value="tv">TV/Pantalla</option>
-                                <option value="cocina">Cocina equipada</option>
+                                <option value=""><?php echo esc_html__('Cualquiera', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('proyector', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Proyector', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('wifi', 'flavor-chat-ia'); ?>"><?php echo esc_html__('WiFi', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('tv', 'flavor-chat-ia'); ?>"><?php echo esc_html__('TV/Pantalla', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('cocina', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Cocina equipada', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                     </div>
@@ -114,7 +114,7 @@ $total_resultados = $total_resultados ?? 0;
                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        Buscar Espacios
+                        <?php echo esc_html__('Buscar Espacios', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -136,9 +136,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos resultados</h3>
-                <p class="text-gray-500 mb-4">Prueba con otros terminos de busqueda o filtros diferentes</p>
-                <a href="?" class="text-rose-600 font-medium hover:text-rose-700">Ver todos los espacios</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos resultados', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba con otros terminos de busqueda o filtros diferentes', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-rose-600 font-medium hover:text-rose-700"><?php echo esc_html__('Ver todos los espacios', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -158,7 +158,7 @@ $total_resultados = $total_resultados ?? 0;
                             </p>
                             <a href="<?php echo esc_url($espacio['url'] ?? '#'); ?>"
                                class="text-rose-600 font-medium text-sm hover:text-rose-700">
-                                Ver detalles →
+                                <?php echo esc_html__('Ver detalles →', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     </article>
@@ -166,13 +166,13 @@ $total_resultados = $total_resultados ?? 0;
             </div>
         <?php else: ?>
             <!-- Espacios destacados cuando no hay busqueda -->
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Espacios Destacados</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Espacios Destacados', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php for ($i = 1; $i <= 6; $i++): ?>
                     <article class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
                         <div class="relative aspect-[16/10] overflow-hidden">
                             <img src="https://picsum.photos/seed/destacado<?php echo $i; ?>/400/250"
-                                 alt="Espacio destacado"
+                                 alt="<?php echo esc_attr__('Espacio destacado', 'flavor-chat-ia'); ?>"
                                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         </div>
                         <div class="p-5">
@@ -180,10 +180,10 @@ $total_resultados = $total_resultados ?? 0;
                                 Espacio Ejemplo <?php echo $i; ?>
                             </h3>
                             <p class="text-sm text-gray-500 mb-3">
-                                25 personas · 30€/hora
+                                <?php echo esc_html__('25 personas · 30€/hora', 'flavor-chat-ia'); ?>
                             </p>
                             <a href="#" class="text-rose-600 font-medium text-sm hover:text-rose-700">
-                                Ver detalles →
+                                <?php echo esc_html__('Ver detalles →', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     </article>

@@ -540,9 +540,15 @@ class Chat_IA_Admin_Shortcuts {
     private function execute_direct_action($shortcut_id, $args) {
         switch ($shortcut_id) {
             case 'test_ping':
+                $tools_status = $this->tools ? __('Conectadas', 'chat-ia-addon') : __('NO conectadas', 'chat-ia-addon');
                 return [
                     'success' => true,
-                    'message' => '✅ **Test exitoso!**\n\nConexión AJAX funcionando correctamente.\n\n- Fecha: ' . date('Y-m-d H:i:s') . '\n- Usuario: ' . wp_get_current_user()->display_name . '\n- Tools: ' . ($this->tools ? 'Conectadas' : 'NO conectadas'),
+                    'message' => sprintf(
+                        __('✅ **Test exitoso!**\n\nConexión AJAX funcionando correctamente.\n\n- Fecha: %s\n- Usuario: %s\n- Tools: %s', 'chat-ia-addon'),
+                        date('Y-m-d H:i:s'),
+                        wp_get_current_user()->display_name,
+                        $tools_status
+                    ),
                     'data' => [
                         'timestamp' => time(),
                         'tools_connected' => $this->tools !== null,
@@ -552,7 +558,7 @@ class Chat_IA_Admin_Shortcuts {
             default:
                 return [
                     'success' => false,
-                    'error' => 'Acción directa no reconocida: ' . $shortcut_id,
+                    'error' => sprintf(__('Acción directa no reconocida: %s', 'chat-ia-addon'), $shortcut_id),
                 ];
         }
     }

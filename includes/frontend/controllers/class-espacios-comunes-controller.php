@@ -289,7 +289,7 @@ class Flavor_Frontend_Espacios_Comunes_Controller extends Flavor_Frontend_Contro
      */
     protected function ajax_crear_reserva($data) {
         if (!is_user_logged_in()) {
-            return ['error' => 'Debes iniciar sesión para reservar'];
+            return ['error' => __('Debes iniciar sesión para reservar', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -303,7 +303,7 @@ class Flavor_Frontend_Espacios_Comunes_Controller extends Flavor_Frontend_Contro
 
         // Validaciones básicas
         if (!$espacio_id || !$fecha_inicio || !$fecha_fin) {
-            return ['error' => 'Faltan datos obligatorios'];
+            return ['error' => __('Faltan datos obligatorios', 'flavor-chat-ia')];
         }
 
         // Verificar disponibilidad
@@ -315,7 +315,7 @@ class Flavor_Frontend_Espacios_Comunes_Controller extends Flavor_Frontend_Contro
         ));
 
         if ($conflicto > 0) {
-            return ['error' => 'El espacio no está disponible en esas fechas'];
+            return ['error' => __('El espacio no está disponible en esas fechas', 'flavor-chat-ia')];
         }
 
         // Crear reserva
@@ -334,11 +334,11 @@ class Flavor_Frontend_Espacios_Comunes_Controller extends Flavor_Frontend_Contro
             return [
                 'success' => true,
                 'reserva_id' => $wpdb->insert_id,
-                'mensaje' => 'Reserva solicitada correctamente. Recibirás confirmación pronto.',
+                'mensaje' => __('Reserva solicitada correctamente. Recibirás confirmación pronto.', 'flavor-chat-ia'),
             ];
         }
 
-        return ['error' => 'Error al crear la reserva'];
+        return ['error' => __('Error al crear la reserva', 'flavor-chat-ia')];
     }
 
     /**

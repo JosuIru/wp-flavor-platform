@@ -20,7 +20,7 @@ $servicios = $punto['servicios'] ?? [];
     <div class="bg-gradient-to-r from-emerald-500 to-green-600 py-8 px-4">
         <div class="container mx-auto max-w-4xl">
             <nav class="flex items-center gap-2 text-sm text-white/80 mb-4">
-                <a href="#" class="hover:text-white">Reciclaje</a>
+                <a href="#" class="hover:text-white"><?php echo esc_html__('Reciclaje', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-white"><?php echo esc_html($nombre); ?></span>
             </nav>
@@ -33,7 +33,7 @@ $servicios = $punto['servicios'] ?? [];
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Contenedores disponibles -->
             <div class="bg-white rounded-2xl p-6 shadow-md">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">Contenedores Disponibles</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-4"><?php echo esc_html__('Contenedores Disponibles', 'flavor-chat-ia'); ?></h2>
                 <div class="grid grid-cols-2 gap-4">
                     <?php
                     $contenedores_info = [
@@ -62,7 +62,7 @@ $servicios = $punto['servicios'] ?? [];
                         <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         </svg>
-                        <p class="text-sm">Ubicacion en mapa</p>
+                        <p class="text-sm"><?php echo esc_html__('Ubicacion en mapa', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
                 <div class="p-4">
@@ -71,7 +71,7 @@ $servicios = $punto['servicios'] ?? [];
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                         </svg>
-                        Como llegar
+                        <?php echo esc_html__('Como llegar', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
@@ -80,39 +80,39 @@ $servicios = $punto['servicios'] ?? [];
         <!-- Info adicional -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
             <div class="bg-white rounded-xl p-5 shadow-md">
-                <h3 class="font-bold text-gray-900 mb-2">Horario de acceso</h3>
+                <h3 class="font-bold text-gray-900 mb-2"><?php echo esc_html__('Horario de acceso', 'flavor-chat-ia'); ?></h3>
                 <p class="text-gray-600"><?php echo esc_html($horario); ?></p>
             </div>
             <div class="bg-white rounded-xl p-5 shadow-md">
-                <h3 class="font-bold text-gray-900 mb-2">Servicios especiales</h3>
+                <h3 class="font-bold text-gray-900 mb-2"><?php echo esc_html__('Servicios especiales', 'flavor-chat-ia'); ?></h3>
                 <div class="flex flex-wrap gap-2">
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700">Aceite usado</span>
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700">Pilas</span>
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700">Ropa</span>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700"><?php echo esc_html__('Aceite usado', 'flavor-chat-ia'); ?></span>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700"><?php echo esc_html__('Pilas', 'flavor-chat-ia'); ?></span>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700"><?php echo esc_html__('Ropa', 'flavor-chat-ia'); ?></span>
                 </div>
             </div>
         </div>
 
         <!-- Guia de reciclaje -->
         <div class="bg-white rounded-2xl p-6 shadow-md mt-8">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">Guia Rapida de Reciclaje</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Guia Rapida de Reciclaje', 'flavor-chat-ia'); ?></h2>
             <div class="prose max-w-none text-gray-700">
                 <ul class="space-y-2">
                     <li class="flex items-start gap-2">
                         <span class="w-4 h-4 rounded bg-yellow-400 mt-1 flex-shrink-0"></span>
-                        <span><strong>Contenedor amarillo:</strong> Envases de plastico, latas, briks, tapones...</span>
+                        <span><strong><?php echo esc_html__('Contenedor amarillo:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Envases de plastico, latas, briks, tapones...', 'flavor-chat-ia'); ?></span>
                     </li>
                     <li class="flex items-start gap-2">
                         <span class="w-4 h-4 rounded bg-blue-500 mt-1 flex-shrink-0"></span>
-                        <span><strong>Contenedor azul:</strong> Papel, carton, periodicos, revistas...</span>
+                        <span><strong><?php echo esc_html__('Contenedor azul:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Papel, carton, periodicos, revistas...', 'flavor-chat-ia'); ?></span>
                     </li>
                     <li class="flex items-start gap-2">
                         <span class="w-4 h-4 rounded bg-green-600 mt-1 flex-shrink-0"></span>
-                        <span><strong>Contenedor verde:</strong> Botellas y tarros de vidrio (sin tapones)</span>
+                        <span><strong><?php echo esc_html__('Contenedor verde:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Botellas y tarros de vidrio (sin tapones)', 'flavor-chat-ia'); ?></span>
                     </li>
                     <li class="flex items-start gap-2">
                         <span class="w-4 h-4 rounded bg-amber-700 mt-1 flex-shrink-0"></span>
-                        <span><strong>Contenedor marron:</strong> Restos de comida, posos de cafe, cascaras...</span>
+                        <span><strong><?php echo esc_html__('Contenedor marron:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Restos de comida, posos de cafe, cascaras...', 'flavor-chat-ia'); ?></span>
                     </li>
                 </ul>
             </div>

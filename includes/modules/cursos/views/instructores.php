@@ -35,7 +35,7 @@ $instructores = $wpdb->get_results("
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Gestión de Instructores</h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Instructores', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Tarjetas resumen -->
@@ -46,7 +46,7 @@ $instructores = $wpdb->get_results("
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo count($instructores); ?></div>
-                <div class="flavor-stat-label">Total Instructores</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Total Instructores', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -58,7 +58,7 @@ $instructores = $wpdb->get_results("
                 <div class="flavor-stat-value">
                     <?php echo number_format(array_sum(array_column($instructores, 'total_cursos'))); ?>
                 </div>
-                <div class="flavor-stat-label">Cursos Creados</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Cursos Creados', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -70,7 +70,7 @@ $instructores = $wpdb->get_results("
                 <div class="flavor-stat-value">
                     <?php echo number_format(array_sum(array_column($instructores, 'total_alumnos'))); ?>
                 </div>
-                <div class="flavor-stat-label">Alumnos Totales</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Alumnos Totales', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
@@ -78,21 +78,21 @@ $instructores = $wpdb->get_results("
     <!-- Tabla de instructores -->
     <div class="flavor-card">
         <div class="flavor-card-header">
-            <h2>Listado de Instructores</h2>
+            <h2><?php echo esc_html__('Listado de Instructores', 'flavor-chat-ia'); ?></h2>
         </div>
         <div class="flavor-card-body">
             <table class="wp-list-table widefat striped">
                 <thead>
                     <tr>
-                        <th>Instructor</th>
-                        <th>Email</th>
-                        <th style="width: 100px;">Cursos</th>
-                        <th style="width: 100px;">Activos</th>
-                        <th style="width: 100px;">Alumnos</th>
-                        <th style="width: 100px;">Valoración</th>
-                        <th style="width: 120px;">Ingresos</th>
-                        <th style="width: 100px;">Desde</th>
-                        <th style="width: 150px;">Acciones</th>
+                        <th><?php echo esc_html__('Instructor', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Cursos', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Activos', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Alumnos', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Valoración', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 120px;"><?php echo esc_html__('Ingresos', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Desde', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -133,10 +133,10 @@ $instructores = $wpdb->get_results("
                                 </td>
                                 <td>
                                     <button class="button button-small btn-ver-instructor" data-id="<?php echo $instructor->ID; ?>">
-                                        Ver Perfil
+                                        <?php echo esc_html__('Ver Perfil', 'flavor-chat-ia'); ?>
                                     </button>
                                     <button class="button button-small btn-cursos-instructor" data-id="<?php echo $instructor->ID; ?>">
-                                        Cursos
+                                        <?php echo esc_html__('Cursos', 'flavor-chat-ia'); ?>
                                     </button>
                                 </td>
                             </tr>
@@ -144,7 +144,7 @@ $instructores = $wpdb->get_results("
                     <?php else: ?>
                         <tr>
                             <td colspan="9" class="flavor-no-data">
-                                No hay instructores registrados
+                                <?php echo esc_html__('No hay instructores registrados', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -158,15 +158,15 @@ $instructores = $wpdb->get_results("
         <div class="flavor-dashboard-col-6">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Top 5 Instructores por Valoración</h2>
+                    <h2><?php echo esc_html__('Top 5 Instructores por Valoración', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <table class="widefat">
                         <thead>
                             <tr>
-                                <th>Instructor</th>
-                                <th>Valoración</th>
-                                <th>Cursos</th>
+                                <th><?php echo esc_html__('Instructor', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Valoración', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Cursos', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -199,15 +199,15 @@ $instructores = $wpdb->get_results("
         <div class="flavor-dashboard-col-6">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Top 5 Instructores por Alumnos</h2>
+                    <h2><?php echo esc_html__('Top 5 Instructores por Alumnos', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <table class="widefat">
                         <thead>
                             <tr>
-                                <th>Instructor</th>
-                                <th>Alumnos</th>
-                                <th>Cursos</th>
+                                <th><?php echo esc_html__('Instructor', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Alumnos', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Cursos', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -237,11 +237,11 @@ $instructores = $wpdb->get_results("
 <div id="modal-instructor" class="flavor-modal" style="display: none;">
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
-            <h2>Perfil del Instructor</h2>
-            <span class="flavor-modal-close">&times;</span>
+            <h2><?php echo esc_html__('Perfil del Instructor', 'flavor-chat-ia'); ?></h2>
+            <span class="flavor-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></span>
         </div>
         <div class="flavor-modal-body" id="instructor-profile-content">
-            <div class="flavor-loading">Cargando...</div>
+            <div class="flavor-loading"><?php echo esc_html__('Cargando...', 'flavor-chat-ia'); ?></div>
         </div>
     </div>
 </div>

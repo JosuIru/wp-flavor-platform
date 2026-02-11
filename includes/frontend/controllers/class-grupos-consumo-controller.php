@@ -243,7 +243,7 @@ class Flavor_Grupos_Consumo_Controller extends Flavor_Frontend_Controller_Base {
         // Lógica para unirse al grupo
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Solicitud enviada correctamente',
+            'message' => __('Solicitud enviada correctamente', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -257,7 +257,7 @@ class Flavor_Grupos_Consumo_Controller extends Flavor_Frontend_Controller_Base {
         // Lógica para realizar pedido
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Pedido registrado',
+            'message' => __('Pedido registrado', 'flavor-chat-ia'),
         ], 200);
     }
 }

@@ -577,7 +577,7 @@ class Flavor_Addon_Marketplace {
         check_ajax_referer('flavor_marketplace_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $filter = sanitize_text_field($_POST['filter'] ?? 'all');
@@ -641,19 +641,19 @@ class Flavor_Addon_Marketplace {
         check_ajax_referer('flavor_marketplace_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $slug = sanitize_text_field($_POST['slug'] ?? '');
 
         if (empty($slug)) {
-            wp_send_json_error('Slug requerido');
+            wp_send_json_error(__('Slug requerido', 'flavor-chat-ia'));
         }
 
         $addon = $this->fetch_addon_details($slug);
 
         if (!$addon) {
-            wp_send_json_error('Addon no encontrado');
+            wp_send_json_error(__('Addon no encontrado', 'flavor-chat-ia'));
         }
 
         wp_send_json_success(['addon' => $addon]);
@@ -689,20 +689,20 @@ class Flavor_Addon_Marketplace {
         check_ajax_referer('flavor_marketplace_nonce', 'nonce');
 
         if (!current_user_can('install_plugins')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $slug = sanitize_text_field($_POST['slug'] ?? '');
 
         if (empty($slug)) {
-            wp_send_json_error('Slug requerido');
+            wp_send_json_error(__('Slug requerido', 'flavor-chat-ia'));
         }
 
         // Obtener URL de descarga
         $addon = $this->fetch_addon_details($slug);
 
         if (!$addon || empty($addon['download_url'])) {
-            wp_send_json_error('No se pudo obtener URL de descarga');
+            wp_send_json_error(__('No se pudo obtener URL de descarga', 'flavor-chat-ia'));
         }
 
         // Usar WordPress upgrader
@@ -735,7 +735,7 @@ class Flavor_Addon_Marketplace {
         check_ajax_referer('flavor_marketplace_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $search = sanitize_text_field($_POST['search'] ?? '');

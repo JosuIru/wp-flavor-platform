@@ -12,11 +12,11 @@ $categorias = $categorias ?? [];
 <div class="flavor-frontend flavor-participacion-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-800">Filtrar propuestas</h3>
+            <h3 class="text-lg font-bold text-gray-800"><?php echo esc_html__('Filtrar propuestas', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
             <button class="text-sm text-amber-600 hover:text-amber-700 font-medium"
                     onclick="flavorParticipacion.limpiarFiltros()">
-                Limpiar filtros
+                <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -24,7 +24,7 @@ $categorias = $categorias ?? [];
         <form id="filtros-participacion" class="space-y-6">
             <!-- Estado -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_estado = [
@@ -47,7 +47,7 @@ $categorias = $categorias ?? [];
 
             <!-- Categoria -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_categoria = [
@@ -70,30 +70,30 @@ $categorias = $categorias ?? [];
 
             <!-- Fecha -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></label>
                 <select name="fecha" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
-                    <option value="">Cualquier fecha</option>
-                    <option value="hoy" <?php echo ($filtros_activos['fecha'] ?? '') === 'hoy' ? 'selected' : ''; ?>>Hoy</option>
-                    <option value="semana" <?php echo ($filtros_activos['fecha'] ?? '') === 'semana' ? 'selected' : ''; ?>>Esta semana</option>
-                    <option value="mes" <?php echo ($filtros_activos['fecha'] ?? '') === 'mes' ? 'selected' : ''; ?>>Este mes</option>
-                    <option value="trimestre" <?php echo ($filtros_activos['fecha'] ?? '') === 'trimestre' ? 'selected' : ''; ?>>Ultimos 3 meses</option>
+                    <option value=""><?php echo esc_html__('Cualquier fecha', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('hoy', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'hoy' ? 'selected' : ''; ?>><?php echo esc_html__('Hoy', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('semana', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'semana' ? 'selected' : ''; ?>><?php echo esc_html__('Esta semana', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('mes', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'mes' ? 'selected' : ''; ?>><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('trimestre', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['fecha'] ?? '') === 'trimestre' ? 'selected' : ''; ?>><?php echo esc_html__('Ultimos 3 meses', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <!-- Ordenar -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Ordenar por</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?></label>
                 <select name="ordenar" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
-                    <option value="recientes" <?php echo ($filtros_activos['ordenar'] ?? '') === 'recientes' ? 'selected' : ''; ?>>Mas recientes</option>
-                    <option value="votadas" <?php echo ($filtros_activos['ordenar'] ?? '') === 'votadas' ? 'selected' : ''; ?>>Mas votadas</option>
-                    <option value="comentadas" <?php echo ($filtros_activos['ordenar'] ?? '') === 'comentadas' ? 'selected' : ''; ?>>Mas comentadas</option>
+                    <option value="<?php echo esc_attr__('recientes', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'recientes' ? 'selected' : ''; ?>><?php echo esc_html__('Mas recientes', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('votadas', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'votadas' ? 'selected' : ''; ?>><?php echo esc_html__('Mas votadas', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('comentadas', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['ordenar'] ?? '') === 'comentadas' ? 'selected' : ''; ?>><?php echo esc_html__('Mas comentadas', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <!-- Boton aplicar -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-amber-600 hover:to-orange-700 transition-all shadow-md">
-                Aplicar filtros
+                <?php echo esc_html__('Aplicar filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

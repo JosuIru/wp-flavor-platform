@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/models/models.dart';
+import '../../../core/widgets/common_widgets.dart';
 import 'camp_form_screen.dart';
 import 'camp_inscriptions_screen.dart';
 
@@ -18,6 +21,7 @@ class CampsManagementScreen extends ConsumerStatefulWidget {
 
 class _CampsManagementScreenState
     extends ConsumerState<CampsManagementScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   List<Map<String, dynamic>> _camps = [];
   bool _isLoading = false;
 
@@ -85,21 +89,21 @@ class _CampsManagementScreenState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar campamento'),
+        title: Text(i18n.eliminarCampamento01a566),
         content: Text(
           '¿Estás seguro de eliminar "$title"?\n\nEsta acción no se puede deshacer.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: Colors.red,
             ),
-            child: const Text('Eliminar'),
+            child: Text(i18n.eliminar5b5c9f),
           ),
         ],
       ),
@@ -114,8 +118,7 @@ class _CampsManagementScreenState
       _loadCamps(); // Recargar lista
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Campamento eliminado correctamente'),
+          SnackBar(content: Text(i18n.campamentoEliminadoCorrectamenteEe685d),
             backgroundColor: Colors.green,
           ),
         );
@@ -145,13 +148,12 @@ class _CampsManagementScreenState
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Compartir: $title'),
+          title: Text(i18n.campsShareTitle(title)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Enlace web:',
+              Text(AppLocalizations.of(context)!.enlaceWeb,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -164,13 +166,12 @@ class _CampsManagementScreenState
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: shareableUrl));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Enlace copiado al portapapeles'),
+                          SnackBar(content: Text(i18n.enlaceCopiadoAlPortapapelesBdfefc),
                           ),
                         );
                       },
                       icon: const Icon(Icons.copy),
-                      label: const Text('Copiar'),
+                      label: Text(i18n.copiar0816bd),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -183,7 +184,7 @@ class _CampsManagementScreenState
                         );
                       },
                       icon: const Icon(Icons.share),
-                      label: const Text('Compartir'),
+                      label: Text(i18n.compartirFba5ba),
                     ),
                   ),
                 ],
@@ -191,8 +192,7 @@ class _CampsManagementScreenState
               const SizedBox(height: 16),
               const Divider(),
               const SizedBox(height: 8),
-              const Text(
-                'Enlace para app móvil:',
+              Text(AppLocalizations.of(context)!.enlaceParaAppMovil,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -202,20 +202,19 @@ class _CampsManagementScreenState
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: appDeeplink));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Deeplink copiado al portapapeles'),
+                    SnackBar(content: Text(i18n.deeplinkCopiadoAlPortapapeles3bd450),
                     ),
                   );
                 },
                 icon: const Icon(Icons.copy),
-                label: const Text('Copiar deeplink'),
+                label: Text(i18n.copiarDeeplinkE589f8),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cerrar'),
+              child: Text(i18n.cerrar92eb39),
             ),
           ],
         ),
@@ -251,51 +250,57 @@ class _CampsManagementScreenState
   }
 
   // Conversión temporal de Map a Camp (necesario para el formulario)
-  _convertToCampModel(Map<String, dynamic> data) {
-    // Aquí deberíamos usar Camp.fromJson pero como solo tenemos
-    // datos parciales del admin endpoint, creamos un objeto mínimo
-    // En producción, sería mejor obtener el campamento completo
-    return null; // TODO: implementar conversión completa
+  Camp _convertToCampModel(Map<String, dynamic> data) {
+    // Usamos Camp.fromJson con datos parciales del endpoint admin.
+    // Los campos faltantes se rellenan con defaults del modelo.
+    final safe = Map<String, dynamic>.from(data);
+    return Camp.fromJson({
+      'id': safe['id'] ?? 0,
+      'title': safe['title'] ?? '',
+      'slug': safe['slug'] ?? '',
+      'excerpt': safe['excerpt'] ?? '',
+      'description': safe['description'],
+      'featured_image': safe['featured_image'] ?? safe['featuredImage'] ?? '',
+      'categories': safe['categories'] ?? [],
+      'ages': safe['ages'] ?? [],
+      'languages': safe['languages'] ?? [],
+      'price': safe['price'] ?? 0,
+      'price_total': safe['price_total'] ?? 0,
+      'duration': safe['duration'] ?? '',
+      'label': safe['label'],
+      'inscription_open': safe['inscription_open'] ?? true,
+      'inscription_count': safe['inscription_count'] ?? 0,
+      'capacity': safe['capacity'],
+      'dates': safe['dates'],
+      'schedule': safe['schedule'],
+      'location': safe['location'],
+      'gallery': safe['gallery'],
+      'category_color': safe['category_color'],
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de Campamentos'),
+        title: Text(i18n.gestiNDeCampamentos247af6),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _createOrEditCamp(),
         icon: const Icon(Icons.add),
-        label: const Text('Nuevo'),
+        label: Text(i18n.nuevo73fa04),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? LoadingScreen(message: i18n.loadingCamps)
           : _camps.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.event_busy,
-                        size: 64,
-                        color: Colors.grey[400],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No hay campamentos',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      FilledButton.icon(
-                        onPressed: () => _createOrEditCamp(),
-                        icon: const Icon(Icons.add),
-                        label: const Text('Crear primero'),
-                      ),
-                    ],
+              ? EmptyScreen(
+                  message: 'No hay campamentos',
+                  icon: Icons.event_busy,
+                  action: FilledButton.icon(
+                    onPressed: () => _createOrEditCamp(),
+                    icon: const Icon(Icons.add),
+                    label: Text(i18n.crearPrimeroE98bb6),
                   ),
                 )
               : RefreshIndicator(
@@ -358,6 +363,7 @@ class _CampManagementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final inscriptionOpen = camp['inscription_open'] == true;
     final inscriptionCount = camp['inscription_count'] ?? 0;
     final priceTotal = camp['price_total'] ?? 0.0;
@@ -400,7 +406,7 @@ class _CampManagementCard extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 4),
-                Text('${priceTotal.toStringAsFixed(2)}€'),
+                Text(i18n.commonPriceEur(priceTotal.toStringAsFixed(2))),
               ],
             ),
             trailing: Column(
@@ -411,7 +417,7 @@ class _CampManagementCard extends StatelessWidget {
                   '$inscriptionCount',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const Text('inscripciones', style: TextStyle(fontSize: 11)),
+                Text(i18n.campsInscriptionsLabel, style: const TextStyle(fontSize: 11)),
               ],
             ),
           ),
@@ -427,19 +433,19 @@ class _CampManagementCard extends StatelessWidget {
                 IconButton.outlined(
                   onPressed: onViewInscriptions,
                   icon: const Icon(Icons.people),
-                  tooltip: 'Ver inscripciones',
+                  tooltip: i18n.verInscripcionesB46dd7,
                 ),
                 // Editar
                 IconButton.outlined(
                   onPressed: onEdit,
                   icon: const Icon(Icons.edit),
-                  tooltip: 'Editar',
+                  tooltip: i18n.editarEf485e,
                 ),
                 // Compartir
                 IconButton.outlined(
                   onPressed: onShare,
                   icon: const Icon(Icons.share),
-                  tooltip: 'Compartir',
+                  tooltip: i18n.compartirFba5ba,
                 ),
                 // Toggle estado
                 IconButton.outlined(
@@ -459,7 +465,7 @@ class _CampManagementCard extends StatelessWidget {
                 IconButton.outlined(
                   onPressed: onDelete,
                   icon: const Icon(Icons.delete),
-                  tooltip: 'Eliminar',
+                  tooltip: i18n.eliminar5b5c9f,
                   style: IconButton.styleFrom(
                     foregroundColor: Colors.red,
                   ),

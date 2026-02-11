@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header -->
     <div class="bg-gradient-to-r from-purple-600 to-violet-600 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Cursos y Talleres</h1>
-            <p class="text-white/90 text-lg">Aprende nuevas habilidades con tus vecinos</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Cursos y Talleres', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Aprende nuevas habilidades con tus vecinos', 'flavor-chat-ia'); ?></p>
             <div class="mt-4 flex items-center gap-4 text-white/80 text-sm">
                 <span><?php echo esc_html($total_cursos); ?> cursos disponibles</span>
             </div>
@@ -37,26 +37,26 @@ $por_pagina = $por_pagina ?? 12;
                 <!-- Tabs -->
                 <div class="flex items-center gap-4 mb-6 border-b border-gray-200">
                     <button class="px-4 py-3 font-semibold text-purple-600 border-b-2 border-purple-500">
-                        Proximos
+                        <?php echo esc_html__('Proximos', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="px-4 py-3 font-semibold text-gray-500 hover:text-purple-600">
-                        En curso
+                        <?php echo esc_html__('En curso', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="px-4 py-3 font-semibold text-gray-500 hover:text-purple-600">
-                        Online
+                        <?php echo esc_html__('Online', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
 
                 <!-- Ordenacion -->
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-gray-600">
-                        Mostrando <span class="font-semibold"><?php echo count($cursos); ?></span> de <?php echo esc_html($total_cursos); ?> cursos
+                        <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($cursos); ?></span> de <?php echo esc_html($total_cursos); ?> cursos
                     </p>
                     <select class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:ring-2 focus:ring-purple-500">
-                        <option>Fecha: mas proximos</option>
-                        <option>Precio: menor a mayor</option>
-                        <option>Mejor valorados</option>
-                        <option>Mas inscritos</option>
+                        <option><?php echo esc_html__('Fecha: mas proximos', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Precio: menor a mayor', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mejor valorados', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mas inscritos', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -65,8 +65,8 @@ $por_pagina = $por_pagina ?? 12;
                         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay cursos disponibles</h3>
-                        <p class="text-gray-500">Prueba a modificar los filtros</p>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay cursos disponibles', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-gray-500"><?php echo esc_html__('Prueba a modificar los filtros', 'flavor-chat-ia'); ?></p>
                     </div>
                 <?php else: ?>
                     <!-- Grid de cursos -->
@@ -89,9 +89,9 @@ $por_pagina = $por_pagina ?? 12;
 
                                     <!-- Badge -->
                                     <?php if (!empty($curso['gratuito'])): ?>
-                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-green-500 text-white">Gratuito</span>
+                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-green-500 text-white"><?php echo esc_html__('Gratuito', 'flavor-chat-ia'); ?></span>
                                     <?php elseif (!empty($curso['plazas_limitadas'])): ?>
-                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-orange-500 text-white">Ultimas plazas</span>
+                                        <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-orange-500 text-white"><?php echo esc_html__('Ultimas plazas', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
                                 </div>
 
@@ -124,7 +124,7 @@ $por_pagina = $por_pagina ?? 12;
                                         <a href="<?php echo esc_url($curso['url'] ?? '#'); ?>"
                                            class="px-4 py-2 rounded-xl text-white font-semibold text-sm transition-all hover:scale-105"
                                            style="background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);">
-                                            Inscribirse
+                                            <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
                                         </a>
                                     </div>
                                 </div>

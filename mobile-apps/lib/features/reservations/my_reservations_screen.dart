@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -121,6 +122,7 @@ class MyReservationsScreen extends ConsumerStatefulWidget {
 }
 
 class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   final _emailController = TextEditingController();
   final _codeController = TextEditingController();
   bool _isOffline = false;
@@ -219,8 +221,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
         if (mounted) {
           Navigator.pop(context); // Cerrar diálogo de código
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('✓ Email verificado correctamente'),
+            SnackBar(content: Text(i18n.emailVerificadoCorrectamente13db6f),
               backgroundColor: Colors.green,
             ),
           );
@@ -254,13 +255,13 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Ingresa tu email para ver tus tickets. Te enviaremos un código de verificación.'),
+              Text(i18n.ticketsEmailPrompt),
               const SizedBox(height: 16),
               TextField(
                 controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'tu@email.com',
+                  labelText: i18n.emailCe8ae9,
+                  hintText: i18n.tuEmailComE48501,
                   prefixIcon: const Icon(Icons.email),
                   errorText: _verificationError,
                 ),
@@ -270,7 +271,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
               ),
               if (_isSendingCode) ...[
                 const SizedBox(height: 16),
-                const Row(
+                Row(
                   children: [
                     SizedBox(
                       width: 16,
@@ -278,7 +279,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
                     SizedBox(width: 12),
-                    Text('Enviando código...'),
+                    Text(i18n.enviandoCDigo36cd31),
                   ],
                 ),
               ],
@@ -287,7 +288,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
           actions: [
             TextButton(
               onPressed: _isSendingCode ? null : () => Navigator.pop(context),
-              child: const Text('Cancelar'),
+              child: Text(i18n.commonCancel),
             ),
             FilledButton(
               onPressed: _isSendingCode
@@ -303,7 +304,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                         });
                       }
                     },
-              child: const Text('Enviar código'),
+              child: Text(i18n.sendCodeLabel),
             ),
           ],
         ),
@@ -320,18 +321,18 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
       barrierDismissible: false,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: const Text('Código de verificación'),
+          title: Text(i18n.verificationCodeLabel),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Hemos enviado un código de 6 dígitos a:\n$_pendingEmail'),
+              Text(i18n.reservationsOtpSent(_pendingEmail ?? '')),
               const SizedBox(height: 16),
               TextField(
                 controller: _codeController,
                 decoration: InputDecoration(
-                  labelText: 'Código',
-                  hintText: '000000',
+                  labelText: i18n.cDigoC54e67,
+                  hintText: i18n.t000000670b14,
                   prefixIcon: const Icon(Icons.lock),
                   errorText: _verificationError,
                   counterText: '',
@@ -358,7 +359,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
               ),
               if (_isVerifying) ...[
                 const SizedBox(height: 16),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
@@ -367,7 +368,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
                     SizedBox(width: 12),
-                    Text('Verificando...'),
+                    Text(i18n.verificando1361c9),
                   ],
                 ),
               ],
@@ -380,7 +381,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                           _sendVerificationCode(_pendingEmail!);
                           setDialogState(() {});
                         },
-                  child: const Text('Reenviar código'),
+                  child: Text(i18n.resendCodeLabel),
                 ),
               ),
             ],
@@ -394,7 +395,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                       _codeController.clear();
                       Navigator.pop(context);
                     },
-              child: const Text('Cancelar'),
+              child: Text(i18n.commonCancel),
             ),
             FilledButton(
               onPressed: _isVerifying
@@ -405,7 +406,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                         setDialogState(() {});
                       }
                     },
-              child: const Text('Verificar'),
+              child: Text(i18n.verificar8e93d9),
             ),
           ],
         ),
@@ -415,18 +416,19 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final emailAsync = ref.watch(savedClientEmailProvider);
     final reservationsAsync = ref.watch(myReservationsProvider);
     final clientEmail = ref.watch(clientEmailProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Tickets'),
+        title: Text(i18n.misTicketsD730aa),
         actions: [
           IconButton(
             onPressed: () => _showEmailDialog(isChange: true),
             icon: const Icon(Icons.person),
-            tooltip: 'Cambiar email',
+            tooltip: i18n.cambiarEmailC3a46a,
           ),
           IconButton(
             onPressed: () {
@@ -493,13 +495,12 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.orange.shade200),
                         ),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Icon(Icons.wifi_off, color: Colors.orange, size: 20),
                             SizedBox(width: 8),
                             Expanded(
-                              child: Text(
-                                'Modo offline - mostrando tickets guardados',
+                              child: Text(AppLocalizations.of(context)!.modoOfflineMostrandoTicketsGuardados,
                                 style: TextStyle(color: Colors.orange),
                               ),
                             ),
@@ -532,8 +533,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                               children: [
                                 Text(email, style: const TextStyle(fontSize: 13)),
                                 if (isVerified)
-                                  Text(
-                                    'Email verificado',
+                                  Text(AppLocalizations.of(context)!.emailVerificado,
                                     style: TextStyle(
                                       fontSize: 11,
                                       color: Colors.green.shade700,
@@ -545,7 +545,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                           ),
                           TextButton(
                             onPressed: () => _showEmailDialog(isChange: true),
-                            child: const Text('Cambiar'),
+                            child: Text(i18n.cambiarD1bdc3),
                           ),
                         ],
                       ),
@@ -616,16 +616,14 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            Text(
-              'Verificación requerida',
+            Text(AppLocalizations.of(context)!.verificacionRequerida,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
-              'Para ver tus tickets, necesitas verificar tu email.',
+            Text(AppLocalizations.of(context)!.paraVerTusTicketsNecesitasVerificarTuEmail,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
@@ -647,13 +645,13 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                     : ref.read(clientEmailProvider) ?? '');
               },
               icon: const Icon(Icons.send),
-              label: const Text('Enviar código de verificación'),
+              label: Text(i18n.enviarCDigoDeVerificaciNEd6c4b),
             ),
             const SizedBox(height: 12),
             OutlinedButton.icon(
               onPressed: () => _showEmailDialog(isChange: true),
               icon: const Icon(Icons.edit),
-              label: const Text('Usar otro email'),
+              label: Text(i18n.usarOtroEmail7573e1),
             ),
           ],
         ),
@@ -674,16 +672,14 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
               color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
             ),
             const SizedBox(height: 24),
-            Text(
-              'Tu billetera de tickets',
+            Text(AppLocalizations.of(context)!.tuBilleteraDeTickets,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
-              'Verifica tu email para acceder a tus tickets de forma segura',
+            Text(AppLocalizations.of(context)!.verificaTuEmailParaAccederATusTicketsDeFormaSegura,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
@@ -693,7 +689,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
             FilledButton.icon(
               onPressed: () => _showEmailDialog(),
               icon: const Icon(Icons.email),
-              label: const Text('Verificar email'),
+              label: Text(i18n.verificarEmailDa92ce),
             ),
           ],
         ),
@@ -714,8 +710,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
               color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'No tienes reservas',
+            Text(i18n.noTienesReservas,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -732,8 +727,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                 children: [
                   Icon(Icons.verified, size: 16, color: Colors.green.shade600),
                   const SizedBox(width: 4),
-                  Text(
-                    'Email verificado',
+                  Text(i18n.emailVerificado,
                     style: TextStyle(
                       color: Colors.green.shade600,
                       fontSize: 12,
@@ -746,7 +740,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
             OutlinedButton.icon(
               onPressed: () => _showEmailDialog(isChange: true),
               icon: const Icon(Icons.edit),
-              label: const Text('Cambiar email'),
+              label: Text(i18n.cambiarEmailC3a46a),
             ),
           ],
         ),
@@ -763,20 +757,18 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
           children: [
             const Icon(Icons.wifi_off, size: 64, color: Colors.orange),
             const SizedBox(height: 16),
-            const Text(
-              'Sin conexión',
+            Text(i18n.sinConexion,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Mostrando tickets guardados en el dispositivo',
+            Text(i18n.mostrandoTicketsGuardadosEnElDispositivo,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             OutlinedButton.icon(
               onPressed: () => ref.invalidate(myReservationsProvider),
               icon: const Icon(Icons.refresh),
-              label: const Text('Reintentar'),
+              label: Text(i18n.reintentar179654),
             ),
           ],
         ),
@@ -827,6 +819,7 @@ class _ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -893,7 +886,7 @@ class _ReservationCard extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: () => _showQR(context),
                         icon: const Icon(Icons.qr_code, size: 18),
-                        label: const Text('Ver QR'),
+                        label: Text(i18n.verQr93c2a8),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -901,7 +894,7 @@ class _ReservationCard extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: () => _addToCalendar(context),
                         icon: const Icon(Icons.calendar_month, size: 18),
-                        label: const Text('Calendario'),
+                        label: Text(i18n.calendarioB0743a),
                       ),
                     ),
                   ],
@@ -933,6 +926,7 @@ class _ReservationCard extends StatelessWidget {
   }
 
   void _addToCalendar(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     try {
       final date = DateTime.parse(reservation.date);
       final event = Event(
@@ -944,7 +938,7 @@ class _ReservationCard extends StatelessWidget {
       Add2Calendar.addEvent2Cal(event);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al añadir al calendario')),
+        SnackBar(content: Text(i18n.errorAlAAdirAlCalendario030367)),
       );
     }
   }
@@ -957,6 +951,7 @@ class _QRDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -992,8 +987,7 @@ class _QRDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              'Muestra este código en la entrada',
+            Text(AppLocalizations.of(context)!.muestraEsteCodigoEnLaEntrada,
               style: Theme.of(context).textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),
@@ -1008,14 +1002,14 @@ class _QRDialog extends StatelessWidget {
                       );
                     },
                     icon: const Icon(Icons.share),
-                    label: const Text('Compartir'),
+                    label: Text(i18n.compartirFba5ba),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: FilledButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Cerrar'),
+                    child: Text(i18n.cerrar92eb39),
                   ),
                 ),
               ],
@@ -1034,6 +1028,7 @@ class _ReservationDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return DraggableScrollableSheet(
@@ -1148,7 +1143,7 @@ class _ReservationDetailsSheet extends StatelessWidget {
                             );
                           },
                           icon: const Icon(Icons.share),
-                          label: const Text('Compartir'),
+                          label: Text(i18n.compartirFba5ba),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -1169,7 +1164,7 @@ class _ReservationDetailsSheet extends StatelessWidget {
                             }
                           },
                           icon: const Icon(Icons.calendar_month),
-                          label: const Text('Añadir'),
+                          label: Text(i18n.aAdirD20f65),
                         ),
                       ),
                     ],
@@ -1209,6 +1204,7 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(

@@ -11,12 +11,11 @@
 /**
  * Inicializa el componente de orquestador cuando Alpine esta listo
  */
-document.addEventListener('alpine:init', () => {
-    Alpine.data('flavorTemplateOrchestrator', () => ({
+const flavorTemplateOrchestratorFactory = () => ({
         // Estado del modal de preview
         mostrarPreviewModal: false,
         plantillaSeleccionadaId: null,
-        plantillaSeleccionadaData: null,
+        plantillaSeleccionadaData: {},
 
         // Estado de modulos seleccionados para instalar
         modulosSeleccionados: [],
@@ -43,6 +42,30 @@ document.addEventListener('alpine:init', () => {
          */
         init() {
             this.inicializarPasosInstalacion();
+            this.asegurarInstanciasUnicasModal();
+        },
+
+        /**
+         * Evita duplicados de modal/progreso en el DOM si fueron renderizados mas de una vez
+         */
+        asegurarInstanciasUnicasModal() {
+            const wrapper = document.querySelector('.flavor-composer-wrapper');
+            if (!wrapper) {
+                return;
+            }
+
+            ['.flavor-template-modal', '.flavor-template-progress'].forEach(selector => {
+                const nodos = wrapper.querySelectorAll(selector);
+                if (nodos.length <= 1) {
+                    return;
+                }
+
+                nodos.forEach((nodo, indice) => {
+                    if (indice > 0) {
+                        nodo.remove();
+                    }
+                });
+            });
         },
 
         /**
@@ -93,12 +116,16 @@ document.addEventListener('alpine:init', () => {
          * Calcula el porcentaje de progreso
          */
         get porcentajeProgreso() {
-            if (this.hayError) {
-                const completados = this.pasosInstalacion.filter(paso => paso.estado === 'completado').length;
-                return Math.round((completados / this.pasosInstalacion.length) * 100);
+            const totalPasos = this.pasosInstalacion.length;
+            if (!totalPasos) {
+                return 0;
             }
 
-            const totalPasos = this.pasosInstalacion.length;
+            if (this.hayError) {
+                const completados = this.pasosInstalacion.filter(paso => paso.estado === 'completado').length;
+                return Math.round((completados / totalPasos) * 100);
+            }
+
             const completados = this.pasosInstalacion.filter(paso =>
                 paso.estado === 'completado' || paso.estado === 'omitido'
             ).length;
@@ -153,7 +180,11 @@ document.addEventListener('alpine:init', () => {
                 const datos = await respuesta.json();
 
                 if (datos.success) {
-                    this.plantillaSeleccionadaData = datos.data;
+                    this.plantillaSeleccionadaData = {
+                        ...datos.data,
+                        modulos_requeridos: this.normalizarListaModulos(datos.data?.modulos_requeridos),
+                        modulos_opcionales: this.normalizarListaModulos(datos.data?.modulos_opcionales)
+                    };
                     this.mostrarPreviewModal = true;
                 } else {
                     this.mostrarNotificacion(
@@ -177,6 +208,78 @@ document.addEventListener('alpine:init', () => {
             this.mostrarPreviewModal = false;
             this.plantillaSeleccionadaId = null;
             this.plantillaSeleccionadaData = null;
+        },
+
+        /**
+         * Normaliza una lista de modulos eliminando vacios y duplicados
+         *
+         * @param {Array} modulos
+         * @returns {Array}
+         */
+        normalizarListaModulos(modulos) {
+            if (!Array.isArray(modulos)) {
+                return [];
+            }
+
+            const unicos = [];
+            const vistos = new Set();
+
+            modulos.forEach(modulo => {
+                const id = typeof modulo === 'string'
+                    ? modulo
+                        .trim()
+                        .toLowerCase()
+                        .replace(/[\s-]+/g, '_')
+                        .replace(/_+/g, '_')
+                        .replace(/^_+|_+$/g, '')
+                    : '';
+                if (!id || vistos.has(id)) {
+                    return;
+                }
+                vistos.add(id);
+                unicos.push(id);
+            });
+
+            return unicos;
+        },
+
+        /**
+         * Obtiene la lista unica de modulos requeridos para el preview
+         *
+         * @returns {Array}
+         */
+        obtenerModulosRequeridosPreview() {
+            return this.normalizarListaModulos(this.plantillaSeleccionadaData?.modulos_requeridos);
+        },
+
+        /**
+         * Obtiene la lista unica de modulos opcionales para el preview
+         *
+         * @returns {Array}
+         */
+        obtenerModulosOpcionalesPreview() {
+            return this.normalizarListaModulos(this.plantillaSeleccionadaData?.modulos_opcionales);
+        },
+
+        /**
+         * Verifica si todos los modulos opcionales estan seleccionados
+         *
+         * @returns {boolean}
+         */
+        todosOpcionalesSeleccionados() {
+            const modulosOpcionales = this.obtenerModulosOpcionalesPreview();
+            return modulosOpcionales.length > 0 &&
+                modulosOpcionales.every(modulo => this.modulosSeleccionados.includes(modulo));
+        },
+
+        /**
+         * Selecciona o deselecciona todos los modulos opcionales
+         *
+         * @param {boolean} seleccionarTodos - true para seleccionar todo, false para limpiar
+         */
+        toggleTodosOpcionales(seleccionarTodos) {
+            const modulosOpcionales = this.obtenerModulosOpcionalesPreview();
+            this.modulosSeleccionados = seleccionarTodos ? [...modulosOpcionales] : [];
         },
 
         /**
@@ -252,7 +355,11 @@ document.addEventListener('alpine:init', () => {
                     console.error(`Error en paso ${pasoId}:`, error);
                     this.actualizarProgreso(pasoId, 'error');
                     this.hayError = true;
-                    this.mensajeError = this.datosOrquestador.i18n?.errorGeneral || 'Error de conexion durante la instalacion';
+                    if (error.name === 'AbortError') {
+                        this.mensajeError = this.datosOrquestador.i18n?.errorGeneral || 'Tiempo de espera agotado durante la instalacion';
+                    } else {
+                        this.mensajeError = this.datosOrquestador.i18n?.errorGeneral || 'Error de conexion durante la instalacion';
+                    }
                     break;
                 }
             }
@@ -280,10 +387,19 @@ document.addEventListener('alpine:init', () => {
             formData.append('cargar_demo', opciones.cargar_demo ? '1' : '0');
             formData.append('_wpnonce', opciones._wpnonce);
 
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 20000);
+
             const respuesta = await fetch(this.datosOrquestador.ajaxUrl || ajaxurl, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                signal: controller.signal
             });
+            clearTimeout(timeoutId);
+
+            if (!respuesta.ok) {
+                throw new Error(`HTTP ${respuesta.status}`);
+            }
 
             return await respuesta.json();
         },
@@ -368,8 +484,13 @@ document.addEventListener('alpine:init', () => {
         esperar(milisegundos) {
             return new Promise(resolve => setTimeout(resolve, milisegundos));
         }
-    }));
+    });
+
+document.addEventListener('alpine:init', () => {
+    Alpine.data('flavorTemplateOrchestrator', flavorTemplateOrchestratorFactory);
 });
+
+window.flavorTemplateOrchestrator = flavorTemplateOrchestratorFactory;
 
 /**
  * Funcion global para abrir el preview de una plantilla

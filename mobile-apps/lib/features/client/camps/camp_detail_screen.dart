@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/api/api_client.dart';
@@ -20,6 +21,7 @@ class CampDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   Camp? _camp;
   bool _isLoading = true;
 
@@ -45,7 +47,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(response.error ?? 'Error al cargar campamento'),
+            content: Text(response.error ?? i18n.campDetailLoadError),
             backgroundColor: Colors.red,
           ),
         );
@@ -58,8 +60,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
 
     if (_camp!.isClosed) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Las inscripciones están cerradas'),
+        SnackBar(content: Text(i18n.lasInscripcionesEstNCerradas4a5c6d),
           backgroundColor: Colors.orange,
         ),
       );
@@ -68,8 +69,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
 
     if (_camp!.isFull) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('El campamento está completo'),
+        SnackBar(content: Text(i18n.elCampamentoEstCompleto98127c),
           backgroundColor: Colors.orange,
         ),
       );
@@ -86,18 +86,19 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: CircularProgressIndicator()),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_camp == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(
-          child: Text('No se encontró el campamento'),
+        body: Center(
+          child: Text(i18n.noSeEncontrElCampamentoA8179a),
         ),
       );
     }
@@ -208,7 +209,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                       // Plazas disponibles
                       if (!camp.isClosed && !camp.isFull)
                         Chip(
-                          label: Text('${camp.availablePlaces} plazas'),
+                          label: Text(i18n.commonPlacesAvailable(camp.availablePlaces)),
                           backgroundColor: Colors.grey[200],
                         ),
                     ],
@@ -225,7 +226,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                       if (camp.categories.isNotEmpty) ...[
                         _InfoRow(
                           icon: Icons.category,
-                          label: 'Categoría',
+                          label: i18n.campDetailCategoryLabel,
                           value: camp.categoriesText,
                         ),
                         const SizedBox(height: 12),
@@ -235,7 +236,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                       if (camp.ages.isNotEmpty) ...[
                         _InfoRow(
                           icon: Icons.child_care,
-                          label: 'Edades',
+                          label: i18n.campDetailAgesLabel,
                           value: camp.agesText,
                         ),
                         const SizedBox(height: 12),
@@ -245,7 +246,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                       if (camp.languages.isNotEmpty) ...[
                         _InfoRow(
                           icon: Icons.language,
-                          label: 'Idiomas',
+                          label: i18n.campDetailLanguagesLabel,
                           value: camp.languagesText,
                         ),
                         const SizedBox(height: 12),
@@ -254,7 +255,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                       // Duración
                       _InfoRow(
                         icon: Icons.schedule,
-                        label: 'Duración',
+                        label: i18n.campDetailDurationLabel,
                         value: camp.duration,
                       ),
                       const SizedBox(height: 12),
@@ -263,7 +264,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                       if (camp.dates != null) ...[
                         _InfoRow(
                           icon: Icons.calendar_today,
-                          label: 'Fechas',
+                          label: i18n.campDetailDatesLabel,
                           value: '${camp.dates!.start} - ${camp.dates!.end}',
                         ),
                         const SizedBox(height: 12),
@@ -280,8 +281,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Precios',
+                      Text(AppLocalizations.of(context)!.precios,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 12),
@@ -291,8 +291,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Inscripción',
+                              Text(AppLocalizations.of(context)!.inscripcion2,
                                 style: TextStyle(color: Colors.grey[600]),
                               ),
                               const SizedBox(height: 4),
@@ -305,8 +304,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(
-                                'Total',
+                              Text(AppLocalizations.of(context)!.total,
                                 style: TextStyle(color: Colors.grey[600]),
                               ),
                               const SizedBox(height: 4),
@@ -338,8 +336,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Descripción',
+                        Text(AppLocalizations.of(context)!.descripcion,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 12),
@@ -362,28 +359,28 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                           camp.dates!.schedule!.isNotEmpty)
                         _InfoCard(
                           icon: Icons.access_time,
-                          title: 'Horario',
+                          title: i18n.campDetailScheduleTitle,
                           content: camp.dates!.schedule!,
                         ),
                       if (camp.dates?.location != null &&
                           camp.dates!.location!.isNotEmpty)
                         _InfoCard(
                           icon: Icons.location_on,
-                          title: 'Ubicación',
+                          title: i18n.campDetailLocationTitle,
                           content: camp.dates!.location!,
                         ),
                       if (camp.dates?.includes != null &&
                           camp.dates!.includes!.isNotEmpty)
                         _InfoCard(
                           icon: Icons.check_circle,
-                          title: 'Qué incluye',
+                          title: i18n.campDetailIncludesTitle,
                           content: camp.dates!.includes!,
                         ),
                       if (camp.dates?.requirements != null &&
                           camp.dates!.requirements!.isNotEmpty)
                         _InfoCard(
                           icon: Icons.info,
-                          title: 'Requisitos',
+                          title: i18n.campDetailRequirementsTitle,
                           content: camp.dates!.requirements!,
                         ),
                     ],
@@ -414,10 +411,10 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
             icon: const Icon(Icons.app_registration),
             label: Text(
               camp.isClosed
-                  ? 'Inscripciones cerradas'
+                  ? i18n.campDetailClosedLabel
                   : camp.isFull
-                      ? 'Completo'
-                      : 'Inscribirse',
+                      ? i18n.campDetailFullLabel
+                      : i18n.campDetailEnrollLabel,
             ),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.all(16),
@@ -445,6 +442,7 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Icon(icon, size: 20, color: Colors.grey[600]),
@@ -488,6 +486,7 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(

@@ -284,7 +284,7 @@ class Flavor_Frontend_Tienda_Local_Controller extends Flavor_Frontend_Controller
 
         setcookie('flavor_carrito', json_encode($carrito), time() + 86400 * 7, '/');
 
-        return ['success' => true, 'carrito' => $carrito, 'mensaje' => 'Producto añadido al carrito'];
+        return ['success' => true, 'carrito' => $carrito, 'mensaje' => __('Producto añadido al carrito', 'flavor-chat-ia')];
     }
 
     protected function ajax_get_carrito($data) {

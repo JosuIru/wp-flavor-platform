@@ -130,15 +130,15 @@ $stats = $wpdb->get_row(
     <!-- Filtros -->
     <div class="card" style="padding: 15px; margin: 20px 0;">
         <form method="get" action="">
-            <input type="hidden" name="page" value="flavor-bicicletas-mantenimiento">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-bicicletas-mantenimiento', 'flavor-chat-ia'); ?>">
             <div style="display: flex; gap: 15px; align-items: end; flex-wrap: wrap;">
                 <div>
                     <label for="tipo"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label>
                     <select name="tipo" id="tipo" class="regular-text">
-                        <option value="todos" <?php selected($filtro_tipo, 'todos'); ?>><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="preventivo" <?php selected($filtro_tipo, 'preventivo'); ?>><?php esc_html_e('Preventivo', 'flavor-chat-ia'); ?></option>
-                        <option value="correctivo" <?php selected($filtro_tipo, 'correctivo'); ?>><?php esc_html_e('Correctivo', 'flavor-chat-ia'); ?></option>
-                        <option value="reparacion" <?php selected($filtro_tipo, 'reparacion'); ?>><?php esc_html_e('Reparación', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('todos', 'flavor-chat-ia'); ?>" <?php selected($filtro_tipo, 'todos'); ?>><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('preventivo', 'flavor-chat-ia'); ?>" <?php selected($filtro_tipo, 'preventivo'); ?>><?php esc_html_e('Preventivo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('correctivo', 'flavor-chat-ia'); ?>" <?php selected($filtro_tipo, 'correctivo'); ?>><?php esc_html_e('Correctivo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('reparacion', 'flavor-chat-ia'); ?>" <?php selected($filtro_tipo, 'reparacion'); ?>><?php esc_html_e('Reparación', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
                 <div>

@@ -120,7 +120,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups"></span>
-        Usuarios del Banco de Tiempo
+        <?php echo esc_html__('Usuarios del Banco de Tiempo', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -131,7 +131,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
             <div class="stat-value" style="font-size: 28px; font-weight: bold; color: #2271b1;">
                 <?php echo number_format(count($datos_usuarios)); ?>
             </div>
-            <div class="stat-label" style="color: #646970;">Usuarios Activos</div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Usuarios Activos', 'flavor-chat-ia'); ?></div>
         </div>
 
         <div class="stat-box" style="background: #fff; padding: 16px; border-left: 4px solid #00a32a; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
@@ -141,7 +141,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
                 echo number_format($total_horas_circulando, 1);
                 ?>
             </div>
-            <div class="stat-label" style="color: #646970;">Total Horas Circulando</div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Total Horas Circulando', 'flavor-chat-ia'); ?></div>
         </div>
 
         <div class="stat-box" style="background: #fff; padding: 16px; border-left: 4px solid #8c52ff; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
@@ -152,7 +152,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
                 echo number_format($promedio_saldo, 1);
                 ?>
             </div>
-            <div class="stat-label" style="color: #646970;">Saldo Promedio</div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Saldo Promedio', 'flavor-chat-ia'); ?></div>
         </div>
     </div>
 
@@ -162,20 +162,20 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
             <form method="get" style="display: inline-flex; gap: 8px; align-items: center;">
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
-                <label for="orden">Ordenar por:</label>
+                <label for="orden"><?php echo esc_html__('Ordenar por:', 'flavor-chat-ia'); ?></label>
                 <select name="orden" id="orden" onchange="this.form.submit()">
-                    <option value="saldo_desc" <?php selected($orden, 'saldo_desc'); ?>>Saldo (mayor a menor)</option>
-                    <option value="saldo_asc" <?php selected($orden, 'saldo_asc'); ?>>Saldo (menor a mayor)</option>
-                    <option value="nombre_asc" <?php selected($orden, 'nombre_asc'); ?>>Nombre (A-Z)</option>
-                    <option value="nombre_desc" <?php selected($orden, 'nombre_desc'); ?>>Nombre (Z-A)</option>
-                    <option value="intercambios_desc" <?php selected($orden, 'intercambios_desc'); ?>>Más intercambios</option>
+                    <option value="<?php echo esc_attr__('saldo_desc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'saldo_desc'); ?>><?php echo esc_html__('Saldo (mayor a menor)', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('saldo_asc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'saldo_asc'); ?>><?php echo esc_html__('Saldo (menor a mayor)', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('nombre_asc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre (A-Z)', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('nombre_desc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre (Z-A)', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('intercambios_desc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'intercambios_desc'); ?>><?php echo esc_html__('Más intercambios', 'flavor-chat-ia'); ?></option>
                 </select>
             </form>
         </div>
 
         <div class="alignright actions">
             <button type="button" class="button" id="btn-exportar-usuarios">
-                <span class="dashicons dashicons-download"></span> Exportar CSV
+                <span class="dashicons dashicons-download"></span> <?php echo esc_html__('Exportar CSV', 'flavor-chat-ia'); ?>
             </button>
         </div>
     </div>
@@ -185,15 +185,15 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
         <thead>
             <tr>
                 <th style="width: 50px;">#</th>
-                <th>Usuario</th>
-                <th style="text-align: center;">Servicios<br>Ofrecidos</th>
-                <th style="text-align: center;">Servicios<br>Activos</th>
-                <th style="text-align: right;">Horas<br>Ganadas</th>
-                <th style="text-align: right;">Horas<br>Gastadas</th>
-                <th style="text-align: right;">Saldo<br>Actual</th>
-                <th style="text-align: center;">Intercambios<br>Completados</th>
-                <th style="text-align: center;">Intercambios<br>Pendientes</th>
-                <th style="width: 100px;">Acciones</th>
+                <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Servicios', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Ofrecidos', 'flavor-chat-ia'); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Servicios', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Activos', 'flavor-chat-ia'); ?></th>
+                <th style="text-align: right;"><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Ganadas', 'flavor-chat-ia'); ?></th>
+                <th style="text-align: right;"><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Gastadas', 'flavor-chat-ia'); ?></th>
+                <th style="text-align: right;"><?php echo esc_html__('Saldo', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Actual', 'flavor-chat-ia'); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Intercambios', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Completados', 'flavor-chat-ia'); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Intercambios', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></th>
+                <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -255,7 +255,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
                 <td>
                     <a href="#" class="button button-small ver-historial"
                        data-usuario-id="<?php echo $datos['id']; ?>">
-                        Historial
+                        <?php echo esc_html__('Historial', 'flavor-chat-ia'); ?>
                     </a>
                 </td>
             </tr>
@@ -265,7 +265,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
                 <tr>
                     <td colspan="10" style="text-align: center; padding: 40px; color: #646970;">
                         <span class="dashicons dashicons-info" style="font-size: 48px;"></span>
-                        <p>No hay usuarios con actividad en el banco de tiempo.</p>
+                        <p><?php echo esc_html__('No hay usuarios con actividad en el banco de tiempo.', 'flavor-chat-ia'); ?></p>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -278,14 +278,14 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
 <div id="modal-historial" style="display:none;">
     <div class="modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000;">
         <div class="modal-content" style="position: relative; max-width: 900px; margin: 50px auto; background: #fff; padding: 20px; border-radius: 4px; max-height: 80vh; overflow-y: auto;">
-            <h2>Historial de Usuario</h2>
+            <h2><?php echo esc_html__('Historial de Usuario', 'flavor-chat-ia'); ?></h2>
             <div id="contenido-historial">
                 <p style="text-align: center; padding: 40px;">
                     <span class="spinner is-active"></span>
                 </p>
             </div>
             <p>
-                <button type="button" class="button" id="btn-cerrar-historial">Cerrar</button>
+                <button type="button" class="button" id="btn-cerrar-historial"><?php echo esc_html__('Cerrar', 'flavor-chat-ia'); ?></button>
             </p>
         </div>
     </div>

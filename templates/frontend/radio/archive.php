@@ -18,8 +18,8 @@ $en_directo = $en_directo ?? [];
         <div class="container mx-auto max-w-6xl">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
-                    <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Radio Comunitaria</h1>
-                    <p class="text-white/90 text-lg">La voz de tu barrio, 24 horas</p>
+                    <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Radio Comunitaria', 'flavor-chat-ia'); ?></h1>
+                    <p class="text-white/90 text-lg"><?php echo esc_html__('La voz de tu barrio, 24 horas', 'flavor-chat-ia'); ?></p>
                 </div>
 
                 <!-- Mini reproductor -->
@@ -32,7 +32,7 @@ $en_directo = $en_directo ?? [];
                     <div>
                         <span class="flex items-center gap-2 text-white text-sm">
                             <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                            EN DIRECTO
+                            <?php echo esc_html__('EN DIRECTO', 'flavor-chat-ia'); ?>
                         </span>
                         <p class="text-white font-bold"><?php echo esc_html($en_directo['programa'] ?? 'Radio Barrio'); ?></p>
                     </div>
@@ -44,7 +44,7 @@ $en_directo = $en_directo ?? [];
     <div class="container mx-auto max-w-6xl px-4 py-8">
         <!-- Programacion de hoy -->
         <section class="mb-12">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Programacion de Hoy</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Programacion de Hoy', 'flavor-chat-ia'); ?></h2>
             <div class="bg-white rounded-2xl shadow-md overflow-hidden">
                 <?php
                 $programacion_hoy = [
@@ -68,7 +68,7 @@ $en_directo = $en_directo ?? [];
                         <?php if ($slot['activo']): ?>
                             <span class="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-red-600 text-white">
                                 <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                                AHORA
+                                <?php echo esc_html__('AHORA', 'flavor-chat-ia'); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -79,11 +79,11 @@ $en_directo = $en_directo ?? [];
         <!-- Todos los programas -->
         <section>
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Todos los Programas</h2>
+                <h2 class="text-2xl font-bold text-gray-900"><?php echo esc_html__('Todos los Programas', 'flavor-chat-ia'); ?></h2>
                 <select class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:ring-2 focus:ring-red-500">
-                    <option>Mas escuchados</option>
-                    <option>Alfabetico A-Z</option>
-                    <option>Mas recientes</option>
+                    <option><?php echo esc_html__('Mas escuchados', 'flavor-chat-ia'); ?></option>
+                    <option><?php echo esc_html__('Alfabetico A-Z', 'flavor-chat-ia'); ?></option>
+                    <option><?php echo esc_html__('Mas recientes', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
@@ -92,7 +92,7 @@ $en_directo = $en_directo ?? [];
                     <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                     </svg>
-                    <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay programas disponibles</h3>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay programas disponibles', 'flavor-chat-ia'); ?></h3>
                 </div>
             <?php else: ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -112,7 +112,7 @@ $en_directo = $en_directo ?? [];
                                 <p class="text-sm text-gray-600 mb-3 line-clamp-2"><?php echo esc_html($programa['descripcion'] ?? ''); ?></p>
                                 <a href="<?php echo esc_url($programa['url'] ?? '#'); ?>"
                                    class="text-red-600 font-medium text-sm hover:text-red-700">
-                                    Ver programa →
+                                    <?php echo esc_html__('Ver programa →', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
                         </article>

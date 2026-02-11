@@ -52,7 +52,7 @@ $stats_plataforma = [
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-microphone"></span>
-        Dashboard de Podcasts
+        <?php echo esc_html__('Dashboard de Podcasts', 'flavor-chat-ia'); ?>
     </h1>
 
     <!-- Estadísticas principales -->
@@ -61,7 +61,7 @@ $stats_plataforma = [
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Total Podcasts</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Podcasts', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #2271b1;"><?php echo number_format($total_podcasts); ?></h2>
                 </div>
                 <span class="dashicons dashicons-microphone" style="font-size: 48px; color: #2271b1; opacity: 0.3;"></span>
@@ -71,7 +71,7 @@ $stats_plataforma = [
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Total Episodios</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Episodios', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #00a32a;"><?php echo number_format($total_episodios); ?></h2>
                 </div>
                 <span class="dashicons dashicons-playlist-audio" style="font-size: 48px; color: #00a32a; opacity: 0.3;"></span>
@@ -81,7 +81,7 @@ $stats_plataforma = [
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Total Suscriptores</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Suscriptores', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #8c49d8;"><?php echo number_format($total_suscriptores); ?></h2>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 48px; color: #8c49d8; opacity: 0.3;"></span>
@@ -91,7 +91,7 @@ $stats_plataforma = [
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Reproducciones</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Reproducciones', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #d63638;"><?php echo number_format($total_reproducciones); ?></h2>
                 </div>
                 <span class="dashicons dashicons-controls-play" style="font-size: 48px; color: #d63638; opacity: 0.3;"></span>
@@ -106,7 +106,7 @@ $stats_plataforma = [
         <div class="flavor-chart-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="margin-top: 0;">
                 <span class="dashicons dashicons-chart-line"></span>
-                Crecimiento de Suscriptores (30 días)
+                <?php echo esc_html__('Crecimiento de Suscriptores (30 días)', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="grafico-crecimiento" style="max-height: 300px;"></canvas>
         </div>
@@ -115,7 +115,7 @@ $stats_plataforma = [
         <div class="flavor-chart-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="margin-top: 0;">
                 <span class="dashicons dashicons-share"></span>
-                Plataformas de Escucha
+                <?php echo esc_html__('Plataformas de Escucha', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="grafico-plataformas" style="max-height: 300px;"></canvas>
         </div>
@@ -126,18 +126,18 @@ $stats_plataforma = [
     <div class="flavor-table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px;">
         <h3 style="margin-top: 0;">
             <span class="dashicons dashicons-star-filled"></span>
-            Episodios Más Populares
+            <?php echo esc_html__('Episodios Más Populares', 'flavor-chat-ia'); ?>
         </h3>
 
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;">Pos.</th>
-                    <th>Episodio</th>
-                    <th>Podcast</th>
-                    <th style="width: 120px;">Reproducciones</th>
-                    <th style="width: 100px;">Me Gusta</th>
-                    <th style="width: 150px;">Fecha</th>
+                    <th style="width: 50px;"><?php echo esc_html__('Pos.', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Episodio', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Podcast', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Reproducciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Me Gusta', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -145,7 +145,7 @@ $stats_plataforma = [
                     <tr>
                         <td colspan="6" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-admin-media" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666;">No hay episodios publicados todavía</p>
+                            <p style="color: #666;"><?php echo esc_html__('No hay episodios publicados todavía', 'flavor-chat-ia'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>

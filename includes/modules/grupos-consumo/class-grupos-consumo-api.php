@@ -51,7 +51,7 @@ class Flavor_Grupos_Consumo_API {
         register_rest_route(self::NAMESPACE, '/pedidos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_pedidos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'estado' => [
                     'default' => 'abierto',
@@ -72,7 +72,7 @@ class Flavor_Grupos_Consumo_API {
         register_rest_route(self::NAMESPACE, '/pedidos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_pedido'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'id' => [
                     'validate_callback' => function($param) {
@@ -264,7 +264,7 @@ class Flavor_Grupos_Consumo_API {
         register_rest_route(self::NAMESPACE, '/gc/productos', [
             'methods' => 'GET',
             'callback' => [$this, 'get_catalogo_productos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'categoria' => [
                     'sanitize_callback' => 'sanitize_text_field',
@@ -292,7 +292,7 @@ class Flavor_Grupos_Consumo_API {
         register_rest_route(self::NAMESPACE, '/gc/ciclos/calendario', [
             'methods' => 'GET',
             'callback' => [$this, 'get_calendario_ciclos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'meses' => [
                     'default' => 3,
@@ -318,7 +318,59 @@ class Flavor_Grupos_Consumo_API {
         register_rest_route(self::NAMESPACE, '/gc/cestas-tipo', [
             'methods' => 'GET',
             'callback' => [$this, 'get_tipos_cestas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // GET /gc/productores-cercanos - Productores que entregan en ubicación del usuario
+        register_rest_route(self::NAMESPACE, '/gc/productores-cercanos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_productores_cercanos'],
+            'permission_callback' => [$this, 'public_permission_check'],
+            'args' => [
+                'lat' => [
+                    'required' => true,
+                    'validate_callback' => function($param) {
+                        return is_numeric($param) && $param >= -90 && $param <= 90;
+                    },
+                    'sanitize_callback' => 'floatval',
+                ],
+                'lng' => [
+                    'required' => true,
+                    'validate_callback' => function($param) {
+                        return is_numeric($param) && $param >= -180 && $param <= 180;
+                    },
+                    'sanitize_callback' => 'floatval',
+                ],
+                'limite' => [
+                    'default' => 20,
+                    'sanitize_callback' => 'absint',
+                ],
+            ],
+        ]);
+
+        // GET /gc/productores - Lista de todos los productores
+        register_rest_route(self::NAMESPACE, '/gc/productores', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_productores'],
+            'permission_callback' => [$this, 'public_permission_check'],
+            'args' => [
+                'per_page' => [
+                    'default' => 20,
+                    'sanitize_callback' => 'absint',
+                ],
+                'page' => [
+                    'default' => 1,
+                    'sanitize_callback' => 'absint',
+                ],
+                'eco' => [
+                    'default' => '',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'con_entrega' => [
+                    'default' => '',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
         ]);
     }
 
@@ -381,7 +433,7 @@ class Flavor_Grupos_Consumo_API {
 
         $post = get_post($id);
         if (!$post || $post->post_type !== 'pedido_colectivo') {
-            return new WP_Error('not_found', 'Pedido no encontrado', ['status' => 404]);
+            return new WP_Error('not_found', __('Pedido no encontrado', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         return new WP_REST_Response([
@@ -401,14 +453,14 @@ class Flavor_Grupos_Consumo_API {
         // Verificar estado
         $estado = get_post_meta($id, '_estado', true);
         if ($estado !== 'abierto') {
-            return new WP_Error('closed', 'El pedido no está abierto', ['status' => 400]);
+            return new WP_Error('closed', __('El pedido no está abierto', 'flavor-chat-ia'), ['status' => 400]);
         }
 
         // Verificar si ya participa
         $participantes = get_post_meta($id, '_participantes', true) ?: [];
         foreach ($participantes as $part) {
             if ($part['user_id'] == $user_id) {
-                return new WP_Error('already_joined', 'Ya participas en este pedido', ['status' => 400]);
+                return new WP_Error('already_joined', __('Ya participas en este pedido', 'flavor-chat-ia'), ['status' => 400]);
             }
         }
 
@@ -433,7 +485,7 @@ class Flavor_Grupos_Consumo_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => '¡Te has unido al pedido!',
+            'message' => __('¡Te has unido al pedido!', 'flavor-chat-ia'),
             'data' => [
                 'importe_total' => $cantidad * $precio_final,
                 'pedido' => $this->format_pedido($id),
@@ -495,12 +547,12 @@ class Flavor_Grupos_Consumo_API {
 
                 return new WP_REST_Response([
                     'success' => true,
-                    'message' => 'Marcado como pagado',
+                    'message' => __('_precio_base', 'flavor-chat-ia'),
                 ], 200);
             }
         }
 
-        return new WP_Error('not_participant', 'No participas en este pedido', ['status' => 400]);
+        return new WP_Error('not_participant', __('No participas en este pedido', 'flavor-chat-ia'), ['status' => 400]);
     }
 
     /**
@@ -518,12 +570,12 @@ class Flavor_Grupos_Consumo_API {
 
                 return new WP_REST_Response([
                     'success' => true,
-                    'message' => 'Marcado como recogido',
+                    'message' => __('¡Te has unido al pedido!', 'flavor-chat-ia'),
                 ], 200);
             }
         }
 
-        return new WP_Error('not_participant', 'No participas en este pedido', ['status' => 400]);
+        return new WP_Error('not_participant', __('No participas en este pedido', 'flavor-chat-ia'), ['status' => 400]);
     }
 
     /**
@@ -571,6 +623,9 @@ class Flavor_Grupos_Consumo_API {
                 'contacto' => get_post_meta($id, '_contacto_email', true),
                 'instrucciones' => get_post_meta($id, '_instrucciones', true),
             ];
+            if (!is_user_logged_in()) {
+                unset($data['meta']['contacto']);
+            }
         }
 
         return $data;
@@ -663,13 +718,13 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         if (empty($grupos)) {
-            return new WP_Error('no_grupo', 'No hay grupos disponibles', ['status' => 404]);
+            return new WP_Error('no_grupo', __('No hay grupos disponibles', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         $consumidor = $consumidor_manager->obtener_consumidor($usuario_id, $grupos[0]->ID);
 
         if (!$consumidor) {
-            return new WP_Error('no_miembro', 'No eres miembro del grupo', ['status' => 403]);
+            return new WP_Error('no_miembro', __('No eres miembro del grupo', 'flavor-chat-ia'), ['status' => 403]);
         }
 
         $datos = [
@@ -831,13 +886,13 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         if (empty($grupos)) {
-            return new WP_Error('no_grupo', 'No hay grupos disponibles', ['status' => 404]);
+            return new WP_Error('no_grupo', __('No hay grupos disponibles', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         $consumidor = $consumidor_manager->obtener_consumidor($usuario_id, $grupos[0]->ID);
 
         if (!$consumidor) {
-            return new WP_Error('no_miembro', 'No eres miembro del grupo', ['status' => 403]);
+            return new WP_Error('no_miembro', __('No eres miembro del grupo', 'flavor-chat-ia'), ['status' => 403]);
         }
 
         $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
@@ -858,7 +913,7 @@ class Flavor_Grupos_Consumo_API {
 
         // Verificar propiedad
         if (!$this->verificar_propiedad_suscripcion($suscripcion_id)) {
-            return new WP_Error('not_owner', 'No tienes permisos', ['status' => 403]);
+            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-chat-ia'), ['status' => 403]);
         }
 
         $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
@@ -880,7 +935,7 @@ class Flavor_Grupos_Consumo_API {
 
         // Verificar propiedad
         if (!$this->verificar_propiedad_suscripcion($suscripcion_id)) {
-            return new WP_Error('not_owner', 'No tienes permisos', ['status' => 403]);
+            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-chat-ia'), ['status' => 403]);
         }
 
         $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
@@ -979,6 +1034,7 @@ class Flavor_Grupos_Consumo_API {
      */
     public function get_calendario_ciclos($request) {
         $meses = $request->get_param('meses');
+        $include_productores = $request->get_param('include_productores') === '1';
 
         $fecha_inicio = date('Y-m-01');
         $fecha_fin = date('Y-m-t', strtotime('+' . $meses . ' months'));
@@ -1002,6 +1058,10 @@ class Flavor_Grupos_Consumo_API {
 
         $ciclos_formateados = [];
         foreach ($ciclos as $ciclo) {
+            $productor_ids = [];
+            if ($include_productores) {
+                $productor_ids = $this->get_productor_ids_by_ciclo($ciclo->ID);
+            }
             $ciclos_formateados[] = [
                 'id' => $ciclo->ID,
                 'nombre' => $ciclo->post_title,
@@ -1012,6 +1072,7 @@ class Flavor_Grupos_Consumo_API {
                 'hora_entrega' => get_post_meta($ciclo->ID, '_gc_hora_entrega', true),
                 'lugar_entrega' => get_post_meta($ciclo->ID, '_gc_lugar_entrega', true),
                 'notas' => get_post_meta($ciclo->ID, '_gc_notas', true),
+                'productor_ids' => $include_productores ? $productor_ids : [],
             ];
         }
 
@@ -1019,6 +1080,29 @@ class Flavor_Grupos_Consumo_API {
             'success' => true,
             'data' => $ciclos_formateados,
         ], 200);
+    }
+
+    /**
+     * Obtiene IDs de productores con pedidos en un ciclo.
+     *
+     * @param int $ciclo_id
+     * @return array
+     */
+    private function get_productor_ids_by_ciclo($ciclo_id) {
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+        $ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT DISTINCT pm.meta_value
+             FROM {$tabla_pedidos} p
+             INNER JOIN {$wpdb->postmeta} pm
+               ON pm.post_id = p.producto_id AND pm.meta_key = '_gc_productor_id'
+             WHERE p.ciclo_id = %d",
+            $ciclo_id
+        ));
+
+        $ids = array_map('absint', $ids);
+        return array_values(array_filter($ids));
     }
 
     /**
@@ -1112,5 +1196,240 @@ class Flavor_Grupos_Consumo_API {
         }
 
         return true;
+    }
+
+    /**
+     * GET /gc/productores-cercanos - Obtiene productores que entregan en la ubicación del usuario
+     *
+     * Usa la fórmula Haversine para calcular la distancia entre el usuario y cada productor,
+     * y filtra aquellos cuyo radio de entrega cubre la ubicación del usuario.
+     *
+     * @param WP_REST_Request $request Petición con lat y lng del usuario
+     * @return WP_REST_Response Lista de productores que pueden entregar en esa ubicación
+     */
+    public function get_productores_cercanos($request) {
+        global $wpdb;
+
+        $latitud_usuario = floatval($request->get_param('lat'));
+        $longitud_usuario = floatval($request->get_param('lng'));
+        $limite = absint($request->get_param('limite'));
+
+        // Radio de la Tierra en km
+        $radio_tierra_km = 6371;
+
+        // Consulta SQL con fórmula Haversine
+        // Busca productores cuyo radio de entrega cubra la distancia hasta el usuario
+        $consulta_sql = $wpdb->prepare("
+            SELECT
+                p.ID,
+                p.post_title,
+                p.post_content,
+                pm_lat.meta_value as latitud,
+                pm_lng.meta_value as longitud,
+                pm_radio.meta_value as radio_entrega_km,
+                pm_direccion.meta_value as direccion,
+                pm_ubicacion.meta_value as ubicacion,
+                pm_eco.meta_value as certificacion_eco,
+                pm_telefono.meta_value as telefono,
+                pm_email.meta_value as email,
+                (
+                    %d * ACOS(
+                        LEAST(1, GREATEST(-1,
+                            COS(RADIANS(%f)) * COS(RADIANS(CAST(pm_lat.meta_value AS DECIMAL(10,7)))) *
+                            COS(RADIANS(CAST(pm_lng.meta_value AS DECIMAL(10,7))) - RADIANS(%f)) +
+                            SIN(RADIANS(%f)) * SIN(RADIANS(CAST(pm_lat.meta_value AS DECIMAL(10,7))))
+                        ))
+                    )
+                ) as distancia_km
+            FROM {$wpdb->posts} p
+            INNER JOIN {$wpdb->postmeta} pm_lat ON p.ID = pm_lat.post_id AND pm_lat.meta_key = '_gc_lat'
+            INNER JOIN {$wpdb->postmeta} pm_lng ON p.ID = pm_lng.post_id AND pm_lng.meta_key = '_gc_lng'
+            INNER JOIN {$wpdb->postmeta} pm_radio ON p.ID = pm_radio.post_id AND pm_radio.meta_key = '_gc_radio_entrega_km'
+            LEFT JOIN {$wpdb->postmeta} pm_direccion ON p.ID = pm_direccion.post_id AND pm_direccion.meta_key = '_gc_direccion_completa'
+            LEFT JOIN {$wpdb->postmeta} pm_ubicacion ON p.ID = pm_ubicacion.post_id AND pm_ubicacion.meta_key = '_gc_ubicacion'
+            LEFT JOIN {$wpdb->postmeta} pm_eco ON p.ID = pm_eco.post_id AND pm_eco.meta_key = '_gc_certificacion_eco'
+            LEFT JOIN {$wpdb->postmeta} pm_telefono ON p.ID = pm_telefono.post_id AND pm_telefono.meta_key = '_gc_contacto_telefono'
+            LEFT JOIN {$wpdb->postmeta} pm_email ON p.ID = pm_email.post_id AND pm_email.meta_key = '_gc_contacto_email'
+            WHERE p.post_type = 'gc_productor'
+            AND p.post_status = 'publish'
+            AND pm_lat.meta_value IS NOT NULL
+            AND pm_lat.meta_value != ''
+            AND pm_lng.meta_value IS NOT NULL
+            AND pm_lng.meta_value != ''
+            AND pm_radio.meta_value IS NOT NULL
+            AND CAST(pm_radio.meta_value AS DECIMAL(10,2)) > 0
+            HAVING distancia_km <= CAST(pm_radio.meta_value AS DECIMAL(10,2))
+            ORDER BY distancia_km ASC
+            LIMIT %d
+        ",
+            $radio_tierra_km,
+            $latitud_usuario,
+            $longitud_usuario,
+            $latitud_usuario,
+            $limite
+        );
+
+        $productores_encontrados = $wpdb->get_results($consulta_sql);
+
+        $productores_formateados = [];
+
+        foreach ($productores_encontrados as $productor) {
+            // Obtener imagen destacada
+            $imagen_url = get_the_post_thumbnail_url($productor->ID, 'medium');
+
+            // Contar productos del productor
+            $cantidad_productos = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->postmeta}
+                WHERE meta_key = '_gc_productor_id' AND meta_value = %d",
+                $productor->ID
+            ));
+
+            $productores_formateados[] = [
+                'id' => (int) $productor->ID,
+                'nombre' => $productor->post_title,
+                'descripcion' => wp_trim_words($productor->post_content, 30, '...'),
+                'ubicacion' => $productor->ubicacion,
+                'direccion' => $productor->direccion,
+                'coordenadas' => [
+                    'lat' => floatval($productor->latitud),
+                    'lng' => floatval($productor->longitud),
+                ],
+                'radio_entrega_km' => floatval($productor->radio_entrega_km),
+                'distancia_km' => round(floatval($productor->distancia_km), 2),
+                'certificacion_eco' => $productor->certificacion_eco === '1',
+                'contacto' => [
+                    'telefono' => $productor->telefono,
+                    'email' => $productor->email,
+                ],
+                'imagen' => $imagen_url ?: null,
+                'cantidad_productos' => (int) $cantidad_productos,
+                'url' => get_permalink($productor->ID),
+                'entrega_disponible' => true, // Siempre true porque solo devolvemos los que pueden entregar
+            ];
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => $productores_formateados,
+            'meta' => [
+                'ubicacion_usuario' => [
+                    'lat' => $latitud_usuario,
+                    'lng' => $longitud_usuario,
+                ],
+                'total' => count($productores_formateados),
+            ],
+        ], 200);
+    }
+
+    /**
+     * GET /gc/productores - Lista de todos los productores
+     *
+     * @param WP_REST_Request $request Petición
+     * @return WP_REST_Response Lista de productores
+     */
+    public function get_productores($request) {
+        $per_page = $request->get_param('per_page');
+        $page = $request->get_param('page');
+        $solo_eco = $request->get_param('eco') === '1';
+        $con_entrega = $request->get_param('con_entrega') === '1';
+
+        $args_query = [
+            'post_type' => 'gc_productor',
+            'post_status' => 'publish',
+            'posts_per_page' => $per_page,
+            'paged' => $page,
+            'orderby' => 'title',
+            'order' => 'ASC',
+        ];
+
+        // Filtrar por certificación ecológica
+        if ($solo_eco) {
+            $args_query['meta_query'][] = [
+                'key' => '_gc_certificacion_eco',
+                'value' => '1',
+            ];
+        }
+
+        // Filtrar por productores con entrega a domicilio
+        if ($con_entrega) {
+            $args_query['meta_query'][] = [
+                'key' => '_gc_radio_entrega_km',
+                'value' => '0',
+                'compare' => '>',
+                'type' => 'NUMERIC',
+            ];
+        }
+
+        $query = new WP_Query($args_query);
+        $productores = [];
+
+        foreach ($query->posts as $post) {
+            $radio_entrega = floatval(get_post_meta($post->ID, '_gc_radio_entrega_km', true));
+            $latitud_productor = get_post_meta($post->ID, '_gc_lat', true);
+            $longitud_productor = get_post_meta($post->ID, '_gc_lng', true);
+
+            $productores[] = [
+                'id' => $post->ID,
+                'nombre' => $post->post_title,
+                'descripcion' => wp_trim_words($post->post_content, 30, '...'),
+                'ubicacion' => get_post_meta($post->ID, '_gc_ubicacion', true),
+                'direccion' => get_post_meta($post->ID, '_gc_direccion_completa', true),
+                'coordenadas' => ($latitud_productor && $longitud_productor) ? [
+                    'lat' => floatval($latitud_productor),
+                    'lng' => floatval($longitud_productor),
+                ] : null,
+                'radio_entrega_km' => $radio_entrega,
+                'tiene_entrega_domicilio' => $radio_entrega > 0,
+                'certificacion_eco' => get_post_meta($post->ID, '_gc_certificacion_eco', true) === '1',
+                'contacto' => [
+                    'nombre' => get_post_meta($post->ID, '_gc_contacto_nombre', true),
+                    'telefono' => get_post_meta($post->ID, '_gc_contacto_telefono', true),
+                    'email' => get_post_meta($post->ID, '_gc_contacto_email', true),
+                ],
+                'imagen' => get_the_post_thumbnail_url($post->ID, 'medium'),
+                'url' => get_permalink($post->ID),
+            ];
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => $productores,
+            'pagination' => [
+                'total' => $query->found_posts,
+                'per_page' => $per_page,
+                'current_page' => $page,
+                'total_pages' => $query->max_num_pages,
+            ],
+        ], 200);
+    }
+
+    /**
+     * Calcula la distancia entre dos puntos geográficos usando la fórmula Haversine
+     *
+     * @param float $latitud1 Latitud del punto 1
+     * @param float $longitud1 Longitud del punto 1
+     * @param float $latitud2 Latitud del punto 2
+     * @param float $longitud2 Longitud del punto 2
+     * @return float Distancia en kilómetros
+     */
+    private function calcular_distancia_haversine($latitud1, $longitud1, $latitud2, $longitud2) {
+        $radio_tierra_km = 6371; // Radio de la Tierra en km
+
+        $diferencia_latitud = deg2rad($latitud2 - $latitud1);
+        $diferencia_longitud = deg2rad($longitud2 - $longitud1);
+
+        $valor_a = sin($diferencia_latitud / 2) * sin($diferencia_latitud / 2) +
+                   cos(deg2rad($latitud1)) * cos(deg2rad($latitud2)) *
+                   sin($diferencia_longitud / 2) * sin($diferencia_longitud / 2);
+
+        $valor_c = 2 * atan2(sqrt($valor_a), sqrt(1 - $valor_a));
+
+        return $radio_tierra_km * $valor_c;
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

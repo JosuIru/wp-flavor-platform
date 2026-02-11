@@ -666,7 +666,7 @@ class Chat_IA_Analytics_Cache {
         $data = $comparisons[$tipo] ?? null;
 
         if (!$data) {
-            return ['success' => false, 'error' => 'Tipo de comparativa no valido'];
+            return ['success' => false, 'error' => __('Tipo de comparativa no valido', 'flavor-chat-ia')];
         }
 
         $labels = [

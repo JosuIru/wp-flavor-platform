@@ -1,0 +1,44 @@
+modulo,estado,evidencia
+advertising,Sin TODOs detectados,includes/modules/advertising/class-advertising-module.php
+avisos-municipales,Sin TODOs detectados,includes/modules/avisos-municipales/class-avisos-municipales-module.php
+ayuda-vecinal,Sin TODOs detectados,includes/modules/ayuda-vecinal/class-ayuda-vecinal-module.php
+banco-tiempo,Sin TODOs detectados,includes/modules/banco-tiempo/class-banco-tiempo-api.php
+bares,Sin TODOs detectados,includes/modules/bares/class-bares-module.php
+biblioteca,Sin TODOs detectados,includes/modules/biblioteca/class-biblioteca-module.php
+bicicletas-compartidas,Sin TODOs detectados,includes/modules/bicicletas-compartidas/class-bicicletas-compartidas-module.php
+carpooling,Sin TODOs detectados,includes/modules/carpooling/class-carpooling-module.php
+chat-grupos,Sin TODOs detectados,includes/modules/chat-grupos/class-chat-grupos-module.php
+chat-interno,Sin TODOs detectados,includes/modules/chat-interno/assets/js/chat-interno.js
+clientes,Sin TODOs detectados,includes/modules/clientes/class-clientes-module.php
+colectivos,Sin TODOs detectados,includes/modules/colectivos/class-colectivos-module.php
+compostaje,Sin TODOs detectados,includes/modules/compostaje/class-compostaje-module.php
+comunidades,Sin TODOs detectados,includes/modules/comunidades/class-comunidades-module.php
+cursos,Sin TODOs detectados,includes/modules/cursos/class-cursos-module.php
+dex-solana,Sin TODOs detectados,includes/modules/dex-solana/class-dex-solana-module.php
+email-marketing,Sin TODOs detectados,includes/modules/email-marketing/assets/js/em-admin.js
+empresarial,Sin TODOs detectados,includes/modules/empresarial/class-empresarial-module.php
+espacios-comunes,Sin TODOs detectados,includes/modules/espacios-comunes/class-espacios-comunes-module.php
+eventos,Parcial,includes/modules/eventos/class-eventos-module.php
+facturas,Parcial,includes/modules/facturas/class-facturas-module.php
+fichaje-empleados,Parcial,includes/modules/fichaje-empleados/class-fichaje-empleados-module.php
+foros,Sin TODOs detectados,includes/modules/foros/class-foros-module.php
+grupos-consumo,Sin TODOs detectados,includes/modules/grupos-consumo/class-grupos-consumo-module.php
+huertos-urbanos,Sin TODOs detectados,includes/modules/huertos-urbanos/class-huertos-urbanos-module.php
+incidencias,Parcial,includes/modules/incidencias/class-incidencias-module.php
+marketplace,Sin TODOs detectados,includes/modules/marketplace/class-marketplace-api.php
+multimedia,Sin TODOs detectados,includes/modules/multimedia/class-multimedia-module.php
+parkings,Sin TODOs detectados,includes/modules/parkings/class-parkings-module.php
+participacion,Sin TODOs detectados,includes/modules/participacion/class-participacion-module.php
+podcast,Sin TODOs detectados,includes/modules/podcast/class-podcast-module.php
+presupuestos-participativos,Sin TODOs detectados,includes/modules/presupuestos-participativos/class-presupuestos-participativos-module.php
+radio,Sin TODOs detectados,includes/modules/radio/class-radio-module.php
+reciclaje,Sin TODOs detectados,includes/modules/reciclaje/class-reciclaje-module.php
+red-social,Sin TODOs detectados,includes/modules/red-social/class-red-social-module.php
+reservas,Parcial,includes/modules/reservas/class-reservas-module.php
+socios,Parcial,includes/modules/socios/class-socios-module.php
+talleres,Parcial,includes/modules/talleres/class-talleres-module.php
+themacle,Sin TODOs detectados,includes/modules/themacle/class-themacle-module.php
+trading-ia,Sin TODOs detectados,includes/modules/trading-ia/class-trading-ia-module.php
+tramites,Parcial,includes/modules/tramites/class-tramites-module.php
+transparencia,Sin TODOs detectados,includes/modules/transparencia/class-transparencia-module.php
+woocommerce,Sin TODOs detectados,includes/modules/woocommerce/class-woocommerce-module.php

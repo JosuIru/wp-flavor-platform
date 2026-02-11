@@ -152,18 +152,18 @@ $stats = $wpdb->get_row(
     <!-- Filtros -->
     <div class="card" style="padding: 15px; margin: 20px 0;">
         <form method="get" action="">
-            <input type="hidden" name="page" value="flavor-carpooling-reservas">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-carpooling-reservas', 'flavor-chat-ia'); ?>">
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
 
                 <div>
                     <label for="estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
                     <select name="estado" id="estado" class="regular-text">
-                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="confirmada" <?php selected($filtro_estado, 'confirmada'); ?>><?php esc_html_e('Confirmada', 'flavor-chat-ia'); ?></option>
-                        <option value="completada" <?php selected($filtro_estado, 'completada'); ?>><?php esc_html_e('Completada', 'flavor-chat-ia'); ?></option>
-                        <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php esc_html_e('Cancelada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('todos', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('confirmada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'confirmada'); ?>><?php esc_html_e('Confirmada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completada'); ?>><?php esc_html_e('Completada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelada'); ?>><?php esc_html_e('Cancelada', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -243,9 +243,9 @@ $stats = $wpdb->get_row(
                             <td>
                                 <strong><?php echo esc_html($reserva->plazas_reservadas); ?></strong>
                                 <?php if ($reserva->plazas_reservadas > 1) : ?>
-                                    <span style="color: #666;">plazas</span>
+                                    <span style="color: #666;"><?php echo esc_html__('plazas', 'flavor-chat-ia'); ?></span>
                                 <?php else : ?>
-                                    <span style="color: #666;">plaza</span>
+                                    <span style="color: #666;"><?php echo esc_html__('plaza', 'flavor-chat-ia'); ?></span>
                                 <?php endif; ?>
                             </td>
                             <td>

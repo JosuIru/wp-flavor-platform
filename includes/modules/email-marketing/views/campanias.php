@@ -154,7 +154,7 @@ if ($action === 'new' || $action === 'edit'):
                 </div>
 
                 <div class="em-sidebar-section em-sidebar-actions">
-                    <button type="submit" name="action" value="save" class="button button-large">
+                    <button type="submit" name="action" value="<?php echo esc_attr__('save', 'flavor-chat-ia'); ?>" class="button button-large">
                         <?php _e('Guardar borrador', 'flavor-chat-ia'); ?>
                     </button>
 

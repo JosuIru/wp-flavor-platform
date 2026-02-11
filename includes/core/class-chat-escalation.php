@@ -49,7 +49,7 @@ class Flavor_Chat_Escalation {
         if (!$conversation_id) {
             return [
                 'success' => false,
-                'error' => 'No hay conversación activa',
+                'error' => __('No hay conversación activa', 'flavor-chat-ia'),
             ];
         }
 
@@ -73,7 +73,7 @@ class Flavor_Chat_Escalation {
         if ($result === false) {
             return [
                 'success' => false,
-                'error' => 'Error al crear escalado',
+                'error' => __('Error al crear escalado', 'flavor-chat-ia'),
             ];
         }
 

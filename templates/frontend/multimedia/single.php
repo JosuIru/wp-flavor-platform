@@ -26,9 +26,9 @@ $medios_relacionados = $medio['relacionados'] ?? [];
     <div class="bg-gray-50 py-3 px-4">
         <div class="container mx-auto max-w-6xl">
             <nav class="flex items-center gap-2 text-sm text-gray-600">
-                <a href="#" class="hover:text-indigo-600">Inicio</a>
+                <a href="#" class="hover:text-indigo-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
-                <a href="#" class="hover:text-indigo-600">Multimedia</a>
+                <a href="#" class="hover:text-indigo-600"><?php echo esc_html__('Multimedia', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-gray-900 font-medium"><?php echo esc_html($titulo_medio); ?></span>
             </nav>
@@ -109,41 +109,41 @@ $medios_relacionados = $medio['relacionados'] ?? [];
 
                 <!-- Comentarios -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">Comentarios</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Comentarios', 'flavor-chat-ia'); ?></h2>
 
                     <div class="space-y-6">
                         <div class="flex gap-4">
-                            <img src="https://i.pravatar.cc/150?img=18" alt="Luis Herrera" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                            <img src="https://i.pravatar.cc/150?img=18" alt="<?php echo esc_attr__('Luis Herrera', 'flavor-chat-ia'); ?>" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-bold text-gray-900">Luis Herrera</span>
-                                    <span class="text-sm text-gray-500">hace 5 horas</span>
+                                    <span class="font-bold text-gray-900"><?php echo esc_html__('Luis Herrera', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-sm text-gray-500"><?php echo esc_html__('hace 5 horas', 'flavor-chat-ia'); ?></span>
                                 </div>
-                                <p class="text-gray-700">Excelente contenido, gracias por compartirlo con la comunidad.</p>
+                                <p class="text-gray-700"><?php echo esc_html__('Excelente contenido, gracias por compartirlo con la comunidad.', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
 
                         <hr class="border-gray-100">
 
                         <div class="flex gap-4">
-                            <img src="https://i.pravatar.cc/150?img=35" alt="Marta Gomez" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                            <img src="https://i.pravatar.cc/150?img=35" alt="<?php echo esc_attr__('Marta Gomez', 'flavor-chat-ia'); ?>" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-bold text-gray-900">Marta Gomez</span>
-                                    <span class="text-sm text-gray-500">hace 2 horas</span>
+                                    <span class="font-bold text-gray-900"><?php echo esc_html__('Marta Gomez', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-sm text-gray-500"><?php echo esc_html__('hace 2 horas', 'flavor-chat-ia'); ?></span>
                                 </div>
-                                <p class="text-gray-700">Me encanta! Seria genial hacer mas contenido como este.</p>
+                                <p class="text-gray-700"><?php echo esc_html__('Me encanta! Seria genial hacer mas contenido como este.', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-6 pt-6 border-t border-gray-100">
-                        <textarea rows="3" placeholder="Escribe un comentario..."
+                        <textarea rows="3" placeholder="<?php echo esc_attr__('Escribe un comentario...', 'flavor-chat-ia'); ?>"
                                   class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"></textarea>
                         <div class="flex justify-end mt-3">
                             <button class="px-6 py-2 rounded-xl text-white font-semibold text-sm transition-all hover:scale-105"
                                     style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);">
-                                Comentar
+                                <?php echo esc_html__('Comentar', 'flavor-chat-ia'); ?>
                             </button>
                         </div>
                     </div>
@@ -154,24 +154,24 @@ $medios_relacionados = $medio['relacionados'] ?? [];
             <div class="lg:col-span-1">
                 <!-- Info del medio -->
                 <div class="bg-white rounded-2xl p-6 shadow-md sticky top-4 mb-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Informacion</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Informacion', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600 text-sm">Tipo</span>
+                            <span class="text-gray-600 text-sm"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></span>
                             <span class="font-semibold text-indigo-600"><?php echo esc_html(ucfirst($tipo_medio)); ?></span>
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600 text-sm">Vistas</span>
+                            <span class="text-gray-600 text-sm"><?php echo esc_html__('Vistas', 'flavor-chat-ia'); ?></span>
                             <span class="font-semibold"><?php echo esc_html($vistas_medio); ?></span>
                         </div>
                         <?php if ($tipo_medio === 'video' || $tipo_medio === 'audio'): ?>
                             <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                                <span class="text-gray-600 text-sm">Duracion</span>
+                                <span class="text-gray-600 text-sm"><?php echo esc_html__('Duracion', 'flavor-chat-ia'); ?></span>
                                 <span class="font-semibold"><?php echo esc_html($duracion_medio); ?></span>
                             </div>
                         <?php endif; ?>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                            <span class="text-gray-600 text-sm">Publicado</span>
+                            <span class="text-gray-600 text-sm"><?php echo esc_html__('Publicado', 'flavor-chat-ia'); ?></span>
                             <span class="font-semibold text-sm"><?php echo esc_html($fecha_medio); ?></span>
                         </div>
                     </div>
@@ -179,31 +179,31 @@ $medios_relacionados = $medio['relacionados'] ?? [];
 
                 <!-- Perfil del autor -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Autor</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Autor', 'flavor-chat-ia'); ?></h3>
                     <div class="flex items-center gap-3 mb-3">
                         <img src="<?php echo esc_url($autor_avatar); ?>" alt="<?php echo esc_attr($autor_medio); ?>"
                              class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900"><?php echo esc_html($autor_medio); ?></p>
-                            <p class="text-sm text-gray-500">14 publicaciones</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('14 publicaciones', 'flavor-chat-ia'); ?></p>
                         </div>
                     </div>
                     <button class="w-full py-2 rounded-xl text-indigo-600 font-semibold text-sm bg-indigo-50 hover:bg-indigo-100 transition-colors">
-                        Ver perfil
+                        <?php echo esc_html__('Ver perfil', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
 
                 <!-- Contenido relacionado -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h3 class="font-bold text-gray-900 mb-4">Relacionado</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Relacionado', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-4">
                         <a href="#" class="flex gap-3 group">
                             <div class="w-24 h-16 rounded-lg bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900 text-sm group-hover:text-indigo-600 transition-colors">Reportaje comunitario</p>
-                                <p class="text-xs text-gray-500">320 vistas</p>
+                                <p class="font-medium text-gray-900 text-sm group-hover:text-indigo-600 transition-colors"><?php echo esc_html__('Reportaje comunitario', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('320 vistas', 'flavor-chat-ia'); ?></p>
                             </div>
                         </a>
                         <a href="#" class="flex gap-3 group">
@@ -211,8 +211,8 @@ $medios_relacionados = $medio['relacionados'] ?? [];
                                 <svg class="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900 text-sm group-hover:text-indigo-600 transition-colors">Galeria de fotos del evento</p>
-                                <p class="text-xs text-gray-500">180 vistas</p>
+                                <p class="font-medium text-gray-900 text-sm group-hover:text-indigo-600 transition-colors"><?php echo esc_html__('Galeria de fotos del evento', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('180 vistas', 'flavor-chat-ia'); ?></p>
                             </div>
                         </a>
                         <a href="#" class="flex gap-3 group">
@@ -220,8 +220,8 @@ $medios_relacionados = $medio['relacionados'] ?? [];
                                 <svg class="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900 text-sm group-hover:text-indigo-600 transition-colors">Podcast semanal</p>
-                                <p class="text-xs text-gray-500">95 vistas</p>
+                                <p class="font-medium text-gray-900 text-sm group-hover:text-indigo-600 transition-colors"><?php echo esc_html__('Podcast semanal', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('95 vistas', 'flavor-chat-ia'); ?></p>
                             </div>
                         </a>
                     </div>

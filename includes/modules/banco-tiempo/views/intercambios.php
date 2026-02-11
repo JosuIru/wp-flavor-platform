@@ -121,7 +121,7 @@ $stats = [
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-randomize"></span>
-        Gestión de Intercambios
+        <?php echo esc_html__('Gestión de Intercambios', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -132,28 +132,28 @@ $stats = [
             <div class="stat-value" style="font-size: 28px; font-weight: bold; color: #dba617;">
                 <?php echo number_format($stats['pendientes']); ?>
             </div>
-            <div class="stat-label" style="color: #646970;">Pendientes</div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></div>
         </div>
 
         <div class="stat-box" style="background: #fff; padding: 16px; border-left: 4px solid #2271b1; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
             <div class="stat-value" style="font-size: 28px; font-weight: bold; color: #2271b1;">
                 <?php echo number_format($stats['aceptados']); ?>
             </div>
-            <div class="stat-label" style="color: #646970;">Aceptados</div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Aceptados', 'flavor-chat-ia'); ?></div>
         </div>
 
         <div class="stat-box" style="background: #fff; padding: 16px; border-left: 4px solid #00a32a; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
             <div class="stat-value" style="font-size: 28px; font-weight: bold; color: #00a32a;">
                 <?php echo number_format($stats['completados']); ?>
             </div>
-            <div class="stat-label" style="color: #646970;">Completados</div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Completados', 'flavor-chat-ia'); ?></div>
         </div>
 
         <div class="stat-box" style="background: #fff; padding: 16px; border-left: 4px solid #d63638; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
             <div class="stat-value" style="font-size: 28px; font-weight: bold; color: #d63638;">
                 <?php echo number_format($stats['cancelados']); ?>
             </div>
-            <div class="stat-label" style="color: #646970;">Cancelados</div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Cancelados', 'flavor-chat-ia'); ?></div>
         </div>
     </div>
 
@@ -164,27 +164,27 @@ $stats = [
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
                 <select name="estado">
-                    <option value="">Todos los estados</option>
-                    <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>>Pendiente</option>
-                    <option value="aceptado" <?php selected($filtro_estado, 'aceptado'); ?>>Aceptado</option>
-                    <option value="completado" <?php selected($filtro_estado, 'completado'); ?>>Completado</option>
-                    <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>>Cancelado</option>
+                    <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('aceptado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'aceptado'); ?>><?php echo esc_html__('Aceptado', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('completado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelado'); ?>><?php echo esc_html__('Cancelado', 'flavor-chat-ia'); ?></option>
                 </select>
 
                 <input type="date" name="fecha_desde" value="<?php echo esc_attr($filtro_fecha_desde); ?>"
-                       placeholder="Desde">
+                       placeholder="<?php echo esc_attr__('Desde', 'flavor-chat-ia'); ?>">
 
                 <input type="date" name="fecha_hasta" value="<?php echo esc_attr($filtro_fecha_hasta); ?>"
-                       placeholder="Hasta">
+                       placeholder="<?php echo esc_attr__('Hasta', 'flavor-chat-ia'); ?>">
 
-                <button type="submit" class="button">Filtrar</button>
+                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
 
                 <?php if ($filtro_estado || $filtro_fecha_desde || $filtro_fecha_hasta): ?>
-                    <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button">Limpiar</a>
+                    <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
                 <?php endif; ?>
 
                 <button type="button" class="button" id="btn-exportar-csv">
-                    <span class="dashicons dashicons-download"></span> Exportar CSV
+                    <span class="dashicons dashicons-download"></span> <?php echo esc_html__('Exportar CSV', 'flavor-chat-ia'); ?>
                 </button>
             </form>
         </div>
@@ -194,14 +194,14 @@ $stats = [
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th style="width: 50px;">ID</th>
-                <th>Servicio</th>
-                <th>Solicitante</th>
-                <th>Proveedor</th>
-                <th>Horas</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th style="width: 180px;">Acciones</th>
+                <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Servicio', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Solicitante', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Proveedor', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                <th style="width: 180px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -235,7 +235,7 @@ $stats = [
                                 <?php echo esc_html($solicitante->display_name); ?>
                             </a>
                         <?php else: ?>
-                            <em>Usuario desconocido</em>
+                            <em><?php echo esc_html__('Usuario desconocido', 'flavor-chat-ia'); ?></em>
                         <?php endif; ?>
                     </td>
                     <td>
@@ -244,7 +244,7 @@ $stats = [
                                 <?php echo esc_html($receptor->display_name); ?>
                             </a>
                         <?php else: ?>
-                            <em>Usuario desconocido</em>
+                            <em><?php echo esc_html__('Usuario desconocido', 'flavor-chat-ia'); ?></em>
                         <?php endif; ?>
                     </td>
                     <td><strong><?php echo number_format($intercambio->horas, 1); ?> h</strong></td>
@@ -265,17 +265,17 @@ $stats = [
                     <td>
                         <a href="#" class="button button-small ver-detalle"
                            data-id="<?php echo $intercambio->id; ?>">
-                            Ver Detalles
+                            <?php echo esc_html__('Ver Detalles', 'flavor-chat-ia'); ?>
                         </a>
 
                         <?php if ($intercambio->estado === 'pendiente'): ?>
                             <form method="post" style="display: inline;">
                                 <?php wp_nonce_field('banco_tiempo_intercambios'); ?>
-                                <input type="hidden" name="accion" value="aprobar">
+                                <input type="hidden" name="accion" value="<?php echo esc_attr__('aprobar', 'flavor-chat-ia'); ?>">
                                 <input type="hidden" name="intercambio_id" value="<?php echo $intercambio->id; ?>">
                                 <button type="submit" class="button button-small button-primary"
                                         onclick="return confirm('¿Aprobar este intercambio?');">
-                                    Aprobar
+                                    <?php echo esc_html__('Aprobar', 'flavor-chat-ia'); ?>
                                 </button>
                             </form>
                         <?php endif; ?>
@@ -286,7 +286,7 @@ $stats = [
                 <tr>
                     <td colspan="8" style="text-align: center; padding: 40px; color: #646970;">
                         <span class="dashicons dashicons-info" style="font-size: 48px;"></span>
-                        <p>No se encontraron intercambios.</p>
+                        <p><?php echo esc_html__('No se encontraron intercambios.', 'flavor-chat-ia'); ?></p>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -320,10 +320,10 @@ $stats = [
 <div id="modal-detalle-intercambio" style="display:none;">
     <div class="modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000;">
         <div class="modal-content" style="position: relative; max-width: 700px; margin: 50px auto; background: #fff; padding: 20px; border-radius: 4px;">
-            <h2>Detalles del Intercambio</h2>
+            <h2><?php echo esc_html__('Detalles del Intercambio', 'flavor-chat-ia'); ?></h2>
             <div id="contenido-detalle-intercambio"></div>
             <p>
-                <button type="button" class="button" id="btn-cerrar-detalle">Cerrar</button>
+                <button type="button" class="button" id="btn-cerrar-detalle"><?php echo esc_html__('Cerrar', 'flavor-chat-ia'); ?></button>
             </p>
         </div>
     </div>

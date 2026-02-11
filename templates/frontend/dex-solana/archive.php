@@ -19,8 +19,8 @@ $modo_actual = $modo_actual ?? 'paper';
     <div class="bg-gradient-to-r from-cyan-500 to-teal-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">DEX Solana</h1>
-                <p class="text-cyan-100">Swaps, pools de liquidez y farming en la red Solana</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('DEX Solana', 'flavor-chat-ia'); ?></h1>
+                <p class="text-cyan-100"><?php echo esc_html__('Swaps, pools de liquidez y farming en la red Solana', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <!-- Selector de modo: Paper Trading / Real Trading -->
@@ -28,21 +28,21 @@ $modo_actual = $modo_actual ?? 'paper';
                     <button class="px-4 py-2 rounded-lg text-sm font-semibold transition-all <?php echo $modo_actual === 'paper' ? 'bg-white text-teal-700 shadow-md' : 'text-white hover:bg-white/10'; ?>"
                             data-modo="paper"
                             onclick="flavorDexSolana.cambiarModo('paper')">
-                        Paper Trading
+                        <?php echo esc_html__('Paper Trading', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="px-4 py-2 rounded-lg text-sm font-semibold transition-all <?php echo $modo_actual === 'real' ? 'bg-white text-teal-700 shadow-md' : 'text-white hover:bg-white/10'; ?>"
                             data-modo="real"
                             onclick="flavorDexSolana.cambiarModo('real')">
-                        Real Trading
+                        <?php echo esc_html__('Real Trading', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
                 <?php if ($modo_actual === 'paper'): ?>
                 <span class="bg-yellow-400/20 backdrop-blur text-yellow-100 px-3 py-1 rounded-full text-xs font-medium">
-                    Modo simulacion
+                    <?php echo esc_html__('Modo simulacion', 'flavor-chat-ia'); ?>
                 </span>
                 <?php else: ?>
                 <span class="bg-green-400/20 backdrop-blur text-green-100 px-3 py-1 rounded-full text-xs font-medium">
-                    Modo real
+                    <?php echo esc_html__('Modo real', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -53,11 +53,11 @@ $modo_actual = $modo_actual ?? 'paper';
     <?php if (!empty($estadisticas)): ?>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <p class="text-sm text-gray-500 mb-1">Valor del Portfolio</p>
+            <p class="text-sm text-gray-500 mb-1"><?php echo esc_html__('Valor del Portfolio', 'flavor-chat-ia'); ?></p>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['valor_portfolio'] ?? '$0.00'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <p class="text-sm text-gray-500 mb-1">Cambio 24h</p>
+            <p class="text-sm text-gray-500 mb-1"><?php echo esc_html__('Cambio 24h', 'flavor-chat-ia'); ?></p>
             <?php
             $cambio_24h = $estadisticas['cambio_24h'] ?? 0;
             $color_cambio = $cambio_24h >= 0 ? 'text-green-600' : 'text-red-500';
@@ -68,11 +68,11 @@ $modo_actual = $modo_actual ?? 'paper';
             </p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <p class="text-sm text-gray-500 mb-1">Total Swaps</p>
+            <p class="text-sm text-gray-500 mb-1"><?php echo esc_html__('Total Swaps', 'flavor-chat-ia'); ?></p>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['total_swaps'] ?? 0); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <p class="text-sm text-gray-500 mb-1">Pools Activos</p>
+            <p class="text-sm text-gray-500 mb-1"><?php echo esc_html__('Pools Activos', 'flavor-chat-ia'); ?></p>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['pools_activos'] ?? 0); ?></p>
         </div>
     </div>
@@ -83,12 +83,12 @@ $modo_actual = $modo_actual ?? 'paper';
         <div class="lg:col-span-2 space-y-6">
             <!-- Formulario rapido de swap -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Swap rapido</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('Swap rapido', 'flavor-chat-ia'); ?></h2>
                 <div class="space-y-4">
                     <!-- Token de origen -->
                     <div class="bg-gray-50 rounded-xl p-4">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-gray-500">De</span>
+                            <span class="text-sm text-gray-500"><?php echo esc_html__('De', 'flavor-chat-ia'); ?></span>
                             <span class="text-xs text-gray-400">Balance: <?php echo esc_html($portfolio['balance_token_origen'] ?? '0.00'); ?></span>
                         </div>
                         <div class="flex items-center gap-3">
@@ -119,7 +119,7 @@ $modo_actual = $modo_actual ?? 'paper';
                     <!-- Token de destino -->
                     <div class="bg-gray-50 rounded-xl p-4">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-gray-500">A</span>
+                            <span class="text-sm text-gray-500"><?php echo esc_html__('A', 'flavor-chat-ia'); ?></span>
                             <span class="text-xs text-gray-400">Balance: <?php echo esc_html($portfolio['balance_token_destino'] ?? '0.00'); ?></span>
                         </div>
                         <div class="flex items-center gap-3">
@@ -142,24 +142,24 @@ $modo_actual = $modo_actual ?? 'paper';
             <!-- Top Tokens -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-gray-800">Tokens populares</h2>
+                    <h2 class="text-xl font-bold text-gray-800"><?php echo esc_html__('Tokens populares', 'flavor-chat-ia'); ?></h2>
                     <a href="<?php echo esc_url(home_url('/dex-solana/buscar/')); ?>" class="text-cyan-600 hover:text-cyan-700 text-sm font-medium">
-                        Ver todos
+                        <?php echo esc_html__('Ver todos', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
                 <?php if (empty($tokens_populares)): ?>
                 <div class="text-center py-8 text-gray-400">
-                    <p class="text-sm">No hay datos de tokens disponibles</p>
+                    <p class="text-sm"><?php echo esc_html__('No hay datos de tokens disponibles', 'flavor-chat-ia'); ?></p>
                 </div>
                 <?php else: ?>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr class="text-xs text-gray-500 border-b border-gray-100">
-                                <th class="text-left pb-3 font-medium">Token</th>
-                                <th class="text-right pb-3 font-medium">Precio</th>
-                                <th class="text-right pb-3 font-medium">24h</th>
-                                <th class="text-right pb-3 font-medium">Volumen</th>
+                                <th class="text-left pb-3 font-medium"><?php echo esc_html__('Token', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('24h', 'flavor-chat-ia'); ?></th>
+                                <th class="text-right pb-3 font-medium"><?php echo esc_html__('Volumen', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
@@ -207,28 +207,28 @@ $modo_actual = $modo_actual ?? 'paper';
         <div class="space-y-6">
             <!-- Acciones rapidas -->
             <div class="bg-gradient-to-br from-cyan-500 to-teal-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold text-lg mb-4">Acciones rapidas</h3>
+                <h3 class="font-semibold text-lg mb-4"><?php echo esc_html__('Acciones rapidas', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <a href="<?php echo esc_url(home_url('/dex-solana/swap/')); ?>"
                        class="w-full bg-white text-teal-700 py-3 px-4 rounded-xl font-semibold hover:bg-cyan-50 transition-colors flex items-center justify-center gap-2 shadow-md">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                         </svg>
-                        Hacer Swap
+                        <?php echo esc_html__('Hacer Swap', 'flavor-chat-ia'); ?>
                     </a>
                     <a href="<?php echo esc_url(home_url('/dex-solana/liquidez/')); ?>"
                        class="w-full bg-white/20 backdrop-blur text-white py-3 px-4 rounded-xl font-semibold hover:bg-white/30 transition-colors flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                         </svg>
-                        Liquidez
+                        <?php echo esc_html__('Liquidez', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
 
             <!-- Resumen portfolio -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Mi Portfolio</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Mi Portfolio', 'flavor-chat-ia'); ?></h3>
                 <?php if (!empty($portfolio['tokens'])): ?>
                 <div class="space-y-3">
                     <?php foreach ($portfolio['tokens'] as $token_cartera): ?>
@@ -258,28 +258,28 @@ $modo_actual = $modo_actual ?? 'paper';
                 </div>
                 <?php else: ?>
                 <div class="text-center py-6 text-gray-400">
-                    <p class="text-sm">Sin tokens en el portfolio</p>
+                    <p class="text-sm"><?php echo esc_html__('Sin tokens en el portfolio', 'flavor-chat-ia'); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
 
             <!-- Estado de la red -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Red Solana</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Red Solana', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Estado</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></span>
                         <span class="flex items-center gap-1 text-sm text-green-600 font-medium">
                             <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                            Operativa
+                            <?php echo esc_html__('Operativa', 'flavor-chat-ia'); ?>
                         </span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">TPS</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('TPS', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm text-gray-800 font-medium"><?php echo esc_html($estadisticas['tps_red'] ?? '~4,000'); ?></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Gas fee</span>
+                        <span class="text-sm text-gray-500"><?php echo esc_html__('Gas fee', 'flavor-chat-ia'); ?></span>
                         <span class="text-sm text-gray-800 font-medium"><?php echo esc_html($estadisticas['gas_fee'] ?? '~0.00025 SOL'); ?></span>
                     </div>
                 </div>
@@ -291,9 +291,9 @@ $modo_actual = $modo_actual ?? 'paper';
     <?php if (count($tokens_populares) > 20): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Anterior</button>
-            <span class="px-4 py-2 text-gray-600">Pagina 1</span>
-            <button class="px-4 py-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 transition-colors">Siguiente</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?></button>
+            <span class="px-4 py-2 text-gray-600"><?php echo esc_html__('Pagina 1', 'flavor-chat-ia'); ?></span>
+            <button class="px-4 py-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 transition-colors"><?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

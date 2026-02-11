@@ -31,6 +31,11 @@ if (!$ciclo_id && !empty($ciclos)) {
 $consolidado = [];
 $totales_por_productor = [];
 $total_general = 0;
+$kpi_total_pedidos = 0;
+$kpi_total_consumidores = 0;
+$kpi_total_productos = 0;
+$kpi_total_productores = 0;
+$kpi_ticket_medio = 0;
 
 if ($ciclo_id) {
     $consolidado_raw = $wpdb->get_results($wpdb->prepare(
@@ -66,6 +71,30 @@ if ($ciclo_id) {
     $totales_por_productor = array_map(function($p) {
         return ['nombre' => $p['nombre'], 'total' => $p['total']];
     }, $consolidado);
+
+    // KPIs del ciclo
+    $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+    if (Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        $kpi_total_pedidos = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE ciclo_id = %d",
+            $ciclo_id
+        ));
+        $kpi_total_consumidores = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_pedidos} WHERE ciclo_id = %d",
+            $ciclo_id
+        ));
+        $kpi_total_productos = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(DISTINCT producto_id) FROM {$tabla_pedidos} WHERE ciclo_id = %d",
+            $ciclo_id
+        ));
+    }
+    $kpi_total_productores = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(DISTINCT productor_id) FROM {$wpdb->prefix}flavor_gc_consolidado WHERE ciclo_id = %d",
+        $ciclo_id
+    ));
+    if ($kpi_total_pedidos > 0) {
+        $kpi_ticket_medio = $total_general / $kpi_total_pedidos;
+    }
 }
 
 // Info del ciclo
@@ -87,7 +116,7 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
     <!-- Selector de Ciclo -->
     <div class="gc-ciclo-selector">
         <form method="get">
-            <input type="hidden" name="page" value="gc-consolidado">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-consolidado', 'flavor-chat-ia'); ?>">
             <label for="ciclo"><?php _e('Seleccionar Ciclo:', 'flavor-chat-ia'); ?></label>
             <select name="ciclo" id="ciclo" onchange="this.form.submit()">
                 <?php foreach ($ciclos as $ciclo): ?>
@@ -153,6 +182,45 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
             </div>
         </div>
 
+        <!-- KPIs del ciclo -->
+        <div class="gc-kpis-grid">
+            <div class="gc-kpi-card">
+                <div class="gc-kpi-icon"><span class="dashicons dashicons-cart"></span></div>
+                <div class="gc-kpi-content">
+                    <span class="gc-kpi-value"><?php echo number_format($kpi_total_pedidos); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Pedidos', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="gc-kpi-card">
+                <div class="gc-kpi-icon"><span class="dashicons dashicons-groups"></span></div>
+                <div class="gc-kpi-content">
+                    <span class="gc-kpi-value"><?php echo number_format($kpi_total_consumidores); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Consumidores', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="gc-kpi-card">
+                <div class="gc-kpi-icon"><span class="dashicons dashicons-products"></span></div>
+                <div class="gc-kpi-content">
+                    <span class="gc-kpi-value"><?php echo number_format($kpi_total_productos); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Productos', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="gc-kpi-card">
+                <div class="gc-kpi-icon"><span class="dashicons dashicons-store"></span></div>
+                <div class="gc-kpi-content">
+                    <span class="gc-kpi-value"><?php echo number_format($kpi_total_productores); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Productores', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="gc-kpi-card gc-kpi-highlight">
+                <div class="gc-kpi-icon"><span class="dashicons dashicons-chart-line"></span></div>
+                <div class="gc-kpi-content">
+                    <span class="gc-kpi-value"><?php echo number_format($kpi_ticket_medio, 2, ',', '.'); ?>€</span>
+                    <span class="gc-kpi-label"><?php _e('Ticket medio', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+        </div>
+
         <!-- Resumen por Productor (gráfico) -->
         <?php if (!empty($totales_por_productor)): ?>
             <div class="gc-resumen-chart">
@@ -165,6 +233,32 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
 
         <!-- Consolidado por Productor -->
         <?php if (!empty($consolidado)): ?>
+            <div class="gc-tabla-card">
+                <h2><?php _e('KPIs por productor', 'flavor-chat-ia'); ?></h2>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th><?php _e('Productor', 'flavor-chat-ia'); ?></th>
+                            <th class="text-right"><?php _e('Total', 'flavor-chat-ia'); ?></th>
+                            <th class="text-right"><?php _e('% del ciclo', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($consolidado as $productor_id => $productor_data): ?>
+                            <tr>
+                                <td><?php echo esc_html($productor_data['nombre']); ?></td>
+                                <td class="text-right"><?php echo number_format($productor_data['total'], 2, ',', '.'); ?>€</td>
+                                <td class="text-right">
+                                    <?php
+                                    $porcentaje = $total_general > 0 ? ($productor_data['total'] / $total_general) * 100 : 0;
+                                    echo number_format($porcentaje, 1, ',', '.') . '%';
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
             <div class="gc-consolidado-lista">
                 <?php foreach ($consolidado as $productor_id => $productor_data): ?>
                     <div class="gc-productor-card" data-productor="<?php echo $productor_id; ?>">

@@ -123,27 +123,27 @@ $energia_ahorrada = $stats_generales->total_kg * 0.5;
     <!-- Filtros -->
     <div class="flavor-filtros-container">
         <form method="get" action="">
-            <input type="hidden" name="page" value="flavor-reciclaje-estadisticas">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-reciclaje-estadisticas', 'flavor-chat-ia'); ?>">
 
             <label for="periodo"><?php echo esc_html__('Período:', 'flavor-chat-ia'); ?></label>
             <select name="periodo" id="periodo" onchange="this.form.submit()">
-                <option value="semana" <?php selected($periodo, 'semana'); ?>><?php echo esc_html__('Última semana', 'flavor-chat-ia'); ?></option>
-                <option value="mes" <?php selected($periodo, 'mes'); ?>><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></option>
-                <option value="trimestre" <?php selected($periodo, 'trimestre'); ?>><?php echo esc_html__('Último trimestre', 'flavor-chat-ia'); ?></option>
-                <option value="anio" <?php selected($periodo, 'anio'); ?>><?php echo esc_html__('Este año', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('semana', 'flavor-chat-ia'); ?>" <?php selected($periodo, 'semana'); ?>><?php echo esc_html__('Última semana', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('mes', 'flavor-chat-ia'); ?>" <?php selected($periodo, 'mes'); ?>><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('trimestre', 'flavor-chat-ia'); ?>" <?php selected($periodo, 'trimestre'); ?>><?php echo esc_html__('Último trimestre', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('anio', 'flavor-chat-ia'); ?>" <?php selected($periodo, 'anio'); ?>><?php echo esc_html__('Este año', 'flavor-chat-ia'); ?></option>
             </select>
 
             <label for="material"><?php echo esc_html__('Material:', 'flavor-chat-ia'); ?></label>
             <select name="material" id="material" onchange="this.form.submit()">
                 <option value=""><?php echo esc_html__('Todos los materiales', 'flavor-chat-ia'); ?></option>
-                <option value="papel" <?php selected($material_filtro, 'papel'); ?>><?php echo esc_html__('Papel', 'flavor-chat-ia'); ?></option>
-                <option value="plastico" <?php selected($material_filtro, 'plastico'); ?>><?php echo esc_html__('Plástico', 'flavor-chat-ia'); ?></option>
-                <option value="vidrio" <?php selected($material_filtro, 'vidrio'); ?>><?php echo esc_html__('Vidrio', 'flavor-chat-ia'); ?></option>
-                <option value="organico" <?php selected($material_filtro, 'organico'); ?>><?php echo esc_html__('Orgánico', 'flavor-chat-ia'); ?></option>
-                <option value="electronico" <?php selected($material_filtro, 'electronico'); ?>><?php echo esc_html__('Electrónico', 'flavor-chat-ia'); ?></option>
-                <option value="ropa" <?php selected($material_filtro, 'ropa'); ?>><?php echo esc_html__('Ropa', 'flavor-chat-ia'); ?></option>
-                <option value="aceite" <?php selected($material_filtro, 'aceite'); ?>><?php echo esc_html__('Aceite', 'flavor-chat-ia'); ?></option>
-                <option value="pilas" <?php selected($material_filtro, 'pilas'); ?>><?php echo esc_html__('Pilas', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('papel', 'flavor-chat-ia'); ?>" <?php selected($material_filtro, 'papel'); ?>><?php echo esc_html__('Papel', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('plastico', 'flavor-chat-ia'); ?>" <?php selected($material_filtro, 'plastico'); ?>><?php echo esc_html__('Plástico', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('vidrio', 'flavor-chat-ia'); ?>" <?php selected($material_filtro, 'vidrio'); ?>><?php echo esc_html__('Vidrio', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('organico', 'flavor-chat-ia'); ?>" <?php selected($material_filtro, 'organico'); ?>><?php echo esc_html__('Orgánico', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('electronico', 'flavor-chat-ia'); ?>" <?php selected($material_filtro, 'electronico'); ?>><?php echo esc_html__('Electrónico', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('ropa', 'flavor-chat-ia'); ?>" <?php selected($material_filtro, 'ropa'); ?>><?php echo esc_html__('Ropa', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('aceite', 'flavor-chat-ia'); ?>" <?php selected($material_filtro, 'aceite'); ?>><?php echo esc_html__('Aceite', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('pilas', 'flavor-chat-ia'); ?>" <?php selected($material_filtro, 'pilas'); ?>><?php echo esc_html__('Pilas', 'flavor-chat-ia'); ?></option>
             </select>
 
             <button type="submit" class="button"><?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?></button>

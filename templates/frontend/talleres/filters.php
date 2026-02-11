@@ -11,16 +11,16 @@ $filtros_activos = $filtros_activos ?? [];
 <div class="flavor-frontend flavor-talleres-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+            <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-violet-600 hover:text-violet-700 font-medium">Limpiar</a>
+            <a href="?" class="text-sm text-violet-600 hover:text-violet-700 font-medium"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
             <?php endif; ?>
         </div>
 
         <form method="get" class="space-y-6">
             <!-- Categoria -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Categoria</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $categorias_talleres = [
@@ -50,7 +50,7 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Nivel -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Nivel</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Nivel', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $niveles_taller = [
@@ -75,7 +75,7 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Precio -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Precio</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $opciones_precio_taller = [
@@ -99,7 +99,7 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Formato -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Formato</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Formato', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $formatos_taller = [
@@ -123,7 +123,7 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Dia de la semana -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Dia de la semana</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Dia de la semana', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $dias_semana_taller = [
@@ -153,7 +153,7 @@ $filtros_activos = $filtros_activos ?? [];
             <!-- Boton aplicar -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-purple-500 to-violet-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-purple-600 hover:to-violet-700 transition-all shadow-md">
-                Aplicar Filtros
+                <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

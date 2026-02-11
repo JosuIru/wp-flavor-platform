@@ -44,7 +44,7 @@ class Flavor_Network_API {
         register_rest_route(self::API_NAMESPACE, '/directory', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_directory'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args'                => $this->get_directory_args(),
         ]);
 
@@ -52,14 +52,14 @@ class Flavor_Network_API {
         register_rest_route(self::API_NAMESPACE, '/node/(?P<slug>[a-z0-9-]+)', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_node_profile'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ─── Mapa de nodos ───
         register_rest_route(self::API_NAMESPACE, '/map', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_map_data'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args'                => $this->get_map_args(),
         ]);
 
@@ -67,7 +67,7 @@ class Flavor_Network_API {
         register_rest_route(self::API_NAMESPACE, '/nearby', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_nearby_nodes'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args'                => [
                 'lat'   => ['required' => true, 'type' => 'number'],
                 'lng'   => ['required' => true, 'type' => 'number'],
@@ -78,7 +78,7 @@ class Flavor_Network_API {
 
         // ─── Tablón de red ───
         register_rest_route(self::API_NAMESPACE, '/board', [
-            ['methods' => 'GET',  'callback' => [$this, 'get_board'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',  'callback' => [$this, 'get_board'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'POST', 'callback' => [$this, 'post_board'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
@@ -89,12 +89,12 @@ class Flavor_Network_API {
 
         // ─── Contenido compartido ───
         register_rest_route(self::API_NAMESPACE, '/content', [
-            ['methods' => 'GET',  'callback' => [$this, 'get_shared_content'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',  'callback' => [$this, 'get_shared_content'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'POST', 'callback' => [$this, 'create_shared_content'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/content/(?P<id>\d+)', [
-            ['methods' => 'GET',    'callback' => [$this, 'get_content_detail'],   'permission_callback' => '__return_true'],
+            ['methods' => 'GET',    'callback' => [$this, 'get_content_detail'],   'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'PUT',    'callback' => [$this, 'update_shared_content'], 'permission_callback' => [$this, 'check_admin_permission']],
             ['methods' => 'DELETE', 'callback' => [$this, 'delete_shared_content'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
@@ -103,29 +103,29 @@ class Flavor_Network_API {
         register_rest_route(self::API_NAMESPACE, '/catalog/(?P<slug>[a-z0-9-]+)', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_node_catalog'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ─── Eventos ───
         register_rest_route(self::API_NAMESPACE, '/events', [
-            ['methods' => 'GET',  'callback' => [$this, 'get_events'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',  'callback' => [$this, 'get_events'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'POST', 'callback' => [$this, 'create_event'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/events/(?P<id>\d+)', [
-            ['methods' => 'GET',    'callback' => [$this, 'get_event_detail'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',    'callback' => [$this, 'get_event_detail'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'PUT',    'callback' => [$this, 'update_event'],      'permission_callback' => [$this, 'check_admin_permission']],
             ['methods' => 'DELETE', 'callback' => [$this, 'delete_event'],      'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
         // ─── Colaboraciones ───
         register_rest_route(self::API_NAMESPACE, '/collaborations', [
-            ['methods' => 'GET',  'callback' => [$this, 'get_collaborations'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',  'callback' => [$this, 'get_collaborations'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'POST', 'callback' => [$this, 'create_collaboration'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/collaborations/(?P<id>\d+)', [
-            ['methods' => 'GET',    'callback' => [$this, 'get_collaboration_detail'], 'permission_callback' => '__return_true'],
+            ['methods' => 'GET',    'callback' => [$this, 'get_collaboration_detail'], 'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'PUT',    'callback' => [$this, 'update_collaboration'],     'permission_callback' => [$this, 'check_admin_permission']],
             ['methods' => 'DELETE', 'callback' => [$this, 'delete_collaboration'],     'permission_callback' => [$this, 'check_admin_permission']],
         ]);
@@ -168,7 +168,7 @@ class Flavor_Network_API {
 
         // ─── Alertas solidarias ───
         register_rest_route(self::API_NAMESPACE, '/alerts', [
-            ['methods' => 'GET',  'callback' => [$this, 'get_alerts'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',  'callback' => [$this, 'get_alerts'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'POST', 'callback' => [$this, 'create_alert'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
@@ -179,7 +179,7 @@ class Flavor_Network_API {
 
         // ─── Ofertas de tiempo ───
         register_rest_route(self::API_NAMESPACE, '/time-offers', [
-            ['methods' => 'GET',  'callback' => [$this, 'get_time_offers'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',  'callback' => [$this, 'get_time_offers'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'POST', 'callback' => [$this, 'create_time_offer'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
@@ -193,14 +193,14 @@ class Flavor_Network_API {
         register_rest_route(self::API_NAMESPACE, '/node/(?P<slug>[a-zA-Z0-9_-]+)/qr', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_node_qr'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ─── Sello de calidad ───
         register_rest_route(self::API_NAMESPACE, '/verify-seal/(?P<slug>[a-z0-9-]+)', [
             'methods'             => 'GET',
             'callback'            => [$this, 'verify_seal'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
 
@@ -297,18 +297,18 @@ class Flavor_Network_API {
 
         // ─── Preguntas a la Red ───
         register_rest_route(self::API_NAMESPACE, '/questions', [
-            ['methods' => 'GET',  'callback' => [$this, 'get_questions'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',  'callback' => [$this, 'get_questions'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'POST', 'callback' => [$this, 'create_question'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/questions/(?P<id>\d+)', [
-            ['methods' => 'GET',    'callback' => [$this, 'get_question_detail'], 'permission_callback' => '__return_true'],
+            ['methods' => 'GET',    'callback' => [$this, 'get_question_detail'], 'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'PUT',    'callback' => [$this, 'update_question'],     'permission_callback' => [$this, 'check_admin_permission']],
             ['methods' => 'DELETE', 'callback' => [$this, 'delete_question'],     'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/questions/(?P<id>\d+)/answers', [
-            ['methods' => 'GET',  'callback' => [$this, 'get_answers'],  'permission_callback' => '__return_true'],
+            ['methods' => 'GET',  'callback' => [$this, 'get_answers'],  'permission_callback' => [$this, 'public_permission_check']],
             ['methods' => 'POST', 'callback' => [$this, 'create_answer'], 'permission_callback' => [$this, 'check_admin_permission']],
         ]);
 
@@ -351,7 +351,7 @@ class Flavor_Network_API {
         register_rest_route(self::API_NAMESPACE, '/stats', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_network_stats'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -359,6 +359,12 @@ class Flavor_Network_API {
 
     public function check_admin_permission() {
         return current_user_can('manage_options');
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 
     // ─── DIRECTORIO ───
@@ -1829,6 +1835,26 @@ class Flavor_Network_API {
 
         $datos['site_url'] = get_site_url();
 
+        // Autogeocodificar si no hay coordenadas y hay dirección
+        if (
+            (empty($datos['latitud']) || empty($datos['longitud'])) &&
+            (!empty($datos['direccion']) || !empty($datos['ciudad']) || !empty($datos['provincia']) || !empty($datos['pais']) || !empty($datos['codigo_postal']))
+        ) {
+            $direccion_completa = trim(implode(', ', array_filter([
+                $datos['direccion'] ?? '',
+                $datos['ciudad'] ?? '',
+                $datos['provincia'] ?? '',
+                $datos['codigo_postal'] ?? '',
+                $datos['pais'] ?? '',
+            ])));
+
+            $coords = $this->geocode_address($direccion_completa);
+            if ($coords) {
+                $datos['latitud'] = $coords['lat'];
+                $datos['longitud'] = $coords['lng'];
+            }
+        }
+
         $nodo = Flavor_Network_Node::save_local_node($datos);
 
         if (!$nodo) {
@@ -1840,6 +1866,55 @@ class Flavor_Network_API {
             'nodo'    => $nodo->to_array(),
             'message' => __('Nodo local guardado correctamente', 'flavor-chat-ia'),
         ], 200);
+    }
+
+    private function geocode_address($direccion) {
+        $direccion = trim((string) $direccion);
+        if ($direccion === '') {
+            return null;
+        }
+
+        $cache_key = 'flavor_geocode_' . md5($direccion);
+        $cached = get_transient($cache_key);
+        if (is_array($cached) && isset($cached['lat']) && isset($cached['lng'])) {
+            return $cached;
+        }
+
+        $url = add_query_arg([
+            'q' => $direccion,
+            'format' => 'json',
+            'limit' => 1,
+        ], 'https://nominatim.openstreetmap.org/search');
+
+        $response = wp_remote_get($url, [
+            'timeout' => 10,
+            'headers' => [
+                'User-Agent' => 'FlavorChatIA/1.0 (+https://flavor-chat-ia)',
+            ],
+        ]);
+
+        if (is_wp_error($response)) {
+            return null;
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+        if (empty($data) || !is_array($data)) {
+            return null;
+        }
+
+        $first = $data[0] ?? null;
+        if (!$first || empty($first['lat']) || empty($first['lon'])) {
+            return null;
+        }
+
+        $coords = [
+            'lat' => (float) $first['lat'],
+            'lng' => (float) $first['lon'],
+        ];
+
+        set_transient($cache_key, $coords, WEEK_IN_SECONDS);
+        return $coords;
     }
 
     // ─── ESTADÍSTICAS ───

@@ -65,7 +65,7 @@ $identificador_unico = 'listing-tabla-' . wp_unique_id();
             <thead>
                 <tr class="border-b border-gray-200" style="background-color: <?php echo $color_primario_escapado; ?>0d;">
                     <?php if ( $mostrar_imagen_flag ) : ?>
-                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">&nbsp;</th>
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"><?php echo esc_html__('&nbsp;', 'flavor-chat-ia'); ?></th>
                     <?php endif; ?>
                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <?php esc_html_e( 'Nombre', 'flavor-chat-ia' ); ?>
@@ -75,7 +75,7 @@ $identificador_unico = 'listing-tabla-' . wp_unique_id();
                             <?php esc_html_e( 'Descripción', 'flavor-chat-ia' ); ?>
                         </th>
                     <?php endif; ?>
-                    <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">&nbsp;</th>
+                    <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500"><?php echo esc_html__('&nbsp;', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">

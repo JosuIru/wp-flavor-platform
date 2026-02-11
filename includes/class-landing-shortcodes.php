@@ -27,6 +27,29 @@ class Flavor_Landing_Shortcodes {
     private $template_map = [];
 
     /**
+     * Mapeo de perfiles de app a módulos de landing
+     */
+    private $profile_to_module_map = [
+        'grupo_consumo'        => 'grupos-consumo',
+        'banco_tiempo'         => 'banco-tiempo',
+        'comunidad'            => 'comunidades',
+        'ayuntamiento'         => 'ayuntamiento',
+        'barrio'               => 'ayuda-vecinal',
+        'smart_village'        => 'ayuda-vecinal',
+        'coworking'            => 'espacios-comunes',
+        'marketplace'          => 'marketplace',
+        'tienda'               => 'tienda',
+        'restaurante'          => 'restaurante',
+        'hosteleria'           => 'restaurante',
+        'academia'             => 'cursos',
+        'radio_comunitaria'    => 'podcast',
+        'cooperativa'          => 'comunidades',
+        'reciclaje_comunitario'=> 'reciclaje',
+        'club_deportivo'       => 'eventos',
+        'ong'                  => 'comunidades',
+    ];
+
+    /**
      * Obtiene la instancia singleton
      *
      * @return Flavor_Landing_Shortcodes
@@ -60,8 +83,11 @@ class Flavor_Landing_Shortcodes {
             'grupos-consumo' => [
                 'sections' => [
                     ['template' => '_generic-hero', 'vars' => $this->get_grupos_consumo_hero()],
-                    ['template' => 'tienda-productos', 'vars' => $this->get_grupos_consumo_productos() + ['id_seccion' => 'productores']],
-                    ['template' => '_generic-cta', 'vars' => $this->get_grupos_consumo_cta() + ['id_seccion' => 'registro']],
+                    ['template' => '_generic-features', 'vars' => $this->get_grupos_consumo_como_funciona() + ['id_seccion' => 'como-funciona']],
+                    ['template' => '_gc-grupos-activos', 'vars' => ['id_seccion' => 'grupos']],
+                    ['template' => '_gc-productos-destacados', 'vars' => ['id_seccion' => 'productos']],
+                    ['template' => '_gc-ciclo-actual', 'vars' => ['id_seccion' => 'ciclo']],
+                    ['template' => '_generic-cta', 'vars' => $this->get_grupos_consumo_cta() + ['id_seccion' => 'unirse']],
                 ],
             ],
             'banco-tiempo' => [
@@ -185,9 +211,31 @@ class Flavor_Landing_Shortcodes {
                     ['template' => 'inmobiliaria-landing', 'vars' => $this->get_inmobiliaria_config()],
                 ],
             ],
+            'tienda' => [
+                'sections' => [
+                    ['template' => '_generic-hero', 'vars' => $this->get_tienda_hero()],
+                    ['template' => 'tienda-productos', 'vars' => $this->get_tienda_productos() + ['id_seccion' => 'productos']],
+                    ['template' => '_generic-cta', 'vars' => $this->get_tienda_cta() + ['id_seccion' => 'comprar']],
+                ],
+            ],
+            'podcast' => [
+                'sections' => [
+                    ['template' => '_generic-hero', 'vars' => $this->get_podcast_hero()],
+                    ['template' => '_generic-grid', 'vars' => $this->get_podcast_episodios() + ['id_seccion' => 'episodios']],
+                ],
+            ],
         ];
 
         return $this->template_map;
+    }
+
+    /**
+     * Obtiene el mapeo público de templates (para editor visual)
+     *
+     * @return array
+     */
+    public function get_template_map_public() {
+        return $this->get_template_map();
     }
 
     /**
@@ -196,6 +244,8 @@ class Flavor_Landing_Shortcodes {
     private function register_shortcodes() {
         add_shortcode('flavor_landing', [$this, 'render_landing']);
         add_shortcode('flavor_section', [$this, 'render_section']);
+        add_shortcode('flavor_grupos_consumo', [$this, 'render_grupos_consumo']);
+        add_shortcode('flavor_banco_tiempo', [$this, 'render_banco_tiempo']);
     }
 
     /**
@@ -213,8 +263,13 @@ class Flavor_Landing_Shortcodes {
         $module = sanitize_text_field($atts['module']);
         $color = sanitize_hex_color($atts['color']);
 
+        // Si no se especifica módulo, detectar automáticamente del perfil activo
         if (empty($module)) {
-            return $this->render_error(__('Módulo no especificado', 'flavor-chat-ia'));
+            $module = $this->get_module_from_active_profile();
+        }
+
+        if (empty($module)) {
+            return $this->render_error(__('Módulo no especificado y no se pudo detectar del perfil activo', 'flavor-chat-ia'));
         }
 
         $template_map = $this->get_template_map();
@@ -244,6 +299,44 @@ class Flavor_Landing_Shortcodes {
         $output .= '</div>';
 
         return $output;
+    }
+
+    /**
+     * Alias shortcode: [flavor_grupos_consumo]
+     *
+     * Renderiza la landing de Grupos de Consumo.
+     *
+     * @param array $atts Atributos del shortcode (opcional)
+     * @return string
+     */
+    public function render_grupos_consumo($atts) {
+        $atts = shortcode_atts([
+            'color' => '',
+        ], $atts, 'flavor_grupos_consumo');
+
+        return $this->render_landing([
+            'module' => 'grupos-consumo',
+            'color' => $atts['color'],
+        ]);
+    }
+
+    /**
+     * Alias shortcode: [flavor_banco_tiempo]
+     *
+     * Renderiza la landing de Banco de Tiempo.
+     *
+     * @param array $atts Atributos del shortcode (opcional)
+     * @return string
+     */
+    public function render_banco_tiempo($atts) {
+        $atts = shortcode_atts([
+            'color' => '',
+        ], $atts, 'flavor_banco_tiempo');
+
+        return $this->render_landing([
+            'module' => 'banco-tiempo',
+            'color' => $atts['color'],
+        ]);
     }
 
     /**
@@ -286,9 +379,22 @@ class Flavor_Landing_Shortcodes {
      * @return string
      */
     private function load_template($template_name, $vars = []) {
-        $template_path = FLAVOR_CHAT_IA_PATH . 'templates/components/landings/' . $template_name . '.php';
+        // Buscar en múltiples ubicaciones
+        $posibles_rutas = [
+            FLAVOR_CHAT_IA_PATH . 'templates/components/landings/' . $template_name . '.php',
+            FLAVOR_CHAT_IA_PATH . 'templates/frontend/landing/' . $template_name . '.php',
+            get_stylesheet_directory() . '/flavor/landing/' . $template_name . '.php',
+        ];
 
-        if (!file_exists($template_path)) {
+        $template_path = null;
+        foreach ($posibles_rutas as $ruta) {
+            if (file_exists($ruta)) {
+                $template_path = $ruta;
+                break;
+            }
+        }
+
+        if (!$template_path) {
             return $this->render_error(sprintf(__('Template "%s" no encontrado', 'flavor-chat-ia'), $template_name));
         }
 
@@ -318,11 +424,16 @@ class Flavor_Landing_Shortcodes {
     /**
      * Estilos globales para las landing pages
      *
-     * @param string $color Color primario
+     * @param string $color Color primario (opcional, si vacío usa el tema activo)
      * @return string
      */
     private function get_landing_styles($color = '') {
-        $primary_color = !empty($color) ? $color : '#3b82f6';
+        // Si no se pasa color, usar el del tema activo
+        if (empty($color)) {
+            $primary_color = $this->get_theme_primary_color();
+        } else {
+            $primary_color = $color;
+        }
 
         return '<style>
             .flavor-landing {
@@ -340,6 +451,75 @@ class Flavor_Landing_Shortcodes {
         </style>';
     }
 
+    /**
+     * Obtiene el color primario del tema activo
+     *
+     * @return string Color hexadecimal
+     */
+    private function get_theme_primary_color() {
+        // Intentar obtener del Theme Manager
+        if (class_exists('Flavor_Theme_Manager')) {
+            $theme_manager = Flavor_Theme_Manager::get_instance();
+            $active_theme_id = get_option('flavor_active_theme', 'default');
+            $theme = $theme_manager->get_theme($active_theme_id);
+
+            if ($theme && !empty($theme['variables']['--flavor-primary'])) {
+                return $theme['variables']['--flavor-primary'];
+            }
+        }
+
+        // Fallback al valor por defecto
+        return '#3b82f6';
+    }
+
+    /**
+     * Obtiene el módulo de landing correspondiente al perfil activo
+     *
+     * @return string Nombre del módulo de landing o vacío si no hay mapeo
+     */
+    private function get_module_from_active_profile() {
+        // Obtener el perfil activo desde la configuración
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $perfil_activo = $configuracion['app_profile'] ?? 'personalizado';
+
+        // Buscar en el mapeo
+        if (isset($this->profile_to_module_map[$perfil_activo])) {
+            return $this->profile_to_module_map[$perfil_activo];
+        }
+
+        // Si el perfil es 'personalizado', intentar detectar del primer módulo activo
+        if ($perfil_activo === 'personalizado') {
+            $modulos_activos = $configuracion['active_modules'] ?? [];
+
+            // Mapeo inverso: de módulos activos a landing modules
+            $modulo_a_landing = [
+                'grupos_consumo'    => 'grupos-consumo',
+                'banco_tiempo'      => 'banco-tiempo',
+                'comunidades'       => 'comunidades',
+                'ayuntamiento'      => 'ayuntamiento',
+                'ayuda_vecinal'     => 'ayuda-vecinal',
+                'espacios_comunes'  => 'espacios-comunes',
+                'marketplace'       => 'marketplace',
+                'woocommerce'       => 'tienda',
+                'cursos'            => 'cursos',
+                'eventos'           => 'eventos',
+                'reciclaje'         => 'reciclaje',
+                'incidencias'       => 'incidencias',
+                'bicicletas_compartidas' => 'bicicletas',
+                'huertos_urbanos'   => 'huertos-urbanos',
+                'biblioteca'        => 'biblioteca',
+            ];
+
+            foreach ($modulos_activos as $modulo) {
+                if (isset($modulo_a_landing[$modulo])) {
+                    return $modulo_a_landing[$modulo];
+                }
+            }
+        }
+
+        return '';
+    }
+
     // =========================================================
     // CONFIGURACIONES DE MÓDULOS
     // =========================================================
@@ -347,11 +527,43 @@ class Flavor_Landing_Shortcodes {
     private function get_grupos_consumo_hero() {
         return [
             'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
-            'subtitulo' => __('Productos locales, frescos y de temporada directamente del productor', 'flavor-chat-ia'),
+            'subtitulo' => __('Consume local, apoya a productores cercanos y forma parte de una comunidad sostenible', 'flavor-chat-ia'),
             'color_primario' => '#84cc16',
             'imagen' => '',
-            'cta_texto' => __('Ver Productores', 'flavor-chat-ia'),
-            'cta_url' => '#productores',
+            'cta_texto' => __('Ver Grupos', 'flavor-chat-ia'),
+            'cta_url' => home_url('/grupos-consumo/'),
+            'cta_secundario_texto' => __('Ver Productos', 'flavor-chat-ia'),
+            'cta_secundario_url' => home_url('/grupos-consumo/productos/'),
+        ];
+    }
+
+    private function get_grupos_consumo_como_funciona() {
+        return [
+            'titulo' => __('¿Cómo funciona?', 'flavor-chat-ia'),
+            'subtitulo' => __('En 4 sencillos pasos puedes empezar a consumir productos locales', 'flavor-chat-ia'),
+            'items' => [
+                [
+                    'titulo' => __('1. Únete a un grupo', 'flavor-chat-ia'),
+                    'icono' => 'groups',
+                    'descripcion' => __('Encuentra un grupo cerca de ti y solicita unirte', 'flavor-chat-ia'),
+                ],
+                [
+                    'titulo' => __('2. Explora productos', 'flavor-chat-ia'),
+                    'icono' => 'carrot',
+                    'descripcion' => __('Descubre productos frescos de productores locales', 'flavor-chat-ia'),
+                ],
+                [
+                    'titulo' => __('3. Haz tu pedido', 'flavor-chat-ia'),
+                    'icono' => 'cart',
+                    'descripcion' => __('Añade productos a tu cesta durante el ciclo de pedidos', 'flavor-chat-ia'),
+                ],
+                [
+                    'titulo' => __('4. Recoge tu cesta', 'flavor-chat-ia'),
+                    'icono' => 'location',
+                    'descripcion' => __('Recoge tu pedido en el punto de entrega acordado', 'flavor-chat-ia'),
+                ],
+            ],
+            'color_primario' => '#84cc16',
         ];
     }
 
@@ -364,10 +576,12 @@ class Flavor_Landing_Shortcodes {
 
     private function get_grupos_consumo_cta() {
         return [
-            'titulo' => __('Únete a un grupo de consumo', 'flavor-chat-ia'),
-            'descripcion' => __('Apoya a los productores locales y disfruta de alimentos frescos y sostenibles', 'flavor-chat-ia'),
-            'boton_texto' => __('Registrarse', 'flavor-chat-ia'),
-            'boton_url' => wp_registration_url(),
+            'titulo' => __('¿Listo para consumir local?', 'flavor-chat-ia'),
+            'descripcion' => __('Únete a un grupo de consumo y empieza a disfrutar de productos frescos, de temporada y de productores cercanos', 'flavor-chat-ia'),
+            'boton_texto' => __('Unirme a un grupo', 'flavor-chat-ia'),
+            'boton_url' => home_url('/grupos-consumo/unirme/'),
+            'boton_secundario_texto' => __('Ver catálogo', 'flavor-chat-ia'),
+            'boton_secundario_url' => home_url('/grupos-consumo/productos/'),
             'color_primario' => '#84cc16',
         ];
     }
@@ -732,4 +946,66 @@ class Flavor_Landing_Shortcodes {
             'color_primario' => '#059669',
         ];
     }
+
+    // =========================================================
+    // TIENDA ONLINE
+    // =========================================================
+
+    private function get_tienda_hero() {
+        return [
+            'titulo' => __('Nuestra Tienda', 'flavor-chat-ia'),
+            'subtitulo' => __('Descubre nuestros productos y ofertas especiales', 'flavor-chat-ia'),
+            'color_primario' => '#00a0d2',
+            'imagen' => '',
+            'cta_texto' => __('Ver Productos', 'flavor-chat-ia'),
+            'cta_url' => '#productos',
+        ];
+    }
+
+    private function get_tienda_productos() {
+        return [
+            'titulo' => __('Productos Destacados', 'flavor-chat-ia'),
+            'color_primario' => '#00a0d2',
+        ];
+    }
+
+    private function get_tienda_cta() {
+        return [
+            'titulo' => __('¿Primera compra?', 'flavor-chat-ia'),
+            'descripcion' => __('Regístrate y obtén un descuento en tu primer pedido', 'flavor-chat-ia'),
+            'boton_texto' => __('Registrarse', 'flavor-chat-ia'),
+            'boton_url' => wp_registration_url(),
+            'color_primario' => '#00a0d2',
+        ];
+    }
+
+    // =========================================================
+    // PODCAST / RADIO
+    // =========================================================
+
+    private function get_podcast_hero() {
+        return [
+            'titulo' => __('Podcast Comunitario', 'flavor-chat-ia'),
+            'subtitulo' => __('Escucha las voces de nuestra comunidad', 'flavor-chat-ia'),
+            'color_primario' => '#dc2626',
+            'imagen' => '',
+            'cta_texto' => __('Últimos Episodios', 'flavor-chat-ia'),
+            'cta_url' => '#episodios',
+        ];
+    }
+
+    private function get_podcast_episodios() {
+        return [
+            'titulo' => __('Últimos Episodios', 'flavor-chat-ia'),
+            'items' => [
+                ['titulo' => __('Historias del barrio', 'flavor-chat-ia'), 'icono' => 'microphone', 'descripcion' => __('45 min', 'flavor-chat-ia')],
+                ['titulo' => __('Entrevista: Comercio local', 'flavor-chat-ia'), 'icono' => 'microphone', 'descripcion' => __('30 min', 'flavor-chat-ia')],
+                ['titulo' => __('Cultura y tradiciones', 'flavor-chat-ia'), 'icono' => 'microphone', 'descripcion' => __('38 min', 'flavor-chat-ia')],
+            ],
+            'color_primario' => '#dc2626',
+        ];
+    }
 }
+
+// Inicializar el singleton para registrar los shortcodes
+Flavor_Landing_Shortcodes::get_instance();

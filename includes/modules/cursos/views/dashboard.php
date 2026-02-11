@@ -53,7 +53,7 @@ $inscripciones_por_dia = $wpdb->get_results(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Dashboard - Cursos y Formación</h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Dashboard - Cursos y Formación', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Tarjetas de estadísticas -->
@@ -64,7 +64,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($total_cursos); ?></div>
-                <div class="flavor-stat-label">Cursos Publicados</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Cursos Publicados', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -74,7 +74,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($cursos_activos); ?></div>
-                <div class="flavor-stat-label">Cursos Activos</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Cursos Activos', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -84,7 +84,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($total_alumnos); ?></div>
-                <div class="flavor-stat-label">Alumnos Totales</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Alumnos Totales', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($total_inscripciones); ?></div>
-                <div class="flavor-stat-label">Inscripciones Activas</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Inscripciones Activas', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -104,7 +104,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($certificados_emitidos); ?></div>
-                <div class="flavor-stat-label">Certificados (mes)</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Certificados (mes)', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -114,7 +114,7 @@ $inscripciones_por_dia = $wpdb->get_results(
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($ingresos_mes, 2); ?>€</div>
-                <div class="flavor-stat-label">Ingresos (mes)</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Ingresos (mes)', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
@@ -124,7 +124,7 @@ $inscripciones_por_dia = $wpdb->get_results(
         <div class="flavor-dashboard-col-8">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Inscripciones - Últimos 30 días</h2>
+                    <h2><?php echo esc_html__('Inscripciones - Últimos 30 días', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <canvas id="chartInscripciones" height="80"></canvas>
@@ -135,15 +135,15 @@ $inscripciones_por_dia = $wpdb->get_results(
         <div class="flavor-dashboard-col-4">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h2>Cursos Populares</h2>
+                    <h2><?php echo esc_html__('Cursos Populares', 'flavor-chat-ia'); ?></h2>
                 </div>
                 <div class="flavor-card-body">
                     <table class="widefat">
                         <thead>
                             <tr>
-                                <th>Curso</th>
-                                <th>Alumnos</th>
-                                <th>Rating</th>
+                                <th><?php echo esc_html__('Curso', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Alumnos', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Rating', 'flavor-chat-ia'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -166,7 +166,7 @@ $inscripciones_por_dia = $wpdb->get_results(
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="3" class="flavor-no-data">No hay datos disponibles</td>
+                                    <td colspan="3" class="flavor-no-data"><?php echo esc_html__('No hay datos disponibles', 'flavor-chat-ia'); ?></td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -179,16 +179,16 @@ $inscripciones_por_dia = $wpdb->get_results(
     <!-- Inscripciones recientes -->
     <div class="flavor-card">
         <div class="flavor-card-header">
-            <h2>Inscripciones Recientes</h2>
+            <h2><?php echo esc_html__('Inscripciones Recientes', 'flavor-chat-ia'); ?></h2>
         </div>
         <div class="flavor-card-body">
             <table class="widefat striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Alumno</th>
-                        <th>Curso</th>
+                        <th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Alumno', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Curso', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -203,7 +203,7 @@ $inscripciones_por_dia = $wpdb->get_results(
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4" class="flavor-no-data">No hay inscripciones recientes</td>
+                            <td colspan="4" class="flavor-no-data"><?php echo esc_html__('No hay inscripciones recientes', 'flavor-chat-ia'); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

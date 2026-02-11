@@ -13,7 +13,7 @@ $productos_relacionados = $productos_relacionados ?? [];
 <div class="flavor-frontend flavor-marketplace-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/marketplace/')); ?>" class="hover:text-green-600 transition-colors">Marketplace</a>
+        <a href="<?php echo esc_url(home_url('/marketplace/')); ?>" class="hover:text-green-600 transition-colors"><?php echo esc_html__('Marketplace', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <?php if (!empty($producto['categoria'])): ?>
         <a href="<?php echo esc_url(home_url('/marketplace/?cat=' . ($producto['categoria_slug'] ?? ''))); ?>" class="hover:text-green-600 transition-colors">
@@ -75,7 +75,7 @@ $productos_relacionados = $productos_relacionados ?? [];
                     <span class="text-lg text-gray-400 line-through"><?php echo esc_html($producto['precio_original']); ?> €</span>
                     <?php endif; ?>
                     <?php if (!empty($producto['negociable'])): ?>
-                    <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full">Negociable</span>
+                    <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full"><?php echo esc_html__('Negociable', 'flavor-chat-ia'); ?></span>
                     <?php endif; ?>
                 </div>
 
@@ -86,7 +86,7 @@ $productos_relacionados = $productos_relacionados ?? [];
                 <!-- Detalles del producto -->
                 <?php if (!empty($producto['detalles'])): ?>
                 <div class="border-t border-gray-100 pt-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">📋 Detalles del producto</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📋 Detalles del producto', 'flavor-chat-ia'); ?></h2>
                     <dl class="grid grid-cols-2 gap-4">
                         <?php foreach ($producto['detalles'] as $etiqueta_detalle => $valor_detalle): ?>
                         <div>
@@ -101,9 +101,9 @@ $productos_relacionados = $productos_relacionados ?? [];
 
             <!-- Ubicacion -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📍 Ubicacion</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📍 Ubicacion', 'flavor-chat-ia'); ?></h2>
                 <div class="bg-gray-100 rounded-xl h-48 flex items-center justify-center text-gray-400">
-                    <span class="text-lg">Mapa de ubicacion aproximada</span>
+                    <span class="text-lg"><?php echo esc_html__('Mapa de ubicacion aproximada', 'flavor-chat-ia'); ?></span>
                 </div>
                 <p class="text-sm text-gray-500 mt-3"><?php echo esc_html($producto['ubicacion'] ?? 'Ubicacion no especificada'); ?></p>
             </div>
@@ -122,43 +122,43 @@ $productos_relacionados = $productos_relacionados ?? [];
                 <div class="grid grid-cols-3 gap-2 mb-4 text-center">
                     <div>
                         <p class="text-xl font-bold text-green-600"><?php echo esc_html($vendedor['anuncios_activos'] ?? 0); ?></p>
-                        <p class="text-xs text-gray-500">Anuncios</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Anuncios', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div>
                         <p class="text-xl font-bold text-gray-800"><?php echo esc_html($vendedor['ventas'] ?? 0); ?></p>
-                        <p class="text-xs text-gray-500">Ventas</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Ventas', 'flavor-chat-ia'); ?></p>
                     </div>
                     <div>
                         <p class="text-xl font-bold text-yellow-500">⭐ <?php echo esc_html($vendedor['valoracion'] ?? '5.0'); ?></p>
-                        <p class="text-xs text-gray-500">Valoracion</p>
+                        <p class="text-xs text-gray-500"><?php echo esc_html__('Valoracion', 'flavor-chat-ia'); ?></p>
                     </div>
                 </div>
 
                 <?php if (!empty($vendedor['verificado'])): ?>
                 <span class="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full mb-4">
-                    ✓ Vendedor verificado
+                    <?php echo esc_html__('✓ Vendedor verificado', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
 
             <!-- Contactar vendedor -->
             <div class="bg-gradient-to-br from-lime-500 to-green-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold mb-2">¿Te interesa este producto?</h3>
+                <h3 class="font-semibold mb-2"><?php echo esc_html__('¿Te interesa este producto?', 'flavor-chat-ia'); ?></h3>
                 <p class="text-lime-100 text-sm mb-4">Contacta con <?php echo esc_html($vendedor['nombre'] ?? 'el vendedor'); ?> para mas informacion.</p>
                 <button class="w-full bg-white text-green-600 py-3 px-4 rounded-xl font-semibold hover:bg-lime-50 transition-colors mb-3"
                         onclick="flavorMarketplace.contactarVendedor(<?php echo esc_attr($producto['id'] ?? 0); ?>)">
-                    💬 Contactar vendedor
+                    <?php echo esc_html__('💬 Contactar vendedor', 'flavor-chat-ia'); ?>
                 </button>
                 <button class="w-full bg-white/20 backdrop-blur text-white py-3 px-4 rounded-xl font-semibold hover:bg-white/30 transition-colors"
                         onclick="flavorMarketplace.guardarFavorito(<?php echo esc_attr($producto['id'] ?? 0); ?>)">
-                    ❤️ Guardar en favoritos
+                    <?php echo esc_html__('❤️ Guardar en favoritos', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- Productos relacionados -->
             <?php if (!empty($productos_relacionados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Productos similares</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Productos similares', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($productos_relacionados as $producto_relacionado): ?>
                     <a href="<?php echo esc_url($producto_relacionado['url'] ?? '#'); ?>" class="flex gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">

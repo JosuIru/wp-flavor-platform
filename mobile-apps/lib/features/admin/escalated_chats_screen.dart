@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
@@ -13,6 +14,7 @@ class EscalatedChatsScreen extends ConsumerStatefulWidget {
 }
 
 class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   String? _selectedStatus;
   List<EscalatedChat> _chats = [];
   bool _isLoading = false;
@@ -60,6 +62,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     // Contar por estado
@@ -69,12 +72,12 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chats Escalados'),
+        title: Text(i18n.chatsEscalados032c6e),
         actions: [
           IconButton(
             onPressed: _loadChats,
             icon: const Icon(Icons.refresh),
-            tooltip: 'Actualizar',
+            tooltip: i18n.actualizar2e7be1,
           ),
         ],
       ),
@@ -134,7 +137,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
               child: Row(
                 children: [
                   Chip(
-                    label: Text('Filtrando: ${_getStatusLabel(_selectedStatus!)}'),
+                    label: Text(i18n.escalatedFilterLabel(_getStatusLabel(_selectedStatus!))),
                     onDeleted: () {
                       setState(() {
                         _selectedStatus = null;
@@ -170,7 +173,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
                             FilledButton.icon(
                               onPressed: _loadChats,
                               icon: const Icon(Icons.refresh),
-                              label: const Text('Reintentar'),
+                              label: Text(i18n.reintentar179654),
                             ),
                           ],
                         ),
@@ -261,6 +264,7 @@ class _StatBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -321,6 +325,7 @@ class _ChatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(

@@ -175,8 +175,8 @@ if (!defined('ABSPATH')) {
                 <div class="flavor-form-group">
                     <label for="norma-tipo"><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
                     <select id="norma-tipo" name="tipo" class="widefat">
-                        <option value="general"><?php _e('General', 'flavor-chat-ia'); ?></option>
-                        <option value="especifica"><?php _e('Específica de espacio', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('general', 'flavor-chat-ia'); ?>"><?php _e('General', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('especifica', 'flavor-chat-ia'); ?>"><?php _e('Específica de espacio', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -190,9 +190,9 @@ if (!defined('ABSPATH')) {
                 <div class="flavor-form-group">
                     <label for="norma-prioridad"><?php _e('Prioridad', 'flavor-chat-ia'); ?></label>
                     <select id="norma-prioridad" name="prioridad" class="widefat">
-                        <option value="baja"><?php _e('Baja', 'flavor-chat-ia'); ?></option>
-                        <option value="media" selected><?php _e('Media', 'flavor-chat-ia'); ?></option>
-                        <option value="alta"><?php _e('Alta', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('baja', 'flavor-chat-ia'); ?>"><?php _e('Baja', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('media', 'flavor-chat-ia'); ?>" selected><?php _e('Media', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('alta', 'flavor-chat-ia'); ?>"><?php _e('Alta', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -488,7 +488,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
                     response.data.forEach(espacio => {
-                        options += `<option value="${espacio.id}">${espacio.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${espacio.id}', 'flavor-chat-ia'); ?>">${espacio.nombre}</option>`;
                     });
                     $('#norma-espacio').html(options);
                 }

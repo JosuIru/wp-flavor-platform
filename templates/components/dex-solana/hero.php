@@ -15,7 +15,7 @@ $url_conectar = $url_conectar ?? '/dex-solana/conectar/';
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #8B5CF6) 0%, var(--flavor-secondary, #7C3AED) 100%); min-height: 500px;">
     <!-- Patron Web3 -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22><rect width=%2260%22 height=%2260%22 fill=%22none%22/><polygon points=%2230,5 55,20 55,50 30,65 5,50 5,20%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22/></svg>'); background-size: 60px 60px;"></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22><rect width=%2260%22 height=%2260%22 fill=%22none%22/><polygon points=%2230,5 55,20 55,50 30,65 5,50 5,20%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22/></svg><?php echo esc_html__('\'); background-size: 60px 60px;">', 'flavor-chat-ia'); ?></div>
     </div>
     <!-- Particulas decorativas -->
     <div class="absolute top-20 left-10 w-2 h-2 rounded-full bg-violet-300/30 animate-pulse"></div>

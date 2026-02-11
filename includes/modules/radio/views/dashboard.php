@@ -63,7 +63,7 @@ $emision_actual = $wpdb->get_row("
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-controls-volumeon"></span>
-        Dashboard de Radio
+        <?php echo esc_html__('Dashboard de Radio', 'flavor-chat-ia'); ?>
     </h1>
 
     <!-- Estado de emisión en vivo -->
@@ -72,24 +72,24 @@ $emision_actual = $wpdb->get_row("
             <span class="dashicons dashicons-controls-play" style="font-size: 48px; color: #00a32a; margin-right: 20px; animation: pulse 2s infinite;"></span>
             <div style="flex: 1;">
                 <h2 style="margin: 0 0 5px 0; color: #00a32a;">
-                    EN VIVO AHORA
+                    <?php echo esc_html__('EN VIVO AHORA', 'flavor-chat-ia'); ?>
                 </h2>
                 <h3 style="margin: 0 0 5px 0;"><?php echo esc_html($emision_actual->programa_nombre); ?></h3>
                 <p style="margin: 0; color: #666;"><?php echo esc_html($emision_actual->programa_descripcion); ?></p>
                 <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">
-                    <strong><?php echo number_format($emision_actual->oyentes_actual ?? 0); ?></strong> oyentes conectados
+                    <strong><?php echo number_format($emision_actual->oyentes_actual ?? 0); ?></strong> <?php echo esc_html__('oyentes conectados', 'flavor-chat-ia'); ?>
                 </p>
             </div>
             <a href="#" class="button button-primary button-large">
-                <span class="dashicons dashicons-admin-settings"></span> Gestionar Emisión
+                <span class="dashicons dashicons-admin-settings"></span> <?php echo esc_html__('Gestionar Emisión', 'flavor-chat-ia'); ?>
             </a>
         </div>
     <?php else: ?>
         <div class="notice notice-info" style="display: flex; align-items: center; padding: 20px; margin: 20px 0;">
             <span class="dashicons dashicons-info" style="font-size: 32px; color: #2271b1; margin-right: 15px;"></span>
             <div>
-                <strong>No hay emisiones en vivo en este momento</strong>
-                <p style="margin: 5px 0 0 0;">La próxima emisión programada comenzará pronto.</p>
+                <strong><?php echo esc_html__('No hay emisiones en vivo en este momento', 'flavor-chat-ia'); ?></strong>
+                <p style="margin: 5px 0 0 0;"><?php echo esc_html__('La próxima emisión programada comenzará pronto.', 'flavor-chat-ia'); ?></p>
             </div>
         </div>
     <?php endif; ?>
@@ -100,7 +100,7 @@ $emision_actual = $wpdb->get_row("
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Programas Activos</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Programas Activos', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #2271b1;"><?php echo number_format($total_programas); ?></h2>
                 </div>
                 <span class="dashicons dashicons-microphone" style="font-size: 48px; color: #2271b1; opacity: 0.3;"></span>
@@ -110,7 +110,7 @@ $emision_actual = $wpdb->get_row("
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Total Emisiones</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Emisiones', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #00a32a;"><?php echo number_format($total_emisiones); ?></h2>
                 </div>
                 <span class="dashicons dashicons-album" style="font-size: 48px; color: #00a32a; opacity: 0.3;"></span>
@@ -120,7 +120,7 @@ $emision_actual = $wpdb->get_row("
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Locutores</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Locutores', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #8c49d8;"><?php echo number_format($total_locutores); ?></h2>
                 </div>
                 <span class="dashicons dashicons-admin-users" style="font-size: 48px; color: #8c49d8; opacity: 0.3;"></span>
@@ -130,7 +130,7 @@ $emision_actual = $wpdb->get_row("
         <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Oyentes (30d)</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Oyentes (30d)', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0; font-size: 32px; color: #d63638;"><?php echo number_format($total_oyentes ?? 0); ?></h2>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 48px; color: #d63638; opacity: 0.3;"></span>
@@ -145,7 +145,7 @@ $emision_actual = $wpdb->get_row("
         <div class="flavor-chart-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="margin-top: 0;">
                 <span class="dashicons dashicons-chart-bar"></span>
-                Audiencia por Día de la Semana
+                <?php echo esc_html__('Audiencia por Día de la Semana', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="grafico-audiencia-dia" style="max-height: 300px;"></canvas>
         </div>
@@ -154,11 +154,11 @@ $emision_actual = $wpdb->get_row("
         <div class="flavor-list-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="margin-top: 0;">
                 <span class="dashicons dashicons-star-filled"></span>
-                Top Programas
+                <?php echo esc_html__('Top Programas', 'flavor-chat-ia'); ?>
             </h3>
             <div style="display: flex; flex-direction: column; gap: 15px;">
                 <?php if (empty($programas_populares)): ?>
-                    <p style="text-align: center; color: #666; padding: 20px;">No hay datos disponibles</p>
+                    <p style="text-align: center; color: #666; padding: 20px;"><?php echo esc_html__('No hay datos disponibles', 'flavor-chat-ia'); ?></p>
                 <?php else: ?>
                     <?php foreach (array_slice($programas_populares, 0, 5) as $indice => $programa): ?>
                         <div style="display: flex; gap: 10px; align-items: center;">
@@ -181,19 +181,19 @@ $emision_actual = $wpdb->get_row("
     <div class="flavor-table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px;">
         <h3 style="margin-top: 0;">
             <span class="dashicons dashicons-clock"></span>
-            Emisiones Recientes
+            <?php echo esc_html__('Emisiones Recientes', 'flavor-chat-ia'); ?>
         </h3>
 
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 60px;">ID</th>
-                    <th>Programa</th>
-                    <th style="width: 120px;">Duración</th>
-                    <th style="width: 120px;">Oyentes Pico</th>
-                    <th style="width: 100px;">Estado</th>
-                    <th style="width: 150px;">Fecha</th>
-                    <th style="width: 100px;">Acciones</th>
+                    <th style="width: 60px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Programa', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Duración', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Oyentes Pico', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -201,7 +201,7 @@ $emision_actual = $wpdb->get_row("
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-album" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666;">No hay emisiones registradas</p>
+                            <p style="color: #666;"><?php echo esc_html__('No hay emisiones registradas', 'flavor-chat-ia'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>

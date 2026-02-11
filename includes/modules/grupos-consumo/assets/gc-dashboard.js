@@ -14,6 +14,7 @@
          */
         init: function() {
             this.bindEvents();
+            this.initCharts();
         },
 
         /**
@@ -33,6 +34,84 @@
             $(document).on('click', '.gc-reanudar-suscripcion', this.reanudarSuscripcion);
             $(document).on('click', '.gc-cancelar-suscripcion', this.cancelarSuscripcion);
             $(document).on('click', '.gc-suscribirse-cesta', this.suscribirseCesta);
+        },
+
+        /**
+         * Inicializa gráficos del panel
+         */
+        initCharts: function() {
+            if (typeof Chart === 'undefined') {
+                return;
+            }
+            if (!gcDashboardData || !gcDashboardData.charts) {
+                return;
+            }
+            var canvas = document.getElementById('gc-user-activity-chart');
+            if (!canvas) {
+                return;
+            }
+            var ctx = canvas.getContext('2d');
+            var labels = gcDashboardData.charts.labels || [];
+            var series = gcDashboardData.charts.series || [];
+            var cycleLabels = gcDashboardData.charts.cycleLabels || [];
+            var cycleSeries = gcDashboardData.charts.cycleSeries || [];
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Pedidos',
+                        data: series,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.15)',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 }
+                        }
+                    }
+                }
+            });
+
+            var cycleCanvas = document.getElementById('gc-user-cycle-chart');
+            if (cycleCanvas && cycleLabels.length > 0) {
+                var cycleCtx = cycleCanvas.getContext('2d');
+                new Chart(cycleCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: cycleLabels,
+                        datasets: [{
+                            label: 'Importe',
+                            data: cycleSeries,
+                            backgroundColor: '#16a34a'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
         },
 
         /**

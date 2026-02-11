@@ -105,14 +105,14 @@ class Flavor_Reservation_Manager {
         $required_fields = ['customer_name', 'customer_phone', 'reservation_date', 'reservation_time', 'guests_count'];
         foreach ($required_fields as $field) {
             if (empty($data[$field])) {
-                return new WP_Error('missing_field', "Campo requerido: {$field}");
+                return new WP_Error('missing_field', sprintf(__('Campo requerido: %s', 'flavor-restaurant-ordering'), $field));
             }
         }
 
         // Validar formato de fecha y hora
         $reservation_datetime = $data['reservation_date'] . ' ' . $data['reservation_time'];
         if (strtotime($reservation_datetime) < time()) {
-            return new WP_Error('invalid_datetime', 'No se puede reservar en el pasado');
+            return new WP_Error('invalid_datetime', __('No se puede reservar en el pasado', 'flavor-restaurant-ordering'));
         }
 
         // Buscar mesa disponible si no se especifica
@@ -127,12 +127,12 @@ class Flavor_Reservation_Manager {
             );
 
             if (!$table_id) {
-                return new WP_Error('no_tables_available', 'No hay mesas disponibles para esa fecha y hora');
+                return new WP_Error('no_tables_available', __('No hay mesas disponibles para esa fecha y hora', 'flavor-restaurant-ordering'));
             }
         } else {
             // Verificar que la mesa esté disponible
             if (!$this->is_table_available($table_id, $data['reservation_date'], $data['reservation_time'])) {
-                return new WP_Error('table_not_available', 'La mesa seleccionada no está disponible en ese horario');
+                return new WP_Error('table_not_available', __('La mesa seleccionada no está disponible en ese horario', 'flavor-restaurant-ordering'));
             }
         }
 
@@ -164,7 +164,7 @@ class Flavor_Reservation_Manager {
         );
 
         if ($inserted === false) {
-            return new WP_Error('db_error', 'Error al crear la reserva');
+            return new WP_Error('db_error', __('Error al crear la reserva', 'flavor-restaurant-ordering'));
         }
 
         $reservation_id = $wpdb->insert_id;
@@ -311,7 +311,7 @@ class Flavor_Reservation_Manager {
 
         $reservation = $this->get_reservation($reservation_id);
         if (!$reservation) {
-            return new WP_Error('reservation_not_found', 'Reserva no encontrada');
+            return new WP_Error('reservation_not_found', __('Reserva no encontrada', 'flavor-restaurant-ordering'));
         }
 
         $allowed_fields = [
@@ -368,7 +368,7 @@ class Flavor_Reservation_Manager {
         );
 
         if ($updated === false) {
-            return new WP_Error('db_error', 'Error al actualizar la reserva');
+            return new WP_Error('db_error', __('Error al actualizar la reserva', 'flavor-restaurant-ordering'));
         }
 
         do_action('flavor_restaurant_reservation_updated', $reservation_id, $data);
@@ -385,12 +385,12 @@ class Flavor_Reservation_Manager {
         $valid_statuses = ['pending', 'confirmed', 'cancelled', 'completed', 'no_show'];
 
         if (!in_array($new_status, $valid_statuses)) {
-            return new WP_Error('invalid_status', 'Estado de reserva inválido');
+            return new WP_Error('invalid_status', __('Estado de reserva inválido', 'flavor-restaurant-ordering'));
         }
 
         $reservation = $this->get_reservation($reservation_id);
         if (!$reservation) {
-            return new WP_Error('reservation_not_found', 'Reserva no encontrada');
+            return new WP_Error('reservation_not_found', __('Reserva no encontrada', 'flavor-restaurant-ordering'));
         }
 
         $update_data = ['status' => $new_status];
@@ -417,7 +417,7 @@ class Flavor_Reservation_Manager {
         );
 
         if ($updated === false) {
-            return new WP_Error('db_error', 'Error al actualizar el estado');
+            return new WP_Error('db_error', __('Error al actualizar el estado', 'flavor-restaurant-ordering'));
         }
 
         // Enviar email de confirmación/cancelación

@@ -74,6 +74,9 @@ class Flavor_WPML_Integration {
         // Registrar strings para traducción
         add_action('init', [$this, 'register_strings']);
 
+        // Registrar CPTs y taxonomias del plugin para WPML
+        add_action('init', [$this, 'register_content_types'], 21);
+
         // Traducir respuestas del chat
         add_filter('flavor_chat_ia_message_content', [$this, 'translate_message'], 10, 2);
 
@@ -142,8 +145,67 @@ class Flavor_WPML_Integration {
             'chat_error' => __('Error al enviar mensaje', 'flavor-chat-ia'),
         ];
 
+        // Permitir que modulos y addons registren strings dinamicos
+        $extra_strings = apply_filters('flavor_chat_ia_wpml_strings', []);
+        if (is_array($extra_strings)) {
+            foreach ($extra_strings as $name => $value) {
+                $strings[$name] = $value;
+            }
+        }
+
         foreach ($strings as $name => $value) {
             icl_register_string('flavor-chat-ia', $name, $value);
+        }
+    }
+
+    /**
+     * Registra CPTs y taxonomias como traducibles en WPML
+     */
+    public function register_content_types() {
+        if (!$this->wpml_active) {
+            return;
+        }
+
+        $post_types = [
+            'flavor_ad',
+            'flavor_advertiser',
+            'flavor_campaign',
+            'flavor_ad_campaign',
+            'flavor_landing',
+            'recompensa_reciclaje',
+            'guia_reciclaje',
+            'marketplace_item',
+            'gc_productor',
+            'gc_producto',
+            'gc_ciclo',
+            'gc_grupo',
+        ];
+
+        $taxonomies = [
+            'flavor_ad_category',
+            'flavor_ad_tag',
+            'ad_ubicacion',
+            'ad_categoria',
+            'gc_categoria',
+            'tipo_material',
+            'categoria_recompensa',
+            'marketplace_tipo',
+            'marketplace_categoria',
+        ];
+
+        $post_types = apply_filters('flavor_chat_ia_wpml_post_types', $post_types);
+        $taxonomies = apply_filters('flavor_chat_ia_wpml_taxonomies', $taxonomies);
+
+        if (is_array($post_types)) {
+            foreach ($post_types as $post_type) {
+                do_action('wpml_register_single_post_type', $post_type);
+            }
+        }
+
+        if (is_array($taxonomies)) {
+            foreach ($taxonomies as $taxonomy) {
+                do_action('wpml_register_single_taxonomy', $taxonomy);
+            }
         }
     }
 

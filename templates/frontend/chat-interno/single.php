@@ -13,7 +13,7 @@ $contacto = $contacto ?? [];
 <div class="flavor-frontend flavor-chat-interno-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/chat-interno/')); ?>" class="hover:text-blue-600 transition-colors">Chat Interno</a>
+        <a href="<?php echo esc_url(home_url('/chat-interno/')); ?>" class="hover:text-blue-600 transition-colors"><?php echo esc_html__('Chat Interno', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <span class="text-gray-700"><?php echo esc_html($contacto['nombre'] ?? 'Conversacion'); ?></span>
     </nav>
@@ -41,10 +41,10 @@ $contacto = $contacto ?? [];
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="Buscar en conversacion">
+                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="<?php echo esc_attr__('Buscar en conversacion', 'flavor-chat-ia'); ?>">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         </button>
-                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="Opciones">
+                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="<?php echo esc_attr__('Opciones', 'flavor-chat-ia'); ?>">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
                         </button>
                     </div>
@@ -57,7 +57,7 @@ $contacto = $contacto ?? [];
                     <?php if (empty($mensajes)): ?>
                     <div class="text-center py-16">
                         <div class="text-6xl mb-4">✉️</div>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Inicio de la conversacion</h3>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php echo esc_html__('Inicio de la conversacion', 'flavor-chat-ia'); ?></h3>
                         <p class="text-gray-500">Envia tu primer mensaje a <?php echo esc_html($contacto['nombre'] ?? 'este usuario'); ?></p>
                     </div>
                     <?php else: ?>
@@ -99,10 +99,10 @@ $contacto = $contacto ?? [];
                 <!-- Input de mensaje -->
                 <div class="p-4 border-t border-gray-100">
                     <div class="flex items-center gap-3">
-                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="Adjuntar archivo">
+                        <button class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" title="<?php echo esc_attr__('Adjuntar archivo', 'flavor-chat-ia'); ?>">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                         </button>
-                        <input type="text" placeholder="Escribe un mensaje..."
+                        <input type="text" placeholder="<?php echo esc_attr__('Escribe un mensaje...', 'flavor-chat-ia'); ?>"
                                class="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-sm"
                                id="input-mensaje-interno">
                         <button class="bg-sky-500 text-white p-3 rounded-xl hover:bg-sky-600 transition-colors"
@@ -125,16 +125,16 @@ $contacto = $contacto ?? [];
                 <p class="text-sm text-gray-500 mb-4"><?php echo esc_html($contacto['rol'] ?? 'Vecino'); ?></p>
                 <?php if (!empty($contacto['verificado'])): ?>
                 <span class="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full mb-4">
-                    ✓ Usuario verificado
+                    <?php echo esc_html__('✓ Usuario verificado', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
                 <div class="space-y-2 text-sm">
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Miembro desde</span>
+                        <span class="text-gray-500"><?php echo esc_html__('Miembro desde', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium text-gray-800"><?php echo esc_html($contacto['fecha_registro'] ?? ''); ?></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Comunidad</span>
+                        <span class="text-gray-500"><?php echo esc_html__('Comunidad', 'flavor-chat-ia'); ?></span>
                         <span class="font-medium text-gray-800"><?php echo esc_html($contacto['comunidad'] ?? ''); ?></span>
                     </div>
                 </div>
@@ -142,26 +142,26 @@ $contacto = $contacto ?? [];
 
             <!-- Acciones -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Acciones</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-2">
                     <button class="w-full text-left px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-sky-50 hover:text-sky-700 transition-colors"
                             onclick="flavorChatInterno.verPerfil(<?php echo esc_attr($contacto['id'] ?? 0); ?>)">
-                        👤 Ver perfil completo
+                        <?php echo esc_html__('👤 Ver perfil completo', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="w-full text-left px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-sky-50 hover:text-sky-700 transition-colors"
                             onclick="flavorChatInterno.silenciar(<?php echo esc_attr($conversacion['id'] ?? 0); ?>)">
-                        🔇 Silenciar conversacion
+                        <?php echo esc_html__('🔇 Silenciar conversacion', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="w-full text-left px-4 py-3 rounded-xl text-sm text-red-600 hover:bg-red-50 transition-colors"
                             onclick="flavorChatInterno.bloquear(<?php echo esc_attr($contacto['id'] ?? 0); ?>)">
-                        🚫 Bloquear usuario
+                        <?php echo esc_html__('🚫 Bloquear usuario', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </div>
 
             <!-- Archivos compartidos -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-3">📎 Archivos compartidos</h3>
+                <h3 class="font-semibold text-gray-800 mb-3"><?php echo esc_html__('📎 Archivos compartidos', 'flavor-chat-ia'); ?></h3>
                 <p class="text-sm text-gray-500"><?php echo esc_html($conversacion['archivos_compartidos'] ?? 0); ?> archivos</p>
             </div>
         </div>

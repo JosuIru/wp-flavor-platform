@@ -83,9 +83,19 @@ function flavor_network_communities_init() {
         require_once FLAVOR_NETWORK_PATH . 'includes/class-network-admin.php';
     }
 
+    // Crear tablas si no existen
+    if (class_exists('Flavor_Network_Installer')) {
+        Flavor_Network_Installer::create_tables();
+    }
+
     // Inicializar componentes principales
     if (class_exists('Flavor_Network_Manager')) {
         Flavor_Network_Manager::get_instance();
+    }
+
+    // Inicializar REST API
+    if (class_exists('Flavor_Network_API')) {
+        Flavor_Network_API::get_instance();
     }
 
     if (is_admin() && class_exists('Flavor_Network_Admin')) {

@@ -17,8 +17,8 @@ $por_pagina = $por_pagina ?? 12;
     <!-- Header -->
     <div class="bg-gradient-to-r from-teal-500 to-emerald-500 py-12 px-4">
         <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Podcasts del Barrio</h1>
-            <p class="text-white/90 text-lg">Escucha las voces de tu comunidad</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Podcasts del Barrio', 'flavor-chat-ia'); ?></h1>
+            <p class="text-white/90 text-lg"><?php echo esc_html__('Escucha las voces de tu comunidad', 'flavor-chat-ia'); ?></p>
             <div class="mt-4 flex items-center gap-4 text-white/80 text-sm">
                 <span><?php echo esc_html($total_podcasts); ?> podcasts disponibles</span>
             </div>
@@ -37,13 +37,13 @@ $por_pagina = $por_pagina ?? 12;
                 <!-- Ordenacion -->
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-gray-600">
-                        Mostrando <span class="font-semibold"><?php echo count($podcasts); ?></span> de <?php echo esc_html($total_podcasts); ?> podcasts
+                        <?php echo esc_html__('Mostrando', 'flavor-chat-ia'); ?> <span class="font-semibold"><?php echo count($podcasts); ?></span> de <?php echo esc_html($total_podcasts); ?> podcasts
                     </p>
                     <select class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:ring-2 focus:ring-teal-500">
-                        <option>Mas recientes</option>
-                        <option>Mas escuchados</option>
-                        <option>Mejor valorados</option>
-                        <option>Alfabetico A-Z</option>
+                        <option><?php echo esc_html__('Mas recientes', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mas escuchados', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Mejor valorados', 'flavor-chat-ia'); ?></option>
+                        <option><?php echo esc_html__('Alfabetico A-Z', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -52,8 +52,8 @@ $por_pagina = $por_pagina ?? 12;
                         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                         </svg>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay podcasts disponibles</h3>
-                        <p class="text-gray-500">Se el primero en crear un podcast</p>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay podcasts disponibles', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-gray-500"><?php echo esc_html__('Se el primero en crear un podcast', 'flavor-chat-ia'); ?></p>
                     </div>
                 <?php else: ?>
                     <!-- Grid de podcasts -->

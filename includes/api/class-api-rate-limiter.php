@@ -19,9 +19,10 @@ class Flavor_API_Rate_Limiter {
 
     /**
      * Limites de peticiones por tipo de request (peticiones por minuto)
+     * Valores aumentados para soportar apps móviles que hacen múltiples peticiones
      */
-    const LIMITE_GET_POR_MINUTO  = 15;
-    const LIMITE_POST_POR_MINUTO = 5;
+    const LIMITE_GET_POR_MINUTO  = 120;  // 2 por segundo
+    const LIMITE_POST_POR_MINUTO = 30;   // 0.5 por segundo
 
     /**
      * Duracion de la ventana de tiempo en segundos
@@ -32,6 +33,39 @@ class Flavor_API_Rate_Limiter {
      * Prefijo para las claves de transient
      */
     const PREFIJO_TRANSIENT = 'flavor_rate_limit_';
+
+    /**
+     * Registrar hooks globales de rate limit
+     */
+    public static function register_hooks() {
+        add_filter('rest_authentication_errors', [__CLASS__, 'rest_auth_rate_limit'], 20);
+    }
+
+    /**
+     * Rate limit global para peticiones REST no autenticadas
+     *
+     * @param mixed $result Resultado previo de autenticación
+     * @return mixed WP_Error si excede el límite, o $result
+     */
+    public static function rest_auth_rate_limit($result) {
+        if (!empty($result)) {
+            return $result;
+        }
+
+        if (is_user_logged_in()) {
+            return $result;
+        }
+
+        $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        if ($method === 'OPTIONS') {
+            return $result;
+        }
+
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        $rate = self::check_rate_limit($tipo);
+
+        return is_wp_error($rate) ? $rate : $result;
+    }
 
     /**
      * Verifica si la peticion actual esta dentro del limite de tasa permitido
@@ -184,3 +218,6 @@ class Flavor_API_Rate_Limiter {
         return self::PREFIJO_TRANSIENT . $tipo_peticion . '_' . $hash_ip;
     }
 }
+
+// Activar rate limit global en REST
+Flavor_API_Rate_Limiter::register_hooks();

@@ -8,10 +8,10 @@ if (!defined('ABSPATH')) exit;
     <div class="flavor-filters-bar">
         <input type="text" id="search-asistentes" placeholder="<?php _e('Buscar asistentes...', 'flavor-chat-ia'); ?>">
         <select id="filtro-evento-asistentes"><option value=""><?php _e('Todos los eventos', 'flavor-chat-ia'); ?></option></select>
-        <select id="filtro-estado-asistente"><option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option><option value="confirmado"><?php _e('Confirmado', 'flavor-chat-ia'); ?></option><option value="pendiente"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option><option value="cancelado"><?php _e('Cancelado', 'flavor-chat-ia'); ?></option></select>
+        <select id="filtro-estado-asistente"><option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option><option value="<?php echo esc_attr__('confirmado', 'flavor-chat-ia'); ?>"><?php _e('Confirmado', 'flavor-chat-ia'); ?></option><option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option><option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>"><?php _e('Cancelado', 'flavor-chat-ia'); ?></option></select>
         <button id="btn-exportar-asistentes" class="button"><?php _e('Exportar', 'flavor-chat-ia'); ?></button>
     </div>
-    <div class="flavor-card"><table class="wp-list-table widefat fixed striped"><thead><tr><th>ID</th><th><?php _e('Nombre', 'flavor-chat-ia'); ?></th><th><?php _e('Email', 'flavor-chat-ia'); ?></th><th><?php _e('Evento', 'flavor-chat-ia'); ?></th><th><?php _e('Fecha Inscripción', 'flavor-chat-ia'); ?></th><th><?php _e('Estado', 'flavor-chat-ia'); ?></th><th><?php _e('Check-in', 'flavor-chat-ia'); ?></th><th><?php _e('Acciones', 'flavor-chat-ia'); ?></th></tr></thead><tbody id="asistentes-list"></tbody></table></div>
+    <div class="flavor-card"><table class="wp-list-table widefat fixed striped"><thead><tr><th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th><th><?php _e('Nombre', 'flavor-chat-ia'); ?></th><th><?php _e('Email', 'flavor-chat-ia'); ?></th><th><?php _e('Evento', 'flavor-chat-ia'); ?></th><th><?php _e('Fecha Inscripción', 'flavor-chat-ia'); ?></th><th><?php _e('Estado', 'flavor-chat-ia'); ?></th><th><?php _e('Check-in', 'flavor-chat-ia'); ?></th><th><?php _e('Acciones', 'flavor-chat-ia'); ?></th></tr></thead><tbody id="asistentes-list"></tbody></table></div>
 </div>
 <style>
 .flavor-asistentes-management{margin:20px;}.flavor-filters-bar{background:#fff;padding:15px 20px;margin:20px 0;border:1px solid #ddd;border-radius:8px;display:flex;gap:15px;flex-wrap:wrap;}.flavor-filters-bar input,.flavor-filters-bar select{padding:6px 12px;border:1px solid #ddd;border-radius:4px;}.flavor-card{background:#fff;border:1px solid #ddd;border-radius:8px;overflow:hidden;}.flavor-badge{padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600;}.flavor-badge.confirmado{background:#d1fae5;color:#065f46;}.flavor-badge.pendiente{background:#fef3c7;color:#92400e;}.flavor-badge.cancelado{background:#fee2e2;color:#991b1b;}
@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     let options = '<option value=""><?php _e('Todos los eventos', 'flavor-chat-ia'); ?></option>';
                     response.data.forEach(evento => {
-                        options += `<option value="${evento.id}">${evento.titulo}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${evento.id}', 'flavor-chat-ia'); ?>">${evento.titulo}</option>`;
                     });
                     $('#filtro-evento-asistentes').html(options);
                 }

@@ -232,15 +232,15 @@ class Flavor_Frontend_Bicicletas_Controller extends Flavor_Frontend_Controller_B
 
     protected function ajax_reservar_bici($data) {
         if (!is_user_logged_in()) {
-            return ['error' => 'Debes iniciar sesión'];
+            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
-        return ['success' => true, 'mensaje' => 'Bicicleta reservada por 15 minutos'];
+        return ['success' => true, 'mensaje' => __('Bicicleta reservada por 15 minutos', 'flavor-chat-ia')];
     }
 
     protected function ajax_devolver_bici($data) {
         if (!is_user_logged_in()) {
-            return ['error' => 'Debes iniciar sesión'];
+            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
-        return ['success' => true, 'mensaje' => 'Bicicleta devuelta correctamente'];
+        return ['success' => true, 'mensaje' => __('Bicicleta devuelta correctamente', 'flavor-chat-ia')];
     }
 }

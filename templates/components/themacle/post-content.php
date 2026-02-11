@@ -82,7 +82,7 @@ $tiene_meta_visible = $mostrar_fecha || $mostrar_autor;
                 <?php endif; ?>
 
                 <?php if ( $mostrar_fecha && $mostrar_autor ) : ?>
-                    <span class="text-gray-300" aria-hidden="true">&middot;</span>
+                    <span class="text-gray-300" aria-hidden="true"><?php echo esc_html__('&middot;', 'flavor-chat-ia'); ?></span>
                 <?php endif; ?>
 
                 <?php if ( $mostrar_autor ) : ?>

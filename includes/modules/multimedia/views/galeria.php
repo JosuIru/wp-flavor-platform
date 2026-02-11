@@ -47,9 +47,9 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-format-gallery"></span>
-        Galería Multimedia
+        <?php echo esc_html__('Galería Multimedia', 'flavor-chat-ia'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalSubir(); return false;">
-            <span class="dashicons dashicons-upload"></span> Subir Archivo
+            <span class="dashicons dashicons-upload"></span> <?php echo esc_html__('Subir Archivo', 'flavor-chat-ia'); ?>
         </a>
     </h1>
 
@@ -59,18 +59,18 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
             <div style="flex: 1; min-width: 200px;">
-                <label for="tipo">Tipo:</label>
+                <label for="tipo"><?php echo esc_html__('Tipo:', 'flavor-chat-ia'); ?></label>
                 <select name="tipo" id="tipo" class="regular-text">
-                    <option value="">Todos</option>
-                    <option value="foto" <?php selected($tipo_filtro, 'foto'); ?>>Fotos</option>
-                    <option value="video" <?php selected($tipo_filtro, 'video'); ?>>Videos</option>
+                    <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('foto', 'flavor-chat-ia'); ?>" <?php selected($tipo_filtro, 'foto'); ?>><?php echo esc_html__('Fotos', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('video', 'flavor-chat-ia'); ?>" <?php selected($tipo_filtro, 'video'); ?>><?php echo esc_html__('Videos', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
             <div style="flex: 1; min-width: 200px;">
-                <label for="categoria">Categoría:</label>
+                <label for="categoria"><?php echo esc_html__('Categoría:', 'flavor-chat-ia'); ?></label>
                 <select name="categoria" id="categoria" class="regular-text">
-                    <option value="">Todas</option>
+                    <option value=""><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($categorias as $categoria): ?>
                         <option value="<?php echo esc_attr($categoria); ?>" <?php selected($categoria_filtro, $categoria); ?>>
                             <?php echo esc_html($categoria); ?>
@@ -79,8 +79,8 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
                 </select>
             </div>
 
-            <button type="submit" class="button button-primary">Filtrar</button>
-            <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button">Limpiar</a>
+            <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+            <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
         </form>
     </div>
 
@@ -90,7 +90,7 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
             <?php if (empty($multimedia)): ?>
                 <div style="grid-column: 1 / -1; text-align: center; padding: 60px;">
                     <span class="dashicons dashicons-format-gallery" style="font-size: 64px; color: #ddd;"></span>
-                    <h3 style="color: #666;">No se encontró contenido</h3>
+                    <h3 style="color: #666;"><?php echo esc_html__('No se encontró contenido', 'flavor-chat-ia'); ?></h3>
                 </div>
             <?php else: ?>
                 <?php foreach ($multimedia as $item): ?>

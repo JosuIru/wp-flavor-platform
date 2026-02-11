@@ -15,8 +15,8 @@ $total_productos = $total_productos ?? 0;
     <div class="bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">🛒 Tienda Local</h1>
-                <p class="text-amber-100">Productos locales y de proximidad del barrio</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('🛒 Tienda Local', 'flavor-chat-ia'); ?></h1>
+                <p class="text-amber-100"><?php echo esc_html__('Productos locales y de proximidad del barrio', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -24,7 +24,7 @@ $total_productos = $total_productos ?? 0;
                 </span>
                 <button class="bg-white text-amber-600 px-6 py-3 rounded-xl font-semibold hover:bg-amber-50 transition-all shadow-md"
                         onclick="flavorTienda.abrirCarrito()">
-                    🛍️ Ver carrito
+                    <?php echo esc_html__('🛍️ Ver carrito', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>
@@ -34,7 +34,7 @@ $total_productos = $total_productos ?? 0;
     <div class="flex flex-wrap gap-2 mb-6">
         <button class="px-4 py-2 rounded-full bg-amber-100 text-amber-700 font-medium hover:bg-amber-200 transition-colors filter-active"
                 data-categoria="todos">
-            Todos
+            <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
         </button>
         <?php foreach ($categorias as $categoria): ?>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors"
@@ -50,8 +50,8 @@ $total_productos = $total_productos ?? 0;
         <?php if (empty($productos)): ?>
         <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
             <div class="text-6xl mb-4">🏪</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay productos disponibles</h3>
-            <p class="text-gray-500">Vuelve pronto para ver las novedades de la tienda local</p>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay productos disponibles', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500"><?php echo esc_html__('Vuelve pronto para ver las novedades de la tienda local', 'flavor-chat-ia'); ?></p>
         </div>
         <?php else: ?>
         <?php foreach ($productos as $producto): ?>
@@ -68,13 +68,13 @@ $total_productos = $total_productos ?? 0;
 
                 <?php if (!empty($producto['oferta'])): ?>
                 <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    OFERTA
+                    <?php echo esc_html__('OFERTA', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
 
                 <?php if (!empty($producto['ecologico'])): ?>
                 <span class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    🌱 ECO
+                    <?php echo esc_html__('🌱 ECO', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -90,7 +90,7 @@ $total_productos = $total_productos ?? 0;
 
                 <?php if (!empty($producto['productor'])): ?>
                 <p class="text-sm text-gray-500 mb-3">
-                    Por <span class="text-amber-600"><?php echo esc_html($producto['productor']); ?></span>
+                    <?php echo esc_html__('Por', 'flavor-chat-ia'); ?> <span class="text-amber-600"><?php echo esc_html($producto['productor']); ?></span>
                 </p>
                 <?php endif; ?>
 
@@ -107,7 +107,7 @@ $total_productos = $total_productos ?? 0;
 
                     <button class="bg-amber-500 hover:bg-amber-600 text-white p-2 rounded-xl transition-colors"
                             onclick="flavorTienda.agregarCarrito(<?php echo esc_attr($producto['id']); ?>)"
-                            title="Añadir al carrito">
+                            title="<?php echo esc_attr__('Añadir al carrito', 'flavor-chat-ia'); ?>">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
@@ -130,11 +130,11 @@ $total_productos = $total_productos ?? 0;
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
             <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
-                ← Anterior
+                <?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?>
             </button>
             <span class="px-4 py-2 text-gray-600">Página 1 de <?php echo ceil($total_productos / 12); ?></span>
             <button class="px-4 py-2 rounded-lg bg-amber-500 text-white hover:bg-amber-600 transition-colors">
-                Siguiente →
+                <?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?>
             </button>
         </nav>
     </div>

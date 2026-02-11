@@ -12,16 +12,16 @@ $filtros_activos = $filtros_activos ?? [];
 
 <div class="flavor-filters radio bg-white rounded-2xl p-5 shadow-md">
     <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+        <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
         <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-red-600 hover:text-red-700">Limpiar</a>
+            <a href="?" class="text-sm text-red-600 hover:text-red-700"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
         <?php endif; ?>
     </div>
 
     <form method="get" class="space-y-6">
         <!-- Tipo de programa -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Tipo de programa</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Tipo de programa', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $tipos = [
@@ -52,7 +52,7 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Dia de emision -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Dia de emision</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Dia de emision', 'flavor-chat-ia'); ?></h4>
             <div class="grid grid-cols-4 gap-2">
                 <?php
                 $dias = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -76,7 +76,7 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Horario -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Franja horaria</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Franja horaria', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $horarios = [
@@ -106,7 +106,7 @@ $filtros_activos = $filtros_activos ?? [];
         <button type="submit"
                 class="w-full py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                 style="background: linear-gradient(135deg, #dc2626 0%, #e11d48 100%);">
-            Aplicar Filtros
+            <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
         </button>
     </form>
 </div>

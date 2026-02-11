@@ -71,7 +71,7 @@ $tendencia_votos = $wpdb->get_results("
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-money-alt" style="color: #00a32a;"></span>
-        Dashboard de Presupuestos Participativos
+        <?php echo esc_html__('Dashboard de Presupuestos Participativos', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -82,10 +82,10 @@ $tendencia_votos = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Presupuesto Total</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Presupuesto Total', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($presupuesto_total, 0, ',', '.'); ?> €</h2>
                     <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        para el ejercicio actual
+                        <?php echo esc_html__('para el ejercicio actual', 'flavor-chat-ia'); ?>
                     </p>
                 </div>
                 <span class="dashicons dashicons-money-alt" style="font-size: 40px; color: #00a32a; opacity: 0.3;"></span>
@@ -95,7 +95,7 @@ $tendencia_votos = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Presupuesto Asignado</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Presupuesto Asignado', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($presupuesto_asignado, 0, ',', '.'); ?> €</h2>
                     <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
                         <?php echo $porcentaje_asignado; ?>% del total
@@ -108,7 +108,7 @@ $tendencia_votos = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #f0b849; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Proyectos en Votación</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Proyectos en Votación', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($proyectos_votacion); ?></h2>
                     <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
                         de <?php echo $total_proyectos; ?> totales
@@ -121,10 +121,10 @@ $tendencia_votos = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #d63638; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Participación</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Participación', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($votantes_unicos_pp); ?></h2>
                     <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        ciudadanos han votado
+                        <?php echo esc_html__('ciudadanos han votado', 'flavor-chat-ia'); ?>
                     </p>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 40px; color: #d63638; opacity: 0.3;"></span>
@@ -136,24 +136,24 @@ $tendencia_votos = $wpdb->get_results("
     <!-- Indicador de presupuesto -->
     <div class="postbox" style="margin: 20px 0;">
         <div class="postbox-header">
-            <h2>Estado del Presupuesto</h2>
+            <h2><?php echo esc_html__('Estado del Presupuesto', 'flavor-chat-ia'); ?></h2>
         </div>
         <div class="inside">
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; padding: 20px;">
                 <div style="text-align: center;">
-                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;">Total Disponible</div>
+                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;"><?php echo esc_html__('Total Disponible', 'flavor-chat-ia'); ?></div>
                     <div style="font-size: 36px; font-weight: 700; color: #00a32a;">
                         <?php echo number_format($presupuesto_total, 0, ',', '.'); ?> €
                     </div>
                 </div>
                 <div style="text-align: center;">
-                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;">Asignado</div>
+                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;"><?php echo esc_html__('Asignado', 'flavor-chat-ia'); ?></div>
                     <div style="font-size: 36px; font-weight: 700; color: #2271b1;">
                         <?php echo number_format($presupuesto_asignado, 0, ',', '.'); ?> €
                     </div>
                 </div>
                 <div style="text-align: center;">
-                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;">Disponible</div>
+                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;"><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></div>
                     <div style="font-size: 36px; font-weight: 700; color: #f0b849;">
                         <?php echo number_format($presupuesto_disponible, 0, ',', '.'); ?> €
                     </div>
@@ -173,7 +173,7 @@ $tendencia_votos = $wpdb->get_results("
         <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0;">
                 <span class="dashicons dashicons-chart-line"></span>
-                Tendencia de Votación (14 días)
+                <?php echo esc_html__('Tendencia de Votación (14 días)', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="chart-tendencia-votos" style="max-height: 300px;"></canvas>
         </div>
@@ -181,7 +181,7 @@ $tendencia_votos = $wpdb->get_results("
         <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0;">
                 <span class="dashicons dashicons-chart-pie"></span>
-                Proyectos por Estado
+                <?php echo esc_html__('Proyectos por Estado', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="chart-proyectos-estado" style="max-height: 300px;"></canvas>
         </div>
@@ -193,7 +193,7 @@ $tendencia_votos = $wpdb->get_results("
 
         <div class="postbox">
             <div class="postbox-header">
-                <h2>Distribución Presupuestaria por Categoría</h2>
+                <h2><?php echo esc_html__('Distribución Presupuestaria por Categoría', 'flavor-chat-ia'); ?></h2>
             </div>
             <div class="inside">
                 <canvas id="chart-distribucion-categoria" style="max-height: 300px;"></canvas>
@@ -202,7 +202,7 @@ $tendencia_votos = $wpdb->get_results("
 
         <div class="postbox">
             <div class="postbox-header">
-                <h2>Proyectos Más Votados</h2>
+                <h2><?php echo esc_html__('Proyectos Más Votados', 'flavor-chat-ia'); ?></h2>
             </div>
             <div class="inside">
                 <?php if (!empty($proyectos_mas_votados)): ?>
@@ -220,14 +220,14 @@ $tendencia_votos = $wpdb->get_results("
                                     <div style="font-size: 18px; font-weight: 600; color: #2271b1;">
                                         <?php echo number_format($proyecto->total_votos); ?>
                                     </div>
-                                    <small style="color: #646970;">votos</small>
+                                    <small style="color: #646970;"><?php echo esc_html__('votos', 'flavor-chat-ia'); ?></small>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 <?php else: ?>
-                    <p style="color: #646970; text-align: center; padding: 20px 0;">No hay proyectos en votación</p>
+                    <p style="color: #646970; text-align: center; padding: 20px 0;"><?php echo esc_html__('No hay proyectos en votación', 'flavor-chat-ia'); ?></p>
                 <?php endif; ?>
             </div>
         </div>

@@ -122,11 +122,11 @@ $categorias = [
                     <div class="em-form-section">
                         <h4><?php _e('Variables disponibles', 'flavor-chat-ia'); ?></h4>
                         <ul class="em-variables-lista">
-                            <li><code>{{nombre}}</code> - <?php _e('Nombre del suscriptor', 'flavor-chat-ia'); ?></li>
-                            <li><code>{{email}}</code> - <?php _e('Email del suscriptor', 'flavor-chat-ia'); ?></li>
-                            <li><code>{{nombre_sitio}}</code> - <?php _e('Nombre del sitio', 'flavor-chat-ia'); ?></li>
-                            <li><code>{{contenido}}</code> - <?php _e('Contenido de la campaña', 'flavor-chat-ia'); ?></li>
-                            <li><code>{{url_baja}}</code> - <?php _e('Enlace de baja', 'flavor-chat-ia'); ?></li>
+                            <li><code><?php echo esc_html__('{{nombre}}', 'flavor-chat-ia'); ?></code> - <?php _e('Nombre del suscriptor', 'flavor-chat-ia'); ?></li>
+                            <li><code><?php echo esc_html__('{{email}}', 'flavor-chat-ia'); ?></code> - <?php _e('Email del suscriptor', 'flavor-chat-ia'); ?></li>
+                            <li><code><?php echo esc_html__('{{nombre_sitio}}', 'flavor-chat-ia'); ?></code> - <?php _e('Nombre del sitio', 'flavor-chat-ia'); ?></li>
+                            <li><code><?php echo esc_html__('{{contenido}}', 'flavor-chat-ia'); ?></code> - <?php _e('Contenido de la campaña', 'flavor-chat-ia'); ?></li>
+                            <li><code><?php echo esc_html__('{{url_baja}}', 'flavor-chat-ia'); ?></code> - <?php _e('Enlace de baja', 'flavor-chat-ia'); ?></li>
                         </ul>
                     </div>
                 </div>
@@ -148,7 +148,7 @@ $categorias = [
 <!-- Modal de preview -->
 <div class="em-modal" id="em-modal-preview" style="display:none;">
     <div class="em-modal-content em-modal-xl">
-        <button type="button" class="em-modal-close em-modal-close-icon">&times;</button>
+        <button type="button" class="em-modal-close em-modal-close-icon"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
         <div class="em-preview-container">
             <iframe id="em-preview-iframe" frameborder="0"></iframe>
         </div>

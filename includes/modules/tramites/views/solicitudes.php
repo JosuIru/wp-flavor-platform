@@ -70,11 +70,11 @@ $solicitudes = $wpdb->get_results($wpdb->prepare(
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-page"></span>
-        Gestión de Solicitudes
+        <?php echo esc_html__('Gestión de Solicitudes', 'flavor-chat-ia'); ?>
     </h1>
 
     <a href="#" class="page-title-action" onclick="document.getElementById('filtros').style.display='block'; return false;">
-        <span class="dashicons dashicons-filter"></span> Filtros
+        <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?>
     </a>
 
     <hr class="wp-header-end">
@@ -83,27 +83,27 @@ $solicitudes = $wpdb->get_results($wpdb->prepare(
     <div id="filtros" class="postbox" style="margin: 20px 0; display: none;">
         <div class="inside">
             <form method="get" action="">
-                <input type="hidden" name="page" value="flavor-tramites-solicitudes">
+                <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-tramites-solicitudes', 'flavor-chat-ia'); ?>">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
                     <div>
-                        <label><strong>Estado:</strong></label>
+                        <label><strong><?php echo esc_html__('Estado:', 'flavor-chat-ia'); ?></strong></label>
                         <select name="estado" class="regular-text">
-                            <option value="">Todos</option>
-                            <option value="pendiente" <?php selected($estado_filtro, 'pendiente'); ?>>Pendiente</option>
-                            <option value="en_revision" <?php selected($estado_filtro, 'en_revision'); ?>>En Revisión</option>
-                            <option value="aprobada" <?php selected($estado_filtro, 'aprobada'); ?>>Aprobada</option>
-                            <option value="rechazada" <?php selected($estado_filtro, 'rechazada'); ?>>Rechazada</option>
+                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('en_revision', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'en_revision'); ?>><?php echo esc_html__('En Revisión', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('aprobada', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'aprobada'); ?>><?php echo esc_html__('Aprobada', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('rechazada', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'rechazada'); ?>><?php echo esc_html__('Rechazada', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                     <div>
-                        <label><strong>Buscar:</strong></label>
-                        <input type="text" name="s" value="<?php echo esc_attr($buscar); ?>" class="regular-text" placeholder="Número o solicitante...">
+                        <label><strong><?php echo esc_html__('Buscar:', 'flavor-chat-ia'); ?></strong></label>
+                        <input type="text" name="s" value="<?php echo esc_attr($buscar); ?>" class="regular-text" placeholder="<?php echo esc_attr__('Número o solicitante...', 'flavor-chat-ia'); ?>">
                     </div>
                 </div>
                 <button type="submit" class="button button-primary">
-                    <span class="dashicons dashicons-search"></span> Filtrar
+                    <span class="dashicons dashicons-search"></span> <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
                 </button>
-                <a href="<?php echo admin_url('admin.php?page=flavor-tramites-solicitudes'); ?>" class="button">Limpiar</a>
+                <a href="<?php echo admin_url('admin.php?page=flavor-tramites-solicitudes'); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
             </form>
         </div>
     </div>
@@ -114,12 +114,12 @@ $solicitudes = $wpdb->get_results($wpdb->prepare(
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th style="width: 100px;">Número</th>
-                        <th>Solicitante</th>
-                        <th>Tipo Trámite</th>
-                        <th style="width: 100px;">Estado</th>
-                        <th style="width: 120px;">Fecha Solicitud</th>
-                        <th style="width: 100px;">Acciones</th>
+                        <th style="width: 100px;"><?php echo esc_html__('Número', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Solicitante', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Tipo Trámite', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 120px;"><?php echo esc_html__('Fecha Solicitud', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -145,14 +145,14 @@ $solicitudes = $wpdb->get_results($wpdb->prepare(
                                 </td>
                                 <td><?php echo date('d/m/Y', strtotime($solicitud->fecha_solicitud)); ?></td>
                                 <td>
-                                    <a href="<?php echo admin_url('admin.php?page=flavor-tramites-solicitudes&id=' . $solicitud->id); ?>" class="button button-small">Ver</a>
+                                    <a href="<?php echo admin_url('admin.php?page=flavor-tramites-solicitudes&id=' . $solicitud->id); ?>" class="button button-small"><?php echo esc_html__('Ver', 'flavor-chat-ia'); ?></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
                             <td colspan="6" style="text-align: center; padding: 40px 0; color: #646970;">
-                                No se encontraron solicitudes
+                                <?php echo esc_html__('No se encontraron solicitudes', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
                     <?php endif; ?>

@@ -1,0 +1,204 @@
+/**
+ * Talleres Module - Frontend Styles
+ *
+ * @package FlavorPlatform
+ * @subpackage Modules/Talleres
+ * @since 3.1.0
+ */
+
+/* Grid de talleres */
+.flavor-talleres-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 20px 0;
+}
+
+/* Card de taller */
+.flavor-taller-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.flavor-taller-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.flavor-taller-card__imagen {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.flavor-taller-card__contenido {
+    padding: 20px;
+}
+
+.flavor-taller-card__titulo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: #1d2327;
+}
+
+.flavor-taller-card__fecha {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    color: #646970;
+    margin-bottom: 12px;
+}
+
+.flavor-taller-card__fecha .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-taller-card__descripcion {
+    font-size: 0.9375rem;
+    color: #50575e;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.flavor-taller-card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.flavor-taller-card__precio {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #00a32a;
+}
+
+.flavor-taller-card__plazas {
+    font-size: 0.875rem;
+    color: #646970;
+}
+
+.flavor-taller-card__plazas--lleno {
+    color: #d63638;
+}
+
+/* Botón de inscripción */
+.flavor-taller-card__inscribirse {
+    display: inline-block;
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 16px;
+    background: var(--flavor-primary, #2271b1);
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.flavor-taller-card__inscribirse:hover {
+    background: var(--flavor-primary-hover, #135e96);
+    color: #fff;
+}
+
+.flavor-taller-card__inscribirse:disabled,
+.flavor-taller-card__inscribirse--disabled {
+    background: #c3c4c7;
+    cursor: not-allowed;
+}
+
+/* Single taller */
+.flavor-taller-single {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.flavor-taller-single__header {
+    margin-bottom: 32px;
+}
+
+.flavor-taller-single__imagen {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.flavor-taller-single__info-box {
+    background: #f6f7f7;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.flavor-taller-single__info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.flavor-taller-single__info-item:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Formulario de inscripción */
+.flavor-taller-inscripcion {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 32px;
+}
+
+.flavor-taller-inscripcion__titulo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 16px;
+}
+
+/* Filtros */
+.flavor-talleres-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f6f7f7;
+    border-radius: 8px;
+}
+
+.flavor-talleres-filtros select,
+.flavor-talleres-filtros input {
+    padding: 8px 12px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-talleres-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-talleres-filtros {
+        flex-direction: column;
+    }
+
+    .flavor-talleres-filtros select,
+    .flavor-talleres-filtros input {
+        width: 100%;
+    }
+}

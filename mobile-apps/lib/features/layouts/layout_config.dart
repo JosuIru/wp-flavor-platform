@@ -371,6 +371,8 @@ class ClientTab {
   final String id;
   final String label;
   final String icon;
+  final String type;
+  final String? url;
   final bool enabled;
   final int order;
 
@@ -378,6 +380,8 @@ class ClientTab {
     required this.id,
     required this.label,
     this.icon = 'help',
+    this.type = 'native',
+    this.url,
     this.enabled = true,
     this.order = 0,
   });
@@ -387,6 +391,8 @@ class ClientTab {
       id: json['id'] ?? '',
       label: json['label'] ?? '',
       icon: json['icon'] ?? 'help',
+      type: json['type'] ?? 'native',
+      url: json['url'],
       enabled: json['enabled'] ?? true,
       order: json['order'] ?? 0,
     );
@@ -396,6 +402,8 @@ class ClientTab {
     'id': id,
     'label': label,
     'icon': icon,
+    'type': type,
+    'url': url,
     'enabled': enabled,
     'order': order,
   };
@@ -543,6 +551,21 @@ class LayoutConfig {
   bool get stickyHeader => settings['sticky_header'] ?? true;
   bool get showSearch => settings['show_search'] ?? true;
   bool get showCart => settings['show_cart'] ?? false;
+  String get navigationStyle => settings['navigation_style'] ?? 'auto';
+  bool get hybridShowAppBar => settings['hybrid_show_appbar'] ?? true;
+  String get mapProvider => settings['map_provider'] ?? 'osm';
+  String get googleMapsApiKey => settings['google_maps_api_key'] ?? '';
+  List<DrawerItem> get drawerItems {
+    final items = settings['drawer_items'];
+    if (items is List) {
+      final list = items
+          .map((item) => DrawerItem.fromJson(item as Map<String, dynamic>))
+          .toList();
+      list.sort((a, b) => a.order.compareTo(b.order));
+      return list;
+    }
+    return [];
+  }
 
   /// Obtiene el índice de la pestaña por defecto
   int get defaultTabIndex {
@@ -552,6 +575,39 @@ class LayoutConfig {
 
   /// Obtiene pestañas habilitadas
   List<ClientTab> get enabledTabs => clientTabs.where((tab) => tab.enabled).toList();
+}
+
+/// Item del menú hamburguesa (modo híbrido)
+class DrawerItem {
+  final String title;
+  final String url;
+  final String icon;
+  final String type;
+  final String target;
+  final int order;
+  final int depth;
+
+  const DrawerItem({
+    required this.title,
+    required this.url,
+    this.icon = 'public',
+    this.type = 'web',
+    this.target = '',
+    this.order = 0,
+    this.depth = 0,
+  });
+
+  factory DrawerItem.fromJson(Map<String, dynamic> json) {
+    return DrawerItem(
+      title: json['title'] ?? '',
+      url: json['url'] ?? '',
+      icon: json['icon'] ?? 'public',
+      type: json['type'] ?? 'web',
+      target: json['target'] ?? '',
+      order: json['order'] ?? 0,
+      depth: json['depth'] ?? 0,
+    );
+  }
 }
 
 /// Servicio para cargar y gestionar layouts

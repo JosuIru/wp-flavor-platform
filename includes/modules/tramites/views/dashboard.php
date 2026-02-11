@@ -73,7 +73,7 @@ $solicitudes_recientes = $wpdb->get_results("
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-text-page" style="color: #2271b1;"></span>
-        Dashboard de Trámites
+        <?php echo esc_html__('Dashboard de Trámites', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -84,7 +84,7 @@ $solicitudes_recientes = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Total Solicitudes</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Total Solicitudes', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($total_solicitudes); ?></h2>
                 </div>
                 <span class="dashicons dashicons-portfolio" style="font-size: 40px; color: #2271b1; opacity: 0.3;"></span>
@@ -94,7 +94,7 @@ $solicitudes_recientes = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #f0b849; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Pendientes</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($solicitudes_pendientes); ?></h2>
                     <p style="margin: 5px 0 0 0; color: #d63638; font-size: 12px; font-weight: 600;">
                         <?php echo $solicitudes_urgentes; ?> urgentes
@@ -107,7 +107,7 @@ $solicitudes_recientes = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Aprobadas (Mes)</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Aprobadas (Mes)', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($solicitudes_aprobadas_mes); ?></h2>
                     <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
                         Tasa: <?php echo $tasa_aprobacion; ?>%
@@ -120,7 +120,7 @@ $solicitudes_recientes = $wpdb->get_results("
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;">Tiempo Promedio</p>
+                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Tiempo Promedio', 'flavor-chat-ia'); ?></p>
                     <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;">
                         <?php echo $tiempo_promedio ? round($tiempo_promedio) : '0'; ?> días
                     </h2>
@@ -137,7 +137,7 @@ $solicitudes_recientes = $wpdb->get_results("
         <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0;">
                 <span class="dashicons dashicons-chart-line"></span>
-                Tendencia Últimos 7 Días
+                <?php echo esc_html__('Tendencia Últimos 7 Días', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="chart-tendencia" style="max-height: 300px;"></canvas>
         </div>
@@ -145,7 +145,7 @@ $solicitudes_recientes = $wpdb->get_results("
         <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0;">
                 <span class="dashicons dashicons-chart-pie"></span>
-                Por Estado
+                <?php echo esc_html__('Por Estado', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="chart-estado" style="max-height: 300px;"></canvas>
         </div>
@@ -157,7 +157,7 @@ $solicitudes_recientes = $wpdb->get_results("
         <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0;">
                 <span class="dashicons dashicons-category"></span>
-                Trámites Más Solicitados
+                <?php echo esc_html__('Trámites Más Solicitados', 'flavor-chat-ia'); ?>
             </h3>
             <canvas id="chart-tipos" style="max-height: 300px;"></canvas>
         </div>
@@ -165,7 +165,7 @@ $solicitudes_recientes = $wpdb->get_results("
         <div class="flavor-table-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0 0 20px 0;">
                 <span class="dashicons dashicons-list-view"></span>
-                Solicitudes Recientes
+                <?php echo esc_html__('Solicitudes Recientes', 'flavor-chat-ia'); ?>
             </h3>
             <?php if (!empty($solicitudes_recientes)): ?>
                 <table class="wp-list-table widefat">
@@ -195,7 +195,7 @@ $solicitudes_recientes = $wpdb->get_results("
                     </tbody>
                 </table>
             <?php else: ?>
-                <p style="color: #646970; text-align: center; padding: 20px 0;">No hay solicitudes recientes</p>
+                <p style="color: #646970; text-align: center; padding: 20px 0;"><?php echo esc_html__('No hay solicitudes recientes', 'flavor-chat-ia'); ?></p>
             <?php endif; ?>
         </div>
 

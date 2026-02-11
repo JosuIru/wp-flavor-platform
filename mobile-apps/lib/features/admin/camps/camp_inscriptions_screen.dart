@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/api/api_client.dart';
@@ -23,6 +24,7 @@ class CampInscriptionsScreen extends ConsumerStatefulWidget {
 
 class _CampInscriptionsScreenState
     extends ConsumerState<CampInscriptionsScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   List<CampInscription> _inscriptions = [];
   Map<String, int>? _stats;
   bool _isLoading = false;
@@ -65,7 +67,7 @@ class _CampInscriptionsScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(response.error ?? 'Error al cargar inscripciones'),
+            content: Text(response.error ?? i18n.campInscriptionsLoadError),
             backgroundColor: Colors.red,
           ),
         );
@@ -81,7 +83,7 @@ class _CampInscriptionsScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('No se puede abrir: $urlString'),
+            content: Text(i18n.commonCannotOpenUrl(urlString)),
             backgroundColor: Colors.red,
           ),
         );
@@ -98,8 +100,7 @@ class _CampInscriptionsScreenState
       _launchUrl(downloadUrl);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Exportando a Excel...'),
+          SnackBar(content: Text(i18n.exportandoAExcel583e30),
             backgroundColor: Colors.green,
           ),
         );
@@ -108,7 +109,7 @@ class _CampInscriptionsScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(response.error ?? 'Error al exportar'),
+            content: Text(response.error ?? i18n.campInscriptionsExportError),
             backgroundColor: Colors.red,
           ),
         );
@@ -118,12 +119,13 @@ class _CampInscriptionsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Inscripciones'),
+            Text(i18n.inscripciones7f2754),
             Text(
               widget.campTitle,
               style: const TextStyle(fontSize: 12),
@@ -134,7 +136,7 @@ class _CampInscriptionsScreenState
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _exportToExcel,
-            tooltip: 'Exportar a Excel',
+            tooltip: i18n.exportarAExcel3ac529,
           ),
         ],
       ),
@@ -149,19 +151,19 @@ class _CampInscriptionsScreenState
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _StatCard(
-                    label: 'Total',
+                    label: i18n.campInscriptionsTotalLabel,
                     value: _stats!['total'].toString(),
                     icon: Icons.people,
                     color: Colors.blue,
                   ),
                   _StatCard(
-                    label: 'Pagadas',
+                    label: i18n.campInscriptionsPaidLabel,
                     value: _stats!['paid'].toString(),
                     icon: Icons.check_circle,
                     color: Colors.green,
                   ),
                   _StatCard(
-                    label: 'Pendientes',
+                    label: i18n.campInscriptionsPendingLabel,
                     value: _stats!['pending'].toString(),
                     icon: Icons.pending,
                     color: Colors.orange,
@@ -177,8 +179,8 @@ class _CampInscriptionsScreenState
               children: [
                 Expanded(
                   child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Buscar',
+                    decoration: InputDecoration(
+                      labelText: i18n.buscar113f74,
                       prefixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(),
                     ),
@@ -191,12 +193,12 @@ class _CampInscriptionsScreenState
                 const SizedBox(width: 8),
                 DropdownButton<String?>(
                   value: _selectedPaymentStatus,
-                  hint: const Text('Estado'),
+                  hint: Text(i18n.estado3397e6),
                   items: [
-                    const DropdownMenuItem(value: null, child: Text('Todos')),
-                    const DropdownMenuItem(value: 'paid', child: Text('Pagadas')),
-                    const DropdownMenuItem(
-                        value: 'pending', child: Text('Pendientes')),
+                    DropdownMenuItem(value: null, child: Text(i18n.todos32630c)),
+                    DropdownMenuItem(value: 'paid', child: Text(i18n.pagadas6be9ac)),
+                    DropdownMenuItem(
+                        value: 'pending', child: Text(i18n.pendientesB4188c)),
                   ],
                   onChanged: (value) {
                     setState(() => _selectedPaymentStatus = value);
@@ -222,8 +224,7 @@ class _CampInscriptionsScreenState
                               color: Colors.grey[400],
                             ),
                             const SizedBox(height: 16),
-                            Text(
-                              'No hay inscripciones',
+                            Text(AppLocalizations.of(context)!.noHayInscripciones,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.grey[600],
@@ -276,6 +277,7 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Icon(icon, color: color, size: 32),
@@ -315,6 +317,7 @@ class _InscriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ExpansionTile(
@@ -337,11 +340,11 @@ class _InscriptionCard extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${inscription.participantAge} años'),
+            Text(i18n.commonYearsOld(inscription.participantAge)),
             const SizedBox(height: 4),
             Chip(
               label: Text(
-                inscription.isPaid ? 'Pagado' : 'Pendiente',
+                inscription.isPaid ? i18n.campInscriptionsPaidLabel : i18n.campInscriptionsPendingLabel,
                 style: const TextStyle(fontSize: 11),
               ),
               backgroundColor:
@@ -359,8 +362,7 @@ class _InscriptionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Información del responsable
-                const Text(
-                  'Responsable',
+                Text(AppLocalizations.of(context)!.responsable,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -397,7 +399,7 @@ class _InscriptionCard extends StatelessWidget {
                       child: FilledButton.tonalIcon(
                         onPressed: onEmail,
                         icon: const Icon(Icons.email, size: 20),
-                        label: const Text('Email'),
+                        label: Text(i18n.emailCe8ae9),
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.blue[100],
                           foregroundColor: Colors.blue[900],
@@ -410,7 +412,7 @@ class _InscriptionCard extends StatelessWidget {
                       child: FilledButton.tonalIcon(
                         onPressed: onPhone,
                         icon: const Icon(Icons.phone, size: 20),
-                        label: const Text('Llamar'),
+                        label: Text(i18n.llamarC9c110),
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.green[100],
                           foregroundColor: Colors.green[900],
@@ -423,7 +425,7 @@ class _InscriptionCard extends StatelessWidget {
                       child: FilledButton.tonalIcon(
                         onPressed: onWhatsApp,
                         icon: const Icon(Icons.message, size: 20),
-                        label: const Text('WhatsApp'),
+                        label: Text(i18n.whatsapp8b777e),
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFF25D366),
                           foregroundColor: Colors.white,
@@ -441,8 +443,7 @@ class _InscriptionCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Inscripción:',
+                    Text(AppLocalizations.of(context)!.inscripcion,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     Text(inscription.inscriptionDate),
@@ -452,8 +453,7 @@ class _InscriptionCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Importe:',
+                    Text(AppLocalizations.of(context)!.importe,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     Text(

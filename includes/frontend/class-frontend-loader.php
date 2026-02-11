@@ -84,6 +84,9 @@ class Flavor_Frontend_Loader {
         // Cargar clase base
         require_once $base_path . 'class-frontend-controller-base.php';
 
+        // Cargar shortcode de landing pages
+        require_once $base_path . 'class-landing-shortcode.php';
+
         // Cargar todos los controladores
         foreach ($this->module_map as $slug => $class) {
             $file = $controllers_path . 'class-' . $slug . '-controller.php';

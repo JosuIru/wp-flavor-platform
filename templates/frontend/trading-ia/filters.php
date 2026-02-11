@@ -14,16 +14,16 @@ $filtros_activos = $filtros_activos ?? [];
 <div class="flavor-frontend flavor-trading-ia-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+            <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-amber-600 hover:text-amber-700 font-medium">Limpiar</a>
+            <a href="?" class="text-sm text-amber-600 hover:text-amber-700 font-medium"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
             <?php endif; ?>
         </div>
 
         <form method="get" class="space-y-6">
             <!-- Tipo de operacion -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Tipo de operacion</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Tipo de operacion', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $tipos_operacion_disponibles = [
@@ -48,24 +48,24 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Token -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Token</h4>
-                <input type="text" name="token" placeholder="Ej: SOL, BONK, JUP..."
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Token', 'flavor-chat-ia'); ?></h4>
+                <input type="text" name="token" placeholder="<?php echo esc_attr__('Ej: SOL, BONK, JUP...', 'flavor-chat-ia'); ?>"
                        value="<?php echo esc_attr($filtros_activos['token'] ?? ''); ?>"
                        class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
             </div>
 
             <!-- Rango de fechas -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Rango de fechas</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Rango de fechas', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-3">
                     <div>
-                        <label class="text-xs text-gray-500 mb-1 block">Desde</label>
+                        <label class="text-xs text-gray-500 mb-1 block"><?php echo esc_html__('Desde', 'flavor-chat-ia'); ?></label>
                         <input type="date" name="fecha_desde"
                                value="<?php echo esc_attr($filtros_activos['fecha_desde'] ?? ''); ?>"
                                class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     </div>
                     <div>
-                        <label class="text-xs text-gray-500 mb-1 block">Hasta</label>
+                        <label class="text-xs text-gray-500 mb-1 block"><?php echo esc_html__('Hasta', 'flavor-chat-ia'); ?></label>
                         <input type="date" name="fecha_hasta"
                                value="<?php echo esc_attr($filtros_activos['fecha_hasta'] ?? ''); ?>"
                                class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
@@ -75,7 +75,7 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Resultado P&L -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Resultado P&L</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Resultado P&L', 'flavor-chat-ia'); ?></h4>
                 <div class="space-y-2">
                     <?php
                     $opciones_resultado_pnl = [
@@ -100,18 +100,18 @@ $filtros_activos = $filtros_activos ?? [];
 
             <!-- Origen del trade -->
             <div>
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Origen</h4>
+                <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Origen', 'flavor-chat-ia'); ?></h4>
                 <select name="origen_trade"
                         class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
-                    <option value="">Todos los origenes</option>
-                    <option value="manual" <?php echo ($filtros_activos['origen_trade'] ?? '') === 'manual' ? 'selected' : ''; ?>>
-                        Manual
+                    <option value=""><?php echo esc_html__('Todos los origenes', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('manual', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['origen_trade'] ?? '') === 'manual' ? 'selected' : ''; ?>>
+                        <?php echo esc_html__('Manual', 'flavor-chat-ia'); ?>
                     </option>
-                    <option value="regla" <?php echo ($filtros_activos['origen_trade'] ?? '') === 'regla' ? 'selected' : ''; ?>>
-                        Regla automatica
+                    <option value="<?php echo esc_attr__('regla', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['origen_trade'] ?? '') === 'regla' ? 'selected' : ''; ?>>
+                        <?php echo esc_html__('Regla automatica', 'flavor-chat-ia'); ?>
                     </option>
-                    <option value="senal" <?php echo ($filtros_activos['origen_trade'] ?? '') === 'senal' ? 'selected' : ''; ?>>
-                        Senal IA
+                    <option value="<?php echo esc_attr__('senal', 'flavor-chat-ia'); ?>" <?php echo ($filtros_activos['origen_trade'] ?? '') === 'senal' ? 'selected' : ''; ?>>
+                        <?php echo esc_html__('Senal IA', 'flavor-chat-ia'); ?>
                     </option>
                 </select>
             </div>
@@ -119,7 +119,7 @@ $filtros_activos = $filtros_activos ?? [];
             <!-- Boton aplicar filtros -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-amber-600 hover:to-orange-700 transition-all shadow-md">
-                Aplicar Filtros
+                <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

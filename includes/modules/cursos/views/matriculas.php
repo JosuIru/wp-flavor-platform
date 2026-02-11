@@ -84,7 +84,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Gestión de Matrículas</h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Matrículas', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Estadísticas rápidas -->
@@ -95,7 +95,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($stats_hoy); ?></div>
-                <div class="flavor-stat-label">Hoy</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Hoy', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -105,7 +105,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($stats_semana); ?></div>
-                <div class="flavor-stat-label">Esta Semana</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Esta Semana', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -115,7 +115,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo number_format($stats_mes); ?></div>
-                <div class="flavor-stat-label">Este Mes</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Este Mes', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
@@ -123,18 +123,18 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
     <!-- Filtros -->
     <div class="flavor-filters">
         <form method="get" action="">
-            <input type="hidden" name="page" value="flavor-chat-cursos">
-            <input type="hidden" name="tab" value="matriculas">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-cursos', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="tab" value="<?php echo esc_attr__('matriculas', 'flavor-chat-ia'); ?>">
 
             <div class="flavor-filters-row">
                 <input type="search"
                        name="s"
                        value="<?php echo esc_attr($search); ?>"
-                       placeholder="Buscar alumno o curso..."
+                       placeholder="<?php echo esc_attr__('Buscar alumno o curso...', 'flavor-chat-ia'); ?>"
                        class="flavor-filter-search">
 
                 <select name="curso_id" class="flavor-filter-select">
-                    <option value="">Todos los cursos</option>
+                    <option value=""><?php echo esc_html__('Todos los cursos', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($cursos_para_filtro as $curso): ?>
                         <option value="<?php echo $curso->id; ?>" <?php selected($filtro_curso, $curso->id); ?>>
                             <?php echo esc_html($curso->titulo); ?>
@@ -143,16 +143,16 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                 </select>
 
                 <select name="estado" class="flavor-filter-select">
-                    <option value="">Todos los estados</option>
-                    <option value="activa" <?php selected($filtro_estado, 'activa'); ?>>Activa</option>
-                    <option value="completada" <?php selected($filtro_estado, 'completada'); ?>>Completada</option>
-                    <option value="abandonada" <?php selected($filtro_estado, 'abandonada'); ?>>Abandonada</option>
-                    <option value="suspendida" <?php selected($filtro_estado, 'suspendida'); ?>>Suspendida</option>
+                    <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('activa', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'activa'); ?>><?php echo esc_html__('Activa', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completada'); ?>><?php echo esc_html__('Completada', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('abandonada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'abandonada'); ?>><?php echo esc_html__('Abandonada', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('suspendida', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'suspendida'); ?>><?php echo esc_html__('Suspendida', 'flavor-chat-ia'); ?></option>
                 </select>
 
-                <button type="submit" class="button">Filtrar</button>
+                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
                 <?php if ($search || $filtro_estado || $filtro_curso): ?>
-                    <a href="?page=flavor-chat-cursos&tab=matriculas" class="button">Limpiar</a>
+                    <a href="?page=flavor-chat-cursos&tab=matriculas" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
                 <?php endif; ?>
             </div>
         </form>
@@ -164,15 +164,15 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
             <table class="wp-list-table widefat striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">ID</th>
-                        <th>Alumno</th>
-                        <th>Curso</th>
-                        <th>Instructor</th>
-                        <th style="width: 100px;">Progreso</th>
-                        <th style="width: 80px;">Precio</th>
-                        <th style="width: 120px;">Fecha</th>
-                        <th style="width: 100px;">Estado</th>
-                        <th style="width: 100px;">Acciones</th>
+                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Alumno', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Curso', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Instructor', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Progreso', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 80px;"><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 120px;"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -198,7 +198,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                                     <?php if ($inscripcion->precio_pagado > 0): ?>
                                         <?php echo number_format($inscripcion->precio_pagado, 2); ?>€
                                     <?php else: ?>
-                                        <span class="flavor-text-success">Gratis</span>
+                                        <span class="flavor-text-success"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -219,7 +219,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                                 </td>
                                 <td>
                                     <button class="button button-small btn-ver-inscripcion" data-id="<?php echo $inscripcion->id; ?>">
-                                        Ver
+                                        <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
                                     </button>
                                 </td>
                             </tr>
@@ -227,7 +227,7 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                     <?php else: ?>
                         <tr>
                             <td colspan="9" class="flavor-no-data">
-                                No se encontraron inscripciones
+                                <?php echo esc_html__('No se encontraron inscripciones', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
                     <?php endif; ?>

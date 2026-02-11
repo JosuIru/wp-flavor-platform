@@ -16,8 +16,8 @@ $categorias = $categorias ?? [];
     <div class="bg-gradient-to-r from-lime-500 to-green-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">🛒 Marketplace Local</h1>
-                <p class="text-lime-100">Compra, vende e intercambia productos en tu comunidad</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('🛒 Marketplace Local', 'flavor-chat-ia'); ?></h1>
+                <p class="text-lime-100"><?php echo esc_html__('Compra, vende e intercambia productos en tu comunidad', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -25,7 +25,7 @@ $categorias = $categorias ?? [];
                 </span>
                 <button class="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-lime-50 transition-all shadow-md"
                         onclick="flavorMarketplace.publicarAnuncio()">
-                    📢 Publicar Anuncio
+                    <?php echo esc_html__('📢 Publicar Anuncio', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>
@@ -37,44 +37,44 @@ $categorias = $categorias ?? [];
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">📦</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['productos_activos'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Productos activos</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Productos activos', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">👤</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['vendedores'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Vendedores</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Vendedores', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">🤝</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['transacciones'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Transacciones</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Transacciones', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">⭐</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['valoracion_media'] ?? '4.7'); ?></p>
-            <p class="text-sm text-gray-500">Valoracion media</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Valoracion media', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
     <?php endif; ?>
 
     <!-- Como funciona -->
     <div class="bg-lime-50 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">💡 ¿Como funciona?</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('💡 ¿Como funciona?', 'flavor-chat-ia'); ?></h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="text-center">
                 <div class="w-16 h-16 bg-lime-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">📸</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Publica</h3>
-                <p class="text-sm text-gray-600">Sube fotos y describe tu producto para que otros lo encuentren</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Publica', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Sube fotos y describe tu producto para que otros lo encuentren', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-lime-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">💬</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Contacta</h3>
-                <p class="text-sm text-gray-600">Habla directamente con compradores o vendedores cercanos</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Contacta', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Habla directamente con compradores o vendedores cercanos', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-lime-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎉</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Intercambia</h3>
-                <p class="text-sm text-gray-600">Acuerda el precio y recoge el producto en tu barrio</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Intercambia', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Acuerda el precio y recoge el producto en tu barrio', 'flavor-chat-ia'); ?></p>
             </div>
         </div>
     </div>
@@ -82,19 +82,19 @@ $categorias = $categorias ?? [];
     <!-- Filtros por categoria -->
     <div class="flex flex-wrap gap-2 mb-6">
         <button class="px-4 py-2 rounded-full bg-lime-100 text-lime-700 font-medium hover:bg-lime-200 transition-colors filter-active" data-categoria="todos">
-            Todos
+            <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="electronica">
-            💻 Electronica
+            <?php echo esc_html__('💻 Electronica', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="hogar">
-            🏠 Hogar
+            <?php echo esc_html__('🏠 Hogar', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="ropa">
-            👗 Ropa
+            <?php echo esc_html__('👗 Ropa', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="deportes">
-            ⚽ Deportes
+            <?php echo esc_html__('⚽ Deportes', 'flavor-chat-ia'); ?>
         </button>
         <?php foreach ($categorias as $categoria_item): ?>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="<?php echo esc_attr($categoria_item['slug']); ?>">
@@ -108,11 +108,11 @@ $categorias = $categorias ?? [];
         <?php if (empty($productos)): ?>
         <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
             <div class="text-6xl mb-4">🛒</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay productos disponibles</h3>
-            <p class="text-gray-500 mb-6">¡Se el primero en publicar un anuncio!</p>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay productos disponibles', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Se el primero en publicar un anuncio!', 'flavor-chat-ia'); ?></p>
             <button class="bg-lime-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-lime-600 transition-colors"
                     onclick="flavorMarketplace.publicarAnuncio()">
-                Publicar Anuncio
+                <?php echo esc_html__('Publicar Anuncio', 'flavor-chat-ia'); ?>
             </button>
         </div>
         <?php else: ?>
@@ -156,7 +156,7 @@ $categorias = $categorias ?? [];
                     </div>
                     <a href="<?php echo esc_url($producto['url'] ?? '#'); ?>"
                        class="text-green-600 hover:text-green-700 font-medium text-sm">
-                        Ver mas →
+                        <?php echo esc_html__('Ver mas →', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>
@@ -169,9 +169,9 @@ $categorias = $categorias ?? [];
     <?php if ($total_productos > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">← Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo ceil($total_productos / 12); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-lime-500 text-white hover:bg-lime-600 transition-colors">Siguiente →</button>
+            <button class="px-4 py-2 rounded-lg bg-lime-500 text-white hover:bg-lime-600 transition-colors"><?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -13,9 +15,22 @@ import 'features/chat/chat_screen.dart';
 import 'features/reservations/reservations_screen.dart';
 import 'features/reservations/my_reservations_screen.dart';
 import 'features/info/info_screen.dart';
+import 'features/info/directory_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'features/setup/setup_screen.dart';
 import 'features/client/camps/camps_screen.dart';
 import 'features/layouts/layout_config.dart';
+import 'features/modules/module_hub_screen.dart';
+import 'features/modules/grupos_consumo/grupos_consumo_screen.dart';
+import 'features/modules/banco_tiempo/banco_tiempo_screen.dart';
+import 'features/modules/marketplace/marketplace_screen.dart';
+import 'features/modules/eventos/eventos_screen.dart';
+import 'features/modules/socios/socios_screen.dart';
+import 'features/modules/facturas/facturas_screen.dart';
+import 'features/modules/chat_grupos/chat_grupos_screen.dart';
+import 'features/modules/chat_interno/chat_interno_screen.dart';
+import 'core/modules/module_screen_registry.dart';
+import 'core/modules/lazy/module_lazy_loader.dart';
 
 /// Provider para información del sitio (logo, nombre, etc.)
 final siteInfoProvider = FutureProvider<Map<String, dynamic>?>((ref) async {
@@ -71,6 +86,17 @@ final clientAppConfigProvider = FutureProvider<Map<String, dynamic>?>((ref) asyn
       'my_tickets_enabled': true,
       'offline_tickets': true,
     },
+    'info_sections': [
+      {'id': 'quick_links', 'label': 'Enlaces Rápidos', 'icon': 'link', 'enabled': true, 'order': 1},
+      {'id': 'services', 'label': 'Servicios', 'icon': 'star', 'enabled': true, 'order': 2},
+      {'id': 'content', 'label': 'Contenido', 'icon': 'article', 'enabled': true, 'order': 3},
+      {'id': 'gallery', 'label': 'Galería', 'icon': 'photo_library', 'enabled': true, 'order': 4},
+      {'id': 'news', 'label': 'Noticias', 'icon': 'newspaper', 'enabled': true, 'order': 5},
+      {'id': 'schedule', 'label': 'Horarios', 'icon': 'schedule', 'enabled': true, 'order': 6},
+      {'id': 'location', 'label': 'Ubicación', 'icon': 'location_on', 'enabled': true, 'order': 7},
+      {'id': 'contact', 'label': 'Contacto', 'icon': 'phone', 'enabled': true, 'order': 8},
+      {'id': 'social', 'label': 'Redes Sociales', 'icon': 'share', 'enabled': true, 'order': 9},
+    ],
   };
 });
 
@@ -159,6 +185,11 @@ void main() async {
       : 'https://placeholder.local/wp-json/chat-ia-mobile/v1';
 
   debugPrint('Client app starting with API URL: $apiUrl');
+
+  // Registrar todas las pantallas de módulos
+  final registry = ModuleScreenRegistry();
+  registry.registerAllScreens();
+  debugPrint('[CLIENT MAIN] Pantallas de módulos registradas');
 
   runApp(
     ProviderScope(
@@ -302,8 +333,18 @@ class _ChatIAClientAppState extends ConsumerState<ChatIAClientApp> {
     final hasLayoutTheme = syncState.layoutConfig != null && syncState.theme != null;
 
     return MaterialApp(
-      title: syncState.siteName ?? (config.isLoaded ? config.appName : AppConfig.clientAppName),
+      title: syncState.siteName ??
+          (config.isLoaded && config.appName.isNotEmpty
+              ? config.appName
+              : AppConfig.clientAppName),
       debugShowCheckedModeBanner: AppConfig.isDebug,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: hasLayoutTheme
           ? syncState.getThemeData(brightness: Brightness.light)
           : DynamicThemeBuilder.buildLightTheme(config.isLoaded ? config : null),
@@ -325,6 +366,7 @@ class _AppStartup extends ConsumerStatefulWidget {
 }
 
 class _AppStartupState extends ConsumerState<_AppStartup> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   bool? _isConfigured;
   bool _isLoading = true;
 
@@ -368,8 +410,9 @@ class _AppStartupState extends ConsumerState<_AppStartup> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     if (_isLoading) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -393,20 +436,50 @@ class ClientHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   int _currentIndex = 0;
   List<_TabConfig> _tabs = [];
   bool _configLoaded = false;
+  String? _lastLayoutSignature;
 
   @override
   void initState() {
     super.initState();
+    _listenToLayoutUpdates();
     _loadConfig();
+  }
+
+  void _listenToLayoutUpdates() {
+    ref.listen<LayoutConfig>(layoutConfigProvider, (previous, next) {
+      final signature = _buildLayoutSignature(next);
+      if (signature == _lastLayoutSignature) {
+        return;
+      }
+      _lastLayoutSignature = signature;
+      _applyLayoutConfig(next);
+    });
+  }
+
+  String _buildLayoutSignature(LayoutConfig config) {
+    final tabsSig = config.clientTabs
+        .map((t) => '${t.id}:${t.enabled ? 1 : 0}:${t.order}:${t.type}:${t.url}')
+        .join('|');
+    final navSig = config.navigationItems
+        .map((n) => '${n.title}:${n.url}:${n.order}')
+        .join('|');
+    return [
+      config.menu.mobileBehavior,
+      config.defaultTab,
+      tabsSig,
+      navSig,
+    ].join('||');
   }
 
   Future<void> _loadConfig() async {
     // Primero intentar usar LayoutService si está cargado
     final layoutService = LayoutService();
     if (layoutService.isLoaded) {
+      _lastLayoutSignature = _buildLayoutSignature(layoutService.config);
       _applyLayoutConfig(layoutService.config);
       return;
     }
@@ -456,15 +529,21 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
   /// Aplica la configuración desde LayoutService
   void _applyLayoutConfig(LayoutConfig layoutConfig) {
     if (!mounted) return;
+    final i18n = AppLocalizations.of(context)!;
 
     // Usar clientTabs si están disponibles (compatibilidad con calendario)
     if (layoutConfig.clientTabs.isNotEmpty) {
       final tabs = <_TabConfig>[];
       for (final clientTab in layoutConfig.enabledTabs) {
+        final label = clientTab.label.isNotEmpty
+            ? clientTab.label
+            : _fallbackTabLabel(i18n, clientTab.id, clientTab.type);
         tabs.add(_TabConfig(
           id: clientTab.id,
-          label: clientTab.label,
+          label: label,
           icon: _iconFromString(clientTab.icon),
+          type: clientTab.type,
+          url: clientTab.url,
           order: clientTab.order,
         ));
       }
@@ -564,6 +643,16 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
         return Icons.shopping_cart;
       case 'store':
         return Icons.store;
+      case 'public':
+        return Icons.public;
+      case 'link':
+        return Icons.link;
+      case 'groups':
+      case 'groups_2':
+        return Icons.groups;
+      case 'handyman':
+      case 'build':
+        return Icons.handyman;
       default:
         return Icons.help;
     }
@@ -576,12 +665,17 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     final tabsEnabled = config.tabsEnabled;
     final tabsData = config.tabs;
     final defaultTab = config.defaultTab;
+    final i18n = AppLocalizations.of(context)!;
 
     final tabs = <_TabConfig>[];
     for (final tab in tabsData) {
       final tabId = tab['id'] as String? ?? '';
       if (tabsEnabled.contains(tabId)) {
-        tabs.add(_TabConfig.fromJson(tab));
+        final tabConfig = _TabConfig.fromJson(tab);
+        final label = tabConfig.label.isNotEmpty
+            ? tabConfig.label
+            : _fallbackTabLabel(i18n, tabConfig.id, tabConfig.type);
+        tabs.add(tabConfig.copyWith(label: label));
       }
     }
 
@@ -604,14 +698,46 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     if (!mounted) return;
     setState(() {
       _tabs = [
-        _TabConfig(id: 'chat', label: 'Chat', icon: Icons.chat_bubble, order: 0),
-        _TabConfig(id: 'reservations', label: 'Reservar', icon: Icons.calendar_today, order: 1),
-        _TabConfig(id: 'my_tickets', label: 'Mis Tickets', icon: Icons.confirmation_number, order: 2),
-        _TabConfig(id: 'info', label: 'Info', icon: Icons.info, order: 3),
+        _TabConfig(id: 'chat', label: i18n.tabChatLabel, icon: Icons.chat_bubble, order: 0),
+        _TabConfig(id: 'reservations', label: i18n.tabReservationsLabel, icon: Icons.calendar_today, order: 1),
+        _TabConfig(id: 'my_tickets', label: i18n.tabMyTicketsLabel, icon: Icons.confirmation_number, order: 2),
+        _TabConfig(id: 'info', label: i18n.tabInfoLabel, icon: Icons.info, order: 3),
       ];
       _currentIndex = 3; // Info por defecto
       _configLoaded = true;
     });
+  }
+
+  String _fallbackTabLabel(AppLocalizations i18n, String tabId, String tabType) {
+    if (tabType == 'web') {
+      return i18n.tabWebLabel;
+    }
+    switch (tabId) {
+      case 'modules':
+        return i18n.tabModulesLabel;
+      case 'chat':
+        return i18n.tabChatLabel;
+      case 'reservations':
+      case 'experiences':
+        return i18n.tabReservationsLabel;
+      case 'my_tickets':
+        return i18n.tabMyTicketsLabel;
+      case 'info':
+        return i18n.tabInfoLabel;
+      case 'camps':
+        return i18n.campamentosB769f1;
+      case 'grupos_consumo':
+        return i18n.gruposConsumoTitle;
+      case 'banco_tiempo':
+        return i18n.bancoTiempoTitle;
+      case 'marketplace':
+        return i18n.marketplaceTitle;
+      default:
+        if (tabId.startsWith('web_')) {
+          return i18n.tabWebLabel;
+        }
+        return tabId;
+    }
   }
 
   /// Navegar a una pestaña específica por ID
@@ -629,8 +755,55 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     }
   }
 
-  Widget _buildScreen(String tabId) {
-    switch (tabId) {
+  bool _hasTab(String id) {
+    return _tabs.any((t) => t.id == id);
+  }
+
+  Future<void> _openExternalUrl(BuildContext context, String url) async {
+    if (url.isEmpty) return;
+    final uri = Uri.tryParse(url);
+    if (uri == null) return;
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo abrir el enlace')),
+      );
+    }
+  }
+
+  Widget _buildScreen(_TabConfig tab) {
+    // Primero intentar cargar desde el registro de módulos
+    final loader = ModuleLazyLoader();
+
+    // Intentar con el ID exacto
+    var builder = loader.getScreenBuilder(tab.id);
+
+    // Intentar con guiones convertidos a guiones bajos
+    if (builder == null) {
+      builder = loader.getScreenBuilder(tab.id.replaceAll('-', '_'));
+    }
+
+    // Intentar con guiones bajos convertidos a guiones
+    if (builder == null) {
+      builder = loader.getScreenBuilder(tab.id.replaceAll('_', '-'));
+    }
+
+    // Si encontramos un builder registrado, usarlo
+    if (builder != null) {
+      debugPrint('✅ Usando pantalla registrada para: ${tab.id}');
+      return builder(context);
+    }
+
+    // Fallback a pantallas hardcodeadas básicas
+    switch (tab.id) {
+      case 'home':
+      case 'inicio':
+        return _hasTab('modules') ? const ModuleHubScreen() : InfoScreen(onNavigateToTab: _navigateToTab);
+      case 'perfil':
+      case 'profile':
+        return _hasTab('socios') ? const SociosScreen() : InfoScreen(onNavigateToTab: _navigateToTab);
+      case 'modules':
+        return const ModuleHubScreen();
       case 'chat':
         return const ChatScreen();
       case 'reservations':
@@ -644,6 +817,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
         return const CampsScreen();
       default:
         // Para pestañas desconocidas, mostrar placeholder
+        debugPrint('⚠️ No se encontró pantalla para: ${tab.id}');
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -651,12 +825,12 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               Icon(Icons.construction, size: 64, color: Colors.grey[400]),
               const SizedBox(height: 16),
               Text(
-                'Sección "$tabId"',
+                i18n.clientUnknownSection(tab.id),
                 style: TextStyle(color: Colors.grey[600], fontSize: 16),
               ),
               const SizedBox(height: 8),
               Text(
-                'Próximamente',
+                i18n.clientComingSoon,
                 style: TextStyle(color: Colors.grey[400], fontSize: 14),
               ),
             ],
@@ -667,6 +841,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final authState = ref.watch(clientAuthProvider);
 
     // Escuchar cambios del syncProvider para recargar configuración
@@ -678,7 +853,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     });
 
     if (!_configLoaded) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -686,21 +861,35 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     }
 
     if (_tabs.isEmpty) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
-          child: Text('No hay pestañas configuradas'),
+          child: Text(i18n.clientNoTabs),
         ),
       );
     }
 
     // Obtener configuración de navegación del layout
     final layoutConfig = ref.watch(layoutConfigProvider);
-    final useBottomNav = layoutConfig.menu.useBottomNavigation;
+    final drawerItems = layoutConfig.drawerItems;
+
+    // Determinar si usar bottom navigation (máximo 5 tabs)
+    final useBottomNav = _tabs.length <= 5;
+
+    // Dividir tabs en bottom (primeras 4) y drawer (todas)
+    final bottomTabs = useBottomNav ? _tabs.take(4).toList() : [];
+
+    // El drawer siempre se muestra si hay más de 4 tabs o si el usuario quiere acceso completo
+    final showDrawer = _tabs.length > 4 || true; // Siempre mostrar drawer para acceso completo
 
     return Scaffold(
+      appBar: showDrawer
+          ? AppBar(
+              title: Text(ref.watch(syncProvider).siteName ?? i18n.defaultAppName),
+            )
+          : null,
       body: IndexedStack(
         index: _currentIndex,
-        children: _tabs.map((tab) => _buildScreen(tab.id)).toList(),
+        children: _tabs.map((tab) => _buildScreen(tab)).toList(),
       ),
       // Botón flotante para ir a la app admin (solo si es admin)
       floatingActionButton: authState.isAdmin
@@ -709,37 +898,37 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                 final success = await AppConfig.openAdminApp();
                 if (!success && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('La app de administración no está instalada'),
+                    SnackBar(
+                      content: Text(i18n.clientAdminAppNotInstalled),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
                 }
               },
               icon: const Icon(Icons.admin_panel_settings),
-              label: const Text('Admin'),
+              label: Text(i18n.commonAdmin),
               backgroundColor: Theme.of(context).colorScheme.secondary,
             )
           : null,
-      bottomNavigationBar: useBottomNav
+      bottomNavigationBar: useBottomNav && bottomTabs.isNotEmpty
           ? NavigationBar(
               selectedIndex: _currentIndex,
               onDestinationSelected: (index) {
                 setState(() => _currentIndex = index);
               },
-              destinations: _tabs.map((tab) => NavigationDestination(
+              destinations: bottomTabs.map((tab) => NavigationDestination(
                 icon: Icon(tab.icon, fill: 0),
                 selectedIcon: Icon(tab.icon),
                 label: tab.label,
               )).toList(),
             )
           : null,
-      drawer: !useBottomNav ? _buildDrawer(context) : null,
+      drawer: showDrawer ? _buildDrawer(context, drawerItems) : null,
     );
   }
 
   /// Construye el drawer cuando no se usa bottom navigation
-  Widget _buildDrawer(BuildContext context) {
+  Widget _buildDrawer(BuildContext context, List<DrawerItem> drawerItems) {
     final syncState = ref.watch(syncProvider);
 
     return Drawer(
@@ -758,7 +947,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      syncState.siteName ?? 'Mi App',
+                      syncState.siteName ?? i18n.defaultAppName,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
@@ -769,25 +958,142 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             // Items de navegación
             Expanded(
               child: ListView.builder(
-                itemCount: _tabs.length,
+                itemCount: drawerItems.isNotEmpty ? drawerItems.length : _tabs.length,
                 itemBuilder: (context, index) {
-                  final tab = _tabs[index];
-                  return ListTile(
-                    leading: Icon(tab.icon),
-                    title: Text(tab.label),
-                    selected: _currentIndex == index,
-                    onTap: () {
-                      Navigator.pop(context);
-                      setState(() => _currentIndex = index);
-                    },
-                  );
+                  if (drawerItems.isNotEmpty) {
+                    final item = drawerItems[index];
+                    return ListTile(
+                      contentPadding: EdgeInsets.only(
+                        left: 16 + (item.depth * 16).toDouble(),
+                        right: 16,
+                      ),
+                      leading: Icon(_iconFromString(item.icon)),
+                      title: Text(item.title),
+                      onTap: () {
+                        Navigator.pop(context);
+                        if (item.type == 'native' && item.target.isNotEmpty) {
+                          final tabIndex = _tabs.indexWhere((t) => t.id == item.target);
+                          if (tabIndex >= 0) {
+                            setState(() => _currentIndex = tabIndex);
+                            return;
+                          }
+                        }
+                      if (item.url.isNotEmpty) {
+                          _openExternalUrl(context, item.url);
+                        }
+                      },
+                    );
+                  } else {
+                    final tab = _tabs[index];
+                    return ListTile(
+                      leading: Icon(tab.icon),
+                      title: Text(tab.label),
+                      selected: _currentIndex == index,
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() => _currentIndex = index);
+                      },
+                    );
+                  }
                 },
               ),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.search),
+              title: Text(i18n.directorioDf7b92),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const DirectoryScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.swap_horiz),
+              title: Text(i18n.infoChangeBusinessTitle),
+              subtitle: Text(i18n.infoConnectOtherSiteSubtitle),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ChangeBusinessScreen(
+                      onComplete: () {
+                        Navigator.pop(context);
+                        ref.invalidate(clientAppConfigProvider);
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Convierte un nombre de icono a IconData
+  IconData _iconFromString(String iconName) {
+    final iconMap = {
+      'home': Icons.home_outlined,
+      'admin-home': Icons.home_outlined,
+      'search': Icons.search_outlined,
+      'admin-users': Icons.person_outline,
+      'email': Icons.email_outlined,
+      'cart': Icons.shopping_cart_outlined,
+      'marker': Icons.place_outlined,
+      'calendar': Icons.calendar_today_outlined,
+      'clock': Icons.access_time_outlined,
+      'heart': Icons.favorite_outline,
+      'star-filled': Icons.star_outline,
+      'menu': Icons.menu,
+      'plus-alt': Icons.add_circle_outline,
+      'dashboard': Icons.dashboard_outlined,
+      'admin-settings': Icons.settings_outlined,
+      'visibility': Icons.visibility_outlined,
+      'info': Icons.info_outline,
+      'phone': Icons.phone_outlined,
+      'location': Icons.location_on_outlined,
+      'link': Icons.link_outlined,
+      'chat': Icons.chat_bubble_outline,
+      'chat_bubble': Icons.chat_bubble_outline,
+      'shopping_basket': Icons.shopping_basket_outlined,
+      'access_time': Icons.access_time_outlined,
+      'account_balance': Icons.account_balance_outlined,
+      'groups': Icons.groups_outlined,
+      'meeting_room': Icons.meeting_room_outlined,
+      'volunteer_activism': Icons.volunteer_activism_outlined,
+      'grass': Icons.grass_outlined,
+      'local_library': Icons.local_library_outlined,
+      'school': Icons.school_outlined,
+      'restaurant': Icons.restaurant_outlined,
+      'local_cafe': Icons.local_cafe_outlined,
+      'store': Icons.store_outlined,
+      'sports': Icons.sports_outlined,
+      'pool': Icons.pool_outlined,
+      'directions_bike': Icons.directions_bike_outlined,
+      'directions_car': Icons.directions_car_outlined,
+      'public': Icons.public_outlined,
+      'business': Icons.business_outlined,
+      'event': Icons.event_outlined,
+      'article': Icons.article_outlined,
+      'handshake': Icons.handshake_outlined,
+      'forum': Icons.forum_outlined,
+      'announcement': Icons.announcement_outlined,
+      'recycling': Icons.recycling_outlined,
+      'eco': Icons.eco_outlined,
+      'add': Icons.add,
+      'settings': Icons.settings_outlined,
+      'account_circle': Icons.account_circle_outlined,
+      'calendar_today': Icons.calendar_today_outlined,
+      'confirmation_number': Icons.confirmation_number_outlined,
+      'child_care': Icons.child_care_outlined,
+    };
+
+    return iconMap[iconName] ?? Icons.public_outlined;
   }
 }
 
@@ -796,20 +1102,44 @@ class _TabConfig {
   final String id;
   final String label;
   final IconData icon;
+  final String type;
+  final String? url;
   final int order;
 
   _TabConfig({
     required this.id,
     required this.label,
     required this.icon,
+    this.type = 'native',
+    this.url,
     required this.order,
   });
+
+  _TabConfig copyWith({
+    String? id,
+    String? label,
+    IconData? icon,
+    String? type,
+    String? url,
+    int? order,
+  }) {
+    return _TabConfig(
+      id: id ?? this.id,
+      label: label ?? this.label,
+      icon: icon ?? this.icon,
+      type: type ?? this.type,
+      url: url ?? this.url,
+      order: order ?? this.order,
+    );
+  }
 
   factory _TabConfig.fromJson(Map<String, dynamic> json) {
     return _TabConfig(
       id: json['id'] as String? ?? '',
       label: json['label'] as String? ?? '',
       icon: _iconFromString(json['icon'] as String? ?? 'help'),
+      type: json['type'] as String? ?? 'native',
+      url: json['url'] as String?,
       order: json['order'] as int? ?? 0,
     );
   }
@@ -832,6 +1162,16 @@ class _TabConfig {
         return Icons.person;
       case 'qr_code':
         return Icons.qr_code;
+      case 'public':
+        return Icons.public;
+      case 'link':
+        return Icons.link;
+      case 'groups':
+      case 'groups_2':
+        return Icons.groups;
+      case 'handyman':
+      case 'build':
+        return Icons.handyman;
       default:
         return Icons.help;
     }

@@ -204,7 +204,7 @@ $rutas_sugeridas = [
                         <p class="font-medium text-gray-900 text-sm"><?php echo esc_html($ruta['nombre']); ?></p>
                         <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
                             <span><?php echo esc_html($ruta['distancia']); ?></span>
-                            <span>&middot;</span>
+                            <span><?php echo esc_html__('&middot;', 'flavor-chat-ia'); ?></span>
                             <span><?php echo esc_html($ruta['duracion']); ?></span>
                         </div>
                     </a>

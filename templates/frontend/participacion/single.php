@@ -13,9 +13,9 @@ $relacionadas = $relacionadas ?? [];
 <div class="flavor-frontend flavor-participacion-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-amber-600 transition-colors">Inicio</a>
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-amber-600 transition-colors"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
-        <a href="<?php echo esc_url(home_url('/participacion/')); ?>" class="hover:text-amber-600 transition-colors">Participacion</a>
+        <a href="<?php echo esc_url(home_url('/participacion/')); ?>" class="hover:text-amber-600 transition-colors"><?php echo esc_html__('Participacion', 'flavor-chat-ia'); ?></a>
         <span>&#8250;</span>
         <span class="text-gray-700"><?php echo esc_html($propuesta['titulo'] ?? 'Propuesta'); ?></span>
     </nav>
@@ -56,7 +56,7 @@ $relacionadas = $relacionadas ?? [];
             <!-- Linea de tiempo de estados -->
             <?php if (!empty($historial_estados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Linea de tiempo</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Linea de tiempo', 'flavor-chat-ia'); ?></h2>
                 <div class="relative pl-8 space-y-6">
                     <div class="absolute left-3 top-2 bottom-2 w-0.5 bg-amber-200"></div>
                     <?php foreach ($historial_estados as $evento_estado): ?>
@@ -74,7 +74,7 @@ $relacionadas = $relacionadas ?? [];
 
             <!-- Seccion de votacion -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Resultados de la votacion</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('Resultados de la votacion', 'flavor-chat-ia'); ?></h2>
                 <?php
                 $votos_favor = intval($propuesta['votos_favor'] ?? 0);
                 $votos_contra = intval($propuesta['votos_contra'] ?? 0);
@@ -86,7 +86,7 @@ $relacionadas = $relacionadas ?? [];
                     <!-- A favor -->
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <span class="font-medium text-green-700">A favor</span>
+                            <span class="font-medium text-green-700"><?php echo esc_html__('A favor', 'flavor-chat-ia'); ?></span>
                             <span class="text-gray-600"><?php echo esc_html($votos_favor); ?> votos (<?php echo esc_html($porcentaje_favor); ?>%)</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4">
@@ -96,7 +96,7 @@ $relacionadas = $relacionadas ?? [];
                     <!-- En contra -->
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <span class="font-medium text-red-700">En contra</span>
+                            <span class="font-medium text-red-700"><?php echo esc_html__('En contra', 'flavor-chat-ia'); ?></span>
                             <span class="text-gray-600"><?php echo esc_html($votos_contra); ?> votos (<?php echo esc_html($porcentaje_contra); ?>%)</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4">
@@ -110,11 +110,11 @@ $relacionadas = $relacionadas ?? [];
                 <div class="flex gap-4 mt-6">
                     <button class="flex-1 bg-green-100 text-green-700 py-3 rounded-xl font-semibold hover:bg-green-200 transition-colors"
                             onclick="flavorParticipacion.votar(<?php echo esc_attr($propuesta['id'] ?? 0); ?>, 'favor')">
-                        A favor
+                        <?php echo esc_html__('A favor', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="flex-1 bg-red-100 text-red-700 py-3 rounded-xl font-semibold hover:bg-red-200 transition-colors"
                             onclick="flavorParticipacion.votar(<?php echo esc_attr($propuesta['id'] ?? 0); ?>, 'contra')">
-                        En contra
+                        <?php echo esc_html__('En contra', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </div>
@@ -123,10 +123,10 @@ $relacionadas = $relacionadas ?? [];
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Debate (<?php echo esc_html($propuesta['comentarios'] ?? 0); ?>)</h2>
                 <form class="space-y-4" onsubmit="return flavorParticipacion.enviarComentario(event, <?php echo esc_attr($propuesta['id'] ?? 0); ?>)">
-                    <textarea name="comentario" rows="3" placeholder="Comparte tu opinion sobre esta propuesta..."
+                    <textarea name="comentario" rows="3" placeholder="<?php echo esc_attr__('Comparte tu opinion sobre esta propuesta...', 'flavor-chat-ia'); ?>"
                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none"></textarea>
                     <button type="submit" class="bg-amber-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-amber-600 transition-colors">
-                        Enviar comentario
+                        <?php echo esc_html__('Enviar comentario', 'flavor-chat-ia'); ?>
                     </button>
                 </form>
             </div>
@@ -136,7 +136,7 @@ $relacionadas = $relacionadas ?? [];
         <div class="space-y-6">
             <!-- Tarjeta del autor -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Autor de la propuesta</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Autor de la propuesta', 'flavor-chat-ia'); ?></h3>
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-12 h-12 rounded-full bg-amber-200 flex items-center justify-center text-lg font-bold text-amber-700">
                         <?php echo esc_html(mb_substr($propuesta['autor'] ?? 'A', 0, 1)); ?>
@@ -148,11 +148,11 @@ $relacionadas = $relacionadas ?? [];
                 </div>
                 <dl class="space-y-2 text-sm">
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Propuestas</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Propuestas', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($propuesta['autor_propuestas'] ?? 0); ?></dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-500">Participaciones</dt>
+                        <dt class="text-gray-500"><?php echo esc_html__('Participaciones', 'flavor-chat-ia'); ?></dt>
                         <dd class="font-medium text-gray-700"><?php echo esc_html($propuesta['autor_participaciones'] ?? 0); ?></dd>
                     </div>
                 </dl>
@@ -160,18 +160,18 @@ $relacionadas = $relacionadas ?? [];
 
             <!-- CTA de votacion -->
             <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white">
-                <h3 class="font-bold text-lg mb-2">Tu voto cuenta</h3>
-                <p class="text-amber-100 text-sm mb-4">Participa en la toma de decisiones de tu comunidad</p>
+                <h3 class="font-bold text-lg mb-2"><?php echo esc_html__('Tu voto cuenta', 'flavor-chat-ia'); ?></h3>
+                <p class="text-amber-100 text-sm mb-4"><?php echo esc_html__('Participa en la toma de decisiones de tu comunidad', 'flavor-chat-ia'); ?></p>
                 <button class="w-full bg-white text-orange-600 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-colors"
                         onclick="flavorParticipacion.votar(<?php echo esc_attr($propuesta['id'] ?? 0); ?>, 'favor')">
-                    Votar esta propuesta
+                    <?php echo esc_html__('Votar esta propuesta', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- Propuestas relacionadas -->
             <?php if (!empty($relacionadas)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Propuestas relacionadas</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Propuestas relacionadas', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($relacionadas as $propuesta_relacionada): ?>
                     <a href="<?php echo esc_url($propuesta_relacionada['url'] ?? '#'); ?>"

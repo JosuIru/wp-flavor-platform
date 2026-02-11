@@ -46,32 +46,32 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_talleres WHE
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Gestión de Talleres</h1>
-    <a href="#" class="page-title-action">Añadir Nuevo</a>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Talleres', 'flavor-chat-ia'); ?></h1>
+    <a href="#" class="page-title-action"><?php echo esc_html__('Añadir Nuevo', 'flavor-chat-ia'); ?></a>
     <hr class="wp-header-end">
 
     <div class="flavor-filters">
         <form method="get">
-            <input type="hidden" name="page" value="flavor-chat-talleres">
-            <input type="hidden" name="tab" value="talleres">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-talleres', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="tab" value="<?php echo esc_attr__('talleres', 'flavor-chat-ia'); ?>">
             <select name="estado">
-                <option value="">Todos los estados</option>
-                <option value="borrador" <?php selected($filtro_estado, 'borrador'); ?>>Borrador</option>
-                <option value="publicado" <?php selected($filtro_estado, 'publicado'); ?>>Publicado</option>
-                <option value="confirmado" <?php selected($filtro_estado, 'confirmado'); ?>>Confirmado</option>
-                <option value="en_curso" <?php selected($filtro_estado, 'en_curso'); ?>>En curso</option>
-                <option value="finalizado" <?php selected($filtro_estado, 'finalizado'); ?>>Finalizado</option>
-                <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>>Cancelado</option>
+                <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('borrador', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'borrador'); ?>><?php echo esc_html__('Borrador', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('publicado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'publicado'); ?>><?php echo esc_html__('Publicado', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('confirmado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'confirmado'); ?>><?php echo esc_html__('Confirmado', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('en_curso', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'en_curso'); ?>><?php echo esc_html__('En curso', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('finalizado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'finalizado'); ?>><?php echo esc_html__('Finalizado', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelado'); ?>><?php echo esc_html__('Cancelado', 'flavor-chat-ia'); ?></option>
             </select>
             <select name="categoria">
-                <option value="">Todas las categorías</option>
+                <option value=""><?php echo esc_html__('Todas las categorías', 'flavor-chat-ia'); ?></option>
                 <?php foreach ($categorias as $cat): ?>
                     <option value="<?php echo esc_attr($cat); ?>" <?php selected($filtro_categoria, $cat); ?>>
                         <?php echo esc_html($cat); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
-            <button type="submit" class="button">Filtrar</button>
+            <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
         </form>
     </div>
 
@@ -79,14 +79,14 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_talleres WHE
         <table class="wp-list-table widefat striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Taller</th>
-                    <th>Organizador</th>
-                    <th>Categoría</th>
-                    <th>Participantes</th>
-                    <th>Precio</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Taller', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Organizador', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Participantes', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -103,12 +103,12 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_talleres WHE
                             <td><?php echo $t->inscritos_actuales; ?>/<?php echo $t->max_participantes; ?></td>
                             <td><?php echo $t->precio > 0 ? number_format($t->precio, 2) . '€' : 'Gratis'; ?></td>
                             <td><span class="flavor-badge flavor-badge-<?php echo $t->estado === 'confirmado' ? 'success' : 'info'; ?>"><?php echo ucfirst($t->estado); ?></span></td>
-                            <td><button class="button button-small">Editar</button></td>
+                            <td><button class="button button-small"><?php echo esc_html__('Editar', 'flavor-chat-ia'); ?></button></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="8" class="flavor-no-data">No se encontraron talleres</td>
+                        <td colspan="8" class="flavor-no-data"><?php echo esc_html__('No se encontraron talleres', 'flavor-chat-ia'); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>

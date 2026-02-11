@@ -251,19 +251,19 @@ class Flavor_Ayuntamiento_Controller extends Flavor_Frontend_Controller_Base {
         register_rest_route('flavor/v1', "/{$this->module_slug}/cita-previa", [
             'methods' => 'POST',
             'callback' => [$this, 'api_solicitar_cita'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', "/{$this->module_slug}/tramites", [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_tramites'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', "/{$this->module_slug}/noticias", [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_noticias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -282,7 +282,7 @@ class Flavor_Ayuntamiento_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Cita solicitada correctamente',
+            'message' => __('Cita solicitada correctamente', 'flavor-chat-ia'),
             'codigo' => 'CITA-' . wp_rand(10000, 99999),
         ], 200);
     }
@@ -323,5 +323,11 @@ class Flavor_Ayuntamiento_Controller extends Flavor_Frontend_Controller_Base {
         ];
 
         return new WP_REST_Response(array_slice($noticias, 0, $limite), 200);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

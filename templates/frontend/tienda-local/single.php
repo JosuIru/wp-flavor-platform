@@ -13,7 +13,7 @@ $productos_relacionados = $productos_relacionados ?? [];
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
         <a href="<?php echo esc_url(home_url('/tienda-local/')); ?>" class="hover:text-amber-600 transition-colors">
-            Tienda Local
+            <?php echo esc_html__('Tienda Local', 'flavor-chat-ia'); ?>
         </a>
         <span>›</span>
         <span class="text-gray-700"><?php echo esc_html($producto['nombre'] ?? 'Producto'); ?></span>
@@ -51,17 +51,17 @@ $productos_relacionados = $productos_relacionados ?? [];
             <div class="flex flex-wrap gap-2">
                 <?php if (!empty($producto['ecologico'])): ?>
                 <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                    🌱 Producto ecológico
+                    <?php echo esc_html__('🌱 Producto ecológico', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
                 <?php if (!empty($producto['local'])): ?>
                 <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-medium">
-                    📍 Km 0
+                    <?php echo esc_html__('📍 Km 0', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
                 <?php if (!empty($producto['oferta'])): ?>
                 <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                    🏷️ En oferta
+                    <?php echo esc_html__('🏷️ En oferta', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -83,7 +83,7 @@ $productos_relacionados = $productos_relacionados ?? [];
                     👨‍🌾
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Producido por</p>
+                    <p class="text-sm text-gray-500"><?php echo esc_html__('Producido por', 'flavor-chat-ia'); ?></p>
                     <p class="font-semibold text-amber-700"><?php echo esc_html($producto['productor']); ?></p>
                 </div>
             </div>
@@ -110,13 +110,13 @@ $productos_relacionados = $productos_relacionados ?? [];
             <div class="flex items-center gap-2">
                 <?php if ($producto['stock'] > 10): ?>
                 <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-                <span class="text-green-600 font-medium">En stock</span>
+                <span class="text-green-600 font-medium"><?php echo esc_html__('En stock', 'flavor-chat-ia'); ?></span>
                 <?php elseif ($producto['stock'] > 0): ?>
                 <span class="w-3 h-3 bg-orange-500 rounded-full"></span>
                 <span class="text-orange-600 font-medium">Últimas <?php echo esc_html($producto['stock']); ?> unidades</span>
                 <?php else: ?>
                 <span class="w-3 h-3 bg-red-500 rounded-full"></span>
-                <span class="text-red-600 font-medium">Agotado</span>
+                <span class="text-red-600 font-medium"><?php echo esc_html__('Agotado', 'flavor-chat-ia'); ?></span>
                 <?php endif; ?>
             </div>
             <?php endif; ?>
@@ -135,14 +135,14 @@ $productos_relacionados = $productos_relacionados ?? [];
                 <button class="flex-1 bg-gradient-to-r from-amber-500 to-yellow-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-amber-600 hover:to-yellow-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                         onclick="flavorTienda.agregarCarrito(<?php echo esc_attr($producto['id']); ?>)"
                         <?php echo ($producto['stock'] ?? 1) <= 0 ? 'disabled' : ''; ?>>
-                    🛒 Añadir al carrito
+                    <?php echo esc_html__('🛒 Añadir al carrito', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
             <!-- Descripción -->
             <?php if (!empty($producto['descripcion'])): ?>
             <div class="prose prose-amber max-w-none">
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Descripción</h3>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2"><?php echo esc_html__('Descripción', 'flavor-chat-ia'); ?></h3>
                 <p class="text-gray-600"><?php echo wp_kses_post($producto['descripcion']); ?></p>
             </div>
             <?php endif; ?>
@@ -150,7 +150,7 @@ $productos_relacionados = $productos_relacionados ?? [];
             <!-- Información adicional -->
             <?php if (!empty($producto['info_adicional'])): ?>
             <div class="bg-gray-50 rounded-xl p-4 space-y-2">
-                <h3 class="font-semibold text-gray-800">Información adicional</h3>
+                <h3 class="font-semibold text-gray-800"><?php echo esc_html__('Información adicional', 'flavor-chat-ia'); ?></h3>
                 <dl class="grid grid-cols-2 gap-2 text-sm">
                     <?php foreach ($producto['info_adicional'] as $etiqueta => $valor): ?>
                     <dt class="text-gray-500"><?php echo esc_html($etiqueta); ?></dt>
@@ -165,7 +165,7 @@ $productos_relacionados = $productos_relacionados ?? [];
     <!-- Productos relacionados -->
     <?php if (!empty($productos_relacionados)): ?>
     <section class="border-t border-gray-200 pt-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">También te puede interesar</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6"><?php echo esc_html__('También te puede interesar', 'flavor-chat-ia'); ?></h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <?php foreach ($productos_relacionados as $relacionado): ?>
             <a href="<?php echo esc_url($relacionado['url']); ?>"

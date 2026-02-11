@@ -109,11 +109,11 @@ $categorias_filtro_documentos = ['Todos', 'Presupuestos', 'Contratos', 'Actas', 
                             <span class="text-xs text-gray-400">
                                 <?php echo esc_html($documento['categoria']); ?>
                             </span>
-                            <span class="text-xs text-gray-300">&bull;</span>
+                            <span class="text-xs text-gray-300"><?php echo esc_html__('&bull;', 'flavor-chat-ia'); ?></span>
                             <span class="text-xs text-gray-400">
                                 <?php echo esc_html($documento['fecha']); ?>
                             </span>
-                            <span class="text-xs text-gray-300">&bull;</span>
+                            <span class="text-xs text-gray-300"><?php echo esc_html__('&bull;', 'flavor-chat-ia'); ?></span>
                             <span class="text-xs text-gray-400">
                                 <?php echo esc_html($documento['tamano']); ?>
                             </span>

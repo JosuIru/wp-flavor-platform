@@ -266,7 +266,7 @@ class Flavor_Dex_Solana_Swap_Engine {
         if (!$transaccion_sin_firmar) {
             return array(
                 'success' => false,
-                'error'   => 'Jupiter no devolvio una transaccion valida para firmar',
+                'error' => __('', 'flavor-chat-ia'),
             );
         }
 

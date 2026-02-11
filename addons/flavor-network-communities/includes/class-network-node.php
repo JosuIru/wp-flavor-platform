@@ -109,9 +109,25 @@ class Flavor_Network_Node {
      */
     public function to_public_array() {
         $datos_publicos = $this->datos;
-        unset($datos_publicos['api_key']);
-        unset($datos_publicos['api_secret']);
-        unset($datos_publicos['configuracion']);
+        unset($datos_publicos['api_key'], $datos_publicos['api_secret'], $datos_publicos['configuracion']);
+        // Redactar posibles campos sensibles si existen
+        $sensibles = [
+            'email',
+            'telefono',
+            'phone',
+            'contacto_email',
+            'contacto_telefono',
+            'contact_email',
+            'contact_phone',
+            'direccion',
+            'direccion_exacta',
+            'address',
+        ];
+        foreach ($sensibles as $key) {
+            if (array_key_exists($key, $datos_publicos)) {
+                unset($datos_publicos[$key]);
+            }
+        }
         return $datos_publicos;
     }
 

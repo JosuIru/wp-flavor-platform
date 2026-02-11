@@ -12,16 +12,16 @@ $filtros_activos = $filtros_activos ?? [];
 
 <div class="flavor-filters espacios-comunes bg-white rounded-2xl p-5 shadow-md">
     <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-bold text-gray-900">Filtros</h3>
+        <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
         <?php if (!empty($filtros_activos)): ?>
-            <a href="?" class="text-sm text-rose-600 hover:text-rose-700">Limpiar</a>
+            <a href="?" class="text-sm text-rose-600 hover:text-rose-700"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
         <?php endif; ?>
     </div>
 
     <form method="get" class="space-y-6">
         <!-- Tipo de espacio -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Tipo de Espacio</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Tipo de Espacio', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $tipos = [
@@ -51,7 +51,7 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Capacidad -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Capacidad</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Capacidad', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $capacidades = [
@@ -80,18 +80,18 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Precio -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Precio por hora</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Precio por hora', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-3">
                 <div class="flex items-center gap-2">
                     <input type="number"
                            name="precio_min"
-                           placeholder="Min"
+                           placeholder="<?php echo esc_attr__('Min', 'flavor-chat-ia'); ?>"
                            value="<?php echo esc_attr($filtros_activos['precio_min'] ?? ''); ?>"
                            class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
                     <span class="text-gray-400">-</span>
                     <input type="number"
                            name="precio_max"
-                           placeholder="Max"
+                           placeholder="<?php echo esc_attr__('Max', 'flavor-chat-ia'); ?>"
                            value="<?php echo esc_attr($filtros_activos['precio_max'] ?? ''); ?>"
                            class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
                 </div>
@@ -112,7 +112,7 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Equipamiento -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Equipamiento</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Equipamiento', 'flavor-chat-ia'); ?></h4>
             <div class="space-y-2">
                 <?php
                 $equipamientos = [
@@ -144,7 +144,7 @@ $filtros_activos = $filtros_activos ?? [];
 
         <!-- Disponibilidad -->
         <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-3">Disponibilidad</h4>
+            <h4 class="text-sm font-semibold text-gray-900 mb-3"><?php echo esc_html__('Disponibilidad', 'flavor-chat-ia'); ?></h4>
             <label class="flex items-center gap-3 cursor-pointer group">
                 <input type="checkbox"
                        name="solo_disponibles"
@@ -152,7 +152,7 @@ $filtros_activos = $filtros_activos ?? [];
                        <?php echo !empty($filtros_activos['solo_disponibles']) ? 'checked' : ''; ?>
                        class="w-4 h-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500">
                 <span class="text-sm text-gray-700 group-hover:text-rose-600 transition-colors">
-                    Solo mostrar disponibles
+                    <?php echo esc_html__('Solo mostrar disponibles', 'flavor-chat-ia'); ?>
                 </span>
             </label>
         </div>
@@ -161,7 +161,7 @@ $filtros_activos = $filtros_activos ?? [];
         <button type="submit"
                 class="w-full py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                 style="background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);">
-            Aplicar Filtros
+            <?php echo esc_html__('Aplicar Filtros', 'flavor-chat-ia'); ?>
         </button>
     </form>
 </div>

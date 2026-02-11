@@ -51,15 +51,31 @@ class Flavor_GC_Frontend_Controller {
         add_shortcode('gc_suscripciones', [$this, 'shortcode_suscripciones']);
         add_shortcode('gc_mi_cesta', [$this, 'shortcode_mi_cesta']);
 
-        // AJAX handlers
+        // AJAX handlers (legacy, nuevos en class-gc-ajax-handlers.php)
         add_action('wp_ajax_gc_agregar_lista', [$this, 'ajax_agregar_lista']);
         add_action('wp_ajax_gc_quitar_lista', [$this, 'ajax_quitar_lista']);
         add_action('wp_ajax_gc_actualizar_cantidad', [$this, 'ajax_actualizar_cantidad']);
         add_action('wp_ajax_gc_convertir_pedido', [$this, 'ajax_convertir_pedido']);
         add_action('wp_ajax_gc_filtrar_productos', [$this, 'ajax_filtrar_productos']);
 
+        // Cargar handlers AJAX mejorados
+        $this->cargar_ajax_handlers();
+
         // Template overrides
         add_filter('template_include', [$this, 'cargar_templates']);
+
+        // Inyectar carrito flotante en el footer
+        add_action('wp_footer', [$this, 'renderizar_carrito_flotante']);
+    }
+
+    /**
+     * Cargar handlers AJAX mejorados
+     */
+    private function cargar_ajax_handlers() {
+        $archivo_handlers = dirname(__FILE__) . '/class-gc-ajax-handlers.php';
+        if (file_exists($archivo_handlers)) {
+            require_once $archivo_handlers;
+        }
     }
 
     /**
@@ -69,7 +85,7 @@ class Flavor_GC_Frontend_Controller {
         $plugin_url = plugins_url('/', dirname(__FILE__));
         $version = defined('FLAVOR_VERSION') ? FLAVOR_VERSION : '1.0.0';
 
-        // CSS
+        // CSS base
         wp_register_style(
             'gc-frontend',
             $plugin_url . 'assets/gc-frontend.css',
@@ -77,7 +93,15 @@ class Flavor_GC_Frontend_Controller {
             $version
         );
 
-        // JavaScript
+        // CSS del catalogo y carrito mejorado
+        wp_register_style(
+            'gc-catalogo',
+            $plugin_url . 'assets/gc-catalogo.css',
+            ['gc-frontend'],
+            $version
+        );
+
+        // JavaScript base
         wp_register_script(
             'gc-frontend',
             $plugin_url . 'assets/gc-frontend.js',
@@ -86,50 +110,216 @@ class Flavor_GC_Frontend_Controller {
             true
         );
 
-        wp_localize_script('gc-frontend', 'gcFrontend', [
+        // JavaScript del catalogo y carrito mejorado
+        wp_register_script(
+            'gc-catalogo',
+            $plugin_url . 'assets/gc-catalogo.js',
+            ['jquery', 'gc-frontend'],
+            $version,
+            true
+        );
+
+        // Configuracion global para JavaScript
+        $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('flavor-chat-ia/v1/gc/'),
             'nonce' => wp_create_nonce('gc_frontend_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
+            'loginUrl' => wp_login_url(get_permalink()),
+            'carritoUrl' => home_url('/mi-cuenta/?tab=gc-lista-compra'),
             'i18n' => [
-                'agregado' => __('Producto agregado a la lista', 'flavor-chat-ia'),
-                'eliminado' => __('Producto eliminado de la lista', 'flavor-chat-ia'),
+                'agregado' => __('Producto agregado al pedido', 'flavor-chat-ia'),
+                'eliminado' => __('Producto eliminado del pedido', 'flavor-chat-ia'),
                 'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmarEliminar' => __('¿Eliminar este producto de la lista?', 'flavor-chat-ia'),
+                'confirmarEliminar' => __('Eliminar este producto del pedido?', 'flavor-chat-ia'),
+                'confirmarVaciar' => __('Seguro que deseas vaciar el pedido?', 'flavor-chat-ia'),
                 'cargando' => __('Cargando...', 'flavor-chat-ia'),
                 'sinProductos' => __('No hay productos disponibles', 'flavor-chat-ia'),
-                'pedidoCreado' => __('Pedido creado correctamente', 'flavor-chat-ia'),
+                'pedidoCreado' => __('Pedido confirmado correctamente', 'flavor-chat-ia'),
+                'pedidoVacio' => __('Tu pedido esta vacio', 'flavor-chat-ia'),
+                'stockInsuficiente' => __('Stock insuficiente', 'flavor-chat-ia'),
             ],
-        ]);
+        ];
+
+        wp_localize_script('gc-frontend', 'gcFrontend', $configuracion_js);
+        wp_localize_script('gc-catalogo', 'gcFrontend', $configuracion_js);
     }
 
     /**
      * Encolar assets cuando se necesitan
+     *
+     * @param bool $incluir_catalogo Si incluir assets del catalogo mejorado
      */
-    private function encolar_assets() {
+    private function encolar_assets($incluir_catalogo = false) {
         wp_enqueue_style('gc-frontend');
         wp_enqueue_script('gc-frontend');
+
+        if ($incluir_catalogo) {
+            wp_enqueue_style('gc-catalogo');
+            wp_enqueue_script('gc-catalogo');
+        }
     }
 
     /**
-     * Shortcode: Catálogo de productos
+     * Shortcode: Catálogo de productos mejorado
+     *
+     * Atributos:
+     * - grupo_id: ID del grupo de consumo (opcional)
+     * - mostrar_filtros: 'si' o 'no' (por defecto 'si')
+     * - columnas: 2, 3 o 4 (por defecto 3)
+     * - productor: ID del productor para filtrar
+     * - categoria: slug de la categoria para filtrar
+     * - limite: numero maximo de productos (-1 para todos)
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del catalogo
      */
     public function shortcode_catalogo($atts) {
-        $this->encolar_assets();
+        $this->encolar_assets(true); // Incluir assets del catalogo
 
-        $atts = shortcode_atts([
-            'ciclo' => '',
+        $atributos = shortcode_atts([
+            'grupo_id' => '',
+            'mostrar_filtros' => 'si',
+            'columnas' => 3,
             'productor' => '',
             'categoria' => '',
-            'columnas' => 3,
             'limite' => -1,
-            'mostrar_filtros' => 'si',
         ], $atts);
 
+        // Preparar datos para el template
+        $datos_template = $this->preparar_datos_catalogo($atributos);
+
         ob_start();
-        $this->render_catalogo($atts);
+
+        // Cargar template mejorado
+        $ruta_template = dirname(dirname(__FILE__)) . '/templates/catalogo.php';
+        if (file_exists($ruta_template)) {
+            $args = $datos_template;
+            include $ruta_template;
+        } else {
+            // Fallback al render antiguo
+            $this->render_catalogo($atributos);
+        }
+
         return ob_get_clean();
+    }
+
+    /**
+     * Preparar datos para el template del catalogo
+     *
+     * @param array $atributos Atributos del shortcode
+     * @return array Datos para el template
+     */
+    private function preparar_datos_catalogo($atributos) {
+        global $wpdb;
+
+        // Obtener productos
+        $args_query = [
+            'post_type' => 'gc_producto',
+            'post_status' => 'publish',
+            'posts_per_page' => intval($atributos['limite']),
+            'orderby' => 'title',
+            'order' => 'ASC',
+        ];
+
+        if (!empty($atributos['productor'])) {
+            $args_query['meta_query'][] = [
+                'key' => '_gc_productor_id',
+                'value' => absint($atributos['productor']),
+            ];
+        }
+
+        if (!empty($atributos['categoria'])) {
+            $args_query['tax_query'] = [[
+                'taxonomy' => 'gc_categoria',
+                'field' => 'slug',
+                'terms' => sanitize_text_field($atributos['categoria']),
+            ]];
+        }
+
+        $productos = get_posts($args_query);
+
+        // Obtener productores para filtros
+        $productores = get_posts([
+            'post_type' => 'gc_productor',
+            'posts_per_page' => -1,
+            'orderby' => 'title',
+            'order' => 'ASC',
+        ]);
+
+        // Obtener categorias
+        $categorias = get_terms([
+            'taxonomy' => 'gc_categoria',
+            'hide_empty' => true,
+        ]);
+
+        // Lista de compra del usuario
+        $lista_compra = [];
+        if (is_user_logged_in()) {
+            $items = $wpdb->get_results($wpdb->prepare(
+                "SELECT producto_id, cantidad FROM {$wpdb->prefix}flavor_gc_lista_compra WHERE usuario_id = %d",
+                get_current_user_id()
+            ));
+            foreach ($items as $item) {
+                $lista_compra[$item->producto_id] = floatval($item->cantidad);
+            }
+        }
+
+        // Obtener ciclo activo
+        $ciclo_activo = $this->obtener_ciclo_activo();
+
+        // Obtener configuracion del modulo
+        $opciones = get_option('flavor_chat_modules', []);
+        $porcentaje_gestion = floatval($opciones['grupos_consumo']['settings']['porcentaje_gestion'] ?? 5);
+
+        return [
+            'productos' => $productos,
+            'productores' => $productores,
+            'categorias' => is_array($categorias) ? $categorias : [],
+            'lista_compra' => $lista_compra,
+            'ciclo_activo' => $ciclo_activo,
+            'porcentaje_gestion' => $porcentaje_gestion,
+            'atts' => $atributos,
+        ];
+    }
+
+    /**
+     * Obtener ciclo activo
+     *
+     * @return array|null Datos del ciclo o null
+     */
+    private function obtener_ciclo_activo() {
+        $ciclos = get_posts([
+            'post_type' => 'gc_ciclo',
+            'post_status' => 'publish',
+            'posts_per_page' => 1,
+            'meta_query' => [
+                [
+                    'key' => '_gc_estado',
+                    'value' => 'abierto',
+                ],
+            ],
+            'orderby' => 'meta_value',
+            'meta_key' => '_gc_fecha_cierre',
+            'order' => 'ASC',
+        ]);
+
+        if (empty($ciclos)) {
+            return null;
+        }
+
+        $ciclo = $ciclos[0];
+        return [
+            'id' => $ciclo->ID,
+            'titulo' => $ciclo->post_title,
+            'fecha_cierre' => get_post_meta($ciclo->ID, '_gc_fecha_cierre', true),
+            'fecha_entrega' => get_post_meta($ciclo->ID, '_gc_fecha_entrega', true),
+            'hora_entrega' => get_post_meta($ciclo->ID, '_gc_hora_entrega', true),
+            'lugar_entrega' => get_post_meta($ciclo->ID, '_gc_lugar_entrega', true),
+            'notas' => get_post_meta($ciclo->ID, '_gc_notas', true),
+            'estado' => 'abierto',
+        ];
     }
 
     /**
@@ -194,10 +384,10 @@ class Flavor_GC_Frontend_Controller {
                     </div>
                     <div class="gc-filtro-orden">
                         <select id="gc-ordenar-productos">
-                            <option value="nombre"><?php _e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
-                            <option value="nombre-desc"><?php _e('Nombre Z-A', 'flavor-chat-ia'); ?></option>
-                            <option value="precio"><?php _e('Precio menor', 'flavor-chat-ia'); ?></option>
-                            <option value="precio-desc"><?php _e('Precio mayor', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('nombre', 'flavor-chat-ia'); ?>"><?php _e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('nombre-desc', 'flavor-chat-ia'); ?>"><?php _e('Nombre Z-A', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('precio', 'flavor-chat-ia'); ?>"><?php _e('Precio menor', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('precio-desc', 'flavor-chat-ia'); ?>"><?php _e('Precio mayor', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -282,22 +472,115 @@ class Flavor_GC_Frontend_Controller {
     }
 
     /**
-     * Shortcode: Mini carrito / Lista de compra
+     * Shortcode: Carrito / Lista de compra mejorado
+     *
+     * Atributos:
+     * - estilo: 'completo' (pagina), 'mini' (widget), 'flotante' (esquina)
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del carrito
      */
     public function shortcode_carrito($atts) {
-        $this->encolar_assets();
+        $this->encolar_assets(true);
 
         if (!is_user_logged_in()) {
             return '<p class="gc-login-requerido">' . __('Inicia sesión para ver tu lista de compra.', 'flavor-chat-ia') . '</p>';
         }
 
-        $atts = shortcode_atts([
+        $atributos = shortcode_atts([
             'estilo' => 'completo', // completo, mini, flotante
         ], $atts);
 
+        // Preparar datos para el template
+        $datos_template = $this->preparar_datos_carrito();
+
         ob_start();
-        $this->render_carrito($atts['estilo']);
+
+        // Seleccionar template segun estilo
+        $estilo = $atributos['estilo'];
+        if ($estilo === 'completo') {
+            $ruta_template = dirname(dirname(__FILE__)) . '/templates/carrito-completo.php';
+        } else {
+            $ruta_template = dirname(dirname(__FILE__)) . '/templates/carrito.php';
+        }
+
+        if (file_exists($ruta_template)) {
+            $args = $datos_template;
+            include $ruta_template;
+        } else {
+            // Fallback al render antiguo
+            $this->render_carrito($estilo);
+        }
+
         return ob_get_clean();
+    }
+
+    /**
+     * Preparar datos para el template del carrito
+     *
+     * @return array Datos para el template
+     */
+    private function preparar_datos_carrito() {
+        global $wpdb;
+
+        $usuario_id = get_current_user_id();
+
+        // Obtener items de la lista
+        $items_raw = $wpdb->get_results($wpdb->prepare(
+            "SELECT l.*, p.post_title as nombre
+             FROM {$wpdb->prefix}flavor_gc_lista_compra l
+             LEFT JOIN {$wpdb->posts} p ON l.producto_id = p.ID
+             WHERE l.usuario_id = %d
+             ORDER BY l.fecha_agregado DESC",
+            $usuario_id
+        ));
+
+        $items = [];
+        $total = 0;
+
+        foreach ($items_raw as $item) {
+            $precio = floatval(get_post_meta($item->producto_id, '_gc_precio', true));
+            $unidad = get_post_meta($item->producto_id, '_gc_unidad', true) ?: 'ud';
+            $cantidad_minima = floatval(get_post_meta($item->producto_id, '_gc_cantidad_minima', true) ?: 1);
+            $stock = get_post_meta($item->producto_id, '_gc_stock', true);
+            $productor_id = get_post_meta($item->producto_id, '_gc_productor_id', true);
+            $productor = $productor_id ? get_post($productor_id) : null;
+            $es_ecologico = $productor_id ? get_post_meta($productor_id, '_gc_certificacion_eco', true) : false;
+
+            $subtotal = $precio * $item->cantidad;
+            $total += $subtotal;
+
+            $items[] = [
+                'id' => $item->id,
+                'producto_id' => $item->producto_id,
+                'nombre' => $item->nombre,
+                'cantidad' => floatval($item->cantidad),
+                'precio' => $precio,
+                'unidad' => $unidad,
+                'cantidad_minima' => $cantidad_minima,
+                'stock' => $stock,
+                'subtotal' => $subtotal,
+                'imagen' => get_the_post_thumbnail_url($item->producto_id, 'thumbnail'),
+                'productor' => $productor ? $productor->post_title : '',
+                'es_ecologico' => (bool) $es_ecologico,
+            ];
+        }
+
+        // Obtener ciclo activo
+        $ciclo = $this->obtener_ciclo_activo();
+
+        // Configuracion del modulo
+        $opciones = get_option('flavor_chat_modules', []);
+        $porcentaje_gestion = floatval($opciones['grupos_consumo']['settings']['porcentaje_gestion'] ?? 5);
+
+        return [
+            'items' => $items,
+            'total' => $total,
+            'ciclo' => $ciclo,
+            'porcentaje_gestion' => $porcentaje_gestion,
+            'notas_ciclo' => $ciclo ? $ciclo['notas'] : '',
+            'url_catalogo' => get_post_type_archive_link('gc_producto'),
+        ];
     }
 
     /**
@@ -733,6 +1016,9 @@ class Flavor_GC_Frontend_Controller {
         $tabla = $wpdb->prefix . 'flavor_gc_lista_compra';
         $usuario_id = get_current_user_id();
 
+        // Asegurar que la tabla existe
+        $this->crear_tabla_lista_compra();
+
         // Verificar si ya existe
         $existente = $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM {$tabla} WHERE usuario_id = %d AND producto_id = %d",
@@ -741,9 +1027,9 @@ class Flavor_GC_Frontend_Controller {
         ));
 
         if ($existente) {
-            $wpdb->update($tabla, ['cantidad' => $cantidad], ['id' => $existente]);
+            $resultado = $wpdb->update($tabla, ['cantidad' => $cantidad], ['id' => $existente]);
         } else {
-            $wpdb->insert($tabla, [
+            $resultado = $wpdb->insert($tabla, [
                 'usuario_id' => $usuario_id,
                 'producto_id' => $producto_id,
                 'cantidad' => $cantidad,
@@ -751,7 +1037,43 @@ class Flavor_GC_Frontend_Controller {
             ]);
         }
 
+        if ($resultado === false) {
+            wp_send_json_error(['message' => __('Error al agregar el producto', 'flavor-chat-ia')]);
+        }
+
         wp_send_json_success(['message' => __('Producto agregado a la lista', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * Crea la tabla de lista de compra si no existe
+     */
+    private function crear_tabla_lista_compra() {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_gc_lista_compra';
+
+        // Verificar si la tabla ya existe
+        $tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla));
+        if ($tabla_existe === $tabla) {
+            return;
+        }
+
+        $charset_collate = $wpdb->get_charset_collate();
+        $sql = "CREATE TABLE IF NOT EXISTS $tabla (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) unsigned NOT NULL,
+            producto_id bigint(20) unsigned NOT NULL,
+            cantidad decimal(10,2) DEFAULT 1.00,
+            fecha_agregado datetime DEFAULT NULL,
+            notas varchar(255) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY producto_id (producto_id)
+        ) $charset_collate;";
+
+        if (!function_exists('dbDelta')) {
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        }
+        dbDelta($sql);
     }
 
     /**
@@ -892,20 +1214,195 @@ class Flavor_GC_Frontend_Controller {
      * Cargar templates personalizados
      */
     public function cargar_templates($template) {
+        $plugin_templates_path = FLAVOR_CHAT_IA_PATH . 'templates/frontend/grupos-consumo/';
+
+        // Template para single gc_grupo
+        if (is_singular('gc_grupo')) {
+            // Primero buscar en el tema
+            $custom_theme = locate_template('grupos-consumo/single-gc_grupo.php');
+            if ($custom_theme) {
+                return $custom_theme;
+            }
+
+            // Si no existe en el tema, usar el del plugin
+            $plugin_template = $plugin_templates_path . 'single-gc_grupo.php';
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
+            }
+        }
+
+        // Template para single gc_ciclo
         if (is_singular('gc_ciclo')) {
-            $custom = locate_template('grupo-consumo/single-ciclo.php');
-            if ($custom) {
-                return $custom;
+            $custom_theme = locate_template('grupos-consumo/single-ciclo.php');
+            if ($custom_theme) {
+                return $custom_theme;
+            }
+
+            $plugin_template = $plugin_templates_path . 'single-gc_ciclo.php';
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
+            }
+        }
+
+        // Template para single gc_productor
+        if (is_singular('gc_productor')) {
+            $custom_theme = locate_template('grupos-consumo/single-gc_productor.php');
+            if ($custom_theme) {
+                return $custom_theme;
+            }
+
+            $plugin_template = $plugin_templates_path . 'single-gc_productor.php';
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
+            }
+        }
+
+        // Template para single gc_producto
+        if (is_singular('gc_producto')) {
+            $custom_theme = locate_template('grupos-consumo/single-gc_producto.php');
+            if ($custom_theme) {
+                return $custom_theme;
+            }
+
+            $plugin_template = $plugin_templates_path . 'single-gc_producto.php';
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
+            }
+        }
+
+        // Templates para archive
+        if (is_post_type_archive('gc_grupo')) {
+            $custom_theme = locate_template('grupos-consumo/archive-gc_grupo.php');
+            if ($custom_theme) {
+                return $custom_theme;
+            }
+
+            $plugin_template = $plugin_templates_path . 'archive-gc_grupo.php';
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
             }
         }
 
         if (is_post_type_archive('gc_ciclo')) {
-            $custom = locate_template('grupo-consumo/archive-ciclo.php');
-            if ($custom) {
-                return $custom;
+            $custom_theme = locate_template('grupos-consumo/archive-ciclo.php');
+            if ($custom_theme) {
+                return $custom_theme;
+            }
+
+            $plugin_template = $plugin_templates_path . 'archive-gc_ciclo.php';
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
             }
         }
 
         return $template;
+    }
+
+    /**
+     * Renderizar carrito flotante en el footer
+     *
+     * Se inyecta automaticamente en todas las paginas donde el usuario esta logueado
+     * y hay productos de grupos de consumo disponibles.
+     */
+    public function renderizar_carrito_flotante() {
+        // Solo mostrar si el usuario esta logueado
+        if (!is_user_logged_in()) {
+            return;
+        }
+
+        // No mostrar en admin
+        if (is_admin()) {
+            return;
+        }
+
+        // Verificar si estamos en una pagina relacionada con grupos de consumo
+        // o si hay productos de gc_producto disponibles
+        $mostrar_carrito = false;
+
+        if (is_singular(['gc_producto', 'gc_productor', 'gc_ciclo', 'gc_grupo'])) {
+            $mostrar_carrito = true;
+        }
+
+        if (is_post_type_archive(['gc_producto', 'gc_productor', 'gc_ciclo', 'gc_grupo'])) {
+            $mostrar_carrito = true;
+        }
+
+        // Verificar si hay shortcode de GC en la pagina
+        global $post;
+        if ($post && (
+            has_shortcode($post->post_content, 'gc_catalogo') ||
+            has_shortcode($post->post_content, 'gc_carrito') ||
+            has_shortcode($post->post_content, 'gc_productos') ||
+            has_shortcode($post->post_content, 'gc_mi_pedido')
+        )) {
+            $mostrar_carrito = true;
+        }
+
+        if (!$mostrar_carrito) {
+            return;
+        }
+
+        // Encolar assets del catalogo
+        $this->encolar_assets(true);
+
+        // Preparar datos
+        global $wpdb;
+        $usuario_id = get_current_user_id();
+
+        // Obtener items del carrito
+        $items_raw = $wpdb->get_results($wpdb->prepare(
+            "SELECT l.*, p.post_title as nombre
+             FROM {$wpdb->prefix}flavor_gc_lista_compra l
+             LEFT JOIN {$wpdb->posts} p ON l.producto_id = p.ID
+             WHERE l.usuario_id = %d
+             ORDER BY l.fecha_agregado DESC
+             LIMIT 10",
+            $usuario_id
+        ));
+
+        $items_carrito = [];
+        $total_carrito = 0;
+
+        foreach ($items_raw as $item) {
+            $precio = floatval(get_post_meta($item->producto_id, '_gc_precio', true));
+            $subtotal = $precio * $item->cantidad;
+            $total_carrito += $subtotal;
+
+            $items_carrito[] = [
+                'id' => $item->id,
+                'producto_id' => $item->producto_id,
+                'nombre' => $item->nombre,
+                'cantidad' => floatval($item->cantidad),
+                'precio' => $precio,
+                'imagen' => get_the_post_thumbnail_url($item->producto_id, 'thumbnail'),
+            ];
+        }
+
+        // Contar total de items
+        $total_items = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_gc_lista_compra WHERE usuario_id = %d",
+            $usuario_id
+        ));
+
+        // Obtener ciclo activo
+        $ciclo_activo = $this->obtener_ciclo_activo();
+
+        // Configuracion del modulo
+        $opciones = get_option('flavor_chat_modules', []);
+        $porcentaje_gestion = floatval($opciones['grupos_consumo']['settings']['porcentaje_gestion'] ?? 5);
+
+        // Cargar template
+        $ruta_template = dirname(dirname(__FILE__)) . '/templates/carrito-flotante.php';
+        if (file_exists($ruta_template)) {
+            $args = [
+                'items_carrito' => $items_carrito,
+                'total_carrito' => $total_carrito,
+                'total_items' => intval($total_items),
+                'ciclo_activo' => $ciclo_activo,
+                'porcentaje_gestion' => $porcentaje_gestion,
+                'url_carrito' => home_url('/mi-cuenta/?tab=gc-lista-compra'),
+            ];
+            include $ruta_template;
+        }
     }
 }

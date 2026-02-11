@@ -14,11 +14,11 @@ $sugerencias = $sugerencias ?? ['concierto', 'taller', 'deporte', 'cultural', 'i
 <div class="flavor-frontend flavor-eventos-search">
     <!-- Buscador -->
     <div class="bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">🔍 Buscar eventos</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('🔍 Buscar eventos', 'flavor-chat-ia'); ?></h2>
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q" value="<?php echo esc_attr($query); ?>"
-                       placeholder="¿Que evento buscas? (ej: concierto, taller de cocina, yoga...)"
+                       placeholder="<?php echo esc_attr__('¿Que evento buscas? (ej: concierto, taller de cocina, yoga...)', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-rose-300">
                 <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-600 text-white p-3 rounded-lg hover:bg-pink-700 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@ $sugerencias = $sugerencias ?? ['concierto', 'taller', 'deporte', 'cultural', 'i
 
         <?php if (!empty($sugerencias) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-rose-100 text-sm">Populares:</span>
+            <span class="text-rose-100 text-sm"><?php echo esc_html__('Populares:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias as $sugerencia_evento): ?>
             <a href="?q=<?php echo esc_attr($sugerencia_evento); ?>" class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
                 <?php echo esc_html($sugerencia_evento); ?>
@@ -55,11 +55,11 @@ $sugerencias = $sugerencias ?? ['concierto', 'taller', 'deporte', 'cultural', 'i
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">🎉</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos eventos</h3>
-        <p class="text-gray-500 mb-6">¿Quieres organizar un evento? ¡Crealo ahora!</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos eventos', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('¿Quieres organizar un evento? ¡Crealo ahora!', 'flavor-chat-ia'); ?></p>
         <button class="bg-rose-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-rose-600 transition-colors"
                 onclick="flavorEventos.crearEvento()">
-            Crear Evento
+            <?php echo esc_html__('Crear Evento', 'flavor-chat-ia'); ?>
         </button>
     </div>
     <?php else: ?>
@@ -98,7 +98,7 @@ $sugerencias = $sugerencias ?? ['concierto', 'taller', 'deporte', 'cultural', 'i
                     </span>
                     <a href="<?php echo esc_url($resultado_evento['url'] ?? '#'); ?>"
                        class="text-pink-600 hover:text-pink-700 font-medium text-sm">
-                        Ver mas →
+                        <?php echo esc_html__('Ver mas →', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             </div>

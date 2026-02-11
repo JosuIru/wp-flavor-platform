@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/config/server_config.dart';
@@ -20,11 +21,14 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
   bool _isTesting = false;
   String? _testResult;
   bool? _testSuccess;
+  Future<List<SavedBusiness>>? _businessesFuture;
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
 
   @override
   void initState() {
     super.initState();
     _loadCurrentConfig();
+    _businessesFuture = _loadBusinesses();
   }
 
   Future<void> _loadCurrentConfig() async {
@@ -34,6 +38,78 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       _urlController.text = serverUrl;
       _namespaceController.text = namespace;
     });
+  }
+
+  Future<List<SavedBusiness>> _loadBusinesses() async {
+    final businesses = await ServerConfig.getBusinesses();
+    businesses.sort((a, b) {
+      final aTime = DateTime.tryParse(a.lastUsedAt ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final bTime = DateTime.tryParse(b.lastUsedAt ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0);
+      return bTime.compareTo(aTime);
+    });
+    return businesses;
+  }
+
+  void _refreshBusinesses() {
+    setState(() {
+      _businessesFuture = _loadBusinesses();
+    });
+  }
+
+  Future<void> _useBusiness(SavedBusiness business) async {
+    setState(() {
+      _isLoading = true;
+      _testResult = null;
+      _testSuccess = null;
+    });
+
+    try {
+      final fullUrl = '${business.serverUrl}${business.apiNamespace}';
+      final testClient = ApiClient(baseUrl: fullUrl);
+      final response = await testClient.getBusinessInfo();
+
+      if (!response.success) {
+        setState(() {
+          _isLoading = false;
+          _testSuccess = false;
+          _testResult = response.error ?? i18n.serverConfigConnectionError;
+        });
+        return;
+      }
+
+      final siteName = response.data?['name']?.toString() ??
+          response.data?['business']?['name']?.toString();
+      final updatedBusiness = business.name.isNotEmpty || siteName == null
+          ? business
+          : business.copyWith(name: siteName);
+
+      await ref.read(serverConfigProvider.notifier).setCurrentBusiness(updatedBusiness);
+      await _loadCurrentConfig();
+      _refreshBusinesses();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              i18n.serverConfigConnectedTo(
+                business.name.isNotEmpty ? business.name : business.serverUrl,
+              ),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _testSuccess = false;
+        _testResult = i18n.serverConfigError(e.toString());
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -65,17 +141,17 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
         _isTesting = false;
         if (response.success) {
           _testSuccess = true;
-          _testResult = 'Conexion exitosa con el servidor';
+          _testResult = i18n.serverConfigConnectionSuccess;
         } else {
           _testSuccess = false;
-          _testResult = response.error ?? 'Error de conexion';
+          _testResult = response.error ?? i18n.serverConfigConnectionError;
         }
       });
     } catch (e) {
       setState(() {
         _isTesting = false;
         _testSuccess = false;
-        _testResult = 'Error: ${e.toString()}';
+        _testResult = i18n.serverConfigError(e.toString());
       });
     }
   }
@@ -89,17 +165,21 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       final url = _urlController.text.trim();
       final namespace = _namespaceController.text.trim();
 
-      await ServerConfig.setServerUrl(url);
-      await ServerConfig.setApiNamespace(namespace);
-
-      // Actualizar el provider
-      ref.read(serverConfigProvider.notifier).updateServerUrl(url);
-      ref.read(serverConfigProvider.notifier).updateApiNamespace(namespace);
+      await ref.read(serverConfigProvider.notifier).setCurrentBusiness(
+            SavedBusiness(
+              id: SavedBusiness.makeId(url, namespace, 'admin'),
+              name: '',
+              serverUrl: url,
+              apiNamespace: namespace,
+              type: 'admin',
+            ),
+          );
+      await _loadCurrentConfig();
+      _refreshBusinesses();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Configuracion guardada. Reinicia la app para aplicar los cambios.'),
+          SnackBar(content: Text(i18n.serverConfigSavedRestartNotice),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 3),
           ),
@@ -109,7 +189,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al guardar: $e'),
+            content: Text(i18n.serverConfigSaveError(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -139,7 +219,9 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
           if (jsonStart >= 0 && jsonEnd > jsonStart) {
             final jsonStr = result.substring(jsonStart, jsonEnd + 1);
             // Parsear el JSON simple
-            final urlMatch = RegExp(r'"server_url"\s*:\s*"([^"]+)"').firstMatch(jsonStr);
+            final urlMatch = RegExp(r'"server_url"\s*:\s*"([^"]+)"').firstMatch(jsonStr) ??
+                RegExp(r'"url"\s*:\s*"([^"]+)"').firstMatch(jsonStr) ??
+                RegExp(r'"api_url"\s*:\s*"([^"]+)"').firstMatch(jsonStr);
             if (urlMatch != null) {
               serverUrl = urlMatch.group(1)!;
             }
@@ -150,9 +232,22 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       }
 
       // Limpiar la URL
-      serverUrl = serverUrl.trim();
+      serverUrl = serverUrl.trim().replaceAll(r'\/', '/');
       if (serverUrl.endsWith('/')) {
         serverUrl = serverUrl.substring(0, serverUrl.length - 1);
+      }
+
+      // Si viene con /wp-json/... dejar solo el dominio base
+      final wpJsonIndex = serverUrl.indexOf('/wp-json');
+      if (wpJsonIndex > 0) {
+        serverUrl = serverUrl.substring(0, wpJsonIndex);
+      }
+
+      // Asegurar esquema
+      if (!serverUrl.startsWith('http://') && !serverUrl.startsWith('https://')) {
+        if (serverUrl.contains('.') && !serverUrl.contains(' ')) {
+          serverUrl = 'https://$serverUrl';
+        }
       }
 
       // Validar que es una URL válida
@@ -171,7 +266,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('QR no válido: $serverUrl'),
+            content: Text(i18n.serverConfigInvalidQr(serverUrl)),
             backgroundColor: Colors.red,
           ),
         );
@@ -183,16 +278,16 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Restablecer valores'),
-        content: const Text('Se restablecera la URL del servidor a los valores por defecto. ¿Continuar?'),
+        title: Text(i18n.serverConfigResetTitle),
+        content: Text(i18n.serverConfigResetDescription),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(i18n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Restablecer'),
+            child: Text(i18n.serverConfigResetAction),
           ),
         ],
       ),
@@ -205,8 +300,8 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Configuracion restablecida'),
+          SnackBar(
+            content: Text(i18n.serverConfigResetDone),
             backgroundColor: Colors.blue,
           ),
         );
@@ -216,15 +311,16 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Configuracion del servidor'),
+        title: Text(i18n.serverConfigTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.restore),
-            tooltip: 'Restablecer valores',
+            tooltip: i18n.serverConfigResetTooltip,
             onPressed: _resetToDefaults,
           ),
         ],
@@ -264,7 +360,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Escanear código QR',
+                                i18n.serverConfigScanQrTitle,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -273,7 +369,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Escanea el QR desde el panel de WordPress para configurar automáticamente',
+                                i18n.serverConfigScanQrDescription,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: colorScheme.onPrimaryContainer.withOpacity(0.8),
@@ -293,6 +389,53 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
               ),
               const SizedBox(height: 16),
 
+              FutureBuilder<List<SavedBusiness>>(
+                future: _businessesFuture,
+                builder: (context, snapshot) {
+                  final businesses = snapshot.data ?? [];
+                  if (businesses.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
+                  final current = ref.watch(serverConfigProvider);
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        i18n.serverConfigSavedBusinesses,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      ...businesses.map((business) {
+                        final isCurrent = business.serverUrl == current.serverUrl &&
+                            business.apiNamespace == current.apiNamespace;
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          child: ListTile(
+                            title: Text(
+                              business.name.isNotEmpty ? business.name : business.serverUrl,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(business.serverUrl),
+                            trailing: isCurrent
+                                ? Text(i18n.commonCurrent)
+                                : TextButton(
+                                    onPressed: _isLoading ? null : () => _useBusiness(business),
+                                    child: Text(i18n.commonUse),
+                                  ),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                },
+              ),
+
               // Divider con texto
               Row(
                 children: [
@@ -300,7 +443,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      'o configura manualmente',
+                      i18n.serverConfigManualSeparator,
                       style: TextStyle(
                         color: colorScheme.outline,
                         fontSize: 12,
@@ -314,7 +457,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
 
               // URL del servidor
               Text(
-                'URL del servidor',
+                i18n.serverConfigServerUrlTitle,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -322,19 +465,19 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
               const SizedBox(height: 8),
               TextFormField(
                 controller: _urlController,
-                decoration: const InputDecoration(
-                  labelText: 'URL del servidor',
-                  hintText: 'https://ejemplo.com',
-                  prefixIcon: Icon(Icons.language),
-                  helperText: 'Incluir https:// o http://',
+                decoration: InputDecoration(
+                  labelText: i18n.serverConfigServerUrlLabel,
+                  hintText: i18n.serverConfigServerUrlHint,
+                  prefixIcon: const Icon(Icons.language),
+                  helperText: i18n.serverConfigServerUrlHelper,
                 ),
                 keyboardType: TextInputType.url,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'La URL es requerida';
+                    return i18n.serverConfigServerUrlRequired;
                   }
                   if (!ServerConfig.isValidUrl(value)) {
-                    return 'URL no valida. Debe comenzar con http:// o https://';
+                    return i18n.serverConfigServerUrlInvalid;
                   }
                   return null;
                 },
@@ -343,7 +486,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
 
               // Namespace de la API
               Text(
-                'Namespace de la API',
+                i18n.serverConfigNamespaceTitle,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -351,18 +494,18 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
               const SizedBox(height: 8),
               TextFormField(
                 controller: _namespaceController,
-                decoration: const InputDecoration(
-                  labelText: 'Namespace',
-                  hintText: '/wp-json/chat-ia-mobile/v1',
-                  prefixIcon: Icon(Icons.api),
-                  helperText: 'Normalmente no es necesario cambiar esto',
+                decoration: InputDecoration(
+                  labelText: i18n.serverConfigNamespaceLabel,
+                  hintText: i18n.serverConfigNamespaceHint,
+                  prefixIcon: const Icon(Icons.api),
+                  helperText: i18n.serverConfigNamespaceHelper,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'El namespace es requerido';
+                    return i18n.serverConfigNamespaceRequired;
                   }
                   if (!value.startsWith('/')) {
-                    return 'Debe comenzar con /';
+                    return i18n.serverConfigNamespaceMustStartSlash;
                   }
                   return null;
                 },
@@ -377,7 +520,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'URL completa de la API:',
+                        i18n.serverConfigApiUrlPreviewTitle,
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                       const SizedBox(height: 4),
@@ -406,7 +549,11 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.wifi_find),
-                  label: Text(_isTesting ? 'Probando...' : 'Probar conexion'),
+                  label: Text(
+                    _isTesting
+                        ? i18n.serverConfigTestingLabel
+                        : i18n.serverConfigTestButton,
+                  ),
                 ),
               ),
 
@@ -463,7 +610,11 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                           ),
                         )
                       : const Icon(Icons.save),
-                  label: Text(_isLoading ? 'Guardando...' : 'Guardar configuracion'),
+                  label: Text(
+                    _isLoading
+                        ? i18n.serverConfigSavingLabel
+                        : i18n.serverConfigSaveButton,
+                  ),
                 ),
               ),
 
@@ -484,7 +635,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Despues de guardar, reinicia la aplicacion para que los cambios surtan efecto.',
+                          i18n.serverConfigRestartNote,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: colorScheme.onSurfaceVariant,
                               ),
@@ -536,9 +687,10 @@ class _QRScannerScreenState extends State<_QRScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Escanear QR'),
+        title: Text(i18n.serverConfigQrScanTitle),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
@@ -565,33 +717,33 @@ class _QRScannerScreenState extends State<_QRScannerScreen> {
                   ],
                 ),
               ),
-              child: const Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.qr_code,
                     size: 48,
                     color: Colors.white,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
-                    'Escanea el código QR',
+                    i18n.serverConfigQrScanInstruction,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
-                    'Encontrarás el QR en el panel de WordPress:\nChat IA → Configuración → Apps Móviles',
+                    i18n.serverConfigQrScanHelp,
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),

@@ -241,6 +241,61 @@ class Flavor_Health_Check {
 		);
 	}
 
+	private function check_api_endpoints() {
+		$api_check_results = [];
+		$modules_base_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/';
+		$registered_module_map = $this->build_registered_module_map($modules_base_path);
+
+		foreach ($registered_module_map as $module_identifier => $module_definition) {
+			$module_file_path = $module_definition['file'];
+			$module_class_name = $module_definition['class'];
+			$has_rest_api = false;
+			$endpoints_count = 0;
+			$api_namespace = '';
+			$api_status = 'warning';
+			$api_status_message = 'Sin REST API';
+
+			if (file_exists($module_file_path)) {
+				// Leer el contenido del archivo para buscar register_rest_route
+				$file_content = file_get_contents($module_file_path);
+
+				if (strpos($file_content, 'register_rest_route') !== false) {
+					$has_rest_api = true;
+
+					// Contar endpoints aproximados
+					$endpoints_count = substr_count($file_content, 'register_rest_route');
+
+					// Extraer namespace si existe
+					if (preg_match("/register_rest_route\s*\(\s*['\"]([^'\"]+)['\"]/", $file_content, $matches)) {
+						$api_namespace = $matches[1];
+					}
+
+					$api_status = 'ok';
+					$api_status_message = sprintf('%d endpoint(s) en %s', $endpoints_count, $api_namespace ?: 'flavor/v1');
+				}
+
+				// Verificar si tiene el hook rest_api_init
+				if (!$has_rest_api && strpos($file_content, 'rest_api_init') !== false) {
+					$api_status = 'warning';
+					$api_status_message = 'Hook registrado pero sin endpoints';
+				}
+			}
+
+			$module_display_name = ucfirst(str_replace('_', ' ', $module_identifier));
+
+			$api_check_results[$module_identifier] = [
+				'name' => $module_display_name,
+				'has_rest_api' => $has_rest_api,
+				'endpoints_count' => $endpoints_count,
+				'namespace' => $api_namespace,
+				'status' => $api_status,
+				'status_message' => $api_status_message,
+			];
+		}
+
+		return $api_check_results;
+	}
+
 	private function check_ai_configuration() {
 		$plugin_settings    = get_option( 'flavor_chat_ia_settings', array() );
 		$active_ai_provider = isset( $plugin_settings['active_provider'] ) ? $plugin_settings['active_provider'] : 'claude';
@@ -282,7 +337,7 @@ class Flavor_Health_Check {
 		return $ai_configuration_checks;
 	}
 
-	private function calculate_summary_counts( $module_check_results, $template_check_results, $ai_configuration_checks ) {
+	private function calculate_summary_counts( $module_check_results, $template_check_results, $ai_configuration_checks, $api_check_results = [] ) {
 		$ok_count = 0; $warning_count = 0; $error_count = 0;
 		foreach ( $module_check_results as $module_data ) {
 			if ( $module_data['status'] === 'ok' ) { $ok_count++; }
@@ -297,19 +352,25 @@ class Flavor_Health_Check {
 			elseif ( $ai_data['status'] === 'warning' ) { $warning_count++; }
 			elseif ( $ai_data['status'] === 'error' ) { $error_count++; }
 		}
+		foreach ( $api_check_results as $api_data ) {
+			if ( $api_data['status'] === 'ok' ) { $ok_count++; }
+			elseif ( $api_data['status'] === 'warning' ) { $warning_count++; }
+			elseif ( $api_data['status'] === 'error' ) { $error_count++; }
+		}
 		return array( 'ok' => $ok_count, 'warnings' => $warning_count, 'errors' => $error_count );
 	}
 
 	public function render_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'No tienes permisos para acceder a esta pagina.' );
+			wp_die( __('No tienes permisos para acceder a esta pagina.', 'flavor-chat-ia') );
 		}
 		$module_check_results    = $this->check_modules();
 		$database_table_results  = $this->check_database_tables();
 		$template_check_results  = $this->check_template_files( $module_check_results );
 		$system_information      = $this->get_system_info( $module_check_results, $database_table_results );
 		$ai_configuration_checks = $this->check_ai_configuration();
-		$summary_counts          = $this->calculate_summary_counts( $module_check_results, $template_check_results, $ai_configuration_checks );
+		$api_check_results       = $this->check_api_endpoints();
+		$summary_counts          = $this->calculate_summary_counts( $module_check_results, $template_check_results, $ai_configuration_checks, $api_check_results );
 		?>
 		<div class="wrap">
 			<h1>Diagnostico - Flavor Platform</h1>
@@ -321,6 +382,8 @@ class Flavor_Health_Check {
 			<?php $this->render_summary_card( $summary_counts ); ?>
 			<h2>Modulos</h2>
 			<?php $this->render_modules_table( $module_check_results ); ?>
+			<h2>REST API</h2>
+			<?php $this->render_api_table( $api_check_results ); ?>
 			<h2>Base de Datos</h2>
 			<?php $this->render_database_table( $database_table_results ); ?>
 			<h2>Templates</h2>
@@ -471,6 +534,84 @@ class Flavor_Health_Check {
 					<td>
 						<?php echo $this->get_status_badge( $provider_data['status'] ); ?>
 						<?php echo esc_html( $provider_data['message'] ); ?>
+					</td>
+				</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	private function render_api_table( $api_check_results ) {
+		if ( empty( $api_check_results ) ) {
+			echo '<p>No se encontraron modulos para verificar.</p>';
+			return;
+		}
+		$total_endpoints = 0;
+		$modules_with_api = 0;
+		foreach ( $api_check_results as $api_data ) {
+			if ( $api_data['has_rest_api'] ) {
+				$modules_with_api++;
+				$total_endpoints += $api_data['endpoints_count'];
+			}
+		}
+		?>
+		<div style="background: #f0f6fc; border: 1px solid #c3c4c7; border-radius: 4px; padding: 12px 16px; margin-bottom: 16px; display: flex; gap: 24px;">
+			<div>
+				<strong style="font-size: 18px;"><?php echo intval( $modules_with_api ); ?></strong>
+				<span style="color: #666;"> / <?php echo count( $api_check_results ); ?> modulos con API</span>
+			</div>
+			<div>
+				<strong style="font-size: 18px;"><?php echo intval( $total_endpoints ); ?></strong>
+				<span style="color: #666;"> endpoints totales</span>
+			</div>
+			<div style="margin-left: auto;">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=flavor-api-docs' ) ); ?>" class="button button-secondary" style="margin: 0;">
+					Ver documentacion API
+				</a>
+			</div>
+		</div>
+		<table class="widefat striped">
+			<thead>
+				<tr>
+					<th>Modulo</th>
+					<th>REST API</th>
+					<th>Endpoints</th>
+					<th>Namespace</th>
+					<th>Estado</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $api_check_results as $module_identifier => $api_data ) : ?>
+				<tr>
+					<td>
+						<strong><?php echo esc_html( $api_data['name'] ); ?></strong>
+						<br><code style="font-size: 11px;"><?php echo esc_html( $module_identifier ); ?></code>
+					</td>
+					<td>
+						<?php if ( $api_data['has_rest_api'] ) : ?>
+							<?php echo $this->get_status_badge( 'ok' ); ?> Si
+						<?php else : ?>
+							<?php echo $this->get_status_badge( 'warning' ); ?> No
+						<?php endif; ?>
+					</td>
+					<td>
+						<?php if ( $api_data['endpoints_count'] > 0 ) : ?>
+							<strong><?php echo intval( $api_data['endpoints_count'] ); ?></strong>
+						<?php else : ?>
+							<span style="color: #999;">-</span>
+						<?php endif; ?>
+					</td>
+					<td>
+						<?php if ( ! empty( $api_data['namespace'] ) ) : ?>
+							<code><?php echo esc_html( $api_data['namespace'] ); ?></code>
+						<?php else : ?>
+							<span style="color: #999;">-</span>
+						<?php endif; ?>
+					</td>
+					<td>
+						<?php echo $this->get_status_badge( $api_data['status'] ); ?>
+						<?php echo esc_html( $api_data['status_message'] ); ?>
 					</td>
 				</tr>
 				<?php endforeach; ?>

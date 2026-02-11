@@ -16,8 +16,8 @@ $zonas_parking = $zonas_parking ?? [];
     <div class="bg-gradient-to-r from-slate-500 to-gray-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">🅿️ Parkings Compartidos</h1>
-                <p class="text-slate-200">Comparte tu plaza de aparcamiento con los vecinos</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('🅿️ Parkings Compartidos', 'flavor-chat-ia'); ?></h1>
+                <p class="text-slate-200"><?php echo esc_html__('Comparte tu plaza de aparcamiento con los vecinos', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -25,7 +25,7 @@ $zonas_parking = $zonas_parking ?? [];
                 </span>
                 <button class="bg-white text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all shadow-md"
                         onclick="flavorParkings.publicarPlaza()">
-                    ➕ Ofrecer Plaza
+                    <?php echo esc_html__('➕ Ofrecer Plaza', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>
@@ -37,39 +37,39 @@ $zonas_parking = $zonas_parking ?? [];
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">🅿️</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['plazas_disponibles'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Plazas disponibles</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Plazas disponibles', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">📋</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['reservas_activas'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500">Reservas activas</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Reservas activas', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
             <div class="text-3xl mb-2">💰</div>
             <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['ahorro_mensual'] ?? '0 €'); ?></p>
-            <p class="text-sm text-gray-500">Ahorro mensual</p>
+            <p class="text-sm text-gray-500"><?php echo esc_html__('Ahorro mensual', 'flavor-chat-ia'); ?></p>
         </div>
     </div>
     <?php endif; ?>
 
     <!-- Como funciona -->
     <div class="bg-gray-50 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">💡 ¿Como funciona?</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('💡 ¿Como funciona?', 'flavor-chat-ia'); ?></h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="text-center">
                 <div class="w-16 h-16 bg-slate-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🔍</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Busca</h3>
-                <p class="text-sm text-gray-600">Encuentra plazas de parking disponibles cerca de ti</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Busca', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Encuentra plazas de parking disponibles cerca de ti', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-slate-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">📅</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Reserva</h3>
-                <p class="text-sm text-gray-600">Selecciona el horario que necesitas y confirma la reserva</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Reserva', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Selecciona el horario que necesitas y confirma la reserva', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-slate-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🅿️</div>
-                <h3 class="font-semibold text-gray-800 mb-1">Aparca</h3>
-                <p class="text-sm text-gray-600">Usa la plaza en el horario reservado y ahorra dinero</p>
+                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Aparca', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm text-gray-600"><?php echo esc_html__('Usa la plaza en el horario reservado y ahorra dinero', 'flavor-chat-ia'); ?></p>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@ $zonas_parking = $zonas_parking ?? [];
     <!-- Filtros por zona -->
     <div class="flex flex-wrap gap-2 mb-6">
         <button class="px-4 py-2 rounded-full bg-slate-200 text-slate-700 font-medium hover:bg-slate-300 transition-colors filter-active" data-zona="todos">
-            Todos
+            <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
         </button>
         <?php foreach ($zonas_parking as $zona_parking_item): ?>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-zona="<?php echo esc_attr($zona_parking_item['slug']); ?>">
@@ -91,11 +91,11 @@ $zonas_parking = $zonas_parking ?? [];
         <?php if (empty($plazas_parking)): ?>
         <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
             <div class="text-6xl mb-4">🅿️</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay plazas disponibles</h3>
-            <p class="text-gray-500 mb-6">¡Ofrece tu plaza cuando no la uses!</p>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay plazas disponibles', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Ofrece tu plaza cuando no la uses!', 'flavor-chat-ia'); ?></p>
             <button class="bg-slate-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-slate-600 transition-colors"
                     onclick="flavorParkings.publicarPlaza()">
-                Ofrecer Plaza
+                <?php echo esc_html__('Ofrecer Plaza', 'flavor-chat-ia'); ?>
             </button>
         </div>
         <?php else: ?>
@@ -155,9 +155,9 @@ $zonas_parking = $zonas_parking ?? [];
     <?php if ($total_plazas > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">← Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo ceil($total_plazas / 12); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-slate-500 text-white hover:bg-slate-600 transition-colors">Siguiente →</button>
+            <button class="px-4 py-2 rounded-lg bg-slate-500 text-white hover:bg-slate-600 transition-colors"><?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

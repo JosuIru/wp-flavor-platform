@@ -260,7 +260,7 @@ GET /wp-json/unified-api/v1/site-info
   ]
 }
 ```
-**Resultado**: App muestra TODO (Reservas + Grupos Consumo + Marketplace)
+**Resultado**: App muestra todo (Reservas + Grupos Consumo + Marketplace)
 
 ## Testing
 

@@ -23,9 +23,9 @@ $contacto_colectivo = $colectivo['contacto'] ?? [];
     <div class="bg-gray-50 py-3 px-4">
         <div class="container mx-auto max-w-6xl">
             <nav class="flex items-center gap-2 text-sm text-gray-600">
-                <a href="#" class="hover:text-rose-600">Inicio</a>
+                <a href="#" class="hover:text-rose-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
-                <a href="#" class="hover:text-rose-600">Colectivos</a>
+                <a href="#" class="hover:text-rose-600"><?php echo esc_html__('Colectivos', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-gray-900 font-medium"><?php echo esc_html($nombre_colectivo); ?></span>
             </nav>
@@ -59,7 +59,7 @@ $contacto_colectivo = $colectivo['contacto'] ?? [];
 
                     <!-- Mision -->
                     <div class="bg-rose-50 rounded-xl p-4 mb-6">
-                        <h3 class="font-bold text-rose-700 mb-2">Nuestra mision</h3>
+                        <h3 class="font-bold text-rose-700 mb-2"><?php echo esc_html__('Nuestra mision', 'flavor-chat-ia'); ?></h3>
                         <p class="text-gray-700 text-sm">
                             <?php echo esc_html($mision_colectivo ?: 'Promover la cohesion social, la participacion activa y el desarrollo sostenible de nuestro barrio a traves de actividades culturales, sociales y medioambientales.'); ?>
                         </p>
@@ -68,7 +68,7 @@ $contacto_colectivo = $colectivo['contacto'] ?? [];
 
                 <!-- Actividades -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Actividades</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Actividades', 'flavor-chat-ia'); ?></h2>
                     <?php if (!empty($actividades_colectivo)): ?>
                         <ul class="space-y-3">
                             <?php foreach ($actividades_colectivo as $actividad): ?>
@@ -86,25 +86,25 @@ $contacto_colectivo = $colectivo['contacto'] ?? [];
                                 <svg class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
-                                <span class="text-gray-700">Reuniones vecinales mensuales</span>
+                                <span class="text-gray-700"><?php echo esc_html__('Reuniones vecinales mensuales', 'flavor-chat-ia'); ?></span>
                             </li>
                             <li class="flex items-start gap-3">
                                 <svg class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
-                                <span class="text-gray-700">Talleres de formacion comunitaria</span>
+                                <span class="text-gray-700"><?php echo esc_html__('Talleres de formacion comunitaria', 'flavor-chat-ia'); ?></span>
                             </li>
                             <li class="flex items-start gap-3">
                                 <svg class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
-                                <span class="text-gray-700">Jornadas de limpieza del barrio</span>
+                                <span class="text-gray-700"><?php echo esc_html__('Jornadas de limpieza del barrio', 'flavor-chat-ia'); ?></span>
                             </li>
                             <li class="flex items-start gap-3">
                                 <svg class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
-                                <span class="text-gray-700">Eventos culturales y festivos</span>
+                                <span class="text-gray-700"><?php echo esc_html__('Eventos culturales y festivos', 'flavor-chat-ia'); ?></span>
                             </li>
                         </ul>
                     <?php endif; ?>
@@ -112,36 +112,36 @@ $contacto_colectivo = $colectivo['contacto'] ?? [];
 
                 <!-- Proximos eventos -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Proximos eventos</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><?php echo esc_html__('Proximos eventos', 'flavor-chat-ia'); ?></h2>
                     <div class="space-y-4">
                         <div class="flex gap-4 p-4 rounded-xl bg-gray-50 hover:bg-rose-50 transition-colors">
                             <div class="w-14 h-14 rounded-xl bg-rose-100 flex flex-col items-center justify-center flex-shrink-0">
-                                <span class="text-xs font-bold text-rose-600">FEB</span>
+                                <span class="text-xs font-bold text-rose-600"><?php echo esc_html__('FEB', 'flavor-chat-ia'); ?></span>
                                 <span class="text-lg font-bold text-rose-700">15</span>
                             </div>
                             <div>
-                                <h3 class="font-bold text-gray-900">Asamblea General</h3>
-                                <p class="text-sm text-gray-500">18:00 - Centro Civico</p>
+                                <h3 class="font-bold text-gray-900"><?php echo esc_html__('Asamblea General', 'flavor-chat-ia'); ?></h3>
+                                <p class="text-sm text-gray-500"><?php echo esc_html__('18:00 - Centro Civico', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
                         <div class="flex gap-4 p-4 rounded-xl bg-gray-50 hover:bg-rose-50 transition-colors">
                             <div class="w-14 h-14 rounded-xl bg-rose-100 flex flex-col items-center justify-center flex-shrink-0">
-                                <span class="text-xs font-bold text-rose-600">FEB</span>
+                                <span class="text-xs font-bold text-rose-600"><?php echo esc_html__('FEB', 'flavor-chat-ia'); ?></span>
                                 <span class="text-lg font-bold text-rose-700">22</span>
                             </div>
                             <div>
-                                <h3 class="font-bold text-gray-900">Taller de participacion</h3>
-                                <p class="text-sm text-gray-500">17:00 - Salon de actos</p>
+                                <h3 class="font-bold text-gray-900"><?php echo esc_html__('Taller de participacion', 'flavor-chat-ia'); ?></h3>
+                                <p class="text-sm text-gray-500"><?php echo esc_html__('17:00 - Salon de actos', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
                         <div class="flex gap-4 p-4 rounded-xl bg-gray-50 hover:bg-rose-50 transition-colors">
                             <div class="w-14 h-14 rounded-xl bg-rose-100 flex flex-col items-center justify-center flex-shrink-0">
-                                <span class="text-xs font-bold text-rose-600">MAR</span>
+                                <span class="text-xs font-bold text-rose-600"><?php echo esc_html__('MAR', 'flavor-chat-ia'); ?></span>
                                 <span class="text-lg font-bold text-rose-700">01</span>
                             </div>
                             <div>
-                                <h3 class="font-bold text-gray-900">Jornada de limpieza</h3>
-                                <p class="text-sm text-gray-500">10:00 - Parque central</p>
+                                <h3 class="font-bold text-gray-900"><?php echo esc_html__('Jornada de limpieza', 'flavor-chat-ia'); ?></h3>
+                                <p class="text-sm text-gray-500"><?php echo esc_html__('10:00 - Parque central', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
                     </div>
@@ -154,49 +154,49 @@ $contacto_colectivo = $colectivo['contacto'] ?? [];
                 <div class="bg-white rounded-2xl p-6 shadow-md sticky top-4 mb-6">
                     <div class="text-center mb-4">
                         <span class="text-4xl font-bold text-rose-600"><?php echo esc_html($miembros_total ?: '87'); ?></span>
-                        <p class="text-gray-500 text-sm">miembros activos</p>
+                        <p class="text-gray-500 text-sm"><?php echo esc_html__('miembros activos', 'flavor-chat-ia'); ?></p>
                     </div>
                     <button class="w-full py-4 rounded-xl text-lg font-semibold text-white transition-all hover:scale-105"
                             style="background: linear-gradient(135deg, #f43f5e 0%, #dc2626 100%);">
-                        Unirse al Colectivo
+                        <?php echo esc_html__('Unirse al Colectivo', 'flavor-chat-ia'); ?>
                     </button>
-                    <p class="text-xs text-gray-500 text-center mt-3">Abierto a nuevos miembros</p>
+                    <p class="text-xs text-gray-500 text-center mt-3"><?php echo esc_html__('Abierto a nuevos miembros', 'flavor-chat-ia'); ?></p>
                 </div>
 
                 <!-- Miembros preview -->
                 <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Miembros destacados</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Miembros destacados', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-3">
                         <div class="flex items-center gap-3">
                             <img src="https://i.pravatar.cc/150?img=10" alt="" class="w-10 h-10 rounded-full object-cover">
                             <div>
-                                <p class="font-medium text-gray-900 text-sm">Carmen Vidal</p>
-                                <p class="text-xs text-gray-500">Presidenta</p>
+                                <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Carmen Vidal', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Presidenta', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
                             <img src="https://i.pravatar.cc/150?img=25" alt="" class="w-10 h-10 rounded-full object-cover">
                             <div>
-                                <p class="font-medium text-gray-900 text-sm">Roberto Sanchez</p>
-                                <p class="text-xs text-gray-500">Secretario</p>
+                                <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Roberto Sanchez', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Secretario', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
                             <img src="https://i.pravatar.cc/150?img=38" alt="" class="w-10 h-10 rounded-full object-cover">
                             <div>
-                                <p class="font-medium text-gray-900 text-sm">Isabel Torres</p>
-                                <p class="text-xs text-gray-500">Tesorera</p>
+                                <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Isabel Torres', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Tesorera', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
                     </div>
                     <a href="#" class="block text-center text-sm text-rose-600 font-medium mt-4 hover:text-rose-700">
-                        Ver todos los miembros
+                        <?php echo esc_html__('Ver todos los miembros', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
 
                 <!-- Contacto -->
                 <div class="bg-white rounded-2xl p-6 shadow-md">
-                    <h3 class="font-bold text-gray-900 mb-4">Contacto</h3>
+                    <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Contacto', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex items-center gap-3 text-gray-600">
                             <svg class="w-5 h-5 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

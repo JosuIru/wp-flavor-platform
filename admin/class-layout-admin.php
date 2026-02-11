@@ -97,6 +97,11 @@ class Flavor_Layout_Admin {
                 'error' => __('Error al guardar', 'flavor-chat-ia'),
                 'confirm_export' => __('¿Exportar configuración para apps móviles?', 'flavor-chat-ia'),
                 'exported' => __('Configuración exportada', 'flavor-chat-ia'),
+                'sponsor_name' => __('Nombre', 'flavor-chat-ia'),
+                'sponsor_logo' => __('URL del logo', 'flavor-chat-ia'),
+                'remove' => __('Eliminar', 'flavor-chat-ia'),
+                'select' => __('Seleccionar', 'flavor-chat-ia'),
+                'selected' => __('Seleccionado', 'flavor-chat-ia'),
             ],
         ]);
     }
@@ -296,6 +301,81 @@ class Flavor_Layout_Admin {
                             </div>
                         </div>
 
+                        <!-- Menu Settings -->
+                        <div class="flavor-settings-section">
+                            <h3><?php esc_html_e('Ajustes de Menús', 'flavor-chat-ia'); ?></h3>
+                            <p class="description"><?php esc_html_e('Configura el comportamiento y orden de elementos por cada menú.', 'flavor-chat-ia'); ?></p>
+
+                            <div class="flavor-settings-row">
+                                <label for="menu_settings_menu"><?php esc_html_e('Menú a configurar', 'flavor-chat-ia'); ?></label>
+                                <select id="menu_settings_menu" class="flavor-menu-settings-select">
+                                    <?php foreach ($menus as $menu_id => $menu): ?>
+                                        <option value="<?php echo esc_attr($menu_id); ?>" <?php selected($active_layout['menu'] ?? 'classic', $menu_id); ?>>
+                                            <?php echo esc_html($menu['name']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <?php
+                            $menu_settings = $settings['menu_settings'] ?? [];
+                            foreach ($menus as $menu_id => $menu):
+                                $menu_cfg = $menu_settings[$menu_id] ?? [];
+                                $is_active = ($active_layout['menu'] ?? 'classic') === $menu_id;
+                                $actions_order = $menu_cfg['actions_order'] ?? ['search', 'user', 'cta'];
+                                $actions_order = array_values(array_pad($actions_order, 3, 'cta'));
+                            ?>
+                            <div class="flavor-menu-settings" data-menu="<?php echo esc_attr($menu_id); ?>" <?php echo $is_active ? '' : 'style="display:none"'; ?>>
+                                <div class="flavor-settings-row">
+                                    <label><?php esc_html_e('Menú fijo (sticky)', 'flavor-chat-ia'); ?></label>
+                                    <label class="flavor-toggle">
+                                        <input type="checkbox" name="menu_settings[<?php echo esc_attr($menu_id); ?>][sticky]" value="1" <?php checked($menu_cfg['sticky'] ?? true); ?>>
+                                        <span class="flavor-toggle__slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="flavor-settings-row">
+                                    <label><?php esc_html_e('Estado por defecto', 'flavor-chat-ia'); ?></label>
+                                    <select name="menu_settings[<?php echo esc_attr($menu_id); ?>][menu_state]">
+                                        <option value="expanded" <?php selected($menu_cfg['menu_state'] ?? 'expanded', 'expanded'); ?>><?php esc_html_e('Desplegado', 'flavor-chat-ia'); ?></option>
+                                        <option value="collapsed" <?php selected($menu_cfg['menu_state'] ?? '', 'collapsed'); ?>><?php esc_html_e('Replegado', 'flavor-chat-ia'); ?></option>
+                                    </select>
+                                </div>
+
+                                <div class="flavor-settings-row">
+                                    <label><?php esc_html_e('Orden de acciones', 'flavor-chat-ia'); ?></label>
+                                    <div class="flavor-action-order">
+                                        <?php foreach ([0, 1, 2] as $index): ?>
+                                            <select name="menu_settings[<?php echo esc_attr($menu_id); ?>][actions_order][<?php echo intval($index); ?>]">
+                                                <option value="search" <?php selected($actions_order[$index] ?? 'search', 'search'); ?>><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></option>
+                                                <option value="user" <?php selected($actions_order[$index] ?? '', 'user'); ?>><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></option>
+                                                <option value="cta" <?php selected($actions_order[$index] ?? '', 'cta'); ?>><?php esc_html_e('CTA', 'flavor-chat-ia'); ?></option>
+                                            </select>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+
+                                <div class="flavor-settings-row">
+                                    <label><?php esc_html_e('Estilo vista normal', 'flavor-chat-ia'); ?></label>
+                                    <select name="menu_settings[<?php echo esc_attr($menu_id); ?>][style_normal]">
+                                        <option value="light" <?php selected($menu_cfg['style_normal'] ?? 'light', 'light'); ?>><?php esc_html_e('Claro', 'flavor-chat-ia'); ?></option>
+                                        <option value="dark" <?php selected($menu_cfg['style_normal'] ?? '', 'dark'); ?>><?php esc_html_e('Oscuro', 'flavor-chat-ia'); ?></option>
+                                        <option value="transparent" <?php selected($menu_cfg['style_normal'] ?? '', 'transparent'); ?>><?php esc_html_e('Transparente', 'flavor-chat-ia'); ?></option>
+                                    </select>
+                                </div>
+
+                                <div class="flavor-settings-row">
+                                    <label><?php esc_html_e('Estilo vista fija', 'flavor-chat-ia'); ?></label>
+                                    <select name="menu_settings[<?php echo esc_attr($menu_id); ?>][style_sticky]">
+                                        <option value="light" <?php selected($menu_cfg['style_sticky'] ?? 'light', 'light'); ?>><?php esc_html_e('Claro', 'flavor-chat-ia'); ?></option>
+                                        <option value="dark" <?php selected($menu_cfg['style_sticky'] ?? '', 'dark'); ?>><?php esc_html_e('Oscuro', 'flavor-chat-ia'); ?></option>
+                                        <option value="transparent" <?php selected($menu_cfg['style_sticky'] ?? '', 'transparent'); ?>><?php esc_html_e('Transparente', 'flavor-chat-ia'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+
                         <!-- Contact Info -->
                         <div class="flavor-settings-section">
                             <h3><?php esc_html_e('Información de Contacto', 'flavor-chat-ia'); ?></h3>
@@ -363,6 +443,48 @@ class Flavor_Layout_Admin {
                                 <label for="copyright_text"><?php esc_html_e('Texto de copyright', 'flavor-chat-ia'); ?></label>
                                 <input type="text" id="copyright_text" name="copyright_text" value="<?php echo esc_attr($settings['copyright_text'] ?? ''); ?>" placeholder="<?php echo esc_attr(sprintf(__('© %d %s. Todos los derechos reservados.', 'flavor-chat-ia'), date('Y'), get_bloginfo('name'))); ?>">
                             </div>
+                        </div>
+
+                        <!-- Sponsors -->
+                        <div class="flavor-settings-section">
+                            <h3><?php esc_html_e('Patrocinadores en Footer', 'flavor-chat-ia'); ?></h3>
+                            <p class="description"><?php esc_html_e('Añade logos de patrocinadores, sponsors o colaboradores para cada footer.', 'flavor-chat-ia'); ?></p>
+
+                            <div class="flavor-settings-row">
+                                <label for="footer_sponsors_footer"><?php esc_html_e('Footer a configurar', 'flavor-chat-ia'); ?></label>
+                                <select id="footer_sponsors_footer" class="flavor-footer-sponsors-select">
+                                    <?php foreach ($footers as $footer_id => $footer): ?>
+                                        <option value="<?php echo esc_attr($footer_id); ?>" <?php selected($active_layout['footer'] ?? 'multi-column', $footer_id); ?>>
+                                            <?php echo esc_html($footer['name']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <?php
+                            $footer_settings = $settings['footer_settings'] ?? [];
+                            foreach ($footers as $footer_id => $footer):
+                                $sponsors = $footer_settings[$footer_id]['sponsors'] ?? [];
+                                $is_active = ($active_layout['footer'] ?? 'multi-column') === $footer_id;
+                            ?>
+                            <div class="flavor-footer-sponsors" data-footer="<?php echo esc_attr($footer_id); ?>" <?php echo $is_active ? '' : 'style="display:none"'; ?>>
+                                <div class="flavor-sponsors-list" data-next-index="<?php echo intval(count($sponsors)); ?>">
+                                    <?php if (!empty($sponsors)): ?>
+                                        <?php foreach ($sponsors as $index => $sponsor): ?>
+                                        <div class="flavor-sponsor-row">
+                                            <input type="text" name="footer_sponsors[<?php echo esc_attr($footer_id); ?>][<?php echo intval($index); ?>][name]" value="<?php echo esc_attr($sponsor['name'] ?? ''); ?>" placeholder="<?php esc_attr_e('Nombre', 'flavor-chat-ia'); ?>">
+                                            <input type="url" name="footer_sponsors[<?php echo esc_attr($footer_id); ?>][<?php echo intval($index); ?>][url]" value="<?php echo esc_url($sponsor['url'] ?? ''); ?>" placeholder="https://">
+                                            <input type="url" name="footer_sponsors[<?php echo esc_attr($footer_id); ?>][<?php echo intval($index); ?>][logo]" value="<?php echo esc_url($sponsor['logo'] ?? ''); ?>" placeholder="<?php esc_attr_e('URL del logo', 'flavor-chat-ia'); ?>">
+                                            <button type="button" class="button flavor-remove-sponsor"><?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?></button>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </div>
+                                <button type="button" class="button flavor-add-sponsor" data-footer="<?php echo esc_attr($footer_id); ?>">
+                                    <?php esc_html_e('Añadir patrocinador', 'flavor-chat-ia'); ?>
+                                </button>
+                            </div>
+                            <?php endforeach; ?>
                         </div>
 
                         <div class="flavor-settings-actions">
@@ -868,6 +990,82 @@ class Flavor_Layout_Admin {
         // Redes sociales
         if (isset($_POST['social_links']) && is_array($_POST['social_links'])) {
             $settings['social_links'] = array_map('esc_url_raw', $_POST['social_links']);
+        }
+
+        // Patrocinadores por footer
+        if (isset($_POST['footer_sponsors']) && is_array($_POST['footer_sponsors'])) {
+            $settings['footer_settings'] = $settings['footer_settings'] ?? [];
+            foreach ($_POST['footer_sponsors'] as $footer_id => $sponsors) {
+                $footer_id = sanitize_key($footer_id);
+                $sanitized = [];
+                if (is_array($sponsors)) {
+                    foreach ($sponsors as $sponsor) {
+                        if (!is_array($sponsor)) {
+                            continue;
+                        }
+                        $name = sanitize_text_field($sponsor['name'] ?? '');
+                        $url = esc_url_raw($sponsor['url'] ?? '');
+                        $logo = esc_url_raw($sponsor['logo'] ?? '');
+                        if ($name === '' && $url === '' && $logo === '') {
+                            continue;
+                        }
+                        $sanitized[] = [
+                            'name' => $name,
+                            'url' => $url,
+                            'logo' => $logo,
+                        ];
+                    }
+                }
+                $settings['footer_settings'][$footer_id]['sponsors'] = $sanitized;
+            }
+        }
+
+        // Ajustes por menú
+        if (isset($_POST['menu_settings']) && is_array($_POST['menu_settings'])) {
+            $settings['menu_settings'] = $settings['menu_settings'] ?? [];
+            $allowed_styles = ['light', 'dark', 'transparent'];
+            $allowed_actions = ['search', 'user', 'cta'];
+
+            foreach ($_POST['menu_settings'] as $menu_id => $menu_cfg) {
+                $menu_id = sanitize_key($menu_id);
+                if (!is_array($menu_cfg)) {
+                    continue;
+                }
+
+                $sticky = isset($menu_cfg['sticky']) && $menu_cfg['sticky'] === '1';
+                $menu_state = sanitize_key($menu_cfg['menu_state'] ?? 'expanded');
+                if (!in_array($menu_state, ['expanded', 'collapsed'], true)) {
+                    $menu_state = 'expanded';
+                }
+
+                $style_normal = sanitize_key($menu_cfg['style_normal'] ?? 'light');
+                $style_sticky = sanitize_key($menu_cfg['style_sticky'] ?? 'light');
+                if (!in_array($style_normal, $allowed_styles, true)) {
+                    $style_normal = 'light';
+                }
+                if (!in_array($style_sticky, $allowed_styles, true)) {
+                    $style_sticky = 'light';
+                }
+
+                $actions_order = [];
+                if (isset($menu_cfg['actions_order']) && is_array($menu_cfg['actions_order'])) {
+                    foreach ($menu_cfg['actions_order'] as $action) {
+                        $action = sanitize_key($action);
+                        if (in_array($action, $allowed_actions, true)) {
+                            $actions_order[] = $action;
+                        }
+                    }
+                }
+                $actions_order = array_values(array_unique($actions_order));
+
+                $settings['menu_settings'][$menu_id] = [
+                    'sticky' => $sticky,
+                    'menu_state' => $menu_state,
+                    'style_normal' => $style_normal,
+                    'style_sticky' => $style_sticky,
+                    'actions_order' => $actions_order,
+                ];
+            }
         }
 
         update_option('flavor_layout_settings', $settings);

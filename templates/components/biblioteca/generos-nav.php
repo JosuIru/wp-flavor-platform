@@ -37,7 +37,7 @@ $generos = [
                 </div>
                 <div>
                     <h2 class="text-lg font-bold text-gray-900"><?php echo esc_html($titulo); ?></h2>
-                    <p class="text-xs text-gray-500">Filtra nuestra coleccion por categoria</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Filtra nuestra coleccion por categoria', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>

@@ -54,7 +54,7 @@ $titulo_pagina = $es_nueva_campana
                     ?>
                     <p class="description">
                         <?php esc_html_e('Variables disponibles:', 'flavor-chat-ia'); ?>
-                        <code>{{nombre}}</code>, <code>{{email}}</code>, <code>{{sitio_nombre}}</code>, <code>{{sitio_url}}</code>, <code>{{fecha}}</code>, <code>{{enlace_baja}}</code>
+                        <code><?php echo esc_html__('{{nombre}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{email}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{sitio_nombre}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{sitio_url}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{fecha}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{enlace_baja}}', 'flavor-chat-ia'); ?></code>
                     </p>
                 </td>
             </tr>
@@ -79,7 +79,7 @@ $titulo_pagina = $es_nueva_campana
         <div class="flavor-newsletter-info" style="margin:20px 0;padding:12px 16px;background:#f0f6fc;border-left:4px solid #72aee6;">
             <strong><?php esc_html_e('Estado:', 'flavor-chat-ia'); ?></strong>
             <span class="flavor-badge"><?php echo esc_html($estado_actual); ?></span>
-            &mdash;
+            <?php echo esc_html__('&mdash;', 'flavor-chat-ia'); ?>
             <strong><?php esc_html_e('Creada:', 'flavor-chat-ia'); ?></strong>
             <?php echo esc_html($datos_campana->created_at ?? ''); ?>
         </div>
@@ -91,7 +91,7 @@ $titulo_pagina = $es_nueva_campana
         <div style="position:absolute;top:5%;left:50%;transform:translateX(-50%);width:90%;max-width:700px;max-height:85vh;background:#fff;border-radius:8px;overflow:auto;">
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #ddd;">
                 <strong><?php esc_html_e('Vista previa del newsletter', 'flavor-chat-ia'); ?></strong>
-                <button type="button" id="btn-cerrar-preview" class="button">&times;</button>
+                <button type="button" id="btn-cerrar-preview" class="button"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
             </div>
             <div id="flavor-newsletter-preview-content" style="padding:16px;"></div>
         </div>

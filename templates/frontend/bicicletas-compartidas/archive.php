@@ -173,11 +173,11 @@ $estaciones_ejemplo = !empty($items) ? $items : [
     <?php if ($total > 0) : ?>
     <nav class="flex justify-center mt-8" aria-label="<?php echo esc_attr__('Paginación', 'flavor-chat-ia'); ?>">
         <ul class="inline-flex items-center gap-1">
-            <li><a href="#" class="px-3 py-2 text-gray-500 hover:text-blue-600 rounded-lg hover:bg-blue-50">&laquo;</a></li>
+            <li><a href="#" class="px-3 py-2 text-gray-500 hover:text-blue-600 rounded-lg hover:bg-blue-50"><?php echo esc_html__('&laquo;', 'flavor-chat-ia'); ?></a></li>
             <li><a href="#" class="px-3 py-2 bg-blue-600 text-white rounded-lg font-medium">1</a></li>
             <li><a href="#" class="px-3 py-2 text-gray-700 hover:text-blue-600 rounded-lg hover:bg-blue-50">2</a></li>
             <li><a href="#" class="px-3 py-2 text-gray-700 hover:text-blue-600 rounded-lg hover:bg-blue-50">3</a></li>
-            <li><a href="#" class="px-3 py-2 text-gray-500 hover:text-blue-600 rounded-lg hover:bg-blue-50">&raquo;</a></li>
+            <li><a href="#" class="px-3 py-2 text-gray-500 hover:text-blue-600 rounded-lg hover:bg-blue-50"><?php echo esc_html__('&raquo;', 'flavor-chat-ia'); ?></a></li>
         </ul>
     </nav>
     <?php endif; ?>

@@ -37,7 +37,7 @@ if (!defined('ABSPATH')) exit;
                             </svg>
                         </div>
                         <div class="absolute top-4 right-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-pink-600">
-                            Manualidades
+                            <?php echo esc_html__('Manualidades', 'flavor-chat-ia'); ?>
                         </div>
                         <div class="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-3">
                             <div class="flex items-center justify-between text-white text-sm">
@@ -45,28 +45,28 @@ if (!defined('ABSPATH')) exit;
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
-                                    Sábados 10:00
+                                    <?php echo esc_html__('Sábados 10:00', 'flavor-chat-ia'); ?>
                                 </span>
-                                <span class="font-bold">4 semanas</span>
+                                <span class="font-bold"><?php echo esc_html__('4 semanas', 'flavor-chat-ia'); ?></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-fuchsia-600 transition-colors">
-                            Bisutería Creativa
+                            <?php echo esc_html__('Bisutería Creativa', 'flavor-chat-ia'); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4">
-                            Aprende a crear tus propias joyas y accesorios únicos con materiales reciclados.
+                            <?php echo esc_html__('Aprende a crear tus propias joyas y accesorios únicos con materiales reciclados.', 'flavor-chat-ia'); ?>
                         </p>
 
                         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
                             <div class="w-10 h-10 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                MC
+                                <?php echo esc_html__('MC', 'flavor-chat-ia'); ?>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900">María Castro</p>
-                                <p class="text-xs text-gray-500">Diseñadora</p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('María Castro', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Diseñadora', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
 
@@ -75,10 +75,10 @@ if (!defined('ABSPATH')) exit;
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                <span>12/15 plazas</span>
+                                <span><?php echo esc_html__('12/15 plazas', 'flavor-chat-ia'); ?></span>
                             </div>
                             <a href="/talleres/inscribirse/" class="px-5 py-2 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold rounded-lg transition-all">
-                                Inscribirse
+                                <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     </div>
@@ -93,7 +93,7 @@ if (!defined('ABSPATH')) exit;
                             </svg>
                         </div>
                         <div class="absolute top-4 right-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-orange-600">
-                            Cocina
+                            <?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?>
                         </div>
                         <div class="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-3">
                             <div class="flex items-center justify-between text-white text-sm">
@@ -101,28 +101,28 @@ if (!defined('ABSPATH')) exit;
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
-                                    Miércoles 18:00
+                                    <?php echo esc_html__('Miércoles 18:00', 'flavor-chat-ia'); ?>
                                 </span>
-                                <span class="font-bold">6 semanas</span>
+                                <span class="font-bold"><?php echo esc_html__('6 semanas', 'flavor-chat-ia'); ?></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
-                            Repostería Saludable
+                            <?php echo esc_html__('Repostería Saludable', 'flavor-chat-ia'); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4">
-                            Deliciosos postres sin azúcar refinada. Recetas fáciles y nutritivas para toda la familia.
+                            <?php echo esc_html__('Deliciosos postres sin azúcar refinada. Recetas fáciles y nutritivas para toda la familia.', 'flavor-chat-ia'); ?>
                         </p>
 
                         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
                             <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                LC
+                                <?php echo esc_html__('LC', 'flavor-chat-ia'); ?>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900">Laura Camps</p>
-                                <p class="text-xs text-gray-500">Chef Pastelera</p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Laura Camps', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Chef Pastelera', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
 
@@ -131,10 +131,10 @@ if (!defined('ABSPATH')) exit;
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                <span>8/12 plazas</span>
+                                <span><?php echo esc_html__('8/12 plazas', 'flavor-chat-ia'); ?></span>
                             </div>
                             <a href="/talleres/inscribirse/" class="px-5 py-2 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold rounded-lg transition-all">
-                                Inscribirse
+                                <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     </div>
@@ -149,7 +149,7 @@ if (!defined('ABSPATH')) exit;
                             </svg>
                         </div>
                         <div class="absolute top-4 right-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-blue-600">
-                            Tecnología
+                            <?php echo esc_html__('Tecnología', 'flavor-chat-ia'); ?>
                         </div>
                         <div class="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-3">
                             <div class="flex items-center justify-between text-white text-sm">
@@ -157,28 +157,28 @@ if (!defined('ABSPATH')) exit;
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
-                                    Lunes 17:00
+                                    <?php echo esc_html__('Lunes 17:00', 'flavor-chat-ia'); ?>
                                 </span>
-                                <span class="font-bold">8 semanas</span>
+                                <span class="font-bold"><?php echo esc_html__('8 semanas', 'flavor-chat-ia'); ?></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                            Smartphone para Mayores
+                            <?php echo esc_html__('Smartphone para Mayores', 'flavor-chat-ia'); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4">
-                            Aprende a usar tu móvil, apps, WhatsApp y videollamadas. Ritmo adaptado.
+                            <?php echo esc_html__('Aprende a usar tu móvil, apps, WhatsApp y videollamadas. Ritmo adaptado.', 'flavor-chat-ia'); ?>
                         </p>
 
                         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                PG
+                                <?php echo esc_html__('PG', 'flavor-chat-ia'); ?>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900">Pedro García</p>
-                                <p class="text-xs text-gray-500">Instructor TIC</p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Pedro García', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Instructor TIC', 'flavor-chat-ia'); ?></p>
                             </div>
                         </div>
 
@@ -187,10 +187,10 @@ if (!defined('ABSPATH')) exit;
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                <span>10/10 plazas</span>
+                                <span><?php echo esc_html__('10/10 plazas', 'flavor-chat-ia'); ?></span>
                             </div>
                             <button class="px-5 py-2 bg-gray-300 text-gray-600 font-semibold rounded-lg cursor-not-allowed" disabled>
-                                Completo
+                                <?php echo esc_html__('Completo', 'flavor-chat-ia'); ?>
                             </button>
                         </div>
                     </div>
@@ -200,7 +200,7 @@ if (!defined('ABSPATH')) exit;
             <!-- Load More -->
             <div class="text-center mt-12">
                 <button class="px-8 py-3 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all">
-                    Ver Más Talleres
+                    <?php echo esc_html__('Ver Más Talleres', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>

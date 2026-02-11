@@ -21,8 +21,9 @@ class Flavor_Page_Builder {
 
     /**
      * Post types soportados
+     * NOTA: flavor_landing usa el Landing Editor dedicado (class-landing-editor.php)
      */
-    private $post_types = ['post', 'page', 'flavor_landing'];
+    private $post_types = ['post', 'page'];
 
     /**
      * Obtener instancia singleton
@@ -8872,6 +8873,27 @@ class Flavor_Page_Builder {
             return $content;
         }
 
+        // Verificar si hay componentes/bloques reales en el layout
+        // Si todas las secciones están vacías, mostrar el contenido original
+        $has_real_content = false;
+        foreach ($layout as $section) {
+            // Verificar si tiene blocks o component_id
+            if (!empty($section['blocks'])) {
+                $has_real_content = true;
+                break;
+            }
+            if (!empty($section['component_id'])) {
+                $has_real_content = true;
+                break;
+            }
+        }
+
+        // Si no hay contenido real en el Page Builder, devolver el contenido original
+        // Esto permite que shortcodes como [flavor_landing] funcionen
+        if (!$has_real_content) {
+            return $content;
+        }
+
         // Renderizar componentes
         ob_start();
         $renderer = new Flavor_Component_Renderer();
@@ -8902,7 +8924,7 @@ class Flavor_Page_Builder {
         check_ajax_referer('flavor_page_builder', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $component_id = isset($_POST['component_id']) ? sanitize_text_field($_POST['component_id']) : '';
@@ -8911,7 +8933,7 @@ class Flavor_Page_Builder {
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
 
         if (empty($component_id)) {
-            wp_send_json_error(['message' => 'Falta el ID del componente']);
+            wp_send_json_error(['message' => __('Falta el ID del componente', 'flavor-chat-ia')]);
         }
 
         $component_data = json_decode(stripslashes($component_data_raw), true);
@@ -8964,14 +8986,14 @@ class Flavor_Page_Builder {
         check_ajax_referer('flavor_page_builder', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $layout = isset($_POST['layout']) ? $_POST['layout'] : '';
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
 
         if (empty($layout)) {
-            wp_send_json_error(['message' => 'No hay layout para previsualizar']);
+            wp_send_json_error(['message' => __('No hay layout para previsualizar', 'flavor-chat-ia')]);
         }
 
         // Generar ID único para el preview
@@ -9009,26 +9031,26 @@ class Flavor_Page_Builder {
         $preview_id = isset($_GET['preview_id']) ? sanitize_text_field($_GET['preview_id']) : '';
 
         if (empty($preview_id)) {
-            wp_die('Vista previa no válida', 'Error', ['response' => 400]);
+            wp_die(__('Vista previa no válida', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 400]);
         }
 
         // Verificar nonce
         if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'flavor_preview_' . $preview_id)) {
-            wp_die('Enlace de vista previa expirado o no válido', 'Error', ['response' => 403]);
+            wp_die(__('Enlace de vista previa expirado o no válido', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 403]);
         }
 
         // Obtener datos del preview
         $preview_data = get_transient('flavor_preview_' . $preview_id);
 
         if (!$preview_data) {
-            wp_die('Vista previa expirada. Por favor, genera una nueva.', 'Error', ['response' => 410]);
+            wp_die(__('Vista previa expirada. Por favor, genera una nueva.', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 410]);
         }
 
         // Decodificar layout
         $layout = json_decode($preview_data['layout'], true);
 
         if (empty($layout) || !is_array($layout)) {
-            wp_die('Layout de vista previa no válido', 'Error', ['response' => 400]);
+            wp_die(__('Layout de vista previa no válido', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 400]);
         }
 
         // Renderizar la vista previa

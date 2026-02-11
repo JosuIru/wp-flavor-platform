@@ -37,9 +37,9 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-album"></span>
-        Gestión de Emisiones
+        <?php echo esc_html__('Gestión de Emisiones', 'flavor-chat-ia'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalNuevaEmision(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> Nueva Emisión
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nueva Emisión', 'flavor-chat-ia'); ?>
         </a>
     </h1>
 
@@ -48,20 +48,20 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
         <div class="notice notice-success" style="display: flex; align-items: center; padding: 20px; margin: 20px 0; border-left: 4px solid #00a32a;">
             <span class="dashicons dashicons-controls-play" style="font-size: 48px; color: #00a32a; margin-right: 20px; animation: pulse 2s infinite;"></span>
             <div style="flex: 1;">
-                <h2 style="margin: 0; color: #00a32a;">EN VIVO AHORA</h2>
+                <h2 style="margin: 0; color: #00a32a;"><?php echo esc_html__('EN VIVO AHORA', 'flavor-chat-ia'); ?></h2>
                 <h3 style="margin: 5px 0;"><?php echo esc_html($emision_en_vivo->programa_nombre); ?></h3>
                 <p style="margin: 0;">
-                    <strong><?php echo number_format($emision_en_vivo->oyentes_actual ?? 0); ?></strong> oyentes conectados
-                    | Pico: <strong><?php echo number_format($emision_en_vivo->oyentes_pico ?? 0); ?></strong>
+                    <strong><?php echo number_format($emision_en_vivo->oyentes_actual ?? 0); ?></strong> <?php echo esc_html__('oyentes conectados
+                    | Pico:', 'flavor-chat-ia'); ?> <strong><?php echo number_format($emision_en_vivo->oyentes_pico ?? 0); ?></strong>
                 </p>
             </div>
             <button class="button button-primary button-large" onclick="finalizarEmision(<?php echo $emision_en_vivo->id; ?>)">
-                <span class="dashicons dashicons-controls-pause"></span> Finalizar Emisión
+                <span class="dashicons dashicons-controls-pause"></span> <?php echo esc_html__('Finalizar Emisión', 'flavor-chat-ia'); ?>
             </button>
         </div>
     <?php else: ?>
         <div class="notice notice-info" style="padding: 20px; margin: 20px 0;">
-            <p style="margin: 0;"><strong>No hay emisiones en vivo</strong></p>
+            <p style="margin: 0;"><strong><?php echo esc_html__('No hay emisiones en vivo', 'flavor-chat-ia'); ?></strong></p>
         </div>
     <?php endif; ?>
 
@@ -70,13 +70,13 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 60px;">ID</th>
-                    <th>Programa</th>
-                    <th style="width: 150px;">Fecha/Hora</th>
-                    <th style="width: 100px;">Duración</th>
-                    <th style="width: 120px;">Oyentes Pico</th>
-                    <th style="width: 100px;">Estado</th>
-                    <th style="width: 150px;">Acciones</th>
+                    <th style="width: 60px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Programa', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Fecha/Hora', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Duración', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Oyentes Pico', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -84,7 +84,7 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-album" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666;">No hay emisiones registradas</p>
+                            <p style="color: #666;"><?php echo esc_html__('No hay emisiones registradas', 'flavor-chat-ia'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -114,11 +114,11 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
                             <td>
                                 <?php if ($emision->estado == 'programada'): ?>
                                     <button class="button button-small button-primary" onclick="iniciarEmision(<?php echo $emision->id; ?>)">
-                                        <span class="dashicons dashicons-controls-play"></span> Iniciar
+                                        <span class="dashicons dashicons-controls-play"></span> <?php echo esc_html__('Iniciar', 'flavor-chat-ia'); ?>
                                     </button>
                                 <?php else: ?>
                                     <button class="button button-small" onclick="verEmision(<?php echo $emision->id; ?>)">
-                                        <span class="dashicons dashicons-visibility"></span> Ver
+                                        <span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
                                     </button>
                                 <?php endif; ?>
                             </td>

@@ -176,58 +176,52 @@ class Flavor_Template_Definitions {
                 ],
                 'paginas' => [
                     [
-                        'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
-                        'slug' => 'grupos-consumo',
+                        'titulo' => __('Inicio', 'flavor-chat-ia'),
+                        'slug' => 'inicio',
                         'contenido' => '[flavor_landing module="grupos-consumo"]',
                         'parent' => 0,
-                        'es_landing' => true,
-                    ],
-                    [
-                        'titulo' => __('Productores', 'flavor-chat-ia'),
-                        'slug' => 'productores',
-                        'contenido' => '<h1>Nuestros Productores</h1>
-<p>Conoce a quienes cultivan y elaboran los productos que llegan a tu mesa.</p>
-
-[flavor_module_listing module="grupos_consumo" action="listar_productores" columnas="3" limite="12"]',
-                        'parent' => 'grupos-consumo',
+                        'es_home' => true,
+                        'template' => 'flavor-fullwidth',
                     ],
                     [
                         'titulo' => __('Productos', 'flavor-chat-ia'),
                         'slug' => 'productos',
-                        'contenido' => '<h1>Productos Disponibles</h1>
-<p>Productos frescos, locales y de temporada.</p>
-
-[flavor_module_listing module="grupos_consumo" action="listar_productos" columnas="3" limite="12"]',
-                        'parent' => 'grupos-consumo',
+                        'contenido' => '[gc_catalogo]',
+                        'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Mi Pedido', 'flavor-chat-ia'),
-                        'slug' => 'mi-pedido',
-                        'contenido' => '<h1>Mi Pedido</h1>
-
-[flavor_module_form module="grupos_consumo" action="hacer_pedido"]',
-                        'parent' => 'grupos-consumo',
+                        'titulo' => __('Productores', 'flavor-chat-ia'),
+                        'slug' => 'productores',
+                        'contenido' => '[gc_productores]',
+                        'parent' => 0,
                     ],
                     [
                         'titulo' => __('Ciclo Actual', 'flavor-chat-ia'),
-                        'slug' => 'ciclo',
-                        'contenido' => '<h1>Ciclo de Pedidos Actual</h1>
-<p>Estado del ciclo de pedidos en curso.</p>
-
-[flavor_module_listing module="grupos_consumo" action="ciclo_actual"]',
-                        'parent' => 'grupos-consumo',
+                        'slug' => 'ciclo-actual',
+                        'contenido' => '[gc_ciclo_actual]',
+                        'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Mis Pedidos', 'flavor-chat-ia'),
-                        'slug' => 'mis-pedidos',
-                        'contenido' => '<h1>Mis Pedidos</h1>
-
-[flavor_module_dashboard module="grupos_consumo"]',
-                        'parent' => 'grupos-consumo',
+                        'titulo' => __('Mi Cuenta', 'flavor-chat-ia'),
+                        'slug' => 'mi-cuenta',
+                        'contenido' => '[flavor_user_dashboard]',
+                        'parent' => 0,
+                    ],
+                ],
+                'menu' => [
+                    'nombre' => __('Menu Grupo Consumo', 'flavor-chat-ia'),
+                    'ubicacion' => 'primary',
+                    'items' => [
+                        ['titulo' => __('Inicio', 'flavor-chat-ia'), 'url' => '/', 'icono' => 'home'],
+                        ['titulo' => __('Productos', 'flavor-chat-ia'), 'url' => '/productos/', 'icono' => 'carrot'],
+                        ['titulo' => __('Productores', 'flavor-chat-ia'), 'url' => '/productores/', 'icono' => 'users'],
+                        ['titulo' => __('Ciclo Actual', 'flavor-chat-ia'), 'url' => '/ciclo-actual/', 'icono' => 'calendar'],
+                        ['titulo' => __('Mi Cuenta', 'flavor-chat-ia'), 'url' => '/mi-cuenta/', 'icono' => 'user'],
                     ],
                 ],
                 'landing' => [
                     'activa' => true,
+                    'slug' => 'inicio',
                     'secciones' => [
                         [
                             'tipo' => 'hero',

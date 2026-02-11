@@ -14,13 +14,13 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['presupuesto 2026', 'contratos
 <div class="flavor-frontend flavor-transparencia-search">
     <!-- Buscador principal -->
     <div class="bg-gradient-to-r from-teal-500 to-cyan-500 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">Buscar documentos</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('Buscar documentos', 'flavor-chat-ia'); ?></h2>
 
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q"
                        value="<?php echo esc_attr($query); ?>"
-                       placeholder="Busca documentos publicos, actas, presupuestos..."
+                       placeholder="<?php echo esc_attr__('Busca documentos publicos, actas, presupuestos...', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-teal-300"
                        autocomplete="off">
                 <button type="submit"
@@ -35,7 +35,7 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['presupuesto 2026', 'contratos
         <!-- Sugerencias populares -->
         <?php if (!empty($sugerencias_busqueda) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-teal-100 text-sm">Sugerencias:</span>
+            <span class="text-teal-100 text-sm"><?php echo esc_html__('Sugerencias:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias_busqueda as $sugerencia_texto): ?>
             <a href="?q=<?php echo esc_attr($sugerencia_texto); ?>"
                class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
@@ -59,21 +59,21 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['presupuesto 2026', 'contratos
         </h3>
         <?php if ($total_resultados > 0): ?>
         <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500">
-            <option value="relevancia">Mas relevantes</option>
-            <option value="recientes">Mas recientes</option>
-            <option value="antiguos">Mas antiguos</option>
+            <option value="<?php echo esc_attr__('relevancia', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mas relevantes', 'flavor-chat-ia'); ?></option>
+            <option value="<?php echo esc_attr__('recientes', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mas recientes', 'flavor-chat-ia'); ?></option>
+            <option value="<?php echo esc_attr__('antiguos', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mas antiguos', 'flavor-chat-ia'); ?></option>
         </select>
         <?php endif; ?>
     </div>
 
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
-        <div class="text-6xl mb-4">&#x1F4C4;</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos documentos</h3>
-        <p class="text-gray-500 mb-6">Prueba con otros terminos o navega por las categorias</p>
+        <div class="text-6xl mb-4"><?php echo esc_html__('&#x1F4C4;', 'flavor-chat-ia'); ?></div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos documentos', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('Prueba con otros terminos o navega por las categorias', 'flavor-chat-ia'); ?></p>
         <a href="<?php echo esc_url(home_url('/transparencia/')); ?>"
            class="bg-teal-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-600 transition-colors inline-block">
-            Ver todos los documentos
+            <?php echo esc_html__('Ver todos los documentos', 'flavor-chat-ia'); ?>
         </a>
     </div>
     <?php else: ?>
@@ -114,9 +114,9 @@ $sugerencias_busqueda = $sugerencias_busqueda ?? ['presupuesto 2026', 'contratos
     <?php if ($total_resultados > 12): ?>
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Anterior</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?></button>
             <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo esc_html(ceil($total_resultados / 12)); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-teal-500 text-white hover:bg-teal-600 transition-colors">Siguiente</button>
+            <button class="px-4 py-2 rounded-lg bg-teal-500 text-white hover:bg-teal-600 transition-colors"><?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?></button>
         </nav>
     </div>
     <?php endif; ?>

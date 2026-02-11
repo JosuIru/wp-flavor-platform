@@ -14,7 +14,7 @@ $eventos_relacionados = $eventos_relacionados ?? [];
 <div class="flavor-frontend flavor-eventos-single">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <a href="<?php echo esc_url(home_url('/eventos/')); ?>" class="hover:text-pink-600 transition-colors">Eventos</a>
+        <a href="<?php echo esc_url(home_url('/eventos/')); ?>" class="hover:text-pink-600 transition-colors"><?php echo esc_html__('Eventos', 'flavor-chat-ia'); ?></a>
         <span>›</span>
         <?php if (!empty($evento['categoria'])): ?>
         <a href="<?php echo esc_url(home_url('/eventos/?cat=' . ($evento['categoria_slug'] ?? ''))); ?>" class="hover:text-pink-600 transition-colors">
@@ -70,28 +70,28 @@ $eventos_relacionados = $eventos_relacionados ?? [];
                     <div class="flex items-center gap-3">
                         <span class="text-xl">📅</span>
                         <div>
-                            <p class="text-sm text-gray-500">Fecha</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($evento['fecha_completa'] ?? ''); ?></p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="text-xl">🕐</span>
                         <div>
-                            <p class="text-sm text-gray-500">Hora</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Hora', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($evento['hora'] ?? ''); ?></p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="text-xl">📍</span>
                         <div>
-                            <p class="text-sm text-gray-500">Lugar</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Lugar', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($evento['ubicacion'] ?? 'Por confirmar'); ?></p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="text-xl">👥</span>
                         <div>
-                            <p class="text-sm text-gray-500">Asistentes</p>
+                            <p class="text-sm text-gray-500"><?php echo esc_html__('Asistentes', 'flavor-chat-ia'); ?></p>
                             <p class="font-medium text-gray-800"><?php echo esc_html($evento['asistentes'] ?? 0); ?> confirmados</p>
                         </div>
                     </div>
@@ -104,9 +104,9 @@ $eventos_relacionados = $eventos_relacionados ?? [];
 
             <!-- Mapa ubicacion -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">📍 Ubicacion del evento</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><?php echo esc_html__('📍 Ubicacion del evento', 'flavor-chat-ia'); ?></h2>
                 <div class="bg-gray-100 rounded-xl h-48 flex items-center justify-center text-gray-400 mb-3">
-                    <span class="text-lg">Mapa de ubicacion</span>
+                    <span class="text-lg"><?php echo esc_html__('Mapa de ubicacion', 'flavor-chat-ia'); ?></span>
                 </div>
                 <p class="text-gray-600"><?php echo esc_html($evento['direccion'] ?? ''); ?></p>
             </div>
@@ -133,18 +133,18 @@ $eventos_relacionados = $eventos_relacionados ?? [];
         <div class="space-y-6">
             <!-- CTA Inscripcion -->
             <div class="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl p-6 text-white">
-                <h3 class="font-semibold mb-2">¡No te lo pierdas!</h3>
+                <h3 class="font-semibold mb-2"><?php echo esc_html__('¡No te lo pierdas!', 'flavor-chat-ia'); ?></h3>
                 <p class="text-rose-100 text-sm mb-2">
                     <?php echo ($evento['precio'] ?? 0) == 0 ? 'Evento gratuito' : 'Precio: ' . esc_html($evento['precio']) . ' €'; ?>
                 </p>
                 <?php if (!empty($evento['plazas_disponibles'])): ?>
                 <p class="text-rose-100 text-sm mb-4">Quedan <?php echo esc_html($evento['plazas_disponibles']); ?> plazas</p>
                 <?php else: ?>
-                <p class="text-rose-100 text-sm mb-4">Plazas limitadas</p>
+                <p class="text-rose-100 text-sm mb-4"><?php echo esc_html__('Plazas limitadas', 'flavor-chat-ia'); ?></p>
                 <?php endif; ?>
                 <button class="w-full bg-white text-pink-600 py-3 px-4 rounded-xl font-semibold hover:bg-rose-50 transition-colors"
                         onclick="flavorEventos.inscribirse(<?php echo esc_attr($evento['id'] ?? 0); ?>)">
-                    🎟️ Inscribirse
+                    <?php echo esc_html__('🎟️ Inscribirse', 'flavor-chat-ia'); ?>
                 </button>
             </div>
 
@@ -153,28 +153,28 @@ $eventos_relacionados = $eventos_relacionados ?? [];
                 <div class="w-20 h-20 rounded-full bg-rose-100 flex items-center justify-center text-rose-700 text-3xl font-bold mx-auto mb-4">
                     <?php echo esc_html(mb_substr($organizador['nombre'] ?? 'O', 0, 1)); ?>
                 </div>
-                <p class="text-xs text-gray-500 mb-1">Organizado por</p>
+                <p class="text-xs text-gray-500 mb-1"><?php echo esc_html__('Organizado por', 'flavor-chat-ia'); ?></p>
                 <h3 class="text-lg font-semibold text-gray-800"><?php echo esc_html($organizador['nombre'] ?? 'Organizador'); ?></h3>
                 <p class="text-sm text-gray-500 mb-4"><?php echo esc_html($organizador['eventos_organizados'] ?? 0); ?> eventos organizados</p>
                 <?php if (!empty($organizador['verificado'])): ?>
                 <span class="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                    ✓ Organizador verificado
+                    <?php echo esc_html__('✓ Organizador verificado', 'flavor-chat-ia'); ?>
                 </span>
                 <?php endif; ?>
             </div>
 
             <!-- Compartir -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">📤 Compartir evento</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('📤 Compartir evento', 'flavor-chat-ia'); ?></h3>
                 <div class="flex gap-3">
                     <button class="flex-1 bg-blue-100 text-blue-700 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors" onclick="flavorEventos.compartir('facebook')">
-                        Facebook
+                        <?php echo esc_html__('Facebook', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="flex-1 bg-sky-100 text-sky-700 py-2 rounded-lg text-sm font-medium hover:bg-sky-200 transition-colors" onclick="flavorEventos.compartir('twitter')">
-                        Twitter
+                        <?php echo esc_html__('Twitter', 'flavor-chat-ia'); ?>
                     </button>
                     <button class="flex-1 bg-green-100 text-green-700 py-2 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors" onclick="flavorEventos.compartir('whatsapp')">
-                        WhatsApp
+                        <?php echo esc_html__('WhatsApp', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </div>
@@ -182,7 +182,7 @@ $eventos_relacionados = $eventos_relacionados ?? [];
             <!-- Eventos relacionados -->
             <?php if (!empty($eventos_relacionados)): ?>
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-800 mb-4">Eventos similares</h3>
+                <h3 class="font-semibold text-gray-800 mb-4"><?php echo esc_html__('Eventos similares', 'flavor-chat-ia'); ?></h3>
                 <div class="space-y-3">
                     <?php foreach ($eventos_relacionados as $evento_relacionado): ?>
                     <a href="<?php echo esc_url($evento_relacionado['url'] ?? '#'); ?>" class="block p-3 rounded-xl hover:bg-gray-50 transition-colors">

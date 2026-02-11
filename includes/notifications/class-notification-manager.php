@@ -869,7 +869,7 @@ class Flavor_Notification_Manager {
         $user_id = get_current_user_id();
 
         if (!$user_id) {
-            wp_send_json_error(['message' => 'No autorizado']);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
         }
 
         if ($notification_id === 0) {
@@ -891,7 +891,7 @@ class Flavor_Notification_Manager {
 
         $user_id = get_current_user_id();
         if (!$user_id) {
-            wp_send_json_error(['message' => 'No autorizado']);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
         }
 
         $args = [
@@ -917,19 +917,19 @@ class Flavor_Notification_Manager {
 
         $user_id = get_current_user_id();
         if (!$user_id) {
-            wp_send_json_error(['message' => 'No autorizado']);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
         }
 
         $event_type = sanitize_text_field($_POST['event_type'] ?? '');
         $preferences = $_POST['preferences'] ?? [];
 
         if (empty($event_type)) {
-            wp_send_json_error(['message' => 'Tipo de evento requerido']);
+            wp_send_json_error(['message' => __('Tipo de evento requerido', 'flavor-chat-ia')]);
         }
 
         $this->update_user_preferences($user_id, $event_type, $preferences);
 
-        wp_send_json_success(['message' => 'Preferencias actualizadas']);
+        wp_send_json_success(['message' => __('Preferencias actualizadas', 'flavor-chat-ia')]);
     }
 
     /**
@@ -942,7 +942,7 @@ class Flavor_Notification_Manager {
         $user_id = get_current_user_id();
 
         if (!$user_id || !$notification_id) {
-            wp_send_json_error(['message' => 'Datos inválidos']);
+            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
         }
 
         $this->dismiss($notification_id, $user_id);

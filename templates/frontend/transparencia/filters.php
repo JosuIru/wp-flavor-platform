@@ -12,11 +12,11 @@ $categorias = $categorias ?? [];
 <div class="flavor-frontend flavor-transparencia-filters">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-800">Filtrar documentos</h3>
+            <h3 class="text-lg font-bold text-gray-800"><?php echo esc_html__('Filtrar documentos', 'flavor-chat-ia'); ?></h3>
             <?php if (!empty($filtros_activos)): ?>
             <button class="text-sm text-teal-600 hover:text-teal-700 font-medium"
                     onclick="flavorTransparencia.limpiarFiltros()">
-                Limpiar filtros
+                <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -24,7 +24,7 @@ $categorias = $categorias ?? [];
         <form id="filtros-transparencia" class="space-y-6">
             <!-- Categoria -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Categoria', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_categoria_transparencia = [
@@ -47,7 +47,7 @@ $categorias = $categorias ?? [];
 
             <!-- Tipo de documento -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de documento</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Tipo de documento', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_tipo_documento = [
@@ -71,9 +71,9 @@ $categorias = $categorias ?? [];
 
             <!-- Fecha -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Ano</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Ano', 'flavor-chat-ia'); ?></label>
                 <select name="ano" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                    <option value="">Cualquier ano</option>
+                    <option value=""><?php echo esc_html__('Cualquier ano', 'flavor-chat-ia'); ?></option>
                     <?php for ($anio_seleccion = intval(date('Y')); $anio_seleccion >= 2018; $anio_seleccion--): ?>
                     <option value="<?php echo esc_attr($anio_seleccion); ?>"
                             <?php echo ($filtros_activos['ano'] ?? '') == $anio_seleccion ? 'selected' : ''; ?>>
@@ -84,9 +84,9 @@ $categorias = $categorias ?? [];
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Mes</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Mes', 'flavor-chat-ia'); ?></label>
                 <select name="mes" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                    <option value="">Cualquier mes</option>
+                    <option value=""><?php echo esc_html__('Cualquier mes', 'flavor-chat-ia'); ?></option>
                     <?php
                     $nombres_meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                     foreach ($nombres_meses as $indice_mes => $nombre_mes): ?>
@@ -100,7 +100,7 @@ $categorias = $categorias ?? [];
 
             <!-- Formato -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Formato</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"><?php echo esc_html__('Formato', 'flavor-chat-ia'); ?></label>
                 <div class="space-y-2">
                     <?php
                     $opciones_formato = [
@@ -122,7 +122,7 @@ $categorias = $categorias ?? [];
             <!-- Boton aplicar -->
             <button type="submit"
                     class="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-teal-600 hover:to-cyan-600 transition-all shadow-md">
-                Aplicar filtros
+                <?php echo esc_html__('Aplicar filtros', 'flavor-chat-ia'); ?>
             </button>
         </form>
     </div>

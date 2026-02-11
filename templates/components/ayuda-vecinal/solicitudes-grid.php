@@ -29,7 +29,7 @@ $urgencias = ['alta' => ['texto' => 'Urgente', 'color' => 'red'], 'media' => ['t
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
                 </svg>
-                Solicitudes
+                <?php echo esc_html__('Solicitudes', 'flavor-chat-ia'); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -38,22 +38,22 @@ $urgencias = ['alta' => ['texto' => 'Urgente', 'color' => 'red'], 'media' => ['t
         <!-- Filtros rapidos -->
         <div class="flex flex-wrap justify-center gap-3 mb-10">
             <button class="px-4 py-2 rounded-full text-sm font-medium transition-all" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); color: white;">
-                Todas
+                <?php echo esc_html__('Todas', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors">
-                🔴 Urgentes
+                <?php echo esc_html__('🔴 Urgentes', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-200 hover:bg-amber-50 transition-colors">
-                Compras
+                <?php echo esc_html__('Compras', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-200 hover:bg-amber-50 transition-colors">
-                Bricolaje
+                <?php echo esc_html__('Bricolaje', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-200 hover:bg-amber-50 transition-colors">
-                Mascotas
+                <?php echo esc_html__('Mascotas', 'flavor-chat-ia'); ?>
             </button>
             <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-200 hover:bg-amber-50 transition-colors">
-                Salud
+                <?php echo esc_html__('Salud', 'flavor-chat-ia'); ?>
             </button>
         </div>
 
@@ -101,7 +101,7 @@ $urgencias = ['alta' => ['texto' => 'Urgente', 'color' => 'red'], 'media' => ['t
                             <span><?php echo esc_html($solicitud['fecha']); ?></span>
                         </div>
                         <button class="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);">
-                            Ayudar
+                            <?php echo esc_html__('Ayudar', 'flavor-chat-ia'); ?>
                         </button>
                     </div>
                 </article>
@@ -110,7 +110,7 @@ $urgencias = ['alta' => ['texto' => 'Urgente', 'color' => 'red'], 'media' => ['t
 
         <div class="text-center mt-12">
             <a href="#todas-solicitudes" class="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-105" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); color: white;">
-                <span>Ver Todas las Solicitudes</span>
+                <span><?php echo esc_html__('Ver Todas las Solicitudes', 'flavor-chat-ia'); ?></span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>

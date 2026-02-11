@@ -22,6 +22,11 @@ class Flavor_Module_Shortcodes {
     private static $instance = null;
 
     /**
+     * Instancia del control de acceso
+     */
+    private $control_acceso = null;
+
+    /**
      * Obtiene la instancia singleton
      */
     public static function get_instance() {
@@ -36,6 +41,52 @@ class Flavor_Module_Shortcodes {
      */
     private function __construct() {
         $this->register_shortcodes();
+        $this->inicializar_control_acceso();
+    }
+
+    /**
+     * Inicializa el controlador de acceso
+     */
+    private function inicializar_control_acceso() {
+        if (class_exists('Flavor_Module_Access_Control')) {
+            $this->control_acceso = Flavor_Module_Access_Control::get_instance();
+        }
+    }
+
+    /**
+     * Verifica si el usuario tiene acceso al módulo
+     *
+     * @param string $module_slug Slug del módulo
+     * @return bool|string True si tiene acceso, o HTML de mensaje de error
+     */
+    private function verificar_acceso_modulo($module_slug) {
+        // Si no hay control de acceso, permitir todo
+        if (!$this->control_acceso) {
+            return true;
+        }
+
+        // Verificar acceso
+        if ($this->control_acceso->user_can_access($module_slug)) {
+            return true;
+        }
+
+        // No tiene acceso - determinar qué mensaje mostrar
+        if (!is_user_logged_in()) {
+            $url_redireccion = $this->obtener_url_actual();
+            return $this->control_acceso->render_login_required($url_redireccion);
+        }
+
+        return $this->control_acceso->render_access_denied($module_slug);
+    }
+
+    /**
+     * Obtiene la URL actual
+     *
+     * @return string
+     */
+    private function obtener_url_actual() {
+        global $wp;
+        return home_url(add_query_arg([], $wp->request));
     }
 
     /**
@@ -65,10 +116,19 @@ class Flavor_Module_Shortcodes {
             'filters' => '',
             'columnas' => '3',
             'limite' => '12',
+            'require_access' => 'yes', // Permitir desactivar verificación de acceso
         ], $atts);
 
         if (empty($atts['module'])) {
             return '<p class="flavor-error">' . __('Falta especificar el módulo', 'flavor-chat-ia') . '</p>';
+        }
+
+        // Verificar acceso al módulo (si no está desactivado)
+        if ($atts['require_access'] !== 'no') {
+            $verificacion_acceso = $this->verificar_acceso_modulo($atts['module']);
+            if ($verificacion_acceso !== true) {
+                return $verificacion_acceso;
+            }
         }
 
         // Obtener el módulo
@@ -106,10 +166,19 @@ class Flavor_Module_Shortcodes {
         $atts = shortcode_atts([
             'module' => '',
             'action' => '',
+            'require_access' => 'yes',
         ], $atts);
 
         if (empty($atts['module']) || empty($atts['action'])) {
             return '<p class="flavor-error">' . __('Falta especificar módulo o acción', 'flavor-chat-ia') . '</p>';
+        }
+
+        // Verificar acceso al módulo
+        if ($atts['require_access'] !== 'no') {
+            $verificacion_acceso = $this->verificar_acceso_modulo($atts['module']);
+            if ($verificacion_acceso !== true) {
+                return $verificacion_acceso;
+            }
         }
 
         // Obtener el módulo
@@ -147,10 +216,19 @@ class Flavor_Module_Shortcodes {
         $atts = shortcode_atts([
             'module' => '',
             'id' => '',
+            'require_access' => 'yes',
         ], $atts);
 
         if (empty($atts['module']) || empty($atts['id'])) {
             return '<p class="flavor-error">' . __('Falta especificar módulo o ID', 'flavor-chat-ia') . '</p>';
+        }
+
+        // Verificar acceso al módulo
+        if ($atts['require_access'] !== 'no') {
+            $verificacion_acceso = $this->verificar_acceso_modulo($atts['module']);
+            if ($verificacion_acceso !== true) {
+                return $verificacion_acceso;
+            }
         }
 
         // Obtener el módulo
@@ -193,14 +271,28 @@ class Flavor_Module_Shortcodes {
     public function render_dashboard($atts) {
         $atts = shortcode_atts([
             'module' => '',
+            'require_access' => 'yes',
         ], $atts);
 
         if (empty($atts['module'])) {
             return '<p class="flavor-error">' . __('Falta especificar el módulo', 'flavor-chat-ia') . '</p>';
         }
 
+        // Verificar si usuario está logueado
         if (!is_user_logged_in()) {
-            return '<p class="flavor-error">' . __('Debes iniciar sesión para ver tu dashboard', 'flavor-chat-ia') . '</p>';
+            // Mostrar formulario de login en lugar de solo un mensaje
+            if ($this->control_acceso) {
+                return $this->control_acceso->render_login_required($this->obtener_url_actual());
+            }
+            return '<p class="flavor-error">' . __('Debes iniciar sesion para ver tu dashboard', 'flavor-chat-ia') . '</p>';
+        }
+
+        // Verificar acceso al módulo
+        if ($atts['require_access'] !== 'no') {
+            $verificacion_acceso = $this->verificar_acceso_modulo($atts['module']);
+            if ($verificacion_acceso !== true) {
+                return $verificacion_acceso;
+            }
         }
 
         // Obtener el módulo

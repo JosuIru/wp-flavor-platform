@@ -75,7 +75,7 @@ $imagen_url_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
                     <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);"><?php echo esc_html__('Hilos', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-bold" style="color: white;">1.5K</div>
+                    <div class="text-3xl md:text-4xl font-bold" style="color: white;"><?php echo esc_html__('1.5K', 'flavor-chat-ia'); ?></div>
                     <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);"><?php echo esc_html__('Respuestas', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>

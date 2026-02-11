@@ -292,7 +292,7 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
 
     protected function ajax_crear_incidencia($data) {
         if (!is_user_logged_in()) {
-            return ['error' => 'Debes iniciar sesión para reportar incidencias'];
+            return ['error' => __('Debes iniciar sesión para reportar incidencias', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -312,17 +312,17 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
         ]);
 
         if ($resultado) {
-            return ['success' => true, 'id' => $wpdb->insert_id, 'mensaje' => 'Incidencia reportada correctamente'];
+            return ['success' => true, 'id' => $wpdb->insert_id, 'mensaje' => __('Incidencia reportada correctamente', 'flavor-chat-ia')];
         }
 
-        return ['error' => 'Error al crear la incidencia'];
+        return ['error' => __('Error al crear la incidencia', 'flavor-chat-ia')];
     }
 
     protected function ajax_apoyar($data) {
         $incidencia_id = intval($data['incidencia_id'] ?? 0);
 
         if ($incidencia_id <= 0) {
-            return ['error' => 'Incidencia no válida'];
+            return ['error' => __('Incidencia no válida', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -331,7 +331,7 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
         // Verificar si ya ha votado (usando cookies para usuarios anónimos)
         $votados = json_decode(stripslashes($_COOKIE['flavor_incidencias_votadas'] ?? '[]'), true) ?: [];
         if (in_array($incidencia_id, $votados)) {
-            return ['error' => 'Ya has apoyado esta incidencia'];
+            return ['error' => __('Ya has apoyado esta incidencia', 'flavor-chat-ia')];
         }
 
         $wpdb->query($wpdb->prepare(
@@ -344,15 +344,15 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
 
         $nuevos_votos = $wpdb->get_var($wpdb->prepare("SELECT votos FROM $tabla WHERE id = %d", $incidencia_id));
 
-        return ['success' => true, 'votos' => intval($nuevos_votos), 'mensaje' => 'Gracias por tu apoyo'];
+        return ['success' => true, 'votos' => intval($nuevos_votos), 'mensaje' => __('Gracias por tu apoyo', 'flavor-chat-ia')];
     }
 
     protected function ajax_enviar_comentario($data) {
         if (!is_user_logged_in()) {
-            return ['error' => 'Debes iniciar sesión para comentar'];
+            return ['error' => __('Debes iniciar sesión para comentar', 'flavor-chat-ia')];
         }
 
         // Implementar lógica de comentarios
-        return ['success' => true, 'mensaje' => 'Comentario enviado'];
+        return ['success' => true, 'mensaje' => __('Comentario enviado', 'flavor-chat-ia')];
     }
 }

@@ -16,7 +16,7 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar en foros</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar en foros', 'flavor-chat-ia'); ?></h1>
 
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="relative">
@@ -26,24 +26,24 @@ $total_resultados = $total_resultados ?? 0;
                     <input type="text"
                            name="q"
                            value="<?php echo esc_attr($consulta_busqueda); ?>"
-                           placeholder="Buscar temas, respuestas, usuarios..."
+                           placeholder="<?php echo esc_attr__('Buscar temas, respuestas, usuarios...', 'flavor-chat-ia'); ?>"
                            class="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 text-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
                 <!-- Sugerencias -->
                 <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="text-sm text-gray-500">Sugerencias:</span>
-                    <a href="?q=ayuda" class="px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors">ayuda</a>
-                    <a href="?q=recomendaciones" class="px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors">recomendaciones</a>
-                    <a href="?q=debate" class="px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors">debate</a>
-                    <a href="?q=opinion" class="px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors">opinion</a>
+                    <span class="text-sm text-gray-500"><?php echo esc_html__('Sugerencias:', 'flavor-chat-ia'); ?></span>
+                    <a href="?q=ayuda" class="px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors"><?php echo esc_html__('ayuda', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=recomendaciones" class="px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors"><?php echo esc_html__('recomendaciones', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=debate" class="px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors"><?php echo esc_html__('debate', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=opinion" class="px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors"><?php echo esc_html__('opinion', 'flavor-chat-ia'); ?></a>
                 </div>
 
                 <div class="mt-4 flex justify-center">
                     <button type="submit"
                             class="px-8 py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                             style="background: linear-gradient(135deg, #6366f1 0%, #9333ea 100%);">
-                        Buscar en Foros
+                        <?php echo esc_html__('Buscar en Foros', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -65,9 +65,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No se encontraron resultados</h3>
-                <p class="text-gray-500 mb-4">Prueba con otros terminos de busqueda</p>
-                <a href="?" class="text-indigo-600 font-medium hover:text-indigo-700">Ver todos los temas</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No se encontraron resultados', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba con otros terminos de busqueda', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-indigo-600 font-medium hover:text-indigo-700"><?php echo esc_html__('Ver todos los temas', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="space-y-4">
@@ -97,15 +97,15 @@ $total_resultados = $total_resultados ?? 0;
             </div>
         <?php else: ?>
             <!-- Temas populares -->
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Temas populares</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Temas populares', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php for ($indice_tema = 1; $indice_tema <= 6; $indice_tema++): ?>
                     <article class="group bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-shadow">
-                        <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-700 mb-2">General</span>
+                        <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-700 mb-2"><?php echo esc_html__('General', 'flavor-chat-ia'); ?></span>
                         <h3 class="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors mb-2">
                             Tema de discusion <?php echo $indice_tema; ?>
                         </h3>
-                        <p class="text-sm text-gray-500">12 respuestas - hace 2 dias</p>
+                        <p class="text-sm text-gray-500"><?php echo esc_html__('12 respuestas - hace 2 dias', 'flavor-chat-ia'); ?></p>
                     </article>
                 <?php endfor; ?>
             </div>

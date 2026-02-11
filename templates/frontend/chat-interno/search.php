@@ -14,11 +14,11 @@ $sugerencias = $sugerencias ?? ['documentos', 'reunion', 'propuesta', 'urgente',
 <div class="flavor-frontend flavor-chat-interno-search">
     <!-- Buscador -->
     <div class="bg-gradient-to-r from-sky-500 to-blue-600 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">🔍 Buscar mensajes</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('🔍 Buscar mensajes', 'flavor-chat-ia'); ?></h2>
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q" value="<?php echo esc_attr($query); ?>"
-                       placeholder="Busca mensajes o contactos..."
+                       placeholder="<?php echo esc_attr__('Busca mensajes o contactos...', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-sky-300">
                 <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@ $sugerencias = $sugerencias ?? ['documentos', 'reunion', 'propuesta', 'urgente',
 
         <?php if (!empty($sugerencias) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-sky-100 text-sm">Busquedas frecuentes:</span>
+            <span class="text-sky-100 text-sm"><?php echo esc_html__('Busquedas frecuentes:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias as $sugerencia_mensaje): ?>
             <a href="?q=<?php echo esc_attr($sugerencia_mensaje); ?>" class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
                 <?php echo esc_html($sugerencia_mensaje); ?>
@@ -55,8 +55,8 @@ $sugerencias = $sugerencias ?? ['documentos', 'reunion', 'propuesta', 'urgente',
     <?php if (empty($resultados)): ?>
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">✉️</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos mensajes</h3>
-        <p class="text-gray-500 mb-6">Intenta con otros terminos de busqueda</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos mensajes', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('Intenta con otros terminos de busqueda', 'flavor-chat-ia'); ?></p>
     </div>
     <?php else: ?>
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

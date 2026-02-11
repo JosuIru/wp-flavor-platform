@@ -16,7 +16,7 @@ $total_resultados = $total_resultados ?? 0;
     <!-- Header de busqueda -->
     <div class="bg-gradient-to-r from-green-500 to-emerald-600 py-12 px-4">
         <div class="container mx-auto max-w-4xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Buscar composteras</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center"><?php echo esc_html__('Buscar composteras', 'flavor-chat-ia'); ?></h1>
 
             <form method="get" class="bg-white rounded-2xl p-4 shadow-xl">
                 <div class="relative">
@@ -26,24 +26,24 @@ $total_resultados = $total_resultados ?? 0;
                     <input type="text"
                            name="q"
                            value="<?php echo esc_attr($consulta_busqueda); ?>"
-                           placeholder="Buscar composteras por nombre o ubicacion..."
+                           placeholder="<?php echo esc_attr__('Buscar composteras por nombre o ubicacion...', 'flavor-chat-ia'); ?>"
                            class="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 text-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                 </div>
 
                 <!-- Sugerencias -->
                 <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="text-sm text-gray-500">Sugerencias:</span>
-                    <a href="?q=centro" class="px-3 py-1 rounded-full text-sm bg-green-50 text-green-600 hover:bg-green-100 transition-colors">centro</a>
-                    <a href="?q=norte" class="px-3 py-1 rounded-full text-sm bg-green-50 text-green-600 hover:bg-green-100 transition-colors">norte</a>
-                    <a href="?q=barrio" class="px-3 py-1 rounded-full text-sm bg-green-50 text-green-600 hover:bg-green-100 transition-colors">barrio</a>
-                    <a href="?q=disponible" class="px-3 py-1 rounded-full text-sm bg-green-50 text-green-600 hover:bg-green-100 transition-colors">disponible</a>
+                    <span class="text-sm text-gray-500"><?php echo esc_html__('Sugerencias:', 'flavor-chat-ia'); ?></span>
+                    <a href="?q=centro" class="px-3 py-1 rounded-full text-sm bg-green-50 text-green-600 hover:bg-green-100 transition-colors"><?php echo esc_html__('centro', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=norte" class="px-3 py-1 rounded-full text-sm bg-green-50 text-green-600 hover:bg-green-100 transition-colors"><?php echo esc_html__('norte', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=barrio" class="px-3 py-1 rounded-full text-sm bg-green-50 text-green-600 hover:bg-green-100 transition-colors"><?php echo esc_html__('barrio', 'flavor-chat-ia'); ?></a>
+                    <a href="?q=disponible" class="px-3 py-1 rounded-full text-sm bg-green-50 text-green-600 hover:bg-green-100 transition-colors"><?php echo esc_html__('disponible', 'flavor-chat-ia'); ?></a>
                 </div>
 
                 <div class="mt-4 flex justify-center">
                     <button type="submit"
                             class="px-8 py-3 rounded-xl text-white font-semibold transition-all hover:scale-105"
                             style="background: linear-gradient(135deg, #22c55e 0%, #059669 100%);">
-                        Buscar Composteras
+                        <?php echo esc_html__('Buscar Composteras', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
             </form>
@@ -65,9 +65,9 @@ $total_resultados = $total_resultados ?? 0;
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No se encontraron composteras</h3>
-                <p class="text-gray-500 mb-4">Prueba con otra ubicacion o nombre</p>
-                <a href="?" class="text-green-600 font-medium hover:text-green-700">Ver todas las composteras</a>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No se encontraron composteras', 'flavor-chat-ia'); ?></h3>
+                <p class="text-gray-500 mb-4"><?php echo esc_html__('Prueba con otra ubicacion o nombre', 'flavor-chat-ia'); ?></p>
+                <a href="?" class="text-green-600 font-medium hover:text-green-700"><?php echo esc_html__('Ver todas las composteras', 'flavor-chat-ia'); ?></a>
             </div>
         <?php elseif (!empty($resultados)): ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -104,7 +104,7 @@ $total_resultados = $total_resultados ?? 0;
             </div>
         <?php else: ?>
             <!-- Composteras disponibles -->
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Composteras disponibles</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Composteras disponibles', 'flavor-chat-ia'); ?></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
                 $composteras_ejemplo = [

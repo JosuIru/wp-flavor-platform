@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
+import '../../core/providers/admin_modules_provider.dart';
 import '../../core/widgets/common_widgets.dart';
+import '../../core/api/api_client.dart';
 import 'qr_scanner_screen.dart';
 import 'export_screen.dart';
 import 'stats_screen.dart';
@@ -10,6 +14,75 @@ import 'customers_screen.dart';
 import 'manual_customers_screen.dart';
 import 'escalated_chats_screen.dart';
 import 'camps/camps_management_screen.dart';
+
+class _ModuleMetric {
+  final String id;
+  final String title;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _ModuleMetric({
+    required this.id,
+    required this.title,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+}
+
+final adminModuleMetricsProvider = FutureProvider<List<_ModuleMetric>>((ref) async {
+  final api = ref.read(apiClientProvider);
+  final modules = await ref.watch(adminModulesProvider.future);
+  final metrics = <_ModuleMetric>[];
+
+  final hasGc = modules.contains('grupos_consumo') || modules.contains('grupos-consumo');
+  if (hasGc) {
+    final pedidos = await api.getGruposConsumoPedidos(estado: 'abierto', perPage: 50, page: 1);
+    final count = pedidos.success && pedidos.data != null
+        ? (pedidos.data!['data'] as List<dynamic>? ?? []).length
+        : 0;
+    metrics.add(_ModuleMetric(
+      id: 'grupos_consumo',
+      title: 'Pedidos abiertos',
+      value: count.toString(),
+      icon: Icons.shopping_basket_outlined,
+      color: Colors.green,
+    ));
+  }
+
+  final hasBanco = modules.contains('banco_tiempo') || modules.contains('banco-tiempo');
+  if (hasBanco) {
+    final servicios = await api.getBancoTiempoServicios(limite: 50, pagina: 1);
+    final count = servicios.success && servicios.data != null
+        ? (servicios.data!['servicios'] as List<dynamic>? ?? []).length
+        : 0;
+    metrics.add(_ModuleMetric(
+      id: 'banco_tiempo',
+      title: 'Servicios activos',
+      value: count.toString(),
+      icon: Icons.volunteer_activism_outlined,
+      color: Colors.teal,
+    ));
+  }
+
+  final hasMarketplace = modules.contains('marketplace');
+  if (hasMarketplace) {
+    final anuncios = await api.getMarketplaceAnuncios(limite: 50, pagina: 1);
+    final count = anuncios.success && anuncios.data != null
+        ? (anuncios.data!['anuncios'] as List<dynamic>? ?? []).length
+        : 0;
+    metrics.add(_ModuleMetric(
+      id: 'marketplace',
+      title: 'Anuncios activos',
+      value: count.toString(),
+      icon: Icons.storefront_outlined,
+      color: Colors.orange,
+    ));
+  }
+
+  return metrics;
+});
 
 /// Dashboard para administradores
 class DashboardScreen extends ConsumerWidget {
@@ -24,16 +97,27 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context)!;
     final dashboardAsync = ref.watch(dashboardProvider);
+    final modulesAsync = ref.watch(adminModulesProvider);
+    final modules = modulesAsync.valueOrNull ?? const <String>[];
+    final hasReservations = modules.any((m) =>
+        m == 'reservas' ||
+        m == 'reservations' ||
+        m == 'experiences' ||
+        m == 'eventos' ||
+        m.contains('calendar'));
+    final hasChat = modules.any((m) => m.contains('chat'));
+    final hasCamps = modules.any((m) => m.contains('camp'));
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: Text(i18n.dashboard2938c7),
         actions: [
           IconButton(
             onPressed: () => ref.invalidate(dashboardProvider),
             icon: const Icon(Icons.refresh),
-            tooltip: 'Actualizar',
+            tooltip: i18n.actualizar2e7be1,
           ),
         ],
       ),
@@ -50,7 +134,7 @@ class DashboardScreen extends ConsumerWidget {
               children: [
                 // Fecha de hoy
                 Text(
-                  _formatDate(data.today.date),
+                  _formatDate(data.today.date, context),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -58,8 +142,7 @@ class DashboardScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Estadísticas de hoy
-                Text(
-                  'Hoy',
+                Text(AppLocalizations.of(context)!.hoy,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -74,17 +157,17 @@ class DashboardScreen extends ConsumerWidget {
                   childAspectRatio: 1.3,
                   children: [
                     StatCard(
-                      title: 'Reservas',
+                      title: i18n.dashboardReservationsLabel,
                       value: '${data.today.reservations}',
                       icon: Icons.calendar_today,
                       color: Colors.blue,
                     ),
                     StatCard(
-                      title: 'Check-ins',
+                      title: i18n.dashboardCheckinsLabel,
                       value: '${data.today.checkins}',
                       icon: Icons.check_circle,
                       color: Colors.green,
-                      subtitle: '${data.today.pendingCheckins} pendientes',
+                      subtitle: i18n.dashboardPending(data.today.pendingCheckins),
                     ),
                   ],
                 ),
@@ -92,15 +175,14 @@ class DashboardScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Estadísticas de la semana
-                Text(
-                  'Esta semana',
+                Text(AppLocalizations.of(context)!.estaSemana,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 const SizedBox(height: 12),
                 StatCard(
-                  title: 'Reservas totales',
+                  title: i18n.dashboardTotalReservationsLabel,
                   value: '${data.week.reservations}',
                   icon: Icons.event_note,
                   color: Colors.purple,
@@ -109,15 +191,14 @@ class DashboardScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Estadísticas del mes
-                Text(
-                  'Este mes',
+                Text(AppLocalizations.of(context)!.esteMes,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 const SizedBox(height: 12),
                 StatCard(
-                  title: 'Ingresos',
+                  title: i18n.dashboardRevenueLabel,
                   value: data.month.formattedRevenue,
                   icon: Icons.euro,
                   color: Colors.amber,
@@ -125,9 +206,20 @@ class DashboardScreen extends ConsumerWidget {
 
                 const SizedBox(height: 24),
 
-                // Accesos rápidos
+                // Módulos activos (datos resumidos)
                 Text(
-                  'Accesos rápidos',
+                  i18n.adminModulesDashboardTitle,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                _ModuleMetricsSection(),
+
+                const SizedBox(height: 24),
+
+                // Accesos rápidos
+                Text(AppLocalizations.of(context)!.accesosRapidos,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -136,37 +228,35 @@ class DashboardScreen extends ConsumerWidget {
                 _QuickActions(
                   onNavigateToReservations: onNavigateToReservations,
                   onNavigateToChat: onNavigateToChat,
+                  showReservations: hasReservations,
+                  showChat: hasChat,
+                  showSummaries: hasReservations,
+                  hasReservations: hasReservations,
+                  hasChat: hasChat,
+                  hasCamps: hasCamps,
                 ),
               ],
             ),
           ),
         ),
-        loading: () => const LoadingScreen(message: 'Cargando dashboard...'),
+        loading: () => LoadingScreen(message: i18n.loadingDashboard),
         error: (error, stack) => ErrorScreen(
-          message: 'Error al cargar el dashboard',
+          message: i18n.dashboardLoadError,
           onRetry: () => ref.invalidate(dashboardProvider),
         ),
       ),
     );
   }
 
-  String _formatDate(String date) {
+  String _formatDate(String date, BuildContext context) {
     try {
       if (date.isEmpty) {
         final now = DateTime.now();
         date = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
       }
-      final parts = date.split('-');
-      final weekdays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-      final months = [
-        'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-      ];
       final dateObj = DateTime.parse(date);
-      final weekday = weekdays[dateObj.weekday - 1];
-      final day = int.parse(parts[2]);
-      final month = months[int.parse(parts[1]) - 1];
-      return '$weekday, $day de $month';
+      final locale = Localizations.localeOf(context).toLanguageTag();
+      return DateFormat('EEE, d MMMM', locale).format(dateObj);
     } catch (e) {
       return date;
     }
@@ -176,14 +266,27 @@ class DashboardScreen extends ConsumerWidget {
 class _QuickActions extends StatelessWidget {
   final VoidCallback? onNavigateToReservations;
   final VoidCallback? onNavigateToChat;
+  final bool showReservations;
+  final bool showChat;
+  final bool showSummaries;
+  final bool hasReservations;
+  final bool hasChat;
+  final bool hasCamps;
 
   const _QuickActions({
     this.onNavigateToReservations,
     this.onNavigateToChat,
+    this.showReservations = false,
+    this.showChat = false,
+    this.showSummaries = false,
+    this.hasReservations = false,
+    this.hasChat = false,
+    this.hasCamps = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -194,7 +297,7 @@ class _QuickActions extends StatelessWidget {
           children: [
             _QuickActionChip(
               icon: Icons.qr_code_scanner,
-              label: 'Escanear QR',
+              label: i18n.dashboardScanQr,
               onTap: () {
                 Navigator.push(
                   context,
@@ -204,126 +307,173 @@ class _QuickActions extends StatelessWidget {
                 );
               },
             ),
-            _QuickActionChip(
-              icon: Icons.calendar_today,
-              label: 'Ver reservas',
-              onTap: onNavigateToReservations ?? () {},
-            ),
-            _QuickActionChip(
-              icon: Icons.smart_toy,
-              label: 'Chat IA',
-              onTap: onNavigateToChat ?? () {},
-            ),
-            _QuickActionChip(
-              icon: Icons.summarize,
-              label: 'Ver resúmenes',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ExportScreen(),
-                  ),
-                );
-              },
-            ),
+            if (showReservations)
+              _QuickActionChip(
+                icon: Icons.calendar_today,
+                label: i18n.dashboardViewReservations,
+                onTap: onNavigateToReservations ?? () {},
+              ),
+            if (showChat)
+              _QuickActionChip(
+                icon: Icons.smart_toy,
+                label: i18n.dashboardChatIa,
+                onTap: onNavigateToChat ?? () {},
+              ),
+            if (showSummaries)
+              _QuickActionChip(
+                icon: Icons.summarize,
+                label: i18n.dashboardViewSummaries,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ExportScreen(),
+                    ),
+                  );
+                },
+              ),
           ],
         ),
 
         const SizedBox(height: 24),
 
         // Herramientas
-        Text(
-          'Herramientas',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            _QuickActionChip(
-              icon: Icons.bar_chart,
-              label: 'Estadísticas',
-              color: Colors.purple,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const StatsScreen(),
-                  ),
-                );
-              },
-            ),
-            _QuickActionChip(
-              icon: Icons.calendar_month,
-              label: 'Calendario',
-              color: Colors.teal,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CalendarViewScreen(),
-                  ),
-                );
-              },
-            ),
-            _QuickActionChip(
-              icon: Icons.people,
-              label: 'Clientes',
-              color: Colors.indigo,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CustomersScreen(),
-                  ),
-                );
-              },
-            ),
-            _QuickActionChip(
-              icon: Icons.people_outline,
-              label: 'Clientes Semana',
-              color: Colors.orange,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ManualCustomersScreen(),
-                  ),
-                );
-              },
-            ),
-            _QuickActionChip(
-              icon: Icons.support_agent,
-              label: 'Chats Escalados',
-              color: Colors.red,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const EscalatedChatsScreen(),
-                  ),
-                );
-              },
-            ),
-            _QuickActionChip(
-              icon: Icons.cabin,
-              label: 'Campamentos',
-              color: Colors.brown,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CampsManagementScreen(),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+        if (hasReservations || hasChat || hasCamps) ...[
+          Text(AppLocalizations.of(context)!.herramientas,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              if (hasReservations)
+                _QuickActionChip(
+                  icon: Icons.bar_chart,
+                  label: i18n.dashboardStats,
+                  color: Colors.purple,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const StatsScreen(),
+                      ),
+                    );
+                  },
+                ),
+              if (hasReservations)
+                _QuickActionChip(
+                  icon: Icons.calendar_month,
+                  label: i18n.dashboardCalendar,
+                  color: Colors.teal,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CalendarViewScreen(),
+                      ),
+                    );
+                  },
+                ),
+              if (hasReservations)
+                _QuickActionChip(
+                  icon: Icons.people,
+                  label: i18n.dashboardCustomers,
+                  color: Colors.indigo,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CustomersScreen(),
+                      ),
+                    );
+                  },
+                ),
+              if (hasReservations)
+                _QuickActionChip(
+                  icon: Icons.people_outline,
+                  label: i18n.dashboardWeeklyCustomers,
+                  color: Colors.orange,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManualCustomersScreen(),
+                      ),
+                    );
+                  },
+                ),
+              if (hasChat)
+                _QuickActionChip(
+                  icon: Icons.support_agent,
+                  label: i18n.dashboardEscalatedChats,
+                  color: Colors.red,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EscalatedChatsScreen(),
+                      ),
+                    );
+                  },
+                ),
+              if (hasCamps)
+                _QuickActionChip(
+                  icon: Icons.cabin,
+                  label: i18n.dashboardCamps,
+                  color: Colors.brown,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CampsManagementScreen(),
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
+        ],
       ],
+    );
+  }
+}
+
+class _ModuleMetricsSection extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context)!;
+    final metricsAsync = ref.watch(adminModuleMetricsProvider);
+
+    return metricsAsync.when(
+      data: (metrics) {
+        if (metrics.isEmpty) {
+          return Text(i18n.adminModulesDashboardEmpty);
+        }
+        return GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 1.3,
+          children: metrics
+              .map((metric) => StatCard(
+                    title: metric.title,
+                    value: metric.value,
+                    icon: metric.icon,
+                    color: metric.color,
+                  ))
+              .toList(),
+        );
+      },
+      loading: () => const SizedBox(
+        height: 64,
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => Text(i18n.adminModulesDashboardEmpty),
     );
   }
 }
@@ -343,6 +493,7 @@ class _QuickActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return ActionChip(
       avatar: Icon(icon, size: 18, color: color),
       label: Text(label),

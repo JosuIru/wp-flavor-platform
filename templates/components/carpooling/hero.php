@@ -29,41 +29,41 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
                 <form class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">Origen</label>
-                            <input type="text" placeholder="¿Desde dónde viajas?" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('Origen', 'flavor-chat-ia'); ?></label>
+                            <input type="text" placeholder="<?php echo esc_attr__('¿Desde dónde viajas?', 'flavor-chat-ia'); ?>" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">Destino</label>
-                            <input type="text" placeholder="¿A dónde vas?" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('Destino', 'flavor-chat-ia'); ?></label>
+                            <input type="text" placeholder="<?php echo esc_attr__('¿A dónde vas?', 'flavor-chat-ia'); ?>" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">Fecha</label>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></label>
                             <input type="date" class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">Pasajeros</label>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);"><?php echo esc_html__('Pasajeros', 'flavor-chat-ia'); ?></label>
                             <select class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
-                                <option>1 pasajero</option>
-                                <option>2 pasajeros</option>
-                                <option>3 pasajeros</option>
-                                <option>4+ pasajeros</option>
+                                <option><?php echo esc_html__('1 pasajero', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('2 pasajeros', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('3 pasajeros', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('4+ pasajeros', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="flavor-button flavor-button-primary w-full md:w-auto px-12">Buscar Viajes</button>
+                    <button type="submit" class="flavor-button flavor-button-primary w-full md:w-auto px-12"><?php echo esc_html__('Buscar Viajes', 'flavor-chat-ia'); ?></button>
                 </form>
                 <div class="grid grid-cols-3 gap-6 mt-8 pt-8 border-t" style="border-color: #e5e7eb;">
                     <div class="text-center">
                         <div class="text-3xl font-bold" style="color: var(--flavor-primary);">2,450</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Viajes activos</div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Viajes activos', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold" style="color: var(--flavor-primary);">8,340</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Usuarios</div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Usuarios', 'flavor-chat-ia'); ?></div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);">€12.5k</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);">Ahorrados</div>
+                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('€12.5k', 'flavor-chat-ia'); ?></div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Ahorrados', 'flavor-chat-ia'); ?></div>
                     </div>
                 </div>
             </div>

@@ -15,8 +15,8 @@ $estadisticas = $estadisticas ?? [];
     <div class="bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-2xl p-8 mb-8 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-3xl font-bold mb-2">⚠️ Incidencias del Barrio</h1>
-                <p class="text-red-100">Reporta y consulta problemas en espacios públicos</p>
+                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('⚠️ Incidencias del Barrio', 'flavor-chat-ia'); ?></h1>
+                <p class="text-red-100"><?php echo esc_html__('Reporta y consulta problemas en espacios públicos', 'flavor-chat-ia'); ?></p>
             </div>
             <div class="flex items-center gap-4">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
@@ -24,7 +24,7 @@ $estadisticas = $estadisticas ?? [];
                 </span>
                 <button class="bg-white text-red-600 px-6 py-3 rounded-xl font-semibold hover:bg-red-50 transition-all shadow-md"
                         onclick="flavorIncidencias.nuevaIncidencia()">
-                    📝 Reportar incidencia
+                    <?php echo esc_html__('📝 Reportar incidencia', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </div>
@@ -40,7 +40,7 @@ $estadisticas = $estadisticas ?? [];
                 </div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['pendientes'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">Pendientes</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@ $estadisticas = $estadisticas ?? [];
                 </div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['en_proceso'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">En proceso</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('En proceso', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@ $estadisticas = $estadisticas ?? [];
                 </div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['resueltas'] ?? 0); ?></p>
-                    <p class="text-xs text-gray-500">Resueltas</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Resueltas', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@ $estadisticas = $estadisticas ?? [];
                 </div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['tiempo_medio'] ?? '—'); ?></p>
-                    <p class="text-xs text-gray-500">Días promedio</p>
+                    <p class="text-xs text-gray-500"><?php echo esc_html__('Días promedio', 'flavor-chat-ia'); ?></p>
                 </div>
             </div>
         </div>
@@ -84,19 +84,19 @@ $estadisticas = $estadisticas ?? [];
     <div class="flex flex-wrap gap-2 mb-6">
         <button class="px-4 py-2 rounded-full bg-red-100 text-red-700 font-medium hover:bg-red-200 transition-colors filter-active"
                 data-estado="todos">
-            Todas
+            <?php echo esc_html__('Todas', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors"
                 data-estado="pendiente">
-            🔴 Pendientes
+            <?php echo esc_html__('🔴 Pendientes', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors"
                 data-estado="en_proceso">
-            🟡 En proceso
+            <?php echo esc_html__('🟡 En proceso', 'flavor-chat-ia'); ?>
         </button>
         <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors"
                 data-estado="resuelto">
-            🟢 Resueltas
+            <?php echo esc_html__('🟢 Resueltas', 'flavor-chat-ia'); ?>
         </button>
     </div>
 
@@ -105,11 +105,11 @@ $estadisticas = $estadisticas ?? [];
         <?php if (empty($incidencias)): ?>
         <div class="text-center py-16 bg-gray-50 rounded-2xl">
             <div class="text-6xl mb-4">✅</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay incidencias</h3>
-            <p class="text-gray-500 mb-6">El barrio está en perfecto estado</p>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay incidencias', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-6"><?php echo esc_html__('El barrio está en perfecto estado', 'flavor-chat-ia'); ?></p>
             <button class="bg-red-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors"
                     onclick="flavorIncidencias.nuevaIncidencia()">
-                📝 Reportar nueva incidencia
+                <?php echo esc_html__('📝 Reportar nueva incidencia', 'flavor-chat-ia'); ?>
             </button>
         </div>
         <?php else: ?>
@@ -198,14 +198,14 @@ $estadisticas = $estadisticas ?? [];
                 <div class="flex md:flex-col justify-end gap-2 p-4 bg-gray-50 md:bg-transparent">
                     <button class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                             onclick="flavorIncidencias.apoyar(<?php echo esc_attr($incidencia['id']); ?>)"
-                            title="Apoyar incidencia">
+                            title="<?php echo esc_attr__('Apoyar incidencia', 'flavor-chat-ia'); ?>">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
                         </svg>
                     </button>
                     <a href="<?php echo esc_url($incidencia['url']); ?>"
                        class="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                       title="Ver detalles">
+                       title="<?php echo esc_attr__('Ver detalles', 'flavor-chat-ia'); ?>">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
@@ -222,11 +222,11 @@ $estadisticas = $estadisticas ?? [];
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
             <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
-                ← Anterior
+                <?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?>
             </button>
             <span class="px-4 py-2 text-gray-600">Página 1 de <?php echo ceil($total_incidencias / 10); ?></span>
             <button class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors">
-                Siguiente →
+                <?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?>
             </button>
         </nav>
     </div>

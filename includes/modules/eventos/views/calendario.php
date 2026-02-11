@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
             html += `<div class="flavor-calendar-cell ${isToday ? 'today' : ''}"><div style="font-weight:600;margin-bottom:5px;">${day}</div>`;
             if (eventos[dateStr]) {
                 eventos[dateStr].forEach(evento => {
-                    html += `<div class="flavor-evento-mini" title="${evento.titulo}">${evento.hora} ${evento.titulo}</div>`;
+                    html += `<div class="flavor-evento-mini" title="<?php echo esc_attr__('${evento.titulo}', 'flavor-chat-ia'); ?>">${evento.hora} ${evento.titulo}</div>`;
                 });
             }
             html += '</div>';

@@ -194,7 +194,7 @@ $usuario_id = get_current_user_id();
     <div class="carpooling-modal__contenido">
         <div class="carpooling-modal__header">
             <h3 class="carpooling-modal__titulo"><?php esc_html_e('Agregar vehiculo', 'flavor-chat-ia'); ?></h3>
-            <button type="button" class="carpooling-modal__cerrar" onclick="this.closest('.carpooling-modal').classList.remove('activo');">&times;</button>
+            <button type="button" class="carpooling-modal__cerrar" onclick="this.closest('.carpooling-modal').classList.remove('activo');"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
         </div>
         <div class="carpooling-modal__body">
             <form id="carpooling-form-vehiculo">
@@ -203,17 +203,17 @@ $usuario_id = get_current_user_id();
                 <div class="carpooling-publicar__grid">
                     <div class="carpooling-campo">
                         <label class="carpooling-campo__label"><?php esc_html_e('Marca', 'flavor-chat-ia'); ?> *</label>
-                        <input type="text" name="marca" class="carpooling-campo__input" required placeholder="Ej: Seat">
+                        <input type="text" name="marca" class="carpooling-campo__input" required placeholder="<?php echo esc_attr__('Ej: Seat', 'flavor-chat-ia'); ?>">
                     </div>
 
                     <div class="carpooling-campo">
                         <label class="carpooling-campo__label"><?php esc_html_e('Modelo', 'flavor-chat-ia'); ?> *</label>
-                        <input type="text" name="modelo" class="carpooling-campo__input" required placeholder="Ej: Ibiza">
+                        <input type="text" name="modelo" class="carpooling-campo__input" required placeholder="<?php echo esc_attr__('Ej: Ibiza', 'flavor-chat-ia'); ?>">
                     </div>
 
                     <div class="carpooling-campo">
                         <label class="carpooling-campo__label"><?php esc_html_e('Color', 'flavor-chat-ia'); ?></label>
-                        <input type="text" name="color" class="carpooling-campo__input" placeholder="Ej: Blanco">
+                        <input type="text" name="color" class="carpooling-campo__input" placeholder="<?php echo esc_attr__('Ej: Blanco', 'flavor-chat-ia'); ?>">
                     </div>
 
                     <div class="carpooling-campo">
@@ -223,7 +223,7 @@ $usuario_id = get_current_user_id();
 
                     <div class="carpooling-campo">
                         <label class="carpooling-campo__label"><?php esc_html_e('Matricula', 'flavor-chat-ia'); ?></label>
-                        <input type="text" name="matricula" class="carpooling-campo__input" placeholder="1234 ABC">
+                        <input type="text" name="matricula" class="carpooling-campo__input" placeholder="<?php echo esc_attr__('1234 ABC', 'flavor-chat-ia'); ?>">
                     </div>
 
                     <div class="carpooling-campo">

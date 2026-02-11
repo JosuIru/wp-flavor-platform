@@ -6,10 +6,10 @@ if (!defined('ABSPATH')) exit;
 $categoria_actual = isset($_GET['categoria']) ? sanitize_text_field($_GET['categoria']) : '';
 ?>
 <div class="flavor-component bg-white rounded-xl shadow-md p-6 sticky top-6">
-    <h3 class="text-xl font-bold mb-4">Filtros</h3>
+    <h3 class="text-xl font-bold mb-4"><?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?></h3>
     <form method="get">
         <div class="mb-6">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">Categoría</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-3"><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></label>
             <?php
             $categorias = get_terms(array('taxonomy' => 'categoria_producto', 'hide_empty' => true));
             if ($categorias) :
@@ -27,7 +27,7 @@ $categoria_actual = isset($_GET['categoria']) ? sanitize_text_field($_GET['categ
             ?>
         </div>
         <?php if ($categoria_actual) : ?>
-            <a href="<?php echo esc_url(get_post_type_archive_link('grupo_consumo')); ?>" class="block text-center px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">Limpiar filtros</a>
+            <a href="<?php echo esc_url(get_post_type_archive_link('grupo_consumo')); ?>" class="block text-center px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"><?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?></a>
         <?php endif; ?>
     </form>
 </div>

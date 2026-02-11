@@ -30,19 +30,19 @@ $usuarios = $wpdb->get_results("
 ?>
 
 <div class="wrap">
-    <h1>Usuarios de la Biblioteca</h1>
+    <h1><?php echo esc_html__('Usuarios de la Biblioteca', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <div class="flavor-card">
         <table class="wp-list-table widefat striped">
             <thead>
                 <tr>
-                    <th>Usuario</th>
-                    <th>Email</th>
-                    <th>Libros Compartidos</th>
-                    <th>Libros Prestados</th>
-                    <th>Libros Tomados</th>
-                    <th>Acciones</th>
+                    <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Libros Compartidos', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Libros Prestados', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Libros Tomados', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -53,7 +53,7 @@ $usuarios = $wpdb->get_results("
                         <td class="flavor-text-center"><?php echo number_format($u->libros_compartidos); ?></td>
                         <td class="flavor-text-center"><?php echo number_format($u->libros_prestados); ?></td>
                         <td class="flavor-text-center"><?php echo number_format($u->libros_tomados); ?></td>
-                        <td><button class="button button-small">Ver Perfil</button></td>
+                        <td><button class="button button-small"><?php echo esc_html__('Ver Perfil', 'flavor-chat-ia'); ?></button></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

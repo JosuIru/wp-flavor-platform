@@ -28,19 +28,19 @@ $ventas_query = new WP_Query($args);
 ?>
 
 <div class="wrap">
-    <h1><span class="dashicons dashicons-cart"></span> Ventas del Marketplace</h1>
+    <h1><span class="dashicons dashicons-cart"></span> <?php echo esc_html__('Ventas del Marketplace', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th>Producto</th>
-                <th>Vendedor</th>
-                <th>Precio</th>
-                <th>Estado</th>
-                <th>Ubicación</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
+                <th><?php echo esc_html__('Producto', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Vendedor', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Ubicación', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -64,15 +64,15 @@ $ventas_query = new WP_Query($args);
                         <td><?php echo $ubicacion ?: 'N/A'; ?></td>
                         <td><?php echo get_the_date('d/m/Y'); ?></td>
                         <td>
-                            <a href="<?php echo get_edit_post_link(); ?>" class="button button-small">Editar</a>
-                            <a href="<?php the_permalink(); ?>" class="button button-small" target="_blank">Ver</a>
+                            <a href="<?php echo get_edit_post_link(); ?>" class="button button-small"><?php echo esc_html__('Editar', 'flavor-chat-ia'); ?></a>
+                            <a href="<?php the_permalink(); ?>" class="button button-small" target="_blank"><?php echo esc_html__('Ver', 'flavor-chat-ia'); ?></a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
                 <?php wp_reset_postdata(); ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px;">No hay ventas registradas</td>
+                    <td colspan="7" style="text-align: center; padding: 40px;"><?php echo esc_html__('No hay ventas registradas', 'flavor-chat-ia'); ?></td>
                 </tr>
             <?php endif; ?>
         </tbody>

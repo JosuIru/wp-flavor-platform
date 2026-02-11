@@ -216,7 +216,7 @@ $vista = $args['vista'] ?? 'mes';
     <!-- Modal de detalle de ciclo -->
     <div class="gc-modal gc-modal-ciclo" id="gc-modal-ciclo" style="display: none;">
         <div class="gc-modal-content">
-            <button type="button" class="gc-modal-close">&times;</button>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
             <div class="gc-modal-body">
                 <!-- Contenido cargado dinámicamente -->
             </div>

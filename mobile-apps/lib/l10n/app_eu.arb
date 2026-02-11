@@ -1,0 +1,1364 @@
+{
+  "@@locale": "eu",
+  "appTitle": "Basabere",
+  "appTagline": "Naturan esperientziak",
+  "clientAppTitle": "Esperientzia erreserbatu",
+  "clientAppSubtitle": "Kontsultatu erabilgarritasuna eta erreserbatu zure bisita",
+  "adminAppTitle": "Administrazioa",
+  "adminAppSubtitle": "Erreserben eta estatistiken kudeaketa",
+  "appVersionLabel": "v{version}",
+  "@appVersionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "languageTitle": "Hizkuntza",
+  "languageDescription": "Aukeratutako hizkuntza IA laguntzailearekin eta jakinarazpenekin erabiliko da.",
+  "languageChanged": "Hizkuntza {language} bihurtu da",
+  "@languageChanged": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigConnectionError": "Konexio errorea",
+  "serverConfigConnectedTo": "{name}-ra konektatuta",
+  "@serverConfigConnectedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigError": "Errorea: {error}",
+  "@serverConfigError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigConnectionSuccess": "Zerbitzariarekin konexioa egina",
+  "serverConfigSavedRestartNotice": "Ezarpena gordeta. Berrabiarazi aplikazioa aldaketak aplikatzeko.",
+  "serverConfigSaveError": "Gordetzean errorea: {error}",
+  "@serverConfigSaveError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigInvalidQr": "QR baliogabea: {url}",
+  "@serverConfigInvalidQr": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "serverConfigResetTitle": "Balioak berrezarri",
+  "serverConfigResetDescription": "Zerbitzariaren URLa balio lehenetsietara itzuliko da. Jarraitu?",
+  "commonCancel": "Utzi",
+  "serverConfigResetAction": "Berrezarri",
+  "serverConfigResetDone": "Ezarpena berrezarrita",
+  "serverConfigTitle": "Zerbitzariaren ezarpena",
+  "serverConfigResetTooltip": "Balioak berrezarri",
+  "serverConfigScanQrTitle": "QR kodea eskaneatu",
+  "serverConfigScanQrDescription": "Eskaneatu QR kodea WordPress paneletik automatikoki konfiguratzeko",
+  "serverConfigSavedBusinesses": "Gordetako negozioak",
+  "commonCurrent": "Unekoa",
+  "commonUse": "Erabili",
+  "serverConfigManualSeparator": "edo eskuz konfiguratu",
+  "serverConfigServerUrlTitle": "Zerbitzariaren URLa",
+  "serverConfigServerUrlLabel": "Zerbitzariaren URLa",
+  "serverConfigServerUrlHint": "https://ejemplo.com",
+  "serverConfigServerUrlHelper": "Sartu https:// edo http://",
+  "serverConfigServerUrlRequired": "URLa beharrezkoa da",
+  "serverConfigServerUrlInvalid": "URLa ez da baliozkoa. http:// edo https://-rekin hasi behar da",
+  "serverConfigNamespaceTitle": "APIren namespace-a",
+  "serverConfigNamespaceLabel": "Namespace-a",
+  "serverConfigNamespaceHint": "/wp-json/chat-ia-mobile/v1",
+  "serverConfigNamespaceHelper": "Normalean ez da beharrezkoa hau aldatzea",
+  "serverConfigNamespaceRequired": "Namespace-a beharrezkoa da",
+  "serverConfigNamespaceMustStartSlash": "/-rekin hasi behar du",
+  "serverConfigApiUrlPreviewTitle": "APIaren URL osoa:",
+  "serverConfigTestingLabel": "Probatzen...",
+  "serverConfigTestButton": "Konexioa probatu",
+  "serverConfigSavingLabel": "Gordetzen...",
+  "serverConfigSaveButton": "Ezarpena gorde",
+  "serverConfigRestartNote": "Gorde ondoren, berrabiarazi aplikazioa aldaketek eragina izan dezaten.",
+  "serverConfigQrScanTitle": "QR eskaneatu",
+  "serverConfigQrScanInstruction": "Eskaneatu QR kodea",
+  "serverConfigQrScanHelp": "QR kodea WordPress panelean aurkituko duzu:\nChat IA → Konfigurazioa → Aplikazio mugikorrak",
+  "reserveCta": "Erreserbatu",
+  "reservationCompletedTitle": "Erreserba osatuta!",
+  "acceptButton": "Onartu",
+  "completePurchaseTitle": "Erosketa amaitu",
+  "cancelPurchaseConfirm": "Erosketa bertan behera utzi?",
+  "continueButton": "Jarraitu",
+  "exitButton": "Irten",
+  "ticketsEmailPrompt": "Sartu zure emaila zure sarrerak ikusteko. Egiaztapen kode bat bidaliko dizugu.",
+  "sendCodeLabel": "Bidali kodea",
+  "verificationCodeLabel": "Egiaztapen kodea",
+  "resendCodeLabel": "Kodea berriro bidali",
+  "verificar8e93d9": "Egiaztatu",
+  "misTicketsD730aa": "Nire sarrerak",
+  "cambiarD1bdc3": "Aldatu",
+  "enviarCDigoDeVerificaciNEd6c4b": "Bidali egiaztapen kodea",
+  "usarOtroEmail7573e1": "Beste email bat erabili",
+  "verificarEmailDa92ce": "Emaila egiaztatu",
+  "cambiarEmailC3a46a": "Emaila aldatu",
+  "reintentar179654": "Saiatu berriro",
+  "verQr93c2a8": "QR ikusi",
+  "calendarioB0743a": "Egutegia",
+  "compartirFba5ba": "Partekatu",
+  "cerrar92eb39": "Itxi",
+  "aAdirD20f65": "Gehitu",
+  "emailVerificadoCorrectamente13db6f": "✓ Emaila ondo egiaztatuta",
+  "enviandoCDigo36cd31": "Kodea bidaltzen...",
+  "verificando1361c9": "Egiaztatzen...",
+  "errorAlAAdirAlCalendario030367": "Errorea egutegira gehitzean",
+  "emailCe8ae9": "Emaila",
+  "tuEmailComE48501": "tu@email.com",
+  "cDigoC54e67": "Kodea",
+  "t000000670b14": "000000",
+  "recargar3a9786": "Birkargatu",
+  "whatsapp8b777e": "WhatsApp",
+  "directorioDf7b92": "Direktorioa",
+  "sitiosGuardados13e63b": "Gordetako guneak",
+  "buscar113f74": "Bilatu",
+  "cercaDeMC17429": "Nire inguruan",
+  "soloFavoritos66eeaf": "Gogokoak bakarrik",
+  "vistaCompactaCe3da5": "Ikuspegi trinkoa",
+  "radioC210a7": "Irratia:",
+  "conectar4b2e15": "Konektatu",
+  "verPerfilD615f4": "Profila ikusi",
+  "todos32630c": "Guztiak",
+  "comunidad6b02af": "Komunitatea",
+  "cooperativa657922": "Kooperatiba",
+  "asociaciN59d9a3": "Elkartea",
+  "empresa9bc720": "Enpresa",
+  "colectivo9c6f6f": "Kolektiboa",
+  "fundaciN0bcfd2": "Fundazioa",
+  "particular1d75c6": "Partikularra",
+  "administraciNPBlica86e1c4": "Administrazio publikoa",
+  "centroEducativo96e832": "Hezkuntza zentroa",
+  "otroC22952": "Beste",
+  "bSico597ae7": "Oinarrizkoa",
+  "enTransiciN3c5b08": "Trantsizioan",
+  "conscienteDf134a": "Kontziente",
+  "referenteD876b0": "Erreferente",
+  "noHayNegociosEnElDirectorio7c8399": "Ez dago negoziorik direktorioan",
+  "noHaySitiosGuardados5a9b5e": "Ez dago gordetako gunerik",
+  "negocios2d41e3": "Negozioak",
+  "toqueParaVerDetallesBa76e9": "Ukitu xehetasunak ikusteko",
+  "tipo4f427c": "Mota",
+  "nivel48281f": "Maila",
+  "sectorOpcional94b201": "Sektorea (aukerakoa)",
+  "ciudadOpcionalE747b0": "Hiria (aukerakoa)",
+  "chat55dcdf": "Chat",
+  "limpiarChatE7dfdf": "Chat-a garbitu",
+  "seguroQueQuieresBorrarElHistorialDE3b015": "Ziur zaude mezuen historia ezabatu nahi duzula?",
+  "borrarA96f30": "Ezabatu",
+  "pendiente17fd63": "Zain",
+  "usadoC277c8": "Erabilita",
+  "cancelado04b0f5": "Bertan behera",
+  "hoy6368f5": "Gaur",
+  "buscarCliente5a2444": "Bezeroa bilatu",
+  "nombreEmailOTelFonoC50094": "Izena, emaila edo telefonoa...",
+  "tipoTicket402ee5": "Sarrera mota",
+  "estado3397e6": "Egoera",
+  "estadSticasF66aff": "Estatistikak",
+  "chatsEscalados032c6e": "Chat eskalatuak",
+  "actualizar2e7be1": "Eguneratu",
+  "clientesA374d1": "Bezeroak",
+  "llamarC9c110": "Deitu",
+  "buscarPorNombreEmailOTelFono63ad57": "Bilatu izen, email edo telefonoaren arabera...",
+  "quitarFiltro9c7d57": "Iragazkia kendu",
+  "chatIaAdminAffb65": "IA Admin Chat",
+  "seguroQueQuieresBorrarElHistorialFdb76f": "Ziur zaude historia ezabatu nahi duzula?",
+  "preguntaSobreReservasClientesEstadSD68421": "Galdetu erreserbei, bezeroei, estatistikoei buruz...",
+  "clientesSemanaD70cd2": "Astekoko bezeroak",
+  "guardarD3270b": "Gorde",
+  "eliminarCliente63bb53": "Bezeroa ezabatu",
+  "eliminar5b5c9f": "Ezabatu",
+  "fechaDelEvento63f6fa": "Ekitaldiaren data *",
+  "errorAlCargarTicketsAb3af0": "Sarrerak kargatzean errorea",
+  "soloSePuedenEditarClientesManualesE83c06": "Eskuzko bezeroak bakarrik editatu daitezke",
+  "soloSePuedenEliminarClientesManuale76681f": "Eskuzko bezeroak bakarrik ezabatu daitezke",
+  "escribeLasNotas771c72": "Idatzi oharrak...",
+  "editarEf485e": "Editatu",
+  "notas265b13": "Oharrak",
+  "nombre45576f": "Izena *",
+  "telFonoD091ea": "Telefonoa",
+  "checkInMasivo074798": "Check-in masiboa",
+  "confirmar848793": "Baieztatu",
+  "cancelaciNMasiva9b9f47": "Bertan behera masiboa",
+  "noBafd73": "Ez",
+  "sCancelarA16a02": "Sí, cancelar",
+  "reservas843a17": "Erreserbak",
+  "seleccionarPendientesC4afe1": "Seleccionar pendientes",
+  "ticketC75143": "Ticket",
+  "cancelarReserva8c43c1": "Erreserba bertan behera utzi",
+  "seguroQueQuieresCancelarEstaReservaC7d487": "Ziur zaude erreserba hau bertan behera utzi nahi duzula? Ekintza hau ezin da desegin.",
+  "checkInEc86d6": "Check-in",
+  "enviar30cc00": "Bidali",
+  "ningunaReservaSeleccionadaTieneDatosB33ea0": "Hautatutako erreserba batek ere ez du kontaktu daturik",
+  "dA734300": "Eguna",
+  "rango10f7ce": "Tartea",
+  "checkInRealizadoCorrectamente74e5cd": "Check-in ondo egina",
+  "reservaCanceladaB25309": "Erreserba bertan behera utzita",
+  "cancelarMasivo3df6df": "Bertan behera masiboa",
+  "enviarMensaje66679f": "Mezua bidali",
+  "selecciNMLtipleE97c53": "Hautapen anizkoa",
+  "buscarPorNombreEmailOCDigo1c88c2": "Bilatu izen, email edo kodearen arabera...",
+  "escribeTuMensajeA97d6f": "Idatzi zure mezua...",
+  "escribeTuMensajeNusaLasVariablesPaE2f1ec": "Escribe tu mensaje...\\nUsa las variables para personalizar cada mensaje.",
+  "procesandoF16b30": "Prozesatzen...",
+  "linterna8f3689": "Linterna",
+  "cambiarCamara5a36e3": "Kamera aldatu",
+  "dashboard2938c7": "Panel nagusia",
+  "soporte54532b": "Euskarria",
+  "telefonoBdf77d": "Telefonoa",
+  "emailCopiadoAlPortapapelesDf197f": "Emaila arbelera kopiatu da",
+  "telefonoCopiadoAlPortapapeles5300e7": "Telefonoa arbelera kopiatu da",
+  "noSePudoAbrirWhatsapp0e9a90": "Ezin izan da WhatsApp ireki",
+  "emailCopiadoFa2686": "Emaila kopiatuta",
+  "telefonoCopiado6cb976": "Telefonoa kopiatuta",
+  "inscripciones7f2754": "Izen-emateak",
+  "exportandoAExcel583e30": "Excelera esportatzen...",
+  "pagadas6be9ac": "Ordainduta",
+  "pendientesB4188c": "Zain",
+  "exportarAExcel3ac529": "Excelera esportatu",
+  "eliminarCampamento01a566": "Kanpamendua ezabatu",
+  "copiar0816bd": "Copiar",
+  "copiarDeeplinkE589f8": "Copiar deeplink",
+  "gestiNDeCampamentos247af6": "Kanpamenduen kudeaketa",
+  "nuevo73fa04": "Nuevo",
+  "crearPrimeroE98bb6": "Crear primero",
+  "campamentoEliminadoCorrectamenteEe685d": "Kanpamendua ondo ezabatu da",
+  "enlaceCopiadoAlPortapapelesBdfefc": "Enlace copiado al portapapeles",
+  "deeplinkCopiadoAlPortapapeles3bd450": "Deeplink copiado al portapapeles",
+  "verInscripcionesB46dd7": "Izen-emateak ikusi",
+  "escribeParaBuscar633b34": "Escribe para buscar",
+  "lasInscripcionesEstNCerradas4a5c6d": "Izen-emateak itxita daude",
+  "elCampamentoEstCompleto98127c": "Kanpamendua beteta dago",
+  "noSeEncontrElCampamentoA8179a": "Ez da kanpamendua aurkitu",
+  "campamentosB769f1": "Kanpamenduak",
+  "limpiar476e7d": "Limpiar",
+  "limpiarFiltrosAf85d5": "Limpiar filtros",
+  "aplicarFiltros880da9": "Aplicar filtros",
+  "todasF28c2b": "Todas",
+  "abierto12ec8f": "Abierto",
+  "cerrado4e2af9": "Itxita",
+  "filtros57aacc": "Filtros",
+  "buscarCampamentosDf032d": "Kanpamenduak bilatu...",
+  "reservationsCheckinConfirm": "{count} erreserbaren check-in egin?",
+  "@reservationsCheckinConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsCheckinResult": "Check-in: {success} ondo, {error} errore",
+  "@reservationsCheckinResult": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "error": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsCancelConfirm": "{count} erreserba bertan behera utzi? Ekintza hau ezin da desegin.",
+  "@reservationsCancelConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsCancelResult": "Bertan behera utzita: {success} ondo, {error} errore",
+  "@reservationsCancelResult": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "error": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsSelectedCount": "{count} hautatuta",
+  "@reservationsSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonCannotOpenUrl": "No se puede abrir: {url}",
+  "@commonCannotOpenUrl": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "reservationsMessagesSent": "Bidalia {sent}/{total} mezu",
+  "@reservationsMessagesSent": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsChannelWhatsApp": "WhatsApp ({count})",
+  "@reservationsChannelWhatsApp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsChannelEmail": "Email ({count})",
+  "@reservationsChannelEmail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsSendingProgress": "Bidaltzen {sent}/{total}...",
+  "@reservationsSendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsManualCount": "📞 {count}",
+  "@reservationsManualCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reservationsWcCount": "🛒 {count}",
+  "@reservationsWcCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "customersNotesTitle": "Oharrak - {name}",
+  "@customersNotesTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customersDeleteConfirm": "Ziur zaude {name} ezabatu nahi duzula?",
+  "@customersDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customersManualCount": "📞 {count}",
+  "@customersManualCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "customersWcCount": "🛒 {count}",
+  "@customersWcCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonDateDmy": "{day}/{month}/{year}",
+  "@commonDateDmy": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "campsShareTitle": "Partekatu: {title}",
+  "@campsShareTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "commonPriceEur": "{amount}€",
+  "@commonPriceEur": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "campsInscriptionsLabel": "inskripzioak",
+  "commonYearsOld": "{age} urte",
+  "@commonYearsOld": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "commonError": "Errorea: {error}",
+  "@commonError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "escalatedFilterLabel": "Filtrando: {status}",
+  "@escalatedFilterLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "commonPlacesAvailable": "{count} plazas",
+  "@commonPlacesAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonConnectedTo": "{name}-ra konektatuta",
+  "@commonConnectedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reservationsOtpSent": "Hemos enviado un código de 6 dígitos a:\n{email}",
+  "@reservationsOtpSent": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "commonResultsFor": "Emaitzak honentzat: {query}",
+  "@commonResultsFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "commonRetry": "Saiatu berriro",
+  "calendarSelectTickets": "Sarrerak hautatu",
+  "calendarStatusAvailable": "Eskuragarri",
+  "calendarStatusFull": "Betea",
+  "calendarStatusClosed": "Itxita",
+  "calendarDayStatusMessage": "Egun hau {status} dago",
+  "@calendarDayStatusMessage": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsItemQuantity": "{qty}x {name}",
+  "@ticketsItemQuantity": {
+    "placeholders": {
+      "qty": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "commonTotal": "Guztira",
+  "commonProcessing": "Prozesatzen...",
+  "reservationsCheckoutFinish": "Erreserba amaitu",
+  "clientNoTabs": "Ez dago fitxa konfiguraturik",
+  "clientAdminAppNotInstalled": "Administrazio aplikazioa ez dago instalatuta",
+  "commonAdmin": "Admin",
+  "commonShortDate": "{date}",
+  "@commonShortDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "loadingDashboard": "Panel nagusia kargatzen...",
+  "loadingAvailability": "Erabilgarritasuna kargatzen...",
+  "loadingTickets": "Sarrerak kargatzen...",
+  "loadingStats": "Estatistikak kargatzen...",
+  "loadingCamps": "Kanpamenduak kargatzen...",
+  "loadingReservations": "Erreserbak kargatzen...",
+  "loadingCustomers": "Bezeroak kargatzen...",
+  "loadingInfo": "Informazioa kargatzen...",
+  "holaEnQuePuedoAyudarte": "Kaixo! Zertan lagun zaitzaket?",
+  "preguntameSobreDisponibilidadNhorariosOComoHacerUnaReserva": "Pregúntame sobre disponibilidad,\\nhorarios o cómo hacer una reserva",
+  "tuReservaHaSidoProcesadaConExito": "Zure erreserba ondo prozesatu da. ",
+  "siSalesAhoraPerderasLosCambiosYTendrasQueEmpezarDeNuevo": "Orain irteten bazara, aldaketak galduko dituzu eta berriro hasi beharko duzu.",
+  "modoOfflineMostrandoTicketsGuardados": "Offline modua - gordetako sarrerak erakusten",
+  "emailVerificado": "Emaila egiaztatuta",
+  "verificacionRequerida": "Egiaztapena behar da",
+  "paraVerTusTicketsNecesitasVerificarTuEmail": "Zure sarrerak ikusteko, emaila egiaztatu behar duzu.",
+  "tuBilleteraDeTickets": "Zure sarreren zorroa",
+  "verificaTuEmailParaAccederATusTicketsDeFormaSegura": "Egiaztatu emaila zure sarrerak modu seguruan ikusteko",
+  "noTienesReservas": "Ez duzu erreserbarik",
+  "sinConexion": "Konexiorik gabe",
+  "mostrandoTicketsGuardadosEnElDispositivo": "Gailuan gordetako sarrerak erakusten",
+  "muestraEsteCodigoEnLaEntrada": "Erakutsi kode hau sarreran",
+  "reservasPorDia": "Erreserbak eguneko",
+  "ingresosPorDia": "Eguneko diru-sarrerak",
+  "reservasPorTipoDeTicket": "Erreserbak sarrera motaren arabera",
+  "ingresosPorTipoDeTicket": "Diru-sarrerak sarrera motaren arabera",
+  "asistenteIaParaGestion": "Kudeaketarako IA laguntzailea",
+  "puedoAyudarteConReservasClientesEstadisticasYMas": "Erreserbekin, bezeroekin, estatistikekin eta gehiagorekin lagun dezaket. ",
+  "detallesDeLaReserva": "Erreserbaren xehetasunak",
+  "cliente": "Bezeroa",
+  "contactarCliente": "Bezeroarekin harremanetan jarri",
+  "plantillasRapidas": "Txantiloi azkarrak:",
+  "enviarMensajeMasivo": "Mezu masiboa bidali",
+  "enviarPor": "Bidali bidez:",
+  "plantillas": "Txantiloiak:",
+  "variablesDisponibles": "Aldagai erabilgarriak:",
+  "nombreNombreDelClienteN": "{nombre} - Nombre del cliente\\n",
+  "hoy": "Gaur",
+  "estaSemana": "Aste honetan",
+  "esteMes": "Hilabete honetan",
+  "accesosRapidos": "Sarbide azkarrak",
+  "herramientas": "Tresnak",
+  "equipoDeDesarrollo": "Garapen taldea",
+  "contactoRapido": "Harreman azkarra",
+  "necesitoAyudaCon": "Honekin laguntza behar dut...",
+  "datosDeContacto": "Harremanetarako datuak",
+  "horarioDeAtencion": "Arreta ordutegia",
+  "lunesAViernes9001800": "Astelehenetik ostiralera: 9:00 - 18:00",
+  "noHayInscripciones": "Ez dago izen-ematerik",
+  "responsable": "Arduraduna",
+  "inscripcion": "Izen-ematea:",
+  "importe": "Zenbatekoa:",
+  "enlaceWeb": "Web esteka:",
+  "enlaceParaAppMovil": "Mugikor app-aren esteka:",
+  "precios": "Prezioak",
+  "inscripcion2": "Izen-ematea",
+  "total": "Guztira",
+  "descripcion": "Deskribapena",
+  "precioTotal": "Guztizko prezioa",
+  "filtros": "Iragazkiak",
+  "categoria": "Kategoria",
+  "edad": "Adina",
+  "idioma": "Hizkuntza",
+  "estado": "Egoera",
+  "setupConnectedSuccess": "Ondo konektatuta!",
+  "setupConnectionFailed": "Ezin izan da zerbitzariarekin konektatu. Egiaztatu URLa.",
+  "setupConnectionError": "Konexio errorea: {error}",
+  "@setupConnectionError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "setupConfiguredSiteNameDefault": "Konfiguratutako gunea",
+  "setupQrClientAppWarning": "⚠️ QR hau bezeroen aplikaziorako da. Erabili Admin QR-a.",
+  "setupAdminQrMissingToken": "❌ Admin QR baliogabea: segurtasun tokena falta da",
+  "setupAdminTokenInvalid": "Segurtasun tokena baliogabea. Sortu QR berria WordPressen.",
+  "setupAdminTokenValidateError": "Tokena balidatzean errorea: {error}",
+  "@setupAdminTokenValidateError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "setupConfigDetected": "Konfigurazioa detektatua: {siteName}",
+  "@setupConfigDetected": {
+    "placeholders": {
+      "siteName": {}
+    }
+  },
+  "setupAdminRequiresSecureQr": "⚠️ Admin aplikazioak WordPress-eko QR segurua eskaneatu behar du",
+  "setupUrlDetected": "URL detektatua",
+  "setupInvalidQr": "QR kodea ez da baliozkoa",
+  "setupTitle": "Zerbitzaria konfiguratu",
+  "setupSubtitle": "Sartu zure WordPress gunearen URLa edo eskaneatu konfigurazio QR kodea",
+  "setupUrlRequired": "Sartu gunearen URLa",
+  "setupConnecting": "Konektatzen...",
+  "setupConnect": "Konektatu",
+  "setupScanQr": "QR kodea eskaneatu",
+  "setupHowToGetQr": "Nola lortu QR kodea?",
+  "setupQrSteps": "1. Accede al panel de administración de WordPress\n2. Ve a Calendario > Chat IA > Apps Móviles\n3. Escanea el código QR mostrado",
+  "setupQrScanTitle": "QR eskaneatu",
+  "setupQrScanHint": "Zuzendu kamera konfigurazio QR koderantz",
+  "exportNoDataToShow": "Ez dago daturik erakusteko",
+  "exportErrorFetchingData": "Datuak eskuratzean errorea",
+  "exportSelectDateRange": "Hautatu data tarte bat",
+  "exportFileSaveError": "Fitxategia gordetzean errorea: {error}",
+  "@exportFileSaveError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "exportNoDataToExport": "Ez dago daturik esportatzeko",
+  "exportErrorExporting": "Esportatzean errorea",
+  "exportCompletedTitle": "Esportazioa osatuta",
+  "exportShareSubject": "Esportazioa {filename}",
+  "@exportShareSubject": {
+    "placeholders": {
+      "filename": {}
+    }
+  },
+  "exportShareFile": "Fitxategia partekatu",
+  "commonClose": "Itxi",
+  "exportTitle": "Laburpenak ikusi eta esportatu",
+  "exportDescription": "Ikusi edo esportatu erreserben, bezeroen edo diru-sarreren datuak.",
+  "exportDataTypeTitle": "Datu mota",
+  "exportFilterTicketTypeTitle": "Sarrera motaren arabera iragazi",
+  "exportErrorLoadingTicketTypes": "Sarrera motak kargatzean errorea",
+  "exportDateRangeTitle": "Data tartea",
+  "exportSelectDates": "Datak hautatu",
+  "exportDaysCount": "{days} egun",
+  "@exportDaysCount": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "exportQuickRangesTitle": "Tarte azkarrak",
+  "exportQuickToday": "Gaur",
+  "exportQuickWeek": "Aste honetan",
+  "exportQuickMonth": "Hilabete honetan",
+  "exportQuickLast30": "Azken 30 egunak",
+  "exportQuickYear": "Aurten",
+  "exportViewData": "Datuak ikusi",
+  "commonLoading": "Kargatzen...",
+  "exportCsv": "CSV esportatu",
+  "exportAllTickets": "Sarrera guztiak",
+  "exportNoTicketFilter": "Motarik gabe",
+  "exportTypeReservations": "Erreserbak",
+  "exportTypeCustomers": "Bezeroak",
+  "exportTypeRevenue": "Diru-sarrerak",
+  "exportTypeReservationsDesc": "Erreserba guztiak bezero datuekin",
+  "exportTypeCustomersDesc": "Bezeroen zerrenda historikoarekin",
+  "exportTypeRevenueDesc": "Eguneko diru-sarreren laburpena",
+  "exportTotalRecords": "{total} erregistro",
+  "@exportTotalRecords": {
+    "placeholders": {
+      "total": {}
+    }
+  },
+  "exportTicketLabel": "Sarrera: {ticketType}",
+  "@exportTicketLabel": {
+    "placeholders": {
+      "ticketType": {}
+    }
+  },
+  "exportNoData": "Ez dago daturik",
+  "dashboardReservationsLabel": "Erreserbak",
+  "dashboardCheckinsLabel": "Check-inak",
+  "dashboardPending": "{count} zain",
+  "@dashboardPending": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "dashboardTotalReservationsLabel": "Erreserba guztiak",
+  "dashboardRevenueLabel": "Diru-sarrerak",
+  "dashboardLoadError": "Panel nagusia kargatzean errorea",
+  "dashboardScanQr": "QR eskaneatu",
+  "dashboardViewReservations": "Erreserbak ikusi",
+  "dashboardChatIa": "IA Chat",
+  "dashboardViewSummaries": "Laburpenak ikusi",
+  "dashboardStats": "Estatistikak",
+  "dashboardCalendar": "Egutegia",
+  "dashboardCustomers": "Bezeroak",
+  "dashboardWeeklyCustomers": "Astekoko bezeroak",
+  "dashboardEscalatedChats": "Chat eskalatuak",
+  "dashboardCamps": "Kanpamenduak",
+  "checkoutSuccessMessage": "Tu reserva ha sido procesada con éxito.\nRecibirás un email de confirmación.",
+  "checkoutExitWarning": "Si sales ahora perderás los cambios y tendrás que empezar de nuevo.",
+  "adminChatIntro": "Puedo ayudarte con reservas, clientes, estadísticas y más.\nTambién puedo generar informes CSV.",
+  "adminMessageVariablesTemplate": "{nombre} - Nombre del cliente\n{fecha} - Fecha de la reserva\n{ticket} - Tipo de ticket\n{codigo} - Código de reserva",
+  "@adminMessageVariablesTemplate": {
+    "placeholders": {
+      "nombre": {},
+      "fecha": {},
+      "ticket": {},
+      "codigo": {}
+    }
+  },
+  "reservationsAvailabilityError": "Erabilgarritasuna kargatzean errorea",
+  "reservationsTicketsError": "Sarrerak kargatzean errorea",
+  "infoLoadError": "Informazioa kargatzean errorea",
+  "adminChatCategoryReservations": "Erreserbak",
+  "adminChatCategoryClients": "Bezeroak",
+  "adminChatCategoryStats": "Estadísticas",
+  "adminChatCategoryExport": "Exportar",
+  "adminChatSuggestionReservationsToday": "¿Cuántas reservas hay para hoy?",
+  "adminChatSuggestionReservationsWeek": "Resumen de reservas de esta semana",
+  "adminChatSuggestionReservationsPending": "Lista de reservas pendientes",
+  "adminChatSuggestionClientsCount": "¿Cuántos clientes diferentes tenemos?",
+  "adminChatSuggestionTopClients": "Erreserba gehien duten bezeroak",
+  "adminChatSuggestionFindClientByEmail": "Bilatu bezeroa email bidez",
+  "adminChatSuggestionMonthlyRevenue": "Resumen de ingresos del mes",
+  "adminChatSuggestionTopTickets": "Tickets más vendidos",
+  "adminChatSuggestionMonthComparison": "Comparativa con el mes anterior",
+  "adminChatSuggestionExportTodayCsv": "Exportar reservas de hoy a CSV",
+  "adminChatSuggestionExportClientsCsv": "Lista de clientes en CSV",
+  "adminChatSuggestionExportMonthlyRevenue": "Informe de ingresos mensual",
+  "notificationsTitle": "Jakinarazpenak",
+  "notificationsPushTitle": "Push jakinarazpenak",
+  "notificationsPushDesc": "Push jakinarazpenak laster egongo dira eskuragarri.",
+  "notificationsSectionReservations": "Erreserbak",
+  "notificationsNewReservationsTitle": "Erreserba berriak",
+  "notificationsNewReservationsDesc": "Erreserba berri bat egiten denean alerta jaso",
+  "notificationsCheckinsTitle": "Check-inak",
+  "notificationsCheckinsDesc": "Check-in bat egiten denean alerta jaso",
+  "notificationsCancellationsTitle": "Bertan behera uzteak",
+  "notificationsCancellationsDesc": "Erreserba bat bertan behera uzten denean alerta jaso",
+  "notificationsSectionSummaries": "Laburpenak",
+  "notificationsDailySummaryTitle": "Eguneko laburpena",
+  "notificationsDailySummaryDesc": "Erreserben laburpena jaso egunero goizean",
+  "notificationsSectionAlerts": "Alertak",
+  "notificationsLowAvailabilityTitle": "Eskuragarritasun baxua",
+  "notificationsLowAvailabilityDesc": "Plaza gutxi geratzen direnean alerta",
+  "notificationsChatEscalationsTitle": "Chat eskalatzeak",
+  "notificationsChatEscalationsDesc": "Bezero batek arreta humanoa eskatzen duenean alerta",
+  "supportContactEmailLabel": "Email",
+  "supportContactCallLabel": "Llamar",
+  "supportContactWhatsAppLabel": "WhatsApp",
+  "supportReportProblemTitle": "Reportar un problema",
+  "supportReportProblemDesc": "Algo no funciona como esperaba",
+  "supportReportProblemSubject": "[App Admin] Reporte de problema",
+  "supportReportProblemBody": "Hola,\n\nHe encontrado un problema en la app:\n\nDescripcion del problema:\n\n\nPasos para reproducirlo:\n1. \n2. \n3. \n\nVersion de la app: {version}\n\nGracias.",
+  "@supportReportProblemBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "supportSuggestImprovementTitle": "Proponer una mejora",
+  "supportSuggestImprovementDesc": "Tengo una idea para mejorar la app",
+  "supportSuggestImprovementSubject": "[App Admin] Propuesta de mejora",
+  "supportSuggestImprovementBody": "Hola,\n\nMe gustaria proponer la siguiente mejora:\n\nDescripcion de la mejora:\n\n\nPor que seria util:\n\n\nVersion de la app: {version}\n\nGracias.",
+  "@supportSuggestImprovementBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "supportGeneralQuestionTitle": "Pregunta general",
+  "supportGeneralQuestionDesc": "Tengo una duda sobre el funcionamiento",
+  "supportGeneralQuestionSubject": "[App Admin] Consulta",
+  "supportGeneralQuestionBody": "Hola,\n\nTengo una pregunta:\n\n\n\nVersion de la app: {version}\n\nGracias.",
+  "@supportGeneralQuestionBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "supportRequestFeatureTitle": "Solicitar nueva funcionalidad",
+  "supportRequestFeatureDesc": "Necesito algo que la app no tiene",
+  "supportRequestFeatureSubject": "[App Admin] Solicitud de funcionalidad",
+  "supportRequestFeatureBody": "Hola,\n\nMe gustaria solicitar la siguiente funcionalidad:\n\nDescripcion:\n\n\nCaso de uso:\n\n\nPrioridad (alta/media/baja):\n\nVersion de la app: {version}\n\nGracias.",
+  "@supportRequestFeatureBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "supportRequestTrainingTitle": "Solicitar formacion",
+  "supportRequestTrainingDesc": "Necesito ayuda para usar la app",
+  "supportRequestTrainingSubject": "[App Admin] Solicitud de formacion",
+  "supportRequestTrainingBody": "Hola,\n\nMe gustaria solicitar formacion sobre:\n\n\n\nDisponibilidad horaria:\n\n\nVersion de la app: {version}\n\nGracias.",
+  "@supportRequestTrainingBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "commonAccept": "Onartu",
+  "commonSave": "Gorde",
+  "siteUrlLabel": "URL del sitio",
+  "siteUrlExampleHint": "ejemplo.com",
+  "exportSelectDateRangeHelp": "Aukeratu data tartea",
+  "infoChangeBusinessTitle": "Cambiar negocio",
+  "infoConnectOtherSiteSubtitle": "Beste gune batera konektatu",
+  "commonResyncTitle": "Berriro sinkronizatu",
+  "commonResyncSubtitle": "Zerbitzaritik konfigurazioa eguneratu",
+  "commonResyncInProgress": "Konfigurazioa sinkronizatzen...",
+  "commonResyncSuccess": "Konfigurazioa eguneratuta",
+  "commonResyncError": "Ezin izan da sinkronizatu",
+  "infoChangeBusinessDialogTitle": "Cambiar de negocio",
+  "infoChangeBusinessDialogBody": "¿Quieres conectar esta app a otro negocio?\n\nPodrás escanear el código QR de configuración del nuevo sitio.",
+  "infoQuickLinks": "Accesos rápidos",
+  "infoOurExperiences": "Nuestras experiencias",
+  "infoNoExperiencesNextMonths": "No hay experiencias disponibles en los próximos 2 meses",
+  "infoUpcomingDates": "Próximas fechas disponibles:",
+  "infoMoreDatesCount": "+ {count} fechas más disponibles",
+  "@infoMoreDatesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "infoSectionTitle": "Información",
+  "infoSeeMoreOnWeb": "Ver más en la web",
+  "infoGalleryTitle": "Galería",
+  "infoNewsTitle": "Noticias",
+  "infoSchedulesLabel": "Horarios",
+  "infoLocationLabel": "Ubicación",
+  "infoViewMap": "Ver mapa",
+  "infoHowToGetThere": "Cómo llegar",
+  "infoContactTitle": "Contacto",
+  "infoWhatsAppLabel": "WhatsApp",
+  "infoEmailLabel": "Email",
+  "infoWebFormLabel": "Formulario Web",
+  "infoFollowUsTitle": "Síguenos",
+  "infoConnectedTo": "✓ {name}-ra konektatuta",
+  "@infoConnectedTo": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "infoScanQrTitle": "Escanear QR",
+  "infoScanNewBusinessHint": "Escanea el código QR del nuevo negocio",
+  "infoConnectAnotherBusinessTitle": "Beste negozio batera konektatu",
+  "infoScanConfigQrHint": "Escanea el código QR de configuración del nuevo sitio web.",
+  "infoScanQrButton": "Escanear QR",
+  "commonChange": "Cambiar",
+  "infoInvalidQrMissingUrl": "QR no válido: no contiene URL",
+  "campInscriptionSuccessTitle": "Izen-ematea bidalita!",
+  "campInscriptionSuccessMessage": "Zure izen-ematea ondo erregistratu da.",
+  "campInscriptionSuccessEmailNote": "Ordainketaren eta berrespenaren xehetasunak dituen emaila jasoko duzu.",
+  "campInscriptionCreateError": "Izen-ematea sortzean errorea",
+  "campInscriptionTitle": "Izen-ematea",
+  "campInscriptionParticipantSection": "Parte-hartzailearen datuak",
+  "campInscriptionFullNameRequired": "Izen-abizenak *",
+  "campInscriptionNameRequiredError": "Izena beharrezkoa da",
+  "campInscriptionAgeRequired": "Adina *",
+  "campInscriptionYearsSuffix": "urte",
+  "campInscriptionAgeRequiredError": "Adina beharrezkoa da",
+  "campInscriptionAgeInvalidError": "Adin baliogabea",
+  "campInscriptionAllergiesLabel": "Alergiak edo egoera medikoak",
+  "campInscriptionAllergiesHelper": "Aukerakoa. Adierazi alergia garrantzitsuren bat badu.",
+  "campInscriptionGuardianSection": "Arduradunaren datuak",
+  "campInscriptionGuardianNameRequiredError": "Arduradunaren izena beharrezkoa da",
+  "campInscriptionEmailRequired": "Emaila *",
+  "campInscriptionEmailRequiredError": "Emaila beharrezkoa da",
+  "campInscriptionEmailInvalidError": "Email baliogabea",
+  "campInscriptionPhoneRequired": "Telefonoa *",
+  "campInscriptionPhoneHelper": "Sartu herrialdeko aurrizkia (adib: +34)",
+  "campInscriptionPhoneRequiredError": "Telefonoa beharrezkoa da",
+  "campInscriptionTermsTitle": "Baldintzak onartzen ditut",
+  "campInscriptionTermsSubtitle": "Izen-emate baldintzak eta pribatutasun politika irakurri eta onartu ditut.",
+  "campInscriptionPaymentInfoTitle": "Ordainketaren informazioa",
+  "campInscriptionPaymentInfoBody": "Ordainketarako jarraibideak dituen emaila jasoko duzu. Ordainketa jasotzean izen-ematea baieztatuko da.",
+  "campInscriptionSubmit": "Izen-ematea bidali",
+  "campInscriptionRequiredNote": "* Derrigorrezko eremuak",
+  "commonSending": "Enviando...",
+  "campDetailLoadError": "Kanpamendua kargatzean errorea",
+  "campDetailCategoryLabel": "Kategoria",
+  "campDetailAgesLabel": "Adinak",
+  "campDetailLanguagesLabel": "Hizkuntzak",
+  "campDetailDurationLabel": "Iraupena",
+  "campDetailDatesLabel": "Datak",
+  "campDetailScheduleTitle": "Ordutegia",
+  "campDetailLocationTitle": "Kokapena",
+  "campDetailIncludesTitle": "Zer barne hartzen du",
+  "campDetailRequirementsTitle": "Baldintzak",
+  "campDetailClosedLabel": "Izen-emateak itxita",
+  "campDetailFullLabel": "Betea",
+  "campDetailEnrollLabel": "Izen eman",
+  "campInscriptionsLoadError": "Izen-emateak kargatzean errorea",
+  "campInscriptionsExportError": "Esportatzean errorea",
+  "campInscriptionsTotalLabel": "Guztira",
+  "campInscriptionsPaidLabel": "Ordainduta",
+  "campInscriptionsPendingLabel": "Zain",
+  "commonCustomer": "Cliente",
+  "commonSelect": "Seleccionar",
+  "commonRequired": "Requerido",
+  "commonCreate": "Crear",
+  "commonViewMore": "Ver más",
+  "reservationsTemplateNameConfirmation": "Baieztapena",
+  "reservationsTemplateTextConfirmation": "Kaixo {nombre}! Zure {ticket} erreserba {fecha} egunerako baieztatuta dago. Kodea: {codigo}. Zure zain gaude!",
+  "@reservationsTemplateTextConfirmation": {
+    "placeholders": {
+      "nombre": {},
+      "ticket": {},
+      "fecha": {},
+      "codigo": {}
+    }
+  },
+  "reservationsTemplateNameReminder": "Oroigarria",
+  "reservationsTemplateTextReminder": "Kaixo {nombre}! Oroitarazi nahi dizugu {ticket} erreserba duzula {fecha} egunerako. Kodea: {codigo}. Zure zain gaude!",
+  "@reservationsTemplateTextReminder": {
+    "placeholders": {
+      "nombre": {},
+      "ticket": {},
+      "fecha": {},
+      "codigo": {}
+    }
+  },
+  "reservationsTemplateNameChange": "Aldaketa/Abisua",
+  "reservationsTemplateTextChange": "Kaixo {nombre}! {ticket} erreserbari buruzko informazioa {fecha} egunerako. ",
+  "@reservationsTemplateTextChange": {
+    "placeholders": {
+      "nombre": {},
+      "ticket": {},
+      "fecha": {}
+    }
+  },
+  "reservationsTemplateNameThanks": "Eskerrak",
+  "reservationsTemplateTextThanks": "Kaixo {nombre}! Eskerrik asko bisitagatik. Espero dugu {ticket}z gozatu izana. Laster arte!",
+  "@reservationsTemplateTextThanks": {
+    "placeholders": {
+      "nombre": {},
+      "ticket": {}
+    }
+  },
+  "reservationsEmptyTitle": "Ez dago erreserbarik",
+  "reservationsEmptySubtitle": "Ez da erreserbarik aurkitu hautatutako iragazkiekin",
+  "reservationsPendingCount": "{count} pendientes",
+  "@reservationsPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "reservationsLoadError": "Erreserbak kargatzean errorea",
+  "reservationsNoName": "Izenik gabe",
+  "reservationsCheckinError": "Check-in egitean errorea",
+  "reservationsCancelError": "Bertan behera uztean errorea",
+  "reservationsLabelCode": "Kodea",
+  "reservationsLabelTicket": "Sarrera",
+  "reservationsLabelDate": "Data",
+  "reservationsLabelStatus": "Egoera",
+  "reservationsLabelName": "Izena",
+  "reservationsLabelEmail": "Emaila",
+  "reservationsLabelPhone": "Telefonoa",
+  "reservationsLabelCheckin": "Check-in",
+  "reservationsSendWhatsApp": "WhatsApp bidali",
+  "reservationsSendEmail": "Emaila bidali",
+  "reservationsTo": "A: {name}",
+  "@reservationsTo": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "reservationsEmailSubject": "Reserva {code}",
+  "@reservationsEmailSubject": {
+    "placeholders": {
+      "code": {}
+    }
+  },
+  "reservationsSendToClients": "Enviar a {count} clientes",
+  "@reservationsSendToClients": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "reservationsOpenWhatsAppEach": "WhatsApp irekiko da mezu bakoitzerako. Bakoitzaren bidalketa baieztatu beharko duzu.",
+  "reservationsOpenEmailEach": "Zure email aplikazioa irekiko da mezu bakoitzerako.",
+  "reservationsOriginAll": "Guztiak",
+  "reservationsOriginManual": "📞 Eskuzkoa",
+  "reservationsOriginWooCommerce": "🛒 WooCommerce",
+  "reservationsNoCustomers": "Ez dago bezerorik",
+  "reservationsNoCustomersInRange": "Ez dago bezerorik hautatutako tartean",
+  "reservationsNoCustomersManual": "Ez dago eskuzko bezerorik",
+  "reservationsNoCustomersWooCommerce": "Ez dago WooCommerce bezeroarik",
+  "reservationsLoadCustomersError": "Bezeroak kargatzean errorea",
+  "customersFilterByDate": "Dataren arabera iragazi",
+  "customersEmptyTitle": "Ez dago bezerorik",
+  "customersEmptySubtitle": "Ez da bezerorik aurkitu uneko iragazkiekin",
+  "customersLoadError": "Bezeroak kargatzean errorea",
+  "customersReservationsCount": "{count} reservas",
+  "@customersReservationsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "customersHistoryTitle": "Historia",
+  "customersFirstReservation": "Lehen erreserba",
+  "customersLastReservation": "Azken erreserba",
+  "customersSaveError": "Gordetzean errorea",
+  "customersDeleteError": "Ezabatzean errorea",
+  "ticketsLabel": "Tickets",
+  "customersAddTitle": "Bezeroa gehitu",
+  "customersEditTitle": "Bezeroa editatu",
+  "campFormCreatedSuccess": "Kanpamendua ondo sortu da",
+  "campFormUpdatedSuccess": "Kanpamendua ondo eguneratu da",
+  "campFormSaveError": "Kanpamendua gordetzean errorea",
+  "campFormEditTitle": "Kanpamendua editatu",
+  "campFormNewTitle": "Kanpamendu berria",
+  "campFormTitleLabel": "Izenburua *",
+  "campFormTitleRequired": "Izenburua beharrezkoa da",
+  "campFormExcerptLabel": "Laburpena",
+  "campFormExcerptHelper": "Kanpamenduaren laburpena",
+  "campFormDescriptionLabel": "Deskribapen osoa",
+  "campFormPricesSection": "Prezioak",
+  "campFormPriceInscriptionLabel": "Izen-emate prezioa",
+  "campFormPriceTotalLabel": "Guztizko prezioa",
+  "campFormDurationLabel": "Iraupena",
+  "campFormDurationHelper": "Adib: 5 egun, 1 aste",
+  "campFormLabelLabel": "Etiketa berezia",
+  "campFormLabelHelper": "Adib: Berria, Nabarmendua",
+  "campFormInscriptionClosedTitle": "Izen-emateak itxita",
+  "campFormInscriptionClosedSubtitle": "Aktibatuta badago, erabiltzaileek ezin izango dute izen eman",
+  "campFormDatesSection": "Datak",
+  "campFormStartDateLabel": "Hasiera data",
+  "campFormEndDateLabel": "Amaiera data",
+  "campFormNotSelected": "Hautatu gabe",
+  "campFormAdditionalInfoSection": "Informazio gehigarria",
+  "campFormScheduleLabel": "Ordutegia",
+  "campFormLocationLabel": "Kokapena",
+  "campFormIncludesLabel": "Zer barne hartzen du",
+  "campFormRequirementsLabel": "Baldintzak",
+  "campFormCategorizationSection": "Sailkapena",
+  "campFormCategories": "Kategoriak",
+  "campFormAges": "Adinak",
+  "campFormLanguages": "Hizkuntzak",
+  "campsLoadError": "Kanpamenduak kargatzean errorea",
+  "campsConnectionError": "Konexio errorea: {error}",
+  "@campsConnectionError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "campsEmptyFiltered": "Ez da kanpamendurik aurkitu iragazkiekin",
+  "campsEmptyAvailable": "Ez dago kanpamendu erabilgarririk",
+  "escalatedChatLoadError": "Chat-a kargatzean errorea",
+  "escalatedChatConnectionError": "Konexio errorea: {error}",
+  "@escalatedChatConnectionError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "escalatedChatReplySent": "Erantzuna bidalita",
+  "escalatedChatSendError": "Bidaltzean errorea",
+  "escalatedChatError": "Error: {error}",
+  "@escalatedChatError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "escalatedChatResolveTitle": "Konponduta markatu",
+  "escalatedChatResolveConfirm": "Baieztatzen duzu chat hau konponduta dagoela?",
+  "escalatedChatResolveNotesLabel": "Oharrak (aukerakoa)",
+  "escalatedChatResolveNotesHint": "Gehitu ohar batzuk konponketari buruz...",
+  "escalatedChatResolveAction": "Konpondu",
+  "escalatedChatResolvedToast": "Chat-a konponduta markatu da",
+  "escalatedChatResolveError": "Konpontzean errorea",
+  "escalatedChatTitle": "Chat eskalatua",
+  "escalatedChatResolveTooltip": "Konponduta markatu",
+  "escalatedChatNotFound": "Ez da chat-a aurkitu",
+  "escalatedChatDraftTitle": "Erreserbaren zirriborroa",
+  "escalatedChatDraftDate": "Data: {date}",
+  "@escalatedChatDraftDate": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "escalatedChatDraftTotal": "Guztira: {total}€",
+  "@escalatedChatDraftTotal": {
+    "placeholders": {
+      "total": {}
+    }
+  },
+  "escalatedChatReplyHint": "Idatzi zure erantzuna...",
+  "escalatedChatResolvedBanner": "Chat hau konponduta markatu da",
+  "campInscriptionAcceptTermsError": "Baldintzak onartu behar dituzu",
+  "loadingConnecting": "Konektatzen...",
+  "adminSetupQrScannedTitle": "QR eskaneatuta",
+  "adminSetupQrContentLabel": "QR edukia:",
+  "adminSetupConnect": "Konektatu",
+  "adminSetupQrClientOnly": "⚠️ Este QR es para la app de clientes.\n\nUsa el QR de Admin (amarillo) desde el panel de WordPress.",
+  "adminSetupQrInvalid": "❌ QR de Admin inválido.\n\nEl código QR no incluye token de seguridad. Genera uno nuevo desde WordPress.",
+  "adminSetupRequiresSecureQr": "⚠️ La app Admin requiere escanear el QR seguro.\n\nEncontrarás el QR de Admin (amarillo) en WordPress > Chat IA > Apps Móviles.",
+  "adminSetupQrNotRecognized": "QR no reconocido: {url}\n\nDebe contener una URL válida",
+  "@adminSetupQrNotRecognized": {
+    "placeholders": {
+      "url": {}
+    }
+  },
+  "adminSetupTimeoutServer": "Timeout - zerbitzariak 15 segundo baino gehiago hartu ditu",
+  "adminSetupTimeoutToken": "Timeout tokena balidatzean",
+  "adminSetupInvalidToken": "❌ Token de seguridad inválido.\n\nEl QR puede estar obsoleto. Genera uno nuevo desde WordPress > Chat IA > Apps Móviles.",
+  "adminSetupServerConfiguredSuccess": "✓ Zerbitzaria ondo konfiguratuta",
+  "commonInvalidResponse": "Erantzun baliogabea",
+  "adminSetupServerError": "Zerbitzariaren errorea: {error}\n\nURL: {url}",
+  "@adminSetupServerError": {
+    "placeholders": {
+      "error": {},
+      "url": {}
+    }
+  },
+  "adminSetupConnectionError": "Konexio errorea:\n{error}\n\nSaiatutako URLa: {url}",
+  "@adminSetupConnectionError": {
+    "placeholders": {
+      "error": {},
+      "url": {}
+    }
+  },
+  "adminSetupTitle": "Zerbitzaria konfiguratu",
+  "adminSetupSubtitle": "Konektatu aplikazioa zure WordPress zerbitzariarekin",
+  "adminSetupScanQrButton": "QR kodea eskaneatu",
+  "adminSetupFindQrHint": "Encuentra el QR en WordPress:\nChat IA → Configuración → Apps Móviles",
+  "adminSetupOrEnterUrl": "edo sartu URLa",
+  "adminSetupServerUrlLabel": "Zerbitzariaren URLa",
+  "adminSetupServerUrlHint": "https://tu-sitio.com",
+  "adminSetupScanQrTitle": "QR eskaneatu",
+  "adminSetupScanQrInstruction": "Zuzendu QR kodeara",
+  "adminSetupScanQrSubtitle": "WordPress panelean aurkituko duzu",
+  "adminLoginError": "Saio-hasierako errorea",
+  "adminLoginConfigServerTooltip": "Zerbitzaria konfiguratu",
+  "adminLoginSubtitle": "Hasi saioa zure WordPress kontuarekin",
+  "adminServerConfiguredStatus": "Zerbitzaria konfiguratuta",
+  "adminServerNotConfiguredStatus": "Zerbitzaria ez dago konfiguratuta",
+  "adminServerConfigureHint": "Sakatu goiko ⚙️ ikonoa konfiguratzeko",
+  "adminLoginUsernameLabel": "Erabiltzailea",
+  "adminLoginUsernameRequired": "Sartu erabiltzailea",
+  "adminLoginPasswordLabel": "Pasahitza",
+  "adminLoginPasswordRequired": "Sartu pasahitza",
+  "adminLoginRememberCredentials": "Gogoratu kredentzialak",
+  "adminLoginButton": "Saioa hasi",
+  "adminBottomNavDashboard": "Panel nagusia",
+  "adminBottomNavReservations": "Erreserbak",
+  "adminBottomNavChat": "IA Chat",
+  "adminBottomNavSettings": "Ezarpenak",
+  "adminSettingsTitle": "Ezarpenak",
+  "adminSettingsUserFallback": "Erabiltzailea",
+  "adminSettingsSectionConfig": "Konfigurazioa",
+  "languageNameEs": "Español",
+  "languageNameEu": "Euskera",
+  "languageNameEn": "Inglés",
+  "languageNameFr": "Francés",
+  "languageNameCa": "Catalán",
+  "adminSettingsLanguageTitle": "Hizkuntza",
+  "adminSettingsNotificationsTitle": "Jakinarazpenak",
+  "adminSettingsNotificationsSubtitle": "Alertak konfiguratu",
+  "adminSettingsModulesTitle": "Moduluak",
+  "adminSettingsModulesSubtitle": "Kudeatu eta berrikusi modulu aktiboak",
+  "adminModulesDashboardTitle": "Moduluen panela",
+  "adminModulesDashboardSubtitle": "Moduluen laburpen operatiboa",
+  "adminModulesDashboardEmpty": "Ez dago metrikarik",
+  "adminModulesTabSummary": "Laburpena",
+  "adminModulesPedidosError": "No se pudieron cargar los pedidos",
+  "adminModulesPedidosEmpty": "Ez dago eskaera irekirik",
+  "adminModulesPedidosMarkPaid": "Ordainduta markatu",
+  "adminModulesPedidosMarkPaidSuccess": "Eskaera ordainduta markatu da",
+  "adminModulesPedidosMarkPaidError": "Ezin izan da ordainduta markatu",
+  "adminModulesPedidosMarkPicked": "Jasota markatu",
+  "adminModulesPedidosMarkPickedSuccess": "Eskaera jasota markatu da",
+  "adminModulesPedidosMarkPickedError": "Ezin izan da jasota markatu",
+  "adminModulesServiciosError": "No se pudieron cargar los servicios",
+  "adminModulesServiciosEmpty": "Ez dago zerbitzu aktiborik",
+  "adminModulesAnunciosError": "No se pudieron cargar los anuncios",
+  "adminModulesAnunciosEmpty": "Ez dago iragarki aktiborik",
+  "adminModulesMarkSold": "Salduta markatu",
+  "adminModulesMarkSoldSuccess": "Iragarkia salduta markatu da",
+  "adminModulesMarkSoldError": "Ezin izan da salduta markatu",
+  "adminSettingsServerTitle": "Zerbitzaria",
+  "adminSettingsServerLoading": "Kargatzen...",
+  "adminSettingsAppsSection": "Aplikazioak",
+  "adminSettingsClientAppTitle": "Bezeroen appa",
+  "adminSettingsClientAppSubtitle": "Ireki bezeroen aplikazioa",
+  "adminSettingsClientAppMissing": "Bezeroen aplikazioa ez dago instalatuta",
+  "adminSettingsSupportTitle": "Laguntza eta euskarria",
+  "adminSettingsSupportSubtitle": "Harremanetan jarri garapen taldearekin",
+  "adminSettingsVersionTitle": "Bertsioa",
+  "adminSettingsDevelopedByTitle": "Garatzailea",
+  "adminSettingsLogoutTitle": "Saioa itxi",
+  "adminSettingsLogoutConfirm": "Ziur zaude saioa itxi nahi duzula?",
+  "adminSettingsLogoutAction": "Saioa itxi",
+  "defaultAppName": "Nire appa",
+  "statsSummaryReservations": "Erreserbak",
+  "statsSummaryCheckins": "Check-inak",
+  "statsSummaryCancelled": "Bertan behera utzita",
+  "statsSummaryRevenue": "Diru-sarrerak",
+  "defaultBusinessName": "Nire negozioa",
+  "navHome": "Hasiera",
+  "navExplore": "Arakatu",
+  "navChat": "Chat",
+  "navProfile": "Profila",
+  "tabChatLabel": "Chat",
+  "tabReservationsLabel": "Erreserbatu",
+  "tabMyTicketsLabel": "Nire sarrerak",
+  "tabInfoLabel": "Info",
+  "tabWebLabel": "Web atala",
+  "tabModulesLabel": "Moduluak",
+  "moduleHubTitle": "Moduluak",
+  "moduleHubError": "Moduluak kargatzea ezin izan da",
+  "moduleHubEmpty": "Ez dago modulu erabilgarririk",
+  "moduleHubNoDescription": "Modulua komunitate honentzat erabilgarri",
+  "modulePlaceholderDescription": "Modulu hau erabilgarri dago baina bere interfazea garatzen ari da.",
+  "modulePlaceholderSubtitle": "Laster aplikaziotik funtzio guztiak erabil ahal izango dituzu.",
+  "clientDashboardTitle": "Nire jarduera",
+  "clientDashboardSubtitle": "Nire moduluen laburpena",
+  "clientDashboardEmpty": "Ez dago daturik",
+  "gruposConsumoTitle": "Kontsumo taldeak",
+  "gruposConsumoError": "Eskariak kargatzea ezin izan da",
+  "gruposConsumoEmpty": "Ez dago eskaerarik",
+  "gruposConsumoJoin": "Batu",
+  "gruposConsumoJoinTitle": "Eskaerara batu",
+  "gruposConsumoJoinQuantity": "Cantidad",
+  "gruposConsumoJoinSuccess": "Te has unido al pedido",
+  "gruposConsumoJoinError": "Ezin izan da eskaerara batu",
+  "gruposConsumoTabAll": "Pedidos",
+  "gruposConsumoTabMine": "Mis pedidos",
+  "gruposConsumoTabCatalog": "Catálogo",
+  "gruposConsumoTabShoppingList": "Lista compra",
+  "gruposConsumoTabCycles": "Ciclos",
+  "gruposConsumoTabProducers": "Productores",
+  "gruposConsumoTabProfile": "Perfil",
+  "gruposConsumoTabHistory": "Historial",
+  "gruposConsumoProfileError": "Ezin izan da profila kargatu",
+  "gruposConsumoProfileMemberYes": "Miembro activo",
+  "gruposConsumoProfileMemberNo": "No eres miembro",
+  "gruposConsumoProfileBalance": "Saldo pendiente",
+  "gruposConsumoProfileRoleUnknown": "Rol no definido",
+  "gruposConsumoSubscriptionsTitle": "Suscripciones",
+  "gruposConsumoSubscriptionsEmpty": "No tienes suscripciones",
+  "gruposConsumoSubscriptionsError": "No se pudieron cargar las suscripciones",
+  "gruposConsumoSubCreate": "Nueva suscripción",
+  "gruposConsumoSubProductId": "ID de producto",
+  "gruposConsumoSubProduct": "Producto",
+  "gruposConsumoSubNoProducts": "No hay productos disponibles",
+  "gruposConsumoSubQuantity": "Cantidad",
+  "gruposConsumoSubFrequency": "Frecuencia (semanal, quincenal, mensual)",
+  "gruposConsumoSubFrequencyWeekly": "Semanal",
+  "gruposConsumoSubFrequencyBiweekly": "Quincenal",
+  "gruposConsumoSubFrequencyMonthly": "Mensual",
+  "gruposConsumoSubCreateSuccess": "Suscripción creada",
+  "gruposConsumoSubCreateError": "Ezin izan da harpidetza sortu",
+  "gruposConsumoSubPause": "Pausar",
+  "gruposConsumoSubCancel": "Cancelar",
+  "gruposConsumoSubPauseSuccess": "Suscripción pausada",
+  "gruposConsumoSubPauseError": "Ezin izan da pausatu",
+  "gruposConsumoSubCancelSuccess": "Suscripción cancelada",
+  "gruposConsumoSubCancelError": "Ezin izan da bertan behera utzi",
+  "gruposConsumoHistoryError": "Ezin izan da historiala kargatu",
+  "gruposConsumoHistoryEmpty": "Sin historial",
+  "gruposConsumoCatalogError": "Ezin izan da katalogoa kargatu",
+  "gruposConsumoCatalogEmpty": "No hay productos disponibles",
+  "gruposConsumoCatalogSearch": "Buscar producto",
+  "gruposConsumoCatalogCategory": "Categoría",
+  "gruposConsumoCatalogCategoryAll": "Todas",
+  "gruposConsumoCatalogProducer": "Productor",
+  "gruposConsumoCatalogProducerAll": "Guztiak",
+  "gruposConsumoShoppingListError": "Ezin izan da erosketa zerrenda kargatu",
+  "gruposConsumoShoppingListEmpty": "Tu lista está vacía",
+  "gruposConsumoShoppingAddSuccess": "Producto añadido",
+  "gruposConsumoShoppingAddError": "Ezin izan da gehitu",
+  "gruposConsumoShoppingRemoveSuccess": "Producto eliminado",
+  "gruposConsumoShoppingRemoveError": "Ezin izan da ezabatu",
+  "gruposConsumoShoppingQuantity": "Cantidad",
+  "gruposConsumoCyclesError": "Ezin izan da egutegia kargatu",
+  "gruposConsumoCyclesEmpty": "No hay ciclos disponibles",
+  "gruposConsumoProducersError": "No se pudieron cargar los productores",
+  "gruposConsumoProducersEmpty": "No hay productores disponibles",
+  "gruposConsumoProducersRadius": "Radio",
+  "gruposConsumoProducersNearby": "Productores cercanos",
+  "gruposConsumoProducersDelivery": "Con entrega",
+  "gruposConsumoProducersEco": "Solo ecológicos",
+  "gruposConsumoMapTitle": "Mapa de productores",
+  "gruposConsumoMapOpen": "Ver mapa",
+  "gruposConsumoMapNoData": "No hay productores con coordenadas",
+  "gruposConsumoDeliveriesMapTitle": "Puntos de entrega",
+  "gruposConsumoDeliveriesMapOpen": "Ver mapa de entregas",
+  "gruposConsumoDeliveriesMapNoData": "No hay lugares de entrega",
+  "gruposConsumoRoutesMapTitle": "Rutas productor a entrega",
+  "gruposConsumoRoutesMapOpen": "Ver rutas productores",
+  "gruposConsumoRoutesMapNoData": "No hay rutas disponibles",
+  "gruposConsumoCyclesFiltersTitle": "Filtros de entrega",
+  "gruposConsumoCyclesFrom": "Desde",
+  "gruposConsumoCyclesTo": "Hasta",
+  "gruposConsumoCyclesTurn": "Turno",
+  "gruposConsumoCyclesTurnAny": "Guztiak",
+  "gruposConsumoCyclesTurnMorning": "Mañana",
+  "gruposConsumoCyclesTurnAfternoon": "Tarde",
+  "gruposConsumoCyclesTurnEvening": "Noche",
+  "gruposConsumoCyclesFiltersClear": "Limpiar filtros",
+  "gruposConsumoProductPrice": "Precio",
+  "gruposConsumoProductStock": "Stock",
+  "gruposConsumoProductSeason": "Temporada",
+  "gruposConsumoProductOrigin": "Origen",
+  "gruposConsumoProductCategories": "Categorías",
+  "gruposConsumoShoppingAdd": "Añadir a lista",
+  "gruposConsumoMineError": "No se pudieron cargar tus pedidos",
+  "gruposConsumoMineEmpty": "Aún no tienes pedidos",
+  "bancoTiempoTitle": "Banco de Tiempo",
+  "bancoTiempoError": "No se pudieron cargar los servicios",
+  "bancoTiempoEmpty": "No hay servicios disponibles",
+  "bancoTiempoCreate": "Publicar servicio",
+  "bancoTiempoCreateSuccess": "Servicio publicado",
+  "bancoTiempoCreateError": "Ezin izan da zerbitzua argitaratu",
+  "bancoTiempoFieldTitle": "Título",
+  "bancoTiempoFieldDescription": "Descripción",
+  "bancoTiempoFieldCategory": "Categoría",
+  "bancoTiempoFieldHours": "Horas estimadas",
+  "bancoTiempoTabAll": "Servicios",
+  "bancoTiempoTabMine": "Mis servicios",
+  "bancoTiempoMineError": "No se pudieron cargar tus servicios",
+  "bancoTiempoMineEmpty": "Aún no tienes servicios",
+  "marketplaceTitle": "Marketplace",
+  "marketplaceError": "No se pudieron cargar los anuncios",
+  "marketplaceEmpty": "No hay anuncios disponibles",
+  "marketplaceCreate": "Publicar anuncio",
+  "marketplaceCreateSuccess": "Anuncio publicado",
+  "marketplaceCreateError": "Ezin izan da iragarkia argitaratu",
+  "marketplaceFieldTitle": "Título",
+  "marketplaceFieldDescription": "Descripción",
+  "marketplaceFieldCategory": "Categoría",
+  "marketplaceFieldType": "Tipo (venta, cambio, regalo)",
+  "marketplaceFieldPrice": "Precio",
+  "marketplaceFieldLocation": "Ubicación",
+  "marketplaceTabAll": "Anuncios",
+  "marketplaceTabMine": "Mis anuncios",
+  "marketplaceMineError": "No se pudieron cargar tus anuncios",
+  "marketplaceMineEmpty": "Aún no tienes anuncios",
+  "marketplaceStatusSold": "Vendido",
+  "marketplaceStatusActive": "Activo",
+  "marketplaceMarkSold": "Marcar vendido",
+  "marketplaceMarkSoldSuccess": "Anuncio marcado como vendido",
+  "marketplaceMarkSoldError": "Ezin izan da salduta markatu",
+  "marketplaceDelete": "Iragarkia ezabatu",
+  "marketplaceDeleteSuccess": "Anuncio eliminado",
+  "marketplaceDeleteError": "Ezin izan da iragarkia ezabatu",
+  "adminDrawerStats": "Estatistikak",
+  "adminDrawerCalendar": "Egutegia",
+  "adminDrawerCustomers": "Bezeroak",
+  "adminDrawerManualCustomers": "Eskuzko bezeroak",
+  "adminDrawerCamps": "Kanpalekuak",
+  "clientUnknownSection": "Sección \"{section}\"",
+  "@clientUnknownSection": {
+    "placeholders": {
+      "section": {}
+    }
+  },
+  "clientComingSoon": "Próximamente"
+}

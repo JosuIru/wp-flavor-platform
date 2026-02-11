@@ -25,9 +25,9 @@ $respuestas = $solicitud['respuestas'] ?? [];
     <div class="bg-gray-50 py-3 px-4">
         <div class="container mx-auto max-w-4xl">
             <nav class="flex items-center gap-2 text-sm text-gray-600">
-                <a href="#" class="hover:text-orange-600">Inicio</a>
+                <a href="#" class="hover:text-orange-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
-                <a href="#" class="hover:text-orange-600">Ayuda Vecinal</a>
+                <a href="#" class="hover:text-orange-600"><?php echo esc_html__('Ayuda Vecinal', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-gray-900 font-medium"><?php echo esc_html($titulo); ?></span>
             </nav>
@@ -45,7 +45,7 @@ $respuestas = $solicitud['respuestas'] ?? [];
                         <div class="flex items-center gap-2 mb-1">
                             <span class="font-bold text-gray-900"><?php echo esc_html($autor); ?></span>
                             <?php if ($urgente): ?>
-                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">Urgente</span>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700"><?php echo esc_html__('Urgente', 'flavor-chat-ia'); ?></span>
                             <?php endif; ?>
                             <span class="px-2 py-0.5 rounded-full text-xs font-bold <?php echo $tipo === 'necesito' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'; ?>">
                                 <?php echo $tipo === 'necesito' ? 'Necesita ayuda' : 'Ofrece ayuda'; ?>
@@ -90,7 +90,7 @@ $respuestas = $solicitud['respuestas'] ?? [];
                     <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                     </svg>
-                    Compartir
+                    <?php echo esc_html__('Compartir', 'flavor-chat-ia'); ?>
                 </button>
             </div>
         </article>
@@ -103,14 +103,14 @@ $respuestas = $solicitud['respuestas'] ?? [];
             <div class="bg-white rounded-2xl p-5 shadow-md mb-6">
                 <div class="flex items-start gap-4">
                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-white font-bold">
-                        TU
+                        <?php echo esc_html__('TU', 'flavor-chat-ia'); ?>
                     </div>
                     <div class="flex-1">
-                        <textarea placeholder="Escribe tu respuesta..." class="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none" rows="3"></textarea>
+                        <textarea placeholder="<?php echo esc_attr__('Escribe tu respuesta...', 'flavor-chat-ia'); ?>" class="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none" rows="3"></textarea>
                         <div class="flex justify-end mt-3">
                             <button class="px-4 py-2 rounded-xl text-white font-semibold transition-all hover:scale-105"
                                     style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);">
-                                Enviar respuesta
+                                <?php echo esc_html__('Enviar respuesta', 'flavor-chat-ia'); ?>
                             </button>
                         </div>
                     </div>
@@ -121,7 +121,7 @@ $respuestas = $solicitud['respuestas'] ?? [];
             <div class="space-y-4">
                 <?php if (empty($respuestas)): ?>
                     <div class="bg-gray-50 rounded-xl p-8 text-center">
-                        <p class="text-gray-500">Se el primero en responder a esta solicitud</p>
+                        <p class="text-gray-500"><?php echo esc_html__('Se el primero en responder a esta solicitud', 'flavor-chat-ia'); ?></p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($respuestas as $respuesta): ?>

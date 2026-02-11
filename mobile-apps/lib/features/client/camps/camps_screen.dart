@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/common_widgets.dart';
 import '../../../core/models/models.dart';
 import 'camp_detail_screen.dart';
 
@@ -13,6 +15,7 @@ class CampsScreen extends ConsumerStatefulWidget {
 }
 
 class _CampsScreenState extends ConsumerState<CampsScreen> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   List<Camp> _camps = [];
   List<Camp> _filteredCamps = [];
   bool _isLoading = false;
@@ -60,13 +63,13 @@ class _CampsScreenState extends ConsumerState<CampsScreen> {
         });
       } else {
         setState(() {
-          _error = response.error ?? 'Error al cargar campamentos';
+          _error = response.error ?? i18n.campsLoadError;
           _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        _error = 'Error de conexión: $e';
+        _error = i18n.campsConnectionError(e.toString());
         _isLoading = false;
       });
     }
@@ -155,6 +158,7 @@ class _CampsScreenState extends ConsumerState<CampsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final hasActiveFilters = _selectedCategory != null ||
         _selectedAge != null ||
@@ -164,12 +168,12 @@ class _CampsScreenState extends ConsumerState<CampsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Campamentos'),
+        title: Text(i18n.campamentosB769f1),
         actions: [
           IconButton(
             onPressed: _loadCamps,
             icon: const Icon(Icons.refresh),
-            tooltip: 'Actualizar',
+            tooltip: i18n.actualizar2e7be1,
           ),
           IconButton(
             onPressed: () => _showFiltersBottomSheet(context),
@@ -177,7 +181,7 @@ class _CampsScreenState extends ConsumerState<CampsScreen> {
               isLabelVisible: hasActiveFilters,
               child: const Icon(Icons.filter_list),
             ),
-            tooltip: 'Filtros',
+            tooltip: i18n.filtros57aacc,
           ),
         ],
       ),
@@ -188,7 +192,7 @@ class _CampsScreenState extends ConsumerState<CampsScreen> {
             padding: const EdgeInsets.all(16),
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Buscar campamentos...',
+                hintText: i18n.buscarCampamentosDf032d,
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
@@ -269,7 +273,9 @@ class _CampsScreenState extends ConsumerState<CampsScreen> {
                       padding: const EdgeInsets.only(right: 8),
                       child: Chip(
                         label: Text(
-                            _selectedStatus == 'open' ? 'Abierto' : 'Cerrado'),
+                            _selectedStatus == 'open'
+                                ? i18n.abierto12ec8f
+                                : i18n.cerrado4e2af9),
                         onDeleted: () {
                           setState(() => _selectedStatus = null);
                           _applyFilters();
@@ -279,7 +285,7 @@ class _CampsScreenState extends ConsumerState<CampsScreen> {
                   TextButton.icon(
                     onPressed: _clearFilters,
                     icon: const Icon(Icons.clear_all),
-                    label: const Text('Limpiar'),
+                    label: Text(i18n.limpiar476e7d),
                   ),
                 ],
               ),
@@ -288,60 +294,25 @@ class _CampsScreenState extends ConsumerState<CampsScreen> {
           // Lista de campamentos
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? LoadingScreen(message: i18n.loadingCamps)
                 : _error != null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              size: 48,
-                              color: colorScheme.error,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              _error!,
-                              style: TextStyle(color: colorScheme.error),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            FilledButton.icon(
-                              onPressed: _loadCamps,
-                              icon: const Icon(Icons.refresh),
-                              label: const Text('Reintentar'),
-                            ),
-                          ],
-                        ),
+                    ? ErrorScreen(
+                        message: _error!,
+                        onRetry: _loadCamps,
                       )
-                    : _filteredCamps.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.search_off,
-                                  size: 48,
-                                  color: colorScheme.outline,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  hasActiveFilters
-                                      ? 'No se encontraron campamentos\ncon los filtros aplicados'
-                                      : 'No hay campamentos disponibles',
-                                  style: TextStyle(color: colorScheme.outline),
-                                  textAlign: TextAlign.center,
-                                ),
-                                if (hasActiveFilters) ...[
-                                  const SizedBox(height: 16),
-                                  TextButton.icon(
+                        : _filteredCamps.isEmpty
+                        ? EmptyScreen(
+                            message: hasActiveFilters
+                                ? i18n.campsEmptyFiltered
+                                : i18n.campsEmptyAvailable,
+                            icon: Icons.search_off,
+                            action: hasActiveFilters
+                                ? TextButton.icon(
                                     onPressed: _clearFilters,
                                     icon: const Icon(Icons.clear_all),
-                                    label: const Text('Limpiar filtros'),
-                                  ),
-                                ],
-                              ],
-                            ),
+                                    label: Text(i18n.limpiarFiltrosAf85d5),
+                                  )
+                                : null,
                           )
                         : RefreshIndicator(
                             onRefresh: _loadCamps,
@@ -416,6 +387,7 @@ class _CampCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
@@ -586,8 +558,7 @@ class _CampCard extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Precio total',
+                          Text(AppLocalizations.of(context)!.precioTotal,
                             style: TextStyle(
                               color: colorScheme.outline,
                               fontSize: 12,
@@ -608,7 +579,9 @@ class _CampCard extends StatelessWidget {
                       FilledButton(
                         onPressed: camp.inscriptionOpen ? onTap : null,
                         child: Text(
-                          camp.inscriptionOpen ? 'Ver más' : 'Cerrado',
+                          camp.inscriptionOpen
+                              ? i18n.commonViewMore
+                              : i18n.cerrado4e2af9,
                         ),
                       ),
                     ],
@@ -650,6 +623,7 @@ class _FiltersBottomSheet extends StatefulWidget {
 }
 
 class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
+  AppLocalizations get i18n => AppLocalizations.of(context)!;
   late String? _category;
   late String? _age;
   late String? _language;
@@ -666,6 +640,7 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -675,8 +650,7 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Filtros',
+              Text(AppLocalizations.of(context)!.filtros,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               TextButton(
@@ -688,7 +662,7 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
                     _status = null;
                   });
                 },
-                child: const Text('Limpiar'),
+                child: Text(i18n.limpiar476e7d),
               ),
             ],
           ),
@@ -696,8 +670,7 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
 
           // Categoría
           if (widget.categories.isNotEmpty) ...[
-            Text(
-              'Categoría',
+            Text(AppLocalizations.of(context)!.categoria,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
@@ -708,9 +681,9 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               items: [
-                const DropdownMenuItem<String?>(
+                DropdownMenuItem<String?>(
                   value: null,
-                  child: Text('Todas'),
+                  child: Text(i18n.todasF28c2b),
                 ),
                 ...widget.categories.map((cat) => DropdownMenuItem<String?>(
                       value: cat.slug,
@@ -724,8 +697,7 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
 
           // Edad
           if (widget.ages.isNotEmpty) ...[
-            Text(
-              'Edad',
+            Text(AppLocalizations.of(context)!.edad,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
@@ -736,9 +708,9 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               items: [
-                const DropdownMenuItem<String?>(
+                DropdownMenuItem<String?>(
                   value: null,
-                  child: Text('Todas'),
+                  child: Text(i18n.todasF28c2b),
                 ),
                 ...widget.ages.map((age) => DropdownMenuItem<String?>(
                       value: age.slug,
@@ -752,8 +724,7 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
 
           // Idioma
           if (widget.languages.isNotEmpty) ...[
-            Text(
-              'Idioma',
+            Text(AppLocalizations.of(context)!.idioma,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
@@ -764,9 +735,9 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               items: [
-                const DropdownMenuItem<String?>(
+                DropdownMenuItem<String?>(
                   value: null,
-                  child: Text('Todos'),
+                  child: Text(i18n.todos32630c),
                 ),
                 ...widget.languages.map((lang) => DropdownMenuItem<String?>(
                       value: lang.slug,
@@ -779,8 +750,7 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
           ],
 
           // Estado
-          Text(
-            'Estado',
+          Text(AppLocalizations.of(context)!.estado,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 8),
@@ -790,18 +760,18 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
-            items: const [
+            items: [
               DropdownMenuItem<String?>(
                 value: null,
-                child: Text('Todos'),
+                child: Text(i18n.todos32630c),
               ),
               DropdownMenuItem<String?>(
                 value: 'open',
-                child: Text('Abierto'),
+                child: Text(i18n.abierto12ec8f),
               ),
               DropdownMenuItem<String?>(
                 value: 'closed',
-                child: Text('Cerrado'),
+                child: Text(i18n.cerrado4e2af9),
               ),
             ],
             onChanged: (value) => setState(() => _status = value),
@@ -813,7 +783,7 @@ class _FiltersBottomSheetState extends State<_FiltersBottomSheet> {
             width: double.infinity,
             child: FilledButton(
               onPressed: () => widget.onApply(_category, _age, _language, _status),
-              child: const Text('Aplicar filtros'),
+              child: Text(i18n.aplicarFiltros880da9),
             ),
           ),
         ],

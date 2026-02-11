@@ -70,6 +70,10 @@ class Flavor_Components_Loader {
             'archivo' => 'class-demo-loader.php',
             'clase'   => 'Flavor_Demo_Loader',
         ],
+        'site_transformer' => [
+            'archivo' => 'class-site-transformer.php',
+            'clase'   => 'Flavor_Site_Transformer',
+        ],
     ];
 
     /**

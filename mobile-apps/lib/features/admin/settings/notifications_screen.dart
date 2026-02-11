@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Estado de las notificaciones
@@ -141,7 +142,7 @@ class NotificationsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notificaciones'),
+        title: Text(AppLocalizations.of(context)!.notificationsTitle),
       ),
       body: ListView(
         children: [
@@ -164,14 +165,14 @@ class NotificationsScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Notificaciones push',
+                            AppLocalizations.of(context)!.notificationsPushTitle,
                             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Las notificaciones push estaran disponibles proximamente.',
+                            AppLocalizations.of(context)!.notificationsPushDesc,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -184,25 +185,25 @@ class NotificationsScreen extends ConsumerWidget {
           ),
 
           // Seccion: Reservas
-          _SectionHeader(title: 'Reservas'),
+          _SectionHeader(title: AppLocalizations.of(context)!.notificationsSectionReservations),
           _NotificationTile(
             icon: Icons.event_available,
-            title: 'Nuevas reservas',
-            subtitle: 'Recibir alerta cuando se realiza una nueva reserva',
+            title: AppLocalizations.of(context)!.notificationsNewReservationsTitle,
+            subtitle: AppLocalizations.of(context)!.notificationsNewReservationsDesc,
             value: settings.newReservations,
             onChanged: notifier.setNewReservations,
           ),
           _NotificationTile(
             icon: Icons.check_circle,
-            title: 'Check-ins',
-            subtitle: 'Recibir alerta cuando se realiza un check-in',
+            title: AppLocalizations.of(context)!.notificationsCheckinsTitle,
+            subtitle: AppLocalizations.of(context)!.notificationsCheckinsDesc,
             value: settings.checkins,
             onChanged: notifier.setCheckins,
           ),
           _NotificationTile(
             icon: Icons.cancel,
-            title: 'Cancelaciones',
-            subtitle: 'Recibir alerta cuando se cancela una reserva',
+            title: AppLocalizations.of(context)!.notificationsCancellationsTitle,
+            subtitle: AppLocalizations.of(context)!.notificationsCancellationsDesc,
             value: settings.cancellations,
             onChanged: notifier.setCancellations,
           ),
@@ -210,11 +211,11 @@ class NotificationsScreen extends ConsumerWidget {
           const Divider(height: 32),
 
           // Seccion: Resumenes
-          _SectionHeader(title: 'Resumenes'),
+          _SectionHeader(title: AppLocalizations.of(context)!.notificationsSectionSummaries),
           _NotificationTile(
             icon: Icons.summarize,
-            title: 'Resumen diario',
-            subtitle: 'Recibir resumen de reservas cada manana',
+            title: AppLocalizations.of(context)!.notificationsDailySummaryTitle,
+            subtitle: AppLocalizations.of(context)!.notificationsDailySummaryDesc,
             value: settings.dailySummary,
             onChanged: notifier.setDailySummary,
           ),
@@ -222,18 +223,18 @@ class NotificationsScreen extends ConsumerWidget {
           const Divider(height: 32),
 
           // Seccion: Alertas
-          _SectionHeader(title: 'Alertas'),
+          _SectionHeader(title: AppLocalizations.of(context)!.notificationsSectionAlerts),
           _NotificationTile(
             icon: Icons.warning_amber,
-            title: 'Baja disponibilidad',
-            subtitle: 'Alerta cuando quedan pocas plazas disponibles',
+            title: AppLocalizations.of(context)!.notificationsLowAvailabilityTitle,
+            subtitle: AppLocalizations.of(context)!.notificationsLowAvailabilityDesc,
             value: settings.lowAvailability,
             onChanged: notifier.setLowAvailability,
           ),
           _NotificationTile(
             icon: Icons.support_agent,
-            title: 'Escalados del chat',
-            subtitle: 'Alerta cuando un cliente solicita atencion humana',
+            title: AppLocalizations.of(context)!.notificationsChatEscalationsTitle,
+            subtitle: AppLocalizations.of(context)!.notificationsChatEscalationsDesc,
             value: settings.chatEscalations,
             onChanged: notifier.setChatEscalations,
           ),

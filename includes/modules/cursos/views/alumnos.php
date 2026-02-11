@@ -40,7 +40,7 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Gestión de Alumnos</h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Alumnos', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Estadísticas generales -->
@@ -51,7 +51,7 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo count($alumnos); ?></div>
-                <div class="flavor-stat-label">Total Alumnos</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Total Alumnos', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -63,7 +63,7 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
                 <div class="flavor-stat-value">
                     <?php echo number_format(array_sum(array_column($alumnos, 'cursos_activos'))); ?>
                 </div>
-                <div class="flavor-stat-label">Inscripciones Activas</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Inscripciones Activas', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -75,7 +75,7 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
                 <div class="flavor-stat-value">
                     <?php echo number_format(array_sum(array_column($alumnos, 'cursos_completados'))); ?>
                 </div>
-                <div class="flavor-stat-label">Cursos Completados</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Cursos Completados', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
@@ -87,7 +87,7 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
                 <div class="flavor-stat-value">
                     <?php echo number_format(array_sum(array_column($alumnos, 'certificados_obtenidos'))); ?>
                 </div>
-                <div class="flavor-stat-label">Certificados Emitidos</div>
+                <div class="flavor-stat-label"><?php echo esc_html__('Certificados Emitidos', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
@@ -95,24 +95,24 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
     <!-- Filtros -->
     <div class="flavor-filters">
         <form method="get" action="">
-            <input type="hidden" name="page" value="flavor-chat-cursos">
-            <input type="hidden" name="tab" value="alumnos">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-cursos', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="tab" value="<?php echo esc_attr__('alumnos', 'flavor-chat-ia'); ?>">
 
             <div class="flavor-filters-row">
                 <input type="search"
                        name="s"
                        value="<?php echo esc_attr($search); ?>"
-                       placeholder="Buscar alumnos..."
+                       placeholder="<?php echo esc_attr__('Buscar alumnos...', 'flavor-chat-ia'); ?>"
                        class="flavor-filter-search">
 
                 <select name="estado" class="flavor-filter-select">
-                    <option value="">Todos los estados</option>
-                    <option value="activa" <?php selected($filtro_estado, 'activa'); ?>>Activos</option>
-                    <option value="completada" <?php selected($filtro_estado, 'completada'); ?>>Completados</option>
-                    <option value="abandonada" <?php selected($filtro_estado, 'abandonada'); ?>>Abandonados</option>
+                    <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('activa', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'activa'); ?>><?php echo esc_html__('Activos', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completada'); ?>><?php echo esc_html__('Completados', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('abandonada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'abandonada'); ?>><?php echo esc_html__('Abandonados', 'flavor-chat-ia'); ?></option>
                 </select>
 
-                <button type="submit" class="button">Filtrar</button>
+                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
             </div>
         </form>
     </div>
@@ -123,15 +123,15 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
             <table class="wp-list-table widefat striped">
                 <thead>
                     <tr>
-                        <th>Alumno</th>
-                        <th>Email</th>
-                        <th style="width: 100px;">Inscripciones</th>
-                        <th style="width: 100px;">Activos</th>
-                        <th style="width: 100px;">Completados</th>
-                        <th style="width: 100px;">Progreso</th>
-                        <th style="width: 100px;">Certificados</th>
-                        <th style="width: 120px;">Total Pagado</th>
-                        <th style="width: 150px;">Acciones</th>
+                        <th><?php echo esc_html__('Alumno', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Inscripciones', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Activos', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Completados', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Progreso', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Certificados', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 120px;"><?php echo esc_html__('Total Pagado', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -171,10 +171,10 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
                                 </td>
                                 <td>
                                     <button class="button button-small btn-ver-alumno" data-id="<?php echo $alumno->ID; ?>">
-                                        Ver Detalle
+                                        <?php echo esc_html__('Ver Detalle', 'flavor-chat-ia'); ?>
                                     </button>
                                     <button class="button button-small btn-progreso-alumno" data-id="<?php echo $alumno->ID; ?>">
-                                        Progreso
+                                        <?php echo esc_html__('Progreso', 'flavor-chat-ia'); ?>
                                     </button>
                                 </td>
                             </tr>
@@ -182,7 +182,7 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
                     <?php else: ?>
                         <tr>
                             <td colspan="9" class="flavor-no-data">
-                                No se encontraron alumnos
+                                <?php echo esc_html__('No se encontraron alumnos', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -196,11 +196,11 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
 <div id="modal-alumno" class="flavor-modal" style="display: none;">
     <div class="flavor-modal-content flavor-modal-large">
         <div class="flavor-modal-header">
-            <h2>Detalle del Alumno</h2>
-            <span class="flavor-modal-close">&times;</span>
+            <h2><?php echo esc_html__('Detalle del Alumno', 'flavor-chat-ia'); ?></h2>
+            <span class="flavor-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></span>
         </div>
         <div class="flavor-modal-body" id="alumno-detail-content">
-            <div class="flavor-loading">Cargando...</div>
+            <div class="flavor-loading"><?php echo esc_html__('Cargando...', 'flavor-chat-ia'); ?></div>
         </div>
     </div>
 </div>

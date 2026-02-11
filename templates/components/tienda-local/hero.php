@@ -25,30 +25,30 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
             <p class="text-xl md:text-2xl mb-12" style="color: rgba(255,255,255,0.9);"><?php echo esc_html($subtitulo ?? 'Apoya al comercio local'); ?></p>
 
             <div class="flavor-card max-w-3xl mx-auto mb-12">
-                <input type="text" placeholder="Buscar productos o tiendas..." class="w-full px-6 py-4 border rounded-lg" style="border-color: #e5e7eb;">
+                <input type="text" placeholder="<?php echo esc_attr__('Buscar productos o tiendas...', 'flavor-chat-ia'); ?>" class="w-full px-6 py-4 border rounded-lg" style="border-color: #e5e7eb;">
             </div>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <a href="#explorar" class="flavor-button flavor-button-primary px-8">Explorar Tiendas</a>
-                <a href="#vender" class="flavor-button px-8">Abrir Tienda</a>
+                <a href="#explorar" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Explorar Tiendas', 'flavor-chat-ia'); ?></a>
+                <a href="#vender" class="flavor-button px-8"><?php echo esc_html__('Abrir Tienda', 'flavor-chat-ia'); ?></a>
             </div>
 
             <div class="grid grid-cols-4 gap-6">
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">150+</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Tiendas Locales</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Tiendas Locales', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">3.5K</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Productos</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('3.5K', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Productos', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold" style="color: var(--flavor-primary);">98%</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Satisfacción</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Satisfacción', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);">24/48h</div>
-                    <div class="text-sm" style="color: rgba(255,255,255,0.8);">Entrega</div>
+                    <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('24/48h', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.8);"><?php echo esc_html__('Entrega', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
         </div>

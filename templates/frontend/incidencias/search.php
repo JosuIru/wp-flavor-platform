@@ -14,13 +14,13 @@ $sugerencias = $sugerencias ?? ['farola', 'bache', 'grafiti', 'basura', 'ruido']
 <div class="flavor-frontend flavor-incidencias-search">
     <!-- Buscador principal -->
     <div class="bg-gradient-to-r from-red-500 to-rose-500 rounded-2xl p-8 mb-8 shadow-lg">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">🔍 Buscar incidencias</h2>
+        <h2 class="text-2xl font-bold text-white mb-4 text-center"><?php echo esc_html__('🔍 Buscar incidencias', 'flavor-chat-ia'); ?></h2>
 
         <form action="" method="get" class="max-w-2xl mx-auto">
             <div class="relative">
                 <input type="text" name="q"
                        value="<?php echo esc_attr($query); ?>"
-                       placeholder="¿Qué incidencia buscas? (ej: farola rota, bache, grafiti...)"
+                       placeholder="<?php echo esc_attr__('¿Qué incidencia buscas? (ej: farola rota, bache, grafiti...)', 'flavor-chat-ia'); ?>"
                        class="w-full px-6 py-4 pr-14 rounded-xl text-lg border-0 shadow-lg focus:ring-4 focus:ring-red-300"
                        autocomplete="off">
                 <button type="submit"
@@ -35,7 +35,7 @@ $sugerencias = $sugerencias ?? ['farola', 'bache', 'grafiti', 'basura', 'ruido']
         <!-- Búsquedas frecuentes -->
         <?php if (!empty($sugerencias) && empty($query)): ?>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
-            <span class="text-red-100 text-sm">Búsquedas frecuentes:</span>
+            <span class="text-red-100 text-sm"><?php echo esc_html__('Búsquedas frecuentes:', 'flavor-chat-ia'); ?></span>
             <?php foreach ($sugerencias as $sugerencia): ?>
             <a href="?q=<?php echo esc_attr($sugerencia); ?>"
                class="bg-white/20 text-white px-3 py-1 rounded-full text-sm hover:bg-white/30 transition-colors">
@@ -62,10 +62,10 @@ $sugerencias = $sugerencias ?? ['farola', 'bache', 'grafiti', 'basura', 'ruido']
             <?php if ($total_resultados > 0): ?>
             <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500"
                     onchange="flavorIncidencias.ordenarResultados(this.value)">
-                <option value="relevancia">Más relevantes</option>
-                <option value="recientes">Más recientes</option>
-                <option value="votos">Más apoyados</option>
-                <option value="prioridad">Mayor prioridad</option>
+                <option value="<?php echo esc_attr__('relevancia', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Más relevantes', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('recientes', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Más recientes', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('votos', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Más apoyados', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('prioridad', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mayor prioridad', 'flavor-chat-ia'); ?></option>
             </select>
             <?php endif; ?>
         </div>
@@ -75,17 +75,17 @@ $sugerencias = $sugerencias ?? ['farola', 'bache', 'grafiti', 'basura', 'ruido']
     <!-- Sin resultados -->
     <div class="text-center py-16 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">🔍</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">No encontramos incidencias</h3>
-        <p class="text-gray-500 mb-6">Prueba con otros términos o reporta una nueva incidencia</p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No encontramos incidencias', 'flavor-chat-ia'); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('Prueba con otros términos o reporta una nueva incidencia', 'flavor-chat-ia'); ?></p>
 
         <div class="flex flex-col sm:flex-row justify-center gap-4">
             <button class="bg-red-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors"
                     onclick="flavorIncidencias.nuevaIncidencia()">
-                📝 Reportar incidencia
+                <?php echo esc_html__('📝 Reportar incidencia', 'flavor-chat-ia'); ?>
             </button>
             <a href="<?php echo esc_url(home_url('/incidencias/')); ?>"
                class="bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors">
-                Ver todas las incidencias
+                <?php echo esc_html__('Ver todas las incidencias', 'flavor-chat-ia'); ?>
             </a>
         </div>
     </div>
@@ -173,14 +173,14 @@ $sugerencias = $sugerencias ?? ['farola', 'bache', 'grafiti', 'basura', 'ruido']
                 <div class="flex md:flex-col justify-end gap-2 p-4 bg-gray-50 md:bg-transparent">
                     <button class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                             onclick="flavorIncidencias.apoyar(<?php echo esc_attr($incidencia['id']); ?>)"
-                            title="Apoyar incidencia">
+                            title="<?php echo esc_attr__('Apoyar incidencia', 'flavor-chat-ia'); ?>">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
                         </svg>
                     </button>
                     <a href="<?php echo esc_url($incidencia['url']); ?>"
                        class="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                       title="Ver detalles">
+                       title="<?php echo esc_attr__('Ver detalles', 'flavor-chat-ia'); ?>">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
@@ -196,11 +196,11 @@ $sugerencias = $sugerencias ?? ['farola', 'bache', 'grafiti', 'basura', 'ruido']
     <div class="flex justify-center mt-8">
         <nav class="flex items-center gap-2">
             <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
-                ← Anterior
+                <?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?>
             </button>
             <span class="px-4 py-2 text-gray-600">Página 1 de <?php echo ceil($total_resultados / 10); ?></span>
             <button class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors">
-                Siguiente →
+                <?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?>
             </button>
         </nav>
     </div>

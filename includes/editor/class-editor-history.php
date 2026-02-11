@@ -56,15 +56,15 @@ class Flavor_Editor_History {
         check_ajax_referer('flavor_editor_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
         $state = $_POST['state'] ?? null;
-        $action_label = sanitize_text_field($_POST['action_label'] ?? 'Cambio');
+        $action_label = sanitize_text_field($_POST['action_label'] ?? __('Cambio', 'flavor-chat-ia'));
 
         if (!$post_id || !$state) {
-            wp_send_json_error(['message' => 'Datos incompletos']);
+            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
         }
 
         $result = $this->save_state($post_id, $state, $action_label);
@@ -134,13 +134,13 @@ class Flavor_Editor_History {
         check_ajax_referer('flavor_editor_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!$post_id) {
-            wp_send_json_error(['message' => 'Post ID requerido']);
+            wp_send_json_error(['message' => __('Post ID requerido', 'flavor-chat-ia')]);
         }
 
         $user_id = get_current_user_id();
@@ -180,19 +180,19 @@ class Flavor_Editor_History {
         check_ajax_referer('flavor_editor_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!$post_id) {
-            wp_send_json_error(['message' => 'Post ID requerido']);
+            wp_send_json_error(['message' => __('Post ID requerido', 'flavor-chat-ia')]);
         }
 
         $result = $this->undo($post_id);
 
         if ($result === false) {
-            wp_send_json_error(['message' => 'No hay más estados para deshacer']);
+            wp_send_json_error(['message' => __('No hay más estados para deshacer', 'flavor-chat-ia')]);
         }
 
         wp_send_json_success($result);
@@ -236,19 +236,19 @@ class Flavor_Editor_History {
         check_ajax_referer('flavor_editor_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!$post_id) {
-            wp_send_json_error(['message' => 'Post ID requerido']);
+            wp_send_json_error(['message' => __('Post ID requerido', 'flavor-chat-ia')]);
         }
 
         $result = $this->redo($post_id);
 
         if ($result === false) {
-            wp_send_json_error(['message' => 'No hay más estados para rehacer']);
+            wp_send_json_error(['message' => __('No hay más estados para rehacer', 'flavor-chat-ia')]);
         }
 
         wp_send_json_success($result);
@@ -292,20 +292,20 @@ class Flavor_Editor_History {
         check_ajax_referer('flavor_editor_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!$post_id) {
-            wp_send_json_error(['message' => 'Post ID requerido']);
+            wp_send_json_error(['message' => __('Post ID requerido', 'flavor-chat-ia')]);
         }
 
         $user_id = get_current_user_id();
         delete_transient("flavor_editor_history_{$post_id}_{$user_id}");
         delete_transient("flavor_editor_pointer_{$post_id}_{$user_id}");
 
-        wp_send_json_success(['message' => 'Historial limpiado']);
+        wp_send_json_success(['message' => __('Historial limpiado', 'flavor-chat-ia')]);
     }
 
     /**

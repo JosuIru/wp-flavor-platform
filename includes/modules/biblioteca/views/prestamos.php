@@ -33,20 +33,20 @@ $prestamos = $wpdb->get_results($wpdb->prepare(
 ?>
 
 <div class="wrap">
-    <h1>Gestión de Préstamos</h1>
+    <h1><?php echo esc_html__('Gestión de Préstamos', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
 
     <div class="flavor-filters">
         <form method="get">
-            <input type="hidden" name="page" value="flavor-chat-biblioteca">
-            <input type="hidden" name="tab" value="prestamos">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-biblioteca', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="tab" value="<?php echo esc_attr__('prestamos', 'flavor-chat-ia'); ?>">
             <select name="estado">
-                <option value="activo" <?php selected($filtro_estado, 'activo'); ?>>Activos</option>
-                <option value="devuelto" <?php selected($filtro_estado, 'devuelto'); ?>>Devueltos</option>
-                <option value="retrasado" <?php selected($filtro_estado, 'retrasado'); ?>>Retrasados</option>
-                <option value="perdido" <?php selected($filtro_estado, 'perdido'); ?>>Perdidos</option>
+                <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activos', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('devuelto', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'devuelto'); ?>><?php echo esc_html__('Devueltos', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('retrasado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'retrasado'); ?>><?php echo esc_html__('Retrasados', 'flavor-chat-ia'); ?></option>
+                <option value="<?php echo esc_attr__('perdido', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'perdido'); ?>><?php echo esc_html__('Perdidos', 'flavor-chat-ia'); ?></option>
             </select>
-            <button type="submit" class="button">Filtrar</button>
+            <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
         </form>
     </div>
 
@@ -54,14 +54,14 @@ $prestamos = $wpdb->get_results($wpdb->prepare(
         <table class="wp-list-table widefat striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Libro</th>
-                    <th>Prestamista</th>
-                    <th>Prestatario</th>
-                    <th>Fecha Préstamo</th>
-                    <th>Devolución Prevista</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Libro', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Prestamista', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Prestatario', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Fecha Préstamo', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Devolución Prevista', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -74,7 +74,7 @@ $prestamos = $wpdb->get_results($wpdb->prepare(
                         <td><?php echo date('d/m/Y', strtotime($p->fecha_prestamo)); ?></td>
                         <td><?php echo date('d/m/Y', strtotime($p->fecha_devolucion_prevista)); ?></td>
                         <td><span class="flavor-badge"><?php echo ucfirst($p->estado); ?></span></td>
-                        <td><button class="button button-small">Ver</button></td>
+                        <td><button class="button button-small"><?php echo esc_html__('Ver', 'flavor-chat-ia'); ?></button></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
