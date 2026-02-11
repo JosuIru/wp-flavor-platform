@@ -1868,12 +1868,24 @@ class Flavor_App_Profile_Admin {
 
             // Asegurar que Module Loader esté disponible
             if (!class_exists('Flavor_Module_Loader')) {
-                require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-module-loader.php';
+                error_log('[PASO_INSTALAR_MODULOS] Cargando Flavor_Module_Loader...');
+                $loader_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/class-module-loader.php';
+                error_log('[PASO_INSTALAR_MODULOS] Ruta del loader: ' . $loader_path);
+                error_log('[PASO_INSTALAR_MODULOS] ¿Archivo existe? ' . (file_exists($loader_path) ? 'Sí' : 'No'));
+
+                require_once $loader_path;
+
+                error_log('[PASO_INSTALAR_MODULOS] ¿Clase cargada? ' . (class_exists('Flavor_Module_Loader') ? 'Sí' : 'No'));
+            } else {
+                error_log('[PASO_INSTALAR_MODULOS] Flavor_Module_Loader ya está cargado');
             }
 
             $modulos_inicializados = 0;
             $errores_inicializacion = [];
+
+            error_log('[PASO_INSTALAR_MODULOS] Intentando obtener instancia del Module Loader...');
             $module_loader = Flavor_Module_Loader::get_instance();
+            error_log('[PASO_INSTALAR_MODULOS] Module Loader obtenido: ' . get_class($module_loader));
 
             foreach ($modulos_a_activar as $module_id) {
                 error_log('[PASO_INSTALAR_MODULOS] Procesando módulo: ' . $module_id);
