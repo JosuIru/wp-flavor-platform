@@ -1826,42 +1826,55 @@ class Flavor_App_Profile_Admin {
      * Paso: Instalar modulos
      */
     private function paso_instalar_modulos($plantilla_id, $perfil, $opciones) {
+        error_log('[PASO_INSTALAR_MODULOS] INICIO - Plantilla: ' . $plantilla_id);
+
         try {
             // Activar modulos requeridos
             $modulos_a_activar = $perfil['modulos_requeridos'] ?? [];
+            error_log('[PASO_INSTALAR_MODULOS] Módulos requeridos: ' . json_encode($modulos_a_activar));
 
             // Agregar modulos opcionales seleccionados
             if (!empty($opciones['modulos_opcionales'])) {
                 $modulos_a_activar = array_merge($modulos_a_activar, $opciones['modulos_opcionales']);
             }
             $modulos_a_activar = $this->normalizar_ids_modulos($modulos_a_activar);
+            error_log('[PASO_INSTALAR_MODULOS] Módulos totales a activar: ' . json_encode($modulos_a_activar));
 
             // Actualizar modulos activos
+            error_log('[PASO_INSTALAR_MODULOS] Actualizando active_modules...');
             $configuracion = get_option('flavor_chat_ia_settings', []);
             $modulos_actuales = $configuracion['active_modules'] ?? [];
             $modulos_combinados = array_unique(array_merge($modulos_actuales, $modulos_a_activar));
             $configuracion['active_modules'] = $modulos_combinados;
-            update_option('flavor_chat_ia_settings', $configuracion);
+            $update_result = update_option('flavor_chat_ia_settings', $configuracion);
+            error_log('[PASO_INSTALAR_MODULOS] update_option result: ' . ($update_result ? 'true' : 'false'));
 
             // Cargar el helper para guardar el perfil directamente en BD
+            error_log('[PASO_INSTALAR_MODULOS] Cargando Profile Saver...');
             require_once FLAVOR_CHAT_IA_PATH . 'includes/class-profile-saver.php';
 
             // Guardar app_profile directamente en BD (bypass WordPress cache/hooks)
+            error_log('[PASO_INSTALAR_MODULOS] Guardando perfil...');
             $resultado_perfil = Flavor_Profile_Saver::guardar_perfil($plantilla_id);
+            error_log('[PASO_INSTALAR_MODULOS] Perfil guardado - Exito: ' . ($resultado_perfil['exito'] ? 'true' : 'false'));
 
             // IMPORTANTE: Limpiar caché para asegurar que los módulos se vean como activos
+            error_log('[PASO_INSTALAR_MODULOS] Limpiando caché...');
             wp_cache_delete('flavor_chat_ia_settings', 'options');
             wp_cache_delete('alloptions', 'options');
 
             // IMPORTANTE: Inicializar módulos recién activados
+            error_log('[PASO_INSTALAR_MODULOS] Inicializando módulos...');
             $modulos_inicializados = 0;
             $errores_inicializacion = [];
             $module_loader = Flavor_Module_Loader::get_instance();
 
             foreach ($modulos_a_activar as $module_id) {
+                error_log('[PASO_INSTALAR_MODULOS] Procesando módulo: ' . $module_id);
                 try {
                     // Cargar el módulo si no está ya cargado
                     $module = $module_loader->get_module($module_id);
+                    error_log('[PASO_INSTALAR_MODULOS] Módulo cargado: ' . ($module ? get_class($module) : 'NULL'));
 
                     if ($module) {
                         // Crear tablas si el módulo lo necesita
@@ -1897,6 +1910,11 @@ class Flavor_App_Profile_Admin {
                 );
             }
 
+            error_log('[PASO_INSTALAR_MODULOS] ÉXITO - Módulos activados: ' . $total_modulos . ', Inicializados: ' . $modulos_inicializados);
+            if (!empty($errores_inicializacion)) {
+                error_log('[PASO_INSTALAR_MODULOS] Errores: ' . json_encode($errores_inicializacion));
+            }
+
             return [
                 'success' => true,
                 'descripcion' => $descripcion,
@@ -1910,9 +1928,12 @@ class Flavor_App_Profile_Admin {
                 'debug_exito' => $resultado_perfil['exito'],
             ];
         } catch (Exception $excepcion) {
+            error_log('[PASO_INSTALAR_MODULOS] ERROR FATAL: ' . $excepcion->getMessage());
+            error_log('[PASO_INSTALAR_MODULOS] Stack trace: ' . $excepcion->getTraceAsString());
             return [
                 'success' => false,
                 'mensaje' => $excepcion->getMessage(),
+                'trace' => $excepcion->getTraceAsString(),
             ];
         }
     }
