@@ -1844,10 +1844,19 @@ class Flavor_App_Profile_Admin {
             error_log('[PASO_INSTALAR_MODULOS] Actualizando active_modules...');
             $configuracion = get_option('flavor_chat_ia_settings', []);
             $modulos_actuales = $configuracion['active_modules'] ?? [];
+            error_log('[PASO_INSTALAR_MODULOS] Módulos actuales antes: ' . json_encode($modulos_actuales));
+
             $modulos_combinados = array_unique(array_merge($modulos_actuales, $modulos_a_activar));
+            error_log('[PASO_INSTALAR_MODULOS] Módulos combinados: ' . json_encode($modulos_combinados));
+
             $configuracion['active_modules'] = $modulos_combinados;
             $update_result = update_option('flavor_chat_ia_settings', $configuracion);
             error_log('[PASO_INSTALAR_MODULOS] update_option result: ' . ($update_result ? 'true' : 'false'));
+
+            // Verificar que se guardó correctamente
+            $configuracion_verificacion = get_option('flavor_chat_ia_settings', []);
+            $modulos_guardados = $configuracion_verificacion['active_modules'] ?? [];
+            error_log('[PASO_INSTALAR_MODULOS] Módulos guardados después: ' . json_encode($modulos_guardados));
 
             // Cargar el helper para guardar el perfil directamente en BD
             error_log('[PASO_INSTALAR_MODULOS] Cargando Profile Saver...');
