@@ -735,17 +735,6 @@ class ApiClient {
       return ApiResponse.error(_handleError(e));
     }
   }
-
-  /// Obtener configuración de la app cliente
-  Future<ApiResponse<Map<String, dynamic>>> getClientAppConfig() async {
-    try {
-      final response = await _dio.get('/client/config');
-      return ApiResponse.success(response.data);
-    } on DioException catch (e) {
-      return ApiResponse.error(_handleError(e));
-    }
-  }
-
   // ==========================================
   // VERIFICACIÓN DE EMAIL
   // ==========================================

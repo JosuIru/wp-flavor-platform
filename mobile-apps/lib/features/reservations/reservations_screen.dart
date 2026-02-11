@@ -87,9 +87,8 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
 
       if (result == true && mounted) {
         // Compra completada
-        showAppSnackBar(
-          context,
-          message: '¡Reserva completada con éxito!',
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('¡Reserva completada con éxito!')),
         );
         // Limpiar estado
         setState(() {
@@ -102,10 +101,11 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
       }
     } else if (mounted) {
       final error = ref.read(cartProvider).error;
-      showAppSnackBar(
-        context,
-        message: error ?? 'Error al procesar la reserva',
-        isError: true,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error ?? 'Error al procesar la reserva'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }

@@ -169,7 +169,7 @@ class _EspaciosComunesScreenState extends ConsumerState<EspaciosComunesScreen> {
                                 Icon(Icons.people, size: 18, color: Colors.grey[600]),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${i18n.espaciosComunesCapacity}: $capacidad ${i18n.espaciosComunes People}',
+                                  '${i18n.espaciosComunesCapacity}: $capacidad personas',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ],
@@ -520,7 +520,7 @@ class _EspacioDetailScreenState extends ConsumerState<EspacioDetailScreen> {
                                   const Icon(Icons.people, size: 20),
                                   const SizedBox(width: 8),
                                   Text(
-                                    '${i18n.espaciosComunesCapacity}: $capacidad ${i18n.espaciosComunes People}',
+                                    '${i18n.espaciosComunesCapacity}: $capacidad personas',
                                     style: Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],

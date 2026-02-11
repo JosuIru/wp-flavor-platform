@@ -1034,67 +1034,6 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
       ),
     );
   }
-
-  /// Convierte un nombre de icono a IconData
-  IconData _iconFromString(String iconName) {
-    final iconMap = {
-      'home': Icons.home_outlined,
-      'admin-home': Icons.home_outlined,
-      'search': Icons.search_outlined,
-      'admin-users': Icons.person_outline,
-      'email': Icons.email_outlined,
-      'cart': Icons.shopping_cart_outlined,
-      'marker': Icons.place_outlined,
-      'calendar': Icons.calendar_today_outlined,
-      'clock': Icons.access_time_outlined,
-      'heart': Icons.favorite_outline,
-      'star-filled': Icons.star_outline,
-      'menu': Icons.menu,
-      'plus-alt': Icons.add_circle_outline,
-      'dashboard': Icons.dashboard_outlined,
-      'admin-settings': Icons.settings_outlined,
-      'visibility': Icons.visibility_outlined,
-      'info': Icons.info_outline,
-      'phone': Icons.phone_outlined,
-      'location': Icons.location_on_outlined,
-      'link': Icons.link_outlined,
-      'chat': Icons.chat_bubble_outline,
-      'chat_bubble': Icons.chat_bubble_outline,
-      'shopping_basket': Icons.shopping_basket_outlined,
-      'access_time': Icons.access_time_outlined,
-      'account_balance': Icons.account_balance_outlined,
-      'groups': Icons.groups_outlined,
-      'meeting_room': Icons.meeting_room_outlined,
-      'volunteer_activism': Icons.volunteer_activism_outlined,
-      'grass': Icons.grass_outlined,
-      'local_library': Icons.local_library_outlined,
-      'school': Icons.school_outlined,
-      'restaurant': Icons.restaurant_outlined,
-      'local_cafe': Icons.local_cafe_outlined,
-      'store': Icons.store_outlined,
-      'sports': Icons.sports_outlined,
-      'pool': Icons.pool_outlined,
-      'directions_bike': Icons.directions_bike_outlined,
-      'directions_car': Icons.directions_car_outlined,
-      'public': Icons.public_outlined,
-      'business': Icons.business_outlined,
-      'event': Icons.event_outlined,
-      'article': Icons.article_outlined,
-      'handshake': Icons.handshake_outlined,
-      'forum': Icons.forum_outlined,
-      'announcement': Icons.announcement_outlined,
-      'recycling': Icons.recycling_outlined,
-      'eco': Icons.eco_outlined,
-      'add': Icons.add,
-      'settings': Icons.settings_outlined,
-      'account_circle': Icons.account_circle_outlined,
-      'calendar_today': Icons.calendar_today_outlined,
-      'confirmation_number': Icons.confirmation_number_outlined,
-      'child_care': Icons.child_care_outlined,
-    };
-
-    return iconMap[iconName] ?? Icons.public_outlined;
-  }
 }
 
 /// Configuración de una pestaña

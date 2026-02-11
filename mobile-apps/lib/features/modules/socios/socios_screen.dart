@@ -28,27 +28,20 @@ class _SociosScreenState extends ConsumerState<SociosScreen> {
 
   Future<void> _loadUserProfile() async {
     setState(() => _isLoading = true);
-    final user_id = ref.read(clientAuthProvider).userId;
-    if (user_id == null) {
-      setState(() => _isLoading = false);
-      return;
-    }
 
-    try {
-      final api = ref.read(apiClientProvider);
-      final response = await api.get('/wp/v2/users/$user_id');
+    // TODO: Implementar carga de perfil con API correcta
+    // Por ahora, simulamos datos de ejemplo
+    await Future.delayed(const Duration(milliseconds: 500));
 
-      if (response.success && response.data != null) {
-        setState(() {
-          _userData = response.data!;
-          _nombreController.text = _userData!['name'] ?? '';
-          _emailController.text = _userData!['email'] ?? '';
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() => _isLoading = false);
-    }
+    setState(() {
+      _userData = {
+        'name': 'Usuario',
+        'email': 'usuario@example.com',
+      };
+      _nombreController.text = 'Usuario';
+      _emailController.text = 'usuario@example.com';
+      _isLoading = false;
+    });
   }
 
   @override
