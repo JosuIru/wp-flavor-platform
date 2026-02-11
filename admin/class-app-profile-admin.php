@@ -1865,6 +1865,12 @@ class Flavor_App_Profile_Admin {
 
             // IMPORTANTE: Inicializar módulos recién activados
             error_log('[PASO_INSTALAR_MODULOS] Inicializando módulos...');
+
+            // Asegurar que Module Loader esté disponible
+            if (!class_exists('Flavor_Module_Loader')) {
+                require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-module-loader.php';
+            }
+
             $modulos_inicializados = 0;
             $errores_inicializacion = [];
             $module_loader = Flavor_Module_Loader::get_instance();
