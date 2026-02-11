@@ -165,7 +165,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             'id' => 'eventos',
             'label' => __('Eventos', 'flavor-chat-ia'),
             'icon' => 'dashicons-calendar',
-            'capability' => 'manage_options',
+            'capability' => 'edit_posts', // Permite a editores y administradores gestionar eventos
             'categoria' => 'actividades',
             'paginas' => [
                 [
@@ -193,6 +193,11 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                     'slug' => 'eventos-config',
                     'titulo' => __('Configuración', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_config'],
+                ],
+                [
+                    'slug' => 'eventos-nuevo',
+                    'titulo' => __('Nuevo Evento', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_nuevo'],
                 ],
             ],
             'estadisticas' => [$this, 'get_estadisticas_dashboard'],
@@ -476,6 +481,15 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         echo '</form>';
         echo '</div>';
     }
+
+    /**
+     * Renderiza la página para crear/editar eventos
+     */
+    public function render_admin_nuevo() {
+        // Incluir la vista con el formulario completo
+        include __DIR__ . '/views/eventos.php';
+    }
+
     public function activate() { $this->create_tables(); }
     public function deactivate() { }
 
