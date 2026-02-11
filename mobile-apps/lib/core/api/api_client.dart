@@ -3098,8 +3098,8 @@ class ApiClient {
   }) async {
     try {
       final response = await _dio.get('/flavor/v1/bares', queryParameters: {
-        if (limite != null) 'limite': limite,
-        if (pagina != null) 'pagina': pagina,
+        if (limite != null) 'per_page': limite,
+        if (pagina != null) 'page': pagina,
       });
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -3126,10 +3126,9 @@ class ApiClient {
     int? pagina,
   }) async {
     try {
-      final response = await _dio.get('/flavor/v1/woocommerce/pedidos', queryParameters: {
+      final response = await _dio.get('/flavor-chat-ia/v1/woocommerce/pedidos', queryParameters: {
         if (estado != null) 'estado': estado,
         if (limite != null) 'limite': limite,
-        if (pagina != null) 'pagina': pagina,
       });
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -3144,21 +3143,11 @@ class ApiClient {
     int? pagina,
   }) async {
     try {
-      final response = await _dio.get('/flavor/v1/woocommerce/productos', queryParameters: {
+      final response = await _dio.get('/flavor-chat-ia/v1/woocommerce/productos', queryParameters: {
         if (busqueda != null) 'busqueda': busqueda,
         if (limite != null) 'limite': limite,
         if (pagina != null) 'pagina': pagina,
       });
-      return ApiResponse.success(response.data);
-    } on DioException catch (e) {
-      return ApiResponse.error(_handleError(e));
-    }
-  }
-
-  /// Obtener estadísticas de WooCommerce
-  Future<ApiResponse<Map<String, dynamic>>> getWooStats() async {
-    try {
-      final response = await _dio.get('/flavor/v1/woocommerce/estadisticas');
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));

@@ -11,55 +11,21 @@ class WooCommerceAdminScreen extends ConsumerStatefulWidget {
   ConsumerState<WooCommerceAdminScreen> createState() => _WooCommerceAdminScreenState();
 }
 
-class _WooCommerceAdminScreenState extends ConsumerState<WooCommerceAdminScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  bool _isLoadingStats = true;
+class _WooCommerceAdminScreenState extends ConsumerState<WooCommerceAdminScreen> {
   bool _isLoadingPedidos = true;
-  Map<String, dynamic>? _stats;
   List<Map<String, dynamic>> _pedidos = [];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _loadData();
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    await Future.wait([
-      _loadStats(),
-      _loadPedidos(),
-    ]);
-  }
-
-  Future<void> _loadStats() async {
-    setState(() => _isLoadingStats = true);
-
-    final api = ref.read(apiClientProvider);
-    final response = await api.getWooStats();
-
-    if (response.success && response.data != null) {
-      setState(() {
-        _stats = response.data;
-        _isLoadingStats = false;
-      });
-    } else {
-      setState(() => _isLoadingStats = false);
-    }
+    _loadPedidos();
   }
 
   Future<void> _loadPedidos() async {
     setState(() => _isLoadingPedidos = true);
 
     final api = ref.read(apiClientProvider);
-    final response = await api.getWooPedidos(limite: 50);
+    final response = await api.getWooPedidos(limite: 100);
 
     if (response.success && response.data != null) {
       final pedidos = (response.data!['pedidos'] as List<dynamic>? ?? [])
@@ -76,21 +42,14 @@ class _WooCommerceAdminScreenState extends ConsumerState<WooCommerceAdminScreen>
   }
 
   Future<void> _refresh() async {
-    await _loadData();
+    await _loadPedidos();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WooCommerce'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.dashboard), text: 'Dashboard'),
-            Tab(icon: Icon(Icons.shopping_cart), text: 'Pedidos'),
-          ],
-        ),
+        title: const Text('WooCommerce - Pedidos'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -98,112 +57,11 @@ class _WooCommerceAdminScreenState extends ConsumerState<WooCommerceAdminScreen>
           ),
         ],
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildDashboardTab(),
-          _buildPedidosTab(),
-        ],
-      ),
+      body: _buildPedidosView(),
     );
   }
 
-  Widget _buildDashboardTab() {
-    if (_isLoadingStats) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_stats == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
-            const SizedBox(height: 16),
-            const Text('Error al cargar estadísticas'),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _loadStats,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Reintentar'),
-            ),
-          ],
-        ),
-      );
-    }
-
-    final ventasHoy = _stats!['ventas_hoy'] ?? 0;
-    final ventasMes = _stats!['ventas_mes'] ?? 0;
-    final pedidosPendientes = _stats!['pedidos_pendientes'] ?? 0;
-    final productosActivos = _stats!['productos_activos'] ?? 0;
-
-    return RefreshIndicator(
-      onRefresh: _refresh,
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Resumen',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.3,
-              children: [
-                _buildStatCard(
-                  'Ventas Hoy',
-                  _formatCurrency(ventasHoy),
-                  Icons.today,
-                  Colors.green,
-                ),
-                _buildStatCard(
-                  'Ventas del Mes',
-                  _formatCurrency(ventasMes),
-                  Icons.calendar_month,
-                  Colors.blue,
-                ),
-                _buildStatCard(
-                  'Pedidos Pendientes',
-                  pedidosPendientes.toString(),
-                  Icons.pending_actions,
-                  Colors.orange,
-                ),
-                _buildStatCard(
-                  'Productos Activos',
-                  productosActivos.toString(),
-                  Icons.inventory_2,
-                  Colors.purple,
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Últimos Pedidos',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _isLoadingPedidos
-                ? const Center(child: CircularProgressIndicator())
-                : _pedidos.isEmpty
-                    ? const Center(child: Text('No hay pedidos'))
-                    : Column(
-                        children: _pedidos.take(5).map((pedido) => _buildPedidoCard(pedido)).toList(),
-                      ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPedidosTab() {
+  Widget _buildPedidosView() {
     if (_isLoadingPedidos) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -229,39 +87,6 @@ class _WooCommerceAdminScreenState extends ConsumerState<WooCommerceAdminScreen>
         itemBuilder: (context, index) {
           return _buildPedidoCard(_pedidos[index]);
         },
-      ),
-    );
-  }
-
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 32, color: color),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 12),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
       ),
     );
   }
