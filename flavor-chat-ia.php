@@ -352,8 +352,8 @@ final class Flavor_Chat_IA {
         // Declarar compatibilidad HPOS de WooCommerce
         add_action('before_woocommerce_init', [$this, 'declare_hpos_compatibility']);
 
-        // Internacionalización (prioridad 1 para que esté disponible antes de que los addons usen __() en plugins_loaded:5)
-        add_action('plugins_loaded', [$this, 'load_textdomain'], 1);
+        // Internacionalización (debe cargarse en init según WP 6.7+)
+        add_action('init', [$this, 'load_textdomain'], 0);
 
         // Limpiar rewrite rules una sola vez tras desactivar controladores frontend
         add_action('init', [$this, 'maybe_flush_frontend_rewrite_rules'], 999);
