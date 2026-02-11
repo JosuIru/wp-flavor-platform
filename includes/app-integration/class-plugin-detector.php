@@ -2,7 +2,7 @@
 /**
  * Detector de Plugins Activos
  *
- * Detecta qué sistemas están activos (wp-calendario-experiencias, Flavor Chat IA)
+ * Detecta qué sistemas están activos (wp-calendario-experiencias, basabere-campamentos, Flavor Chat IA)
  * y devuelve información estructurada para las apps móviles
  *
  * @package FlavorChatIA
@@ -39,6 +39,11 @@ class Flavor_Plugin_Detector {
             $systems[] = $this->get_calendario_info();
         }
 
+        // Detectar basabere-campamentos
+        if ($this->is_basabere_active()) {
+            $systems[] = $this->get_basabere_info();
+        }
+
         // Detectar Flavor Chat IA
         if ($this->is_flavor_chat_active()) {
             $systems[] = $this->get_flavor_chat_info();
@@ -66,6 +71,17 @@ class Flavor_Plugin_Detector {
      */
     public function is_flavor_chat_active() {
         return class_exists('Flavor_Chat_IA');
+    }
+
+    /**
+     * Verifica si basabere-campamentos está activo
+     *
+     * @return bool
+     */
+    public function is_basabere_active() {
+        return class_exists('Camps_Mobile_API') ||
+               class_exists('Basabere_Campamentos') ||
+               function_exists('basabere_campamentos_init');
     }
 
     /**
@@ -122,6 +138,32 @@ class Flavor_Plugin_Detector {
     }
 
     /**
+     * Obtiene información de basabere-campamentos
+     *
+     * @return array
+     */
+    private function get_basabere_info() {
+        $version = '1.0.0';
+
+        // Intentar obtener versión real
+        if (defined('BASABERE_VERSION')) {
+            $version = BASABERE_VERSION;
+        } elseif (defined('BASABERE_CAMPAMENTOS_VERSION')) {
+            $version = BASABERE_CAMPAMENTOS_VERSION;
+        }
+
+        return [
+            'id' => 'basabere-campamentos',
+            'name' => 'Basabere Campamentos',
+            'active' => true,
+            'version' => $version,
+            'api_namespace' => 'camps/v1',
+            'features' => $this->get_basabere_features(),
+            'endpoints' => $this->get_basabere_endpoints(),
+        ];
+    }
+
+    /**
      * Obtiene características de wp-calendario-experiencias
      *
      * @return array
@@ -135,6 +177,26 @@ class Flavor_Plugin_Detector {
             'dashboard_admin',
             'calendario',
             'experiencias',
+        ];
+    }
+
+    /**
+     * Obtiene características de basabere-campamentos
+     *
+     * @return array
+     */
+    private function get_basabere_features() {
+        return [
+            'campamentos',
+            'inscripciones',
+            'categorias_campamentos',
+            'filtros_campamentos',
+            'exportar_excel',
+            'gestion_admin_campamentos',
+            'taxonomias_campamentos',
+            'galeria_campamentos',
+            'compartir_campamentos',
+            'estadisticas_campamentos',
         ];
     }
 
@@ -178,6 +240,34 @@ class Flavor_Plugin_Detector {
             'reservations' => $base . '/reservations',
             'admin' => $base . '/admin',
             'client' => $base . '/client',
+        ];
+    }
+
+    /**
+     * Obtiene endpoints de basabere-campamentos
+     *
+     * @return array
+     */
+    private function get_basabere_endpoints() {
+        $base = '/wp-json/camps/v1';
+
+        return [
+            // Endpoints públicos (cliente)
+            'camps' => $base . '/camps',
+            'camp_detail' => $base . '/camps/{id}',
+            'inscribe' => $base . '/camps/{id}/inscribe',
+
+            // Endpoints admin
+            'admin_camps' => $base . '/admin/camps',
+            'admin_camp_detail' => $base . '/admin/camps/{id}',
+            'admin_inscriptions' => $base . '/admin/camps/{id}/inscriptions',
+            'admin_stats' => $base . '/admin/stats',
+            'admin_export_excel' => $base . '/admin/camps/{id}/export-excel',
+            'admin_toggle_inscription' => $base . '/admin/camps/{id}/toggle-inscription',
+            'admin_toggle_status' => $base . '/admin/camps/{id}/toggle-status',
+            'admin_shareable_link' => $base . '/admin/camps/{id}/shareable-link',
+            'admin_taxonomies' => $base . '/admin/taxonomies',
+            'admin_upload_image' => $base . '/admin/upload-image',
         ];
     }
 
