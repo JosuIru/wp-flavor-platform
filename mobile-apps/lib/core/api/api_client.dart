@@ -2997,6 +2997,174 @@ class ApiClient {
   // HELPERS
   // ==========================================
 
+  // ===== FICHAJE EMPLEADOS =====
+
+  /// Registrar entrada de fichaje
+  Future<ApiResponse<Map<String, dynamic>>> registrarEntrada({
+    String? notas,
+    double? latitud,
+    double? longitud,
+    String? dispositivo,
+  }) async {
+    try {
+      final response = await _dio.post('/flavor/v1/fichaje/entrada', data: {
+        if (notas != null) 'notas': notas,
+        if (latitud != null) 'latitud': latitud,
+        if (longitud != null) 'longitud': longitud,
+        if (dispositivo != null) 'dispositivo': dispositivo,
+      });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Registrar salida de fichaje
+  Future<ApiResponse<Map<String, dynamic>>> registrarSalida({
+    String? notas,
+    double? latitud,
+    double? longitud,
+    String? dispositivo,
+  }) async {
+    try {
+      final response = await _dio.post('/flavor/v1/fichaje/salida', data: {
+        if (notas != null) 'notas': notas,
+        if (latitud != null) 'latitud': latitud,
+        if (longitud != null) 'longitud': longitud,
+        if (dispositivo != null) 'dispositivo': dispositivo,
+      });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Obtener estado actual del fichaje
+  Future<ApiResponse<Map<String, dynamic>>> getFichajeEstado() async {
+    try {
+      final response = await _dio.get('/flavor/v1/fichaje/estado');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Obtener historial de fichajes
+  Future<ApiResponse<Map<String, dynamic>>> getFichajeHistorial({
+    String? desde,
+    String? hasta,
+    String? tipo,
+  }) async {
+    try {
+      final response = await _dio.get('/flavor/v1/fichaje/historial', queryParameters: {
+        if (desde != null) 'desde': desde,
+        if (hasta != null) 'hasta': hasta,
+        if (tipo != null) 'tipo': tipo,
+      });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Obtener todos los fichajes (admin)
+  Future<ApiResponse<Map<String, dynamic>>> getFichajes({
+    String? desde,
+    String? hasta,
+    int? usuarioId,
+    int? pagina,
+    int? limite,
+  }) async {
+    try {
+      final response = await _dio.get('/flavor/v1/fichaje/admin/listado', queryParameters: {
+        if (desde != null) 'desde': desde,
+        if (hasta != null) 'hasta': hasta,
+        if (usuarioId != null) 'usuario_id': usuarioId,
+        if (pagina != null) 'pagina': pagina,
+        if (limite != null) 'limite': limite,
+      });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ===== BARES =====
+
+  /// Obtener listado de bares
+  Future<ApiResponse<Map<String, dynamic>>> getBares({
+    int? limite,
+    int? pagina,
+  }) async {
+    try {
+      final response = await _dio.get('/flavor/v1/bares', queryParameters: {
+        if (limite != null) 'limite': limite,
+        if (pagina != null) 'pagina': pagina,
+      });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Obtener detalle de un bar
+  Future<ApiResponse<Map<String, dynamic>>> getBarDetail(int id) async {
+    try {
+      final response = await _dio.get('/flavor/v1/bares/$id');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ===== WOOCOMMERCE =====
+
+  /// Obtener pedidos de WooCommerce
+  Future<ApiResponse<Map<String, dynamic>>> getWooPedidos({
+    String? estado,
+    int? limite,
+    int? pagina,
+  }) async {
+    try {
+      final response = await _dio.get('/flavor/v1/woocommerce/pedidos', queryParameters: {
+        if (estado != null) 'estado': estado,
+        if (limite != null) 'limite': limite,
+        if (pagina != null) 'pagina': pagina,
+      });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Obtener productos de WooCommerce
+  Future<ApiResponse<Map<String, dynamic>>> getWooProductos({
+    String? busqueda,
+    int? limite,
+    int? pagina,
+  }) async {
+    try {
+      final response = await _dio.get('/flavor/v1/woocommerce/productos', queryParameters: {
+        if (busqueda != null) 'busqueda': busqueda,
+        if (limite != null) 'limite': limite,
+        if (pagina != null) 'pagina': pagina,
+      });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Obtener estadísticas de WooCommerce
+  Future<ApiResponse<Map<String, dynamic>>> getWooStats() async {
+    try {
+      final response = await _dio.get('/flavor/v1/woocommerce/estadisticas');
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
   String _handleError(DioException error) {
     if (error.response != null) {
       final data = error.response!.data;

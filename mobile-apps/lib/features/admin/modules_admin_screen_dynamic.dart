@@ -8,6 +8,9 @@ import 'admin_reservations_screen.dart';
 import 'camps/camps_management_screen.dart';
 import 'module_placeholder_screen.dart';
 import '../modules/facturas/facturas_screen.dart';
+import '../modules/fichaje_empleados/fichaje_empleados_screen.dart';
+import '../modules/bares/bares_screen.dart';
+import '../modules/woocommerce/woocommerce_admin_screen.dart';
 
 /// Dashboard dinámico de módulos administrativos
 ///
@@ -389,15 +392,24 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
         screen = const FacturasScreen();
         break;
 
+      case 'fichaje_empleados':
+        screen = const FichajeEmpleadosScreen();
+        break;
+
+      case 'bares':
+        screen = const BaresScreen();
+        break;
+
+      case 'woocommerce':
+        screen = const WooCommerceAdminScreen();
+        break;
+
       case 'campamentos':
       case 'basabere-campamentos':
         screen = const CampsManagementScreen();
         break;
 
-      // Módulos sin pantalla específica: fichaje_empleados, bares, woocommerce
-      case 'fichaje_empleados':
-      case 'bares':
-      case 'woocommerce':
+      // Otros módulos sin pantalla específica
       default:
         screen = ModulePlaceholderScreen(
           moduleId: moduleId,
