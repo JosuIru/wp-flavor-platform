@@ -11,6 +11,25 @@ import '../modules/facturas/facturas_screen.dart';
 import '../modules/fichaje_empleados/fichaje_empleados_screen.dart';
 import '../modules/bares/bares_screen.dart';
 import '../modules/woocommerce/woocommerce_admin_screen.dart';
+import '../modules/avisos_municipales/avisos_municipales_screen.dart';
+import '../modules/ayuda_vecinal/ayuda_vecinal_screen.dart';
+import '../modules/banco_tiempo/banco_tiempo_screen.dart';
+import '../modules/biblioteca/biblioteca_screen.dart';
+import '../modules/bicicletas_compartidas/bicicletas_compartidas_screen.dart';
+import '../modules/chat_grupos/chat_grupos_screen.dart';
+import '../modules/chat_interno/chat_interno_screen.dart';
+import '../modules/cursos/cursos_screen.dart';
+import '../modules/espacios_comunes/espacios_comunes_screen.dart';
+import '../modules/eventos/eventos_screen.dart';
+import '../modules/grupos_consumo/grupos_consumo_screen.dart';
+import '../modules/huertos_urbanos/huertos_urbanos_screen.dart';
+import '../modules/incidencias/incidencias_screen.dart';
+import '../modules/marketplace/marketplace_screen.dart';
+import '../modules/parkings/parkings_screen.dart';
+import '../modules/reciclaje/reciclaje_screen.dart';
+import '../modules/socios/socios_screen.dart';
+import '../modules/talleres/talleres_screen.dart';
+import '../modules/tramites/tramites_screen.dart';
 
 /// Dashboard dinámico de módulos administrativos
 ///
@@ -384,29 +403,101 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
     // Mapear módulos activos a sus pantallas
     // Los IDs vienen del endpoint /app-discovery/v1/modules
     switch (moduleId) {
+      // Módulos principales
       case 'reservas':
         screen = const AdminReservationsScreen();
         break;
-
       case 'facturas':
         screen = const FacturasScreen();
         break;
-
       case 'fichaje_empleados':
         screen = const FichajeEmpleadosScreen();
         break;
-
       case 'bares':
         screen = const BaresScreen();
         break;
-
       case 'woocommerce':
         screen = const WooCommerceAdminScreen();
         break;
-
       case 'campamentos':
       case 'basabere-campamentos':
         screen = const CampsManagementScreen();
+        break;
+
+      // Módulos comunitarios
+      case 'avisos_municipales':
+      case 'avisos-municipales':
+        screen = const AvisosMunicipalesScreen();
+        break;
+      case 'ayuda_vecinal':
+      case 'ayuda-vecinal':
+        screen = const AyudaVecinalScreen();
+        break;
+      case 'banco_tiempo':
+      case 'banco-tiempo':
+        screen = const BancoTiempoScreen();
+        break;
+      case 'grupos_consumo':
+      case 'grupos-consumo':
+        screen = const GruposConsumoScreen();
+        break;
+      case 'huertos_urbanos':
+      case 'huertos-urbanos':
+        screen = const HuertosUrbanosScreen();
+        break;
+
+      // Servicios y recursos
+      case 'biblioteca':
+        screen = const BibliotecaScreen();
+        break;
+      case 'espacios_comunes':
+      case 'espacios-comunes':
+        screen = const EspaciosComunesScreen();
+        break;
+      case 'eventos':
+        screen = const EventosScreen();
+        break;
+      case 'cursos':
+        screen = const CursosScreen();
+        break;
+      case 'talleres':
+        screen = const TalleresScreen();
+        break;
+
+      // Movilidad y transporte
+      case 'bicicletas_compartidas':
+      case 'bicicletas-compartidas':
+        screen = const BicicletasCompartidasScreen();
+        break;
+      case 'parkings':
+        screen = const ParkingsScreen();
+        break;
+
+      // Comunicación
+      case 'chat_grupos':
+      case 'chat-grupos':
+        screen = const ChatGruposScreen();
+        break;
+      case 'chat_interno':
+      case 'chat-interno':
+        screen = const ChatInternoScreen();
+        break;
+
+      // Gestión y servicios
+      case 'incidencias':
+        screen = const IncidenciasScreen();
+        break;
+      case 'tramites':
+        screen = const TramitesScreen();
+        break;
+      case 'marketplace':
+        screen = const MarketplaceScreen();
+        break;
+      case 'socios':
+        screen = const SociosScreen();
+        break;
+      case 'reciclaje':
+        screen = const ReciclajeScreen();
         break;
 
       // Otros módulos sin pantalla específica
