@@ -444,6 +444,7 @@ class Flavor_Layout_Registry {
                 'font_family' => $design_settings['body_font'] ?? 'Inter',
             ],
             'navigation_items' => $this->get_navigation_items_for_mobile(),
+            'drawer_items' => $this->get_drawer_items_for_mobile(),
         ];
     }
 
@@ -471,6 +472,237 @@ class Flavor_Layout_Registry {
         }
 
         return $menu_items;
+    }
+
+    /**
+     * Obtener items del drawer para móvil
+     *
+     * Genera los items del menú hamburguesa (drawer) con la estructura
+     * esperada por las apps Flutter.
+     *
+     * @return array Lista de items del drawer
+     */
+    private function get_drawer_items_for_mobile() {
+        $drawer_items = [];
+
+        // Obtener menú WordPress del location 'primary' o 'mobile'
+        $menu_locations = get_nav_menu_locations();
+        $menu_location = isset($menu_locations['mobile']) ? 'mobile' : 'primary';
+
+        if (isset($menu_locations[$menu_location])) {
+            $menu_object = wp_get_nav_menu_object($menu_locations[$menu_location]);
+
+            if ($menu_object) {
+                $items = wp_get_nav_menu_items($menu_object->term_id);
+
+                if ($items) {
+                    // Calcular profundidad de cada item
+                    $item_depths = $this->calculate_menu_item_depths($items);
+
+                    foreach ($items as $index => $item) {
+                        $icon = get_post_meta($item->ID, '_menu_item_icon', true);
+                        if (empty($icon)) {
+                            $icon = $this->guess_icon_from_title($item->title);
+                        }
+
+                        // Determinar si es navegación nativa o web
+                        $type = 'web';
+                        $target = '';
+
+                        // Detectar si es URL interna y mapear a tab nativo
+                        if ($this->is_internal_url($item->url)) {
+                            $native_target = $this->map_url_to_native_tab($item->url);
+                            if ($native_target) {
+                                $type = 'native';
+                                $target = $native_target;
+                            }
+                        }
+
+                        $drawer_items[] = [
+                            'title' => $item->title,
+                            'url' => $item->url,
+                            'icon' => $icon,
+                            'type' => $type,
+                            'target' => $target,
+                            'order' => $index,
+                            'depth' => $item_depths[$item->ID] ?? 0,
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Si no hay menú configurado, devolver items por defecto
+        if (empty($drawer_items)) {
+            $drawer_items = $this->get_default_drawer_items();
+        }
+
+        return $drawer_items;
+    }
+
+    /**
+     * Calcular profundidad de items de menú
+     *
+     * @param array $items Items del menú WordPress
+     * @return array Mapa de ID => profundidad
+     */
+    private function calculate_menu_item_depths($items) {
+        $depths = [];
+        $parent_depths = [];
+
+        foreach ($items as $item) {
+            $parent_id = (int) $item->menu_item_parent;
+
+            if ($parent_id === 0) {
+                // Item de nivel raíz
+                $depths[$item->ID] = 0;
+                $parent_depths[$item->ID] = 0;
+            } else {
+                // Item hijo - profundidad del padre + 1
+                $parent_depth = isset($parent_depths[$parent_id]) ? $parent_depths[$parent_id] : 0;
+                $depth = $parent_depth + 1;
+                $depths[$item->ID] = $depth;
+                $parent_depths[$item->ID] = $depth;
+            }
+        }
+
+        return $depths;
+    }
+
+    /**
+     * Adivinar icono basado en el título del item
+     *
+     * @param string $title Título del item
+     * @return string Nombre del icono
+     */
+    private function guess_icon_from_title($title) {
+        $title_lower = strtolower($title);
+
+        $icon_map = [
+            'inicio' => 'home',
+            'home' => 'home',
+            'chat' => 'chat',
+            'reservar' => 'calendar',
+            'reservas' => 'calendar',
+            'tickets' => 'confirmation_number',
+            'entradas' => 'confirmation_number',
+            'info' => 'info',
+            'información' => 'info',
+            'contacto' => 'phone',
+            'eventos' => 'event',
+            'tienda' => 'store',
+            'marketplace' => 'store',
+            'grupos' => 'groups',
+            'comunidad' => 'groups',
+            'servicios' => 'star',
+            'perfil' => 'account_circle',
+            'ajustes' => 'settings',
+            'configuración' => 'settings',
+        ];
+
+        foreach ($icon_map as $keyword => $icon) {
+            if (strpos($title_lower, $keyword) !== false) {
+                return $icon;
+            }
+        }
+
+        return 'public';
+    }
+
+    /**
+     * Verificar si una URL es interna del sitio
+     *
+     * @param string $url URL a verificar
+     * @return bool True si es URL interna
+     */
+    private function is_internal_url($url) {
+        $site_url = home_url();
+        return strpos($url, $site_url) === 0;
+    }
+
+    /**
+     * Mapear URL a ID de tab nativo
+     *
+     * @param string $url URL del item
+     * @return string|false ID de tab nativo o false si no hay mapeo
+     */
+    private function map_url_to_native_tab($url) {
+        // Extraer path de la URL
+        $path = parse_url($url, PHP_URL_PATH);
+        if (!$path) {
+            return false;
+        }
+
+        $path_lower = strtolower($path);
+
+        // Mapeo de paths a tabs nativos
+        $mappings = [
+            '/chat' => 'chat',
+            '/reservar' => 'reservations',
+            '/reservas' => 'reservations',
+            '/mis-tickets' => 'my_tickets',
+            '/tickets' => 'my_tickets',
+            '/info' => 'info',
+            '/grupos-consumo' => 'grupos_consumo',
+            '/banco-tiempo' => 'banco_tiempo',
+            '/marketplace' => 'marketplace',
+            '/eventos' => 'eventos',
+            '/socios' => 'socios',
+        ];
+
+        foreach ($mappings as $pattern => $tab_id) {
+            if (strpos($path_lower, $pattern) !== false) {
+                return $tab_id;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Obtener items por defecto del drawer
+     *
+     * @return array Items por defecto
+     */
+    private function get_default_drawer_items() {
+        return [
+            [
+                'title' => __('Inicio', 'flavor-chat-ia'),
+                'url' => home_url(),
+                'icon' => 'home',
+                'type' => 'native',
+                'target' => 'info',
+                'order' => 0,
+                'depth' => 0,
+            ],
+            [
+                'title' => __('Chat', 'flavor-chat-ia'),
+                'url' => home_url('/chat'),
+                'icon' => 'chat',
+                'type' => 'native',
+                'target' => 'chat',
+                'order' => 1,
+                'depth' => 0,
+            ],
+            [
+                'title' => __('Reservar', 'flavor-chat-ia'),
+                'url' => home_url('/reservar'),
+                'icon' => 'calendar',
+                'type' => 'native',
+                'target' => 'reservations',
+                'order' => 2,
+                'depth' => 0,
+            ],
+            [
+                'title' => __('Mis Tickets', 'flavor-chat-ia'),
+                'url' => home_url('/mis-tickets'),
+                'icon' => 'confirmation_number',
+                'type' => 'native',
+                'target' => 'my_tickets',
+                'order' => 3,
+                'depth' => 0,
+            ],
+        ];
     }
 
     /**

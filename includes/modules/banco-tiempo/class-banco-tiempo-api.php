@@ -51,7 +51,7 @@ class Flavor_Banco_Tiempo_API {
         register_rest_route(self::NAMESPACE, '/banco-tiempo/servicios', [
             'methods' => 'GET',
             'callback' => [$this, 'get_servicios'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'busqueda' => [
                     'type' => 'string',
@@ -203,11 +203,79 @@ class Flavor_Banco_Tiempo_API {
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
+        // PUT /banco-tiempo/servicio/{id} - Actualizar servicio (singular para apps)
+        register_rest_route(self::NAMESPACE, '/banco-tiempo/servicio/(?P<id>\d+)', [
+            'methods' => 'PUT',
+            'callback' => [$this, 'actualizar_servicio'],
+            'permission_callback' => [$this, 'check_authentication'],
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'type' => 'integer',
+                    'sanitize_callback' => 'absint',
+                ],
+                'titulo' => [
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'descripcion' => [
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+                'categoria' => [
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'duracion_horas' => [
+                    'type' => 'number',
+                ],
+                'tipo' => [
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'enum' => ['ofrezco', 'necesito'],
+                ],
+            ],
+        ]);
+
+        // POST /banco-tiempo/servicio - Crear servicio (singular para apps, alias de /servicios)
+        register_rest_route(self::NAMESPACE, '/banco-tiempo/servicio', [
+            'methods' => 'POST',
+            'callback' => [$this, 'crear_servicio'],
+            'permission_callback' => [$this, 'check_authentication'],
+            'args' => [
+                'titulo' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'descripcion' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+                'categoria' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'duracion_horas' => [
+                    'required' => true,
+                    'type' => 'number',
+                ],
+                'tipo' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'enum' => ['ofrezco', 'necesito'],
+                ],
+            ],
+        ]);
+
         // GET /banco-tiempo/categorias - Lista de categorías
         register_rest_route(self::NAMESPACE, '/banco-tiempo/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -257,14 +325,16 @@ class Flavor_Banco_Tiempo_API {
 
         $servicios_formateados = array_map([$this, 'formatear_servicio'], $servicios);
 
-        return new WP_REST_Response([
+        $respuesta = [
             'success' => true,
             'servicios' => $servicios_formateados,
             'total' => (int) $total,
             'pagina' => $pagina,
             'limite' => $limite,
             'total_paginas' => ceil($total / $limite),
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_banco_tiempo_response($respuesta), 200);
     }
 
     /**
@@ -338,7 +408,7 @@ class Flavor_Banco_Tiempo_API {
         return new WP_REST_Response([
             'success' => true,
             'servicio' => $this->formatear_servicio($servicio),
-            'mensaje' => 'Servicio publicado con éxito',
+            'mensaje' => __('Servicio publicado con éxito', 'flavor-chat-ia'),
         ], 201);
     }
 
@@ -549,12 +619,23 @@ class Flavor_Banco_Tiempo_API {
             $transaccion_id
         ));
 
-        // TODO: Enviar notificación al receptor
+        $receptor = get_user_by('id', $servicio->usuario_id);
+        if ($receptor && !empty($receptor->user_email)) {
+            $asunto = sprintf(__('Nueva solicitud en Banco de Tiempo', 'flavor-chat-ia'));
+            $contenido = sprintf(
+                __("Hola %s,\n\nHas recibido una nueva solicitud para tu servicio \"%s\".\n\nMensaje:\n%s\n\nFecha preferida: %s\n", 'flavor-chat-ia'),
+                $receptor->display_name,
+                $servicio->titulo,
+                $mensaje,
+                $fecha_preferida ?: __('No indicada', 'flavor-chat-ia')
+            );
+            wp_mail($receptor->user_email, $asunto, $contenido);
+        }
 
         return new WP_REST_Response([
             'success' => true,
             'transaccion' => $this->formatear_transaccion($transaccion, $usuario_id),
-            'mensaje' => 'Solicitud enviada con éxito',
+            'mensaje' => __('horas_reales', 'flavor-chat-ia'),
         ], 201);
     }
 
@@ -615,7 +696,7 @@ class Flavor_Banco_Tiempo_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Intercambio completado con éxito',
+            'mensaje' => __('Servicio publicado con éxito', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -656,7 +737,7 @@ class Flavor_Banco_Tiempo_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Servicio eliminado con éxito',
+            'mensaje' => __('Educación', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -747,5 +828,154 @@ class Flavor_Banco_Tiempo_API {
      */
     public function check_authentication($request) {
         return is_user_logged_in();
+    }
+
+    private function sanitize_public_banco_tiempo_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['servicios']) && is_array($respuesta['servicios'])) {
+            $respuesta['servicios'] = array_map([$this, 'sanitize_public_servicio'], $respuesta['servicios']);
+        }
+
+        if (!empty($respuesta['servicio']) && is_array($respuesta['servicio'])) {
+            $respuesta['servicio'] = $this->sanitize_public_servicio($respuesta['servicio']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_servicio($servicio) {
+        if (!is_array($servicio)) {
+            return $servicio;
+        }
+
+        if (!empty($servicio['usuario']) && is_array($servicio['usuario'])) {
+            unset($servicio['usuario']['id'], $servicio['usuario']['email']);
+        }
+
+        return $servicio;
+    }
+
+    /**
+     * PUT /banco-tiempo/servicio/{id}
+     * Actualizar un servicio existente
+     */
+    public function actualizar_servicio($request) {
+        $usuario_id = get_current_user_id();
+
+        if (!$usuario_id) {
+            return new WP_Error(
+                'no_auth',
+                'Debes iniciar sesión',
+                ['status' => 401]
+            );
+        }
+
+        $servicio_id = $request->get_param('id');
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+
+        // Verificar que el servicio existe y pertenece al usuario
+        $servicio_existente = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla WHERE id = %d",
+            $servicio_id
+        ));
+
+        if (!$servicio_existente) {
+            return new WP_Error(
+                'servicio_no_encontrado',
+                'Servicio no encontrado',
+                ['status' => 404]
+            );
+        }
+
+        if ((int) $servicio_existente->usuario_id !== $usuario_id) {
+            return new WP_Error(
+                'no_autorizado',
+                'No tienes permisos para editar este servicio',
+                ['status' => 403]
+            );
+        }
+
+        // Preparar datos a actualizar
+        $datos_actualizar = [];
+        $formatos = [];
+
+        if ($request->has_param('titulo')) {
+            $datos_actualizar['titulo'] = sanitize_text_field($request->get_param('titulo'));
+            $formatos[] = '%s';
+        }
+
+        if ($request->has_param('descripcion')) {
+            $datos_actualizar['descripcion'] = sanitize_textarea_field($request->get_param('descripcion'));
+            $formatos[] = '%s';
+        }
+
+        if ($request->has_param('categoria')) {
+            $datos_actualizar['categoria'] = sanitize_text_field($request->get_param('categoria'));
+            $formatos[] = '%s';
+        }
+
+        if ($request->has_param('duracion_horas')) {
+            $horas = floatval($request->get_param('duracion_horas'));
+            if ($horas > 0 && $horas <= 24) {
+                $datos_actualizar['horas_estimadas'] = $horas;
+                $formatos[] = '%f';
+            }
+        }
+
+        if ($request->has_param('tipo')) {
+            $tipo = sanitize_text_field($request->get_param('tipo'));
+            if (in_array($tipo, ['ofrezco', 'necesito'])) {
+                $datos_actualizar['tipo'] = $tipo;
+                $formatos[] = '%s';
+            }
+        }
+
+        if (empty($datos_actualizar)) {
+            return new WP_Error(
+                'sin_cambios',
+                'No se enviaron datos para actualizar',
+                ['status' => 400]
+            );
+        }
+
+        // Actualizar
+        $resultado = $wpdb->update(
+            $tabla,
+            $datos_actualizar,
+            ['id' => $servicio_id],
+            $formatos,
+            ['%d']
+        );
+
+        if ($resultado === false) {
+            return new WP_Error(
+                'error_actualizar',
+                'Error al actualizar el servicio',
+                ['status' => 500]
+            );
+        }
+
+        // Obtener servicio actualizado
+        $servicio_actualizado = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla WHERE id = %d",
+            $servicio_id
+        ));
+
+        return new WP_REST_Response([
+            'success' => true,
+            'servicio' => $this->formatear_servicio($servicio_actualizado),
+            'mensaje' => __('Servicio actualizado con éxito', 'flavor-chat-ia'),
+        ], 200);
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

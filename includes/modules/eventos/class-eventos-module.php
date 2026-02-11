@@ -5,11 +5,20 @@
  */
 if (!defined('ABSPATH')) { exit; }
 
+// Incluir API REST
+require_once __DIR__ . '/class-eventos-api.php';
+
 class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
+
+    use Flavor_Module_Admin_Pages_Trait;
 
     protected $id = 'eventos';
     protected $name = 'Eventos y Calendario';
     protected $description = 'Gestion de eventos, calendario e inscripciones';
+
+    // Visibilidad por defecto: publico (cualquiera puede ver eventos)
+    protected $default_visibility = 'public';
+    protected $required_capability = 'read';
 
     public function __construct() { parent::__construct(); }
 
@@ -23,7 +32,15 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Eventos no estan creadas. Activa el modulo.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     protected function get_default_settings() {
@@ -40,7 +57,425 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         ];
     }
 
-    public function init() { add_action('init', [$this, 'maybe_create_tables']); }
+    public function init() {
+        add_action('init', [$this, 'maybe_create_tables']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registrar rutas REST API (para apps)
+     */
+    public function register_rest_routes() {
+        register_rest_route('flavor/v1', '/eventos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_listar_eventos'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route('flavor/v1', '/eventos/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_ver_evento'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route('flavor/v1', '/eventos/(?P<id>\d+)/inscribirse', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_inscribirse_evento'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        register_rest_route('flavor/v1', '/eventos/mis', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_mis_eventos'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        register_rest_route('flavor/v1', '/eventos/mis-inscripciones', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_mis_inscripciones'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        register_rest_route('flavor/v1', '/eventos/estadisticas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_estadisticas'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+    }
+
+    public function rest_listar_eventos($request) {
+        $respuesta = $this->action_listar_eventos([
+            'tipo' => $request->get_param('tipo'),
+            'categoria' => $request->get_param('categoria'),
+            'desde' => $request->get_param('desde'),
+            'hasta' => $request->get_param('hasta'),
+            'limite' => $request->get_param('limite'),
+            'estado' => $request->get_param('estado'),
+            'solo_gratuitos' => $request->get_param('solo_gratuitos'),
+        ]);
+
+        return rest_ensure_response($respuesta);
+    }
+
+    public function rest_ver_evento($request) {
+        return rest_ensure_response($this->action_ver_evento([
+            'evento_id' => $request->get_param('id'),
+        ]));
+    }
+
+    public function rest_inscribirse_evento($request) {
+        return rest_ensure_response($this->action_inscribirse_evento([
+            'evento_id' => $request->get_param('id'),
+            'num_plazas' => $request->get_param('num_plazas'),
+            'nombre' => $request->get_param('nombre'),
+            'email' => $request->get_param('email'),
+            'telefono' => $request->get_param('telefono'),
+            'notas' => $request->get_param('notas'),
+        ]));
+    }
+
+    public function rest_mis_eventos($request) {
+        return rest_ensure_response($this->action_mis_eventos([
+            'estado' => $request->get_param('estado'),
+            'limite' => $request->get_param('limite'),
+        ]));
+    }
+
+    public function rest_mis_inscripciones($request) {
+        return rest_ensure_response($this->action_mis_inscripciones([
+            'estado' => $request->get_param('estado'),
+            'limite' => $request->get_param('limite'),
+        ]));
+    }
+
+    public function rest_estadisticas($request) {
+        return rest_ensure_response($this->action_estadisticas([]));
+    }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'eventos',
+            'label' => __('Eventos', 'flavor-chat-ia'),
+            'icon' => 'dashicons-calendar',
+            'capability' => 'manage_options',
+            'categoria' => 'actividades',
+            'paginas' => [
+                [
+                    'slug' => 'eventos-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'eventos-proximos',
+                    'titulo' => __('Próximos Eventos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_proximos'],
+                    'badge' => [$this, 'contar_eventos_proximos'],
+                ],
+                [
+                    'slug' => 'eventos-calendario',
+                    'titulo' => __('Calendario', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_calendario'],
+                ],
+                [
+                    'slug' => 'eventos-asistentes',
+                    'titulo' => __('Asistentes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_asistentes'],
+                ],
+                [
+                    'slug' => 'eventos-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta eventos próximos (publicados y futuros)
+     *
+     * @return int
+     */
+    public function contar_eventos_proximos() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_eventos WHERE estado = 'publicado' AND fecha_inicio > %s",
+            current_time('mysql')
+        ));
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+        $estadisticas = [];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            return $estadisticas;
+        }
+
+        // Eventos próximos
+        $eventos_proximos = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_eventos WHERE estado = 'publicado' AND fecha_inicio > %s",
+            current_time('mysql')
+        ));
+        $estadisticas[] = [
+            'icon' => 'dashicons-calendar',
+            'valor' => $eventos_proximos,
+            'label' => __('Eventos próximos', 'flavor-chat-ia'),
+            'color' => $eventos_proximos > 0 ? 'blue' : 'gray',
+            'enlace' => admin_url('admin.php?page=eventos-proximos'),
+        ];
+
+        // Asistentes registrados (inscripciones confirmadas o pendientes)
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+            $total_asistentes = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado IN ('confirmada', 'pendiente')"
+            );
+            $estadisticas[] = [
+                'icon' => 'dashicons-groups',
+                'valor' => $total_asistentes,
+                'label' => __('Asistentes registrados', 'flavor-chat-ia'),
+                'color' => $total_asistentes > 0 ? 'green' : 'gray',
+                'enlace' => admin_url('admin.php?page=eventos-asistentes'),
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de eventos
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Eventos', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Evento', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=eventos-nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        // Resumen de estadísticas
+        $estadisticas = $this->action_estadisticas([]);
+        if ($estadisticas['success'] && !empty($estadisticas['data'])) {
+            $datos = $estadisticas['data'];
+            echo '<div class="flavor-stats-grid">';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['total_eventos']) . '</span><span class="stat-label">' . __('Total Eventos', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['eventos_proximos']) . '</span><span class="stat-label">' . __('Próximos', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['total_inscripciones']) . '</span><span class="stat-label">' . __('Inscripciones', 'flavor-chat-ia') . '</span></div>';
+            echo '</div>';
+        }
+
+        echo '<p>' . __('Panel de control del módulo de eventos con métricas y accesos rápidos.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de próximos eventos
+     */
+    public function render_admin_proximos() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Próximos Eventos', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Evento', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=eventos-nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        // Listado de próximos eventos
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $eventos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_eventos WHERE estado = 'publicado' AND fecha_inicio > %s ORDER BY fecha_inicio ASC LIMIT 20",
+            current_time('mysql')
+        ), ARRAY_A);
+
+        if (!empty($eventos)) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Título', 'flavor-chat-ia') . '</th><th>' . __('Fecha', 'flavor-chat-ia') . '</th><th>' . __('Tipo', 'flavor-chat-ia') . '</th><th>' . __('Inscritos', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($eventos as $evento) {
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($evento['titulo']) . '</strong></td>';
+                echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($evento['fecha_inicio']))) . '</td>';
+                echo '<td>' . esc_html(ucfirst($evento['tipo'])) . '</td>';
+                echo '<td>' . esc_html($evento['inscritos_count']) . ($evento['aforo_maximo'] > 0 ? '/' . $evento['aforo_maximo'] : '') . '</td>';
+                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay eventos próximos programados.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el calendario de eventos
+     */
+    public function render_admin_calendario() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Calendario de Eventos', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Evento', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=eventos-nuevo'), 'class' => 'button-primary'],
+        ]);
+        echo '<p>' . __('Vista de calendario mensual con todos los eventos programados.', 'flavor-chat-ia') . '</p>';
+        echo '<div id="flavor-eventos-calendario">';
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $mes = isset($_GET['mes']) ? sanitize_text_field($_GET['mes']) : date('Y-m');
+        if (!preg_match('/^\d{4}-\d{2}$/', $mes)) {
+            $mes = date('Y-m');
+        }
+        $inicio_mes = $mes . '-01';
+        $fin_mes = date('Y-m-t', strtotime($inicio_mes));
+
+        $eventos = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, titulo, fecha_inicio, fecha_fin, tipo, estado
+             FROM $tabla_eventos
+             WHERE DATE(fecha_inicio) BETWEEN %s AND %s
+             ORDER BY fecha_inicio ASC",
+            $inicio_mes,
+            $fin_mes
+        ), ARRAY_A);
+
+        $por_dia = [];
+        foreach ($eventos as $evento) {
+            $dia = date('Y-m-d', strtotime($evento['fecha_inicio']));
+            if (!isset($por_dia[$dia])) {
+                $por_dia[$dia] = [];
+            }
+            $por_dia[$dia][] = $evento;
+        }
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="eventos-calendario">';
+        echo '<input type="month" name="mes" value="' . esc_attr($mes) . '"> ';
+        echo '<button class="button">' . esc_html__('Ver', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        if (empty($eventos)) {
+            echo '<p>' . esc_html__('No hay eventos programados en este mes.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<table class="widefat striped"><thead><tr>';
+            echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Eventos', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead><tbody>';
+            foreach ($por_dia as $fecha => $items) {
+                echo '<tr>';
+                echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($fecha))) . '</td>';
+                echo '<td>';
+                foreach ($items as $item) {
+                    echo '<div style="margin-bottom:6px;">';
+                    echo '<strong>' . esc_html($item['titulo']) . '</strong> ';
+                    echo '<span style="color:#666;">(' . esc_html($item['tipo']) . ')</span> ';
+                    echo '<span style="color:#999;">' . esc_html(date_i18n('H:i', strtotime($item['fecha_inicio']))) . '</span>';
+                    echo '</div>';
+                }
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de gestión de asistentes
+     */
+    public function render_admin_asistentes() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Gestión de Asistentes', 'flavor-chat-ia'));
+
+        // Listado de inscripciones
+        global $wpdb;
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        $inscripciones = $wpdb->get_results(
+            "SELECT i.*, e.titulo as evento_titulo, e.fecha_inicio
+             FROM $tabla_inscripciones i
+             LEFT JOIN $tabla_eventos e ON i.evento_id = e.id
+             WHERE i.estado IN ('confirmada', 'pendiente')
+             ORDER BY i.created_at DESC
+             LIMIT 50",
+            ARRAY_A
+        );
+
+        if (!empty($inscripciones)) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Nombre', 'flavor-chat-ia') . '</th><th>' . __('Email', 'flavor-chat-ia') . '</th><th>' . __('Evento', 'flavor-chat-ia') . '</th><th>' . __('Plazas', 'flavor-chat-ia') . '</th><th>' . __('Estado', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($inscripciones as $inscripcion) {
+                $clase_estado = $inscripcion['estado'] === 'confirmada' ? 'status-confirmed' : 'status-pending';
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($inscripcion['nombre']) . '</strong></td>';
+                echo '<td>' . esc_html($inscripcion['email']) . '</td>';
+                echo '<td>' . esc_html($inscripcion['evento_titulo'] ?? __('Evento eliminado', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . esc_html($inscripcion['num_plazas']) . '</td>';
+                echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($inscripcion['estado'])) . '</span></td>';
+                echo '<td><a href="#" class="button button-small">' . __('Gestionar', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay asistentes registrados.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la configuración del módulo de eventos
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Eventos', 'flavor-chat-ia'));
+
+        $configuracion_actual = $this->get_default_settings();
+        echo '<form method="post" action="">';
+        echo '<table class="form-table">';
+
+        echo '<tr><th scope="row"><label for="requiere_aprobacion">' . __('Requiere aprobación', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="requiere_aprobacion" id="requiere_aprobacion" ' . checked($configuracion_actual['requiere_aprobacion'], true, false) . ' />';
+        echo '<p class="description">' . __('Las inscripciones requieren aprobación manual.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="aforo_maximo_defecto">' . __('Aforo máximo por defecto', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="aforo_maximo_defecto" id="aforo_maximo_defecto" value="' . esc_attr($configuracion_actual['aforo_maximo_defecto']) . '" min="0" class="small-text" />';
+        echo '<p class="description">' . __('0 = sin límite.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="dias_recordatorio">' . __('Días para recordatorio', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="dias_recordatorio" id="dias_recordatorio" value="' . esc_attr($configuracion_actual['dias_recordatorio']) . '" min="0" max="30" class="small-text" />';
+        echo '<p class="description">' . __('Días antes del evento para enviar recordatorio.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="permitir_lista_espera">' . __('Permitir lista de espera', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="permitir_lista_espera" id="permitir_lista_espera" ' . checked($configuracion_actual['permitir_lista_espera'], true, false) . ' /></td></tr>';
+
+        echo '</table>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '</form>';
+        echo '</div>';
+    }
     public function activate() { $this->create_tables(); }
     public function deactivate() { }
 
@@ -137,7 +572,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         if (method_exists($this, $nombre_metodo)) {
             return $this->$nombre_metodo($params);
         }
-        return ['success' => false, 'message' => 'Accion no encontrada'];
+        return ['success' => false, 'message' => __('Accion no encontrada', 'flavor-chat-ia')];
     }
 
     // ─── Action: listar_eventos ──────────────────────────────
@@ -174,7 +609,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $values[] = $limite;
         $eventos = $wpdb->get_results($wpdb->prepare($sql, ...$values), ARRAY_A);
         if (!$eventos) {
-            return ['success' => true, 'data' => [], 'message' => 'No se encontraron eventos'];
+            return ['success' => true, 'data' => [], 'message' => __('eventos_buscar', 'flavor-chat-ia')];
         }
         $resultado = [];
         foreach ($eventos as $evento) {
@@ -199,7 +634,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
     private function action_ver_evento($params) {
         if (empty($params['evento_id'])) {
-            return ['success' => false, 'message' => 'Se requiere evento_id'];
+            return ['success' => false, 'message' => __('Accion no encontrada', 'flavor-chat-ia')];
         }
         global $wpdb;
         $tabla_ev = $wpdb->prefix . 'flavor_eventos';
@@ -210,7 +645,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             ARRAY_A
         );
         if (!$evento) {
-            return ['success' => false, 'message' => 'Evento no encontrado'];
+            return ['success' => false, 'message' => __('Accion no encontrada', 'flavor-chat-ia')];
         }
         $total_inscritos = (int) $wpdb->get_var(
             $wpdb->prepare(
@@ -231,7 +666,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
     private function action_crear_evento($params) {
         if (empty($params['titulo']) || empty($params['fecha_inicio'])) {
-            return ['success' => false, 'message' => 'Se requiere titulo y fecha_inicio'];
+            return ['success' => false, 'message' => __('Accion no encontrada', 'flavor-chat-ia')];
         }
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_eventos';
@@ -254,16 +689,16 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         ];
         $resultado = $wpdb->insert($tabla, $datos);
         if ($resultado === false) {
-            return ['success' => false, 'message' => 'Error al crear el evento'];
+            return ['success' => false, 'message' => __('Organiza un evento para la comunidad', 'flavor-chat-ia')];
         }
-        return ['success' => true, 'data' => ['id' => $wpdb->insert_id], 'message' => 'Evento creado correctamente'];
+        return ['success' => true, 'data' => ['id' => $wpdb->insert_id], 'message' => __('titulo', 'flavor-chat-ia')];
     }
 
     // ─── Action: actualizar_evento ───────────────────────────
 
     private function action_actualizar_evento($params) {
         if (empty($params['evento_id'])) {
-            return ['success' => false, 'message' => 'Se requiere evento_id'];
+            return ['success' => false, 'message' => __('textarea', 'flavor-chat-ia')];
         }
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_eventos';
@@ -276,20 +711,20 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             }
         }
         if (empty($datos_actualizar)) {
-            return ['success' => false, 'message' => 'No hay campos para actualizar'];
+            return ['success' => false, 'message' => __('Reunión', 'flavor-chat-ia')];
         }
         $resultado = $wpdb->update($tabla, $datos_actualizar, ['id' => $evento_id]);
         if ($resultado === false) {
-            return ['success' => false, 'message' => 'Error al actualizar'];
+            return ['success' => false, 'message' => __('Networking', 'flavor-chat-ia')];
         }
-        return ['success' => true, 'message' => 'Evento actualizado correctamente'];
+        return ['success' => true, 'message' => __('Evento actualizado correctamente', 'flavor-chat-ia')];
     }
 
     // ─── Action: inscribirse ─────────────────────────────────
 
     private function action_inscribirse($params) {
         if (empty($params['evento_id'])) {
-            return ['success' => false, 'message' => 'Se requiere evento_id'];
+            return ['success' => false, 'message' => __('datetime-local', 'flavor-chat-ia')];
         }
         global $wpdb;
         $tabla_ev = $wpdb->prefix . 'flavor_eventos';
@@ -300,7 +735,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             ARRAY_A
         );
         if (!$evento) {
-            return ['success' => false, 'message' => 'Evento no encontrado o no disponible'];
+            return ['success' => false, 'message' => __('Aforo máximo', 'flavor-chat-ia')];
         }
         $num_plazas = isset($params['num_plazas']) ? absint($params['num_plazas']) : 1;
         $plazas_disponibles = $this->calcular_plazas_disponibles($evento);
@@ -309,7 +744,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             if ($this->get_setting('permitir_lista_espera')) {
                 $estado_inscripcion = 'lista_espera';
             } else {
-                return ['success' => false, 'message' => 'No hay plazas disponibles'];
+                return ['success' => false, 'message' => __('min', 'flavor-chat-ia')];
             }
         }
         if ($this->get_setting('requiere_aprobacion')) {
@@ -323,7 +758,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                 if (empty($nombre_inscrito)) { $nombre_inscrito = $usuario_actual->display_name; }
                 if (empty($email_inscrito))  { $email_inscrito = $usuario_actual->user_email; }
             } else {
-                return ['success' => false, 'message' => 'Se requiere nombre y email'];
+                return ['success' => false, 'message' => __('inscribirse_evento', 'flavor-chat-ia')];
             }
         }
         $datos_inscripcion = [
@@ -338,7 +773,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         ];
         $resultado = $wpdb->insert($tabla_ins, $datos_inscripcion);
         if ($resultado === false) {
-            return ['success' => false, 'message' => 'Error al inscribirse'];
+            return ['success' => false, 'message' => __('required', 'flavor-chat-ia')];
         }
         $wpdb->query(
             $wpdb->prepare("UPDATE $tabla_ev SET inscritos_count = inscritos_count + %d WHERE id = %d", $num_plazas, $evento_id)
@@ -346,7 +781,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => true,
             'data'    => ['inscripcion_id' => $wpdb->insert_id, 'estado' => $estado_inscripcion],
-            'message' => 'Inscripcion realizada correctamente',
+            'message' => __('number', 'flavor-chat-ia'),
         ];
     }
 
@@ -354,7 +789,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
     private function action_cancelar_inscripcion($params) {
         if (empty($params['evento_id'])) {
-            return ['success' => false, 'message' => 'Se requiere evento_id'];
+            return ['success' => false, 'message' => __('Comentarios', 'flavor-chat-ia')];
         }
         global $wpdb;
         $tabla_ev = $wpdb->prefix . 'flavor_eventos';
@@ -371,7 +806,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         } else {
             $user_id = get_current_user_id();
             if (!$user_id) {
-                return ['success' => false, 'message' => 'Se requiere inscripcion_id o estar autenticado'];
+                return ['success' => false, 'message' => __('textarea', 'flavor-chat-ia')];
             }
             $inscripcion = $wpdb->get_row(
                 $wpdb->prepare(
@@ -381,7 +816,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             );
         }
         if (!$inscripcion) {
-            return ['success' => false, 'message' => 'Inscripcion no encontrada'];
+            return ['success' => false, 'message' => __('Accion no encontrada', 'flavor-chat-ia')];
         }
         $wpdb->update($tabla_ins, ['estado' => 'cancelada'], ['id' => $inscripcion['id']]);
         $plazas_canceladas = (int) $inscripcion['num_plazas'];
@@ -391,7 +826,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                 $plazas_canceladas, $evento_id
             )
         );
-        return ['success' => true, 'message' => 'Inscripcion cancelada correctamente'];
+        return ['success' => true, 'message' => __('eventos/hero', 'flavor-chat-ia')];
     }
 
     // ─── Action: mis_eventos ─────────────────────────────────
@@ -401,7 +836,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . 'flavor_eventos';
         $user_id = get_current_user_id();
         if (!$user_id) {
-            return ['success' => false, 'message' => 'Debes estar autenticado'];
+            return ['success' => false, 'message' => __('Calendario de Eventos', 'flavor-chat-ia')];
         }
         $limite = isset($params['limite']) ? absint($params['limite']) : 20;
         $estado_filtro = '';
@@ -428,7 +863,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $tabla_ins = $wpdb->prefix . 'flavor_eventos_inscripciones';
         $user_id = get_current_user_id();
         if (!$user_id) {
-            return ['success' => false, 'message' => 'Debes estar autenticado'];
+            return ['success' => false, 'message' => __('Accion no encontrada', 'flavor-chat-ia')];
         }
         $limite = isset($params['limite']) ? absint($params['limite']) : 20;
         $estado_filtro = '';

@@ -51,7 +51,7 @@ class Flavor_Marketplace_API {
         register_rest_route(self::NAMESPACE, '/marketplace/anuncios', [
             'methods' => 'GET',
             'callback' => [$this, 'get_anuncios'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => [
                 'busqueda' => [
                     'type' => 'string',
@@ -138,7 +138,7 @@ class Flavor_Marketplace_API {
         register_rest_route(self::NAMESPACE, '/marketplace/anuncios/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_anuncio'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // PUT /marketplace/anuncios/{id} - Actualizar anuncio
@@ -155,11 +155,25 @@ class Flavor_Marketplace_API {
             'permission_callback' => [$this, 'check_authentication'],
         ]);
 
+        // POST /marketplace/anuncio - Crear anuncio (singular, alias para apps)
+        register_rest_route(self::NAMESPACE, '/marketplace/anuncio', [
+            'methods' => 'POST',
+            'callback' => [$this, 'crear_anuncio'],
+            'permission_callback' => [$this, 'check_authentication'],
+        ]);
+
+        // PUT /marketplace/anuncio/{id} - Actualizar anuncio (singular, para apps)
+        register_rest_route(self::NAMESPACE, '/marketplace/anuncio/(?P<id>\d+)', [
+            'methods' => 'PUT',
+            'callback' => [$this, 'actualizar_anuncio'],
+            'permission_callback' => [$this, 'check_authentication'],
+        ]);
+
         // GET /marketplace/categorias - Lista de categorías
         register_rest_route(self::NAMESPACE, '/marketplace/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'get_categorias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // POST /marketplace/anuncios/{id}/contactar - Contactar con vendedor
@@ -236,14 +250,16 @@ class Flavor_Marketplace_API {
 
         $anuncios = array_map([$this, 'formatear_anuncio'], $query->posts);
 
-        return new WP_REST_Response([
+        $respuesta = [
             'success' => true,
             'anuncios' => $anuncios,
             'total' => $query->found_posts,
             'pagina' => $pagina,
             'limite' => $limite,
             'total_paginas' => $query->max_num_pages,
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_marketplace_response($respuesta), 200);
     }
 
     /**
@@ -324,7 +340,7 @@ class Flavor_Marketplace_API {
         $fecha_expiracion = date('Y-m-d', strtotime("+$dias_expiracion days"));
         update_post_meta($post_id, '_marketplace_fecha_expiracion', $fecha_expiracion);
 
-        // TODO: Procesar imágenes si se envían
+        $this->procesar_imagenes($imagenes, $post_id);
 
         $post = get_post($post_id);
         $anuncio = $this->formatear_anuncio($post);
@@ -332,7 +348,7 @@ class Flavor_Marketplace_API {
         return new WP_REST_Response([
             'success' => true,
             'anuncio' => $anuncio,
-            'mensaje' => 'Anuncio publicado con éxito',
+            'mensaje' => __('Anuncio publicado con éxito', 'flavor-chat-ia'),
         ], 201);
     }
 
@@ -388,10 +404,12 @@ class Flavor_Marketplace_API {
         $vistas = get_post_meta($post_id, '_marketplace_vistas', true);
         update_post_meta($post_id, '_marketplace_vistas', intval($vistas) + 1);
 
-        return new WP_REST_Response([
+        $respuesta = [
             'success' => true,
             'anuncio' => $this->formatear_anuncio($post, true), // true = detalle completo
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_marketplace_response($respuesta), 200);
     }
 
     /**
@@ -454,7 +472,7 @@ class Flavor_Marketplace_API {
         return new WP_REST_Response([
             'success' => true,
             'anuncio' => $this->formatear_anuncio($post),
-            'mensaje' => 'Anuncio actualizado con éxito',
+            'mensaje' => __('Anuncio actualizado con éxito', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -489,7 +507,7 @@ class Flavor_Marketplace_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Anuncio eliminado con éxito',
+            'mensaje' => __('Anuncio eliminado con éxito', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -517,6 +535,36 @@ class Flavor_Marketplace_API {
             'success' => true,
             'categorias' => $categorias_formateadas,
         ], 200);
+    }
+
+    private function sanitize_public_marketplace_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['anuncios']) && is_array($respuesta['anuncios'])) {
+            $respuesta['anuncios'] = array_map([$this, 'sanitize_public_anuncio'], $respuesta['anuncios']);
+        }
+
+        if (!empty($respuesta['anuncio']) && is_array($respuesta['anuncio'])) {
+            $respuesta['anuncio'] = $this->sanitize_public_anuncio($respuesta['anuncio']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_anuncio($anuncio) {
+        if (!is_array($anuncio)) {
+            return $anuncio;
+        }
+
+        if (!empty($anuncio['autor']) && is_array($anuncio['autor'])) {
+            unset($anuncio['autor']['id']);
+        }
+
+        $anuncio['ubicacion'] = '';
+
+        return $anuncio;
     }
 
     /**
@@ -547,9 +595,6 @@ class Flavor_Marketplace_API {
             );
         }
 
-        // TODO: Enviar notificación o email al vendedor
-        // Por ahora, guardamos el mensaje como comentario
-
         $comment_data = [
             'comment_post_ID' => $post_id,
             'comment_author' => wp_get_current_user()->display_name,
@@ -562,9 +607,21 @@ class Flavor_Marketplace_API {
 
         $comment_id = wp_insert_comment($comment_data);
 
+        $vendedor_email = get_the_author_meta('user_email', $post->post_author);
+        if ($vendedor_email) {
+            $asunto = sprintf(__('Nuevo mensaje sobre tu anuncio "%s"', 'flavor-chat-ia'), $post->post_title);
+            $contenido = sprintf(
+                __("Hola,\n\nHas recibido un mensaje sobre tu anuncio \"%s\".\n\nMensaje:\n%s\n\nVer anuncio: %s\n", 'flavor-chat-ia'),
+                $post->post_title,
+                $mensaje,
+                get_permalink($post_id)
+            );
+            wp_mail($vendedor_email, $asunto, $contenido);
+        }
+
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Mensaje enviado al vendedor',
+            'mensaje' => __('Anuncio publicado con éxito', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -599,7 +656,7 @@ class Flavor_Marketplace_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Anuncio marcado como vendido',
+            'mensaje' => __('Anuncio publicado con éxito', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -674,10 +731,121 @@ class Flavor_Marketplace_API {
         return $anuncio;
     }
 
+    private function procesar_imagenes($imagenes, $post_id) {
+        if (empty($imagenes)) {
+            return;
+        }
+
+        if (is_string($imagenes)) {
+            $decoded = json_decode($imagenes, true);
+            if (is_array($decoded)) {
+                $imagenes = $decoded;
+            } else {
+                $imagenes = array_filter(array_map('trim', explode(',', $imagenes)));
+            }
+        }
+
+        if (!is_array($imagenes)) {
+            return;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+
+        $attachment_ids = [];
+        $mime_map = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp',
+        ];
+
+        foreach ($imagenes as $imagen) {
+            if (is_numeric($imagen)) {
+                $attachment_id = absint($imagen);
+                if ($attachment_id) {
+                    wp_update_post(['ID' => $attachment_id, 'post_parent' => $post_id]);
+                    $attachment_ids[] = $attachment_id;
+                }
+                continue;
+            }
+
+            if (!is_string($imagen)) {
+                continue;
+            }
+
+            $imagen = trim($imagen);
+            if ($imagen === '') {
+                continue;
+            }
+
+            $attachment_id = 0;
+
+            if (strpos($imagen, 'data:image') === 0) {
+                $parts = explode(',', $imagen, 2);
+                if (count($parts) === 2) {
+                    $header = $parts[0];
+                    $data = base64_decode($parts[1]);
+                    preg_match('/data:(image\/[a-zA-Z0-9+.-]+);base64/', $header, $matches);
+                    $mime = $matches[1] ?? 'image/jpeg';
+                    $ext = $mime_map[$mime] ?? 'jpg';
+                    $filename = 'marketplace-' . $post_id . '-' . wp_generate_password(6, false) . '.' . $ext;
+
+                    $upload = wp_upload_bits($filename, null, $data);
+                    if (empty($upload['error'])) {
+                        $attachment_id = wp_insert_attachment([
+                            'post_mime_type' => $mime,
+                            'post_title' => sanitize_file_name($filename),
+                            'post_content' => '',
+                            'post_status' => 'inherit',
+                            'post_parent' => $post_id,
+                        ], $upload['file'], $post_id);
+
+                        if (!is_wp_error($attachment_id)) {
+                            $metadata = wp_generate_attachment_metadata($attachment_id, $upload['file']);
+                            wp_update_attachment_metadata($attachment_id, $metadata);
+                        } else {
+                            $attachment_id = 0;
+                        }
+                    }
+                }
+            } elseif (filter_var($imagen, FILTER_VALIDATE_URL)) {
+                $tmp = download_url($imagen);
+                if (!is_wp_error($tmp)) {
+                    $file_array = [
+                        'name' => basename(parse_url($imagen, PHP_URL_PATH)),
+                        'tmp_name' => $tmp,
+                    ];
+                    $attachment_id = media_handle_sideload($file_array, $post_id);
+                    if (is_wp_error($attachment_id)) {
+                        @unlink($tmp);
+                        $attachment_id = 0;
+                    }
+                }
+            }
+
+            if ($attachment_id) {
+                $attachment_ids[] = $attachment_id;
+            }
+        }
+
+        if (!empty($attachment_ids)) {
+            set_post_thumbnail($post_id, $attachment_ids[0]);
+            update_post_meta($post_id, '_marketplace_gallery', $attachment_ids);
+        }
+    }
+
     /**
      * Verifica autenticación
      */
     public function check_authentication($request) {
         return is_user_logged_in();
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

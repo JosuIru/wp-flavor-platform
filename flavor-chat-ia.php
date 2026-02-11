@@ -143,6 +143,7 @@ final class Flavor_Chat_IA {
 
         // API de Layouts para Apps Nativas
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-integration/class-app-layouts-api.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/app-integration/class-app-pairing.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-integration/trait-app-data-provider.php';
 
         // Sistema de CPTs para Apps
@@ -152,6 +153,10 @@ final class Flavor_Chat_IA {
         if (is_admin()) {
             require_once FLAVOR_CHAT_IA_PATH . 'includes/app-integration/class-app-config-admin.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-cpt-settings.php';
+
+            // Panel de Gestión Unificado (para módulos)
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/trait-module-admin-pages.php';
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-unified-admin-panel.php';
         }
 
         // Core
@@ -170,8 +175,24 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/interface-chat-module.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-module-loader.php';
 
+        // Sistema de Control de Acceso a Módulos
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-access-control.php';
+
         // Sistema de perfiles de aplicación
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-app-profiles.php';
+
+        // Rate Limiter para APIs (debe cargarse antes de la API móvil)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-rate-limiter.php';
+
+        // API REST para apps móviles
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-mobile-api.php';
+
+        // API de Contenido Nativo (renderizado nativo en apps, sin WebViews)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-native-content-api.php';
+
+        // Sistema de Red de Comunidades (Network)
+        // NOTA: Las clases de Network se cargan desde el addon flavor-network-communities
+        // El addon debe estar activo para usar el sistema de Network
 
         // Sistema Template Orchestrator (activación automatizada de plantillas)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/interface-template-component.php';
@@ -182,8 +203,23 @@ final class Flavor_Chat_IA {
         // Gestor de Roles y Capabilities
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-role-manager.php';
 
+        // Helper de Permisos (sistema granular)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-permission-helper.php';
+
+        // Panel de Administracion de Permisos
+        if (is_admin()) {
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-permissions-admin.php';
+        }
+
+        // Comandos WP-CLI para permisos
+        if (defined('WP_CLI') && WP_CLI) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/cli/class-permission-command.php';
+        }
+
         // Shortcodes para Landing Pages
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-landing-shortcodes.php';
+        // Fallback de shortcodes GC cuando el módulo no está cargado
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-gc-shortcodes-fallback.php';
 
         // Push Notifications via Firebase Cloud Messaging (debe cargarse ANTES del notification manager)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/notifications/class-push-notification-channel.php';
@@ -201,6 +237,7 @@ final class Flavor_Chat_IA {
         // Editor Visual Mejorado
         require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-editor-history.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-color-picker.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-landing-editor.php';
 
         // Sistema de Animaciones
         require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
@@ -233,6 +270,7 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-shortcodes.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-frontend-assets.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-page-creator.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-lifecycle.php';
 
         // Dashboard de usuario frontend (Mi Cuenta)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-user-dashboard.php';
@@ -254,6 +292,9 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/layouts/class-layout-api.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/layouts/class-layout-extras.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/layouts/class-layout-forms.php';
+
+        // Sistema de Ayuda Contextual con Tooltips
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-contextual-help.php';
 
         // Admin
         // Design settings se necesita tambien en frontend (preview handler)
@@ -284,6 +325,12 @@ final class Flavor_Chat_IA {
 
             // Página de documentación
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-documentation-admin.php';
+
+            // Documentación interactiva de la API REST
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-api-docs.php';
+
+            // Administración de visibilidad de módulos
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-module-visibility-admin.php';
         }
     }
 
@@ -310,6 +357,15 @@ final class Flavor_Chat_IA {
 
         // Limpiar rewrite rules una sola vez tras desactivar controladores frontend
         add_action('init', [$this, 'maybe_flush_frontend_rewrite_rules'], 999);
+
+        // Aviso y activación opcional del tema companion
+        add_action('admin_notices', [$this, 'maybe_show_starter_theme_notice']);
+        add_action('admin_post_flavor_activate_starter_theme', [$this, 'handle_activate_starter_theme']);
+        add_action('admin_post_flavor_install_starter_theme', [$this, 'handle_install_starter_theme']);
+        add_action('admin_post_flavor_dismiss_starter_theme_notice', [$this, 'handle_dismiss_starter_theme_notice']);
+
+        // Auto-asignar roles de módulo al activar módulos
+        add_action('update_option_flavor_chat_ia_settings', [$this, 'handle_modules_role_assignment'], 10, 2);
     }
 
     /**
@@ -326,6 +382,9 @@ final class Flavor_Chat_IA {
      * Inicialización del plugin
      */
     public function init() {
+        // Ensure shortcodes render in content even if another theme/plugin removed the filter.
+        add_filter('the_content', 'do_shortcode', 99);
+
         // Inicializar Registro de Actividad (antes que los modulos para que puedan usarlo)
         if (class_exists('Flavor_Activity_Log')) {
             Flavor_Activity_Log::get_instance();
@@ -346,9 +405,24 @@ final class Flavor_Chat_IA {
             Flavor_App_Profiles::get_instance();
         }
 
+        // Inicializar API REST para apps móviles
+        if (class_exists('Chat_IA_Mobile_API')) {
+            Chat_IA_Mobile_API::get_instance();
+        }
+
         // Inicializar Gestor de Roles
         if (class_exists('Flavor_Role_Manager')) {
             Flavor_Role_Manager::get_instance();
+        }
+
+        // Inicializar Control de Acceso a Módulos
+        if (class_exists('Flavor_Module_Access_Control')) {
+            Flavor_Module_Access_Control::get_instance();
+        }
+
+        // Inicializar Admin de Visibilidad de Módulos (solo admin)
+        if (is_admin() && class_exists('Flavor_Module_Visibility_Admin')) {
+            Flavor_Module_Visibility_Admin::get_instance();
         }
 
         // Inicializar gestor de motores IA (multi-proveedor)
@@ -364,6 +438,9 @@ final class Flavor_Chat_IA {
         if (class_exists('Flavor_Chat_Assets')) {
             Flavor_Chat_Assets::get_instance();
         }
+
+        // Inicializar Sistema de Red de Comunidades
+        // NOTA: La inicialización se hace desde el addon flavor-network-communities
 
         if (is_admin() && class_exists('Flavor_Chat_Settings')) {
             Flavor_Chat_Settings::get_instance();
@@ -387,6 +464,11 @@ final class Flavor_Chat_IA {
         // Inicializar Sistema de Tours Guiados
         if (is_admin() && class_exists('Flavor_Guided_Tours')) {
             Flavor_Guided_Tours::get_instance();
+        }
+
+        // Inicializar Sistema de Ayuda Contextual
+        if (is_admin() && class_exists('Flavor_Contextual_Help')) {
+            Flavor_Contextual_Help::get_instance();
         }
 
         // Inicializar Performance Cache y precarga
@@ -487,6 +569,13 @@ final class Flavor_Chat_IA {
             Flavor_App_CPT_Settings::get_instance();
         }
 
+        // Inicializar Panel de Gestión Unificado
+        // Sistema dinámico que muestra las páginas de admin de todos los módulos activos
+        // Se inicializa siempre porque también registra endpoints REST
+        if (class_exists('Flavor_Unified_Admin_Panel')) {
+            Flavor_Unified_Admin_Panel::get_instance();
+        }
+
         // Registrar AJAX handlers
         if (class_exists('Flavor_Chat_Ajax')) {
             Flavor_Chat_Ajax::register_hooks();
@@ -560,6 +649,35 @@ final class Flavor_Chat_IA {
             Flavor_Module_Actions_API::get_instance();
         }
 
+        // Inicializar APIs de Módulos para Apps Móviles
+        if (class_exists('Flavor_Huertos_Urbanos_API')) {
+            Flavor_Huertos_Urbanos_API::get_instance();
+        }
+        if (class_exists('Flavor_Reciclaje_API')) {
+            Flavor_Reciclaje_API::get_instance();
+        }
+        if (class_exists('Flavor_Bicicletas_Compartidas_API')) {
+            Flavor_Bicicletas_Compartidas_API::get_instance();
+        }
+        if (class_exists('Flavor_Parkings_API')) {
+            Flavor_Parkings_API::get_instance();
+        }
+        if (class_exists('Flavor_Avisos_Municipales_API')) {
+            Flavor_Avisos_Municipales_API::get_instance();
+        }
+        if (class_exists('Flavor_Ayuda_Vecinal_API')) {
+            Flavor_Ayuda_Vecinal_API::get_instance();
+        }
+        if (class_exists('Flavor_Banco_Tiempo_API')) {
+            Flavor_Banco_Tiempo_API::get_instance();
+        }
+        if (class_exists('Flavor_Marketplace_API')) {
+            Flavor_Marketplace_API::get_instance();
+        }
+        if (class_exists('Flavor_Grupos_Consumo_API')) {
+            Flavor_Grupos_Consumo_API::get_instance();
+        }
+
         // Inicializar Sistema de Shortcodes de Módulos
         if (class_exists('Flavor_Module_Shortcodes')) {
             Flavor_Module_Shortcodes::get_instance();
@@ -593,6 +711,39 @@ final class Flavor_Chat_IA {
         // Inicializar Admin de Newsletter (solo admin)
         if (is_admin() && class_exists('Flavor_Newsletter_Admin')) {
             Flavor_Newsletter_Admin::get_instance();
+        }
+    }
+
+    /**
+     * Asigna automaticamente rol admin del modulo al usuario que activa módulos.
+     *
+     * @param array $old_value
+     * @param array $value
+     */
+    public function handle_modules_role_assignment($old_value, $value) {
+        if (!is_admin() || !class_exists('Flavor_Permission_Helper')) {
+            return;
+        }
+
+        $old_modules = isset($old_value['active_modules']) && is_array($old_value['active_modules'])
+            ? $old_value['active_modules']
+            : [];
+        $new_modules = isset($value['active_modules']) && is_array($value['active_modules'])
+            ? $value['active_modules']
+            : [];
+
+        $activated = array_diff($new_modules, $old_modules);
+        if (empty($activated)) {
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return;
+        }
+
+        foreach ($activated as $module_slug) {
+            Flavor_Permission_Helper::assign_module_admin_to_user($user_id, $module_slug);
         }
     }
 
@@ -688,6 +839,227 @@ final class Flavor_Chat_IA {
 
         // Limpiar caché de rewrite
         flush_rewrite_rules();
+
+        // Si el tema companion existe o está empaquetado y no está activo, mostrar aviso
+        $starter_theme = wp_get_theme('flavor-starter');
+        if (($starter_theme->exists() || $this->starter_theme_is_bundled()) && get_stylesheet() !== 'flavor-starter') {
+            update_option('flavor_show_starter_theme_notice', 1);
+        }
+    }
+
+    /**
+     * Ruta del tema companion dentro del plugin
+     */
+    private function get_starter_theme_bundle_path() {
+        return FLAVOR_CHAT_IA_PATH . 'assets/companion-theme/flavor-starter';
+    }
+
+    /**
+     * Comprueba si el tema companion está empaquetado en el plugin
+     */
+    private function starter_theme_is_bundled() {
+        $bundle_path = $this->get_starter_theme_bundle_path();
+        return file_exists($bundle_path . '/style.css');
+    }
+
+    /**
+     * Muestra aviso para activar el tema companion
+     */
+    public function maybe_show_starter_theme_notice() {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        if (!get_option('flavor_show_starter_theme_notice')) {
+            return;
+        }
+
+        $starter_theme = wp_get_theme('flavor-starter');
+        if (get_stylesheet() === 'flavor-starter') {
+            delete_option('flavor_show_starter_theme_notice');
+            return;
+        }
+
+        $is_installed = $starter_theme->exists();
+        $is_bundled = $this->starter_theme_is_bundled();
+
+        $activate_url = wp_nonce_url(
+            admin_url('admin-post.php?action=flavor_activate_starter_theme'),
+            'flavor_activate_starter_theme'
+        );
+        $install_url = wp_nonce_url(
+            admin_url('admin-post.php?action=flavor_install_starter_theme'),
+            'flavor_install_starter_theme'
+        );
+        $dismiss_url = wp_nonce_url(
+            admin_url('admin-post.php?action=flavor_dismiss_starter_theme_notice'),
+            'flavor_dismiss_starter_theme_notice'
+        );
+
+        $error_message = get_option('flavor_starter_theme_notice_error');
+        if (!empty($error_message)) {
+            ?>
+            <div class="notice notice-error">
+                <p><?php echo esc_html($error_message); ?></p>
+            </div>
+            <?php
+        }
+        ?>
+        <div class="notice notice-info is-dismissible">
+            <p>
+                <strong><?php esc_html_e('Flavor Starter disponible', 'flavor-chat-ia'); ?></strong><br>
+                <?php
+                if ($is_installed) {
+                    esc_html_e('El tema companion "Flavor Starter" está instalado y optimizado para este plugin. ¿Quieres activarlo ahora?', 'flavor-chat-ia');
+                } elseif ($is_bundled) {
+                    esc_html_e('El tema companion "Flavor Starter" está incluido en el plugin. ¿Quieres instalarlo y activarlo ahora?', 'flavor-chat-ia');
+                } else {
+                    esc_html_e('El tema companion "Flavor Starter" no está instalado. Puedes instalarlo manualmente desde Apariencia > Temas.', 'flavor-chat-ia');
+                }
+                ?>
+            </p>
+            <p>
+                <?php if ($is_installed): ?>
+                    <a href="<?php echo esc_url($activate_url); ?>" class="button button-primary">
+                        <?php esc_html_e('Activar tema', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php elseif ($is_bundled): ?>
+                    <a href="<?php echo esc_url($install_url); ?>" class="button button-primary">
+                        <?php esc_html_e('Instalar y activar', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php endif; ?>
+                <a href="<?php echo esc_url($dismiss_url); ?>" class="button button-secondary">
+                    <?php esc_html_e('Ahora no', 'flavor-chat-ia'); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Activa el tema Flavor Starter
+     */
+    public function handle_activate_starter_theme() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+        }
+
+        if (!$this->verify_admin_action_nonce('flavor_activate_starter_theme')) {
+            // Fallback permitido solo para admins si el nonce caducó
+            if (!current_user_can('manage_options')) {
+                wp_die(__('Enlace caducado. Intenta de nuevo.', 'flavor-chat-ia'));
+            }
+        }
+
+        $starter_theme = wp_get_theme('flavor-starter');
+        if ($starter_theme->exists()) {
+            $this->ensure_theme_network_enabled('flavor-starter');
+            switch_theme('flavor-starter');
+        }
+
+        delete_option('flavor_starter_theme_notice_error');
+        delete_option('flavor_show_starter_theme_notice');
+        wp_safe_redirect(admin_url('themes.php'));
+        exit;
+    }
+
+    /**
+     * Instala y activa el tema Flavor Starter desde el bundle del plugin
+     */
+    public function handle_install_starter_theme() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+        }
+
+        if (!$this->verify_admin_action_nonce('flavor_install_starter_theme')) {
+            if (!current_user_can('manage_options')) {
+                wp_die(__('Enlace caducado. Intenta de nuevo.', 'flavor-chat-ia'));
+            }
+        }
+
+        $starter_theme = wp_get_theme('flavor-starter');
+        $theme_root = get_theme_root();
+        $dest = trailingslashit($theme_root) . 'flavor-starter';
+        $source = $this->get_starter_theme_bundle_path();
+
+        if (!$starter_theme->exists()) {
+            if (!file_exists($source)) {
+                update_option('flavor_starter_theme_notice_error', __('No se encontró el bundle del tema en el plugin.', 'flavor-chat-ia'));
+                wp_safe_redirect(admin_url());
+                exit;
+            }
+
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+
+            $result = copy_dir($source, $dest);
+            if (is_wp_error($result)) {
+                update_option('flavor_starter_theme_notice_error', $result->get_error_message());
+                wp_safe_redirect(admin_url());
+                exit;
+            }
+        }
+
+        $starter_theme = wp_get_theme('flavor-starter');
+        if ($starter_theme->exists()) {
+            $this->ensure_theme_network_enabled('flavor-starter');
+            switch_theme('flavor-starter');
+        }
+
+        delete_option('flavor_starter_theme_notice_error');
+        delete_option('flavor_show_starter_theme_notice');
+        wp_safe_redirect(admin_url('themes.php'));
+        exit;
+    }
+
+    /**
+     * Descarta el aviso del tema companion
+     */
+    public function handle_dismiss_starter_theme_notice() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+        }
+
+        if (!$this->verify_admin_action_nonce('flavor_dismiss_starter_theme_notice')) {
+            if (!current_user_can('manage_options')) {
+                wp_die(__('Enlace caducado. Intenta de nuevo.', 'flavor-chat-ia'));
+            }
+        }
+        delete_option('flavor_show_starter_theme_notice');
+        wp_safe_redirect(admin_url());
+        exit;
+    }
+
+    /**
+     * Verifica nonce de acciones admin con fallback seguro para admins.
+     *
+     * @param string $action
+     * @return bool
+     */
+    private function verify_admin_action_nonce($action) {
+        $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if ($nonce && wp_verify_nonce($nonce, $action)) {
+            return true;
+        }
+        // Si el nonce no es válido, permitir solo si es admin
+        return current_user_can('manage_options');
+    }
+
+    /**
+     * Asegura que el tema esté habilitado en multisite.
+     *
+     * @param string $stylesheet
+     */
+    private function ensure_theme_network_enabled($stylesheet) {
+        if (!is_multisite()) {
+            return;
+        }
+
+        $allowed = get_site_option('allowedthemes', []);
+        if (!isset($allowed[$stylesheet]) || !$allowed[$stylesheet]) {
+            $allowed[$stylesheet] = true;
+            update_site_option('allowedthemes', $allowed);
+        }
     }
 
     /**
@@ -714,6 +1086,11 @@ final class Flavor_Chat_IA {
         // Desprogramar cron de Newsletter
         if (class_exists('Flavor_Newsletter_Manager')) {
             Flavor_Newsletter_Manager::desprogramar_cron();
+        }
+
+        // Desprogramar cron de limpieza de tokens de pairing
+        if (class_exists('Flavor_App_Pairing')) {
+            Flavor_App_Pairing::desactivar_cron();
         }
 
         flush_rewrite_rules();
@@ -849,9 +1226,7 @@ final class Flavor_Chat_IA {
         }
 
         // Red de Comunidades
-        if (class_exists('Flavor_Network_Installer')) {
-            Flavor_Network_Installer::create_tables();
-        }
+        // NOTA: Las tablas se crean desde el addon flavor-network-communities
 
         // Reservas
         if (file_exists(FLAVOR_CHAT_IA_PATH . 'includes/modules/reservas/install.php')) {
