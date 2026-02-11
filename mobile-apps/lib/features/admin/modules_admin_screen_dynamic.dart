@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart';
 import '../../core/providers/admin_modules_provider.dart';
+import 'admin_reservations_screen.dart';
+import 'camps/camps_management_screen.dart';
+import 'module_placeholder_screen.dart';
 
 /// Dashboard dinámico de módulos administrativos
 ///
@@ -372,11 +375,32 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
   }
 
   void _navigateToModule(BuildContext context, String moduleId, String moduleName) {
-    // TODO: Navegar a pantalla específica del módulo
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Abriendo módulo: $moduleName'),
-        duration: const Duration(seconds: 2),
+    Widget? screen;
+
+    // Mapear módulos a sus pantallas administrativas
+    switch (moduleId) {
+      case 'reservas':
+      case 'basabere-campamentos':
+      case 'calendario-experiencias':
+        screen = const AdminReservationsScreen();
+        break;
+
+      case 'campamentos':
+        screen = const CampsManagementScreen();
+        break;
+
+      // Para todos los demás módulos, mostrar pantalla placeholder
+      default:
+        screen = ModulePlaceholderScreen(
+          moduleId: moduleId,
+          moduleName: moduleName,
+        );
+    }
+
+    // Navegar a la pantalla
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => screen!,
       ),
     );
   }
