@@ -1849,14 +1849,60 @@ class Flavor_App_Profile_Admin {
             // Guardar app_profile directamente en BD (bypass WordPress cache/hooks)
             $resultado_perfil = Flavor_Profile_Saver::guardar_perfil($plantilla_id);
 
+            // IMPORTANTE: Limpiar caché para asegurar que los módulos se vean como activos
+            wp_cache_delete('flavor_chat_ia_settings', 'options');
+            wp_cache_delete('alloptions', 'options');
+
+            // IMPORTANTE: Inicializar módulos recién activados
+            $modulos_inicializados = 0;
+            $errores_inicializacion = [];
+            $module_loader = Flavor_Module_Loader::get_instance();
+
+            foreach ($modulos_a_activar as $module_id) {
+                try {
+                    // Cargar el módulo si no está ya cargado
+                    $module = $module_loader->get_module($module_id);
+
+                    if ($module) {
+                        // Crear tablas si el módulo lo necesita
+                        if (method_exists($module, 'maybe_create_tables')) {
+                            $module->maybe_create_tables();
+                        }
+
+                        // Crear páginas si el módulo lo necesita
+                        if (method_exists($module, 'maybe_create_pages')) {
+                            $module->maybe_create_pages();
+                        }
+
+                        $modulos_inicializados++;
+                    } else {
+                        $errores_inicializacion[] = "No se pudo cargar el módulo: $module_id";
+                    }
+                } catch (Exception $e) {
+                    $errores_inicializacion[] = "Error en módulo $module_id: " . $e->getMessage();
+                }
+            }
+
             $total_modulos = count($modulos_a_activar);
+
+            $descripcion = sprintf(
+                _n('%d modulo activado', '%d modulos activados', $total_modulos, 'flavor-chat-ia'),
+                $total_modulos
+            );
+
+            if ($modulos_inicializados > 0) {
+                $descripcion .= sprintf(
+                    ' (' . _n('%d inicializado', '%d inicializados', $modulos_inicializados, 'flavor-chat-ia') . ')',
+                    $modulos_inicializados
+                );
+            }
 
             return [
                 'success' => true,
-                'descripcion' => sprintf(
-                    _n('%d modulo activado', '%d modulos activados', $total_modulos, 'flavor-chat-ia'),
-                    $total_modulos
-                ),
+                'descripcion' => $descripcion,
+                'modulos_activados' => $total_modulos,
+                'modulos_inicializados' => $modulos_inicializados,
+                'errores_inicializacion' => $errores_inicializacion,
                 'debug_metodo' => 'WPDB_DIRECTO_V2',
                 'debug_valor_previo' => $resultado_perfil['valor_previo'],
                 'debug_wpdb_result' => $resultado_perfil['wpdb_result'],
