@@ -24,8 +24,8 @@ if (!empty($active_modules)) {
     echo "   (Ninguno)\n";
 }
 
-// 2. App Profile
-$app_profile = get_option('app_profile', null);
+// 2. App Profile (está dentro de flavor_chat_ia_settings)
+$app_profile = $config['app_profile'] ?? null;
 echo "\n2. App Profile: " . ($app_profile ?: '(no definido)') . "\n";
 
 // 3. Módulos cargados
@@ -52,8 +52,11 @@ $db_value = $wpdb->get_var("SELECT option_value FROM {$wpdb->options} WHERE opti
 if ($db_value) {
     $db_config = maybe_unserialize($db_value);
     $db_active = $db_config['active_modules'] ?? [];
-    echo "\n4. Active Modules en BD (lectura directa):\n";
-    echo "   Total: " . count($db_active) . "\n";
+    $db_profile = $db_config['app_profile'] ?? null;
+
+    echo "\n4. Lectura directa de BD:\n";
+    echo "   App Profile: " . ($db_profile ?: '(no definido)') . "\n";
+    echo "   Active Modules: " . count($db_active) . "\n";
     if (!empty($db_active)) {
         foreach ($db_active as $mod) {
             echo "   - $mod\n";

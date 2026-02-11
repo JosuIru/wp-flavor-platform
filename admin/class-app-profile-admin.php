@@ -2454,6 +2454,11 @@ class Flavor_App_Profile_Admin {
 
         error_log('[SYNC_MENU] Páginas padre: ' . count($parent_pages) . ', Páginas hijo: ' . count($child_pages));
 
+        // Log de todas las páginas padre
+        foreach ($parent_pages as $page) {
+            error_log('[SYNC_MENU] Página padre detectada: ID=' . $page->ID . ' Título="' . $page->post_title . '"');
+        }
+
         // Mapa de page_id => menu_item_id
         $page_to_menu_item = [];
 
@@ -2479,8 +2484,13 @@ class Flavor_App_Profile_Admin {
             }
         }
 
+        // Log del mapa de páginas a menu items
+        error_log('[SYNC_MENU] Mapa page_to_menu_item: ' . json_encode($page_to_menu_item));
+
         // Luego añadir páginas hijo bajo sus padres
         foreach ($child_pages as $page) {
+            error_log('[SYNC_MENU] Procesando página hijo: ID=' . $page->ID . ' Título="' . $page->post_title . '" post_parent=' . $page->post_parent);
+
             if (in_array((int) $page->ID, $existing_page_ids, true)) {
                 error_log('[SYNC_MENU] Página hijo ya existe en menú: ' . $page->post_title);
                 continue;
@@ -2488,6 +2498,7 @@ class Flavor_App_Profile_Admin {
 
             // Verificar si el padre está en el menú
             $parent_menu_item_id = $page_to_menu_item[$page->post_parent] ?? 0;
+            error_log('[SYNC_MENU] Buscando padre ' . $page->post_parent . ' en mapa, encontrado menu_item_id: ' . $parent_menu_item_id);
 
             if (!$parent_menu_item_id) {
                 // Si el padre no está en el menú, buscar si ya existe
