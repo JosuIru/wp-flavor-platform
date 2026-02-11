@@ -239,6 +239,9 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-color-picker.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-landing-editor.php';
 
+        // Visual Builder Unificado (v3.0+)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-visual-builder.php';
+
         // Sistema de Animaciones
         require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
 

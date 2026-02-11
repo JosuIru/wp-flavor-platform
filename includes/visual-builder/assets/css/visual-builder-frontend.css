@@ -1,0 +1,32 @@
+/**
+ * Flavor Visual Builder - Frontend CSS
+ *
+ * @package FlavorChatIA
+ * @version 1.0.0
+ */
+
+.flavor-vb-section {
+    position: relative;
+    padding: 80px 0;
+}
+
+.flavor-vb-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.flavor-vb-component {
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-vb-section {
+        padding: 60px 0;
+    }
+
+    .flavor-vb-container {
+        padding: 0 15px;
+    }
+}
