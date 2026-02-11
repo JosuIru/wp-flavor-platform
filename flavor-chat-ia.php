@@ -124,6 +124,9 @@ final class Flavor_Chat_IA {
         // Helpers/Utilities
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-helpers.php';
 
+        // Autenticación JWT para REST API (debe cargarse temprano)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-jwt-auth.php';
+
         // Sistema de Performance Cache
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-performance-cache.php';
 
