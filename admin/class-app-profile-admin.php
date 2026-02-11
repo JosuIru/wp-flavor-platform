@@ -1850,8 +1850,29 @@ class Flavor_App_Profile_Admin {
             error_log('[PASO_INSTALAR_MODULOS] Módulos combinados: ' . json_encode($modulos_combinados));
 
             $configuracion['active_modules'] = $modulos_combinados;
+
+            // Intentar guardar con update_option primero
             $update_result = update_option('flavor_chat_ia_settings', $configuracion);
             error_log('[PASO_INSTALAR_MODULOS] update_option result: ' . ($update_result ? 'true' : 'false'));
+
+            // Si update_option devuelve false, forzar guardado directo en BD
+            if (!$update_result) {
+                error_log('[PASO_INSTALAR_MODULOS] update_option falló, usando WPDB directo...');
+                global $wpdb;
+                $serialized = maybe_serialize($configuracion);
+                $wpdb_result = $wpdb->update(
+                    $wpdb->options,
+                    ['option_value' => $serialized],
+                    ['option_name' => 'flavor_chat_ia_settings'],
+                    ['%s'],
+                    ['%s']
+                );
+                error_log('[PASO_INSTALAR_MODULOS] WPDB update result: ' . $wpdb_result);
+
+                // Limpiar caché de opciones
+                wp_cache_delete('flavor_chat_ia_settings', 'options');
+                wp_cache_delete('alloptions', 'options');
+            }
 
             // Verificar que se guardó correctamente
             $configuracion_verificacion = get_option('flavor_chat_ia_settings', []);
