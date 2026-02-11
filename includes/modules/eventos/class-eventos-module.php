@@ -59,6 +59,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // Registrar en Panel Unificado de Gestión
@@ -490,8 +491,39 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         include __DIR__ . '/views/eventos.php';
     }
 
-    public function activate() { $this->create_tables(); }
+    public function activate() {
+        $this->create_tables();
+
+        // Crear páginas frontend automáticamente
+        if (class_exists('Flavor_Page_Creator')) {
+            Flavor_Page_Creator::create_pages_for_modules(['eventos']);
+        }
+    }
+
     public function deactivate() { }
+
+    /**
+     * Crea/actualiza páginas de eventos si es necesario.
+     * Se ejecuta en hook init para que $wp_rewrite esté disponible.
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('eventos');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina_eventos = get_page_by_path('eventos');
+        if (!$pagina_eventos && !get_option('flavor_eventos_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['eventos']);
+            update_option('flavor_eventos_pages_created', 1, false);
+        }
+    }
 
     public function maybe_create_tables() {
         global $wpdb;
