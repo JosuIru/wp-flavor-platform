@@ -91,7 +91,11 @@ class Flavor_Module_Notifications {
         }
 
         $notification_manager = Flavor_Notification_Manager::get_instance();
-        $notification_manager->procesar_cola();
+
+        // Verificar que el método existe antes de llamarlo
+        if (method_exists($notification_manager, 'process_queue')) {
+            $notification_manager->process_queue();
+        }
     }
 
     /**
