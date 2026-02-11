@@ -17,13 +17,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'colectivos';
-        $this->name = __('Colectivos y Asociaciones', 'flavor-chat-ia');
-        $this->description = __('Gestión de colectivos, asociaciones y cooperativas con proyectos, asambleas y miembros', 'flavor-chat-ia');
+        $this->name = 'Colectivos y Asociaciones'; // Translation loaded on init
+        $this->description = 'Gestión de colectivos, asociaciones y cooperativas con proyectos, asambleas y miembros'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -49,7 +51,15 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Colectivos no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -77,6 +87,452 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+        $this->registrar_en_panel_unificado();
+    }
+
+    // =========================================================
+    // REST API
+    // =========================================================
+
+    /**
+     * Registra las rutas de la REST API para el modulo de colectivos
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // GET /flavor/v1/colectivos - Listar colectivos
+        register_rest_route($namespace, '/colectivos', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_listar_colectivos'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'tipo' => [
+                    'type'              => 'string',
+                    'enum'              => ['asociacion', 'cooperativa', 'ong', 'colectivo', 'plataforma'],
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'sector' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'busqueda' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'limite' => [
+                    'type'              => 'integer',
+                    'default'           => 20,
+                    'sanitize_callback' => 'absint',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/colectivos/{id} - Obtener un colectivo
+        register_rest_route($namespace, '/colectivos/(?P<id>\d+)', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_obtener_colectivo'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function ($valor) {
+                        return is_numeric($valor) && $valor > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/colectivos/{id}/unirse - Unirse a colectivo
+        register_rest_route($namespace, '/colectivos/(?P<id>\d+)/unirse', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [$this, 'api_unirse_colectivo'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function ($valor) {
+                        return is_numeric($valor) && $valor > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/colectivos/{id}/miembros - Ver miembros de un colectivo
+        register_rest_route($namespace, '/colectivos/(?P<id>\d+)/miembros', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_obtener_miembros'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function ($valor) {
+                        return is_numeric($valor) && $valor > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/colectivos/mis-colectivos - Colectivos del usuario
+        register_rest_route($namespace, '/colectivos/mis-colectivos', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_mis_colectivos'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args'                => [
+                'rol' => [
+                    'type'              => 'string',
+                    'enum'              => ['presidente', 'secretario', 'tesorero', 'vocal', 'miembro'],
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'estado' => [
+                    'type'              => 'string',
+                    'enum'              => ['activo', 'pendiente'],
+                    'default'           => 'activo',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Verifica si el usuario esta autenticado para la REST API
+     *
+     * @return bool|WP_Error
+     */
+    public function api_verificar_usuario_autenticado() {
+        if (!is_user_logged_in()) {
+            return new \WP_Error(
+                'rest_not_logged_in',
+                __('Debes iniciar sesion para realizar esta accion.', 'flavor-chat-ia'),
+                ['status' => 401]
+            );
+        }
+        return true;
+    }
+
+    /**
+     * API: Listar colectivos
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_listar_colectivos($request) {
+        $parametros = [
+            'tipo'     => $request->get_param('tipo'),
+            'sector'   => $request->get_param('sector'),
+            'busqueda' => $request->get_param('busqueda'),
+            'limite'   => $request->get_param('limite'),
+        ];
+
+        $resultado = $this->action_listar_colectivos($parametros);
+
+        if (!$resultado['success']) {
+            return new \WP_Error(
+                'colectivos_error',
+                $resultado['error'],
+                ['status' => 400]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener un colectivo especifico
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_obtener_colectivo($request) {
+        $colectivo_id = $request->get_param('id');
+
+        $parametros = [
+            'colectivo_id' => $colectivo_id,
+        ];
+
+        $resultado = $this->action_ver_colectivo($parametros);
+
+        if (!$resultado['success']) {
+            return new \WP_Error(
+                'colectivo_no_encontrado',
+                $resultado['error'],
+                ['status' => 404]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Unirse a un colectivo
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_unirse_colectivo($request) {
+        $colectivo_id = $request->get_param('id');
+
+        $parametros = [
+            'colectivo_id' => $colectivo_id,
+        ];
+
+        $resultado = $this->action_unirse($parametros);
+
+        if (!$resultado['success']) {
+            $codigo_estado = 400;
+
+            // Determinar codigo de estado apropiado
+            if (strpos($resultado['error'], 'ya eres miembro') !== false) {
+                $codigo_estado = 409; // Conflict
+            } elseif (strpos($resultado['error'], 'solicitud pendiente') !== false) {
+                $codigo_estado = 409; // Conflict
+            } elseif (strpos($resultado['error'], 'no encontrado') !== false) {
+                $codigo_estado = 404;
+            }
+
+            return new \WP_Error(
+                'unirse_error',
+                $resultado['error'],
+                ['status' => $codigo_estado]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener miembros de un colectivo
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_obtener_miembros($request) {
+        $colectivo_id = $request->get_param('id');
+
+        $parametros = [
+            'colectivo_id' => $colectivo_id,
+        ];
+
+        // Usamos action_ver_colectivo que ya incluye miembros
+        $resultado = $this->action_ver_colectivo($parametros);
+
+        if (!$resultado['success']) {
+            return new \WP_Error(
+                'colectivo_no_encontrado',
+                $resultado['error'],
+                ['status' => 404]
+            );
+        }
+
+        // Retornar solo los miembros
+        return rest_ensure_response([
+            'success'       => true,
+            'colectivo_id'  => $colectivo_id,
+            'nombre'        => $resultado['colectivo']['nombre'],
+            'total'         => count($resultado['miembros']),
+            'miembros'      => $resultado['miembros'],
+        ]);
+    }
+
+    /**
+     * API: Obtener colectivos del usuario autenticado
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_mis_colectivos($request) {
+        $parametros = [
+            'rol'    => $request->get_param('rol'),
+            'estado' => $request->get_param('estado'),
+        ];
+
+        $resultado = $this->action_mis_colectivos($parametros);
+
+        if (!$resultado['success']) {
+            return new \WP_Error(
+                'mis_colectivos_error',
+                $resultado['error'],
+                ['status' => 400]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * Configuracion de paginas de administracion para el panel unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id'         => 'colectivos',
+            'label'      => __('Colectivos', 'flavor-chat-ia'),
+            'icon'       => 'dashicons-networking',
+            'capability' => 'manage_options',
+            'categoria'  => 'comunidad',
+            'paginas'    => [
+                [
+                    'slug'     => 'flavor-colectivos-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug'     => 'flavor-colectivos-listado',
+                    'titulo'   => __('Colectivos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_colectivos'],
+                ],
+                [
+                    'slug'     => 'flavor-colectivos-miembros',
+                    'titulo'   => __('Miembros', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_miembros'],
+                    'badge'    => [$this, 'contar_solicitudes_pendientes'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas'     => [$this, 'get_estadisticas_globales'],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard de administracion del modulo
+     */
+    public function render_admin_dashboard() {
+        $this->render_page_header(
+            __('Dashboard de Colectivos', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nuevo Colectivo', 'flavor-chat-ia'),
+                    'url'   => $this->admin_page_url('flavor-colectivos-listado') . '&action=new',
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+
+        $estadisticas = $this->get_estadisticas_globales();
+        include dirname(__FILE__) . '/views/admin-dashboard.php';
+    }
+
+    /**
+     * Renderiza el listado de colectivos en administracion
+     */
+    public function render_admin_colectivos() {
+        $this->render_page_header(
+            __('Gestión de Colectivos', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nuevo Colectivo', 'flavor-chat-ia'),
+                    'url'   => $this->admin_page_url('flavor-colectivos-listado') . '&action=new',
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+
+        include dirname(__FILE__) . '/views/admin-colectivos.php';
+    }
+
+    /**
+     * Renderiza el listado de miembros en administracion
+     */
+    public function render_admin_miembros() {
+        $solicitudes_pendientes = $this->contar_solicitudes_pendientes();
+
+        $this->render_page_header(
+            __('Gestión de Miembros', 'flavor-chat-ia'),
+            []
+        );
+
+        $tabs = [
+            [
+                'slug'  => 'activos',
+                'label' => __('Activos', 'flavor-chat-ia'),
+            ],
+            [
+                'slug'  => 'pendientes',
+                'label' => __('Pendientes', 'flavor-chat-ia'),
+                'badge' => $solicitudes_pendientes,
+            ],
+        ];
+
+        $tab_actual = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'activos';
+        $this->render_page_tabs($tabs, $tab_actual);
+
+        include dirname(__FILE__) . '/views/admin-miembros.php';
+    }
+
+    /**
+     * Renderiza el widget del dashboard principal
+     */
+    public function render_dashboard_widget() {
+        $estadisticas = $this->get_estadisticas_globales();
+        ?>
+        <div class="colectivos-widget">
+            <div class="widget-stats">
+                <div class="stat-item">
+                    <span class="stat-value"><?php echo esc_html($estadisticas['total_colectivos']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Colectivos', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value"><?php echo esc_html($estadisticas['total_miembros']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value"><?php echo esc_html($estadisticas['proyectos_activos']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Proyectos activos', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <a href="<?php echo esc_url($this->admin_page_url('flavor-colectivos-dashboard')); ?>" class="button">
+                <?php esc_html_e('Ver todo', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene las estadisticas globales del modulo
+     *
+     * @return array
+     */
+    public function get_estadisticas_globales() {
+        global $wpdb;
+        $tabla_colectivos          = $wpdb->prefix . 'flavor_colectivos';
+        $tabla_colectivos_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
+        $tabla_colectivos_proyectos = $wpdb->prefix . 'flavor_colectivos_proyectos';
+
+        $total_colectivos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_colectivos WHERE estado = 'activo'");
+        $total_miembros   = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_colectivos_miembros WHERE estado = 'activo'");
+        $proyectos_activos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_colectivos_proyectos WHERE estado = 'en_curso'");
+        $solicitudes_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_colectivos_miembros WHERE estado = 'pendiente'");
+
+        return [
+            'total_colectivos'       => $total_colectivos,
+            'total_miembros'         => $total_miembros,
+            'proyectos_activos'      => $proyectos_activos,
+            'solicitudes_pendientes' => $solicitudes_pendientes,
+        ];
+    }
+
+    /**
+     * Cuenta las solicitudes de membresia pendientes
+     *
+     * @return int
+     */
+    public function contar_solicitudes_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_colectivos_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
+
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_colectivos_miembros WHERE estado = 'pendiente'");
     }
 
     // =========================================================

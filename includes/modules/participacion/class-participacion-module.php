@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Version del modulo
      */
@@ -56,8 +58,8 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'participacion';
-        $this->name = __('Participacion Ciudadana', 'flavor-chat-ia');
-        $this->description = __('Votaciones, encuestas, propuestas, presupuestos participativos y consultas ciudadanas.', 'flavor-chat-ia');
+        $this->name = 'Participacion Ciudadana'; // Translation loaded on init
+        $this->description = 'Votaciones, encuestas, propuestas, presupuestos participativos y consultas ciudadanas.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -78,7 +80,15 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Participacion no estan creadas. Activa el modulo para crearlas automaticamente.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -137,6 +147,9 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             wp_schedule_event(time(), 'hourly', 'flavor_participacion_actualizar_estados');
         }
         add_action('flavor_participacion_actualizar_estados', [$this, 'actualizar_estados_automaticos']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -426,9 +439,9 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                 <div class="filtro-grupo">
                     <label for="filtro_orden"><?php esc_html_e('Ordenar:', 'flavor-chat-ia'); ?></label>
                     <select name="filtro_orden" class="filtro-propuestas">
-                        <option value="apoyos"><?php esc_html_e('Mas apoyos', 'flavor-chat-ia'); ?></option>
-                        <option value="recientes"><?php esc_html_e('Mas recientes', 'flavor-chat-ia'); ?></option>
-                        <option value="comentarios"><?php esc_html_e('Mas comentados', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('apoyos', 'flavor-chat-ia'); ?>"><?php esc_html_e('Mas apoyos', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('recientes', 'flavor-chat-ia'); ?>"><?php esc_html_e('Mas recientes', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('comentarios', 'flavor-chat-ia'); ?>"><?php esc_html_e('Mas comentados', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
                 <div class="filtro-busqueda filtro-busqueda-propuestas">
@@ -579,9 +592,9 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                     <div class="form-grupo">
                         <label for="ambito"><?php esc_html_e('Ambito', 'flavor-chat-ia'); ?></label>
                         <select name="ambito" id="ambito">
-                            <option value="barrio"><?php esc_html_e('Barrio', 'flavor-chat-ia'); ?></option>
-                            <option value="distrito"><?php esc_html_e('Distrito', 'flavor-chat-ia'); ?></option>
-                            <option value="ciudad"><?php esc_html_e('Ciudad', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('barrio', 'flavor-chat-ia'); ?>"><?php esc_html_e('Barrio', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('distrito', 'flavor-chat-ia'); ?>"><?php esc_html_e('Distrito', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('ciudad', 'flavor-chat-ia'); ?>"><?php esc_html_e('Ciudad', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -1435,25 +1448,25 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor-chat/v1', '/participacion/propuestas', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_propuestas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/participacion/propuestas/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_propuesta'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/participacion/votaciones', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_votaciones'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/participacion/estadisticas', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_estadisticas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -1467,11 +1480,13 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             'limite' => absint($request->get_param('limite')) ?: 20,
         ]);
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'total' => count($propuestas),
             'propuestas' => $propuestas,
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_participacion_response($respuesta));
     }
 
     /**
@@ -1484,10 +1499,12 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             return new WP_Error('not_found', __('Propuesta no encontrada.', 'flavor-chat-ia'), ['status' => 404]);
         }
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'propuesta' => $propuesta,
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_participacion_response($respuesta));
     }
 
     /**
@@ -1499,11 +1516,13 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             'limite' => absint($request->get_param('limite')) ?: 10,
         ]);
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'total' => count($votaciones),
             'votaciones' => $votaciones,
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_participacion_response($respuesta));
     }
 
     /**
@@ -1513,11 +1532,54 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $anio = $request->get_param('anio') ?: date('Y');
         $estadisticas = $this->obtener_estadisticas_participacion($anio);
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'anio' => $anio,
             'estadisticas' => $estadisticas,
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_participacion_response($respuesta));
+    }
+
+    private function sanitize_public_participacion_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['propuestas']) && is_array($respuesta['propuestas'])) {
+            $respuesta['propuestas'] = array_map([$this, 'sanitize_public_propuesta'], $respuesta['propuestas']);
+        }
+
+        if (!empty($respuesta['propuesta'])) {
+            $respuesta['propuesta'] = $this->sanitize_public_propuesta($respuesta['propuesta']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_propuesta($propuesta) {
+        if (is_object($propuesta)) {
+            unset(
+                $propuesta->proponente_id,
+                $propuesta->direccion,
+                $propuesta->ubicacion_lat,
+                $propuesta->ubicacion_lng
+            );
+            return $propuesta;
+        }
+
+        if (!is_array($propuesta)) {
+            return $propuesta;
+        }
+
+        unset(
+            $propuesta['proponente_id'],
+            $propuesta['direccion'],
+            $propuesta['ubicacion_lat'],
+            $propuesta['ubicacion_lng']
+        );
+
+        return $propuesta;
     }
 
     // =========================================================================
@@ -2290,5 +2352,476 @@ KNOWLEDGE;
                 'template' => 'participacion/presupuesto-widget',
             ],
         ];
+    }
+
+    // =========================================================================
+    // PANEL UNIFICADO DE GESTIÓN
+    // =========================================================================
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'participacion',
+            'label' => __('Participación', 'flavor-chat-ia'),
+            'icon' => 'dashicons-groups',
+            'capability' => 'manage_options',
+            'categoria' => 'comunidad',
+            'paginas' => [
+                [
+                    'slug' => 'participacion-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'participacion-propuestas',
+                    'titulo' => __('Propuestas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_propuestas'],
+                    'badge' => [$this, 'contar_propuestas_activas'],
+                ],
+                [
+                    'slug' => 'participacion-votaciones',
+                    'titulo' => __('Votaciones', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_votaciones'],
+                    'badge' => [$this, 'contar_votaciones_abiertas'],
+                ],
+                [
+                    'slug' => 'participacion-debates',
+                    'titulo' => __('Debates', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_debates'],
+                ],
+                [
+                    'slug' => 'participacion-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta propuestas activas
+     *
+     * @return int
+     */
+    public function contar_propuestas_activas() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_propuestas WHERE estado = 'activa'"
+        );
+    }
+
+    /**
+     * Cuenta votaciones abiertas
+     *
+     * @return int
+     */
+    public function contar_votaciones_abiertas() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_votaciones = $wpdb->prefix . 'flavor_votaciones';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_votaciones WHERE estado = 'abierta' AND fecha_fin > %s",
+            current_time('mysql')
+        ));
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
+        $tabla_votaciones = $wpdb->prefix . 'flavor_votaciones';
+        $estadisticas = [];
+
+        // Propuestas activas
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+            $propuestas_activas = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_propuestas WHERE estado = 'activa'"
+            );
+            $estadisticas[] = [
+                'icon' => 'dashicons-lightbulb',
+                'valor' => $propuestas_activas,
+                'label' => __('Propuestas activas', 'flavor-chat-ia'),
+                'color' => $propuestas_activas > 0 ? 'blue' : 'gray',
+                'enlace' => admin_url('admin.php?page=participacion-propuestas'),
+            ];
+        }
+
+        // Votaciones abiertas
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
+            $votaciones_abiertas = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_votaciones WHERE estado = 'abierta' AND fecha_fin > %s",
+                current_time('mysql')
+            ));
+            $estadisticas[] = [
+                'icon' => 'dashicons-thumbs-up',
+                'valor' => $votaciones_abiertas,
+                'label' => __('Votaciones abiertas', 'flavor-chat-ia'),
+                'color' => $votaciones_abiertas > 0 ? 'green' : 'gray',
+                'enlace' => admin_url('admin.php?page=participacion-votaciones'),
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de participación
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Participación', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Propuesta', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-propuestas&action=nueva'), 'class' => 'button-primary'],
+        ]);
+
+        // Resumen de estadísticas
+        global $wpdb;
+        $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
+        $tabla_votaciones = $wpdb->prefix . 'flavor_votaciones';
+
+        $total_propuestas = 0;
+        $propuestas_activas = 0;
+        $votaciones_abiertas = 0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+            $total_propuestas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_propuestas");
+            $propuestas_activas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_propuestas WHERE estado = 'activa'");
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
+            $votaciones_abiertas = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_votaciones WHERE estado = 'abierta' AND fecha_fin > %s",
+                current_time('mysql')
+            ));
+        }
+
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_propuestas) . '</span><span class="stat-label">' . __('Total Propuestas', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($propuestas_activas) . '</span><span class="stat-label">' . __('Propuestas Activas', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($votaciones_abiertas) . '</span><span class="stat-label">' . __('Votaciones Abiertas', 'flavor-chat-ia') . '</span></div>';
+        echo '</div>';
+
+        echo '<p>' . __('Panel de control del módulo de participación ciudadana con métricas y accesos rápidos.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de propuestas
+     */
+    public function render_admin_propuestas() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Propuestas Ciudadanas', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Propuesta', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-propuestas&action=nueva'), 'class' => 'button-primary'],
+        ]);
+
+        // Listado de propuestas
+        global $wpdb;
+        $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $propuestas = $wpdb->get_results("SELECT * FROM $tabla_propuestas ORDER BY created_at DESC LIMIT 20");
+
+        if (empty($propuestas)) {
+            echo '<div class="notice notice-info"><p>' . __('No hay propuestas registradas.', 'flavor-chat-ia') . '</p></div>';
+        } else {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr>';
+            echo '<th>' . __('ID', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Título', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Categoría', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Votos', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Fecha', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead><tbody>';
+
+            foreach ($propuestas as $propuesta) {
+                $titulo = isset($propuesta->titulo) ? $propuesta->titulo : (isset($propuesta->title) ? $propuesta->title : '-');
+                $categoria = isset($propuesta->categoria) ? $propuesta->categoria : '-';
+                $estado = isset($propuesta->estado) ? $propuesta->estado : '-';
+                $votos = isset($propuesta->votos) ? $propuesta->votos : (isset($propuesta->apoyos) ? $propuesta->apoyos : 0);
+                $fecha = isset($propuesta->created_at) ? $propuesta->created_at : '-';
+
+                echo '<tr>';
+                echo '<td>' . esc_html($propuesta->id) . '</td>';
+                echo '<td>' . esc_html($titulo) . '</td>';
+                echo '<td>' . esc_html($categoria) . '</td>';
+                echo '<td><span class="status-badge status-' . esc_attr($estado) . '">' . esc_html(ucfirst($estado)) . '</span></td>';
+                echo '<td>' . esc_html($votos) . '</td>';
+                echo '<td>' . esc_html($fecha) . '</td>';
+                echo '</tr>';
+            }
+
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de votaciones
+     */
+    public function render_admin_votaciones() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Votaciones', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Votación', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-votaciones&action=nueva'), 'class' => 'button-primary'],
+        ]);
+
+        // Listado de votaciones
+        global $wpdb;
+        $tabla_votaciones = $wpdb->prefix . 'flavor_votaciones';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $votaciones = $wpdb->get_results("SELECT * FROM $tabla_votaciones ORDER BY created_at DESC LIMIT 20");
+
+        if (empty($votaciones)) {
+            echo '<div class="notice notice-info"><p>' . __('No hay votaciones registradas.', 'flavor-chat-ia') . '</p></div>';
+        } else {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr>';
+            echo '<th>' . __('ID', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Título', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Fecha Inicio', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Fecha Fin', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead><tbody>';
+
+            foreach ($votaciones as $votacion) {
+                $titulo = isset($votacion->titulo) ? $votacion->titulo : (isset($votacion->title) ? $votacion->title : '-');
+                $estado = isset($votacion->estado) ? $votacion->estado : '-';
+                $fecha_inicio = isset($votacion->fecha_inicio) ? $votacion->fecha_inicio : '-';
+                $fecha_fin = isset($votacion->fecha_fin) ? $votacion->fecha_fin : '-';
+
+                echo '<tr>';
+                echo '<td>' . esc_html($votacion->id) . '</td>';
+                echo '<td>' . esc_html($titulo) . '</td>';
+                echo '<td><span class="status-badge status-' . esc_attr($estado) . '">' . esc_html(ucfirst($estado)) . '</span></td>';
+                echo '<td>' . esc_html($fecha_inicio) . '</td>';
+                echo '<td>' . esc_html($fecha_fin) . '</td>';
+                echo '</tr>';
+            }
+
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de debates
+     */
+    public function render_admin_debates() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Debates Ciudadanos', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Debate', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-debates&action=nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        // Listado de debates (usando comentarios de propuestas activas o tabla dedicada)
+        global $wpdb;
+        $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
+        $tabla_comentarios = $wpdb->prefix . 'flavor_participacion_comentarios';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        // Mostrar propuestas con más actividad de debate
+        $propuestas_debate = $wpdb->get_results(
+            "SELECT p.*,
+                    (SELECT COUNT(*) FROM $tabla_comentarios c WHERE c.propuesta_id = p.id) as num_comentarios
+             FROM $tabla_propuestas p
+             WHERE p.estado = 'activa'
+             ORDER BY num_comentarios DESC
+             LIMIT 20"
+        );
+
+        if (empty($propuestas_debate)) {
+            echo '<div class="notice notice-info"><p>' . __('No hay debates activos en este momento.', 'flavor-chat-ia') . '</p></div>';
+        } else {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr>';
+            echo '<th>' . __('Propuesta', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Categoría', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Comentarios', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead><tbody>';
+
+            foreach ($propuestas_debate as $propuesta) {
+                $titulo = isset($propuesta->titulo) ? $propuesta->titulo : (isset($propuesta->title) ? $propuesta->title : '-');
+                $categoria = isset($propuesta->categoria) ? $propuesta->categoria : '-';
+                $num_comentarios = isset($propuesta->num_comentarios) ? $propuesta->num_comentarios : 0;
+
+                echo '<tr>';
+                echo '<td>' . esc_html($titulo) . '</td>';
+                echo '<td>' . esc_html($categoria) . '</td>';
+                echo '<td>' . esc_html($num_comentarios) . '</td>';
+                echo '<td><span class="status-badge status-activa">' . __('Activo', 'flavor-chat-ia') . '</span></td>';
+                echo '<td><a href="' . esc_url(admin_url('admin.php?page=participacion-debates&propuesta_id=' . $propuesta->id)) . '" class="button button-small">' . __('Ver Debate', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Participación', 'flavor-chat-ia'));
+
+        // Procesar guardado de configuración
+        if (isset($_POST['guardar_config']) && check_admin_referer('participacion_config_nonce')) {
+            $nuevos_ajustes = [
+                'requiere_verificacion' => isset($_POST['requiere_verificacion']),
+                'votos_necesarios_propuesta' => intval($_POST['votos_necesarios_propuesta'] ?? 10),
+                'permite_propuestas_ciudadanas' => isset($_POST['permite_propuestas_ciudadanas']),
+                'moderacion_propuestas' => isset($_POST['moderacion_propuestas']),
+                'duracion_votacion_dias' => intval($_POST['duracion_votacion_dias'] ?? 7),
+                'max_propuestas_usuario_mes' => intval($_POST['max_propuestas_usuario_mes'] ?? 5),
+                'permitir_comentarios' => isset($_POST['permitir_comentarios']),
+                'presupuesto_participativo_activo' => isset($_POST['presupuesto_participativo_activo']),
+                'presupuesto_total_anual' => floatval($_POST['presupuesto_total_anual'] ?? 100000),
+            ];
+
+            update_option('flavor_participacion_settings', array_merge($this->get_settings(), $nuevos_ajustes));
+            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $settings = $this->get_settings();
+        ?>
+        <form method="post" class="flavor-config-form">
+            <?php wp_nonce_field('participacion_config_nonce'); ?>
+
+            <table class="form-table">
+                <tr>
+                    <th scope="row"><?php _e('Requiere verificación', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="requiere_verificacion" value="1" <?php checked($settings['requiere_verificacion'] ?? true); ?>>
+                            <?php _e('Los usuarios deben estar verificados para participar', 'flavor-chat-ia'); ?>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Votos necesarios', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <input type="number" name="votos_necesarios_propuesta" value="<?php echo esc_attr($settings['votos_necesarios_propuesta'] ?? 10); ?>" min="1" class="small-text">
+                        <p class="description"><?php _e('Votos mínimos para que una propuesta avance', 'flavor-chat-ia'); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Propuestas ciudadanas', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="permite_propuestas_ciudadanas" value="1" <?php checked($settings['permite_propuestas_ciudadanas'] ?? true); ?>>
+                            <?php _e('Permitir que los ciudadanos creen propuestas', 'flavor-chat-ia'); ?>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Moderación', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="moderacion_propuestas" value="1" <?php checked($settings['moderacion_propuestas'] ?? true); ?>>
+                            <?php _e('Las propuestas requieren aprobación antes de publicarse', 'flavor-chat-ia'); ?>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Duración de votaciones', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <input type="number" name="duracion_votacion_dias" value="<?php echo esc_attr($settings['duracion_votacion_dias'] ?? 7); ?>" min="1" class="small-text">
+                        <span><?php _e('días', 'flavor-chat-ia'); ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Límite propuestas/usuario', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <input type="number" name="max_propuestas_usuario_mes" value="<?php echo esc_attr($settings['max_propuestas_usuario_mes'] ?? 5); ?>" min="1" class="small-text">
+                        <span><?php _e('propuestas por mes', 'flavor-chat-ia'); ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Comentarios', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="permitir_comentarios" value="1" <?php checked($settings['permitir_comentarios'] ?? true); ?>>
+                            <?php _e('Permitir comentarios en propuestas', 'flavor-chat-ia'); ?>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" colspan="2"><h2><?php _e('Presupuestos Participativos', 'flavor-chat-ia'); ?></h2></th>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Activar presupuestos', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="presupuesto_participativo_activo" value="1" <?php checked($settings['presupuesto_participativo_activo'] ?? false); ?>>
+                            <?php _e('Habilitar módulo de presupuestos participativos', 'flavor-chat-ia'); ?>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Presupuesto anual', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <input type="number" name="presupuesto_total_anual" value="<?php echo esc_attr($settings['presupuesto_total_anual'] ?? 100000); ?>" min="0" step="100" class="regular-text">
+                        <span><?php echo esc_html__('&euro;', 'flavor-chat-ia'); ?></span>
+                    </td>
+                </tr>
+            </table>
+
+            <p class="submit">
+                <input type="submit" name="guardar_config" class="button button-primary" value="<?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>">
+            </p>
+        </form>
+        <?php
+        echo '</div>';
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

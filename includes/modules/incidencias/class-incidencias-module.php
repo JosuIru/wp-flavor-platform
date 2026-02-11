@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Versión de las tablas
      */
@@ -24,8 +26,8 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'incidencias';
-        $this->name = __('Incidencias Urbanas', 'flavor-chat-ia');
-        $this->description = __('Reportar y gestionar incidencias del barrio: baches, alumbrado, limpieza, etc.', 'flavor-chat-ia');
+        $this->name = 'Incidencias Urbanas'; // Translation loaded on init
+        $this->description = 'Reportar y gestionar incidencias del barrio: baches, alumbrado, limpieza, etc.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -46,7 +48,15 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Incidencias no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -109,9 +119,13 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
 
         // AJAX handlers públicos
         add_action('wp_ajax_incidencias_reportar', [$this, 'ajax_reportar_incidencia']);
@@ -149,6 +163,648 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'incidencias',
+            'label' => __('Incidencias', 'flavor-chat-ia'),
+            'icon' => 'dashicons-warning',
+            'capability' => 'manage_options',
+            'categoria' => 'servicios',
+            'paginas' => [
+                [
+                    'slug' => 'incidencias-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'incidencias-abiertas',
+                    'titulo' => __('Abiertas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_abiertas'],
+                    'badge' => [$this, 'contar_incidencias_abiertas'],
+                ],
+                [
+                    'slug' => 'incidencias-todas',
+                    'titulo' => __('Todas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_todas'],
+                ],
+                [
+                    'slug' => 'incidencias-mapa',
+                    'titulo' => __('Mapa', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_mapa'],
+                ],
+                [
+                    'slug' => 'incidencias-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta incidencias abiertas (pendientes, validadas, en proceso)
+     *
+     * @return int
+     */
+    public function contar_incidencias_abiertas() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_incidencias}
+             WHERE estado IN ('pendiente', 'validada', 'en_proceso')"
+        );
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+        $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+            return $estadisticas;
+        }
+
+        // Incidencias abiertas
+        $incidencias_abiertas = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_incidencias}
+             WHERE estado IN ('pendiente', 'validada', 'en_proceso')"
+        );
+        $estadisticas[] = [
+            'icon' => 'dashicons-warning',
+            'valor' => $incidencias_abiertas,
+            'label' => __('Incidencias abiertas', 'flavor-chat-ia'),
+            'color' => $incidencias_abiertas > 0 ? 'orange' : 'green',
+            'enlace' => admin_url('admin.php?page=incidencias-abiertas'),
+        ];
+
+        // Resueltas este mes
+        $mes_actual = date('Y-m');
+        $resueltas_mes = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_incidencias}
+             WHERE estado = 'resuelta'
+             AND DATE_FORMAT(fecha_resolucion, '%%Y-%%m') = %s",
+            $mes_actual
+        ));
+        $estadisticas[] = [
+            'icon' => 'dashicons-yes-alt',
+            'valor' => $resueltas_mes,
+            'label' => __('Resueltas este mes', 'flavor-chat-ia'),
+            'color' => 'green',
+            'enlace' => admin_url('admin.php?page=incidencias-todas&estado=resuelta'),
+        ];
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de admin de incidencias
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Incidencias', 'flavor-chat-ia'), [
+            ['label' => __('Ver Abiertas', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-abiertas'), 'class' => 'button-primary'],
+            ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-mapa'), 'class' => ''],
+        ]);
+        $this->handle_admin_actions();
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<p>' . __('Panel de control del módulo de incidencias urbanas.', 'flavor-chat-ia') . '</p>';
+
+        $estadisticas = $this->get_estadisticas_dashboard();
+        if (!empty($estadisticas)) {
+            echo '<div class="flavor-stats-grid">';
+            foreach ($estadisticas as $estadistica) {
+                $color_class = !empty($estadistica['color']) ? 'flavor-stat-' . $estadistica['color'] : '';
+                $enlace = !empty($estadistica['enlace']) ? $estadistica['enlace'] : '';
+                $card_open = $enlace ? '<a class="flavor-stat-card ' . esc_attr($color_class) . '" href="' . esc_url($enlace) . '">' : '<div class="flavor-stat-card ' . esc_attr($color_class) . '">';
+                $card_close = $enlace ? '</a>' : '</div>';
+
+                echo $card_open;
+                echo '<div class="flavor-stat-icon"><span class="dashicons ' . esc_attr($estadistica['icon']) . '"></span></div>';
+                echo '<div class="flavor-stat-content">';
+                echo '<div class="flavor-stat-value">' . esc_html($estadistica['valor']) . '</div>';
+                echo '<div class="flavor-stat-label">' . esc_html($estadistica['label']) . '</div>';
+                echo '</div>';
+                echo $card_close;
+            }
+            echo '</div>';
+        }
+
+        $this->render_incidencias_resumen();
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el listado de incidencias abiertas
+     */
+    public function render_admin_abiertas() {
+        $this->render_admin_listado_incidencias(true);
+    }
+
+    /**
+     * Renderiza el listado de todas las incidencias
+     */
+    public function render_admin_todas() {
+        $this->render_admin_listado_incidencias(false);
+    }
+
+    /**
+     * Renderiza el mapa de incidencias
+     */
+    public function render_admin_mapa() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Mapa de Incidencias', 'flavor-chat-ia'));
+        $this->handle_admin_actions();
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_incidencias';
+        $incidencias = $wpdb->get_results(
+            "SELECT id, numero_incidencia, titulo, categoria, estado, latitud, longitud, direccion, fecha_reporte
+             FROM $tabla
+             WHERE latitud IS NOT NULL AND longitud IS NOT NULL
+             ORDER BY fecha_reporte DESC
+             LIMIT 500"
+        );
+
+        $map_data = array_map(function($i) {
+            return [
+                'id' => (int) $i->id,
+                'numero' => $i->numero_incidencia,
+                'titulo' => $i->titulo,
+                'categoria' => $i->categoria,
+                'estado' => $i->estado,
+                'lat' => (float) $i->latitud,
+                'lng' => (float) $i->longitud,
+                'direccion' => $i->direccion,
+                'fecha' => $i->fecha_reporte,
+            ];
+        }, $incidencias);
+
+        $centro_lat = (float) $this->get_setting('centro_mapa_lat');
+        $centro_lng = (float) $this->get_setting('centro_mapa_lng');
+        $zoom = (int) $this->get_setting('zoom_mapa');
+
+        wp_enqueue_style(
+            'leaflet',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+            [],
+            '1.9.4'
+        );
+        wp_enqueue_script(
+            'leaflet',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+            [],
+            '1.9.4',
+            true
+        );
+
+        echo '<p>' . __('Mapa interactivo de incidencias reportadas con coordenadas.', 'flavor-chat-ia') . '</p>';
+        echo '<div id="incidencias-admin-mapa" style="height: 520px; background: #f5f5f5; border: 1px solid #e5e5e5;"></div>';
+
+        echo '<div style="margin-top: 20px;">';
+        echo '<h3>' . esc_html__('Últimas incidencias geolocalizadas', 'flavor-chat-ia') . '</h3>';
+        if (empty($incidencias)) {
+            echo '<p>' . esc_html__('No hay incidencias con coordenadas todavía.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<table class="widefat striped"><thead><tr>';
+            echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead><tbody>';
+            foreach (array_slice($incidencias, 0, 20) as $incidencia) {
+                echo '<tr>';
+                echo '<td>' . esc_html($incidencia->id) . '</td>';
+                echo '<td>' . esc_html($incidencia->numero_incidencia) . '</td>';
+                echo '<td>' . esc_html($incidencia->titulo) . '</td>';
+                echo '<td>' . esc_html($incidencia->estado) . '</td>';
+                echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($incidencia->fecha_reporte))) . '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+        echo '</div>';
+
+        $map_json = wp_json_encode($map_data);
+        $map_js = "
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof L === 'undefined') {
+                    return;
+                }
+                var mapEl = document.getElementById('incidencias-admin-mapa');
+                if (!mapEl) {
+                    return;
+                }
+                var map = L.map(mapEl).setView([$centro_lat, $centro_lng], $zoom);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(map);
+                var data = $map_json || [];
+                data.forEach(function(item) {
+                    if (!item.lat || !item.lng) return;
+                    var marker = L.marker([item.lat, item.lng]).addTo(map);
+                    var popup = '<strong>' + (item.numero || '') + '</strong><br>' +
+                        (item.titulo || '') + '<br>' +
+                        (item.estado || '') + (item.direccion ? '<br>' + item.direccion : '');
+                    marker.bindPopup(popup);
+                });
+            });
+        ";
+        wp_add_inline_script('leaflet', $map_js);
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza configuración del módulo
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Incidencias', 'flavor-chat-ia'));
+        $this->handle_admin_save_config();
+        echo '<p>' . __('Configuración del sistema de incidencias urbanas.', 'flavor-chat-ia') . '</p>';
+
+        $categorias = $this->get_setting('categorias', []);
+        $prioridades = $this->get_setting('prioridades', []);
+        $estados = $this->get_setting('estados', []);
+        $departamentos = $this->get_setting('departamentos', []);
+
+        $format_lines = function($items) {
+            $lines = [];
+            foreach ($items as $key => $label) {
+                $lines[] = $key . '|' . $label;
+            }
+            return implode("\n", $lines);
+        };
+
+        echo '<form method="post">';
+        wp_nonce_field('incidencias_config', 'incidencias_config_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Requiere validación', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_validacion" value="1" ' . checked($this->get_setting('requiere_validacion'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite reporte anónimo', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_anonimo" value="1" ' . checked($this->get_setting('permite_anonimo'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Tiempo objetivo (h)', 'flavor-chat-ia') . '</th><td><input type="number" name="tiempo_respuesta_objetivo" min="1" value="' . esc_attr($this->get_setting('tiempo_respuesta_objetivo')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar actualizaciones', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="notificar_actualizaciones" value="1" ' . checked($this->get_setting('notificar_actualizaciones'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar días antes', 'flavor-chat-ia') . '</th><td><input type="number" name="notificar_dias_antes" min="0" value="' . esc_attr($this->get_setting('notificar_dias_antes')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Máx. fotos por incidencia', 'flavor-chat-ia') . '</th><td><input type="number" name="max_fotos_por_incidencia" min="0" value="' . esc_attr($this->get_setting('max_fotos_por_incidencia')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Tamaño máximo foto (MB)', 'flavor-chat-ia') . '</th><td><input type="number" name="tamano_max_foto" min="1" value="' . esc_attr($this->get_setting('tamano_max_foto')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Habilitar votos', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="habilitar_votos" value="1" ' . checked($this->get_setting('habilitar_votos'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Habilitar comentarios', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="habilitar_comentarios" value="1" ' . checked($this->get_setting('habilitar_comentarios'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Moderación comentarios', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="moderacion_comentarios" value="1" ' . checked($this->get_setting('moderacion_comentarios'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Token Mapbox', 'flavor-chat-ia') . '</th><td><input type="text" name="mapbox_token" class="regular-text" value="' . esc_attr($this->get_setting('mapbox_token')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Centro mapa (lat, lng)', 'flavor-chat-ia') . '</th><td>';
+        echo '<input type="number" step="0.000001" name="centro_mapa_lat" value="' . esc_attr($this->get_setting('centro_mapa_lat')) . '" style="width:140px;"> ';
+        echo '<input type="number" step="0.000001" name="centro_mapa_lng" value="' . esc_attr($this->get_setting('centro_mapa_lng')) . '" style="width:140px;">';
+        echo '</td></tr>';
+        echo '<tr><th>' . esc_html__('Zoom mapa', 'flavor-chat-ia') . '</th><td><input type="number" name="zoom_mapa" min="1" max="20" value="' . esc_attr($this->get_setting('zoom_mapa')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Categorías', 'flavor-chat-ia') . '</th><td>';
+        echo '<textarea name="categorias" rows="6" class="large-text" placeholder="alumbrado|Alumbrado público">' . esc_textarea($format_lines($categorias)) . '</textarea>';
+        echo '<p class="description">' . esc_html__('Una por línea en formato clave|Etiqueta.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<tr><th>' . esc_html__('Prioridades', 'flavor-chat-ia') . '</th><td>';
+        echo '<textarea name="prioridades" rows="4" class="large-text" placeholder="baja|Baja">' . esc_textarea($format_lines($prioridades)) . '</textarea>';
+        echo '</td></tr>';
+        echo '<tr><th>' . esc_html__('Estados', 'flavor-chat-ia') . '</th><td>';
+        echo '<textarea name="estados" rows="6" class="large-text" placeholder="pendiente|Pendiente">' . esc_textarea($format_lines($estados)) . '</textarea>';
+        echo '</td></tr>';
+        echo '<tr><th>' . esc_html__('Departamentos', 'flavor-chat-ia') . '</th><td>';
+        echo '<textarea name="departamentos" rows="4" class="large-text" placeholder="obras|Obras y Servicios">' . esc_textarea($format_lines($departamentos)) . '</textarea>';
+        echo '</td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    private function render_incidencias_resumen() {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_incidencias';
+        $incidencias = $wpdb->get_results(
+            "SELECT id, numero_incidencia, titulo, categoria, estado, prioridad, fecha_reporte
+             FROM $tabla
+             ORDER BY fecha_reporte DESC
+             LIMIT 10"
+        );
+
+        echo '<h3>' . esc_html__('Incidencias recientes', 'flavor-chat-ia') . '</h3>';
+        if (empty($incidencias)) {
+            echo '<p>' . esc_html__('No hay incidencias registradas aún.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Prioridad', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($incidencias as $incidencia) {
+            echo '<tr>';
+            echo '<td>' . esc_html($incidencia->id) . '</td>';
+            echo '<td>' . esc_html($incidencia->numero_incidencia) . '</td>';
+            echo '<td>' . esc_html($incidencia->titulo) . '</td>';
+            echo '<td>' . esc_html($incidencia->estado) . '</td>';
+            echo '<td>' . esc_html($incidencia->prioridad) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($incidencia->fecha_reporte))) . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+    }
+
+    private function render_admin_listado_incidencias($solo_abiertas) {
+        echo '<div class="wrap flavor-modulo-page">';
+        $titulo = $solo_abiertas ? __('Incidencias Abiertas', 'flavor-chat-ia') : __('Todas las Incidencias', 'flavor-chat-ia');
+        $this->render_page_header($titulo, [
+            ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-mapa'), 'class' => ''],
+        ]);
+        $this->handle_admin_actions();
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $config = $this->get_settings();
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $categoria = isset($_GET['categoria']) ? sanitize_text_field($_GET['categoria']) : '';
+        $prioridad = isset($_GET['prioridad']) ? sanitize_text_field($_GET['prioridad']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        $estados_disponibles = array_keys($config['estados'] ?? []);
+        $categorias_disponibles = array_keys($config['categorias'] ?? []);
+        $prioridades_disponibles = array_keys($config['prioridades'] ?? []);
+
+        if ($solo_abiertas && !$estado) {
+            $estado = 'abiertas';
+        }
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="' . esc_attr($solo_abiertas ? 'incidencias-abiertas' : 'incidencias-todas') . '">';
+        echo '<select name="estado">';
+        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        if ($solo_abiertas) {
+            echo '<option value="abiertas" ' . selected($estado, 'abiertas', false) . '>' . esc_html__('Solo abiertas', 'flavor-chat-ia') . '</option>';
+        }
+        foreach ($estados_disponibles as $key) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html($config['estados'][$key] ?? $key) . '</option>';
+        }
+        echo '</select> ';
+        echo '<select name="categoria">';
+        echo '<option value="">' . esc_html__('Todas las categorías', 'flavor-chat-ia') . '</option>';
+        foreach ($categorias_disponibles as $key) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($categoria, $key, false) . '>' . esc_html($config['categorias'][$key] ?? $key) . '</option>';
+        }
+        echo '</select> ';
+        echo '<select name="prioridad">';
+        echo '<option value="">' . esc_html__('Todas las prioridades', 'flavor-chat-ia') . '</option>';
+        foreach ($prioridades_disponibles as $key) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($prioridad, $key, false) . '>' . esc_html($config['prioridades'][$key] ?? $key) . '</option>';
+        }
+        echo '</select> ';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por título o número', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_incidencias';
+        $where = [];
+        $params = [];
+
+        if ($estado === 'abiertas') {
+            $where[] = "estado IN ('pendiente','validada','en_proceso')";
+        } elseif ($estado && in_array($estado, $estados_disponibles, true)) {
+            $where[] = 'estado = %s';
+            $params[] = $estado;
+        } elseif ($solo_abiertas) {
+            $where[] = "estado IN ('pendiente','validada','en_proceso')";
+        }
+
+        if ($categoria && in_array($categoria, $categorias_disponibles, true)) {
+            $where[] = 'categoria = %s';
+            $params[] = $categoria;
+        }
+        if ($prioridad && in_array($prioridad, $prioridades_disponibles, true)) {
+            $where[] = 'prioridad = %s';
+            $params[] = $prioridad;
+        }
+        if ($busqueda) {
+            $where[] = '(titulo LIKE %s OR numero_incidencia LIKE %s)';
+            $like = '%' . $wpdb->esc_like($busqueda) . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        $sql = "SELECT id, numero_incidencia, titulo, categoria, prioridad, estado, votos_ciudadanos, fecha_reporte FROM $tabla";
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY fecha_reporte DESC LIMIT 200';
+
+        $incidencias = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($incidencias)) {
+            echo '<p>' . esc_html__('No hay incidencias con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th>';
+        echo '<th>' . esc_html__('Número', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Título', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Prioridad', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Votos', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($incidencias as $incidencia) {
+            echo '<tr>';
+            echo '<td>' . esc_html($incidencia->id) . '</td>';
+            echo '<td>' . esc_html($incidencia->numero_incidencia) . '</td>';
+            echo '<td>' . esc_html($incidencia->titulo) . '</td>';
+            echo '<td>' . esc_html($config['categorias'][$incidencia->categoria] ?? $incidencia->categoria) . '</td>';
+            echo '<td>' . esc_html($config['prioridades'][$incidencia->prioridad] ?? $incidencia->prioridad) . '</td>';
+            echo '<td>' . esc_html($config['estados'][$incidencia->estado] ?? $incidencia->estado) . '</td>';
+            echo '<td>' . esc_html($incidencia->votos_ciudadanos) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($incidencia->fecha_reporte))) . '</td>';
+            echo '<td>' . $this->render_incidencia_actions($incidencia->id, $incidencia->estado, $incidencia->prioridad, $solo_abiertas ? 'incidencias-abiertas' : 'incidencias-todas') . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    private function render_incidencia_actions($incidencia_id, $estado_actual, $prioridad_actual, $page_slug) {
+        $config = $this->get_settings();
+        $estados = array_keys($config['estados'] ?? []);
+        $prioridades = array_keys($config['prioridades'] ?? []);
+
+        $links = [];
+        foreach ($estados as $estado) {
+            if ($estado === $estado_actual) {
+                continue;
+            }
+            $url = add_query_arg([
+                'page' => $page_slug,
+                'incidencia_action' => 'estado',
+                'incidencia_id' => $incidencia_id,
+                'estado' => $estado,
+            ], admin_url('admin.php'));
+            $url = wp_nonce_url($url, 'incidencias_admin_' . $incidencia_id);
+            $links[] = '<a href="' . esc_url($url) . '">' . esc_html($config['estados'][$estado] ?? $estado) . '</a>';
+            if (count($links) >= 3) {
+                break;
+            }
+        }
+
+        $prio_links = [];
+        foreach ($prioridades as $prioridad) {
+            if ($prioridad === $prioridad_actual) {
+                continue;
+            }
+            $url = add_query_arg([
+                'page' => $page_slug,
+                'incidencia_action' => 'prioridad',
+                'incidencia_id' => $incidencia_id,
+                'prioridad' => $prioridad,
+            ], admin_url('admin.php'));
+            $url = wp_nonce_url($url, 'incidencias_admin_' . $incidencia_id);
+            $prio_links[] = '<a href="' . esc_url($url) . '">' . esc_html($config['prioridades'][$prioridad] ?? $prioridad) . '</a>';
+            if (count($prio_links) >= 2) {
+                break;
+            }
+        }
+
+        $output = '';
+        if (!empty($links)) {
+            $output .= '<div><strong>' . esc_html__('Estado:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $links) . '</div>';
+        }
+        if (!empty($prio_links)) {
+            $output .= '<div><strong>' . esc_html__('Prioridad:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $prio_links) . '</div>';
+        }
+        return $output;
+    }
+
+    private function handle_admin_actions() {
+        if (empty($_GET['incidencia_action']) || empty($_GET['incidencia_id'])) {
+            return;
+        }
+
+        $accion = sanitize_text_field($_GET['incidencia_action']);
+        $incidencia_id = absint($_GET['incidencia_id']);
+        $nonce = $_GET['_wpnonce'] ?? '';
+
+        if (!$incidencia_id) {
+            return;
+        }
+        if (!wp_verify_nonce($nonce, 'incidencias_admin_' . $incidencia_id)) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_incidencias';
+        $config = $this->get_settings();
+
+        if ($accion === 'estado') {
+            $nuevo_estado = sanitize_text_field($_GET['estado'] ?? '');
+            if (empty($nuevo_estado) || empty($config['estados'][$nuevo_estado])) {
+                return;
+            }
+            $data = ['estado' => $nuevo_estado];
+            $format = ['%s'];
+            if ($nuevo_estado === 'resuelta') {
+                $data['fecha_resolucion'] = current_time('mysql');
+                $format[] = '%s';
+            } elseif (in_array($nuevo_estado, ['cerrada', 'rechazada'], true)) {
+                $data['fecha_cierre'] = current_time('mysql');
+                $format[] = '%s';
+            }
+            $wpdb->update($tabla, $data, ['id' => $incidencia_id], $format, ['%d']);
+            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        if ($accion === 'prioridad') {
+            $nueva_prioridad = sanitize_text_field($_GET['prioridad'] ?? '');
+            if (empty($nueva_prioridad) || empty($config['prioridades'][$nueva_prioridad])) {
+                return;
+            }
+            $wpdb->update($tabla, ['prioridad' => $nueva_prioridad], ['id' => $incidencia_id], ['%s'], ['%d']);
+            echo '<div class="notice notice-success"><p>' . esc_html__('Prioridad actualizada.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    private function handle_admin_save_config() {
+        if (empty($_POST['incidencias_config_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['incidencias_config_nonce'], 'incidencias_config')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $this->update_setting('requiere_validacion', !empty($_POST['requiere_validacion']));
+        $this->update_setting('permite_anonimo', !empty($_POST['permite_anonimo']));
+        $this->update_setting('tiempo_respuesta_objetivo', absint($_POST['tiempo_respuesta_objetivo'] ?? 48));
+        $this->update_setting('notificar_actualizaciones', !empty($_POST['notificar_actualizaciones']));
+        $this->update_setting('notificar_dias_antes', absint($_POST['notificar_dias_antes'] ?? 2));
+        $this->update_setting('max_fotos_por_incidencia', absint($_POST['max_fotos_por_incidencia'] ?? 5));
+        $this->update_setting('tamano_max_foto', absint($_POST['tamano_max_foto'] ?? 5));
+        $this->update_setting('habilitar_votos', !empty($_POST['habilitar_votos']));
+        $this->update_setting('habilitar_comentarios', !empty($_POST['habilitar_comentarios']));
+        $this->update_setting('moderacion_comentarios', !empty($_POST['moderacion_comentarios']));
+        $this->update_setting('mapbox_token', sanitize_text_field($_POST['mapbox_token'] ?? ''));
+        $this->update_setting('centro_mapa_lat', floatval($_POST['centro_mapa_lat'] ?? 0));
+        $this->update_setting('centro_mapa_lng', floatval($_POST['centro_mapa_lng'] ?? 0));
+        $this->update_setting('zoom_mapa', absint($_POST['zoom_mapa'] ?? 14));
+
+        $this->update_setting('categorias', $this->parse_config_lines($_POST['categorias'] ?? ''));
+        $this->update_setting('prioridades', $this->parse_config_lines($_POST['prioridades'] ?? ''));
+        $this->update_setting('estados', $this->parse_config_lines($_POST['estados'] ?? ''));
+        $this->update_setting('departamentos', $this->parse_config_lines($_POST['departamentos'] ?? ''));
+
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function parse_config_lines($raw) {
+        $raw = is_string($raw) ? $raw : '';
+        $items = [];
+        foreach (array_filter(array_map('trim', explode("\n", $raw))) as $line) {
+            $parts = array_map('trim', explode('|', $line, 2));
+            if (!empty($parts[0])) {
+                $items[$parts[0]] = $parts[1] ?? $parts[0];
+            }
+        }
+        return $items;
+    }
+
+    /**
      * Registrar shortcodes
      */
     public function register_shortcodes() {
@@ -164,6 +820,10 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      * Encolar assets del frontend
      */
     public function enqueue_frontend_assets() {
+        if (!$this->can_activate()) {
+            return;
+        }
+
         if (!$this->should_load_assets()) {
             return;
         }
@@ -1621,13 +2281,13 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/incidencias', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_incidencias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/incidencias/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_detalle_incidencia'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/incidencias', [
@@ -1645,19 +2305,19 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/incidencias/estadisticas', [
             'methods' => 'GET',
             'callback' => [$this, 'api_estadisticas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/incidencias/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'api_categorias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/incidencias/mapa', [
             'methods' => 'GET',
             'callback' => [$this, 'api_mapa'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -1707,7 +2367,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             ...array_slice($valores, 0, -2)
         ));
 
-        return new WP_REST_Response([
+        $respuesta = [
             'data' => $incidencias,
             'meta' => [
                 'total' => intval($total),
@@ -1715,7 +2375,9 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
                 'per_page' => $por_pagina,
                 'total_pages' => ceil($total / $por_pagina),
             ],
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_incidencias_response($respuesta), 200);
     }
 
     /**
@@ -1732,11 +2394,13 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $fotos = $this->obtener_fotos_incidencia($id);
         $seguimiento = $this->obtener_seguimiento_incidencia($id, true);
 
-        return new WP_REST_Response([
+        $respuesta = [
             'data' => $incidencia,
             'fotos' => $fotos,
             'seguimiento' => $seguimiento,
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_incidencias_response($respuesta), 200);
     }
 
     /**
@@ -1818,7 +2482,40 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             LIMIT 500
         ");
 
-        return new WP_REST_Response(['data' => $incidencias], 200);
+        $respuesta = ['data' => $incidencias];
+
+        return new WP_REST_Response($this->sanitize_public_incidencias_response($respuesta), 200);
+    }
+
+    private function sanitize_public_incidencias_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta)) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['data']) && is_array($respuesta['data'])) {
+            $respuesta['data'] = array_map([$this, 'sanitize_public_incidencia'], $respuesta['data']);
+        }
+
+        if (!empty($respuesta['data']) && is_object($respuesta['data'])) {
+            $respuesta['data'] = $this->sanitize_public_incidencia($respuesta['data']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_incidencia($incidencia) {
+        if (is_object($incidencia)) {
+            unset($incidencia->usuario_id, $incidencia->direccion);
+            return $incidencia;
+        }
+
+        if (!is_array($incidencia)) {
+            return $incidencia;
+        }
+
+        unset($incidencia['usuario_id'], $incidencia['direccion']);
+
+        return $incidencia;
     }
 
     // =========================================================================
@@ -2265,4 +2962,32 @@ KNOWLEDGE;
             ],
         ];
     }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('incidencias');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('incidencias');
+        if (!$pagina && !get_option('flavor_incidencias_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['incidencias']);
+            update_option('flavor_incidencias_pages_created', 1, false);
+        }
+    }
+
 }

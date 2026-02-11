@@ -71,6 +71,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_ajax_biblioteca_solicitar_prestamo', [$this, 'ajax_solicitar_prestamo']);
@@ -117,13 +118,13 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/biblioteca/libros', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_libros'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/biblioteca/libros/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_detalle_libro'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/biblioteca/libros', [
@@ -195,13 +196,13 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/biblioteca/generos', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_generos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/biblioteca/estadisticas', [
             'methods' => 'GET',
             'callback' => [$this, 'api_estadisticas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/biblioteca/recomendaciones', [
@@ -1111,7 +1112,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         ];
 
         $resultado = $this->action_buscar_libros($params);
-        return new WP_REST_Response($resultado, 200);
+        return new WP_REST_Response($this->sanitize_public_biblioteca_response($resultado), 200);
     }
 
     /**
@@ -1120,7 +1121,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
     public function api_detalle_libro($request) {
         $resultado = $this->action_detalle_libro(['libro_id' => $request->get_param('id')]);
         $status = $resultado['success'] ? 200 : 404;
-        return new WP_REST_Response($resultado, $status);
+        return new WP_REST_Response($this->sanitize_public_biblioteca_response($resultado), $status);
     }
 
     /**
@@ -1968,6 +1969,33 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         return $data;
     }
 
+    private function sanitize_public_biblioteca_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['libros']) && is_array($respuesta['libros'])) {
+            $respuesta['libros'] = array_map([$this, 'sanitize_public_libro'], $respuesta['libros']);
+        }
+
+        if (!empty($respuesta['libro']) && is_array($respuesta['libro'])) {
+            $respuesta['libro'] = $this->sanitize_public_libro($respuesta['libro']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_libro($libro) {
+        if (!is_array($libro)) {
+            return $libro;
+        }
+
+        unset($libro['propietario_id'], $libro['ubicacion']);
+        $libro['propietario'] = __('Vecino', 'flavor-chat-ia');
+
+        return $libro;
+    }
+
     /**
      * Calcular fecha inicio según periodo
      */
@@ -2318,4 +2346,32 @@ KNOWLEDGE;
             ],
         ];
     }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('biblioteca');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('biblioteca');
+        if (!$pagina && !get_option('flavor_biblioteca_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['biblioteca']);
+            update_option('flavor_biblioteca_pages_created', 1, false);
+        }
+    }
+
 }

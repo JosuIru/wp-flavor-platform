@@ -15,13 +15,15 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'themacle';
-        $this->name = __('Themacle Web Components', 'flavor-chat-ia');
-        $this->description = __('Componentes web universales reutilizables para construir cualquier tipo de web', 'flavor-chat-ia');
+        $this->name = 'Themacle Web Components'; // Translation loaded on init
+        $this->description = 'Componentes web universales reutilizables para construir cualquier tipo de web'; // Translation loaded on init
         parent::__construct();
     }
 
@@ -39,11 +41,376 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         return '';
     }
 
+    
     /**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
+    }
+
+/**
      * Inicializar hooks del módulo
      */
     public function init() {
-        // No requiere hooks especiales - solo registra componentes web
+        // Registrar REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registrar rutas REST API
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // Listar todos los componentes web
+        register_rest_route($namespace, '/themacle/componentes', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_listar_componentes'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'categoria' => [
+                    'type' => 'string',
+                    'description' => 'Filtrar por categoría (hero, content, listings, features, cta, navigation)',
+                ],
+            ],
+        ]);
+
+        // Obtener un componente específico
+        register_rest_route($namespace, '/themacle/componentes/(?P<id>[a-z0-9_]+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_obtener_componente'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'description' => 'Identificador del componente (ej: hero_fullscreen)',
+                ],
+            ],
+        ]);
+
+        // Listar categorías disponibles
+        register_rest_route($namespace, '/themacle/categorias', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_listar_categorias'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Obtener estadísticas del módulo
+        register_rest_route($namespace, '/themacle/estadisticas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_obtener_estadisticas'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    // =========================================================================
+    // Métodos API REST
+    // =========================================================================
+
+    /**
+     * API: Listar componentes web
+     */
+    public function api_listar_componentes($request) {
+        $categoria_filtro = $request->get_param('categoria');
+        $componentes_web = $this->get_web_components();
+        $lista_componentes = [];
+
+        foreach ($componentes_web as $identificador_componente => $datos_componente) {
+            // Filtrar por categoría si se especifica
+            if ($categoria_filtro && ($datos_componente['category'] ?? '') !== $categoria_filtro) {
+                continue;
+            }
+
+            $lista_componentes[] = [
+                'id' => $identificador_componente,
+                'label' => $datos_componente['label'],
+                'description' => $datos_componente['description'],
+                'category' => $datos_componente['category'] ?? 'otros',
+                'icon' => $datos_componente['icon'] ?? 'dashicons-admin-generic',
+                'template' => $datos_componente['template'] ?? '',
+                'fields' => array_keys($datos_componente['fields'] ?? []),
+            ];
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'total' => count($lista_componentes),
+            'componentes' => $lista_componentes,
+        ], 200);
+    }
+
+    /**
+     * API: Obtener un componente específico
+     */
+    public function api_obtener_componente($request) {
+        $identificador_componente = sanitize_text_field($request->get_param('id'));
+        $componentes_web = $this->get_web_components();
+
+        if (!isset($componentes_web[$identificador_componente])) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => __('Componente no encontrado', 'flavor-chat-ia'),
+            ], 404);
+        }
+
+        $datos_componente = $componentes_web[$identificador_componente];
+
+        return new WP_REST_Response([
+            'success' => true,
+            'componente' => [
+                'id' => $identificador_componente,
+                'label' => $datos_componente['label'],
+                'description' => $datos_componente['description'],
+                'category' => $datos_componente['category'] ?? 'otros',
+                'icon' => $datos_componente['icon'] ?? 'dashicons-admin-generic',
+                'template' => $datos_componente['template'] ?? '',
+                'preview' => $datos_componente['preview'] ?? '',
+                'fields' => $datos_componente['fields'] ?? [],
+            ],
+        ], 200);
+    }
+
+    /**
+     * API: Listar categorías de componentes
+     */
+    public function api_listar_categorias($request) {
+        $componentes_web = $this->get_web_components();
+        $categorias_componentes = [];
+
+        foreach ($componentes_web as $datos_componente) {
+            $categoria = $datos_componente['category'] ?? 'otros';
+            if (!isset($categorias_componentes[$categoria])) {
+                $categorias_componentes[$categoria] = 0;
+            }
+            $categorias_componentes[$categoria]++;
+        }
+
+        $nombres_categorias = [
+            'hero' => __('Heroes', 'flavor-chat-ia'),
+            'content' => __('Contenido', 'flavor-chat-ia'),
+            'listings' => __('Listados', 'flavor-chat-ia'),
+            'features' => __('Características', 'flavor-chat-ia'),
+            'cta' => __('CTA', 'flavor-chat-ia'),
+            'navigation' => __('Navegación', 'flavor-chat-ia'),
+            'otros' => __('Otros', 'flavor-chat-ia'),
+        ];
+
+        $categorias_resultado = [];
+        foreach ($categorias_componentes as $slug_categoria => $total_componentes) {
+            $categorias_resultado[] = [
+                'slug' => $slug_categoria,
+                'nombre' => $nombres_categorias[$slug_categoria] ?? ucfirst($slug_categoria),
+                'total_componentes' => $total_componentes,
+            ];
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'total' => count($categorias_resultado),
+            'categorias' => $categorias_resultado,
+        ], 200);
+    }
+
+    /**
+     * API: Obtener estadísticas del módulo
+     */
+    public function api_obtener_estadisticas($request) {
+        $componentes_web = $this->get_web_components();
+        $total_componentes = count($componentes_web);
+
+        $categorias_componentes = [];
+        foreach ($componentes_web as $datos_componente) {
+            $categoria = $datos_componente['category'] ?? 'otros';
+            if (!isset($categorias_componentes[$categoria])) {
+                $categorias_componentes[$categoria] = 0;
+            }
+            $categorias_componentes[$categoria]++;
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'estadisticas' => [
+                'total_componentes' => $total_componentes,
+                'total_categorias' => count($categorias_componentes),
+                'componentes_por_categoria' => $categorias_componentes,
+            ],
+        ], 200);
+    }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'themacle',
+            'label' => __('Themacle', 'flavor-chat-ia'),
+            'icon' => 'dashicons-admin-customizer',
+            'capability' => 'manage_options',
+            'categoria' => 'recursos',
+            'paginas' => [
+                [
+                    'slug' => 'themacle-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'themacle-temas',
+                    'titulo' => __('Temas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_temas'],
+                ],
+                [
+                    'slug' => 'themacle-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        $componentes_web = $this->get_web_components();
+        $total_componentes = count($componentes_web);
+
+        $categorias_componentes = [];
+        foreach ($componentes_web as $componente) {
+            $categoria = $componente['category'] ?? 'otros';
+            if (!isset($categorias_componentes[$categoria])) {
+                $categorias_componentes[$categoria] = 0;
+            }
+            $categorias_componentes[$categoria]++;
+        }
+
+        return [
+            [
+                'icon' => 'dashicons-layout',
+                'valor' => $total_componentes,
+                'label' => __('Componentes disponibles', 'flavor-chat-ia'),
+                'color' => 'blue',
+                'enlace' => admin_url('admin.php?page=themacle-dashboard'),
+            ],
+            [
+                'icon' => 'dashicons-category',
+                'valor' => count($categorias_componentes),
+                'label' => __('Categorías', 'flavor-chat-ia'),
+                'color' => 'purple',
+                'enlace' => admin_url('admin.php?page=themacle-dashboard'),
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard de Themacle
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Themacle', 'flavor-chat-ia'), [
+            ['label' => __('Ver Documentación', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-secondary'],
+        ]);
+
+        $componentes_web = $this->get_web_components();
+        $categorias_agrupadas = [];
+        foreach ($componentes_web as $identificador_componente => $datos_componente) {
+            $categoria = $datos_componente['category'] ?? 'otros';
+            if (!isset($categorias_agrupadas[$categoria])) {
+                $categorias_agrupadas[$categoria] = [];
+            }
+            $categorias_agrupadas[$categoria][$identificador_componente] = $datos_componente;
+        }
+
+        // Estadísticas rápidas
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . count($componentes_web) . '</span><span class="stat-label">' . __('Total Componentes', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . count($categorias_agrupadas) . '</span><span class="stat-label">' . __('Categorías', 'flavor-chat-ia') . '</span></div>';
+        echo '</div>';
+
+        // Listado de componentes por categoría
+        echo '<h2>' . __('Componentes Web Disponibles', 'flavor-chat-ia') . '</h2>';
+
+        $nombres_categorias = [
+            'hero' => __('Heroes', 'flavor-chat-ia'),
+            'content' => __('Contenido', 'flavor-chat-ia'),
+            'listings' => __('Listados', 'flavor-chat-ia'),
+            'features' => __('Características', 'flavor-chat-ia'),
+            'cta' => __('CTA', 'flavor-chat-ia'),
+            'navigation' => __('Navegación', 'flavor-chat-ia'),
+            'otros' => __('Otros', 'flavor-chat-ia'),
+        ];
+
+        foreach ($categorias_agrupadas as $categoria_slug => $lista_componentes) {
+            $nombre_categoria = $nombres_categorias[$categoria_slug] ?? ucfirst($categoria_slug);
+            echo '<h3>' . esc_html($nombre_categoria) . ' (' . count($lista_componentes) . ')</h3>';
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Componente', 'flavor-chat-ia') . '</th><th>' . __('Descripción', 'flavor-chat-ia') . '</th><th>' . __('Template', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($lista_componentes as $identificador => $datos_componente_item) {
+                echo '<tr>';
+                echo '<td><span class="dashicons ' . esc_attr($datos_componente_item['icon'] ?? 'dashicons-admin-generic') . '"></span> <strong>' . esc_html($datos_componente_item['label']) . '</strong></td>';
+                echo '<td>' . esc_html($datos_componente_item['description']) . '</td>';
+                echo '<td><code>' . esc_html($datos_componente_item['template'] ?? '-') . '</code></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de gestión de temas
+     */
+    public function render_admin_temas() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Gestión de Temas', 'flavor-chat-ia'));
+
+        echo '<p>' . __('Los componentes Themacle se adaptan automáticamente al tema visual activo del sitio mediante CSS custom properties.', 'flavor-chat-ia') . '</p>';
+
+        echo '<div class="card">';
+        echo '<h3>' . __('Tema Activo', 'flavor-chat-ia') . '</h3>';
+        echo '<p>' . __('El tema visual actual define los colores, tipografías y espaciados que utilizan todos los componentes.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+
+        echo '<div class="card">';
+        echo '<h3>' . __('Personalización', 'flavor-chat-ia') . '</h3>';
+        echo '<p>' . __('Puedes personalizar las variables CSS para adaptar los componentes a tu marca.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la configuración del módulo
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Themacle', 'flavor-chat-ia'));
+
+        echo '<form method="post" action="">';
+        echo '<table class="form-table">';
+
+        echo '<tr><th scope="row"><label for="componentes_activos">' . __('Componentes Activos', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><p class="description">' . __('Todos los componentes están activos por defecto. Puedes desactivar componentes específicos si no los necesitas.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cache_templates">' . __('Cache de Templates', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="cache_templates" id="cache_templates" checked />';
+        echo '<p class="description">' . __('Cachear los templates de componentes para mejorar el rendimiento.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '</table>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '</form>';
+        echo '</div>';
     }
 
     /**

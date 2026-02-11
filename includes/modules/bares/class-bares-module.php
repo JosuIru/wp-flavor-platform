@@ -20,13 +20,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'bares';
-        $this->name = __('Bares y Hosteleria', 'flavor-chat-ia');
-        $this->description = __('Directorio y gestion de bares, restaurantes y locales de hosteleria con carta, eventos y reservas', 'flavor-chat-ia');
+        $this->name = 'Bares y Hosteleria'; // Translation loaded on init
+        $this->description = 'Directorio y gestion de bares, restaurantes y locales de hosteleria con carta, eventos y reservas'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -48,7 +50,15 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Bares no estan creadas. Activa el modulo para crearlas automaticamente.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -88,6 +98,734 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
+    }
+
+    // =========================================================
+    // REST API
+    // =========================================================
+
+    /**
+     * Namespace de la REST API
+     */
+    const REST_NAMESPACE = 'flavor/v1';
+
+    /**
+     * Registra las rutas REST del módulo de bares
+     */
+    public function register_rest_routes() {
+        // GET /flavor/v1/bares - Listar bares
+        register_rest_route(self::REST_NAMESPACE, '/bares', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_listar_bares'],
+            'permission_callback' => [$this, 'api_permission_public'],
+            'args'                => [
+                'tipo' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'enum'              => ['bar', 'restaurante', 'cafeteria', 'pub', 'terraza', 'cocteleria'],
+                ],
+                'valoracion_minima' => [
+                    'type'              => 'number',
+                    'sanitize_callback' => 'floatval',
+                ],
+                'busqueda' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'latitud' => [
+                    'type'              => 'number',
+                    'sanitize_callback' => 'floatval',
+                ],
+                'longitud' => [
+                    'type'              => 'number',
+                    'sanitize_callback' => 'floatval',
+                ],
+                'radio_km' => [
+                    'type'              => 'number',
+                    'sanitize_callback' => 'floatval',
+                    'default'           => 10,
+                ],
+                'limite' => [
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'default'           => 12,
+                ],
+                'pagina' => [
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'default'           => 1,
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/bares/{id} - Obtener un bar
+        register_rest_route(self::REST_NAMESPACE, '/bares/(?P<id>\d+)', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_obtener_bar'],
+            'permission_callback' => [$this, 'api_permission_public'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function($param) {
+                        return is_numeric($param) && $param > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/bares/{id}/carta - Obtener carta del bar
+        register_rest_route(self::REST_NAMESPACE, '/bares/(?P<id>\d+)/carta', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_obtener_carta'],
+            'permission_callback' => [$this, 'api_permission_public'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function($param) {
+                        return is_numeric($param) && $param > 0;
+                    },
+                ],
+                'categoria' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/bares/{id}/eventos - Obtener eventos del bar
+        register_rest_route(self::REST_NAMESPACE, '/bares/(?P<id>\d+)/eventos', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_obtener_eventos'],
+            'permission_callback' => [$this, 'api_permission_public'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function($param) {
+                        return is_numeric($param) && $param > 0;
+                    },
+                ],
+                'proximos' => [
+                    'type'              => 'boolean',
+                    'default'           => true,
+                ],
+                'limite' => [
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'default'           => 10,
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/bares/{id}/reservar - Reservar mesa
+        register_rest_route(self::REST_NAMESPACE, '/bares/(?P<id>\d+)/reservar', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'api_reservar_mesa'],
+            'permission_callback' => [$this, 'api_permission_reservar'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function($param) {
+                        return is_numeric($param) && $param > 0;
+                    },
+                ],
+                'nombre_reserva' => [
+                    'required'          => true,
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'telefono' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'fecha' => [
+                    'required'          => true,
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'validate_callback' => function($param) {
+                        return preg_match('/^\d{4}-\d{2}-\d{2}$/', $param);
+                    },
+                ],
+                'hora' => [
+                    'required'          => true,
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'validate_callback' => function($param) {
+                        return preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $param);
+                    },
+                ],
+                'comensales' => [
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'default'           => 2,
+                ],
+                'notas' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Permiso público con rate limit
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST
+     * @return bool|WP_Error
+     */
+    public function api_permission_public($request) {
+        // Aplicar rate limit si la clase existe
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            return Flavor_API_Rate_Limiter::check_rate_limit('get');
+        }
+        return true;
+    }
+
+    /**
+     * Permiso para reservar - requiere login si está configurado
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST
+     * @return bool|WP_Error
+     */
+    public function api_permission_reservar($request) {
+        // Rate limit
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            $rate_check = Flavor_API_Rate_Limiter::check_rate_limit('post');
+            if (is_wp_error($rate_check)) {
+                return $rate_check;
+            }
+        }
+
+        // Verificar si las reservas están habilitadas
+        if (!$this->get_setting('permitir_reservas', true)) {
+            return new WP_Error(
+                'reservas_deshabilitadas',
+                __('Las reservas no están habilitadas en este momento.', 'flavor-chat-ia'),
+                ['status' => 403]
+            );
+        }
+
+        // Verificar login si es requerido
+        if ($this->get_setting('requiere_login_reserva', true) && !is_user_logged_in()) {
+            return new WP_Error(
+                'login_requerido',
+                __('Debes iniciar sesión para realizar una reserva.', 'flavor-chat-ia'),
+                ['status' => 401]
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * API: Listar bares con filtros opcionales
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_listar_bares($request) {
+        $parametros = [
+            'tipo'              => $request->get_param('tipo'),
+            'valoracion_minima' => $request->get_param('valoracion_minima'),
+            'latitud'           => $request->get_param('latitud'),
+            'longitud'          => $request->get_param('longitud'),
+            'radio_km'          => $request->get_param('radio_km'),
+            'limite'            => $request->get_param('limite'),
+            'pagina'            => $request->get_param('pagina'),
+        ];
+
+        // Si hay término de búsqueda, usar acción de búsqueda
+        $termino_busqueda = $request->get_param('busqueda');
+        if (!empty($termino_busqueda)) {
+            $parametros['busqueda'] = $termino_busqueda;
+            $resultado = $this->action_buscar_bares($parametros);
+        } else {
+            $resultado = $this->action_listar_bares($parametros);
+        }
+
+        if (!$resultado['success']) {
+            return new WP_Error(
+                'error_listado',
+                $resultado['error'] ?? __('Error al obtener el listado de bares.', 'flavor-chat-ia'),
+                ['status' => 400]
+            );
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Obtener detalle de un bar
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_obtener_bar($request) {
+        $bar_id = $request->get_param('id');
+
+        $resultado = $this->action_ver_bar(['bar_id' => $bar_id]);
+
+        if (!$resultado['success']) {
+            return new WP_Error(
+                'bar_no_encontrado',
+                $resultado['error'] ?? __('Bar no encontrado.', 'flavor-chat-ia'),
+                ['status' => 404]
+            );
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Obtener carta de un bar
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_obtener_carta($request) {
+        $bar_id = $request->get_param('id');
+        $categoria = $request->get_param('categoria');
+
+        $parametros = ['bar_id' => $bar_id];
+        if (!empty($categoria)) {
+            $parametros['categoria'] = $categoria;
+        }
+
+        $resultado = $this->action_ver_carta($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_Error(
+                'carta_no_encontrada',
+                $resultado['error'] ?? __('Carta no encontrada.', 'flavor-chat-ia'),
+                ['status' => 404]
+            );
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Obtener eventos de un bar
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_obtener_eventos($request) {
+        global $wpdb;
+
+        $bar_id = $request->get_param('id');
+        $solo_proximos = $request->get_param('proximos');
+        $limite = $request->get_param('limite');
+
+        $tabla_bares = $wpdb->prefix . 'flavor_bares';
+
+        // Verificar que el bar existe
+        $nombre_bar = $wpdb->get_var($wpdb->prepare(
+            "SELECT nombre FROM $tabla_bares WHERE id = %d AND estado = 'activo'",
+            $bar_id
+        ));
+
+        if (!$nombre_bar) {
+            return new WP_Error(
+                'bar_no_encontrado',
+                __('Bar no encontrado.', 'flavor-chat-ia'),
+                ['status' => 404]
+            );
+        }
+
+        // Buscar eventos del bar en la tabla de eventos si existe
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $eventos = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            $condicion_fecha = $solo_proximos ? "AND fecha >= CURDATE()" : "";
+
+            $eventos = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, titulo, descripcion, fecha, hora_inicio, hora_fin, imagen, precio, aforo_maximo, inscritos_count
+                 FROM $tabla_eventos
+                 WHERE lugar_id = %d AND tipo_lugar = 'bar' {$condicion_fecha}
+                 ORDER BY fecha ASC, hora_inicio ASC
+                 LIMIT %d",
+                $bar_id,
+                $limite
+            ), ARRAY_A);
+
+            // Formatear eventos
+            $eventos = array_map(function($evento) {
+                return [
+                    'id'            => (int) $evento['id'],
+                    'titulo'        => $evento['titulo'],
+                    'descripcion'   => $evento['descripcion'],
+                    'fecha'         => $evento['fecha'],
+                    'fecha_formateada' => date_i18n('d/m/Y', strtotime($evento['fecha'])),
+                    'hora_inicio'   => substr($evento['hora_inicio'], 0, 5),
+                    'hora_fin'      => $evento['hora_fin'] ? substr($evento['hora_fin'], 0, 5) : null,
+                    'imagen'        => $evento['imagen'],
+                    'precio'        => $evento['precio'] ? $this->format_price(floatval($evento['precio'])) : __('Gratis', 'flavor-chat-ia'),
+                    'aforo_maximo'  => (int) $evento['aforo_maximo'],
+                    'inscritos'     => (int) $evento['inscritos_count'],
+                    'plazas_disponibles' => max(0, (int) $evento['aforo_maximo'] - (int) $evento['inscritos_count']),
+                ];
+            }, $eventos);
+        }
+
+        return new WP_REST_Response([
+            'success'    => true,
+            'bar_id'     => $bar_id,
+            'bar_nombre' => $nombre_bar,
+            'total'      => count($eventos),
+            'eventos'    => $eventos,
+        ], 200);
+    }
+
+    /**
+     * API: Reservar mesa en un bar
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_reservar_mesa($request) {
+        $parametros = [
+            'bar_id'         => $request->get_param('id'),
+            'nombre_reserva' => $request->get_param('nombre_reserva'),
+            'telefono'       => $request->get_param('telefono'),
+            'fecha'          => $request->get_param('fecha'),
+            'hora'           => $request->get_param('hora'),
+            'comensales'     => $request->get_param('comensales'),
+            'notas'          => $request->get_param('notas'),
+        ];
+
+        $resultado = $this->action_reservar($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_Error(
+                'error_reserva',
+                $resultado['error'] ?? __('Error al realizar la reserva.', 'flavor-chat-ia'),
+                ['status' => 400]
+            );
+        }
+
+        return new WP_REST_Response([
+            'success'    => true,
+            'reserva_id' => $resultado['reserva_id'],
+            'mensaje'    => $resultado['mensaje'],
+        ], 201);
+    }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'bares',
+            'label' => __('Bares y Hostelería', 'flavor-chat-ia'),
+            'icon' => 'dashicons-food',
+            'capability' => 'manage_options',
+            'categoria' => 'servicios',
+            'paginas' => [
+                [
+                    'slug' => 'bares-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'bares-locales',
+                    'titulo' => __('Locales', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_locales'],
+                    'badge' => [$this, 'contar_locales_activos'],
+                ],
+                [
+                    'slug' => 'bares-reservas',
+                    'titulo' => __('Reservas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_reservas'],
+                    'badge' => [$this, 'contar_reservas_pendientes'],
+                ],
+                [
+                    'slug' => 'bares-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta locales activos
+     *
+     * @return int
+     */
+    public function contar_locales_activos() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_bares = $wpdb->prefix . 'flavor_bares';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_bares)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_bares WHERE estado = 'activo'"
+        );
+    }
+
+    /**
+     * Cuenta reservas pendientes
+     *
+     * @return int
+     */
+    public function contar_reservas_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_reservas = $wpdb->prefix . 'flavor_bares_reservas';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_reservas WHERE estado = 'pendiente'"
+        );
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla_bares = $wpdb->prefix . 'flavor_bares';
+        $tabla_reservas = $wpdb->prefix . 'flavor_bares_reservas';
+        $estadisticas = [];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_bares)) {
+            return $estadisticas;
+        }
+
+        // Locales activos
+        $locales_activos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_bares WHERE estado = 'activo'"
+        );
+        $estadisticas[] = [
+            'icon' => 'dashicons-food',
+            'valor' => $locales_activos,
+            'label' => __('Locales activos', 'flavor-chat-ia'),
+            'color' => $locales_activos > 0 ? 'orange' : 'gray',
+            'enlace' => admin_url('admin.php?page=bares-locales'),
+        ];
+
+        // Reservas pendientes
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+            $reservas_pendientes = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_reservas WHERE estado = 'pendiente'"
+            );
+            $estadisticas[] = [
+                'icon' => 'dashicons-calendar-alt',
+                'valor' => $reservas_pendientes,
+                'label' => __('Reservas pendientes', 'flavor-chat-ia'),
+                'color' => $reservas_pendientes > 0 ? 'red' : 'gray',
+                'enlace' => admin_url('admin.php?page=bares-reservas'),
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard del módulo de bares
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Bares y Hostelería', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Local', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bares-locales&action=nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        // Resumen de estadísticas
+        $resultado_estadisticas = $this->action_estadisticas([]);
+        if ($resultado_estadisticas['success'] && !empty($resultado_estadisticas['estadisticas'])) {
+            $datos = $resultado_estadisticas['estadisticas'];
+            echo '<div class="flavor-stats-grid">';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['total_bares']) . '</span><span class="stat-label">' . __('Locales Activos', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['reservas_pendientes']) . '</span><span class="stat-label">' . __('Reservas Pendientes', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['reservas_este_mes']) . '</span><span class="stat-label">' . __('Reservas Este Mes', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['valoracion_media_global']) . '</span><span class="stat-label">' . __('Valoración Media', 'flavor-chat-ia') . '</span></div>';
+            echo '</div>';
+
+            // Top bares
+            if (!empty($datos['top_bares'])) {
+                echo '<h3>' . __('Top Locales Mejor Valorados', 'flavor-chat-ia') . '</h3>';
+                echo '<table class="wp-list-table widefat fixed striped">';
+                echo '<thead><tr><th>' . __('Nombre', 'flavor-chat-ia') . '</th><th>' . __('Tipo', 'flavor-chat-ia') . '</th><th>' . __('Valoración', 'flavor-chat-ia') . '</th><th>' . __('Reseñas', 'flavor-chat-ia') . '</th></tr></thead>';
+                echo '<tbody>';
+                foreach ($datos['top_bares'] as $bar) {
+                    echo '<tr>';
+                    echo '<td><strong>' . esc_html($bar['nombre']) . '</strong></td>';
+                    echo '<td>' . esc_html(ucfirst($bar['tipo'])) . '</td>';
+                    echo '<td>' . esc_html(number_format($bar['valoracion_media'], 1)) . ' / 5</td>';
+                    echo '<td>' . esc_html($bar['valoraciones_count']) . '</td>';
+                    echo '</tr>';
+                }
+                echo '</tbody></table>';
+            }
+        }
+
+        echo '<p>' . __('Panel de control del módulo de bares y hostelería con métricas y accesos rápidos.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de gestión de locales
+     */
+    public function render_admin_locales() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Gestión de Locales', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Local', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bares-locales&action=nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        // Listado de bares
+        global $wpdb;
+        $tabla_bares = $wpdb->prefix . 'flavor_bares';
+        $bares = $wpdb->get_results(
+            "SELECT * FROM $tabla_bares ORDER BY nombre ASC LIMIT 50",
+            ARRAY_A
+        );
+
+        if (!empty($bares)) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Nombre', 'flavor-chat-ia') . '</th><th>' . __('Tipo', 'flavor-chat-ia') . '</th><th>' . __('Dirección', 'flavor-chat-ia') . '</th><th>' . __('Valoración', 'flavor-chat-ia') . '</th><th>' . __('Estado', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($bares as $bar) {
+                $clase_estado = $bar['estado'] === 'activo' ? 'status-active' : 'status-inactive';
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($bar['nombre']) . '</strong></td>';
+                echo '<td>' . esc_html($this->obtener_etiqueta_tipo($bar['tipo'])) . '</td>';
+                echo '<td>' . esc_html($bar['direccion'] ?: '-') . '</td>';
+                echo '<td>' . esc_html(number_format(floatval($bar['valoracion_media']), 1)) . ' (' . esc_html($bar['valoraciones_count']) . ')</td>';
+                echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($bar['estado'])) . '</span></td>';
+                echo '<td><a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a> <a href="#" class="button button-small">' . __('Ver Carta', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay locales registrados.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de gestión de reservas
+     */
+    public function render_admin_reservas() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Gestión de Reservas', 'flavor-chat-ia'));
+
+        // Tabs de estado
+        $tab_actual = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendiente';
+        $this->render_page_tabs([
+            ['slug' => 'pendiente', 'label' => __('Pendientes', 'flavor-chat-ia'), 'badge' => $this->contar_reservas_pendientes()],
+            ['slug' => 'confirmada', 'label' => __('Confirmadas', 'flavor-chat-ia')],
+            ['slug' => 'todas', 'label' => __('Todas', 'flavor-chat-ia')],
+        ], $tab_actual);
+
+        // Listado de reservas
+        global $wpdb;
+        $tabla_reservas = $wpdb->prefix . 'flavor_bares_reservas';
+        $tabla_bares = $wpdb->prefix . 'flavor_bares';
+
+        $condicion_estado = '';
+        if ($tab_actual !== 'todas') {
+            $condicion_estado = $wpdb->prepare(" WHERE r.estado = %s", $tab_actual);
+        }
+
+        $reservas = $wpdb->get_results(
+            "SELECT r.*, b.nombre as bar_nombre
+             FROM $tabla_reservas r
+             LEFT JOIN $tabla_bares b ON r.bar_id = b.id
+             $condicion_estado
+             ORDER BY r.fecha DESC, r.hora DESC
+             LIMIT 50",
+            ARRAY_A
+        );
+
+        if (!empty($reservas)) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Local', 'flavor-chat-ia') . '</th><th>' . __('Nombre', 'flavor-chat-ia') . '</th><th>' . __('Fecha', 'flavor-chat-ia') . '</th><th>' . __('Hora', 'flavor-chat-ia') . '</th><th>' . __('Comensales', 'flavor-chat-ia') . '</th><th>' . __('Estado', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($reservas as $reserva) {
+                $clase_estado = 'status-' . $reserva['estado'];
+                echo '<tr>';
+                echo '<td>' . esc_html($reserva['bar_nombre'] ?? __('Local eliminado', 'flavor-chat-ia')) . '</td>';
+                echo '<td><strong>' . esc_html($reserva['nombre_reserva']) . '</strong><br><small>' . esc_html($reserva['telefono']) . '</small></td>';
+                echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($reserva['fecha']))) . '</td>';
+                echo '<td>' . esc_html(substr($reserva['hora'], 0, 5)) . '</td>';
+                echo '<td>' . esc_html($reserva['comensales']) . '</td>';
+                echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html($this->obtener_etiqueta_estado_reserva($reserva['estado'])) . '</span></td>';
+                echo '<td>';
+                if ($reserva['estado'] === 'pendiente') {
+                    echo '<a href="#" class="button button-small button-primary">' . __('Confirmar', 'flavor-chat-ia') . '</a> ';
+                }
+                echo '<a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a>';
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay reservas en esta categoría.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la configuración del módulo de bares
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Bares y Hostelería', 'flavor-chat-ia'));
+
+        $configuracion_actual = $this->get_default_settings();
+        echo '<form method="post" action="">';
+        echo '<table class="form-table">';
+
+        echo '<tr><th scope="row"><label for="permitir_reservas">' . __('Permitir reservas', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="permitir_reservas" id="permitir_reservas" ' . checked($configuracion_actual['permitir_reservas'], true, false) . ' />';
+        echo '<p class="description">' . __('Habilita el sistema de reservas online.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="permitir_valoraciones">' . __('Permitir valoraciones', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="permitir_valoraciones" id="permitir_valoraciones" ' . checked($configuracion_actual['permitir_valoraciones'], true, false) . ' />';
+        echo '<p class="description">' . __('Permite a los usuarios valorar los locales.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="requiere_login_reserva">' . __('Login para reservar', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="requiere_login_reserva" id="requiere_login_reserva" ' . checked($configuracion_actual['requiere_login_reserva'], true, false) . ' />';
+        echo '<p class="description">' . __('Requiere iniciar sesión para hacer reservas.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="limite_resultados">' . __('Límite de resultados', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="limite_resultados" id="limite_resultados" value="' . esc_attr($configuracion_actual['limite_resultados']) . '" min="1" max="100" class="small-text" />';
+        echo '<p class="description">' . __('Número máximo de locales a mostrar por página.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '</table>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '</form>';
+        echo '</div>';
     }
 
     /**

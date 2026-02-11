@@ -14,13 +14,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'talleres';
-        $this->name = __('Talleres Prácticos', 'flavor-chat-ia');
-        $this->description = __('Talleres prácticos y workshops organizados por y para la comunidad.', 'flavor-chat-ia');
+        $this->name = 'Talleres Prácticos'; // Translation loaded on init
+        $this->description = 'Talleres prácticos y workshops organizados por y para la comunidad.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -42,7 +44,15 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Talleres no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -80,6 +90,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
@@ -111,6 +122,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
             wp_schedule_event(time(), 'twicedaily', 'talleres_confirmar_automatico');
         }
         add_action('talleres_confirmar_automatico', [$this, 'confirmar_talleres_automatico']);
+
+        // Registrar en Panel Unificado de Gestion
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -135,25 +149,25 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/talleres', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_talleres'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/talleres/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_detalle_taller'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/talleres/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'api_categorias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/talleres/calendario', [
             'methods' => 'GET',
             'callback' => [$this, 'api_calendario'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Requieren autenticacion
@@ -545,7 +559,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_detalle_taller($params) {
         if (empty($params['taller_id'])) {
-            return ['success' => false, 'error' => 'ID de taller requerido'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -559,7 +573,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$taller) {
-            return ['success' => false, 'error' => 'Taller no encontrado'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         // Obtener sesiones
@@ -673,11 +687,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_inscribirse($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         if (empty($params['taller_id'])) {
-            return ['success' => false, 'error' => 'ID de taller requerido'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -694,12 +708,12 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$taller) {
-            return ['success' => false, 'error' => 'Taller no disponible'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         // Verificar fecha limite de inscripcion
         if ($taller->fecha_limite_inscripcion && strtotime($taller->fecha_limite_inscripcion) < time()) {
-            return ['success' => false, 'error' => 'El plazo de inscripción ha finalizado'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         // Verificar que no este ya inscrito
@@ -710,7 +724,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($ya_inscrito) {
-            return ['success' => false, 'error' => 'Ya estás inscrito en este taller'];
+            return ['success' => false, 'error' => __('No hay plazas disponibles', 'flavor-chat-ia')];
         }
 
         // Verificar plazas
@@ -723,7 +737,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
                 $lista_espera = true;
                 $posicion_espera = $taller->lista_espera_count + 1;
             } else {
-                return ['success' => false, 'error' => 'No hay plazas disponibles'];
+                return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
             }
         }
 
@@ -764,7 +778,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$resultado) {
-            return ['success' => false, 'error' => 'Error al inscribirse'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         // Actualizar contadores
@@ -805,11 +819,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_cancelar_inscripcion($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         if (empty($params['inscripcion_id'])) {
-            return ['success' => false, 'error' => 'ID de inscripción requerido'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -830,7 +844,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => 'Inscripción no encontrada o no cancelable'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         // Verificar anticipacion de cancelacion
@@ -883,7 +897,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => 'Inscripción cancelada correctamente',
+            'mensaje' => __('flavor_talleres', 'flavor-chat-ia'),
         ];
     }
 
@@ -892,7 +906,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_mis_talleres_inscritos($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -949,11 +963,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_valorar_taller($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('puntuacion', 'flavor-chat-ia')];
         }
 
         if (empty($params['taller_id']) || !isset($params['puntuacion'])) {
-            return ['success' => false, 'error' => 'Datos incompletos'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -973,7 +987,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => 'Debes completar el taller para valorarlo'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         // Verificar si ya valoro
@@ -983,7 +997,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($ya_valoro) {
-            return ['success' => false, 'error' => 'Ya has valorado este taller'];
+            return ['success' => false, 'error' => __('fecha_valoracion', 'flavor-chat-ia')];
         }
 
         // Guardar valoracion
@@ -1017,7 +1031,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => '¡Gracias por tu valoración!',
+            'mensaje' => __('Datos incompletos', 'flavor-chat-ia'),
         ];
     }
 
@@ -1026,11 +1040,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_marcar_asistencia($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('sesion_id', 'flavor-chat-ia')];
         }
 
         if (empty($params['sesion_id']) || empty($params['participante_id'])) {
-            return ['success' => false, 'error' => 'Datos incompletos'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1053,7 +1067,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$sesion || ($sesion->organizador_id != $usuario_id && !current_user_can('manage_options'))) {
-            return ['success' => false, 'error' => 'No tienes permiso para marcar asistencia'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         // Obtener inscripcion
@@ -1065,7 +1079,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => 'Participante no inscrito'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         // Insertar o actualizar asistencia
@@ -1169,11 +1183,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_proponer_taller($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         if (empty($params['titulo']) || empty($params['descripcion'])) {
-            return ['success' => false, 'error' => 'Título y descripción son requeridos'];
+            return ['success' => false, 'error' => __('slug', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1208,7 +1222,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($tabla_talleres, $datos);
 
         if (!$resultado) {
-            return ['success' => false, 'error' => 'Error al crear la propuesta'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         $taller_id = $wpdb->insert_id;
@@ -1218,7 +1232,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => 'Propuesta enviada correctamente. Será revisada por los coordinadores.',
+            'mensaje' => __('taller_id', 'flavor-chat-ia'),
             'taller_id' => $taller_id,
         ];
     }
@@ -1228,11 +1242,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_descargar_certificado($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         if (empty($params['taller_id'])) {
-            return ['success' => false, 'error' => 'ID de taller requerido'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1252,11 +1266,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => 'Debes completar el taller para obtener el certificado'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         if (!$inscripcion->permite_certificado) {
-            return ['success' => false, 'error' => 'Este taller no emite certificados'];
+            return ['success' => false, 'error' => __('ID de taller requerido', 'flavor-chat-ia')];
         }
 
         if ($inscripcion->porcentaje_asistencia < $inscripcion->porcentaje_asistencia_certificado) {
@@ -1306,11 +1320,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      */
     private function action_estadisticas_taller($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('taller_id', 'flavor-chat-ia')];
         }
 
         if (empty($params['taller_id'])) {
-            return ['success' => false, 'error' => 'ID de taller requerido'];
+            return ['success' => false, 'error' => __('SELECT * FROM $tabla_talleres WHERE id = %d AND organizador_id = %d', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1329,7 +1343,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$taller && !current_user_can('manage_options')) {
-            return ['success' => false, 'error' => 'No tienes permiso para ver estas estadísticas'];
+            return ['success' => false, 'error' => __('cancelada', 'flavor-chat-ia')];
         }
 
         if (!$taller) {
@@ -1465,7 +1479,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
     public function api_materiales($request) {
         if (!is_user_logged_in()) {
-            return rest_ensure_response(['success' => false, 'error' => 'Debes iniciar sesión']);
+            return rest_ensure_response(['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1519,7 +1533,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
     public function api_organizador_mis_talleres($request) {
         if (!is_user_logged_in()) {
-            return rest_ensure_response(['success' => false, 'error' => 'Debes iniciar sesión']);
+            return rest_ensure_response(['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1602,7 +1616,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         $material_id = isset($_POST['material_id']) ? intval($_POST['material_id']) : 0;
 
         if (!$material_id) {
-            wp_send_json(['success' => false, 'error' => 'Material no especificado']);
+            wp_send_json(['success' => false, 'error' => __('Material no especificado', 'flavor-chat-ia')]);
         }
 
         // Incrementar contador de descargas
@@ -1647,7 +1661,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('talleres_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json(['success' => false, 'error' => 'Debes iniciar sesión']);
+            wp_send_json(['success' => false, 'error' => __('Material no especificado', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1664,7 +1678,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$es_organizador && !current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => 'No tienes permiso']);
+            wp_send_json(['success' => false, 'error' => __('Material no especificado', 'flavor-chat-ia')]);
         }
 
         // Manejar subida de archivo
@@ -1700,7 +1714,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json([
             'success' => true,
-            'mensaje' => 'Material subido correctamente',
+            'mensaje' => __('flavor_talleres', 'flavor-chat-ia'),
             'material_id' => $wpdb->insert_id,
         ]);
     }
@@ -1709,7 +1723,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => 'Sin permisos']);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1719,7 +1733,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
 
         if (empty($titulo)) {
-            wp_send_json(['success' => false, 'error' => 'El título es requerido']);
+            wp_send_json(['success' => false, 'error' => __('max_participantes', 'flavor-chat-ia')]);
         }
 
         $datos = [
@@ -1765,7 +1779,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => 'Sin permisos']);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1777,14 +1791,14 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         $estados_validos = ['borrador', 'pendiente', 'publicado', 'confirmado', 'en_curso', 'finalizado', 'cancelado'];
 
         if (!in_array($estado, $estados_validos)) {
-            wp_send_json(['success' => false, 'error' => 'Estado inválido']);
+            wp_send_json(['success' => false, 'error' => __('Material no especificado', 'flavor-chat-ia')]);
         }
 
         $wpdb->update($tabla_talleres, ['estado' => $estado], ['id' => $taller_id]);
 
         wp_send_json([
             'success' => true,
-            'mensaje' => 'Estado actualizado',
+            'mensaje' => __('taller_id', 'flavor-chat-ia'),
         ]);
     }
 
@@ -1792,7 +1806,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('talleres_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => 'Sin permisos']);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1940,6 +1954,10 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
     // =========================================================================
 
     private function enqueue_frontend_assets() {
+        if (!$this->can_activate()) {
+            return;
+        }
+
         wp_enqueue_style('talleres-frontend', $this->get_module_url() . 'assets/css/talleres.css', [], '1.0.0');
         wp_enqueue_script('talleres-frontend', $this->get_module_url() . 'assets/js/talleres.js', ['jquery'], '1.0.0', true);
         wp_localize_script('talleres-frontend', 'talleresData', [
@@ -2527,4 +2545,577 @@ KNOWLEDGE;
             ],
         ];
     }
+
+    // =========================================================================
+    // PANEL UNIFICADO DE GESTION - METODOS ADMINISTRATIVOS
+    // =========================================================================
+
+    /**
+     * Configuracion para el Panel Unificado de Gestion
+     *
+     * @return array Configuracion del modulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'talleres',
+            'label' => __('Talleres', 'flavor-chat-ia'),
+            'icon' => 'dashicons-welcome-learn-more',
+            'capability' => 'manage_options',
+            'categoria' => 'actividades',
+            'paginas' => [
+                [
+                    'slug' => 'talleres-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'talleres-activos',
+                    'titulo' => __('Talleres Activos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_talleres_activos'],
+                    'badge' => [$this, 'contar_talleres_activos'],
+                ],
+                [
+                    'slug' => 'talleres-inscripciones',
+                    'titulo' => __('Inscripciones', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_inscripciones'],
+                    'badge' => [$this, 'contar_inscripciones_pendientes'],
+                ],
+                [
+                    'slug' => 'talleres-calendario',
+                    'titulo' => __('Calendario', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_calendario'],
+                ],
+                [
+                    'slug' => 'talleres-configuracion',
+                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta los talleres activos
+     *
+     * @return int
+     */
+    public function contar_talleres_activos() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_talleres WHERE estado = 'activo'"
+        );
+    }
+
+    /**
+     * Cuenta las inscripciones pendientes de confirmar
+     *
+     * @return int
+     */
+    public function contar_inscripciones_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado = 'pendiente'"
+        );
+    }
+
+    /**
+     * Estadisticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
+        $estadisticas = [];
+
+        // Talleres activos
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+            $talleres_activos = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_talleres WHERE estado = 'activo'"
+            );
+            $estadisticas[] = [
+                'icon' => 'dashicons-welcome-learn-more',
+                'valor' => $talleres_activos,
+                'label' => __('Talleres activos', 'flavor-chat-ia'),
+                'color' => $talleres_activos > 0 ? 'blue' : 'gray',
+                'enlace' => admin_url('admin.php?page=talleres-activos'),
+            ];
+        }
+
+        // Inscripciones pendientes
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+            $inscripciones_pendientes = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado = 'pendiente'"
+            );
+            if ($inscripciones_pendientes > 0) {
+                $estadisticas[] = [
+                    'icon' => 'dashicons-groups',
+                    'valor' => $inscripciones_pendientes,
+                    'label' => __('Inscripciones pendientes', 'flavor-chat-ia'),
+                    'color' => 'orange',
+                    'enlace' => admin_url('admin.php?page=talleres-inscripciones&estado=pendiente'),
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de talleres
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Talleres', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Taller', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=talleres-activos&accion=nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        echo '<div class="flavor-dashboard-cards">';
+
+        // Estadisticas rapidas
+        $talleres_activos = $this->contar_talleres_activos();
+        $inscripciones_pendientes = $this->contar_inscripciones_pendientes();
+
+        echo '<div class="flavor-card">';
+        echo '<span class="dashicons dashicons-welcome-learn-more"></span>';
+        echo '<h3>' . esc_html($talleres_activos) . '</h3>';
+        echo '<p>' . __('Talleres Activos', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+
+        echo '<div class="flavor-card">';
+        echo '<span class="dashicons dashicons-groups"></span>';
+        echo '<h3>' . esc_html($inscripciones_pendientes) . '</h3>';
+        echo '<p>' . __('Inscripciones Pendientes', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+
+        echo '</div>';
+
+        echo '<p>' . __('Panel de control para gestionar todos los talleres de la comunidad.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el listado de talleres activos
+     */
+    public function render_admin_talleres_activos() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Talleres Activos', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Taller', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=talleres-activos&accion=nuevo'), 'class' => 'button-primary'],
+        ]);
+        $this->handle_admin_actions();
+        echo '<p>' . __('Listado de todos los talleres activos y programados.', 'flavor-chat-ia') . '</p>';
+
+        global $wpdb;
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+        $tabla_sesiones = $wpdb->prefix . 'flavor_talleres_sesiones';
+
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $categoria = isset($_GET['categoria']) ? sanitize_text_field($_GET['categoria']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="talleres-activos">';
+        echo '<select name="estado">';
+        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        foreach (['borrador','pendiente','publicado','confirmado','en_curso','finalizado','cancelado'] as $estado_key) {
+            echo '<option value="' . esc_attr($estado_key) . '" ' . selected($estado, $estado_key, false) . '>' . esc_html($estado_key) . '</option>';
+        }
+        echo '</select> ';
+        echo '<input type="text" name="categoria" placeholder="' . esc_attr__('Categoría', 'flavor-chat-ia') . '" value="' . esc_attr($categoria) . '"> ';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por título', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        $where = [];
+        $params = [];
+        if ($estado) {
+            $where[] = 't.estado = %s';
+            $params[] = $estado;
+        }
+        if ($categoria) {
+            $where[] = 't.categoria = %s';
+            $params[] = $categoria;
+        }
+        if ($busqueda) {
+            $where[] = 't.titulo LIKE %s';
+            $params[] = '%' . $wpdb->esc_like($busqueda) . '%';
+        }
+
+        $sql = "SELECT t.*, (
+                    SELECT MIN(fecha_hora) FROM $tabla_sesiones s WHERE s.taller_id = t.id
+                ) as proxima_sesion
+                FROM $tabla_talleres t";
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY t.fecha_creacion DESC LIMIT 200';
+
+        $talleres = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($talleres)) {
+            echo '<p>' . esc_html__('No hay talleres con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Inscritos', 'flavor-chat-ia') . '</th><th>' . esc_html__('Próxima sesión', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($talleres as $taller) {
+            echo '<tr>';
+            echo '<td>' . esc_html($taller->id) . '</td>';
+            echo '<td>' . esc_html($taller->titulo) . '</td>';
+            echo '<td>' . esc_html($taller->categoria ?: '-') . '</td>';
+            echo '<td>' . esc_html($taller->estado) . '</td>';
+            echo '<td>' . esc_html($taller->inscritos_actuales) . '/' . esc_html($taller->max_participantes) . '</td>';
+            echo '<td>' . ($taller->proxima_sesion ? esc_html(date_i18n('d/m/Y H:i', strtotime($taller->proxima_sesion))) : '-') . '</td>';
+            echo '<td>' . $this->render_taller_actions($taller->id, $taller->estado) . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la gestion de inscripciones
+     */
+    public function render_admin_inscripciones() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Inscripciones', 'flavor-chat-ia'));
+        echo '<p>' . __('Gestion de inscripciones a talleres.', 'flavor-chat-ia') . '</p>';
+        $this->handle_admin_actions();
+
+        global $wpdb;
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $taller_id = isset($_GET['taller_id']) ? absint($_GET['taller_id']) : 0;
+
+        $talleres = $wpdb->get_results("SELECT id, titulo FROM $tabla_talleres ORDER BY titulo ASC");
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="talleres-inscripciones">';
+        echo '<select name="estado">';
+        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        foreach (['pendiente','confirmada','cancelada','completada','no_presentado'] as $estado_key) {
+            echo '<option value="' . esc_attr($estado_key) . '" ' . selected($estado, $estado_key, false) . '>' . esc_html($estado_key) . '</option>';
+        }
+        echo '</select> ';
+        echo '<select name="taller_id">';
+        echo '<option value="0">' . esc_html__('Todos los talleres', 'flavor-chat-ia') . '</option>';
+        foreach ($talleres as $t) {
+            echo '<option value="' . esc_attr($t->id) . '" ' . selected($taller_id, $t->id, false) . '>' . esc_html($t->titulo) . '</option>';
+        }
+        echo '</select> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        $where = [];
+        $params = [];
+        if ($estado) {
+            $where[] = 'i.estado = %s';
+            $params[] = $estado;
+        }
+        if ($taller_id) {
+            $where[] = 'i.taller_id = %d';
+            $params[] = $taller_id;
+        }
+
+        $sql = "SELECT i.*, t.titulo as taller_titulo
+                FROM $tabla_inscripciones i
+                LEFT JOIN $tabla_talleres t ON i.taller_id = t.id";
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY i.fecha_inscripcion DESC LIMIT 200';
+
+        $inscripciones = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($inscripciones)) {
+            echo '<p>' . esc_html__('No hay inscripciones con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th><th>' . esc_html__('Participante', 'flavor-chat-ia') . '</th><th>Email</th><th>' . esc_html__('Taller', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($inscripciones as $inscripcion) {
+            echo '<tr>';
+            echo '<td>' . esc_html($inscripcion->id) . '</td>';
+            echo '<td>' . esc_html($inscripcion->nombre_completo ?: '-') . '</td>';
+            echo '<td>' . esc_html($inscripcion->email ?: '-') . '</td>';
+            echo '<td>' . esc_html($inscripcion->taller_titulo ?: '-') . '</td>';
+            echo '<td>' . esc_html($inscripcion->estado) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($inscripcion->fecha_inscripcion))) . '</td>';
+            echo '<td>' . $this->render_inscripcion_actions($inscripcion->id, $inscripcion->estado) . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el calendario de talleres
+     */
+    public function render_admin_calendario() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Calendario de Talleres', 'flavor-chat-ia'));
+        echo '<p>' . __('Vista de calendario con todos los talleres programados.', 'flavor-chat-ia') . '</p>';
+        global $wpdb;
+        $tabla_sesiones = $wpdb->prefix . 'flavor_talleres_sesiones';
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+
+        $mes = isset($_GET['mes']) ? sanitize_text_field($_GET['mes']) : date('Y-m');
+        if (!preg_match('/^\d{4}-\d{2}$/', $mes)) {
+            $mes = date('Y-m');
+        }
+        $inicio_mes = $mes . '-01';
+        $fin_mes = date('Y-m-t', strtotime($inicio_mes));
+
+        $sesiones = $wpdb->get_results($wpdb->prepare(
+            "SELECT s.*, t.titulo as taller_titulo
+             FROM $tabla_sesiones s
+             LEFT JOIN $tabla_talleres t ON s.taller_id = t.id
+             WHERE DATE(s.fecha_hora) BETWEEN %s AND %s
+             ORDER BY s.fecha_hora ASC",
+            $inicio_mes,
+            $fin_mes
+        ));
+
+        $por_dia = [];
+        foreach ($sesiones as $sesion) {
+            $dia = date('Y-m-d', strtotime($sesion->fecha_hora));
+            if (!isset($por_dia[$dia])) {
+                $por_dia[$dia] = [];
+            }
+            $por_dia[$dia][] = $sesion;
+        }
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="talleres-calendario">';
+        echo '<input type="month" name="mes" value="' . esc_attr($mes) . '"> ';
+        echo '<button class="button">' . esc_html__('Ver', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        if (empty($sesiones)) {
+            echo '<p>' . esc_html__('No hay talleres programados en este mes.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th><th>' . esc_html__('Sesiones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($por_dia as $fecha => $items) {
+            echo '<tr>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($fecha))) . '</td>';
+            echo '<td>';
+            foreach ($items as $item) {
+                echo '<div style="margin-bottom:6px;">';
+                echo '<strong>' . esc_html($item->taller_titulo ?: __('Sesión', 'flavor-chat-ia')) . '</strong> ';
+                echo '<span style="color:#666;">' . esc_html(date_i18n('H:i', strtotime($item->fecha_hora))) . '</span>';
+                echo '</div>';
+            }
+            echo '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la configuracion del modulo
+     */
+    public function render_admin_configuracion() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuracion de Talleres', 'flavor-chat-ia'));
+        echo '<p>' . __('Configuracion del sistema de talleres.', 'flavor-chat-ia') . '</p>';
+
+        // Mostrar configuracion actual
+        $configuracion = $this->get_settings();
+        echo '<h3>' . __('Configuracion Actual', 'flavor-chat-ia') . '</h3>';
+        echo '<table class="form-table">';
+        echo '<tr><th>' . __('Requiere aprobacion de organizadores', 'flavor-chat-ia') . '</th><td>' . ($configuracion['requiere_aprobacion_organizadores'] ? __('Si', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')) . '</td></tr>';
+        echo '<tr><th>' . __('Permite talleres gratuitos', 'flavor-chat-ia') . '</th><td>' . ($configuracion['permite_talleres_gratuitos'] ? __('Si', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')) . '</td></tr>';
+        echo '<tr><th>' . __('Permite talleres de pago', 'flavor-chat-ia') . '</th><td>' . ($configuracion['permite_talleres_pago'] ? __('Si', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')) . '</td></tr>';
+        echo '<tr><th>' . __('Comision talleres de pago', 'flavor-chat-ia') . '</th><td>' . esc_html($configuracion['comision_talleres_pago']) . '%</td></tr>';
+        echo '<tr><th>' . __('Max participantes por taller', 'flavor-chat-ia') . '</th><td>' . esc_html($configuracion['max_participantes_por_taller']) . '</td></tr>';
+        echo '<tr><th>' . __('Min participantes para confirmar', 'flavor-chat-ia') . '</th><td>' . esc_html($configuracion['min_participantes_para_confirmar']) . '</td></tr>';
+        echo '<tr><th>' . __('Permite lista de espera', 'flavor-chat-ia') . '</th><td>' . ($configuracion['permite_lista_espera'] ? __('Si', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')) . '</td></tr>';
+        echo '<tr><th>' . __('Dias anticipacion cancelacion', 'flavor-chat-ia') . '</th><td>' . esc_html($configuracion['dias_anticipacion_cancelacion']) . '</td></tr>';
+        echo '</table>';
+
+        $this->handle_admin_save_configuracion();
+        echo '<h3>' . __('Actualizar configuración', 'flavor-chat-ia') . '</h3>';
+        echo '<form method="post">';
+        wp_nonce_field('talleres_config', 'talleres_config_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . __('Requiere aprobacion de organizadores', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_aprobacion_organizadores" value="1" ' . checked($configuracion['requiere_aprobacion_organizadores'], true, false) . '> ' . __('Si', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . __('Permite talleres gratuitos', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_talleres_gratuitos" value="1" ' . checked($configuracion['permite_talleres_gratuitos'], true, false) . '> ' . __('Si', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . __('Permite talleres de pago', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_talleres_pago" value="1" ' . checked($configuracion['permite_talleres_pago'], true, false) . '> ' . __('Si', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . __('Comision talleres de pago', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="comision_talleres_pago" value="' . esc_attr($configuracion['comision_talleres_pago']) . '"></td></tr>';
+        echo '<tr><th>' . __('Max participantes por taller', 'flavor-chat-ia') . '</th><td><input type="number" name="max_participantes_por_taller" value="' . esc_attr($configuracion['max_participantes_por_taller']) . '"></td></tr>';
+        echo '<tr><th>' . __('Min participantes para confirmar', 'flavor-chat-ia') . '</th><td><input type="number" name="min_participantes_para_confirmar" value="' . esc_attr($configuracion['min_participantes_para_confirmar']) . '"></td></tr>';
+        echo '<tr><th>' . __('Permite lista de espera', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_lista_espera" value="1" ' . checked($configuracion['permite_lista_espera'], true, false) . '> ' . __('Si', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . __('Dias anticipacion cancelacion', 'flavor-chat-ia') . '</th><td><input type="number" name="dias_anticipacion_cancelacion" value="' . esc_attr($configuracion['dias_anticipacion_cancelacion']) . '"></td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    private function render_taller_actions($taller_id, $estado_actual) {
+        $estados = ['borrador','pendiente','publicado','confirmado','en_curso','finalizado','cancelado'];
+        $links = [];
+        foreach ($estados as $estado) {
+            if ($estado === $estado_actual) {
+                continue;
+            }
+            $url = add_query_arg([
+                'page' => 'talleres-activos',
+                'taller_action' => 'estado',
+                'taller_id' => $taller_id,
+                'estado' => $estado,
+            ], admin_url('admin.php'));
+            $url = wp_nonce_url($url, 'talleres_admin_' . $taller_id);
+            $links[] = '<a href="' . esc_url($url) . '">' . esc_html($estado) . '</a>';
+            if (count($links) >= 3) {
+                break;
+            }
+        }
+        if (empty($links)) {
+            return '';
+        }
+        return '<div><strong>' . esc_html__('Estado:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $links) . '</div>';
+    }
+
+    private function render_inscripcion_actions($inscripcion_id, $estado_actual) {
+        $estados = ['pendiente','confirmada','cancelada','completada','no_presentado'];
+        $links = [];
+        foreach ($estados as $estado) {
+            if ($estado === $estado_actual) {
+                continue;
+            }
+            $url = add_query_arg([
+                'page' => 'talleres-inscripciones',
+                'inscripcion_action' => 'estado',
+                'inscripcion_id' => $inscripcion_id,
+                'estado' => $estado,
+            ], admin_url('admin.php'));
+            $url = wp_nonce_url($url, 'talleres_inscripcion_' . $inscripcion_id);
+            $links[] = '<a href="' . esc_url($url) . '">' . esc_html($estado) . '</a>';
+            if (count($links) >= 2) {
+                break;
+            }
+        }
+        if (empty($links)) {
+            return '';
+        }
+        return '<div><strong>' . esc_html__('Estado:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $links) . '</div>';
+    }
+
+    private function handle_admin_actions() {
+        if (!empty($_GET['taller_action']) && !empty($_GET['taller_id'])) {
+            $taller_id = absint($_GET['taller_id']);
+            $nonce = $_GET['_wpnonce'] ?? '';
+            if (!$taller_id || !wp_verify_nonce($nonce, 'talleres_admin_' . $taller_id)) {
+                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+                return;
+            }
+            $estado = sanitize_text_field($_GET['estado'] ?? '');
+            if ($estado) {
+                global $wpdb;
+                $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+                $wpdb->update($tabla_talleres, ['estado' => $estado], ['id' => $taller_id], ['%s'], ['%d']);
+                echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+            }
+        }
+
+        if (!empty($_GET['inscripcion_action']) && !empty($_GET['inscripcion_id'])) {
+            $inscripcion_id = absint($_GET['inscripcion_id']);
+            $nonce = $_GET['_wpnonce'] ?? '';
+            if (!$inscripcion_id || !wp_verify_nonce($nonce, 'talleres_inscripcion_' . $inscripcion_id)) {
+                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+                return;
+            }
+            $estado = sanitize_text_field($_GET['estado'] ?? '');
+            if ($estado) {
+                global $wpdb;
+                $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
+                $wpdb->update($tabla_inscripciones, ['estado' => $estado], ['id' => $inscripcion_id], ['%s'], ['%d']);
+                echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+            }
+        }
+    }
+
+    private function handle_admin_save_configuracion() {
+        if (empty($_POST['talleres_config_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['talleres_config_nonce'], 'talleres_config')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $this->update_setting('requiere_aprobacion_organizadores', !empty($_POST['requiere_aprobacion_organizadores']));
+        $this->update_setting('permite_talleres_gratuitos', !empty($_POST['permite_talleres_gratuitos']));
+        $this->update_setting('permite_talleres_pago', !empty($_POST['permite_talleres_pago']));
+        $this->update_setting('comision_talleres_pago', floatval($_POST['comision_talleres_pago'] ?? 0));
+        $this->update_setting('max_participantes_por_taller', absint($_POST['max_participantes_por_taller'] ?? 20));
+        $this->update_setting('min_participantes_para_confirmar', absint($_POST['min_participantes_para_confirmar'] ?? 5));
+        $this->update_setting('permite_lista_espera', !empty($_POST['permite_lista_espera']));
+        $this->update_setting('dias_anticipacion_cancelacion', absint($_POST['dias_anticipacion_cancelacion'] ?? 2));
+
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('talleres');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('talleres');
+        if (!$pagina && !get_option('flavor_talleres_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['talleres']);
+            update_option('flavor_talleres_pages_created', 1, false);
+        }
+    }
+
 }

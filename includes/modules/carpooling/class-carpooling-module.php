@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Nombre tabla viajes
      */
@@ -46,8 +48,8 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $this->id = 'carpooling';
-        $this->name = __('Carpooling', 'flavor-chat-ia');
-        $this->description = __('Sistema de viajes compartidos entre vecinos para reducir costes y emisiones.', 'flavor-chat-ia');
+        $this->name = 'Carpooling'; // Translation loaded on init
+        $this->description = 'Sistema de viajes compartidos entre vecinos para reducir costes y emisiones.'; // Translation loaded on init
 
         $this->tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
         $this->tabla_reservas = $wpdb->prefix . 'flavor_carpooling_reservas';
@@ -72,7 +74,122 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Carpooling no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_table_schema() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+
+        return [
+            $this->tabla_viajes => "CREATE TABLE {$this->tabla_viajes} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                conductor_id bigint(20) UNSIGNED NOT NULL,
+                vehiculo_id bigint(20) UNSIGNED DEFAULT NULL,
+                origen varchar(255) NOT NULL,
+                destino varchar(255) NOT NULL,
+                origen_lat decimal(10,8) DEFAULT NULL,
+                origen_lng decimal(11,8) DEFAULT NULL,
+                destino_lat decimal(10,8) DEFAULT NULL,
+                destino_lng decimal(11,8) DEFAULT NULL,
+                fecha_salida datetime NOT NULL,
+                plazas_disponibles int(11) NOT NULL,
+                plazas_ocupadas int(11) NOT NULL DEFAULT 0,
+                precio_por_plaza decimal(10,2) DEFAULT NULL,
+                descripcion text,
+                permite_fumar tinyint(1) NOT NULL DEFAULT 0,
+                permite_mascotas tinyint(1) NOT NULL DEFAULT 0,
+                permite_equipaje_grande tinyint(1) NOT NULL DEFAULT 0,
+                estado enum('activo','completo','cancelado','finalizado') NOT NULL DEFAULT 'activo',
+                es_recurrente tinyint(1) NOT NULL DEFAULT 0,
+                ruta_recurrente_id bigint(20) UNSIGNED DEFAULT NULL,
+                created_at datetime NOT NULL,
+                updated_at datetime DEFAULT NULL,
+                PRIMARY KEY (id),
+                KEY conductor_id (conductor_id),
+                KEY vehiculo_id (vehiculo_id),
+                KEY estado (estado),
+                KEY fecha_salida (fecha_salida),
+                KEY ruta_recurrente_id (ruta_recurrente_id)
+            ) $charset_collate;",
+
+            $this->tabla_reservas => "CREATE TABLE {$this->tabla_reservas} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                viaje_id bigint(20) UNSIGNED NOT NULL,
+                pasajero_id bigint(20) UNSIGNED NOT NULL,
+                numero_plazas int(11) NOT NULL DEFAULT 1,
+                estado enum('pendiente','confirmada','cancelada','completada') NOT NULL DEFAULT 'pendiente',
+                precio_total decimal(10,2) DEFAULT NULL,
+                punto_recogida varchar(255) DEFAULT NULL,
+                punto_bajada varchar(255) DEFAULT NULL,
+                notas text,
+                fecha_reserva datetime NOT NULL,
+                fecha_confirmacion datetime DEFAULT NULL,
+                PRIMARY KEY (id),
+                KEY viaje_id (viaje_id),
+                KEY pasajero_id (pasajero_id),
+                KEY estado (estado)
+            ) $charset_collate;",
+
+            $this->tabla_rutas_recurrentes => "CREATE TABLE {$this->tabla_rutas_recurrentes} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                conductor_id bigint(20) UNSIGNED NOT NULL,
+                nombre varchar(255) NOT NULL,
+                origen varchar(255) NOT NULL,
+                destino varchar(255) NOT NULL,
+                dias_semana varchar(50) NOT NULL,
+                hora_salida time NOT NULL,
+                plazas_disponibles int(11) NOT NULL,
+                precio_por_plaza decimal(10,2) DEFAULT NULL,
+                activa tinyint(1) NOT NULL DEFAULT 1,
+                created_at datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY conductor_id (conductor_id)
+            ) $charset_collate;",
+
+            $this->tabla_valoraciones => "CREATE TABLE {$this->tabla_valoraciones} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                viaje_id bigint(20) UNSIGNED NOT NULL,
+                valorador_id bigint(20) UNSIGNED NOT NULL,
+                valorado_id bigint(20) UNSIGNED NOT NULL,
+                tipo_valoracion enum('conductor','pasajero') NOT NULL,
+                puntuacion int(11) NOT NULL,
+                comentario text,
+                fecha_valoracion datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY viaje_id (viaje_id),
+                KEY valorador_id (valorador_id),
+                KEY valorado_id (valorado_id)
+            ) $charset_collate;",
+
+            $this->tabla_vehiculos => "CREATE TABLE {$this->tabla_vehiculos} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                propietario_id bigint(20) UNSIGNED NOT NULL,
+                marca varchar(100) NOT NULL,
+                modelo varchar(100) NOT NULL,
+                color varchar(50) DEFAULT NULL,
+                matricula varchar(20) NOT NULL,
+                ano int(11) DEFAULT NULL,
+                plazas_totales int(11) NOT NULL,
+                foto_url varchar(500) DEFAULT NULL,
+                activo tinyint(1) NOT NULL DEFAULT 1,
+                created_at datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY propietario_id (propietario_id),
+                UNIQUE KEY matricula (matricula)
+            ) $charset_collate;"
+        ];
     }
 
     /**
@@ -103,8 +220,12 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
 
         // AJAX handlers publicos
         add_action('wp_ajax_carpooling_buscar_viajes', [$this, 'ajax_buscar_viajes']);
@@ -202,164 +323,21 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
     /**
      * Crea las tablas necesarias
      */
+        /**
+     * Crea las tablas necesarias
+     */
     private function create_tables() {
-        global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
+        $esquemas = $this->get_table_schema();
 
-        $sql_viajes = "CREATE TABLE IF NOT EXISTS {$this->tabla_viajes} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            conductor_id bigint(20) unsigned NOT NULL,
-            vehiculo_id bigint(20) unsigned DEFAULT NULL,
-            origen varchar(255) NOT NULL,
-            origen_lat decimal(10,7) NOT NULL,
-            origen_lng decimal(10,7) NOT NULL,
-            origen_place_id varchar(255) DEFAULT NULL,
-            destino varchar(255) NOT NULL,
-            destino_lat decimal(10,7) NOT NULL,
-            destino_lng decimal(10,7) NOT NULL,
-            destino_place_id varchar(255) DEFAULT NULL,
-            paradas_intermedias text DEFAULT NULL COMMENT 'JSON array de paradas',
-            fecha_hora datetime NOT NULL,
-            hora_llegada_estimada datetime DEFAULT NULL,
-            distancia_km decimal(10,2) DEFAULT NULL,
-            duracion_estimada_minutos int(11) DEFAULT NULL,
-            plazas_disponibles int(11) NOT NULL,
-            plazas_totales int(11) NOT NULL,
-            precio_por_plaza decimal(10,2) NOT NULL,
-            precio_calculado_auto tinyint(1) DEFAULT 0,
-            permite_fumar tinyint(1) DEFAULT 0,
-            permite_mascotas tinyint(1) DEFAULT 0,
-            permite_equipaje_grande tinyint(1) DEFAULT 0,
-            solo_mujeres tinyint(1) DEFAULT 0,
-            preferencias text DEFAULT NULL COMMENT 'JSON preferencias adicionales',
-            notas text DEFAULT NULL,
-            es_recurrente tinyint(1) DEFAULT 0,
-            ruta_recurrente_id bigint(20) unsigned DEFAULT NULL,
-            estado enum('publicado','completo','en_curso','finalizado','cancelado') DEFAULT 'publicado',
-            motivo_cancelacion text DEFAULT NULL,
-            visualizaciones int(11) DEFAULT 0,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY conductor_id (conductor_id),
-            KEY vehiculo_id (vehiculo_id),
-            KEY fecha_hora (fecha_hora),
-            KEY estado (estado),
-            KEY origen_coords (origen_lat, origen_lng),
-            KEY destino_coords (destino_lat, destino_lng),
-            KEY ruta_recurrente_id (ruta_recurrente_id)
-        ) $charset_collate;";
-
-        $sql_reservas = "CREATE TABLE IF NOT EXISTS {$this->tabla_reservas} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            viaje_id bigint(20) unsigned NOT NULL,
-            pasajero_id bigint(20) unsigned NOT NULL,
-            plazas_reservadas int(11) DEFAULT 1,
-            punto_recogida varchar(255) DEFAULT NULL,
-            punto_recogida_lat decimal(10,7) DEFAULT NULL,
-            punto_recogida_lng decimal(10,7) DEFAULT NULL,
-            punto_bajada varchar(255) DEFAULT NULL,
-            punto_bajada_lat decimal(10,7) DEFAULT NULL,
-            punto_bajada_lng decimal(10,7) DEFAULT NULL,
-            coste_total decimal(10,2) NOT NULL,
-            mensaje_pasajero text DEFAULT NULL,
-            telefono_contacto varchar(20) DEFAULT NULL,
-            estado enum('solicitada','confirmada','rechazada','cancelada','completada','no_show') DEFAULT 'solicitada',
-            motivo_rechazo text DEFAULT NULL,
-            motivo_cancelacion text DEFAULT NULL,
-            cancelado_por enum('pasajero','conductor') DEFAULT NULL,
-            valoracion_realizada tinyint(1) DEFAULT 0,
-            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_confirmacion datetime DEFAULT NULL,
-            fecha_cancelacion datetime DEFAULT NULL,
-            PRIMARY KEY (id),
-            KEY viaje_id (viaje_id),
-            KEY pasajero_id (pasajero_id),
-            KEY estado (estado),
-            UNIQUE KEY viaje_pasajero (viaje_id, pasajero_id)
-        ) $charset_collate;";
-
-        $sql_rutas_recurrentes = "CREATE TABLE IF NOT EXISTS {$this->tabla_rutas_recurrentes} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            conductor_id bigint(20) unsigned NOT NULL,
-            vehiculo_id bigint(20) unsigned DEFAULT NULL,
-            nombre varchar(255) DEFAULT NULL,
-            origen varchar(255) NOT NULL,
-            origen_lat decimal(10,7) NOT NULL,
-            origen_lng decimal(10,7) NOT NULL,
-            destino varchar(255) NOT NULL,
-            destino_lat decimal(10,7) NOT NULL,
-            destino_lng decimal(10,7) NOT NULL,
-            hora_salida time NOT NULL,
-            dias_semana varchar(50) NOT NULL COMMENT 'JSON: [1,2,3,4,5] para L-V',
-            plazas int(11) NOT NULL,
-            precio_por_plaza decimal(10,2) NOT NULL,
-            preferencias text DEFAULT NULL COMMENT 'JSON',
-            activa tinyint(1) DEFAULT 1,
-            fecha_inicio date DEFAULT NULL,
-            fecha_fin date DEFAULT NULL,
-            ultima_generacion date DEFAULT NULL,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY conductor_id (conductor_id),
-            KEY activa (activa)
-        ) $charset_collate;";
-
-        $sql_valoraciones = "CREATE TABLE IF NOT EXISTS {$this->tabla_valoraciones} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            viaje_id bigint(20) unsigned NOT NULL,
-            reserva_id bigint(20) unsigned NOT NULL,
-            valorador_id bigint(20) unsigned NOT NULL,
-            valorado_id bigint(20) unsigned NOT NULL,
-            tipo enum('conductor','pasajero') NOT NULL,
-            puntuacion int(11) NOT NULL CHECK (puntuacion >= 1 AND puntuacion <= 5),
-            comentario text DEFAULT NULL,
-            puntualidad int(11) DEFAULT NULL,
-            amabilidad int(11) DEFAULT NULL,
-            limpieza int(11) DEFAULT NULL,
-            conduccion int(11) DEFAULT NULL,
-            comunicacion int(11) DEFAULT NULL,
-            visible tinyint(1) DEFAULT 1,
-            respuesta_valorado text DEFAULT NULL,
-            fecha_respuesta datetime DEFAULT NULL,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY valoracion_unica (reserva_id, valorador_id),
-            KEY viaje_id (viaje_id),
-            KEY valorado_id (valorado_id),
-            KEY tipo (tipo),
-            KEY puntuacion (puntuacion)
-        ) $charset_collate;";
-
-        $sql_vehiculos = "CREATE TABLE IF NOT EXISTS {$this->tabla_vehiculos} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            usuario_id bigint(20) unsigned NOT NULL,
-            marca varchar(100) NOT NULL,
-            modelo varchar(100) NOT NULL,
-            anio int(4) DEFAULT NULL,
-            color varchar(50) DEFAULT NULL,
-            matricula varchar(20) DEFAULT NULL,
-            tipo enum('coche','moto','furgoneta') DEFAULT 'coche',
-            plazas_disponibles int(11) DEFAULT 4,
-            tiene_aire_acondicionado tinyint(1) DEFAULT 1,
-            tiene_maletero_grande tinyint(1) DEFAULT 0,
-            foto_url varchar(500) DEFAULT NULL,
-            verificado tinyint(1) DEFAULT 0,
-            fecha_verificacion datetime DEFAULT NULL,
-            es_predeterminado tinyint(1) DEFAULT 0,
-            activo tinyint(1) DEFAULT 1,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY usuario_id (usuario_id),
-            KEY activo (activo)
-        ) $charset_collate;";
+        if (empty($esquemas)) {
+            return;
+        }
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql_viajes);
-        dbDelta($sql_reservas);
-        dbDelta($sql_rutas_recurrentes);
-        dbDelta($sql_valoraciones);
-        dbDelta($sql_vehiculos);
+
+        foreach ($esquemas as $tabla => $sql) {
+            dbDelta($sql);
+        }
     }
 
     /**
@@ -1432,7 +1410,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (is_wp_error($respuesta)) {
-            wp_send_json(['success' => false, 'error' => 'Error de conexion']);
+            wp_send_json(['success' => false, 'error' => __('Error de conexion', 'flavor-chat-ia')]);
         }
 
         $lugares_raw = json_decode(wp_remote_retrieve_body($respuesta), true);
@@ -1489,13 +1467,13 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         register_rest_route('carpooling/v1', '/viajes', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_viajes'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('carpooling/v1', '/viajes/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_viaje'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('carpooling/v1', '/viajes', [
@@ -1513,7 +1491,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         register_rest_route('carpooling/v1', '/usuario/(?P<id>\d+)/valoraciones', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_valoraciones_usuario'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -1539,7 +1517,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ];
 
         $resultado = $this->action_buscar_viajes($params);
-        return new WP_REST_Response($resultado, $resultado['success'] ? 200 : 400);
+        return new WP_REST_Response($this->sanitize_public_carpooling_response($resultado), $resultado['success'] ? 200 : 400);
     }
 
     /**
@@ -1550,13 +1528,15 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $viaje = $this->obtener_viaje($viaje_id);
 
         if (!$viaje) {
-            return new WP_REST_Response(['success' => false, 'error' => 'Viaje no encontrado'], 404);
+            return new WP_REST_Response(['success' => false, 'error' => __('Viaje no encontrado', 'flavor-chat-ia')], 404);
         }
 
-        return new WP_REST_Response([
+        $respuesta = [
             'success' => true,
             'viaje' => $this->formatear_viaje_para_respuesta($viaje, true),
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_carpooling_response($respuesta), 200);
     }
 
     /**
@@ -1585,7 +1565,52 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             'usuario_id' => absint($request['id']),
             'tipo' => $request->get_param('tipo'),
         ]);
-        return new WP_REST_Response($resultado, 200);
+        return new WP_REST_Response($this->sanitize_public_carpooling_response($resultado), 200);
+    }
+
+    private function sanitize_public_carpooling_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['viajes']) && is_array($respuesta['viajes'])) {
+            $respuesta['viajes'] = array_map([$this, 'sanitize_public_viaje'], $respuesta['viajes']);
+        }
+
+        if (!empty($respuesta['viaje']) && is_array($respuesta['viaje'])) {
+            $respuesta['viaje'] = $this->sanitize_public_viaje($respuesta['viaje']);
+        }
+
+        if (!empty($respuesta['valoraciones']) && is_array($respuesta['valoraciones'])) {
+            $respuesta['valoraciones'] = array_map(function($valoracion) {
+                if (!is_object($valoracion) && !is_array($valoracion)) {
+                    return $valoracion;
+                }
+
+                if (is_object($valoracion)) {
+                    unset($valoracion->valorador_id);
+                    return $valoracion;
+                }
+
+                unset($valoracion['valorador_id']);
+                return $valoracion;
+            }, $respuesta['valoraciones']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_viaje($viaje) {
+        if (!is_array($viaje)) {
+            return $viaje;
+        }
+
+        if (!empty($viaje['conductor']) && is_array($viaje['conductor'])) {
+            unset($viaje['conductor']['id']);
+            $viaje['conductor']['avatar'] = '';
+        }
+
+        return $viaje;
     }
 
     // ========================================
@@ -2412,4 +2437,197 @@ KNOWLEDGE;
             ],
         ];
     }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'carpooling',
+            'label' => __('Carpooling', 'flavor-chat-ia'),
+            'icon' => 'dashicons-car',
+            'capability' => 'manage_options',
+            'categoria' => 'sostenibilidad',
+            'paginas' => [
+                [
+                    'slug' => 'carpooling-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'carpooling-viajes',
+                    'titulo' => __('Viajes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_viajes'],
+                    'badge' => [$this, 'contar_viajes_activos'],
+                ],
+                [
+                    'slug' => 'carpooling-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard de administración
+     */
+    public function render_admin_dashboard() {
+        include dirname(__FILE__) . '/views/dashboard.php';
+    }
+
+    /**
+     * Renderiza la página de viajes
+     */
+    public function render_admin_viajes() {
+        include dirname(__FILE__) . '/views/viajes.php';
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_admin_config() {
+        $configuracion_actual = $this->get_settings();
+
+        echo '<div class="wrap flavor-modulo-page">';
+        echo '<h1>' . esc_html__('Configuración de Carpooling', 'flavor-chat-ia') . '</h1>';
+
+        echo '<form method="post" action="">';
+        wp_nonce_field('guardar_config_carpooling', 'carpooling_config_nonce');
+        echo '<table class="form-table">';
+
+        echo '<tr><th scope="row"><label for="max_pasajeros_por_viaje">' . esc_html__('Máximo pasajeros por viaje', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="max_pasajeros_por_viaje" id="max_pasajeros_por_viaje" value="' . esc_attr($configuracion_actual['max_pasajeros_por_viaje']) . '" min="1" max="8" class="small-text" />';
+        echo '<p class="description">' . esc_html__('Número máximo de pasajeros permitidos por viaje.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="precio_por_km">' . esc_html__('Precio por kilómetro', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="precio_por_km" id="precio_por_km" value="' . esc_attr($configuracion_actual['precio_por_km']) . '" min="0" step="0.01" class="small-text" /> EUR';
+        echo '<p class="description">' . esc_html__('Precio sugerido por kilómetro recorrido.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="radio_busqueda_km">' . esc_html__('Radio de búsqueda', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="radio_busqueda_km" id="radio_busqueda_km" value="' . esc_attr($configuracion_actual['radio_busqueda_km']) . '" min="1" class="small-text" /> km';
+        echo '<p class="description">' . esc_html__('Radio por defecto para buscar viajes cercanos.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="dias_anticipacion_maxima">' . esc_html__('Días de anticipación máxima', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="dias_anticipacion_maxima" id="dias_anticipacion_maxima" value="' . esc_attr($configuracion_actual['dias_anticipacion_maxima']) . '" min="1" max="90" class="small-text" />';
+        echo '<p class="description">' . esc_html__('Días máximos para publicar un viaje con antelación.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="tiempo_minimo_cancelacion_horas">' . esc_html__('Tiempo mínimo de cancelación', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="tiempo_minimo_cancelacion_horas" id="tiempo_minimo_cancelacion_horas" value="' . esc_attr($configuracion_actual['tiempo_minimo_cancelacion_horas']) . '" min="0" class="small-text" /> horas';
+        echo '<p class="description">' . esc_html__('Horas mínimas antes del viaje para permitir cancelaciones.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="requiere_verificacion_conductor">' . esc_html__('Verificación de conductores', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="requiere_verificacion_conductor" id="requiere_verificacion_conductor" ' . checked($configuracion_actual['requiere_verificacion_conductor'], true, false) . ' />';
+        echo '<p class="description">' . esc_html__('Requerir verificación de identidad para conductores.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="permite_valoraciones">' . esc_html__('Sistema de valoraciones', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="permite_valoraciones" id="permite_valoraciones" ' . checked($configuracion_actual['permite_valoraciones'], true, false) . ' />';
+        echo '<p class="description">' . esc_html__('Permitir valoraciones entre usuarios después de viajes.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="permite_mascotas">' . esc_html__('Permitir mascotas', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="permite_mascotas" id="permite_mascotas" ' . checked($configuracion_actual['permite_mascotas'], true, false) . ' />';
+        echo '<p class="description">' . esc_html__('Permitir opción de viajes con mascotas.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="notificaciones_email">' . esc_html__('Notificaciones por email', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="notificaciones_email" id="notificaciones_email" ' . checked($configuracion_actual['notificaciones_email'], true, false) . ' /></td></tr>';
+
+        echo '</table>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . esc_attr__('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '</form>';
+        echo '</div>';
+    }
+
+    /**
+     * Cuenta viajes activos para el badge
+     *
+     * @return int
+     */
+    public function contar_viajes_activos() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_viajes)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$this->tabla_viajes} WHERE estado = 'activo' AND fecha_salida >= NOW()"
+        );
+    }
+
+    /**
+     * Obtiene estadísticas para el dashboard del panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+
+        $estadisticas = [
+            'viajes_activos' => 0,
+            'reservas_pendientes' => 0,
+            'conductores_activos' => 0,
+            'viajes_completados_mes' => 0,
+        ];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_viajes)) {
+            return $estadisticas;
+        }
+
+        $estadisticas['viajes_activos'] = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$this->tabla_viajes} WHERE estado = 'activo' AND fecha_salida >= NOW()"
+        );
+
+        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_reservas)) {
+            $estadisticas['reservas_pendientes'] = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE estado = 'pendiente'"
+            );
+        }
+
+        $estadisticas['conductores_activos'] = (int) $wpdb->get_var(
+            "SELECT COUNT(DISTINCT conductor_id) FROM {$this->tabla_viajes} WHERE estado = 'activo'"
+        );
+
+        $estadisticas['viajes_completados_mes'] = (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$this->tabla_viajes} WHERE estado = 'completado' AND fecha_salida >= %s",
+                date('Y-m-01')
+            )
+        );
+
+        return $estadisticas;
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('carpooling');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('carpooling');
+        if (!$pagina && !get_option('flavor_carpooling_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['carpooling']);
+            update_option('flavor_carpooling_pages_created', 1, false);
+        }
+    }
+
 }

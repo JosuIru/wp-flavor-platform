@@ -15,13 +15,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'clientes';
-        $this->name = __('Gestion de Clientes', 'flavor-chat-ia');
-        $this->description = __('CRM basico para gestionar clientes, notas e interacciones', 'flavor-chat-ia');
+        $this->name = 'Gestion de Clientes'; // Translation loaded on init
+        $this->description = 'CRM basico para gestionar clientes, notas e interacciones'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -43,7 +45,15 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas del modulo de Clientes no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -64,6 +74,830 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestion
+        $this->registrar_en_panel_unificado();
+    }
+
+    // =====================================================================
+    // REST API ENDPOINTS
+    // =====================================================================
+
+    /**
+     * Registrar rutas REST API
+     */
+    public function register_rest_routes() {
+        // GET /flavor/v1/clientes - Listar clientes
+        register_rest_route('flavor/v1', '/clientes', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_listar_clientes'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+            'args' => [
+                'estado' => [
+                    'type' => 'string',
+                    'enum' => ['activo', 'inactivo', 'potencial', 'perdido'],
+                    'description' => 'Filtrar por estado del cliente',
+                ],
+                'tipo' => [
+                    'type' => 'string',
+                    'enum' => ['particular', 'empresa', 'autonomo', 'administracion'],
+                    'description' => 'Filtrar por tipo de cliente',
+                ],
+                'etiquetas' => [
+                    'type' => 'string',
+                    'description' => 'Filtrar por etiquetas',
+                ],
+                'limite' => [
+                    'type' => 'integer',
+                    'default' => 20,
+                    'description' => 'Numero maximo de resultados',
+                ],
+                'pagina' => [
+                    'type' => 'integer',
+                    'default' => 1,
+                    'description' => 'Numero de pagina',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/clientes/{id} - Obtener un cliente
+        register_rest_route('flavor/v1', '/clientes/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_obtener_cliente'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+            'args' => [
+                'id' => [
+                    'type' => 'integer',
+                    'required' => true,
+                    'description' => 'ID del cliente',
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/clientes - Crear cliente
+        register_rest_route('flavor/v1', '/clientes', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_crear_cliente'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+            'args' => [
+                'nombre' => [
+                    'type' => 'string',
+                    'required' => true,
+                    'description' => 'Nombre del cliente',
+                ],
+                'email' => [
+                    'type' => 'string',
+                    'format' => 'email',
+                    'description' => 'Email del cliente',
+                ],
+                'telefono' => [
+                    'type' => 'string',
+                    'description' => 'Telefono del cliente',
+                ],
+                'empresa' => [
+                    'type' => 'string',
+                    'description' => 'Empresa del cliente',
+                ],
+                'cargo' => [
+                    'type' => 'string',
+                    'description' => 'Cargo del cliente',
+                ],
+                'direccion' => [
+                    'type' => 'string',
+                    'description' => 'Direccion del cliente',
+                ],
+                'tipo' => [
+                    'type' => 'string',
+                    'enum' => ['particular', 'empresa', 'autonomo', 'administracion'],
+                    'default' => 'particular',
+                    'description' => 'Tipo de cliente',
+                ],
+                'estado' => [
+                    'type' => 'string',
+                    'enum' => ['activo', 'inactivo', 'potencial', 'perdido'],
+                    'default' => 'potencial',
+                    'description' => 'Estado del cliente',
+                ],
+                'etiquetas' => [
+                    'type' => 'string',
+                    'description' => 'Etiquetas separadas por comas',
+                ],
+                'valor_estimado' => [
+                    'type' => 'number',
+                    'default' => 0,
+                    'description' => 'Valor estimado del cliente',
+                ],
+                'origen' => [
+                    'type' => 'string',
+                    'enum' => ['web', 'referido', 'redes', 'directo', 'otro'],
+                    'default' => 'directo',
+                    'description' => 'Origen del cliente',
+                ],
+                'asignado_a' => [
+                    'type' => 'integer',
+                    'description' => 'ID del usuario asignado',
+                ],
+            ],
+        ]);
+
+        // PUT /flavor/v1/clientes/{id} - Actualizar cliente
+        register_rest_route('flavor/v1', '/clientes/(?P<id>\d+)', [
+            'methods' => 'PUT',
+            'callback' => [$this, 'api_actualizar_cliente'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+            'args' => [
+                'id' => [
+                    'type' => 'integer',
+                    'required' => true,
+                    'description' => 'ID del cliente',
+                ],
+                'nombre' => [
+                    'type' => 'string',
+                    'description' => 'Nombre del cliente',
+                ],
+                'email' => [
+                    'type' => 'string',
+                    'format' => 'email',
+                    'description' => 'Email del cliente',
+                ],
+                'telefono' => [
+                    'type' => 'string',
+                    'description' => 'Telefono del cliente',
+                ],
+                'empresa' => [
+                    'type' => 'string',
+                    'description' => 'Empresa del cliente',
+                ],
+                'cargo' => [
+                    'type' => 'string',
+                    'description' => 'Cargo del cliente',
+                ],
+                'direccion' => [
+                    'type' => 'string',
+                    'description' => 'Direccion del cliente',
+                ],
+                'tipo' => [
+                    'type' => 'string',
+                    'enum' => ['particular', 'empresa', 'autonomo', 'administracion'],
+                    'description' => 'Tipo de cliente',
+                ],
+                'estado' => [
+                    'type' => 'string',
+                    'enum' => ['activo', 'inactivo', 'potencial', 'perdido'],
+                    'description' => 'Estado del cliente',
+                ],
+                'etiquetas' => [
+                    'type' => 'string',
+                    'description' => 'Etiquetas separadas por comas',
+                ],
+                'valor_estimado' => [
+                    'type' => 'number',
+                    'description' => 'Valor estimado del cliente',
+                ],
+                'origen' => [
+                    'type' => 'string',
+                    'enum' => ['web', 'referido', 'redes', 'directo', 'otro'],
+                    'description' => 'Origen del cliente',
+                ],
+                'asignado_a' => [
+                    'type' => 'integer',
+                    'description' => 'ID del usuario asignado',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/clientes/buscar - Buscar clientes
+        register_rest_route('flavor/v1', '/clientes/buscar', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_buscar_clientes'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+            'args' => [
+                'busqueda' => [
+                    'type' => 'string',
+                    'required' => true,
+                    'description' => 'Termino de busqueda',
+                ],
+                'limite' => [
+                    'type' => 'integer',
+                    'default' => 10,
+                    'description' => 'Numero maximo de resultados',
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/clientes/{id}/notas - Agregar nota a cliente
+        register_rest_route('flavor/v1', '/clientes/(?P<id>\d+)/notas', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_agregar_nota'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+            'args' => [
+                'id' => [
+                    'type' => 'integer',
+                    'required' => true,
+                    'description' => 'ID del cliente',
+                ],
+                'contenido' => [
+                    'type' => 'string',
+                    'required' => true,
+                    'description' => 'Contenido de la nota',
+                ],
+                'tipo' => [
+                    'type' => 'string',
+                    'enum' => ['nota', 'llamada', 'email', 'reunion', 'tarea', 'seguimiento'],
+                    'default' => 'nota',
+                    'description' => 'Tipo de nota/interaccion',
+                ],
+                'estado' => [
+                    'type' => 'string',
+                    'enum' => ['pendiente', 'completada', 'cancelada'],
+                    'default' => 'completada',
+                    'description' => 'Estado de la nota',
+                ],
+                'fecha_seguimiento' => [
+                    'type' => 'string',
+                    'description' => 'Fecha de seguimiento (YYYY-MM-DD HH:MM:SS)',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/clientes/estadisticas - Estadisticas del CRM
+        register_rest_route('flavor/v1', '/clientes/estadisticas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_estadisticas'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+        ]);
+    }
+
+    /**
+     * API: Listar clientes
+     *
+     * @param WP_REST_Request $request Peticion REST
+     * @return WP_REST_Response
+     */
+    public function api_listar_clientes($request) {
+        $parametros = [
+            'estado' => $request->get_param('estado'),
+            'tipo' => $request->get_param('tipo'),
+            'etiquetas' => $request->get_param('etiquetas'),
+            'limite' => $request->get_param('limite'),
+            'pagina' => $request->get_param('pagina'),
+        ];
+
+        $resultado = $this->action_listar_clientes($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => $resultado['error'] ?? __('Error al listar clientes', 'flavor-chat-ia'),
+            ], 400);
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener un cliente
+     *
+     * @param WP_REST_Request $request Peticion REST
+     * @return WP_REST_Response
+     */
+    public function api_obtener_cliente($request) {
+        $cliente_id = $request->get_param('id');
+
+        $resultado = $this->action_ver_cliente(['cliente_id' => $cliente_id]);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => $resultado['error'] ?? __('Cliente no encontrado', 'flavor-chat-ia'),
+            ], 404);
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Crear cliente
+     *
+     * @param WP_REST_Request $request Peticion REST
+     * @return WP_REST_Response
+     */
+    public function api_crear_cliente($request) {
+        $parametros = [
+            'nombre' => $request->get_param('nombre'),
+            'email' => $request->get_param('email'),
+            'telefono' => $request->get_param('telefono'),
+            'empresa' => $request->get_param('empresa'),
+            'cargo' => $request->get_param('cargo'),
+            'direccion' => $request->get_param('direccion'),
+            'tipo' => $request->get_param('tipo'),
+            'estado' => $request->get_param('estado'),
+            'etiquetas' => $request->get_param('etiquetas'),
+            'valor_estimado' => $request->get_param('valor_estimado'),
+            'origen' => $request->get_param('origen'),
+            'asignado_a' => $request->get_param('asignado_a'),
+        ];
+
+        $resultado = $this->action_crear_cliente($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => $resultado['error'] ?? __('Error al crear cliente', 'flavor-chat-ia'),
+            ], 400);
+        }
+
+        return new WP_REST_Response($resultado, 201);
+    }
+
+    /**
+     * API: Actualizar cliente
+     *
+     * @param WP_REST_Request $request Peticion REST
+     * @return WP_REST_Response
+     */
+    public function api_actualizar_cliente($request) {
+        $parametros = [
+            'cliente_id' => $request->get_param('id'),
+            'nombre' => $request->get_param('nombre'),
+            'email' => $request->get_param('email'),
+            'telefono' => $request->get_param('telefono'),
+            'empresa' => $request->get_param('empresa'),
+            'cargo' => $request->get_param('cargo'),
+            'direccion' => $request->get_param('direccion'),
+            'tipo' => $request->get_param('tipo'),
+            'estado' => $request->get_param('estado'),
+            'etiquetas' => $request->get_param('etiquetas'),
+            'valor_estimado' => $request->get_param('valor_estimado'),
+            'origen' => $request->get_param('origen'),
+            'asignado_a' => $request->get_param('asignado_a'),
+        ];
+
+        // Filtrar parametros nulos para no sobrescribir con valores vacios
+        $parametros = array_filter($parametros, function($valor) {
+            return $valor !== null;
+        });
+
+        $resultado = $this->action_actualizar_cliente($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => $resultado['error'] ?? __('Error al actualizar cliente', 'flavor-chat-ia'),
+            ], 400);
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Buscar clientes
+     *
+     * @param WP_REST_Request $request Peticion REST
+     * @return WP_REST_Response
+     */
+    public function api_buscar_clientes($request) {
+        $parametros = [
+            'busqueda' => $request->get_param('busqueda'),
+            'limite' => $request->get_param('limite'),
+        ];
+
+        $resultado = $this->action_buscar_clientes($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => $resultado['error'] ?? __('Error en la busqueda', 'flavor-chat-ia'),
+            ], 400);
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Agregar nota a cliente
+     *
+     * @param WP_REST_Request $request Peticion REST
+     * @return WP_REST_Response
+     */
+    public function api_agregar_nota($request) {
+        $parametros = [
+            'cliente_id' => $request->get_param('id'),
+            'contenido' => $request->get_param('contenido'),
+            'tipo' => $request->get_param('tipo'),
+            'estado' => $request->get_param('estado'),
+            'fecha_seguimiento' => $request->get_param('fecha_seguimiento'),
+        ];
+
+        $resultado = $this->action_agregar_nota($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => $resultado['error'] ?? __('Error al agregar nota', 'flavor-chat-ia'),
+            ], 400);
+        }
+
+        return new WP_REST_Response($resultado, 201);
+    }
+
+    /**
+     * API: Estadisticas del CRM
+     *
+     * @param WP_REST_Request $request Peticion REST
+     * @return WP_REST_Response
+     */
+    public function api_estadisticas($request) {
+        $resultado = $this->action_estadisticas([]);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => $resultado['error'] ?? __('Error al obtener estadisticas', 'flavor-chat-ia'),
+            ], 400);
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * Configuracion para el Panel Unificado de Gestion
+     *
+     * @return array Configuracion del modulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'clientes',
+            'label' => __('Clientes', 'flavor-chat-ia'),
+            'icon' => 'dashicons-businessman',
+            'capability' => 'manage_options',
+            'categoria' => 'personas',
+            'paginas' => [
+                [
+                    'slug' => 'clientes-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'clientes-listado',
+                    'titulo' => __('Clientes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                    'badge' => [$this, 'contar_clientes_activos'],
+                ],
+                [
+                    'slug' => 'clientes-fichas',
+                    'titulo' => __('Fichas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_fichas'],
+                ],
+                [
+                    'slug' => 'clientes-config',
+                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta clientes activos para el badge
+     *
+     * @return int
+     */
+    public function contar_clientes_activos() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_clientes WHERE estado = 'activo'"
+        );
+    }
+
+    /**
+     * Estadisticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+        $estadisticas = [];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+            return $estadisticas;
+        }
+
+        // Total de clientes
+        $total_clientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_clientes");
+        $estadisticas[] = [
+            'icon' => 'dashicons-businessman',
+            'valor' => $total_clientes,
+            'label' => __('Total Clientes', 'flavor-chat-ia'),
+            'color' => $total_clientes > 0 ? 'blue' : 'gray',
+            'enlace' => admin_url('admin.php?page=clientes-listado'),
+        ];
+
+        // Clientes activos
+        $clientes_activos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_clientes WHERE estado = 'activo'"
+        );
+        $estadisticas[] = [
+            'icon' => 'dashicons-yes-alt',
+            'valor' => $clientes_activos,
+            'label' => __('Clientes Activos', 'flavor-chat-ia'),
+            'color' => $clientes_activos > 0 ? 'green' : 'gray',
+            'enlace' => admin_url('admin.php?page=clientes-listado&estado=activo'),
+        ];
+
+        // Clientes potenciales
+        $clientes_potenciales = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_clientes WHERE estado = 'potencial'"
+        );
+        $estadisticas[] = [
+            'icon' => 'dashicons-star-empty',
+            'valor' => $clientes_potenciales,
+            'label' => __('Potenciales', 'flavor-chat-ia'),
+            'color' => $clientes_potenciales > 0 ? 'orange' : 'gray',
+            'enlace' => admin_url('admin.php?page=clientes-listado&estado=potencial'),
+        ];
+
+        // Valor total del pipeline
+        $valor_pipeline = (float) $wpdb->get_var(
+            "SELECT IFNULL(SUM(valor_estimado), 0) FROM $tabla_clientes WHERE valor_estimado > 0"
+        );
+        if ($valor_pipeline > 0) {
+            $estadisticas[] = [
+                'icon' => 'dashicons-chart-line',
+                'valor' => $this->format_price($valor_pipeline),
+                'label' => __('Valor Pipeline', 'flavor-chat-ia'),
+                'color' => 'purple',
+                'enlace' => admin_url('admin.php?page=clientes-dashboard'),
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de clientes
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Clientes', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Cliente', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado&action=nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        // Resumen de estadisticas
+        $estadisticas = $this->action_estadisticas([]);
+        if ($estadisticas['success'] && !empty($estadisticas['estadisticas'])) {
+            $datos = $estadisticas['estadisticas'];
+            echo '<div class="flavor-stats-grid">';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['total_clientes']) . '</span><span class="stat-label">' . __('Total Clientes', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['nuevos_este_mes']) . '</span><span class="stat-label">' . __('Nuevos este mes', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($this->format_price($datos['pipeline']['valor_total'])) . '</span><span class="stat-label">' . __('Valor Pipeline', 'flavor-chat-ia') . '</span></div>';
+            echo '</div>';
+
+            // Desglose por estado
+            if (!empty($datos['por_estado'])) {
+                echo '<h3>' . __('Clientes por Estado', 'flavor-chat-ia') . '</h3>';
+                echo '<ul class="flavor-list-inline">';
+                foreach ($datos['por_estado'] as $estado_nombre => $cantidad_estado) {
+                    echo '<li><strong>' . esc_html(ucfirst($estado_nombre)) . ':</strong> ' . esc_html($cantidad_estado) . '</li>';
+                }
+                echo '</ul>';
+            }
+
+            // Desglose por tipo
+            if (!empty($datos['por_tipo'])) {
+                echo '<h3>' . __('Clientes por Tipo', 'flavor-chat-ia') . '</h3>';
+                echo '<ul class="flavor-list-inline">';
+                foreach ($datos['por_tipo'] as $tipo_nombre => $cantidad_tipo) {
+                    echo '<li><strong>' . esc_html(ucfirst($tipo_nombre)) . ':</strong> ' . esc_html($cantidad_tipo) . '</li>';
+                }
+                echo '</ul>';
+            }
+        }
+
+        echo '<p>' . __('Panel de control del CRM con metricas y accesos rapidos.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el listado de clientes
+     */
+    public function render_admin_listado() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Listado de Clientes', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Cliente', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado&action=nuevo'), 'class' => 'button-primary'],
+            ['label' => __('Exportar', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado&action=exportar'), 'class' => 'button'],
+        ]);
+
+        // Filtros
+        $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
+
+        // Listado de clientes
+        global $wpdb;
+        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+
+        $condiciones_where = ['1=1'];
+        $valores_preparar = [];
+
+        if (!empty($estado_filtro)) {
+            $condiciones_where[] = 'estado = %s';
+            $valores_preparar[] = $estado_filtro;
+        }
+
+        if (!empty($tipo_filtro)) {
+            $condiciones_where[] = 'tipo = %s';
+            $valores_preparar[] = $tipo_filtro;
+        }
+
+        $sql_where = implode(' AND ', $condiciones_where);
+        $sql_query = "SELECT * FROM $tabla_clientes WHERE $sql_where ORDER BY updated_at DESC LIMIT 50";
+
+        if (!empty($valores_preparar)) {
+            $clientes = $wpdb->get_results($wpdb->prepare($sql_query, ...$valores_preparar), ARRAY_A);
+        } else {
+            $clientes = $wpdb->get_results($sql_query, ARRAY_A);
+        }
+
+        if (!empty($clientes)) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr>';
+            echo '<th>' . __('Nombre', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Email', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Telefono', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Tipo', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Valor', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead>';
+            echo '<tbody>';
+            foreach ($clientes as $cliente) {
+                $clase_estado = 'status-' . esc_attr($cliente['estado']);
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($cliente['nombre']) . '</strong>';
+                if (!empty($cliente['empresa'])) {
+                    echo '<br><small>' . esc_html($cliente['empresa']) . '</small>';
+                }
+                echo '</td>';
+                echo '<td>' . esc_html($cliente['email']) . '</td>';
+                echo '<td>' . esc_html($cliente['telefono']) . '</td>';
+                echo '<td>' . esc_html(ucfirst($cliente['tipo'])) . '</td>';
+                echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($cliente['estado'])) . '</span></td>';
+                echo '<td>' . esc_html($this->format_price((float) $cliente['valor_estimado'])) . '</td>';
+                echo '<td>';
+                echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-fichas&cliente_id=' . $cliente['id'])) . '" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> ';
+                echo '<a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a>';
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No se encontraron clientes.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la pagina de fichas de clientes
+     */
+    public function render_admin_fichas() {
+        echo '<div class="wrap flavor-modulo-page">';
+
+        $cliente_id = isset($_GET['cliente_id']) ? absint($_GET['cliente_id']) : 0;
+
+        if ($cliente_id > 0) {
+            // Mostrar ficha individual
+            $resultado = $this->action_ver_cliente(['cliente_id' => $cliente_id]);
+
+            if ($resultado['success'] && !empty($resultado['cliente'])) {
+                $cliente = $resultado['cliente'];
+
+                $this->render_page_header(
+                    sprintf(__('Ficha: %s', 'flavor-chat-ia'), $cliente['nombre']),
+                    [
+                        ['label' => __('Editar', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+                        ['label' => __('Volver al listado', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado'), 'class' => 'button'],
+                    ]
+                );
+
+                echo '<div class="flavor-ficha-cliente">';
+
+                // Informacion principal
+                echo '<div class="flavor-ficha-section">';
+                echo '<h3>' . __('Informacion de Contacto', 'flavor-chat-ia') . '</h3>';
+                echo '<table class="form-table">';
+                echo '<tr><th>' . __('Email', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['email']) . '</td></tr>';
+                echo '<tr><th>' . __('Telefono', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['telefono']) . '</td></tr>';
+                echo '<tr><th>' . __('Empresa', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['empresa']) . '</td></tr>';
+                echo '<tr><th>' . __('Cargo', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['cargo']) . '</td></tr>';
+                echo '<tr><th>' . __('Direccion', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['direccion']) . '</td></tr>';
+                echo '</table>';
+                echo '</div>';
+
+                // Estado y clasificacion
+                echo '<div class="flavor-ficha-section">';
+                echo '<h3>' . __('Clasificacion', 'flavor-chat-ia') . '</h3>';
+                echo '<table class="form-table">';
+                echo '<tr><th>' . __('Tipo', 'flavor-chat-ia') . '</th><td>' . esc_html(ucfirst($cliente['tipo'])) . '</td></tr>';
+                echo '<tr><th>' . __('Estado', 'flavor-chat-ia') . '</th><td>' . esc_html(ucfirst($cliente['estado'])) . '</td></tr>';
+                echo '<tr><th>' . __('Origen', 'flavor-chat-ia') . '</th><td>' . esc_html(ucfirst($cliente['origen'])) . '</td></tr>';
+                echo '<tr><th>' . __('Valor Estimado', 'flavor-chat-ia') . '</th><td>' . esc_html($this->format_price($cliente['valor_estimado'])) . '</td></tr>';
+                echo '</table>';
+                echo '</div>';
+
+                // Notas recientes
+                if (!empty($cliente['notas'])) {
+                    echo '<div class="flavor-ficha-section">';
+                    echo '<h3>' . __('Notas e Interacciones', 'flavor-chat-ia') . '</h3>';
+                    echo '<ul class="flavor-notas-list">';
+                    foreach ($cliente['notas'] as $nota) {
+                        echo '<li>';
+                        echo '<strong>' . esc_html(ucfirst($nota['tipo'])) . '</strong> - ';
+                        echo '<span class="fecha">' . esc_html($nota['created_at']) . '</span>';
+                        echo '<p>' . esc_html($nota['contenido']) . '</p>';
+                        echo '<small>' . __('Por:', 'flavor-chat-ia') . ' ' . esc_html($nota['autor']) . '</small>';
+                        echo '</li>';
+                    }
+                    echo '</ul>';
+                    echo '</div>';
+                }
+
+                echo '</div>';
+            } else {
+                echo '<p>' . __('Cliente no encontrado.', 'flavor-chat-ia') . '</p>';
+            }
+        } else {
+            // Listado de fichas
+            $this->render_page_header(__('Fichas de Clientes', 'flavor-chat-ia'));
+            echo '<p>' . __('Selecciona un cliente del listado para ver su ficha completa.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=clientes-listado')) . '" class="button">' . __('Ir al Listado de Clientes', 'flavor-chat-ia') . '</a></p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la pagina de configuracion del modulo
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuracion de Clientes', 'flavor-chat-ia'));
+
+        $configuracion_actual = $this->get_default_settings();
+
+        echo '<form method="post" action="">';
+        echo '<table class="form-table">';
+
+        echo '<tr><th scope="row"><label for="limite_resultados_por_defecto">' . __('Limite de resultados por defecto', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="limite_resultados_por_defecto" id="limite_resultados_por_defecto" value="' . esc_attr($configuracion_actual['limite_resultados_por_defecto']) . '" min="5" max="100" class="small-text" />';
+        echo '<p class="description">' . __('Numero de clientes a mostrar por pagina.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label>' . __('Tipos de Cliente', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><code>' . esc_html(implode(', ', $configuracion_actual['tipos_cliente'])) . '</code>';
+        echo '<p class="description">' . __('Tipos disponibles para clasificar clientes.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label>' . __('Estados de Cliente', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><code>' . esc_html(implode(', ', $configuracion_actual['estados_cliente'])) . '</code>';
+        echo '<p class="description">' . __('Estados del pipeline de ventas.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label>' . __('Origenes de Cliente', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><code>' . esc_html(implode(', ', $configuracion_actual['origenes_cliente'])) . '</code>';
+        echo '<p class="description">' . __('Como llegaron los clientes.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label>' . __('Tipos de Nota', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><code>' . esc_html(implode(', ', $configuracion_actual['tipos_nota'])) . '</code>';
+        echo '<p class="description">' . __('Tipos de interacciones registrables.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '</table>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuracion', 'flavor-chat-ia') . '" /></p>';
+        echo '</form>';
+        echo '</div>';
     }
 
     /**

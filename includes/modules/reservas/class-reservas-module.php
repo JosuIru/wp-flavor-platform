@@ -14,13 +14,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'reservas';
-        $this->name = __('Reservas', 'flavor-chat-ia');
-        $this->description = __('Gestion generica de reservas: mesas, espacios, clases y mas. Permite crear, cancelar, modificar y consultar disponibilidad.', 'flavor-chat-ia');
+        $this->name = 'Reservas'; // Translation loaded on init
+        $this->description = 'Gestion generica de reservas: mesas, espacios, clases y mas. Permite crear, cancelar, modificar y consultar disponibilidad.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -42,7 +44,15 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Reservas no estan creadas. Activa el modulo para crearlas automaticamente.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -74,6 +84,771 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registrar rutas REST API para APKs
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // Listar reservas del usuario
+        register_rest_route($namespace, '/reservas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_listar_reservas'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'estado' => [
+                    'type' => 'string',
+                    'enum' => ['pendiente', 'confirmada', 'cancelada', 'completada'],
+                ],
+                'fecha' => [
+                    'type' => 'string',
+                    'format' => 'date',
+                ],
+                'limite' => [
+                    'type' => 'integer',
+                    'default' => 20,
+                ],
+            ],
+        ]);
+
+        // Obtener una reserva específica
+        register_rest_route($namespace, '/reservas/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_obtener_reserva'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'type' => 'integer',
+                ],
+            ],
+        ]);
+
+        // Crear nueva reserva
+        register_rest_route($namespace, '/reservas', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_crear_reserva'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'tipo_servicio' => [
+                    'type' => 'string',
+                    'default' => 'mesa_restaurante',
+                ],
+                'nombre_cliente' => [
+                    'required' => true,
+                    'type' => 'string',
+                ],
+                'email_cliente' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'format' => 'email',
+                ],
+                'telefono_cliente' => [
+                    'type' => 'string',
+                ],
+                'fecha_reserva' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'format' => 'date',
+                ],
+                'hora_inicio' => [
+                    'required' => true,
+                    'type' => 'string',
+                ],
+                'hora_fin' => [
+                    'type' => 'string',
+                ],
+                'num_personas' => [
+                    'type' => 'integer',
+                    'default' => 1,
+                ],
+                'notas' => [
+                    'type' => 'string',
+                ],
+            ],
+        ]);
+
+        // Modificar reserva
+        register_rest_route($namespace, '/reservas/(?P<id>\d+)', [
+            'methods' => 'PUT',
+            'callback' => [$this, 'api_modificar_reserva'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'type' => 'integer',
+                ],
+                'fecha_reserva' => [
+                    'type' => 'string',
+                    'format' => 'date',
+                ],
+                'hora_inicio' => [
+                    'type' => 'string',
+                ],
+                'hora_fin' => [
+                    'type' => 'string',
+                ],
+                'num_personas' => [
+                    'type' => 'integer',
+                ],
+            ],
+        ]);
+
+        // Cancelar reserva
+        register_rest_route($namespace, '/reservas/(?P<id>\d+)/cancelar', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_cancelar_reserva'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'type' => 'integer',
+                ],
+            ],
+        ]);
+
+        // Consultar disponibilidad
+        register_rest_route($namespace, '/reservas/disponibilidad', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_disponibilidad'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'fecha_reserva' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'format' => 'date',
+                ],
+                'hora_inicio' => [
+                    'type' => 'string',
+                ],
+                'hora_fin' => [
+                    'type' => 'string',
+                ],
+                'num_personas' => [
+                    'type' => 'integer',
+                    'default' => 1,
+                ],
+            ],
+        ]);
+
+        // Obtener configuración (tipos de servicio, horarios, etc.)
+        register_rest_route($namespace, '/reservas/config', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_obtener_config'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    // =========================================================================
+    // Métodos API REST
+    // =========================================================================
+
+    /**
+     * API: Listar reservas
+     */
+    public function api_listar_reservas($request) {
+        $resultado = $this->action_mis_reservas([
+            'email' => $request->get_param('email'),
+            'estado' => $request->get_param('estado'),
+            'limite' => $request->get_param('limite') ?: 20,
+        ]);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response(['success' => false, 'error' => $resultado['error']], 400);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Obtener una reserva específica
+     */
+    public function api_obtener_reserva($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+        $id = absint($request->get_param('id'));
+
+        $reserva = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla WHERE id = %d",
+            $id
+        ));
+
+        if (!$reserva) {
+            return new WP_REST_Response(['success' => false, 'error' => 'Reserva no encontrada'], 404);
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'reserva' => [
+                'id' => $reserva->id,
+                'tipo_servicio' => $reserva->tipo_servicio,
+                'nombre_cliente' => $reserva->nombre_cliente,
+                'email_cliente' => $reserva->email_cliente,
+                'telefono_cliente' => $reserva->telefono_cliente,
+                'fecha' => $reserva->fecha_reserva,
+                'hora_inicio' => $reserva->hora_inicio,
+                'hora_fin' => $reserva->hora_fin,
+                'num_personas' => $reserva->num_personas,
+                'estado' => $reserva->estado,
+                'notas' => $reserva->notas,
+                'created_at' => $reserva->created_at,
+            ],
+        ], 200);
+    }
+
+    /**
+     * API: Crear reserva
+     */
+    public function api_crear_reserva($request) {
+        $resultado = $this->action_crear_reserva([
+            'tipo_servicio' => $request->get_param('tipo_servicio'),
+            'nombre_cliente' => $request->get_param('nombre_cliente'),
+            'email_cliente' => $request->get_param('email_cliente'),
+            'telefono_cliente' => $request->get_param('telefono_cliente'),
+            'fecha_reserva' => $request->get_param('fecha_reserva'),
+            'hora_inicio' => $request->get_param('hora_inicio'),
+            'hora_fin' => $request->get_param('hora_fin'),
+            'num_personas' => $request->get_param('num_personas'),
+            'notas' => $request->get_param('notas'),
+        ]);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response(['success' => false, 'error' => $resultado['error']], 400);
+        }
+
+        return new WP_REST_Response($resultado, 201);
+    }
+
+    /**
+     * API: Modificar reserva
+     */
+    public function api_modificar_reserva($request) {
+        $resultado = $this->action_modificar_reserva([
+            'reserva_id' => $request->get_param('id'),
+            'fecha_reserva' => $request->get_param('fecha_reserva'),
+            'hora_inicio' => $request->get_param('hora_inicio'),
+            'hora_fin' => $request->get_param('hora_fin'),
+            'num_personas' => $request->get_param('num_personas'),
+        ]);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response(['success' => false, 'error' => $resultado['error']], 400);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Cancelar reserva
+     */
+    public function api_cancelar_reserva($request) {
+        $resultado = $this->action_cancelar_reserva([
+            'reserva_id' => $request->get_param('id'),
+        ]);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response(['success' => false, 'error' => $resultado['error']], 400);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Consultar disponibilidad
+     */
+    public function api_disponibilidad($request) {
+        $resultado = $this->action_disponibilidad([
+            'fecha_reserva' => $request->get_param('fecha_reserva'),
+            'hora_inicio' => $request->get_param('hora_inicio'),
+            'hora_fin' => $request->get_param('hora_fin'),
+            'num_personas' => $request->get_param('num_personas'),
+        ]);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response(['success' => false, 'error' => $resultado['error']], 400);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Obtener configuración del módulo
+     */
+    public function api_obtener_config($request) {
+        return new WP_REST_Response([
+            'success' => true,
+            'config' => [
+                'hora_apertura' => $this->get_setting('hora_apertura', '09:00'),
+                'hora_cierre' => $this->get_setting('hora_cierre', '22:00'),
+                'duracion_por_defecto' => $this->get_setting('duracion_por_defecto', 60),
+                'capacidad_maxima' => $this->get_setting('capacidad_maxima', 50),
+                'dias_antelacion' => $this->get_setting('dias_antelacion', 30),
+                'tipos_servicio' => $this->get_setting('tipos_servicio', []),
+                'estados_reserva' => $this->get_setting('estados_reserva', []),
+            ],
+        ], 200);
+    }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'reservas',
+            'label' => __('Reservas', 'flavor-chat-ia'),
+            'icon' => 'dashicons-calendar-alt',
+            'capability' => 'manage_options',
+            'categoria' => 'operaciones',
+            'paginas' => [
+                [
+                    'slug' => 'reservas-calendario',
+                    'titulo' => __('Calendario', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_calendario'],
+                    'badge' => [$this, 'contar_reservas_hoy'],
+                ],
+                [
+                    'slug' => 'reservas-listado',
+                    'titulo' => __('Todas las Reservas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                ],
+                [
+                    'slug' => 'reservas-nueva',
+                    'titulo' => __('Nueva Reserva', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_nueva'],
+                ],
+                [
+                    'slug' => 'reservas-recursos',
+                    'titulo' => __('Recursos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_recursos'],
+                ],
+                [
+                    'slug' => 'reservas-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta reservas para hoy
+     *
+     * @return int
+     */
+    public function contar_reservas_hoy() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return 0;
+        }
+        $hoy = date('Y-m-d');
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla WHERE DATE(fecha_reserva) = %s AND estado IN ('pendiente', 'confirmada')",
+            $hoy
+        ));
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+        $stats = [];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return $stats;
+        }
+
+        // Reservas para hoy
+        $hoy = date('Y-m-d');
+        $reservas_hoy = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla WHERE DATE(fecha_reserva) = %s AND estado IN ('pendiente', 'confirmada')",
+            $hoy
+        ));
+        $stats[] = [
+            'icon' => 'dashicons-calendar-alt',
+            'valor' => $reservas_hoy,
+            'label' => __('Reservas hoy', 'flavor-chat-ia'),
+            'color' => $reservas_hoy > 0 ? 'blue' : 'green',
+            'enlace' => admin_url('admin.php?page=reservas-calendario'),
+        ];
+
+        // Pendientes de confirmar
+        $pendientes = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla WHERE estado = 'pendiente'"
+        );
+        if ($pendientes > 0) {
+            $stats[] = [
+                'icon' => 'dashicons-clock',
+                'valor' => $pendientes,
+                'label' => __('Pendientes confirmar', 'flavor-chat-ia'),
+                'color' => 'orange',
+                'enlace' => admin_url('admin.php?page=reservas-listado&estado=pendiente'),
+            ];
+        }
+
+        return $stats;
+    }
+
+    /**
+     * Renderiza el calendario de reservas
+     */
+    public function render_admin_calendario() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Calendario de Reservas', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Reserva', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reservas-nueva'), 'class' => 'button-primary'],
+        ]);
+        $this->handle_admin_actions();
+        echo '<p>' . __('Vista rápida de reservas próximas (7 días).', 'flavor-chat-ia') . '</p>';
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+        $hoy = date('Y-m-d');
+        $fin = date('Y-m-d', strtotime('+7 days'));
+
+        $reservas = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM $tabla WHERE fecha_reserva BETWEEN %s AND %s ORDER BY fecha_reserva ASC, hora_inicio ASC LIMIT 200",
+                $hoy,
+                $fin
+            )
+        );
+
+        if (empty($reservas)) {
+            echo '<p>' . esc_html__('No hay reservas próximas.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $por_dia = [];
+        foreach ($reservas as $reserva) {
+            $por_dia[$reserva->fecha_reserva][] = $reserva;
+        }
+
+        foreach ($por_dia as $fecha => $items) {
+            echo '<h3>' . esc_html(date_i18n(get_option('date_format'), strtotime($fecha))) . '</h3>';
+            echo '<table class="widefat striped"><thead><tr>';
+            echo '<th>' . esc_html__('Hora', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Cliente', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Personas', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead><tbody>';
+            foreach ($items as $reserva) {
+                echo '<tr>';
+                echo '<td>' . esc_html(substr($reserva->hora_inicio, 0, 5)) . ' - ' . esc_html(substr($reserva->hora_fin, 0, 5)) . '</td>';
+                echo '<td>' . esc_html($reserva->nombre_cliente) . '</td>';
+                echo '<td>' . esc_html($reserva->num_personas) . '</td>';
+                echo '<td>' . esc_html(ucfirst($reserva->estado)) . '</td>';
+                echo '<td>' . $this->render_estado_actions($reserva->id, $reserva->estado) . '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el listado de reservas
+     */
+    public function render_admin_listado() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Listado de Reservas', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Reserva', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reservas-nueva'), 'class' => 'button-primary'],
+        ]);
+        $this->handle_admin_actions();
+        echo '<p>' . __('Listado filtrable de todas las reservas.', 'flavor-chat-ia') . '</p>';
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $fecha = isset($_GET['fecha']) ? sanitize_text_field($_GET['fecha']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="reservas-listado">';
+        echo '<input type="date" name="fecha" value="' . esc_attr($fecha) . '"> ';
+        echo '<select name="estado">';
+        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        foreach ($this->get_setting('estados_reserva', []) as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html($label) . '</option>';
+        }
+        echo '</select> ';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar cliente', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+        $where = [];
+        $params = [];
+        if ($estado) {
+            $where[] = 'estado = %s';
+            $params[] = $estado;
+        }
+        if ($fecha) {
+            $where[] = 'fecha_reserva = %s';
+            $params[] = $fecha;
+        }
+        if ($busqueda) {
+            $where[] = 'nombre_cliente LIKE %s';
+            $params[] = '%' . $wpdb->esc_like($busqueda) . '%';
+        }
+        $sql = "SELECT * FROM $tabla";
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY fecha_reserva DESC, hora_inicio DESC LIMIT 200';
+
+        $reservas = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($reservas)) {
+            echo '<p>' . esc_html__('No hay reservas con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th>';
+        echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Hora', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Cliente', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Personas', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($reservas as $reserva) {
+            echo '<tr>';
+            echo '<td>' . esc_html($reserva->id) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($reserva->fecha_reserva))) . '</td>';
+            echo '<td>' . esc_html(substr($reserva->hora_inicio, 0, 5)) . ' - ' . esc_html(substr($reserva->hora_fin, 0, 5)) . '</td>';
+            echo '<td>' . esc_html($reserva->nombre_cliente) . '</td>';
+            echo '<td>' . esc_html($reserva->num_personas) . '</td>';
+            echo '<td>' . esc_html(ucfirst($reserva->estado)) . '</td>';
+            echo '<td>' . $this->render_estado_actions($reserva->id, $reserva->estado) . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza formulario de nueva reserva
+     */
+    public function render_admin_nueva() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Nueva Reserva', 'flavor-chat-ia'));
+        $this->handle_admin_create_reserva();
+        echo '<p>' . __('Formulario para crear nueva reserva manual.', 'flavor-chat-ia') . '</p>';
+
+        $tipos = $this->get_setting('tipos_servicio', []);
+        $estados = $this->get_setting('estados_reserva', []);
+
+        echo '<form method="post">';
+        wp_nonce_field('crear_reserva', 'reservas_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Tipo de servicio', 'flavor-chat-ia') . '</th><td><select name="tipo_servicio">';
+        foreach ($tipos as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '">' . esc_html($label) . '</option>';
+        }
+        echo '</select></td></tr>';
+        echo '<tr><th>' . esc_html__('Nombre cliente', 'flavor-chat-ia') . '</th><td><input type="text" name="nombre_cliente" class="regular-text" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Email', 'flavor-chat-ia') . '</th><td><input type="email" name="email_cliente" class="regular-text" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Teléfono', 'flavor-chat-ia') . '</th><td><input type="text" name="telefono_cliente" class="regular-text"></td></tr>';
+        echo '<tr><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th><td><input type="date" name="fecha_reserva" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Hora inicio', 'flavor-chat-ia') . '</th><td><input type="time" name="hora_inicio" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Hora fin', 'flavor-chat-ia') . '</th><td><input type="time" name="hora_fin" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Personas', 'flavor-chat-ia') . '</th><td><input type="number" name="num_personas" min="1" value="1"></td></tr>';
+        echo '<tr><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><td><select name="estado">';
+        foreach ($estados as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '">' . esc_html($label) . '</option>';
+        }
+        echo '</select></td></tr>';
+        echo '<tr><th>' . esc_html__('Notas', 'flavor-chat-ia') . '</th><td><textarea name="notas" rows="4" class="large-text"></textarea></td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Guardar Reserva', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza gestión de recursos
+     */
+    public function render_admin_recursos() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Recursos Reservables', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Recurso', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+        ]);
+        echo '<p>' . __('Gestiona tipos de servicio desde la configuración del módulo.', 'flavor-chat-ia') . '</p>';
+        echo '<p><a class="button" href="' . esc_url(admin_url('admin.php?page=reservas-config')) . '">' . esc_html__('Ir a configuración', 'flavor-chat-ia') . '</a></p>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza configuración del módulo
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Reservas', 'flavor-chat-ia'));
+        $this->handle_admin_save_config();
+        echo '<p>' . __('Configuración del sistema de reservas.', 'flavor-chat-ia') . '</p>';
+
+        $tipos = $this->get_setting('tipos_servicio', []);
+        $tipos_lineas = [];
+        foreach ($tipos as $key => $label) {
+            $tipos_lineas[] = $key . '|' . $label;
+        }
+
+        echo '<form method="post">';
+        wp_nonce_field('reservas_config', 'reservas_config_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Hora apertura', 'flavor-chat-ia') . '</th><td><input type="time" name="hora_apertura" value="' . esc_attr($this->get_setting('hora_apertura')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Hora cierre', 'flavor-chat-ia') . '</th><td><input type="time" name="hora_cierre" value="' . esc_attr($this->get_setting('hora_cierre')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Duración por defecto (min)', 'flavor-chat-ia') . '</th><td><input type="number" name="duracion_por_defecto" value="' . esc_attr($this->get_setting('duracion_por_defecto')) . '" min="15"></td></tr>';
+        echo '<tr><th>' . esc_html__('Capacidad máxima', 'flavor-chat-ia') . '</th><td><input type="number" name="capacidad_maxima" value="' . esc_attr($this->get_setting('capacidad_maxima')) . '" min="1"></td></tr>';
+        echo '<tr><th>' . esc_html__('Días de antelación', 'flavor-chat-ia') . '</th><td><input type="number" name="dias_antelacion" value="' . esc_attr($this->get_setting('dias_antelacion')) . '" min="1"></td></tr>';
+        echo '<tr><th>' . esc_html__('Tipos de servicio', 'flavor-chat-ia') . '</th><td>';
+        echo '<textarea name="tipos_servicio" rows="5" class="large-text" placeholder="mesa_restaurante|Mesa de Restaurante">' . esc_textarea(implode("\n", $tipos_lineas)) . '</textarea>';
+        echo '<p class="description">' . esc_html__('Un tipo por línea en formato clave|Etiqueta.', 'flavor-chat-ia') . '</p>';
+        echo '</td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    private function handle_admin_actions() {
+        if (empty($_GET['reserva_action']) || empty($_GET['reserva_id'])) {
+            return;
+        }
+
+        $action = sanitize_text_field($_GET['reserva_action']);
+        $reserva_id = absint($_GET['reserva_id']);
+        $nonce = $_GET['_wpnonce'] ?? '';
+
+        if (!wp_verify_nonce($nonce, 'reservas_estado_' . $reserva_id)) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $estados = array_keys($this->get_setting('estados_reserva', []));
+        if (!in_array($action, $estados, true)) {
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+        $wpdb->update($tabla, ['estado' => $action], ['id' => $reserva_id]);
+        echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function render_estado_actions($reserva_id, $estado_actual) {
+        $acciones = [];
+        foreach ($this->get_setting('estados_reserva', []) as $key => $label) {
+            if ($key === $estado_actual) {
+                continue;
+            }
+            $url = wp_nonce_url(
+                add_query_arg([
+                    'reserva_action' => $key,
+                    'reserva_id' => $reserva_id,
+                ]),
+                'reservas_estado_' . $reserva_id
+            );
+            $acciones[] = '<a href="' . esc_url($url) . '">' . esc_html($label) . '</a>';
+        }
+
+        return implode(' | ', $acciones);
+    }
+
+    private function handle_admin_create_reserva() {
+        if (empty($_POST['reservas_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['reservas_nonce'], 'crear_reserva')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $data = [
+            'tipo_servicio' => sanitize_text_field($_POST['tipo_servicio'] ?? 'mesa_restaurante'),
+            'nombre_cliente' => sanitize_text_field($_POST['nombre_cliente'] ?? ''),
+            'email_cliente' => sanitize_email($_POST['email_cliente'] ?? ''),
+            'telefono_cliente' => sanitize_text_field($_POST['telefono_cliente'] ?? ''),
+            'fecha_reserva' => sanitize_text_field($_POST['fecha_reserva'] ?? ''),
+            'hora_inicio' => sanitize_text_field($_POST['hora_inicio'] ?? ''),
+            'hora_fin' => sanitize_text_field($_POST['hora_fin'] ?? ''),
+            'num_personas' => max(1, intval($_POST['num_personas'] ?? 1)),
+            'estado' => sanitize_text_field($_POST['estado'] ?? 'pendiente'),
+            'notas' => sanitize_textarea_field($_POST['notas'] ?? ''),
+        ];
+
+        if (empty($data['nombre_cliente']) || !is_email($data['email_cliente'])) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nombre y email son obligatorios.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+        $wpdb->insert($tabla, $data);
+        echo '<div class="notice notice-success"><p>' . esc_html__('Reserva creada correctamente.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function handle_admin_save_config() {
+        if (empty($_POST['reservas_config_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['reservas_config_nonce'], 'reservas_config')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $this->update_setting('hora_apertura', sanitize_text_field($_POST['hora_apertura'] ?? '09:00'));
+        $this->update_setting('hora_cierre', sanitize_text_field($_POST['hora_cierre'] ?? '22:00'));
+        $this->update_setting('duracion_por_defecto', absint($_POST['duracion_por_defecto'] ?? 60));
+        $this->update_setting('capacidad_maxima', absint($_POST['capacidad_maxima'] ?? 50));
+        $this->update_setting('dias_antelacion', absint($_POST['dias_antelacion'] ?? 30));
+
+        $tipos_raw = sanitize_textarea_field($_POST['tipos_servicio'] ?? '');
+        $tipos = [];
+        foreach (array_filter(array_map('trim', explode("\n", $tipos_raw))) as $linea) {
+            $parts = array_map('trim', explode('|', $linea, 2));
+            if (!empty($parts[0])) {
+                $tipos[$parts[0]] = $parts[1] ?? $parts[0];
+            }
+        }
+        if ($tipos) {
+            $this->update_setting('tipos_servicio', $tipos);
+        }
+
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
     }
 
     /**

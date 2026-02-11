@@ -14,13 +14,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'chat_grupos';
-        $this->name = __('Chat de Grupos', 'flavor-chat-ia');
-        $this->description = __('Grupos de conversación temáticos para la comunidad con canales y temas organizados.', 'flavor-chat-ia');
+        $this->name = 'Chat de Grupos'; // Translation loaded on init
+        $this->description = 'Grupos de conversación temáticos para la comunidad con canales y temas organizados.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -41,7 +43,15 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Chat de Grupos no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -98,6 +108,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         // Enqueue assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+
+        // Panel de administración unificado
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -466,7 +479,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_mis_grupos($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -610,17 +623,17 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_crear_grupo($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('publico', 'flavor-chat-ia')];
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_crear_grupos']) {
-            return ['success' => false, 'error' => 'La creación de grupos está deshabilitada.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $nombre = sanitize_text_field($params['nombre'] ?? '');
         if (strlen($nombre) < 3) {
-            return ['success' => false, 'error' => 'El nombre debe tener al menos 3 caracteres.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $tipo = in_array($params['tipo'] ?? '', ['publico', 'privado', 'secreto']) ? $params['tipo'] : 'publico';
@@ -652,7 +665,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$insertado) {
-            return ['success' => false, 'error' => 'Error al crear el grupo.'];
+            return ['success' => false, 'error' => __('grupo_creado', 'flavor-chat-ia')];
         }
 
         $grupo_id = $wpdb->insert_id;
@@ -676,7 +689,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'grupo_id' => $grupo_id,
             'slug' => $slug,
-            'mensaje' => 'Grupo creado correctamente.',
+            'mensaje' => __('grupo_id', 'flavor-chat-ia'),
         ];
     }
 
@@ -686,12 +699,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_unirse_grupo($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
         if (!$grupo_id) {
-            return ['success' => false, 'error' => 'ID de grupo inválido.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -705,7 +718,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$grupo) {
-            return ['success' => false, 'error' => 'Grupo no encontrado.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Verificar si ya es miembro
@@ -715,12 +728,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($es_miembro) {
-            return ['success' => false, 'error' => 'Ya eres miembro de este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Verificar límite de miembros
         if ($grupo->miembros_count >= $grupo->max_miembros) {
-            return ['success' => false, 'error' => 'El grupo ha alcanzado el límite de miembros.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Para grupos privados/secretos, verificar invitación
@@ -745,7 +758,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             }
 
             if (!$invitacion) {
-                return ['success' => false, 'error' => 'Necesitas una invitación para unirte a este grupo.'];
+                return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
             }
 
             // Marcar invitación como aceptada
@@ -771,7 +784,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'usuario_nombre' => wp_get_current_user()->display_name,
         ]);
 
-        return ['success' => true, 'mensaje' => 'Te has unido al grupo.'];
+        return ['success' => true, 'mensaje' => __('Te has unido al grupo.', 'flavor-chat-ia')];
     }
 
     /**
@@ -780,7 +793,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_salir_grupo($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
@@ -795,7 +808,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$miembro) {
-            return ['success' => false, 'error' => 'No eres miembro de este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Si es el único admin, no puede salir
@@ -807,7 +820,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             ));
 
             if (!$otros_admins) {
-                return ['success' => false, 'error' => 'Debes asignar otro administrador antes de salir.'];
+                return ['success' => false, 'error' => __('usuario_nombre', 'flavor-chat-ia')];
             }
         }
 
@@ -823,7 +836,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'usuario_nombre' => wp_get_current_user()->display_name,
         ]);
 
-        return ['success' => true, 'mensaje' => 'Has salido del grupo.'];
+        return ['success' => true, 'mensaje' => __('Te has unido al grupo.', 'flavor-chat-ia')];
     }
 
     /**
@@ -834,7 +847,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_ver_grupo($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -931,22 +944,22 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_enviar_mensaje($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_escribir($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'No puedes escribir en este grupo.'];
+            return ['success' => false, 'error' => __('flavor_chat_grupos_mensajes', 'flavor-chat-ia')];
         }
 
         $mensaje = trim($params['mensaje'] ?? '');
         if (empty($mensaje) && empty($params['adjuntos'])) {
-            return ['success' => false, 'error' => 'El mensaje no puede estar vacío.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         if (strlen($mensaje) > 5000) {
-            return ['success' => false, 'error' => 'Mensaje demasiado largo (máximo 5000 caracteres).'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1059,7 +1072,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_ver_grupo($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1074,7 +1087,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$grupo) {
-            return ['success' => false, 'error' => 'Grupo no encontrado.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Obtener mi membresía
@@ -1165,7 +1178,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_ver_grupo($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1202,13 +1215,13 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_invitar_miembro($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('usuario_id', 'flavor-chat-ia')];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_es_admin_o_mod($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'No tienes permisos para invitar.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1219,7 +1232,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $email = sanitize_email($params['email'] ?? '');
 
         if (!$invitado_id && !$email) {
-            return ['success' => false, 'error' => 'Debes especificar un usuario o email.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Verificar si ya es miembro
@@ -1229,7 +1242,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 $grupo_id, $invitado_id
             ));
             if ($ya_miembro) {
-                return ['success' => false, 'error' => 'El usuario ya es miembro del grupo.'];
+                return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
             }
         }
 
@@ -1256,7 +1269,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => true,
             'codigo' => $codigo,
-            'mensaje' => 'Invitación enviada.',
+            'mensaje' => __('grupo_id', 'flavor-chat-ia'),
         ];
     }
 
@@ -1266,18 +1279,18 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_expulsar_miembro($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
         $expulsado_id = intval($params['usuario_id'] ?? 0);
 
         if (!$this->usuario_es_admin_o_mod($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'No tienes permisos para expulsar.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         if ($expulsado_id === $usuario_id) {
-            return ['success' => false, 'error' => 'No puedes expulsarte a ti mismo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1289,7 +1302,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $su_rol = $this->obtener_rol_usuario($expulsado_id, $grupo_id);
 
         if ($su_rol === 'admin' && $mi_rol !== 'admin') {
-            return ['success' => false, 'error' => 'No puedes expulsar a un administrador.'];
+            return ['success' => false, 'error' => __('usuario_nombre', 'flavor-chat-ia')];
         }
 
         $wpdb->delete($tabla_miembros, ['grupo_id' => $grupo_id, 'usuario_id' => $expulsado_id]);
@@ -1307,7 +1320,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'por_nombre' => wp_get_current_user()->display_name,
         ]);
 
-        return ['success' => true, 'mensaje' => 'Miembro expulsado.'];
+        return ['success' => true, 'mensaje' => __('usuario_id', 'flavor-chat-ia')];
     }
 
     /**
@@ -1316,7 +1329,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_cambiar_rol($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
@@ -1324,11 +1337,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $nuevo_rol = $params['rol'] ?? '';
 
         if (!in_array($nuevo_rol, ['miembro', 'moderador', 'admin'])) {
-            return ['success' => false, 'error' => 'Rol inválido.'];
+            return ['success' => false, 'error' => __('usuario_id', 'flavor-chat-ia')];
         }
 
         if (!$this->usuario_es_admin($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'Solo los administradores pueden cambiar roles.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1340,7 +1353,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             ['grupo_id' => $grupo_id, 'usuario_id' => $miembro_id]
         );
 
-        return ['success' => true, 'mensaje' => 'Rol actualizado.'];
+        return ['success' => true, 'mensaje' => __('duracion_horas', 'flavor-chat-ia')];
     }
 
     /**
@@ -1349,7 +1362,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_silenciar_grupo($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('silenciado_hasta', 'flavor-chat-ia')];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
@@ -1381,12 +1394,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_ver_grupo($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $query = sanitize_text_field($params['query'] ?? '');
         if (strlen($query) < 3) {
-            return ['success' => false, 'error' => 'La búsqueda debe tener al menos 3 caracteres.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1425,13 +1438,13 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_crear_encuesta($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('SELECT permite_encuestas FROM $tabla_grupos WHERE id = %d', 'flavor-chat-ia')];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_escribir($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => 'No puedes crear encuestas en este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1443,18 +1456,18 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$grupo || !$grupo->permite_encuestas) {
-            return ['success' => false, 'error' => 'Las encuestas no están permitidas en este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $pregunta = sanitize_text_field($params['pregunta'] ?? '');
         $opciones = $params['opciones'] ?? [];
 
         if (strlen($pregunta) < 5) {
-            return ['success' => false, 'error' => 'La pregunta debe tener al menos 5 caracteres.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         if (!is_array($opciones) || count($opciones) < 2) {
-            return ['success' => false, 'error' => 'La encuesta debe tener al menos 2 opciones.'];
+            return ['success' => false, 'error' => __('encuesta', 'flavor-chat-ia')];
         }
 
         $opciones = array_map('sanitize_text_field', array_slice($opciones, 0, 10));
@@ -1493,7 +1506,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'encuesta_id' => $encuesta_id,
             'mensaje_id' => $mensaje_id,
-            'mensaje' => 'Encuesta creada.',
+            'mensaje' => __('encuesta_id', 'flavor-chat-ia'),
         ];
     }
 
@@ -1503,7 +1516,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_votar_encuesta($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $encuesta_id = intval($params['encuesta_id'] ?? 0);
@@ -1519,16 +1532,16 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$encuesta) {
-            return ['success' => false, 'error' => 'Encuesta no encontrada.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         if ($encuesta->cerrada) {
-            return ['success' => false, 'error' => 'La encuesta está cerrada.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $opciones = json_decode($encuesta->opciones, true);
         if ($opcion < 0 || $opcion >= count($opciones)) {
-            return ['success' => false, 'error' => 'Opción inválida.'];
+            return ['success' => false, 'error' => __('SELECT id FROM $tabla_votos WHERE encuesta_id = %d AND usuario_id = %d AND opcion_index = %d', 'flavor-chat-ia')];
         }
 
         // Si no es múltiple, eliminar voto anterior
@@ -1589,14 +1602,14 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_reaccionar($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $mensaje_id = intval($params['mensaje_id'] ?? 0);
         $emoji = sanitize_text_field($params['emoji'] ?? '');
 
         if (!$emoji) {
-            return ['success' => false, 'error' => 'Emoji inválido.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1610,12 +1623,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => 'Mensaje no encontrado.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Verificar acceso al grupo
         if (!$this->usuario_puede_ver_grupo($usuario_id, $mensaje->grupo_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a este grupo.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Toggle reacción
@@ -1657,7 +1670,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_fijar_mensaje($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         $mensaje_id = intval($params['mensaje_id'] ?? 0);
@@ -1672,11 +1685,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => 'Mensaje no encontrado.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         if (!$this->usuario_es_admin_o_mod($usuario_id, $mensaje->grupo_id)) {
-            return ['success' => false, 'error' => 'No tienes permisos para fijar mensajes.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
 
         // Toggle fijado
@@ -1718,19 +1731,19 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/chat-grupos/explorar', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_explorar_grupos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/chat-grupos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_info_grupo'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/chat-grupos/(?P<id>\d+)/mensajes', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_mensajes'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/chat-grupos/(?P<id>\d+)/mensajes', [
@@ -1742,7 +1755,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/chat-grupos/(?P<id>\d+)/miembros', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_miembros'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/chat-grupos/crear', [
@@ -1781,25 +1794,31 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     }
 
     public function rest_explorar_grupos($request) {
-        return rest_ensure_response($this->action_grupos_publicos([
+        $respuesta = $this->action_grupos_publicos([
             'categoria' => $request->get_param('categoria'),
             'busqueda' => $request->get_param('busqueda'),
             'pagina' => $request->get_param('pagina'),
-        ]));
+        ]);
+
+        return rest_ensure_response($this->sanitize_public_chat_response($respuesta));
     }
 
     public function rest_info_grupo($request) {
-        return rest_ensure_response($this->action_info_grupo([
+        $respuesta = $this->action_info_grupo([
             'grupo_id' => $request->get_param('id'),
-        ]));
+        ]);
+
+        return rest_ensure_response($this->sanitize_public_chat_response($respuesta));
     }
 
     public function rest_mensajes($request) {
-        return rest_ensure_response($this->action_mensajes([
+        $respuesta = $this->action_mensajes([
             'grupo_id' => $request->get_param('id'),
             'antes_de' => $request->get_param('antes_de'),
             'limite' => $request->get_param('limite'),
-        ]));
+        ]);
+
+        return rest_ensure_response($this->sanitize_public_chat_response($respuesta));
     }
 
     public function rest_enviar_mensaje($request) {
@@ -1812,9 +1831,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     }
 
     public function rest_miembros($request) {
-        return rest_ensure_response($this->action_miembros_grupo([
+        $respuesta = $this->action_miembros_grupo([
             'grupo_id' => $request->get_param('id'),
-        ]));
+        ]);
+
+        return rest_ensure_response($this->sanitize_public_chat_response($respuesta));
     }
 
     public function rest_crear_grupo($request) {
@@ -1865,6 +1886,74 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ]));
     }
 
+    private function sanitize_public_chat_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['mensajes']) && is_array($respuesta['mensajes'])) {
+            $respuesta['mensajes'] = array_map([$this, 'sanitize_public_message'], $respuesta['mensajes']);
+        }
+
+        if (!empty($respuesta['miembros']) && is_array($respuesta['miembros'])) {
+            $respuesta['miembros'] = array_map([$this, 'sanitize_public_member'], $respuesta['miembros']);
+        }
+
+        if (!empty($respuesta['grupo']) && is_array($respuesta['grupo'])) {
+            $respuesta['grupo'] = $this->sanitize_public_group($respuesta['grupo']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_message($mensaje) {
+        if (!is_array($mensaje)) {
+            return $mensaje;
+        }
+
+        unset($mensaje['usuario_id'], $mensaje['menciones']);
+        $mensaje['autor_avatar'] = '';
+        $mensaje['es_mio'] = false;
+
+        return $mensaje;
+    }
+
+    private function sanitize_public_member($miembro) {
+        if (!is_array($miembro)) {
+            return $miembro;
+        }
+
+        unset($miembro['id']);
+        $miembro['avatar'] = '';
+
+        return $miembro;
+    }
+
+    private function sanitize_public_group($grupo) {
+        if (!is_array($grupo)) {
+            return $grupo;
+        }
+
+        if (!empty($grupo['creador']) && is_array($grupo['creador'])) {
+            unset($grupo['creador']['id']);
+            $grupo['creador']['avatar'] = '';
+        }
+
+        if (!empty($grupo['admins']) && is_array($grupo['admins'])) {
+            $grupo['admins'] = array_map(function($admin) {
+                if (!is_array($admin)) {
+                    return $admin;
+                }
+
+                unset($admin['id']);
+                $admin['avatar'] = '';
+                return $admin;
+            }, $grupo['admins']);
+        }
+
+        return $grupo;
+    }
+
     // ==================== AJAX Handlers ====================
 
     public function ajax_enviar_mensaje() {
@@ -1897,7 +1986,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $mensaje_id = intval($_POST['mensaje_id'] ?? 0);
 
         if (!$usuario_id || !$grupo_id || !$mensaje_id) {
-            wp_send_json_error('Parámetros inválidos');
+            wp_send_json_error(__('Parámetros inválidos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1972,17 +2061,17 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_chat_grupos', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error('Debes iniciar sesión');
+            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
         }
 
         $grupo_id = intval($_POST['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_escribir(get_current_user_id(), $grupo_id)) {
-            wp_send_json_error('No puedes subir archivos a este grupo');
+            wp_send_json_error(__('No puedes subir archivos a este grupo', 'flavor-chat-ia'));
         }
 
         if (empty($_FILES['archivo'])) {
-            wp_send_json_error('No se recibió ningún archivo');
+            wp_send_json_error(__('No se recibió ningún archivo', 'flavor-chat-ia'));
         }
 
         require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -1993,7 +2082,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $max_size = $settings['max_archivo_mb'] * 1024 * 1024;
 
         if ($_FILES['archivo']['size'] > $max_size) {
-            wp_send_json_error("El archivo excede el tamaño máximo de {$settings['max_archivo_mb']} MB");
+            wp_send_json_error(sprintf(__('El archivo excede el tamaño máximo de %s MB', 'flavor-chat-ia'), $settings['max_archivo_mb']));
         }
 
         $attachment_id = media_handle_upload('archivo', 0);
@@ -2057,7 +2146,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($_POST['grupo_id'] ?? 0);
 
         if (!$this->usuario_es_admin($usuario_id, $grupo_id)) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -2113,12 +2202,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            wp_send_json_error('Mensaje no encontrado');
+            wp_send_json_error(__('Mensaje no encontrado', 'flavor-chat-ia'));
         }
 
         // Solo el autor o admin/mod puede eliminar
         if ($mensaje->usuario_id != $usuario_id && !$this->usuario_es_admin_o_mod($usuario_id, $mensaje->grupo_id)) {
-            wp_send_json_error('No tienes permisos');
+            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
         }
 
         $wpdb->update($tabla_mensajes, ['eliminado' => 1], ['id' => $mensaje_id]);
@@ -2134,7 +2223,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $nuevo_mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
 
         if (empty($nuevo_mensaje)) {
-            wp_send_json_error('El mensaje no puede estar vacío');
+            wp_send_json_error(__('El mensaje no puede estar vacío', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -2146,7 +2235,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje || $mensaje->usuario_id != $usuario_id) {
-            wp_send_json_error('No puedes editar este mensaje');
+            wp_send_json_error(__('No puedes editar este mensaje', 'flavor-chat-ia'));
         }
 
         $wpdb->update($tabla_mensajes, [
@@ -2325,10 +2414,10 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                     <input type="text" id="cg-buscar-grupos" placeholder="<?php esc_attr_e('Buscar grupos...', 'flavor-chat-ia'); ?>">
                     <select id="cg-filtro-categoria">
                         <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
-                        <option value="general"><?php _e('General', 'flavor-chat-ia'); ?></option>
-                        <option value="deportes"><?php _e('Deportes', 'flavor-chat-ia'); ?></option>
-                        <option value="cultura"><?php _e('Cultura', 'flavor-chat-ia'); ?></option>
-                        <option value="vecinal"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('general', 'flavor-chat-ia'); ?>"><?php _e('General', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('deportes', 'flavor-chat-ia'); ?>"><?php _e('Deportes', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('cultura', 'flavor-chat-ia'); ?>"><?php _e('Cultura', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('vecinal', 'flavor-chat-ia'); ?>"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
             </div>
@@ -2368,10 +2457,10 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                     <div class="cg-form-field">
                         <label for="cg-tipo"><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
                         <select id="cg-tipo" name="tipo">
-                            <option value="publico"><?php _e('Público', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('publico', 'flavor-chat-ia'); ?>"><?php _e('Público', 'flavor-chat-ia'); ?></option>
                             <?php if ($settings['permite_grupos_privados']): ?>
-                            <option value="privado"><?php _e('Privado', 'flavor-chat-ia'); ?></option>
-                            <option value="secreto"><?php _e('Secreto', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('privado', 'flavor-chat-ia'); ?>"><?php _e('Privado', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('secreto', 'flavor-chat-ia'); ?>"><?php _e('Secreto', 'flavor-chat-ia'); ?></option>
                             <?php endif; ?>
                         </select>
                     </div>
@@ -2379,16 +2468,16 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                         <label for="cg-categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
                         <select id="cg-categoria" name="categoria">
                             <option value=""><?php _e('Sin categoría', 'flavor-chat-ia'); ?></option>
-                            <option value="general"><?php _e('General', 'flavor-chat-ia'); ?></option>
-                            <option value="deportes"><?php _e('Deportes', 'flavor-chat-ia'); ?></option>
-                            <option value="cultura"><?php _e('Cultura', 'flavor-chat-ia'); ?></option>
-                            <option value="vecinal"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('general', 'flavor-chat-ia'); ?>"><?php _e('General', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('deportes', 'flavor-chat-ia'); ?>"><?php _e('Deportes', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('cultura', 'flavor-chat-ia'); ?>"><?php _e('Cultura', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('vecinal', 'flavor-chat-ia'); ?>"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                 </div>
                 <div class="cg-form-field">
                     <label for="cg-color"><?php _e('Color', 'flavor-chat-ia'); ?></label>
-                    <input type="color" id="cg-color" name="color" value="#2271b1">
+                    <input type="color" id="cg-color" name="color" value="<?php echo esc_attr__('#2271b1', 'flavor-chat-ia'); ?>">
                 </div>
                 <div class="cg-form-actions">
                     <button type="submit" class="cg-btn cg-btn-primary"><?php _e('Crear Grupo', 'flavor-chat-ia'); ?></button>
@@ -2621,5 +2710,141 @@ KNOWLEDGE;
             ['pregunta' => '¿Cuántos grupos puedo crear?', 'respuesta' => 'No hay límite.'],
             ['pregunta' => '¿Los mensajes se guardan?', 'respuesta' => 'Sí, el historial se mantiene.'],
         ];
+    }
+
+    /**
+     * Configuración para el Panel de Administración Unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'chat_grupos',
+            'label' => __('Chat de Grupos', 'flavor-chat-ia'),
+            'icon' => 'dashicons-format-chat',
+            'capability' => 'manage_options',
+            'categoria' => 'comunicacion',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-chat-grupos-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-chat-grupos-grupos',
+                    'titulo' => __('Grupos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_grupos'],
+                    'badge' => [$this, 'contar_grupos_pendientes'],
+                ],
+                [
+                    'slug' => 'flavor-chat-grupos-moderacion',
+                    'titulo' => __('Moderación', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_moderacion'],
+                    'badge' => [$this, 'contar_reportes_pendientes'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas' => [$this, 'get_estadisticas_admin'],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard de administración del módulo
+     */
+    public function render_admin_dashboard() {
+        $estadisticas = $this->get_estadisticas_admin();
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-grupos/admin/views/dashboard.php';
+    }
+
+    /**
+     * Renderiza la gestión de grupos
+     */
+    public function render_admin_grupos() {
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-grupos/admin/views/grupos.php';
+    }
+
+    /**
+     * Renderiza la página de moderación
+     */
+    public function render_admin_moderacion() {
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-grupos/admin/views/moderacion.php';
+    }
+
+    /**
+     * Renderiza el widget del dashboard unificado
+     */
+    public function render_dashboard_widget() {
+        $estadisticas = $this->get_estadisticas_admin();
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-grupos/admin/views/widget.php';
+    }
+
+    /**
+     * Obtiene estadísticas para el panel de administración
+     *
+     * @return array
+     */
+    public function get_estadisticas_admin() {
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+
+        $total_grupos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_grupos WHERE estado = 'activo'");
+        $total_mensajes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_mensajes");
+        $total_miembros = (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_miembros");
+        $mensajes_hoy = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_mensajes WHERE DATE(fecha_creacion) = %s",
+            current_time('Y-m-d')
+        ));
+
+        return [
+            'total_grupos' => $total_grupos,
+            'total_mensajes' => $total_mensajes,
+            'total_miembros' => $total_miembros,
+            'mensajes_hoy' => $mensajes_hoy,
+        ];
+    }
+
+    /**
+     * Cuenta grupos pendientes de aprobación
+     *
+     * @return int
+     */
+    public function contar_grupos_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_grupos WHERE estado = 'pendiente'");
+    }
+
+    /**
+     * Cuenta reportes de moderación pendientes
+     *
+     * @return int
+     */
+    public function contar_reportes_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_reportes = $wpdb->prefix . 'flavor_chat_grupos_reportes';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_reportes)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_reportes WHERE estado = 'pendiente'");
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

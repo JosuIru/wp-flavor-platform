@@ -14,13 +14,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'woocommerce';
-        $this->name = __('WooCommerce', 'flavor-chat-ia');
-        $this->description = __('Integración con WooCommerce: carrito, productos, pedidos y más.', 'flavor-chat-ia');
+        $this->name = 'WooCommerce'; // Translation loaded on init
+        $this->description = 'Integración con WooCommerce: carrito, productos, pedidos y más.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -43,11 +45,21 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
         // Hooks específicos de WooCommerce si es necesario
         add_action('woocommerce_cart_updated', [$this, 'on_cart_updated']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -124,7 +136,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => 'WooCommerce no disponible.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -199,7 +211,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => 'WooCommerce no disponible.',
+                'error' => __('ID de producto no válido.', 'flavor-chat-ia'),
             ];
         }
 
@@ -211,7 +223,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($product_id <= 0) {
             return [
                 'success' => false,
-                'error' => 'ID de producto no válido.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -220,7 +232,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product) {
             return [
                 'success' => false,
-                'error' => 'Producto no encontrado.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -228,7 +240,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product->is_in_stock()) {
             return [
                 'success' => false,
-                'error' => 'El producto no está disponible.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -254,7 +266,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
             return [
                 'success' => false,
-                'error' => 'Este producto tiene variaciones. Debes especificar cuál quieres.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
                 'requiere_variacion' => true,
                 'atributos' => $attributes,
                 'instrucciones' => 'Pregunta al usuario qué variación prefiere.',
@@ -285,7 +297,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
             return [
                 'success' => false,
-                'error' => 'No se pudo añadir al carrito.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
 
         } catch (Exception $e) {
@@ -303,7 +315,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => 'WooCommerce no disponible.',
+                'error' => __('cart_updated', 'flavor-chat-ia'),
             ];
         }
 
@@ -314,7 +326,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             $cart->empty_cart();
             return [
                 'success' => true,
-                'mensaje' => 'Carrito vaciado.',
+                'mensaje' => __('Carrito vaciado.', 'flavor-chat-ia'),
                 'cart_updated' => true,
             ];
         }
@@ -327,7 +339,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             if ($cart->remove_cart_item($cart_item_key)) {
                 return [
                     'success' => true,
-                    'mensaje' => 'Producto eliminado del carrito.',
+                    'mensaje' => __('Carrito vaciado.', 'flavor-chat-ia'),
                     'cart_updated' => true,
                 ];
             }
@@ -340,7 +352,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
                     if ($cart->remove_cart_item($key)) {
                         return [
                             'success' => true,
-                            'mensaje' => 'Producto eliminado del carrito.',
+                            'mensaje' => __('Carrito vaciado.', 'flavor-chat-ia'),
                             'cart_updated' => true,
                         ];
                     }
@@ -350,7 +362,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => 'Producto no encontrado en el carrito.',
+            'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
         ];
     }
 
@@ -361,7 +373,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => 'WooCommerce no disponible.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -371,7 +383,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (empty($cart_item_key)) {
             return [
                 'success' => false,
-                'error' => 'Se requiere cart_item_key.',
+                'error' => __('Producto no encontrado en el carrito.', 'flavor-chat-ia'),
             ];
         }
 
@@ -383,7 +395,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$cart_item) {
             return [
                 'success' => false,
-                'error' => 'Producto no encontrado en el carrito.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -413,7 +425,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => 'WooCommerce no disponible.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -422,7 +434,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (empty($codigo)) {
             return [
                 'success' => false,
-                'error' => 'Se requiere un código de cupón.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -430,7 +442,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (WC()->cart->has_discount($codigo)) {
             return [
                 'success' => false,
-                'error' => 'Este cupón ya está aplicado.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -560,7 +572,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($product_id <= 0) {
             return [
                 'success' => false,
-                'error' => 'Producto no encontrado.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -569,7 +581,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product) {
             return [
                 'success' => false,
-                'error' => 'Producto no encontrado.',
+                'error' => __('en_stock', 'flavor-chat-ia'),
             ];
         }
 
@@ -654,7 +666,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($order_id <= 0) {
             return [
                 'success' => false,
-                'error' => 'Se requiere número de pedido.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -663,7 +675,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$order) {
             return [
                 'success' => false,
-                'error' => 'Pedido no encontrado.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -671,7 +683,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!empty($email) && $order->get_billing_email() !== $email) {
             return [
                 'success' => false,
-                'error' => 'El email no coincide con el pedido.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -1104,5 +1116,217 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
                 'template' => 'woocommerce/carrito-mini',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Panel de Administración Unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'woocommerce',
+            'label' => __('WooCommerce', 'flavor-chat-ia'),
+            'icon' => 'dashicons-cart',
+            'capability' => 'manage_woocommerce',
+            'categoria' => 'economia',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-woocommerce-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-woocommerce-pedidos',
+                    'titulo' => __('Pedidos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_pedidos'],
+                    'badge' => [$this, 'contar_pedidos_pendientes'],
+                ],
+                [
+                    'slug' => 'flavor-woocommerce-productos',
+                    'titulo' => __('Productos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_productos'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas' => [$this, 'get_estadisticas_tienda'],
+        ];
+    }
+
+    /**
+     * Cuenta los pedidos pendientes de procesar
+     *
+     * @return int
+     */
+    public function contar_pedidos_pendientes() {
+        if (!function_exists('wc_get_orders')) {
+            return 0;
+        }
+
+        $pedidos_pendientes = wc_get_orders([
+            'status' => ['pending', 'processing', 'on-hold'],
+            'return' => 'ids',
+            'limit' => -1,
+        ]);
+
+        return count($pedidos_pendientes);
+    }
+
+    /**
+     * Renderiza el dashboard de administración de WooCommerce
+     */
+    public function render_admin_dashboard() {
+        $ruta_vista = plugin_dir_path(__FILE__) . 'views/dashboard.php';
+
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            $this->render_vista_placeholder(__('Dashboard de WooCommerce', 'flavor-chat-ia'));
+        }
+    }
+
+    /**
+     * Renderiza la página de pedidos
+     */
+    public function render_admin_pedidos() {
+        $ruta_vista = plugin_dir_path(__FILE__) . 'views/pedidos.php';
+
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            $this->render_vista_placeholder(__('Gestión de Pedidos', 'flavor-chat-ia'));
+        }
+    }
+
+    /**
+     * Renderiza la página de productos
+     */
+    public function render_admin_productos() {
+        $ruta_vista = plugin_dir_path(__FILE__) . 'views/productos.php';
+
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            $this->render_vista_placeholder(__('Gestión de Productos', 'flavor-chat-ia'));
+        }
+    }
+
+    /**
+     * Renderiza un placeholder cuando la vista no existe
+     *
+     * @param string $titulo_pagina Título de la página
+     */
+    private function render_vista_placeholder($titulo_pagina) {
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header($titulo_pagina); ?>
+            <div class="notice notice-info">
+                <p><?php esc_html_e('Esta vista está en desarrollo.', 'flavor-chat-ia'); ?></p>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el widget del dashboard principal
+     */
+    public function render_dashboard_widget() {
+        $estadisticas = $this->get_estadisticas_tienda();
+        ?>
+        <div class="flavor-widget-woocommerce">
+            <div class="widget-stats">
+                <div class="stat-item">
+                    <span class="stat-value"><?php echo esc_html($estadisticas['pedidos_hoy']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Pedidos hoy', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value"><?php echo esc_html($estadisticas['ventas_hoy_formateado']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Ventas hoy', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value"><?php echo esc_html($estadisticas['pendientes']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="widget-actions">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-pedidos')); ?>" class="button">
+                    <?php esc_html_e('Ver pedidos', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene las estadísticas de la tienda para el dashboard
+     *
+     * @return array
+     */
+    public function get_estadisticas_tienda() {
+        $estadisticas = [
+            'pedidos_hoy' => 0,
+            'ventas_hoy' => 0,
+            'ventas_hoy_formateado' => $this->format_price(0),
+            'pendientes' => 0,
+            'productos_total' => 0,
+            'productos_sin_stock' => 0,
+        ];
+
+        if (!function_exists('wc_get_orders')) {
+            return $estadisticas;
+        }
+
+        // Pedidos de hoy
+        $inicio_hoy = strtotime('today midnight');
+        $pedidos_hoy = wc_get_orders([
+            'date_created' => '>=' . $inicio_hoy,
+            'status' => ['completed', 'processing', 'on-hold'],
+            'return' => 'ids',
+            'limit' => -1,
+        ]);
+
+        $estadisticas['pedidos_hoy'] = count($pedidos_hoy);
+
+        // Ventas de hoy
+        $total_ventas_hoy = 0;
+        foreach ($pedidos_hoy as $order_id) {
+            $order = wc_get_order($order_id);
+            if ($order) {
+                $total_ventas_hoy += floatval($order->get_total());
+            }
+        }
+        $estadisticas['ventas_hoy'] = $total_ventas_hoy;
+        $estadisticas['ventas_hoy_formateado'] = $this->format_price($total_ventas_hoy);
+
+        // Pedidos pendientes
+        $estadisticas['pendientes'] = $this->contar_pedidos_pendientes();
+
+        // Total de productos
+        $args_productos = [
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+        ];
+        $productos_query = new WP_Query($args_productos);
+        $estadisticas['productos_total'] = $productos_query->found_posts;
+
+        // Productos sin stock
+        $args_sin_stock = [
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'meta_query' => [
+                [
+                    'key' => '_stock_status',
+                    'value' => 'outofstock',
+                ],
+            ],
+        ];
+        $sin_stock_query = new WP_Query($args_sin_stock);
+        $estadisticas['productos_sin_stock'] = $sin_stock_query->found_posts;
+
+        return $estadisticas;
     }
 }

@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Hook de WP Cron
      */
@@ -31,8 +33,8 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'trading_ia';
-        $this->name = __('Trading IA', 'flavor-chat-ia');
-        $this->description = __('Bot de trading simulado con IA para criptomonedas Solana. Paper trading con indicadores tecnicos, gestion de riesgo y reglas dinamicas.', 'flavor-chat-ia');
+        $this->name = 'Trading IA'; // Translation loaded on init
+        $this->description = 'Bot de trading simulado con IA para criptomonedas Solana. Paper trading con indicadores tecnicos, gestion de riesgo y reglas dinamicas.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -54,7 +56,92 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas del Trading IA no estan creadas. Se crearan automaticamente al activar el plugin.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_table_schema() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+        $tabla_portfolio = $wpdb->prefix . 'flavor_trading_ia_portfolio';
+        $tabla_reglas = $wpdb->prefix . 'flavor_trading_ia_reglas';
+        $tabla_alertas = $wpdb->prefix . 'flavor_trading_ia_alertas';
+
+        return array(
+            $tabla_trades => "CREATE TABLE {$tabla_trades} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                user_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                tipo enum('compra','venta') NOT NULL,
+                token varchar(20) NOT NULL,
+                cantidad decimal(20,8) NOT NULL,
+                precio_entrada decimal(20,8) NOT NULL,
+                precio_salida decimal(20,8) DEFAULT NULL,
+                estado enum('abierta','cerrada','cancelada') NOT NULL DEFAULT 'abierta',
+                stop_loss decimal(20,8) DEFAULT NULL,
+                take_profit decimal(20,8) DEFAULT NULL,
+                pnl decimal(20,8) DEFAULT NULL,
+                pnl_porcentaje decimal(10,4) DEFAULT NULL,
+                confianza_ia int(11) DEFAULT NULL,
+                razon_ia text,
+                fecha_apertura datetime NOT NULL,
+                fecha_cierre datetime DEFAULT NULL,
+                PRIMARY KEY (id),
+                KEY user_id (user_id),
+                KEY estado (estado),
+                KEY token (token),
+                KEY fecha_apertura (fecha_apertura)
+            ) $charset_collate;",
+
+            $tabla_portfolio => "CREATE TABLE {$tabla_portfolio} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                user_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                token varchar(20) NOT NULL,
+                cantidad decimal(20,8) NOT NULL DEFAULT 0,
+                valor_promedio decimal(20,8) NOT NULL DEFAULT 0,
+                ultima_actualizacion datetime NOT NULL,
+                PRIMARY KEY (id),
+                UNIQUE KEY user_token (user_id, token)
+            ) $charset_collate;",
+
+            $tabla_reglas => "CREATE TABLE {$tabla_reglas} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                user_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                nombre varchar(255) NOT NULL,
+                condicion text NOT NULL,
+                accion varchar(50) NOT NULL,
+                activa tinyint(1) NOT NULL DEFAULT 1,
+                prioridad int(11) NOT NULL DEFAULT 50,
+                fecha_creacion datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY user_id (user_id)
+            ) $charset_collate;",
+
+            $tabla_alertas => "CREATE TABLE {$tabla_alertas} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                user_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                token varchar(20) NOT NULL,
+                tipo_alerta enum('precio_mayor','precio_menor','cambio_porcentaje') NOT NULL,
+                valor_objetivo decimal(20,8) NOT NULL,
+                activa tinyint(1) NOT NULL DEFAULT 1,
+                notificada tinyint(1) NOT NULL DEFAULT 0,
+                fecha_creacion datetime NOT NULL,
+                fecha_notificacion datetime DEFAULT NULL,
+                PRIMARY KEY (id),
+                KEY user_id (user_id),
+                KEY activa (activa)
+            ) $charset_collate;"
+        );
     }
 
     /**
@@ -84,6 +171,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        add_action('init', [$this, 'maybe_create_tables']);
         $this->cargar_clases_auxiliares();
 
         // Registrar schedule personalizado para WP Cron
@@ -134,6 +222,149 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             wp_schedule_event(time(), 'hourly', 'flavor_trading_ia_verificar_alertas');
         }
         add_action('flavor_trading_ia_verificar_alertas', array($this, 'verificar_alertas_precio'));
+
+        // Registrar en panel de administracion unificado
+        $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Configuracion para el panel de administracion unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return array(
+            'id'         => $this->id,
+            'label'      => $this->name,
+            'icon'       => 'dashicons-chart-line',
+            'capability' => 'manage_options',
+            'categoria'  => 'economia',
+            'paginas'    => array(
+                array(
+                    'slug'     => 'trading-ia-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => array($this, 'render_admin_dashboard'),
+                ),
+                array(
+                    'slug'     => 'trading-ia-operaciones',
+                    'titulo'   => __('Operaciones', 'flavor-chat-ia'),
+                    'callback' => array($this, 'render_admin_operaciones'),
+                    'badge'    => array($this, 'contar_posiciones_abiertas'),
+                ),
+                array(
+                    'slug'     => 'trading-ia-configuracion',
+                    'titulo'   => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => array($this, 'render_admin_configuracion'),
+                ),
+            ),
+            'dashboard_widget' => array($this, 'render_dashboard_widget'),
+            'estadisticas'     => array($this, 'get_estadisticas_panel'),
+        );
+    }
+
+    /**
+     * Cuenta las posiciones abiertas para el badge
+     *
+     * @return int
+     */
+    public function contar_posiciones_abiertas() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_trades} WHERE estado = 'abierta'"
+        );
+    }
+
+    /**
+     * Renderiza el dashboard de administracion
+     */
+    public function render_admin_dashboard() {
+        $this->render_page_header(__('Trading IA - Dashboard', 'flavor-chat-ia'));
+        echo '<div class="wrap trading-ia-admin-dashboard">';
+        echo '<p>' . esc_html__('Panel de control del bot de trading simulado.', 'flavor-chat-ia') . '</p>';
+        // Aqui se puede agregar el contenido del dashboard
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la pagina de operaciones
+     */
+    public function render_admin_operaciones() {
+        $this->render_page_header(
+            __('Trading IA - Operaciones', 'flavor-chat-ia'),
+            array(
+                array(
+                    'label' => __('Nueva operacion', 'flavor-chat-ia'),
+                    'url'   => '#nueva-operacion',
+                    'class' => 'button-primary',
+                ),
+            )
+        );
+        echo '<div class="wrap trading-ia-admin-operaciones">';
+        echo '<p>' . esc_html__('Historial y gestion de operaciones de trading.', 'flavor-chat-ia') . '</p>';
+        // Aqui se puede agregar el listado de operaciones
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la pagina de configuracion
+     */
+    public function render_admin_configuracion() {
+        $this->render_page_header(__('Trading IA - Configuracion', 'flavor-chat-ia'));
+        echo '<div class="wrap trading-ia-admin-configuracion">';
+        echo '<p>' . esc_html__('Configuracion del bot de trading y parametros de riesgo.', 'flavor-chat-ia') . '</p>';
+        // Aqui se puede agregar el formulario de configuracion
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el widget para el dashboard unificado
+     */
+    public function render_dashboard_widget() {
+        $posiciones_abiertas = $this->contar_posiciones_abiertas();
+        $bot_activo = $this->get_setting('bot_activo', false);
+        $estado_bot = $bot_activo ? __('Activo', 'flavor-chat-ia') : __('Inactivo', 'flavor-chat-ia');
+        ?>
+        <div class="trading-ia-widget">
+            <p><strong><?php esc_html_e('Estado del bot:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($estado_bot); ?></p>
+            <p><strong><?php esc_html_e('Posiciones abiertas:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($posiciones_abiertas); ?></p>
+            <a href="<?php echo esc_url($this->admin_page_url('trading-ia-dashboard')); ?>" class="button">
+                <?php esc_html_e('Ver dashboard', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene estadisticas para el panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_panel() {
+        global $wpdb;
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+
+        $total_trades = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_trades}");
+        $trades_ganadores = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_trades} WHERE estado = 'cerrada' AND pnl > 0"
+        );
+        $trades_perdedores = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_trades} WHERE estado = 'cerrada' AND pnl < 0"
+        );
+
+        return array(
+            'total_operaciones' => $total_trades,
+            'operaciones_ganadoras' => $trades_ganadores,
+            'operaciones_perdedoras' => $trades_perdedores,
+            'posiciones_abiertas' => $this->contar_posiciones_abiertas(),
+            'bot_activo' => $this->get_setting('bot_activo', false),
+        );
     }
 
     /**
@@ -911,13 +1142,13 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/trading-ia/mercado', array(
             'methods'             => 'GET',
             'callback'            => array($this, 'api_obtener_mercado'),
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ));
 
         register_rest_route($namespace, '/trading-ia/mercado/(?P<token>[a-zA-Z]+)', array(
             'methods'             => 'GET',
             'callback'            => array($this, 'api_obtener_token'),
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ));
 
         // Rutas que requieren autenticacion
@@ -1968,7 +2199,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                     <?php foreach ($estado['estado']['tokens_monitoreados'] as $token): ?>
                         <span class="token-badge">
                             <?php echo esc_html($token); ?>
-                            <button class="btn-eliminar-token" data-token="<?php echo esc_attr($token); ?>">&times;</button>
+                            <button class="btn-eliminar-token" data-token="<?php echo esc_attr($token); ?>"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
                         </span>
                     <?php endforeach; ?>
                 </div>
@@ -2014,6 +2245,10 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * Encola assets del frontend
      */
     private function enqueue_frontend_assets() {
+        if (!$this->can_activate()) {
+            return;
+        }
+
         wp_enqueue_script(
             'trading-ia-frontend',
             $this->get_module_url() . 'assets/js/trading-ia-frontend.js',
@@ -3067,5 +3302,41 @@ KNOWLEDGE;
         );
 
         return $configuraciones_formulario[$nombre_accion] ?? array();
+    }
+
+    /**
+     * Verifica y crea tablas si no existen
+     */
+    public function maybe_create_tables() {
+        global $wpdb;
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_trades)) {
+            $this->create_tables();
+        }
+    }
+
+    /**
+     * Crea las tablas necesarias
+     */
+    private function create_tables() {
+        $esquemas = $this->get_table_schema();
+
+        if (empty($esquemas)) {
+            return;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        foreach ($esquemas as $tabla => $sql) {
+            dbDelta($sql);
+        }
+    }
+
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

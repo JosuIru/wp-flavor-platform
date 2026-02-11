@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Version del modulo
      */
@@ -62,8 +64,8 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'compostaje';
-        $this->name = __('Compostaje Comunitario', 'flavor-chat-ia');
-        $this->description = __('Sistema completo de compostaje comunitario con gamificacion, turnos y estadisticas.', 'flavor-chat-ia');
+        $this->name = 'Compostaje Comunitario'; // Translation loaded on init
+        $this->description = 'Sistema completo de compostaje comunitario con gamificacion, turnos y estadisticas.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -84,7 +86,15 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Compostaje no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -113,6 +123,9 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        // Registrar en panel de administracion unificado
+        $this->registrar_en_panel_unificado();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
@@ -442,13 +455,13 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor-compostaje/v1', '/puntos', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_puntos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-compostaje/v1', '/puntos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_punto'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-compostaje/v1', '/aportacion', [
@@ -466,7 +479,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor-compostaje/v1', '/turnos', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_turnos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-compostaje/v1', '/turno/inscribir', [
@@ -478,19 +491,19 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor-compostaje/v1', '/estadisticas/globales', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_estadisticas_globales'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-compostaje/v1', '/ranking', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_ranking'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-compostaje/v1', '/materiales', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_materiales'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -682,10 +695,32 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $ranking = $this->obtener_ranking_usuarios($limite, $periodo);
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'ranking' => $ranking,
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_compostaje_response($respuesta));
+    }
+
+    private function sanitize_public_compostaje_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['ranking']) && is_array($respuesta['ranking'])) {
+            $respuesta['ranking'] = array_map(function($entrada) {
+                if (!is_array($entrada)) {
+                    return $entrada;
+                }
+
+                unset($entrada['usuario_id']);
+                $entrada['avatar'] = '';
+                return $entrada;
+            }, $respuesta['ranking']);
+        }
+
+        return $respuesta;
     }
 
     /**
@@ -1271,7 +1306,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $punto_id = intval($_GET['punto_id'] ?? $_POST['punto_id'] ?? 0);
 
         if (!$punto_id) {
-            wp_send_json(['success' => false, 'error' => 'ID de punto requerido']);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1280,7 +1315,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $punto = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_puntos WHERE id = %d", $punto_id));
 
         if (!$punto) {
-            wp_send_json(['success' => false, 'error' => 'Punto no encontrado']);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
         }
 
         wp_send_json([
@@ -1298,7 +1333,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => 'No autenticado']);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
         }
 
         $estadisticas = $this->obtener_estadisticas_usuario($usuario_id);
@@ -1313,7 +1348,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => 'No autenticado']);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1360,7 +1395,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $turno_id = intval($_POST['turno_id'] ?? 0);
 
         if (!$usuario_id || !$turno_id) {
-            wp_send_json(['success' => false, 'error' => 'Datos invalidos']);
+            wp_send_json(['success' => false, 'error' => __('No estas inscrito en este turno', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1373,7 +1408,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            wp_send_json(['success' => false, 'error' => 'No estas inscrito en este turno']);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
         }
 
         $wpdb->update($tabla_inscripciones, ['estado' => 'cancelado'], ['id' => $inscripcion->id]);
@@ -1382,7 +1417,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             $turno_id
         ));
 
-        wp_send_json(['success' => true, 'mensaje' => 'Inscripcion cancelada']);
+        wp_send_json(['success' => true, 'mensaje' => __('turno_id', 'flavor-chat-ia')]);
     }
 
     /**
@@ -1392,7 +1427,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('compostaje_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => 'Sin permisos']);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $turno_id = intval($_POST['turno_id'] ?? 0);
@@ -1405,7 +1440,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $turno = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_turnos WHERE id = %d", $turno_id));
 
         if (!$turno) {
-            wp_send_json(['success' => false, 'error' => 'Turno no encontrado']);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
         }
 
         foreach ($asistentes as $usuario_id) {
@@ -1423,7 +1458,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $wpdb->update($tabla_turnos, ['estado' => 'completado'], ['id' => $turno_id]);
 
-        wp_send_json(['success' => true, 'mensaje' => 'Turno completado']);
+        wp_send_json(['success' => true, 'mensaje' => __('dias_aviso_turno', 'flavor-chat-ia')]);
     }
 
     /**
@@ -1492,10 +1527,10 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             <div class="flavor-compostaje-filtros">
                 <select id="filtro-tipo-punto" class="flavor-select">
                     <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                    <option value="comunitario"><?php _e('Comunitario', 'flavor-chat-ia'); ?></option>
-                    <option value="vecinal"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
-                    <option value="escolar"><?php _e('Escolar', 'flavor-chat-ia'); ?></option>
-                    <option value="municipal"><?php _e('Municipal', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('comunitario', 'flavor-chat-ia'); ?>"><?php _e('Comunitario', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('vecinal', 'flavor-chat-ia'); ?>"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('escolar', 'flavor-chat-ia'); ?>"><?php _e('Escolar', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('municipal', 'flavor-chat-ia'); ?>"><?php _e('Municipal', 'flavor-chat-ia'); ?></option>
                 </select>
                 <button type="button" id="btn-mi-ubicacion" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-location"></span>
@@ -1597,7 +1632,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                     </div>
                     <div class="preview-item">
                         <span class="preview-label"><?php _e('CO2 evitado:', 'flavor-chat-ia'); ?></span>
-                        <span id="co2-estimado" class="preview-value">0 kg</span>
+                        <span id="co2-estimado" class="preview-value"><?php echo esc_html__('0 kg', 'flavor-chat-ia'); ?></span>
                     </div>
                 </div>
 
@@ -1900,11 +1935,11 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                 </select>
                 <select id="filtro-tipo-turno" class="flavor-select">
                     <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                    <option value="volteo"><?php _e('Volteo', 'flavor-chat-ia'); ?></option>
-                    <option value="riego"><?php _e('Riego', 'flavor-chat-ia'); ?></option>
-                    <option value="medicion"><?php _e('Medicion', 'flavor-chat-ia'); ?></option>
-                    <option value="tamizado"><?php _e('Tamizado', 'flavor-chat-ia'); ?></option>
-                    <option value="limpieza"><?php _e('Limpieza', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('volteo', 'flavor-chat-ia'); ?>"><?php _e('Volteo', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('riego', 'flavor-chat-ia'); ?>"><?php _e('Riego', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('medicion', 'flavor-chat-ia'); ?>"><?php _e('Medicion', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('tamizado', 'flavor-chat-ia'); ?>"><?php _e('Tamizado', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('limpieza', 'flavor-chat-ia'); ?>"><?php _e('Limpieza', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
@@ -2019,7 +2054,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
     private function action_mis_estadisticas_compostaje($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Usuario no autenticado'];
+            return ['success' => false, 'error' => __('Usuario no autenticado', 'flavor-chat-ia')];
         }
 
         $estadisticas = $this->obtener_estadisticas_usuario($usuario_id);
@@ -2332,5 +2367,84 @@ KNOWLEDGE;
                 'respuesta' => 'Si, pero en pequenas cantidades. Su acidez puede ralentizar el proceso si hay exceso.',
             ],
         ];
+    }
+
+    /**
+     * Configuracion de paginas de administracion para el Panel Unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'compostaje',
+            'label' => __('Compostaje', 'flavor-chat-ia'),
+            'icon' => 'dashicons-carrot',
+            'capability' => 'manage_options',
+            'categoria' => 'sostenibilidad',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-compostaje-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-compostaje-composteras',
+                    'titulo' => __('Composteras', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_composteras'],
+                ],
+                [
+                    'slug' => 'flavor-compostaje-participantes',
+                    'titulo' => __('Participantes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_participantes'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard de administracion de compostaje
+     */
+    public function render_admin_dashboard() {
+        $this->render_page_header(__('Dashboard de Compostaje', 'flavor-chat-ia'));
+
+        $estadisticas_generales = $this->obtener_estadisticas_generales();
+
+        include dirname(__FILE__) . '/views/admin-dashboard.php';
+    }
+
+    /**
+     * Renderiza la pagina de gestion de composteras
+     */
+    public function render_admin_composteras() {
+        $acciones = [
+            [
+                'label' => __('Nueva Compostera', 'flavor-chat-ia'),
+                'url' => admin_url('admin.php?page=flavor-compostaje-composteras&action=nueva'),
+                'class' => 'button-primary',
+            ],
+        ];
+
+        $this->render_page_header(__('Gestion de Composteras', 'flavor-chat-ia'), $acciones);
+
+        $composteras = $this->obtener_composteras();
+
+        include dirname(__FILE__) . '/views/admin-composteras.php';
+    }
+
+    /**
+     * Renderiza la pagina de gestion de participantes
+     */
+    public function render_admin_participantes() {
+        $this->render_page_header(__('Participantes del Compostaje', 'flavor-chat-ia'));
+
+        $participantes = $this->obtener_ranking_participantes();
+
+        include dirname(__FILE__) . '/views/admin-participantes.php';
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

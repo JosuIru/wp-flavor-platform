@@ -15,6 +15,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /** @var string Versión del módulo */
     const VERSION = '2.0.0';
 
@@ -46,8 +48,8 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $this->id = 'podcast';
-        $this->name = __('Podcast', 'flavor-chat-ia');
-        $this->description = __('Plataforma de podcasting comunitario - crea, publica y escucha episodios de audio.', 'flavor-chat-ia');
+        $this->name = 'Podcast'; // Translation loaded on init
+        $this->description = 'Plataforma de podcasting comunitario - crea, publica y escucha episodios de audio.'; // Translation loaded on init
 
         $this->tabla_series = $wpdb->prefix . 'flavor_podcast_series';
         $this->tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
@@ -72,7 +74,15 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Podcast no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -112,6 +122,9 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_nopriv_flavor_podcast_action', [$this, 'handle_ajax_request']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_filter('query_vars', [$this, 'add_query_vars']);
+
+        // Registrar en panel de administración unificado
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -487,15 +500,15 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                 <div class="player-secondary-controls">
                     <div class="player-speed-control">
                         <button class="player-btn player-btn-speed" title="<?php esc_attr_e('Velocidad', 'flavor-chat-ia'); ?>">
-                            <span class="speed-value">1x</span>
+                            <span class="speed-value"><?php echo esc_html__('1x', 'flavor-chat-ia'); ?></span>
                         </button>
                         <div class="speed-menu" style="display:none;">
-                            <button data-speed="0.5">0.5x</button>
-                            <button data-speed="0.75">0.75x</button>
-                            <button data-speed="1" class="active">1x</button>
-                            <button data-speed="1.25">1.25x</button>
-                            <button data-speed="1.5">1.5x</button>
-                            <button data-speed="2">2x</button>
+                            <button data-speed="0.5"><?php echo esc_html__('0.5x', 'flavor-chat-ia'); ?></button>
+                            <button data-speed="0.75"><?php echo esc_html__('0.75x', 'flavor-chat-ia'); ?></button>
+                            <button data-speed="1" class="active"><?php echo esc_html__('1x', 'flavor-chat-ia'); ?></button>
+                            <button data-speed="1.25"><?php echo esc_html__('1.25x', 'flavor-chat-ia'); ?></button>
+                            <button data-speed="1.5"><?php echo esc_html__('1.5x', 'flavor-chat-ia'); ?></button>
+                            <button data-speed="2"><?php echo esc_html__('2x', 'flavor-chat-ia'); ?></button>
                         </div>
                     </div>
 
@@ -891,8 +904,8 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                     </select>
                     <select name="podcast_tipo">
                         <option value=""><?php _e('Series y episodios', 'flavor-chat-ia'); ?></option>
-                        <option value="series" <?php selected($_GET['podcast_tipo'] ?? '', 'series'); ?>><?php _e('Solo series', 'flavor-chat-ia'); ?></option>
-                        <option value="episodios" <?php selected($_GET['podcast_tipo'] ?? '', 'episodios'); ?>><?php _e('Solo episodios', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('series', 'flavor-chat-ia'); ?>" <?php selected($_GET['podcast_tipo'] ?? '', 'series'); ?>><?php _e('Solo series', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('episodios', 'flavor-chat-ia'); ?>" <?php selected($_GET['podcast_tipo'] ?? '', 'episodios'); ?>><?php _e('Solo episodios', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
                 <?php endif; ?>
@@ -1189,25 +1202,25 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/series', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_series'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/series/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_serie'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/series/(?P<id>\d+)/episodios', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_episodios_serie'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/episodios/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_episodio'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/series', [
@@ -1231,7 +1244,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/buscar', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_buscar'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -1246,10 +1259,12 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             'orden' => $request->get_param('orden') ?: 'recientes',
         ]);
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'data' => array_map([$this, 'formatear_serie_respuesta'], $series),
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_podcast_response($respuesta));
     }
 
     /**
@@ -1261,10 +1276,12 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             return new WP_Error('not_found', __('Serie no encontrada', 'flavor-chat-ia'), ['status' => 404]);
         }
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'data' => $this->formatear_serie_respuesta($serie, true),
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_podcast_response($respuesta));
     }
 
     /**
@@ -1277,11 +1294,13 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
         $episodios = $this->obtener_episodios_serie($serie_id, $limite, $offset);
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'data' => array_map([$this, 'formatear_episodio_respuesta'], $episodios),
             'total' => $this->contar_episodios_serie($serie_id),
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_podcast_response($respuesta));
     }
 
     /**
@@ -1293,10 +1312,12 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             return new WP_Error('not_found', __('Episodio no encontrado', 'flavor-chat-ia'), ['status' => 404]);
         }
 
-        return rest_ensure_response([
+        $respuesta = [
             'success' => true,
             'data' => $this->formatear_episodio_respuesta($episodio, true),
-        ]);
+        ];
+
+        return rest_ensure_response($this->sanitize_public_podcast_response($respuesta));
     }
 
     /**
@@ -1462,7 +1483,48 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             );
         }
 
-        return rest_ensure_response(['success' => true, 'data' => $resultados]);
+        $respuesta = ['success' => true, 'data' => $resultados];
+
+        return rest_ensure_response($this->sanitize_public_podcast_response($respuesta));
+    }
+
+    private function sanitize_public_podcast_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['data']) && is_array($respuesta['data'])) {
+            $respuesta['data'] = $this->sanitize_public_podcast_data($respuesta['data']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_podcast_data($data) {
+        if (is_array($data) && isset($data['series']) && isset($data['episodios'])) {
+            $data['series'] = array_map([$this, 'sanitize_public_podcast_item'], $data['series']);
+            $data['episodios'] = array_map([$this, 'sanitize_public_podcast_item'], $data['episodios']);
+            return $data;
+        }
+
+        if (is_array($data) && array_key_exists('id', $data)) {
+            return $this->sanitize_public_podcast_item($data);
+        }
+
+        if (is_array($data)) {
+            return array_map([$this, 'sanitize_public_podcast_item'], $data);
+        }
+
+        return $data;
+    }
+
+    private function sanitize_public_podcast_item($item) {
+        if (!is_array($item)) {
+            return $item;
+        }
+
+        unset($item['autor_id']);
+        return $item;
     }
 
     /**
@@ -2285,5 +2347,211 @@ KNOWLEDGE;
             ['pregunta' => '¿Cómo suscribirse desde Apple Podcasts?', 'respuesta' => 'Copia el enlace del feed RSS de la serie y añádelo en Apple Podcasts.'],
             ['pregunta' => '¿Las estadísticas son en tiempo real?', 'respuesta' => 'Las reproducciones se registran en tiempo real, las estadísticas se actualizan cada hora.'],
         ];
+    }
+
+    /**
+     * Configuración para el panel de administración unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id'         => 'podcast',
+            'label'      => __('Podcast', 'flavor-chat-ia'),
+            'icon'       => 'dashicons-playlist-audio',
+            'capability' => 'manage_options',
+            'categoria'  => 'comunicacion',
+            'paginas'    => [
+                [
+                    'slug'     => 'flavor-podcast-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug'     => 'flavor-podcast-episodios',
+                    'titulo'   => __('Episodios', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_episodios'],
+                ],
+                [
+                    'slug'     => 'flavor-podcast-programas',
+                    'titulo'   => __('Programas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_programas'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard de administración de Podcast
+     */
+    public function render_admin_dashboard() {
+        global $wpdb;
+
+        $total_series = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_series}");
+        $total_episodios = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_episodios}");
+        $total_reproducciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_reproducciones}");
+        $total_suscripciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_suscripciones}");
+
+        $this->render_page_header(__('Dashboard de Podcast', 'flavor-chat-ia'), [
+            [
+                'label' => __('Nuevo Programa', 'flavor-chat-ia'),
+                'url'   => $this->admin_page_url('flavor-podcast-programas') . '&action=nuevo',
+                'class' => 'button-primary',
+            ],
+        ]);
+        ?>
+        <div class="flavor-admin-stats-grid">
+            <div class="stat-card">
+                <span class="dashicons dashicons-microphone"></span>
+                <div class="stat-content">
+                    <span class="stat-value"><?php echo esc_html(number_format_i18n($total_series)); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Programas', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="dashicons dashicons-playlist-audio"></span>
+                <div class="stat-content">
+                    <span class="stat-value"><?php echo esc_html(number_format_i18n($total_episodios)); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Episodios', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="dashicons dashicons-controls-play"></span>
+                <div class="stat-content">
+                    <span class="stat-value"><?php echo esc_html(number_format_i18n($total_reproducciones)); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Reproducciones', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="dashicons dashicons-groups"></span>
+                <div class="stat-content">
+                    <span class="stat-value"><?php echo esc_html(number_format_i18n($total_suscripciones)); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Suscripciones', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de administración de episodios
+     */
+    public function render_admin_episodios() {
+        global $wpdb;
+
+        $this->render_page_header(__('Episodios', 'flavor-chat-ia'), [
+            [
+                'label' => __('Nuevo Episodio', 'flavor-chat-ia'),
+                'url'   => $this->admin_page_url('flavor-podcast-episodios') . '&action=nuevo',
+                'class' => 'button-primary',
+            ],
+        ]);
+
+        $episodios = $wpdb->get_results(
+            "SELECT e.*, s.titulo AS serie_titulo
+             FROM {$this->tabla_episodios} e
+             LEFT JOIN {$this->tabla_series} s ON e.serie_id = s.id
+             ORDER BY e.fecha_publicacion DESC
+             LIMIT 50"
+        );
+        ?>
+        <table class="wp-list-table widefat fixed striped">
+            <thead>
+                <tr>
+                    <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Programa', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Duración', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($episodios)): ?>
+                    <tr>
+                        <td colspan="5"><?php esc_html_e('No hay episodios disponibles.', 'flavor-chat-ia'); ?></td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($episodios as $episodio): ?>
+                        <tr>
+                            <td><strong><?php echo esc_html($episodio->titulo); ?></strong></td>
+                            <td><?php echo esc_html($episodio->serie_titulo); ?></td>
+                            <td><?php echo esc_html(gmdate('H:i:s', $episodio->duracion)); ?></td>
+                            <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($episodio->fecha_publicacion))); ?></td>
+                            <td>
+                                <span class="status-badge status-<?php echo esc_attr($episodio->estado); ?>">
+                                    <?php echo esc_html(ucfirst($episodio->estado)); ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de administración de programas (series)
+     */
+    public function render_admin_programas() {
+        global $wpdb;
+
+        $this->render_page_header(__('Programas', 'flavor-chat-ia'), [
+            [
+                'label' => __('Nuevo Programa', 'flavor-chat-ia'),
+                'url'   => $this->admin_page_url('flavor-podcast-programas') . '&action=nuevo',
+                'class' => 'button-primary',
+            ],
+        ]);
+
+        $programas = $wpdb->get_results(
+            "SELECT s.*,
+                    (SELECT COUNT(*) FROM {$this->tabla_episodios} e WHERE e.serie_id = s.id) AS total_episodios,
+                    (SELECT COUNT(*) FROM {$this->tabla_suscripciones} sub WHERE sub.serie_id = s.id) AS total_suscriptores
+             FROM {$this->tabla_series} s
+             ORDER BY s.fecha_creacion DESC
+             LIMIT 50"
+        );
+        ?>
+        <table class="wp-list-table widefat fixed striped">
+            <thead>
+                <tr>
+                    <th><?php esc_html_e('Programa', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Episodios', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Suscriptores', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($programas)): ?>
+                    <tr>
+                        <td colspan="5"><?php esc_html_e('No hay programas disponibles.', 'flavor-chat-ia'); ?></td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($programas as $programa): ?>
+                        <?php $autor = get_userdata($programa->autor_id); ?>
+                        <tr>
+                            <td><strong><?php echo esc_html($programa->titulo); ?></strong></td>
+                            <td><?php echo $autor ? esc_html($autor->display_name) : '-'; ?></td>
+                            <td><?php echo esc_html(number_format_i18n($programa->total_episodios)); ?></td>
+                            <td><?php echo esc_html(number_format_i18n($programa->total_suscriptores)); ?></td>
+                            <td>
+                                <span class="status-badge status-<?php echo esc_attr($programa->estado); ?>">
+                                    <?php echo esc_html(ucfirst($programa->estado)); ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <?php
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

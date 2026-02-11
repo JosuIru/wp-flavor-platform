@@ -15,6 +15,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Version del modulo
      */
@@ -32,8 +34,8 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $this->id = 'transparencia';
-        $this->name = __('Portal de Transparencia', 'flavor-chat-ia');
-        $this->description = __('Portal de transparencia con datos publicos, presupuestos, contratos, actas y rendicion de cuentas.', 'flavor-chat-ia');
+        $this->name = 'Portal de Transparencia'; // Translation loaded on init
+        $this->description = 'Portal de transparencia con datos publicos, presupuestos, contratos, actas y rendicion de cuentas.'; // Translation loaded on init
         $this->prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
 
         parent::__construct();
@@ -55,7 +57,15 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Transparencia no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -82,9 +92,47 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Configuracion para el panel de administracion unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id'         => 'transparencia',
+            'label'      => __('Transparencia', 'flavor-chat-ia'),
+            'icon'       => 'dashicons-visibility',
+            'capability' => 'manage_options',
+            'categoria'  => 'economia',
+            'paginas'    => [
+                [
+                    'slug'     => 'transparencia-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                    'badge'    => [$this, 'contar_solicitudes_pendientes'],
+                ],
+                [
+                    'slug'     => 'transparencia-documentos',
+                    'titulo'   => __('Documentos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_documentos'],
+                ],
+                [
+                    'slug'     => 'transparencia-configuracion',
+                    'titulo'   => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas'     => [$this, 'get_estadisticas_admin'],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        // Registrar en panel de administracion unificado
+        $this->registrar_en_panel_unificado();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
@@ -443,54 +491,54 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/transparencia/documentos', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_documentos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args' => $this->get_documentos_args(),
         ]);
 
         register_rest_route($namespace, '/transparencia/documentos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_documento'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Presupuestos
         register_rest_route($namespace, '/transparencia/presupuestos', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_presupuestos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/transparencia/presupuestos/resumen', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_resumen_presupuesto'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Gastos
         register_rest_route($namespace, '/transparencia/gastos', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_gastos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/transparencia/gastos/estadisticas', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_estadisticas_gastos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Actas
         register_rest_route($namespace, '/transparencia/actas', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_actas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Solicitudes
         register_rest_route($namespace, '/transparencia/solicitudes', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_crear_solicitud'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/transparencia/solicitudes/(?P<id>\d+)', [
@@ -503,7 +551,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/transparencia/estadisticas', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_estadisticas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -549,7 +597,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $documento = $this->obtener_documento_por_id($documento_id);
 
         if (!$documento) {
-            return new WP_Error('not_found', 'Documento no encontrado', ['status' => 404]);
+            return new WP_Error('not_found', __('Documento no encontrado', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         // Incrementar visitas
@@ -656,7 +704,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $solicitud = $this->obtener_solicitud_por_id($solicitud_id);
 
         if (!$solicitud) {
-            return new WP_Error('not_found', 'Solicitud no encontrada', ['status' => 404]);
+            return new WP_Error('not_found', __('Solicitud no encontrada', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         return new WP_REST_Response($solicitud, 200);
@@ -1143,17 +1191,17 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         // Validaciones
         if (empty($datos['titulo']) || empty($datos['descripcion'])) {
-            return ['success' => false, 'error' => 'El titulo y la descripcion son obligatorios.'];
+            return ['success' => false, 'error' => __('El titulo y la descripcion son obligatorios.', 'flavor-chat-ia')];
         }
 
         if (empty($datos['email']) || !is_email($datos['email'])) {
-            return ['success' => false, 'error' => 'Se requiere un email valido.'];
+            return ['success' => false, 'error' => __('El titulo y la descripcion son obligatorios.', 'flavor-chat-ia')];
         }
 
         $usuario_actual_id = get_current_user_id();
 
         if (!$usuario_actual_id && !$configuracion['permite_solicitudes_anonimas']) {
-            return ['success' => false, 'error' => 'Debe iniciar sesion para realizar solicitudes.'];
+            return ['success' => false, 'error' => __('email', 'flavor-chat-ia')];
         }
 
         // Generar numero de expediente
@@ -1194,7 +1242,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if ($resultado_insercion === false) {
-            return ['success' => false, 'error' => 'No se pudo registrar la solicitud.'];
+            return ['success' => false, 'error' => __('dias_tramitacion', 'flavor-chat-ia')];
         }
 
         $solicitud_id = $wpdb->insert_id;
@@ -1205,7 +1253,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => 'Solicitud registrada correctamente.',
+            'mensaje' => __('solicitudes_info', 'flavor-chat-ia'),
             'solicitud_id' => $solicitud_id,
             'numero_expediente' => $numero_expediente,
             'fecha_limite' => date_i18n('d/m/Y', strtotime($fecha_limite)),
@@ -1431,13 +1479,13 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $documento_id = (int) ($_POST['documento_id'] ?? 0);
 
         if (!$documento_id) {
-            wp_send_json_error(['mensaje' => 'ID de documento invalido']);
+            wp_send_json_error(['mensaje' => __('ID de documento invalido', 'flavor-chat-ia')]);
         }
 
         $documento = $this->obtener_documento_por_id($documento_id);
 
         if (!$documento) {
-            wp_send_json_error(['mensaje' => 'Documento no encontrado']);
+            wp_send_json_error(['mensaje' => __(__('Documento no encontrado', 'flavor-chat-ia'), 'flavor-chat-ia')]);
         }
 
         $this->incrementar_visitas($documento_id);
@@ -1450,7 +1498,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
      */
     public function transparencia_descargar_documento() {
         if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'transparencia_nonce')) {
-            wp_die('Acceso no autorizado');
+            wp_die(__('Acceso no autorizado', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1463,7 +1511,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$documento || empty($documento->archivo_url)) {
-            wp_die('Documento no encontrado');
+            wp_die(__(__('Documento no encontrado', 'flavor-chat-ia'), 'flavor-chat-ia'));
         }
 
         // Incrementar descargas
@@ -1634,11 +1682,11 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                         <label for="transparencia-categoria"><?php _e('Categoria', 'flavor-chat-ia'); ?></label>
                         <select id="transparencia-categoria" name="categoria">
                             <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                            <option value="presupuestos"><?php _e('Presupuestos', 'flavor-chat-ia'); ?></option>
-                            <option value="contratos"><?php _e('Contratos', 'flavor-chat-ia'); ?></option>
-                            <option value="subvenciones"><?php _e('Subvenciones', 'flavor-chat-ia'); ?></option>
-                            <option value="actas"><?php _e('Actas', 'flavor-chat-ia'); ?></option>
-                            <option value="normativa"><?php _e('Normativa', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('presupuestos', 'flavor-chat-ia'); ?>"><?php _e('Presupuestos', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('contratos', 'flavor-chat-ia'); ?>"><?php _e('Contratos', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('subvenciones', 'flavor-chat-ia'); ?>"><?php _e('Subvenciones', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('actas', 'flavor-chat-ia'); ?>"><?php _e('Actas', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('normativa', 'flavor-chat-ia'); ?>"><?php _e('Normativa', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                     <div class="transparencia-campo">
@@ -1863,12 +1911,12 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                     <label for="solicitud-categoria"><?php _e('Categoria', 'flavor-chat-ia'); ?></label>
                     <select id="solicitud-categoria" name="categoria">
                         <option value=""><?php _e('Seleccione una categoria', 'flavor-chat-ia'); ?></option>
-                        <option value="presupuestos"><?php _e('Presupuestos y cuentas', 'flavor-chat-ia'); ?></option>
-                        <option value="contratos"><?php _e('Contratos y licitaciones', 'flavor-chat-ia'); ?></option>
-                        <option value="subvenciones"><?php _e('Subvenciones y ayudas', 'flavor-chat-ia'); ?></option>
-                        <option value="personal"><?php _e('Personal y retribuciones', 'flavor-chat-ia'); ?></option>
-                        <option value="normativa"><?php _e('Normativa y acuerdos', 'flavor-chat-ia'); ?></option>
-                        <option value="otros"><?php _e('Otros', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('presupuestos', 'flavor-chat-ia'); ?>"><?php _e('Presupuestos y cuentas', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('contratos', 'flavor-chat-ia'); ?>"><?php _e('Contratos y licitaciones', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('subvenciones', 'flavor-chat-ia'); ?>"><?php _e('Subvenciones y ayudas', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('personal', 'flavor-chat-ia'); ?>"><?php _e('Personal y retribuciones', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('normativa', 'flavor-chat-ia'); ?>"><?php _e('Normativa y acuerdos', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('otros', 'flavor-chat-ia'); ?>"><?php _e('Otros', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -2372,6 +2420,248 @@ KNOWLEDGE;
     }
 
     // ========================================================================
+    // PANEL ADMINISTRACION UNIFICADO
+    // ========================================================================
+
+    /**
+     * Contar solicitudes pendientes para badge en menu
+     *
+     * @return int
+     */
+    public function contar_solicitudes_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_solicitudes = $this->prefijo_tabla . 'solicitudes_info';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado IN ('recibida', 'admitida', 'en_tramite')"
+        );
+    }
+
+    /**
+     * Renderizar dashboard de administracion
+     */
+    public function render_admin_dashboard() {
+        $estadisticas = $this->calcular_estadisticas_generales();
+        $solicitudes_pendientes = $this->contar_solicitudes_pendientes();
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Dashboard de Transparencia', 'flavor-chat-ia'), [
+                [
+                    'label' => __('Nuevo Documento', 'flavor-chat-ia'),
+                    'url'   => $this->admin_page_url('transparencia-documentos') . '&action=nuevo',
+                    'class' => 'button-primary',
+                ],
+            ]); ?>
+
+            <div class="flavor-dashboard-grid">
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-media-document"></span>
+                    <div class="stat-content">
+                        <span class="stat-number"><?php echo number_format($estadisticas['documentos']['total'] ?? 0); ?></span>
+                        <span class="stat-label"><?php _e('Documentos Publicados', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+
+                <div class="flavor-stat-card <?php echo $solicitudes_pendientes > 0 ? 'has-badge' : ''; ?>">
+                    <span class="dashicons dashicons-format-status"></span>
+                    <div class="stat-content">
+                        <span class="stat-number"><?php echo number_format($solicitudes_pendientes); ?></span>
+                        <span class="stat-label"><?php _e('Solicitudes Pendientes', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-visibility"></span>
+                    <div class="stat-content">
+                        <span class="stat-number"><?php echo number_format($estadisticas['documentos']['visitas'] ?? 0); ?></span>
+                        <span class="stat-label"><?php _e('Visitas Totales', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-clock"></span>
+                    <div class="stat-content">
+                        <span class="stat-number"><?php echo $estadisticas['solicitudes']['promedio_dias_tramitacion'] ?? 0; ?></span>
+                        <span class="stat-label"><?php _e('Dias Promedio Respuesta', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flavor-admin-section">
+                <h2><?php _e('Actividad Reciente', 'flavor-chat-ia'); ?></h2>
+                <?php $this->render_dashboard_widget(); ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderizar pagina de documentos
+     */
+    public function render_admin_documentos() {
+        $accion = isset($_GET['action']) ? sanitize_text_field($_GET['action']) : 'listado';
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Documentos de Transparencia', 'flavor-chat-ia'), [
+                [
+                    'label' => __('Nuevo Documento', 'flavor-chat-ia'),
+                    'url'   => $this->admin_page_url('transparencia-documentos') . '&action=nuevo',
+                    'class' => 'button-primary',
+                ],
+            ]); ?>
+
+            <?php
+            $tabs_navegacion = [
+                ['slug' => 'listado', 'label' => __('Todos', 'flavor-chat-ia')],
+                ['slug' => 'presupuestos', 'label' => __('Presupuestos', 'flavor-chat-ia')],
+                ['slug' => 'contratos', 'label' => __('Contratos', 'flavor-chat-ia')],
+                ['slug' => 'actas', 'label' => __('Actas', 'flavor-chat-ia')],
+                ['slug' => 'normativa', 'label' => __('Normativa', 'flavor-chat-ia')],
+            ];
+            $tab_actual = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'listado';
+            $this->render_page_tabs($tabs_navegacion, $tab_actual);
+            ?>
+
+            <div class="flavor-admin-content">
+                <?php
+                $parametros_documentos = ['limite' => 20, 'pagina' => 1];
+                if ($tab_actual !== 'listado') {
+                    $parametros_documentos['categoria'] = $tab_actual;
+                }
+                $documentos = $this->obtener_documentos_publicos($parametros_documentos);
+                ?>
+
+                <?php if (empty($documentos['documentos'])): ?>
+                    <div class="flavor-empty-state">
+                        <span class="dashicons dashicons-media-document"></span>
+                        <p><?php _e('No hay documentos en esta categoria.', 'flavor-chat-ia'); ?></p>
+                    </div>
+                <?php else: ?>
+                    <table class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Titulo', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Categoria', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Visitas', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($documentos['documentos'] as $documento): ?>
+                            <tr>
+                                <td><strong><?php echo esc_html($documento['titulo']); ?></strong></td>
+                                <td><?php echo esc_html($documento['categoria']); ?></td>
+                                <td><?php echo esc_html($documento['fecha_publicacion']); ?></td>
+                                <td><?php echo number_format($documento['visitas']); ?></td>
+                                <td>
+                                    <a href="#" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
+                                    <a href="<?php echo esc_url($documento['url']); ?>" target="_blank" class="button button-small"><?php _e('Ver', 'flavor-chat-ia'); ?></a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderizar pagina de configuracion
+     */
+    public function render_admin_configuracion() {
+        $configuracion_actual = $this->get_settings();
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Configuracion de Transparencia', 'flavor-chat-ia')); ?>
+
+            <form method="post" action="">
+                <?php wp_nonce_field('transparencia_config', 'transparencia_nonce'); ?>
+
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php _e('Plazo respuesta (dias)', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="number" name="dias_plazo_respuesta"
+                                   value="<?php echo esc_attr($configuracion_actual['dias_plazo_respuesta']); ?>"
+                                   min="1" max="90" class="small-text">
+                            <p class="description"><?php _e('Dias habiles para responder solicitudes de informacion.', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Solicitudes anonimas', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="permite_solicitudes_anonimas" value="1"
+                                       <?php checked($configuracion_actual['permite_solicitudes_anonimas']); ?>>
+                                <?php _e('Permitir solicitudes sin identificacion', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Email notificaciones', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="email" name="email_notificaciones"
+                                   value="<?php echo esc_attr($configuracion_actual['email_notificaciones']); ?>"
+                                   class="regular-text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Mostrar graficos', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="mostrar_graficos" value="1"
+                                       <?php checked($configuracion_actual['mostrar_graficos']); ?>>
+                                <?php _e('Habilitar visualizacion grafica de datos', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Documentos por pagina', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="number" name="limite_documentos_por_pagina"
+                                   value="<?php echo esc_attr($configuracion_actual['limite_documentos_por_pagina']); ?>"
+                                   min="6" max="48" step="6" class="small-text">
+                        </td>
+                    </tr>
+                </table>
+
+                <p class="submit">
+                    <button type="submit" class="button button-primary"><?php _e('Guardar Configuracion', 'flavor-chat-ia'); ?></button>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtener estadisticas para el panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_admin() {
+        $estadisticas = $this->calcular_estadisticas_generales();
+
+        return [
+            'documentos_publicados' => $estadisticas['documentos']['total'] ?? 0,
+            'solicitudes_pendientes' => $this->contar_solicitudes_pendientes(),
+            'visitas_mes' => $estadisticas['documentos']['visitas'] ?? 0,
+            'tasa_respuesta' => round($estadisticas['solicitudes']['tasa_resolucion'] ?? 0, 1) . '%',
+        ];
+    }
+
+    // ========================================================================
     // FAQS
     // ========================================================================
 
@@ -2405,5 +2695,11 @@ KNOWLEDGE;
                 'respuesta' => 'Depende de la configuracion. En general se requiere al menos un email para recibir la respuesta. Algunas solicitudes pueden requerir identificacion completa.',
             ],
         ];
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

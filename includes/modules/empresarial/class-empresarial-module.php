@@ -11,6 +11,8 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     protected $module_id = 'empresarial';
     protected $module_name = 'Sector Empresarial';
     protected $module_description = 'Componentes profesionales para empresas: héroes corporativos, servicios, equipo, testimonios, estadísticas y más';
@@ -48,6 +50,13 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      */
     public function deactivate() {
         return true;
+    }
+
+    /**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -439,6 +448,690 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('wp_ajax_empresarial_contacto', [$this, 'ajax_contacto_form']);
         add_action('wp_ajax_nopriv_empresarial_contacto', [$this, 'ajax_contacto_form']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en el panel de administración unificado
+        $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registrar rutas REST API
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // GET /flavor/v1/empresas - Listar empresas
+        register_rest_route($namespace, '/empresas', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_listar_empresas'],
+            'permission_callback' => [$this, 'api_check_read_permission'],
+            'args'                => [
+                'estado' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'enum'              => ['activa', 'inactiva', 'pendiente'],
+                ],
+                'categoria' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'per_page' => [
+                    'type'              => 'integer',
+                    'default'           => 20,
+                    'sanitize_callback' => 'absint',
+                    'minimum'           => 1,
+                    'maximum'           => 100,
+                ],
+                'page' => [
+                    'type'              => 'integer',
+                    'default'           => 1,
+                    'sanitize_callback' => 'absint',
+                    'minimum'           => 1,
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/empresas/{id} - Obtener una empresa
+        register_rest_route($namespace, '/empresas/(?P<id>\d+)', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_obtener_empresa'],
+            'permission_callback' => [$this, 'api_check_read_permission'],
+            'args'                => [
+                'id' => [
+                    'type'              => 'integer',
+                    'required'          => true,
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function($param) {
+                        return is_numeric($param) && $param > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/empresas/{id}/servicios - Servicios de la empresa
+        register_rest_route($namespace, '/empresas/(?P<id>\d+)/servicios', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_obtener_servicios_empresa'],
+            'permission_callback' => [$this, 'api_check_read_permission'],
+            'args'                => [
+                'id' => [
+                    'type'              => 'integer',
+                    'required'          => true,
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function($param) {
+                        return is_numeric($param) && $param > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/empresas/categorias - Categorías de empresas
+        register_rest_route($namespace, '/empresas/categorias', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_obtener_categorias'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // GET /flavor/v1/empresas/buscar - Buscar empresas
+        register_rest_route($namespace, '/empresas/buscar', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_buscar_empresas'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'termino' => [
+                    'type'              => 'string',
+                    'required'          => true,
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'validate_callback' => function($param) {
+                        return !empty($param) && strlen($param) >= 2;
+                    },
+                ],
+                'categoria' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'per_page' => [
+                    'type'              => 'integer',
+                    'default'           => 20,
+                    'sanitize_callback' => 'absint',
+                    'minimum'           => 1,
+                    'maximum'           => 100,
+                ],
+                'page' => [
+                    'type'              => 'integer',
+                    'default'           => 1,
+                    'sanitize_callback' => 'absint',
+                    'minimum'           => 1,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Verificar permisos de lectura para la API
+     *
+     * @param \WP_REST_Request $request Objeto de solicitud REST
+     * @return bool
+     */
+    public function api_check_read_permission($request) {
+        // Lectura pública por defecto, o restringida según configuración
+        $configuracion_api = $this->get_rest_config();
+        if (!empty($configuracion_api['require_auth'])) {
+            return is_user_logged_in();
+        }
+        return true;
+    }
+
+    /**
+     * API: Listar empresas
+     *
+     * @param \WP_REST_Request $request Objeto de solicitud REST
+     * @return \WP_REST_Response
+     */
+    public function api_listar_empresas($request) {
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_empresarial_proyectos';
+
+        $estado_filtro     = $request->get_param('estado');
+        $categoria_filtro  = $request->get_param('categoria');
+        $limite_resultados = $request->get_param('per_page') ?: 20;
+        $pagina_actual     = $request->get_param('page') ?: 1;
+        $offset_consulta   = ($pagina_actual - 1) * $limite_resultados;
+
+        $condiciones_where = '1=1';
+        $valores_parametros = [];
+
+        if (!empty($estado_filtro)) {
+            $condiciones_where .= ' AND estado = %s';
+            $valores_parametros[] = $estado_filtro;
+        }
+
+        // Obtener empresas únicas desde proyectos
+        $consulta_total = "SELECT COUNT(DISTINCT cliente_nombre) FROM $tabla_proyectos WHERE $condiciones_where";
+        if (!empty($valores_parametros)) {
+            $total_empresas = (int) $wpdb->get_var($wpdb->prepare($consulta_total, $valores_parametros));
+        } else {
+            $total_empresas = (int) $wpdb->get_var($consulta_total);
+        }
+
+        $consulta_empresas = "SELECT
+                                cliente_nombre as nombre,
+                                cliente_email as email,
+                                COUNT(*) as total_proyectos,
+                                SUM(presupuesto) as presupuesto_total,
+                                MAX(created_at) as ultimo_proyecto
+                              FROM $tabla_proyectos
+                              WHERE $condiciones_where
+                              GROUP BY cliente_nombre, cliente_email
+                              ORDER BY ultimo_proyecto DESC
+                              LIMIT %d OFFSET %d";
+
+        $parametros_completos = array_merge($valores_parametros, [$limite_resultados, $offset_consulta]);
+        $lista_empresas = $wpdb->get_results($wpdb->prepare($consulta_empresas, $parametros_completos), ARRAY_A);
+
+        // Formatear datos de respuesta
+        $empresas_formateadas = [];
+        foreach ($lista_empresas ?: [] as $indice => $empresa) {
+            $empresas_formateadas[] = [
+                'id'               => $indice + 1 + $offset_consulta,
+                'nombre'           => $empresa['nombre'],
+                'email'            => $empresa['email'],
+                'total_proyectos'  => (int) $empresa['total_proyectos'],
+                'presupuesto_total' => $this->format_price((float) $empresa['presupuesto_total']),
+                'ultimo_proyecto'  => $empresa['ultimo_proyecto'],
+            ];
+        }
+
+        $total_paginas = ceil($total_empresas / $limite_resultados);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'data'    => $empresas_formateadas,
+            'meta'    => [
+                'total'       => $total_empresas,
+                'page'        => $pagina_actual,
+                'per_page'    => $limite_resultados,
+                'total_pages' => $total_paginas,
+            ],
+        ], 200);
+    }
+
+    /**
+     * API: Obtener una empresa por ID
+     *
+     * @param \WP_REST_Request $request Objeto de solicitud REST
+     * @return \WP_REST_Response
+     */
+    public function api_obtener_empresa($request) {
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_empresarial_proyectos';
+
+        $empresa_id = $request->get_param('id');
+
+        // Obtener empresas únicas ordenadas por último proyecto
+        $lista_empresas = $wpdb->get_results(
+            "SELECT
+                cliente_nombre as nombre,
+                cliente_email as email,
+                COUNT(*) as total_proyectos,
+                SUM(presupuesto) as presupuesto_total,
+                SUM(CASE WHEN estado = 'completado' THEN presupuesto ELSE 0 END) as presupuesto_completado,
+                SUM(CASE WHEN estado IN ('aprobado', 'en_curso') THEN presupuesto ELSE 0 END) as presupuesto_activo,
+                MAX(created_at) as ultimo_proyecto,
+                MIN(created_at) as primer_proyecto
+             FROM $tabla_proyectos
+             GROUP BY cliente_nombre, cliente_email
+             ORDER BY ultimo_proyecto DESC",
+            ARRAY_A
+        );
+
+        $indice_empresa = $empresa_id - 1;
+        if (!isset($lista_empresas[$indice_empresa])) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'message' => __('Empresa no encontrada.', 'flavor-chat-ia'),
+            ], 404);
+        }
+
+        $datos_empresa = $lista_empresas[$indice_empresa];
+
+        // Obtener proyectos de esta empresa
+        $proyectos_empresa = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, titulo, estado, presupuesto, progreso, fecha_inicio, fecha_entrega, created_at
+                 FROM $tabla_proyectos
+                 WHERE cliente_nombre = %s
+                 ORDER BY created_at DESC",
+                $datos_empresa['nombre']
+            ),
+            ARRAY_A
+        );
+
+        // Calcular estadísticas
+        $estadisticas_empresa = [
+            'proyectos_activos'    => 0,
+            'proyectos_completados' => 0,
+            'proyectos_pendientes' => 0,
+            'progreso_promedio'    => 0,
+        ];
+
+        $suma_progreso = 0;
+        $cantidad_activos = 0;
+
+        foreach ($proyectos_empresa ?: [] as $proyecto) {
+            if (in_array($proyecto['estado'], ['aprobado', 'en_curso'], true)) {
+                $estadisticas_empresa['proyectos_activos']++;
+                $suma_progreso += (int) $proyecto['progreso'];
+                $cantidad_activos++;
+            } elseif ($proyecto['estado'] === 'completado') {
+                $estadisticas_empresa['proyectos_completados']++;
+            } elseif ($proyecto['estado'] === 'propuesta') {
+                $estadisticas_empresa['proyectos_pendientes']++;
+            }
+        }
+
+        if ($cantidad_activos > 0) {
+            $estadisticas_empresa['progreso_promedio'] = round($suma_progreso / $cantidad_activos, 1);
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'data'    => [
+                'id'                     => $empresa_id,
+                'nombre'                 => $datos_empresa['nombre'],
+                'email'                  => $datos_empresa['email'],
+                'total_proyectos'        => (int) $datos_empresa['total_proyectos'],
+                'presupuesto_total'      => $this->format_price((float) $datos_empresa['presupuesto_total']),
+                'presupuesto_completado' => $this->format_price((float) $datos_empresa['presupuesto_completado']),
+                'presupuesto_activo'     => $this->format_price((float) $datos_empresa['presupuesto_activo']),
+                'primer_proyecto'        => $datos_empresa['primer_proyecto'],
+                'ultimo_proyecto'        => $datos_empresa['ultimo_proyecto'],
+                'estadisticas'           => $estadisticas_empresa,
+                'proyectos'              => $proyectos_empresa ?: [],
+            ],
+        ], 200);
+    }
+
+    /**
+     * API: Obtener servicios de una empresa
+     *
+     * @param \WP_REST_Request $request Objeto de solicitud REST
+     * @return \WP_REST_Response
+     */
+    public function api_obtener_servicios_empresa($request) {
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_empresarial_proyectos';
+
+        $empresa_id = $request->get_param('id');
+
+        // Obtener empresas únicas ordenadas por último proyecto
+        $lista_empresas = $wpdb->get_results(
+            "SELECT cliente_nombre as nombre FROM $tabla_proyectos GROUP BY cliente_nombre ORDER BY MAX(created_at) DESC",
+            ARRAY_A
+        );
+
+        $indice_empresa = $empresa_id - 1;
+        if (!isset($lista_empresas[$indice_empresa])) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'message' => __('Empresa no encontrada.', 'flavor-chat-ia'),
+            ], 404);
+        }
+
+        $nombre_empresa = $lista_empresas[$indice_empresa]['nombre'];
+
+        // Obtener proyectos como "servicios contratados"
+        $servicios_empresa = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT
+                    id,
+                    titulo as nombre,
+                    descripcion,
+                    estado,
+                    presupuesto,
+                    progreso,
+                    fecha_inicio,
+                    fecha_entrega,
+                    created_at
+                 FROM $tabla_proyectos
+                 WHERE cliente_nombre = %s
+                 ORDER BY created_at DESC",
+                $nombre_empresa
+            ),
+            ARRAY_A
+        );
+
+        // Formatear servicios
+        $servicios_formateados = [];
+        foreach ($servicios_empresa ?: [] as $servicio) {
+            $dias_restantes = null;
+            if (!empty($servicio['fecha_entrega'])) {
+                $fecha_entrega_obj = date_create($servicio['fecha_entrega']);
+                $fecha_hoy_obj     = date_create(current_time('Y-m-d'));
+                if ($fecha_entrega_obj && $fecha_hoy_obj) {
+                    $diferencia_fechas = date_diff($fecha_hoy_obj, $fecha_entrega_obj);
+                    $dias_restantes = (int) $diferencia_fechas->format('%R%a');
+                }
+            }
+
+            $servicios_formateados[] = [
+                'id'              => (int) $servicio['id'],
+                'nombre'          => $servicio['nombre'],
+                'descripcion'     => $servicio['descripcion'],
+                'estado'          => $servicio['estado'],
+                'presupuesto'     => $this->format_price((float) $servicio['presupuesto']),
+                'progreso'        => (int) $servicio['progreso'],
+                'fecha_inicio'    => $servicio['fecha_inicio'],
+                'fecha_entrega'   => $servicio['fecha_entrega'],
+                'dias_restantes'  => $dias_restantes,
+                'created_at'      => $servicio['created_at'],
+            ];
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'data'    => [
+                'empresa_id'   => $empresa_id,
+                'empresa'      => $nombre_empresa,
+                'servicios'    => $servicios_formateados,
+                'total'        => count($servicios_formateados),
+            ],
+        ], 200);
+    }
+
+    /**
+     * API: Obtener categorías de empresas
+     *
+     * @param \WP_REST_Request $request Objeto de solicitud REST
+     * @return \WP_REST_Response
+     */
+    public function api_obtener_categorias($request) {
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_empresarial_proyectos';
+
+        // Obtener estadísticas por estado de proyecto como "categorías"
+        $categorias_estado = $wpdb->get_results(
+            "SELECT
+                estado as nombre,
+                COUNT(DISTINCT cliente_nombre) as total_empresas,
+                COUNT(*) as total_proyectos,
+                SUM(presupuesto) as presupuesto_total
+             FROM $tabla_proyectos
+             GROUP BY estado
+             ORDER BY total_empresas DESC",
+            ARRAY_A
+        );
+
+        // Formatear categorías
+        $categorias_formateadas = [];
+        $etiquetas_estado = [
+            'propuesta'  => __('En Propuesta', 'flavor-chat-ia'),
+            'aprobado'   => __('Aprobados', 'flavor-chat-ia'),
+            'en_curso'   => __('En Curso', 'flavor-chat-ia'),
+            'completado' => __('Completados', 'flavor-chat-ia'),
+            'cancelado'  => __('Cancelados', 'flavor-chat-ia'),
+        ];
+
+        foreach ($categorias_estado ?: [] as $categoria) {
+            $categorias_formateadas[] = [
+                'slug'             => $categoria['nombre'],
+                'nombre'           => $etiquetas_estado[$categoria['nombre']] ?? ucfirst($categoria['nombre']),
+                'total_empresas'   => (int) $categoria['total_empresas'],
+                'total_proyectos'  => (int) $categoria['total_proyectos'],
+                'presupuesto_total' => $this->format_price((float) $categoria['presupuesto_total']),
+            ];
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'data'    => $categorias_formateadas,
+        ], 200);
+    }
+
+    /**
+     * API: Buscar empresas
+     *
+     * @param \WP_REST_Request $request Objeto de solicitud REST
+     * @return \WP_REST_Response
+     */
+    public function api_buscar_empresas($request) {
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_empresarial_proyectos';
+
+        $termino_busqueda  = $request->get_param('termino');
+        $categoria_filtro  = $request->get_param('categoria');
+        $limite_resultados = $request->get_param('per_page') ?: 20;
+        $pagina_actual     = $request->get_param('page') ?: 1;
+        $offset_consulta   = ($pagina_actual - 1) * $limite_resultados;
+
+        $patron_busqueda = '%' . $wpdb->esc_like($termino_busqueda) . '%';
+
+        $condiciones_where = "(cliente_nombre LIKE %s OR cliente_email LIKE %s OR titulo LIKE %s OR descripcion LIKE %s)";
+        $valores_parametros = [$patron_busqueda, $patron_busqueda, $patron_busqueda, $patron_busqueda];
+
+        if (!empty($categoria_filtro)) {
+            $condiciones_where .= ' AND estado = %s';
+            $valores_parametros[] = $categoria_filtro;
+        }
+
+        // Contar resultados únicos por empresa
+        $consulta_total = "SELECT COUNT(DISTINCT cliente_nombre) FROM $tabla_proyectos WHERE $condiciones_where";
+        $total_resultados = (int) $wpdb->get_var($wpdb->prepare($consulta_total, $valores_parametros));
+
+        // Buscar empresas
+        $consulta_busqueda = "SELECT
+                                cliente_nombre as nombre,
+                                cliente_email as email,
+                                COUNT(*) as total_proyectos,
+                                SUM(presupuesto) as presupuesto_total,
+                                MAX(created_at) as ultimo_proyecto
+                              FROM $tabla_proyectos
+                              WHERE $condiciones_where
+                              GROUP BY cliente_nombre, cliente_email
+                              ORDER BY ultimo_proyecto DESC
+                              LIMIT %d OFFSET %d";
+
+        $parametros_completos = array_merge($valores_parametros, [$limite_resultados, $offset_consulta]);
+        $empresas_encontradas = $wpdb->get_results($wpdb->prepare($consulta_busqueda, $parametros_completos), ARRAY_A);
+
+        // Formatear resultados
+        $resultados_formateados = [];
+        foreach ($empresas_encontradas ?: [] as $indice => $empresa) {
+            $resultados_formateados[] = [
+                'id'               => $indice + 1 + $offset_consulta,
+                'nombre'           => $empresa['nombre'],
+                'email'            => $empresa['email'],
+                'total_proyectos'  => (int) $empresa['total_proyectos'],
+                'presupuesto_total' => $this->format_price((float) $empresa['presupuesto_total']),
+                'ultimo_proyecto'  => $empresa['ultimo_proyecto'],
+            ];
+        }
+
+        $total_paginas = ceil($total_resultados / $limite_resultados);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'data'    => $resultados_formateados,
+            'meta'    => [
+                'termino'     => $termino_busqueda,
+                'total'       => $total_resultados,
+                'page'        => $pagina_actual,
+                'per_page'    => $limite_resultados,
+                'total_pages' => $total_paginas,
+            ],
+        ], 200);
+    }
+
+    /**
+     * Configuración para el panel de administración unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id'         => $this->module_id,
+            'label'      => $this->module_name,
+            'icon'       => 'dashicons-building',
+            'capability' => 'manage_options',
+            'categoria'  => 'economia',
+            'paginas'    => [
+                [
+                    'slug'     => 'flavor-empresarial-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                    'badge'    => [$this, 'contar_contactos_nuevos'],
+                ],
+                [
+                    'slug'     => 'flavor-empresarial-empresas',
+                    'titulo'   => __('Empresas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_empresas'],
+                ],
+                [
+                    'slug'     => 'flavor-empresarial-contratos',
+                    'titulo'   => __('Contratos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_contratos'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas'     => [$this, 'get_estadisticas_resumen'],
+        ];
+    }
+
+    /**
+     * Cuenta los contactos nuevos para mostrar en el badge
+     *
+     * @return int
+     */
+    public function contar_contactos_nuevos() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_contactos = $wpdb->prefix . 'flavor_empresarial_contactos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_contactos)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_contactos WHERE estado = 'nuevo'");
+    }
+
+    /**
+     * Renderiza el dashboard del módulo empresarial
+     */
+    public function render_admin_dashboard() {
+        $estadisticas = $this->action_estadisticas([]);
+
+        $this->render_page_header(
+            __('Dashboard Empresarial', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nuevo Proyecto', 'flavor-chat-ia'),
+                    'url'   => $this->admin_page_url('flavor-empresarial-contratos') . '&action=nuevo',
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+
+        include dirname(__FILE__) . '/views/admin-dashboard.php';
+    }
+
+    /**
+     * Renderiza la página de gestión de empresas/clientes
+     */
+    public function render_admin_empresas() {
+        $this->render_page_header(
+            __('Gestión de Empresas', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nueva Empresa', 'flavor-chat-ia'),
+                    'url'   => $this->admin_page_url('flavor-empresarial-empresas') . '&action=nueva',
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+
+        include dirname(__FILE__) . '/views/admin-empresas.php';
+    }
+
+    /**
+     * Renderiza la página de gestión de contratos/proyectos
+     */
+    public function render_admin_contratos() {
+        $this->render_page_header(
+            __('Gestión de Contratos', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nuevo Contrato', 'flavor-chat-ia'),
+                    'url'   => $this->admin_page_url('flavor-empresarial-contratos') . '&action=nuevo',
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+
+        include dirname(__FILE__) . '/views/admin-contratos.php';
+    }
+
+    /**
+     * Renderiza el widget del dashboard principal de WordPress
+     */
+    public function render_dashboard_widget() {
+        $estadisticas = $this->action_estadisticas([]);
+
+        if (!$estadisticas['success']) {
+            echo '<p>' . esc_html__('No se pudieron cargar las estadísticas.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        $datos_estadisticas = $estadisticas['estadisticas'];
+        ?>
+        <div class="flavor-empresarial-widget">
+            <div class="widget-stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number"><?php echo esc_html($datos_estadisticas['contactos']['nuevos']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Contactos Nuevos', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number"><?php echo esc_html($datos_estadisticas['proyectos']['activos']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number"><?php echo esc_html($datos_estadisticas['financiero']['presupuesto_activo_fmt']); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Presupuesto Activo', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <p class="widget-footer">
+                <a href="<?php echo esc_url($this->admin_page_url('flavor-empresarial-dashboard')); ?>">
+                    <?php esc_html_e('Ver Dashboard Completo', 'flavor-chat-ia'); ?> &rarr;
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene un resumen de estadísticas para el panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_resumen() {
+        $estadisticas = $this->action_estadisticas([]);
+
+        if (!$estadisticas['success']) {
+            return [];
+        }
+
+        $datos_estadisticas = $estadisticas['estadisticas'];
+
+        return [
+            'contactos_nuevos'    => $datos_estadisticas['contactos']['nuevos'],
+            'contactos_pendientes' => $datos_estadisticas['contactos']['pendientes'],
+            'proyectos_activos'   => $datos_estadisticas['proyectos']['activos'],
+            'proyectos_vencidos'  => $datos_estadisticas['proyectos']['vencidos'],
+            'presupuesto_activo'  => $datos_estadisticas['financiero']['presupuesto_activo_fmt'],
+        ];
     }
 
     // =========================================================================
@@ -1450,5 +2143,15 @@ Este modulo gestiona la actividad empresarial: contactos comerciales, proyectos 
 - Progreso promedio de proyectos activos
 - Proyectos con fecha de entrega vencida
 KNOWLEDGE;
+    }
+
+    /**
+     * Formatea un precio para mostrar
+     *
+     * @param float $precio Precio a formatear
+     * @return string Precio formateado
+     */
+    protected function format_price($precio) {
+        return number_format($precio, 2, ',', '.') . ' €';
     }
 }

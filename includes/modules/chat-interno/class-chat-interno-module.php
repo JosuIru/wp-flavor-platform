@@ -16,13 +16,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'chat_interno';
-        $this->name = __('Chat Interno', 'flavor-chat-ia');
-        $this->description = __('Sistema de mensajeria privada uno a uno entre miembros de la comunidad.', 'flavor-chat-ia');
+        $this->name = 'Chat Interno'; // Translation loaded on init
+        $this->description = 'Sistema de mensajeria privada uno a uno entre miembros de la comunidad.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -44,7 +46,15 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Chat Interno no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -88,6 +98,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_flavor_chat_interno_typing', [$this, 'ajax_typing']);
         add_action('wp_ajax_flavor_chat_interno_buscar', [$this, 'ajax_buscar_mensajes']);
         add_action('wp_ajax_flavor_chat_interno_archivar', [$this, 'ajax_archivar_conversacion']);
+        add_action('wp_ajax_flavor_chat_interno_silenciar', [$this, 'ajax_silenciar_conversacion']);
         add_action('wp_ajax_flavor_chat_interno_eliminar_msg', [$this, 'ajax_eliminar_mensaje']);
         add_action('wp_ajax_flavor_chat_interno_editar_msg', [$this, 'ajax_editar_mensaje']);
         add_action('wp_ajax_flavor_chat_interno_bloquear', [$this, 'ajax_bloquear_usuario']);
@@ -113,6 +124,9 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         // Actualizar estado online
         add_action('wp_login', [$this, 'marcar_usuario_online'], 10, 2);
         add_action('wp_logout', [$this, 'marcar_usuario_offline']);
+
+        // Registrar en panel de administracion unificado
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -421,6 +435,10 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                 'description' => 'Archivar/desarchivar conversacion',
                 'params' => ['conversacion_id', 'archivar'],
             ],
+            'silenciar' => [
+                'description' => 'Silenciar/activar notificaciones de conversacion',
+                'params' => ['conversacion_id', 'silenciar'],
+            ],
             'eliminar_mensaje' => [
                 'description' => 'Eliminar mensaje',
                 'params' => ['mensaje_id', 'para_todos'],
@@ -479,7 +497,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesion.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -586,31 +604,31 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesion.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         $otro_usuario_id = intval($params['usuario_id'] ?? 0);
 
         if (!$otro_usuario_id) {
-            return ['success' => false, 'error' => 'ID de usuario invalido.'];
+            return ['success' => false, 'error' => __('Este usuario te ha bloqueado.', 'flavor-chat-ia')];
         }
 
         if ($otro_usuario_id === $usuario_id) {
-            return ['success' => false, 'error' => 'No puedes chatear contigo mismo.'];
+            return ['success' => false, 'error' => __('flavor_chat_conversaciones', 'flavor-chat-ia')];
         }
 
         // Verificar que el usuario existe
         $otro_usuario = get_userdata($otro_usuario_id);
         if (!$otro_usuario) {
-            return ['success' => false, 'error' => 'Usuario no encontrado.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         // Verificar bloqueos
         if ($this->esta_bloqueado($usuario_id, $otro_usuario_id)) {
-            return ['success' => false, 'error' => 'Has bloqueado a este usuario.'];
+            return ['success' => false, 'error' => __('individual', 'flavor-chat-ia')];
         }
         if ($this->esta_bloqueado($otro_usuario_id, $usuario_id)) {
-            return ['success' => false, 'error' => 'Este usuario te ha bloqueado.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -680,7 +698,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'conversacion_id' => $conversacion_id,
             'nueva' => true,
-            'mensaje' => 'Conversacion iniciada.',
+            'mensaje' => __('limite', 'flavor-chat-ia'),
         ];
     }
 
@@ -692,7 +710,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a esta conversacion.'];
+            return ['success' => false, 'error' => __(' AND m.id < %d', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -825,22 +843,22 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesion.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a esta conversacion.'];
+            return ['success' => false, 'error' => __('El mensaje no puede estar vacio.', 'flavor-chat-ia')];
         }
 
         // Verificar bloqueos
         $otro_participante = $this->obtener_otro_participante($usuario_id, $conversacion_id);
         if ($this->esta_bloqueado($usuario_id, $otro_participante['id'])) {
-            return ['success' => false, 'error' => 'Has bloqueado a este usuario.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
         if ($this->esta_bloqueado($otro_participante['id'], $usuario_id)) {
-            return ['success' => false, 'error' => 'Este usuario te ha bloqueado.'];
+            return ['success' => false, 'error' => __('flavor_chat_conversaciones', 'flavor-chat-ia')];
         }
 
         $mensaje = trim($params['mensaje'] ?? '');
@@ -849,11 +867,11 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             : 'texto';
 
         if (empty($mensaje) && empty($params['adjuntos']) && $tipo === 'texto') {
-            return ['success' => false, 'error' => 'El mensaje no puede estar vacio.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         if (strlen($mensaje) > 5000) {
-            return ['success' => false, 'error' => 'Mensaje demasiado largo (maximo 5000 caracteres).'];
+            return ['success' => false, 'error' => __('adjuntos', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -951,7 +969,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a esta conversacion.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -999,13 +1017,13 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesion.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         $query = trim($params['query'] ?? '');
 
         if (strlen($query) < 2) {
-            return ['success' => false, 'error' => 'La busqueda debe tener al menos 2 caracteres.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1069,7 +1087,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a esta conversacion.'];
+            return ['success' => false, 'error' => __('Conversacion archivada.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1093,6 +1111,37 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Accion: Silenciar conversacion
+     */
+    private function action_silenciar($params) {
+        $usuario_id = get_current_user_id();
+        $conversacion_id = intval($params['conversacion_id'] ?? 0);
+
+        if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+        }
+
+        global $wpdb;
+        $tabla_participantes = $wpdb->prefix . 'flavor_chat_participantes';
+
+        $silenciar = isset($params['silenciar']) ? (bool) $params['silenciar'] : true;
+
+        $wpdb->update(
+            $tabla_participantes,
+            ['silenciado' => $silenciar ? 1 : 0],
+            ['conversacion_id' => $conversacion_id, 'usuario_id' => $usuario_id]
+        );
+
+        return [
+            'success' => true,
+            'silenciado' => $silenciar,
+            'mensaje' => $silenciar
+                ? __('Conversacion silenciada.', 'flavor-chat-ia')
+                : __('Notificaciones reactivadas.', 'flavor-chat-ia'),
+        ];
+    }
+
+    /**
      * Accion: Eliminar mensaje
      */
     private function action_eliminar_mensaje($params) {
@@ -1108,16 +1157,16 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => 'Mensaje no encontrado.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         if (!$this->usuario_es_participante($usuario_id, $mensaje->conversacion_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a esta conversacion.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_eliminar_mensajes']) {
-            return ['success' => false, 'error' => 'La eliminacion de mensajes no esta permitida.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         $para_todos = !empty($params['para_todos']) && (int) $mensaje->remitente_id === $usuario_id;
@@ -1156,7 +1205,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $nuevo_mensaje = trim($params['mensaje'] ?? '');
 
         if (empty($nuevo_mensaje)) {
-            return ['success' => false, 'error' => 'El mensaje no puede estar vacio.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1168,16 +1217,16 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => 'Mensaje no encontrado.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         if ((int) $mensaje->remitente_id !== $usuario_id) {
-            return ['success' => false, 'error' => 'Solo puedes editar tus propios mensajes.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_editar_mensajes']) {
-            return ['success' => false, 'error' => 'La edicion de mensajes no esta permitida.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         // Verificar tiempo limite
@@ -1221,15 +1270,15 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $bloqueado_id = intval($params['usuario_id'] ?? 0);
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesion.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         if (!$bloqueado_id || $bloqueado_id === $usuario_id) {
-            return ['success' => false, 'error' => 'ID de usuario invalido.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         if ($this->esta_bloqueado($usuario_id, $bloqueado_id)) {
-            return ['success' => false, 'error' => 'Este usuario ya esta bloqueado.'];
+            return ['success' => false, 'error' => __('escribiendo', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1255,7 +1304,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $bloqueado_id = intval($params['usuario_id'] ?? 0);
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesion.'];
+            return ['success' => false, 'error' => __('Sin permisos.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1281,7 +1330,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $escribiendo = !empty($params['escribiendo']);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => 'No tienes acceso a esta conversacion.'];
+            return ['success' => false, 'error' => __('SELECT COUNT(*) FROM $tabla_mensajes WHERE eliminado = 0', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1304,7 +1353,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      */
     private function action_estadisticas_mensajeria($params) {
         if (!current_user_can('manage_options')) {
-            return ['success' => false, 'error' => 'Sin permisos.'];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1529,6 +1578,20 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * AJAX: Silenciar conversacion
+     */
+    public function ajax_silenciar_conversacion() {
+        check_ajax_referer('flavor_chat_interno', 'nonce');
+
+        $resultado = $this->action_silenciar([
+            'conversacion_id' => intval($_POST['conversacion_id'] ?? 0),
+            'silenciar' => !empty($_POST['silenciar']),
+        ]);
+
+        wp_send_json($resultado);
+    }
+
+    /**
      * AJAX: Eliminar mensaje
      */
     public function ajax_eliminar_mensaje() {
@@ -1590,16 +1653,16 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_chat_interno', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json(['success' => false, 'error' => 'Debes iniciar sesion.']);
+            wp_send_json(['success' => false, 'error' => __('query', 'flavor-chat-ia')]);
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_archivos']) {
-            wp_send_json(['success' => false, 'error' => 'La subida de archivos no esta permitida.']);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
         }
 
         if (empty($_FILES['file'])) {
-            wp_send_json(['success' => false, 'error' => 'No se recibio ningun archivo.']);
+            wp_send_json(['success' => false, 'error' => __('search', 'flavor-chat-ia')]);
         }
 
         $archivo = $_FILES['file'];
@@ -1617,7 +1680,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $tipos_permitidos = $this->get_allowed_file_types();
         if (!in_array($archivo['type'], $tipos_permitidos)) {
-            wp_send_json(['success' => false, 'error' => 'Tipo de archivo no permitido.']);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
         }
 
         require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -1650,7 +1713,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_chat_interno', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json(['success' => false, 'error' => 'Debes iniciar sesion.']);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
         }
 
         $busqueda = sanitize_text_field($_GET['query'] ?? '');
@@ -1689,14 +1752,14 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => 'No autenticado.']);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
         }
 
         $conversacion_id = intval($_GET['conversacion_id'] ?? 0);
         $ultimo_mensaje_id = intval($_GET['ultimo_mensaje_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            wp_send_json(['success' => false, 'error' => 'Sin acceso.']);
+            wp_send_json(['success' => false, 'error' => __('mensajes', 'flavor-chat-ia')]);
         }
 
         // Actualizar actividad
@@ -1790,12 +1853,12 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = intval($_GET['usuario_id'] ?? 0);
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => 'ID invalido.']);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
         }
 
         $usuario = get_userdata($usuario_id);
         if (!$usuario) {
-            wp_send_json(['success' => false, 'error' => 'Usuario no encontrado.']);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
         }
 
         $yo = get_current_user_id();
@@ -2645,6 +2708,264 @@ KNOWLEDGE;
             [
                 'pregunta' => 'Como se si alguien leyo mi mensaje?',
                 'respuesta' => 'Veras un indicador de "visto" cuando el destinatario haya leido tu mensaje.',
+            ],
+        ];
+    }
+
+    /**
+     * Configuracion para el panel de administracion unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'chat_interno',
+            'label' => __('Chat Interno', 'flavor-chat-ia'),
+            'icon' => 'dashicons-testimonial',
+            'capability' => 'manage_options',
+            'categoria' => 'comunicacion',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-chat-interno-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-chat-interno-conversaciones',
+                    'titulo' => __('Conversaciones', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_conversaciones'],
+                    'badge' => [$this, 'contar_conversaciones_activas'],
+                ],
+                [
+                    'slug' => 'flavor-chat-interno-config',
+                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas' => [$this, 'get_estadisticas_admin'],
+        ];
+    }
+
+    /**
+     * Cuenta conversaciones activas para el badge
+     *
+     * @return int
+     */
+    public function contar_conversaciones_activas() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+            return 0;
+        }
+
+        $total_activas = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_conversaciones} WHERE estado = 'activa'"
+        );
+
+        return intval($total_activas);
+    }
+
+    /**
+     * Renderiza el dashboard de administracion
+     */
+    public function render_admin_dashboard() {
+        $this->render_page_header(__('Chat Interno - Dashboard', 'flavor-chat-ia'));
+        ?>
+        <div class="wrap flavor-chat-interno-admin">
+            <div class="flavor-admin-grid">
+                <?php $this->render_dashboard_widget(); ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la lista de conversaciones en admin
+     */
+    public function render_admin_conversaciones() {
+        $this->render_page_header(
+            __('Conversaciones', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Exportar', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=flavor-chat-interno-conversaciones&action=exportar'),
+                    'class' => 'button-secondary',
+                ],
+            ]
+        );
+        ?>
+        <div class="wrap flavor-chat-interno-admin">
+            <p><?php _e('Listado de todas las conversaciones del sistema.', 'flavor-chat-ia'); ?></p>
+            <?php $this->render_tabla_conversaciones(); ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la tabla de conversaciones
+     */
+    private function render_tabla_conversaciones() {
+        global $wpdb;
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+        $tabla_participantes = $wpdb->prefix . 'flavor_chat_participantes';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas no estan creadas.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $conversaciones = $wpdb->get_results("
+            SELECT c.*,
+                   COUNT(DISTINCT p.usuario_id) as num_participantes
+            FROM {$tabla_conversaciones} c
+            LEFT JOIN {$tabla_participantes} p ON c.id = p.conversacion_id
+            GROUP BY c.id
+            ORDER BY c.fecha_actualizacion DESC
+            LIMIT 50
+        ");
+
+        if (empty($conversaciones)) {
+            echo '<div class="notice notice-info"><p>' . __('No hay conversaciones registradas.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+        ?>
+        <table class="wp-list-table widefat fixed striped">
+            <thead>
+                <tr>
+                    <th><?php _e('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Participantes', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Ultima actividad', 'flavor-chat-ia'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($conversaciones as $conversacion): ?>
+                    <tr>
+                        <td><?php echo esc_html($conversacion->id); ?></td>
+                        <td><?php echo esc_html(ucfirst($conversacion->tipo)); ?></td>
+                        <td>
+                            <span class="flavor-estado flavor-estado-<?php echo esc_attr($conversacion->estado); ?>">
+                                <?php echo esc_html(ucfirst($conversacion->estado)); ?>
+                            </span>
+                        </td>
+                        <td><?php echo intval($conversacion->num_participantes); ?></td>
+                        <td><?php echo esc_html(human_time_diff(strtotime($conversacion->fecha_actualizacion), current_time('timestamp')) . ' ' . __('atras', 'flavor-chat-ia')); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php
+    }
+
+    /**
+     * Renderiza la pagina de configuracion en admin
+     */
+    public function render_admin_configuracion() {
+        $this->render_page_header(__('Configuracion del Chat Interno', 'flavor-chat-ia'));
+        ?>
+        <div class="wrap flavor-chat-interno-admin">
+            <form method="post" action="">
+                <?php wp_nonce_field('flavor_chat_interno_config', 'config_nonce'); ?>
+
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php _e('Permitir archivos', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="permite_archivos" value="1" <?php checked($this->get_setting('permite_archivos'), true); ?>>
+                                <?php _e('Permitir envio de archivos adjuntos', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Notas de voz', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="permite_notas_voz" value="1" <?php checked($this->get_setting('permite_notas_voz'), true); ?>>
+                                <?php _e('Permitir envio de notas de voz', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Mensajes por pagina', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="number" name="mensajes_por_pagina" value="<?php echo esc_attr($this->get_setting('mensajes_por_pagina')); ?>" min="10" max="100" class="small-text">
+                        </td>
+                    </tr>
+                </table>
+
+                <p class="submit">
+                    <button type="submit" class="button button-primary"><?php _e('Guardar cambios', 'flavor-chat-ia'); ?></button>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget para el dashboard del panel unificado
+     */
+    public function render_dashboard_widget() {
+        global $wpdb;
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_mensajes';
+
+        $total_conversaciones = 0;
+        $total_mensajes_hoy = 0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+            $total_conversaciones = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_conversaciones}");
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
+            $total_mensajes_hoy = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_mensajes} WHERE DATE(fecha_envio) = %s",
+                current_time('Y-m-d')
+            ));
+        }
+        ?>
+        <div class="flavor-widget-stats">
+            <div class="stat-item">
+                <span class="stat-number"><?php echo intval($total_conversaciones); ?></span>
+                <span class="stat-label"><?php _e('Conversaciones', 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number"><?php echo intval($total_mensajes_hoy); ?></span>
+                <span class="stat-label"><?php _e('Mensajes hoy', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Estadisticas para el panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_admin() {
+        global $wpdb;
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+
+        $total_activas = 0;
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+            $total_activas = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_conversaciones} WHERE estado = 'activa'");
+        }
+
+        return [
+            [
+                'icon' => 'dashicons-testimonial',
+                'valor' => intval($total_activas),
+                'label' => __('Chats activos', 'flavor-chat-ia'),
+                'color' => 'purple',
+                'enlace' => admin_url('admin.php?page=flavor-chat-interno-conversaciones'),
             ],
         ];
     }

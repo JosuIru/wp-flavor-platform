@@ -68,6 +68,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
@@ -115,19 +116,19 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/espacios', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_espacios'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/espacios/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_detalle_espacio'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/espacios/(?P<id>\d+)/disponibilidad', [
             'methods' => 'GET',
             'callback' => [$this, 'api_disponibilidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/espacios/reservas', [
@@ -157,7 +158,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/espacios/equipamiento', [
             'methods' => 'GET',
             'callback' => [$this, 'api_equipamiento'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/espacios/incidencias', [
@@ -175,7 +176,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/espacios/tipos', [
             'methods' => 'GET',
             'callback' => [$this, 'api_tipos_espacios'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -933,12 +934,12 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     public function api_listar_espacios($request) {
         $params = ['tipo' => $request->get_param('tipo')];
         $resultado = $this->action_listar_espacios($params);
-        return new WP_REST_Response($resultado, 200);
+        return new WP_REST_Response($this->sanitize_public_espacios_response($resultado), 200);
     }
 
     public function api_detalle_espacio($request) {
         $resultado = $this->action_detalle_espacio(['espacio_id' => $request->get_param('id')]);
-        return new WP_REST_Response($resultado, $resultado['success'] ? 200 : 404);
+        return new WP_REST_Response($this->sanitize_public_espacios_response($resultado), $resultado['success'] ? 200 : 404);
     }
 
     public function api_disponibilidad($request) {
@@ -948,7 +949,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
             'fecha_hasta' => $request->get_param('hasta'),
         ];
         $resultado = $this->action_disponibilidad($params);
-        return new WP_REST_Response($resultado, 200);
+        return new WP_REST_Response($this->sanitize_public_espacios_response($resultado), 200);
     }
 
     public function api_crear_reserva($request) {
@@ -979,7 +980,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     public function api_equipamiento($request) {
         $params = ['categoria' => $request->get_param('categoria')];
         $resultado = $this->action_equipamiento_disponible($params);
-        return new WP_REST_Response($resultado, 200);
+        return new WP_REST_Response($this->sanitize_public_espacios_response($resultado), 200);
     }
 
     public function api_reportar_incidencia($request) {
@@ -1010,6 +1011,34 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ];
 
         return new WP_REST_Response(['success' => true, 'tipos' => $tipos], 200);
+    }
+
+    private function sanitize_public_espacios_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['espacios']) && is_array($respuesta['espacios'])) {
+            $respuesta['espacios'] = array_map([$this, 'sanitize_public_espacio'], $respuesta['espacios']);
+        }
+
+        if (!empty($respuesta['espacio']) && is_array($respuesta['espacio'])) {
+            $respuesta['espacio'] = $this->sanitize_public_espacio($respuesta['espacio']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_espacio($espacio) {
+        if (!is_array($espacio)) {
+            return $espacio;
+        }
+
+        if (array_key_exists('responsable', $espacio)) {
+            unset($espacio['responsable']);
+        }
+
+        return $espacio;
     }
 
     // =========================================================================
@@ -1670,4 +1699,32 @@ KNOWLEDGE;
             ],
         ];
     }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('espacios_comunes');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('espacios-comunes');
+        if (!$pagina && !get_option('flavor_espacios_comunes_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['espacios_comunes']);
+            update_option('flavor_espacios_comunes_pages_created', 1, false);
+        }
+    }
+
 }

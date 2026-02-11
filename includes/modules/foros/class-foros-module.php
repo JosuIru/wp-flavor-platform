@@ -16,13 +16,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'foros';
-        $this->name = __('Foros de Discusion', 'flavor-chat-ia');
-        $this->description = __('Sistema de foros comunitarios con categorias, hilos y respuestas', 'flavor-chat-ia');
+        $this->name = 'Foros de Discusion'; // Translation loaded on init
+        $this->description = 'Sistema de foros comunitarios con categorias, hilos y respuestas'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -44,7 +46,15 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Foros no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -69,6 +79,11 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
+        $this->registrar_en_panel_unificado();
+
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
     }
 
     /**
@@ -1287,6 +1302,382 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
     }
 
     // =========================================================
+    // Configuracion del Panel de Administracion Unificado
+    // =========================================================
+
+    /**
+     * Configuracion de admin para el Panel Unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'foros',
+            'label' => __('Foros de Discusion', 'flavor-chat-ia'),
+            'icon' => 'dashicons-format-chat',
+            'capability' => 'manage_options',
+            'categoria' => 'comunicacion',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-foros-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-foros-listado',
+                    'titulo' => __('Foros', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_foros'],
+                    'badge' => [$this, 'contar_foros_activos'],
+                ],
+                [
+                    'slug' => 'flavor-foros-moderacion',
+                    'titulo' => __('Moderacion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_moderacion'],
+                    'badge' => [$this, 'contar_pendientes_moderacion'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas' => [$this, 'get_estadisticas_admin'],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard de administracion de foros
+     */
+    public function render_admin_dashboard() {
+        $estadisticas = $this->get_estadisticas_admin();
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Dashboard de Foros', 'flavor-chat-ia'), [
+                [
+                    'label' => __('Nuevo Foro', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=flavor-foros-listado&action=nuevo'),
+                    'class' => 'button-primary',
+                ],
+            ]); ?>
+
+            <div class="flavor-stats-grid">
+                <div class="stat-card">
+                    <span class="dashicons dashicons-category"></span>
+                    <div class="stat-value"><?php echo intval($estadisticas['total_foros']); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Foros', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="stat-card">
+                    <span class="dashicons dashicons-admin-comments"></span>
+                    <div class="stat-value"><?php echo intval($estadisticas['total_hilos']); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Hilos', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="stat-card">
+                    <span class="dashicons dashicons-format-chat"></span>
+                    <div class="stat-value"><?php echo intval($estadisticas['total_respuestas']); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Respuestas', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="stat-card">
+                    <span class="dashicons dashicons-visibility"></span>
+                    <div class="stat-value"><?php echo intval($estadisticas['total_vistas']); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Vistas Totales', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+
+            <div class="flavor-admin-section">
+                <h2><?php esc_html_e('Ultimos Hilos', 'flavor-chat-ia'); ?></h2>
+                <?php $this->render_ultimos_hilos_tabla(); ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pagina de listado de foros
+     */
+    public function render_admin_foros() {
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Gestionar Foros', 'flavor-chat-ia'), [
+                [
+                    'label' => __('Crear Foro', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=flavor-foros-listado&action=nuevo'),
+                    'class' => 'button-primary',
+                ],
+            ]); ?>
+
+            <?php $this->render_foros_tabla(); ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pagina de moderacion
+     */
+    public function render_admin_moderacion() {
+        $tab_actual = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'hilos';
+        $pendientes_hilos = $this->contar_hilos_pendientes();
+        $pendientes_respuestas = $this->contar_respuestas_reportadas();
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Moderacion de Foros', 'flavor-chat-ia')); ?>
+
+            <?php $this->render_page_tabs([
+                [
+                    'slug' => 'hilos',
+                    'label' => __('Hilos', 'flavor-chat-ia'),
+                    'badge' => $pendientes_hilos,
+                ],
+                [
+                    'slug' => 'respuestas',
+                    'label' => __('Respuestas', 'flavor-chat-ia'),
+                    'badge' => $pendientes_respuestas,
+                ],
+                [
+                    'slug' => 'reportes',
+                    'label' => __('Reportes', 'flavor-chat-ia'),
+                ],
+            ], $tab_actual); ?>
+
+            <div class="flavor-admin-section">
+                <?php
+                switch ($tab_actual) {
+                    case 'respuestas':
+                        $this->render_respuestas_moderacion();
+                        break;
+                    case 'reportes':
+                        $this->render_reportes();
+                        break;
+                    default:
+                        $this->render_hilos_moderacion();
+                        break;
+                }
+                ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el widget del dashboard
+     */
+    public function render_dashboard_widget() {
+        $estadisticas = $this->get_estadisticas_admin();
+        ?>
+        <div class="flavor-widget-content">
+            <ul class="flavor-widget-stats">
+                <li>
+                    <span class="label"><?php esc_html_e('Foros activos:', 'flavor-chat-ia'); ?></span>
+                    <span class="value"><?php echo intval($estadisticas['total_foros']); ?></span>
+                </li>
+                <li>
+                    <span class="label"><?php esc_html_e('Hilos totales:', 'flavor-chat-ia'); ?></span>
+                    <span class="value"><?php echo intval($estadisticas['total_hilos']); ?></span>
+                </li>
+                <li>
+                    <span class="label"><?php esc_html_e('Respuestas:', 'flavor-chat-ia'); ?></span>
+                    <span class="value"><?php echo intval($estadisticas['total_respuestas']); ?></span>
+                </li>
+                <li>
+                    <span class="label"><?php esc_html_e('Pendientes moderacion:', 'flavor-chat-ia'); ?></span>
+                    <span class="value"><?php echo intval($this->contar_pendientes_moderacion()); ?></span>
+                </li>
+            </ul>
+            <p class="flavor-widget-actions">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-foros-dashboard')); ?>" class="button">
+                    <?php esc_html_e('Ver Dashboard', 'flavor-chat-ia'); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene estadisticas para el panel de admin
+     *
+     * @return array
+     */
+    public function get_estadisticas_admin() {
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+
+        $total_foros = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_foros WHERE estado = 'activo'");
+        $total_hilos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_hilos WHERE estado != 'eliminado'");
+        $total_respuestas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_respuestas WHERE estado = 'visible'");
+        $total_vistas = $wpdb->get_var("SELECT SUM(vistas) FROM $tabla_hilos");
+
+        return [
+            'total_foros' => intval($total_foros),
+            'total_hilos' => intval($total_hilos),
+            'total_respuestas' => intval($total_respuestas),
+            'total_vistas' => intval($total_vistas),
+        ];
+    }
+
+    /**
+     * Cuenta los foros activos
+     *
+     * @return int
+     */
+    public function contar_foros_activos() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_foros WHERE estado = 'activo'");
+    }
+
+    /**
+     * Cuenta elementos pendientes de moderacion
+     *
+     * @return int
+     */
+    public function contar_pendientes_moderacion() {
+        return $this->contar_hilos_pendientes() + $this->contar_respuestas_reportadas();
+    }
+
+    /**
+     * Cuenta hilos pendientes de moderacion
+     *
+     * @return int
+     */
+    private function contar_hilos_pendientes() {
+        global $wpdb;
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+        $requiere_moderacion = $this->get_setting('requiere_moderacion', false);
+
+        if (!$requiere_moderacion) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_hilos WHERE estado = 'pendiente'");
+    }
+
+    /**
+     * Cuenta respuestas reportadas
+     *
+     * @return int
+     */
+    private function contar_respuestas_reportadas() {
+        global $wpdb;
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_respuestas WHERE estado = 'reportado'");
+    }
+
+    /**
+     * Renderiza la tabla de ultimos hilos
+     */
+    private function render_ultimos_hilos_tabla() {
+        global $wpdb;
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+
+        $hilos_recientes = $wpdb->get_results(
+            "SELECT h.*, f.nombre AS nombre_foro
+             FROM $tabla_hilos h
+             LEFT JOIN $tabla_foros f ON f.id = h.foro_id
+             WHERE h.estado != 'eliminado'
+             ORDER BY h.created_at DESC
+             LIMIT 10"
+        );
+
+        if (empty($hilos_recientes)) {
+            echo '<p>' . esc_html__('No hay hilos todavia.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        echo '<table class="wp-list-table widefat fixed striped">';
+        echo '<thead><tr>';
+        echo '<th>' . esc_html__('Titulo', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Foro', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Autor', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Respuestas', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+
+        foreach ($hilos_recientes as $hilo) {
+            $autor = get_user_by('ID', $hilo->autor_id);
+            echo '<tr>';
+            echo '<td><strong>' . esc_html($hilo->titulo) . '</strong></td>';
+            echo '<td>' . esc_html($hilo->nombre_foro) . '</td>';
+            echo '<td>' . ($autor ? esc_html($autor->display_name) : '-') . '</td>';
+            echo '<td>' . intval($hilo->respuestas_count) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($hilo->created_at))) . '</td>';
+            echo '</tr>';
+        }
+
+        echo '</tbody></table>';
+    }
+
+    /**
+     * Renderiza la tabla de foros
+     */
+    private function render_foros_tabla() {
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+
+        $foros = $wpdb->get_results("SELECT * FROM $tabla_foros ORDER BY orden ASC, nombre ASC");
+
+        if (empty($foros)) {
+            echo '<p>' . esc_html__('No hay foros creados. Crea el primero.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        echo '<table class="wp-list-table widefat fixed striped">';
+        echo '<thead><tr>';
+        echo '<th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Descripcion', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Orden', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+
+        foreach ($foros as $foro) {
+            $estados_clase = [
+                'activo' => 'status-active',
+                'cerrado' => 'status-warning',
+                'archivado' => 'status-inactive',
+            ];
+            $estado_clase = $estados_clase[$foro->estado] ?? '';
+
+            echo '<tr>';
+            echo '<td><strong>' . esc_html($foro->nombre) . '</strong></td>';
+            echo '<td>' . esc_html(wp_trim_words($foro->descripcion, 10)) . '</td>';
+            echo '<td><span class="status-badge ' . esc_attr($estado_clase) . '">' . esc_html(ucfirst($foro->estado)) . '</span></td>';
+            echo '<td>' . intval($foro->orden) . '</td>';
+            echo '<td>';
+            echo '<a href="#" class="button button-small">' . esc_html__('Editar', 'flavor-chat-ia') . '</a> ';
+            echo '<a href="#" class="button button-small">' . esc_html__('Ver', 'flavor-chat-ia') . '</a>';
+            echo '</td>';
+            echo '</tr>';
+        }
+
+        echo '</tbody></table>';
+    }
+
+    /**
+     * Renderiza la seccion de moderacion de hilos
+     */
+    private function render_hilos_moderacion() {
+        echo '<p>' . esc_html__('Aqui apareceran los hilos que requieran moderacion.', 'flavor-chat-ia') . '</p>';
+    }
+
+    /**
+     * Renderiza la seccion de moderacion de respuestas
+     */
+    private function render_respuestas_moderacion() {
+        echo '<p>' . esc_html__('Aqui apareceran las respuestas reportadas o pendientes de revision.', 'flavor-chat-ia') . '</p>';
+    }
+
+    /**
+     * Renderiza la seccion de reportes
+     */
+    private function render_reportes() {
+        echo '<p>' . esc_html__('Aqui apareceran los reportes enviados por los usuarios.', 'flavor-chat-ia') . '</p>';
+    }
+
+    // =========================================================
     // Knowledge Base y FAQs
     // =========================================================
 
@@ -1389,7 +1780,7 @@ KNOWLEDGE;
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => 'Debes iniciar sesion para editar.',
+                'error' => __('Debes iniciar sesion para editar.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1400,7 +1791,7 @@ KNOWLEDGE;
         if (!$mensaje_id || empty($contenido)) {
             return [
                 'success' => false,
-                'error' => 'Se requiere ID del mensaje y contenido.',
+                'error' => __('Debes iniciar sesion para editar.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1414,11 +1805,11 @@ KNOWLEDGE;
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => 'Mensaje no encontrado.'];
+            return ['success' => false, 'error' => __('Mensaje no encontrado.', 'flavor-chat-ia')];
         }
 
         if ((int) $mensaje->autor_id !== $usuario_id && !current_user_can('manage_options')) {
-            return ['success' => false, 'error' => 'No tienes permiso para editar este mensaje.'];
+            return ['success' => false, 'error' => __('Mensaje no encontrado.', 'flavor-chat-ia')];
         }
 
         $datos_actualizar = [
@@ -1438,12 +1829,388 @@ KNOWLEDGE;
         );
 
         if ($resultado === false) {
-            return ['success' => false, 'error' => 'Error al actualizar el mensaje.'];
+            return ['success' => false, 'error' => __('Mensaje no encontrado.', 'flavor-chat-ia')];
         }
 
         return [
             'success' => true,
-            'mensaje' => 'Mensaje actualizado correctamente.',
+            'mensaje' => __('Mensaje actualizado correctamente.', 'flavor-chat-ia'),
         ];
     }
+
+    // =========================================================
+    // REST API
+    // =========================================================
+
+    /**
+     * Registra las rutas REST del modulo de foros
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // GET /flavor/v1/foros - Listar foros/categorias
+        register_rest_route($namespace, '/foros', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_listar_foros'],
+            'permission_callback' => [$this, 'api_permiso_publico'],
+        ]);
+
+        // GET /flavor/v1/foros/{id}/temas - Listar temas de un foro
+        register_rest_route($namespace, '/foros/(?P<id>\d+)/temas', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_listar_temas_foro'],
+            'permission_callback' => [$this, 'api_permiso_publico'],
+            'args'                => [
+                'id' => [
+                    'description' => __('ID del foro', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'required'    => true,
+                ],
+                'pagina' => [
+                    'description' => __('Numero de pagina', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'default'     => 1,
+                ],
+                'orden' => [
+                    'description' => __('Criterio de ordenacion', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'enum'        => ['recientes', 'actividad', 'mas_vistos', 'mas_respuestas'],
+                    'default'     => 'actividad',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/foros/temas/{id} - Obtener un tema con respuestas
+        register_rest_route($namespace, '/foros/temas/(?P<id>\d+)', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_obtener_tema'],
+            'permission_callback' => [$this, 'api_permiso_publico'],
+            'args'                => [
+                'id' => [
+                    'description' => __('ID del tema/hilo', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'required'    => true,
+                ],
+                'pagina' => [
+                    'description' => __('Numero de pagina de respuestas', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'default'     => 1,
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/foros/temas - Crear nuevo tema
+        register_rest_route($namespace, '/foros/temas', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'api_crear_tema'],
+            'permission_callback' => [$this, 'api_permiso_usuario_autenticado'],
+            'args'                => [
+                'foro_id' => [
+                    'description' => __('ID del foro donde crear el tema', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'required'    => true,
+                ],
+                'titulo' => [
+                    'description' => __('Titulo del tema', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'required'    => true,
+                ],
+                'contenido' => [
+                    'description' => __('Contenido del tema', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'required'    => true,
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/foros/temas/{id}/responder - Responder a tema
+        register_rest_route($namespace, '/foros/temas/(?P<id>\d+)/responder', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'api_responder_tema'],
+            'permission_callback' => [$this, 'api_permiso_usuario_autenticado'],
+            'args'                => [
+                'id' => [
+                    'description' => __('ID del tema/hilo', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'required'    => true,
+                ],
+                'contenido' => [
+                    'description' => __('Contenido de la respuesta', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'required'    => true,
+                ],
+                'parent_id' => [
+                    'description' => __('ID de la respuesta padre (para respuestas anidadas)', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'default'     => 0,
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/foros/buscar - Buscar en foros
+        register_rest_route($namespace, '/foros/buscar', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_buscar'],
+            'permission_callback' => [$this, 'api_permiso_publico'],
+            'args'                => [
+                'busqueda' => [
+                    'description' => __('Termino de busqueda', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'required'    => true,
+                ],
+                'foro_id' => [
+                    'description' => __('ID del foro para filtrar (opcional)', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'default'     => 0,
+                ],
+                'limite' => [
+                    'description' => __('Numero maximo de resultados', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'default'     => 20,
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/foros/mis-temas - Temas del usuario autenticado
+        register_rest_route($namespace, '/foros/mis-temas', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_mis_temas'],
+            'permission_callback' => [$this, 'api_permiso_usuario_autenticado'],
+            'args'                => [
+                'pagina' => [
+                    'description' => __('Numero de pagina', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'default'     => 1,
+                ],
+            ],
+        ]);
+    }
+
+    // =========================================================
+    // Callbacks de permisos REST
+    // =========================================================
+
+    /**
+     * Permiso: Acceso publico (cualquier usuario)
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return bool
+     */
+    public function api_permiso_publico($request) {
+        // Verificar rate limiting si esta disponible
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            $metodo = strtoupper($request->get_method());
+            $tipo_limite = in_array($metodo, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+            return Flavor_API_Rate_Limiter::check_rate_limit($tipo_limite);
+        }
+        return true;
+    }
+
+    /**
+     * Permiso: Usuario autenticado requerido
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return bool|WP_Error
+     */
+    public function api_permiso_usuario_autenticado($request) {
+        if (!is_user_logged_in()) {
+            return new WP_Error(
+                'rest_forbidden',
+                __('Debes iniciar sesion para realizar esta accion.', 'flavor-chat-ia'),
+                ['status' => 401]
+            );
+        }
+
+        // Verificar rate limiting si esta disponible
+        if (class_exists('Flavor_API_Rate_Limiter')) {
+            $metodo = strtoupper($request->get_method());
+            $tipo_limite = in_array($metodo, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+            if (!Flavor_API_Rate_Limiter::check_rate_limit($tipo_limite)) {
+                return new WP_Error(
+                    'rest_rate_limit_exceeded',
+                    __('Has excedido el limite de peticiones. Intenta de nuevo mas tarde.', 'flavor-chat-ia'),
+                    ['status' => 429]
+                );
+            }
+        }
+
+        return true;
+    }
+
+    // =========================================================
+    // Callbacks de endpoints REST
+    // =========================================================
+
+    /**
+     * API: Listar todos los foros/categorias
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response
+     */
+    public function api_listar_foros($request) {
+        $resultado = $this->action_listar_foros([]);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response($resultado, 400);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Listar temas de un foro especifico
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response
+     */
+    public function api_listar_temas_foro($request) {
+        $parametros = [
+            'foro_id' => absint($request['id']),
+            'pagina'  => absint($request->get_param('pagina') ?? 1),
+            'orden'   => sanitize_text_field($request->get_param('orden') ?? 'actividad'),
+        ];
+
+        $resultado = $this->action_ver_foro($parametros);
+
+        if (!$resultado['success']) {
+            $codigo_estado = ($resultado['error'] ?? '') === __('Foro no encontrado o no disponible.', 'flavor-chat-ia') ? 404 : 400;
+            return new WP_REST_Response($resultado, $codigo_estado);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Obtener un tema/hilo con sus respuestas
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response
+     */
+    public function api_obtener_tema($request) {
+        $parametros = [
+            'hilo_id' => absint($request['id']),
+            'pagina'  => absint($request->get_param('pagina') ?? 1),
+        ];
+
+        $resultado = $this->action_ver_hilo($parametros);
+
+        if (!$resultado['success']) {
+            $codigo_estado = ($resultado['error'] ?? '') === __('Hilo no encontrado.', 'flavor-chat-ia') ? 404 : 400;
+            return new WP_REST_Response($resultado, $codigo_estado);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Crear un nuevo tema/hilo
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response
+     */
+    public function api_crear_tema($request) {
+        $parametros_json = $request->get_json_params();
+
+        $parametros = [
+            'foro_id'   => absint($parametros_json['foro_id'] ?? 0),
+            'titulo'    => sanitize_text_field($parametros_json['titulo'] ?? ''),
+            'contenido' => sanitize_textarea_field($parametros_json['contenido'] ?? ''),
+        ];
+
+        $resultado = $this->action_crear_hilo($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response($resultado, 400);
+        }
+
+        return new WP_REST_Response($resultado, 201);
+    }
+
+    /**
+     * API: Responder a un tema/hilo
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response
+     */
+    public function api_responder_tema($request) {
+        $parametros_json = $request->get_json_params();
+
+        $parametros = [
+            'hilo_id'   => absint($request['id']),
+            'contenido' => sanitize_textarea_field($parametros_json['contenido'] ?? ''),
+            'parent_id' => absint($parametros_json['parent_id'] ?? 0),
+        ];
+
+        $resultado = $this->action_responder($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response($resultado, 400);
+        }
+
+        return new WP_REST_Response($resultado, 201);
+    }
+
+    /**
+     * API: Buscar en los foros
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response
+     */
+    public function api_buscar($request) {
+        $parametros = [
+            'busqueda' => sanitize_text_field($request->get_param('busqueda') ?? ''),
+            'foro_id'  => absint($request->get_param('foro_id') ?? 0),
+            'limite'   => min(100, absint($request->get_param('limite') ?? 20)),
+        ];
+
+        $resultado = $this->action_buscar($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response($resultado, 400);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Obtener temas del usuario autenticado
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response
+     */
+    public function api_mis_temas($request) {
+        $parametros = [
+            'pagina' => absint($request->get_param('pagina') ?? 1),
+        ];
+
+        $resultado = $this->action_mis_hilos($parametros);
+
+        if (!$resultado['success']) {
+            return new WP_REST_Response($resultado, 400);
+        }
+
+        return new WP_REST_Response($resultado, 200);
+    }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('foros');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('foros');
+        if (!$pagina && !get_option('flavor_foros_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['foros']);
+            update_option('flavor_foros_pages_created', 1, false);
+        }
+    }
+
 }

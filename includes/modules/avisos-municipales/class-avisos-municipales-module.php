@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
 
@@ -25,8 +27,8 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'avisos_municipales';
-        $this->name = __('Avisos Municipales', 'flavor-chat-ia');
-        $this->description = __('Comunicados oficiales, cortes de servicio, eventos y notificaciones del ayuntamiento.', 'flavor-chat-ia');
+        $this->name = 'Avisos Municipales'; // Translation loaded on init
+        $this->description = 'Comunicados oficiales, cortes de servicio, eventos y notificaciones del ayuntamiento.'; // Translation loaded on init
 
         global $wpdb;
         $this->tablas = [
@@ -56,7 +58,92 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Avisos Municipales no estan creadas. Activa el modulo para crearlas automaticamente.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_table_schema() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+
+        return [
+            $this->tablas['avisos'] => "CREATE TABLE {$this->tablas['avisos']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                titulo varchar(255) NOT NULL,
+                contenido text NOT NULL,
+                prioridad enum('urgente','alta','media','baja') NOT NULL DEFAULT 'media',
+                categoria varchar(100) DEFAULT NULL,
+                estado enum('borrador','publicado','archivado') NOT NULL DEFAULT 'borrador',
+                autor_id bigint(20) UNSIGNED NOT NULL,
+                fecha_publicacion datetime DEFAULT NULL,
+                fecha_expiracion datetime DEFAULT NULL,
+                tiene_adjuntos tinyint(1) NOT NULL DEFAULT 0,
+                total_visualizaciones int(11) NOT NULL DEFAULT 0,
+                total_confirmaciones int(11) NOT NULL DEFAULT 0,
+                requiere_confirmacion tinyint(1) NOT NULL DEFAULT 0,
+                created_at datetime NOT NULL,
+                updated_at datetime DEFAULT NULL,
+                PRIMARY KEY (id),
+                KEY autor_id (autor_id),
+                KEY estado (estado),
+                KEY prioridad (prioridad),
+                KEY categoria (categoria),
+                KEY fecha_publicacion (fecha_publicacion)
+            ) $charset_collate;",
+
+            $this->tablas['adjuntos'] => "CREATE TABLE {$this->tablas['adjuntos']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                aviso_id bigint(20) UNSIGNED NOT NULL,
+                nombre_archivo varchar(255) NOT NULL,
+                ruta_archivo varchar(500) NOT NULL,
+                tipo_mime varchar(100) DEFAULT NULL,
+                tamano_bytes int(11) DEFAULT NULL,
+                orden int(11) NOT NULL DEFAULT 0,
+                created_at datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY aviso_id (aviso_id)
+            ) $charset_collate;",
+
+            $this->tablas['visualizaciones'] => "CREATE TABLE {$this->tablas['visualizaciones']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                aviso_id bigint(20) UNSIGNED NOT NULL,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
+                fecha_visualizacion datetime NOT NULL,
+                PRIMARY KEY (id),
+                UNIQUE KEY aviso_usuario (aviso_id, usuario_id)
+            ) $charset_collate;",
+
+            $this->tablas['confirmaciones'] => "CREATE TABLE {$this->tablas['confirmaciones']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                aviso_id bigint(20) UNSIGNED NOT NULL,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
+                fecha_confirmacion datetime NOT NULL,
+                PRIMARY KEY (id),
+                UNIQUE KEY aviso_usuario (aviso_id, usuario_id)
+            ) $charset_collate;",
+
+            $this->tablas['push'] => "CREATE TABLE {$this->tablas['push']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
+                endpoint text NOT NULL,
+                public_key varchar(255) DEFAULT NULL,
+                auth_token varchar(255) DEFAULT NULL,
+                user_agent text,
+                created_at datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY usuario_id (usuario_id)
+            ) $charset_collate;"
+        ];
     }
 
     /**
@@ -100,6 +187,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
@@ -132,6 +220,9 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         if (!wp_next_scheduled('flavor_avisos_enviar_programados')) {
             wp_schedule_event(time(), 'hourly', 'flavor_avisos_enviar_programados');
         }
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -147,172 +238,21 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
     /**
      * Crea las tablas necesarias
      */
+        /**
+     * Crea las tablas necesarias
+     */
     private function create_tables() {
-        global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
+        $esquemas = $this->get_table_schema();
 
-        $sql_avisos = "CREATE TABLE IF NOT EXISTS {$this->tablas['avisos']} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            titulo varchar(255) NOT NULL,
-            contenido longtext NOT NULL,
-            extracto text DEFAULT NULL,
-            categoria_id bigint(20) unsigned DEFAULT NULL,
-            prioridad enum('baja','media','alta','urgente') DEFAULT 'media',
-            zona_id bigint(20) unsigned DEFAULT NULL,
-            ubicacion_especifica varchar(500) DEFAULT NULL,
-            coordenadas_lat decimal(10,8) DEFAULT NULL,
-            coordenadas_lng decimal(11,8) DEFAULT NULL,
-            fecha_inicio datetime NOT NULL,
-            fecha_fin datetime DEFAULT NULL,
-            fecha_publicacion datetime DEFAULT NULL,
-            publicado tinyint(1) DEFAULT 0,
-            destacado tinyint(1) DEFAULT 0,
-            requiere_confirmacion tinyint(1) DEFAULT 0,
-            adjuntos longtext DEFAULT NULL,
-            enlace_externo varchar(500) DEFAULT NULL,
-            imagen_destacada bigint(20) unsigned DEFAULT NULL,
-            autor_id bigint(20) unsigned DEFAULT NULL,
-            departamento varchar(100) DEFAULT NULL,
-            contacto_email varchar(100) DEFAULT NULL,
-            contacto_telefono varchar(50) DEFAULT NULL,
-            visualizaciones int(11) DEFAULT 0,
-            confirmaciones_count int(11) DEFAULT 0,
-            notificaciones_enviadas tinyint(1) DEFAULT 0,
-            meta_data longtext DEFAULT NULL,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY categoria_id (categoria_id),
-            KEY zona_id (zona_id),
-            KEY prioridad (prioridad),
-            KEY fecha_inicio (fecha_inicio),
-            KEY fecha_fin (fecha_fin),
-            KEY publicado (publicado),
-            KEY destacado (destacado),
-            KEY autor_id (autor_id),
-            FULLTEXT KEY busqueda (titulo, contenido)
-        ) $charset_collate;";
-
-        $sql_categorias = "CREATE TABLE IF NOT EXISTS {$this->tablas['categorias']} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            nombre varchar(100) NOT NULL,
-            slug varchar(100) NOT NULL,
-            descripcion text DEFAULT NULL,
-            icono varchar(50) DEFAULT 'megaphone',
-            color varchar(7) DEFAULT '#2563eb',
-            orden int(11) DEFAULT 0,
-            activa tinyint(1) DEFAULT 1,
-            notificar_por_defecto tinyint(1) DEFAULT 1,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY slug (slug),
-            KEY orden (orden),
-            KEY activa (activa)
-        ) $charset_collate;";
-
-        $sql_zonas = "CREATE TABLE IF NOT EXISTS {$this->tablas['zonas']} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            nombre varchar(100) NOT NULL,
-            slug varchar(100) NOT NULL,
-            descripcion text DEFAULT NULL,
-            codigo_postal varchar(10) DEFAULT NULL,
-            padre_id bigint(20) unsigned DEFAULT NULL,
-            tipo enum('municipio','distrito','barrio','calle') DEFAULT 'barrio',
-            poligono_geojson longtext DEFAULT NULL,
-            poblacion int(11) DEFAULT NULL,
-            activa tinyint(1) DEFAULT 1,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY slug (slug),
-            KEY padre_id (padre_id),
-            KEY tipo (tipo),
-            KEY activa (activa)
-        ) $charset_collate;";
-
-        $sql_suscripciones = "CREATE TABLE IF NOT EXISTS {$this->tablas['suscripciones']} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            usuario_id bigint(20) unsigned DEFAULT NULL,
-            email varchar(100) NOT NULL,
-            nombre varchar(100) DEFAULT NULL,
-            telefono varchar(20) DEFAULT NULL,
-            categorias_ids text DEFAULT NULL,
-            zonas_ids text DEFAULT NULL,
-            prioridad_minima enum('baja','media','alta','urgente') DEFAULT 'media',
-            notificar_email tinyint(1) DEFAULT 1,
-            notificar_push tinyint(1) DEFAULT 0,
-            notificar_sms tinyint(1) DEFAULT 0,
-            frecuencia enum('inmediata','diaria','semanal') DEFAULT 'inmediata',
-            idioma varchar(5) DEFAULT 'es',
-            token_confirmacion varchar(64) DEFAULT NULL,
-            confirmada tinyint(1) DEFAULT 0,
-            activa tinyint(1) DEFAULT 1,
-            fecha_ultima_notificacion datetime DEFAULT NULL,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY email (email),
-            KEY usuario_id (usuario_id),
-            KEY confirmada (confirmada),
-            KEY activa (activa)
-        ) $charset_collate;";
-
-        $sql_lecturas = "CREATE TABLE IF NOT EXISTS {$this->tablas['lecturas']} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            aviso_id bigint(20) unsigned NOT NULL,
-            usuario_id bigint(20) unsigned DEFAULT NULL,
-            session_id varchar(64) DEFAULT NULL,
-            ip_address varchar(45) DEFAULT NULL,
-            user_agent varchar(255) DEFAULT NULL,
-            tiempo_lectura int(11) DEFAULT 0,
-            fecha_lectura datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY aviso_usuario (aviso_id, usuario_id),
-            KEY aviso_id (aviso_id),
-            KEY usuario_id (usuario_id),
-            KEY fecha_lectura (fecha_lectura)
-        ) $charset_collate;";
-
-        $sql_confirmaciones = "CREATE TABLE IF NOT EXISTS {$this->tablas['confirmaciones']} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            aviso_id bigint(20) unsigned NOT NULL,
-            usuario_id bigint(20) unsigned NOT NULL,
-            nombre_completo varchar(150) DEFAULT NULL,
-            dni varchar(20) DEFAULT NULL,
-            ip_address varchar(45) DEFAULT NULL,
-            comentario text DEFAULT NULL,
-            fecha_confirmacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY aviso_usuario (aviso_id, usuario_id),
-            KEY aviso_id (aviso_id),
-            KEY usuario_id (usuario_id),
-            KEY fecha_confirmacion (fecha_confirmacion)
-        ) $charset_collate;";
-
-        $sql_push = "CREATE TABLE IF NOT EXISTS {$this->tablas['push']} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            usuario_id bigint(20) unsigned DEFAULT NULL,
-            suscripcion_id bigint(20) unsigned DEFAULT NULL,
-            endpoint text NOT NULL,
-            p256dh varchar(255) NOT NULL,
-            auth varchar(255) NOT NULL,
-            user_agent varchar(255) DEFAULT NULL,
-            activa tinyint(1) DEFAULT 1,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_ultimo_uso datetime DEFAULT NULL,
-            PRIMARY KEY (id),
-            KEY usuario_id (usuario_id),
-            KEY suscripcion_id (suscripcion_id),
-            KEY activa (activa)
-        ) $charset_collate;";
+        if (empty($esquemas)) {
+            return;
+        }
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql_avisos);
-        dbDelta($sql_categorias);
-        dbDelta($sql_zonas);
-        dbDelta($sql_suscripciones);
-        dbDelta($sql_lecturas);
-        dbDelta($sql_confirmaciones);
-        dbDelta($sql_push);
+
+        foreach ($esquemas as $tabla => $sql) {
+            dbDelta($sql);
+        }
     }
 
     /**
@@ -419,14 +359,14 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/avisos', [
             'methods'             => 'GET',
             'callback'            => [$this, 'rest_get_avisos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
             'args'                => $this->get_avisos_args(),
         ]);
 
         register_rest_route($namespace, '/avisos/(?P<id>\d+)', [
             'methods'             => 'GET',
             'callback'            => [$this, 'rest_get_aviso'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/avisos', [
@@ -450,19 +390,19 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/avisos/categorias', [
             'methods'             => 'GET',
             'callback'            => [$this, 'rest_get_categorias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/avisos/zonas', [
             'methods'             => 'GET',
             'callback'            => [$this, 'rest_get_zonas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/avisos/suscribir', [
             'methods'             => 'POST',
             'callback'            => [$this, 'rest_suscribir'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/avisos/(?P<id>\d+)/confirmar', [
@@ -558,10 +498,10 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                     <label class="avisos-filtro-label"><?php _e('Prioridad', 'flavor-chat-ia'); ?></label>
                     <select id="avisos-filtro-prioridad" class="avisos-filtro-select">
                         <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                        <option value="urgente"><?php _e('Urgente', 'flavor-chat-ia'); ?></option>
-                        <option value="alta"><?php _e('Alta', 'flavor-chat-ia'); ?></option>
-                        <option value="media"><?php _e('Media', 'flavor-chat-ia'); ?></option>
-                        <option value="baja"><?php _e('Baja', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('urgente', 'flavor-chat-ia'); ?>"><?php _e('Urgente', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('alta', 'flavor-chat-ia'); ?>"><?php _e('Alta', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('media', 'flavor-chat-ia'); ?>"><?php _e('Media', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('baja', 'flavor-chat-ia'); ?>"><?php _e('Baja', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
                 <div class="avisos-filtro-grupo">
@@ -1995,13 +1935,13 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $aviso_id = intval($params['aviso_id'] ?? 0);
 
         if (!$aviso_id) {
-            return ['success' => false, 'error' => 'ID de aviso invalido.'];
+            return ['success' => false, 'error' => __('Accion no implementada: {$action_name}', 'flavor-chat-ia')];
         }
 
         $aviso = $this->obtener_aviso($aviso_id);
 
         if (!$aviso) {
-            return ['success' => false, 'error' => 'Aviso no encontrado.'];
+            return ['success' => false, 'error' => __('Accion no implementada: {$action_name}', 'flavor-chat-ia')];
         }
 
         $this->registrar_visualizacion($aviso_id);
@@ -2016,7 +1956,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesion.'];
+            return ['success' => false, 'error' => __('Accion no implementada: {$action_name}', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -2179,4 +2119,308 @@ KNOWLEDGE;
             ],
         ];
     }
+
+    // =========================================================================
+    // PANEL UNIFICADO DE GESTIÓN
+    // =========================================================================
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'avisos_municipales',
+            'label' => __('Avisos', 'flavor-chat-ia'),
+            'icon' => 'dashicons-megaphone',
+            'capability' => 'manage_options',
+            'categoria' => 'comunicacion',
+            'paginas' => [
+                [
+                    'slug' => 'avisos-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'avisos-activos',
+                    'titulo' => __('Avisos Activos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_activos'],
+                    'badge' => [$this, 'contar_avisos_publicados'],
+                ],
+                [
+                    'slug' => 'avisos-nuevo',
+                    'titulo' => __('Nuevo Aviso', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_nuevo'],
+                ],
+                [
+                    'slug' => 'avisos-archivo',
+                    'titulo' => __('Archivo', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_archivo'],
+                ],
+                [
+                    'slug' => 'avisos-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta avisos publicados y no expirados para el badge del admin
+     *
+     * @return int
+     */
+    public function contar_avisos_publicados() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_avisos = $this->tablas['avisos'];
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_avisos WHERE estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s)",
+            current_time('mysql')
+        ));
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla_avisos = $this->tablas['avisos'];
+        $estadisticas = [];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+            return $estadisticas;
+        }
+
+        // Avisos activos
+        $avisos_activos = $this->contar_avisos_publicados();
+        $estadisticas[] = [
+            'icon' => 'dashicons-megaphone',
+            'valor' => $avisos_activos,
+            'label' => __('Avisos activos', 'flavor-chat-ia'),
+            'color' => $avisos_activos > 0 ? 'blue' : 'gray',
+            'enlace' => admin_url('admin.php?page=avisos-activos'),
+        ];
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de avisos municipales
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Avisos Municipales', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Aviso', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=avisos-nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        // Resumen de estadísticas
+        global $wpdb;
+        $tabla_avisos = $this->tablas['avisos'];
+        $avisos_activos = $this->contar_avisos_publicados();
+        $total_avisos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_avisos");
+        $avisos_urgentes = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_avisos WHERE prioridad = 'urgente' AND estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s)",
+            current_time('mysql')
+        ));
+
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($avisos_activos) . '</span><span class="stat-label">' . __('Avisos Activos', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_avisos) . '</span><span class="stat-label">' . __('Total Avisos', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($avisos_urgentes) . '</span><span class="stat-label">' . __('Urgentes', 'flavor-chat-ia') . '</span></div>';
+        echo '</div>';
+
+        echo '<p>' . __('Panel de control del módulo de avisos municipales con métricas y accesos rápidos.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de avisos activos
+     */
+    public function render_admin_activos() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Avisos Activos', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Aviso', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=avisos-nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        global $wpdb;
+        $tabla_avisos = $this->tablas['avisos'];
+        $avisos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_avisos WHERE estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s) ORDER BY created_at DESC LIMIT 20",
+            current_time('mysql')
+        ), ARRAY_A);
+
+        if (!empty($avisos)) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Título', 'flavor-chat-ia') . '</th><th>' . __('Prioridad', 'flavor-chat-ia') . '</th><th>' . __('Categoría', 'flavor-chat-ia') . '</th><th>' . __('Fecha', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($avisos as $aviso) {
+                $clase_prioridad = 'priority-' . esc_attr($aviso['prioridad'] ?? 'media');
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($aviso['titulo']) . '</strong></td>';
+                echo '<td><span class="' . esc_attr($clase_prioridad) . '">' . esc_html(ucfirst($aviso['prioridad'] ?? 'media')) . '</span></td>';
+                echo '<td>' . esc_html($aviso['categoria'] ?? '-') . '</td>';
+                echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($aviso['created_at']))) . '</td>';
+                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay avisos activos en este momento.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de nuevo aviso
+     */
+    public function render_admin_nuevo() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Nuevo Aviso', 'flavor-chat-ia'));
+
+        echo '<form method="post" action="" class="flavor-form">';
+        wp_nonce_field('flavor_crear_aviso', 'flavor_aviso_nonce');
+
+        echo '<table class="form-table">';
+
+        echo '<tr><th scope="row"><label for="titulo">' . __('Título', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" name="titulo" id="titulo" class="regular-text" required /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="contenido">' . __('Contenido', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><textarea name="contenido" id="contenido" rows="6" class="large-text"></textarea></td></tr>';
+
+        echo '<tr><th scope="row"><label for="prioridad">' . __('Prioridad', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><select name="prioridad" id="prioridad">';
+        echo '<option value="baja">' . __('Baja', 'flavor-chat-ia') . '</option>';
+        echo '<option value="media" selected>' . __('Media', 'flavor-chat-ia') . '</option>';
+        echo '<option value="alta">' . __('Alta', 'flavor-chat-ia') . '</option>';
+        echo '<option value="urgente">' . __('Urgente', 'flavor-chat-ia') . '</option>';
+        echo '</select></td></tr>';
+
+        echo '<tr><th scope="row"><label for="fecha_expiracion">' . __('Fecha de expiración', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="datetime-local" name="fecha_expiracion" id="fecha_expiracion" />';
+        echo '<p class="description">' . __('Dejar vacío para aviso sin fecha de expiración.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '</table>';
+
+        echo '<p class="submit">';
+        echo '<input type="submit" name="publicar_aviso" class="button-primary" value="' . __('Publicar Aviso', 'flavor-chat-ia') . '" />';
+        echo ' <input type="submit" name="guardar_borrador" class="button" value="' . __('Guardar Borrador', 'flavor-chat-ia') . '" />';
+        echo '</p>';
+        echo '</form>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de archivo de avisos
+     */
+    public function render_admin_archivo() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Archivo de Avisos', 'flavor-chat-ia'));
+
+        global $wpdb;
+        $tabla_avisos = $this->tablas['avisos'];
+        $avisos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_avisos WHERE estado = 'expirado' OR (fecha_expiracion IS NOT NULL AND fecha_expiracion <= %s) ORDER BY created_at DESC LIMIT 50",
+            current_time('mysql')
+        ), ARRAY_A);
+
+        if (!empty($avisos)) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Título', 'flavor-chat-ia') . '</th><th>' . __('Categoría', 'flavor-chat-ia') . '</th><th>' . __('Publicado', 'flavor-chat-ia') . '</th><th>' . __('Expirado', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($avisos as $aviso) {
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($aviso['titulo']) . '</strong></td>';
+                echo '<td>' . esc_html($aviso['categoria'] ?? '-') . '</td>';
+                echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($aviso['created_at']))) . '</td>';
+                echo '<td>' . ($aviso['fecha_expiracion'] ? esc_html(date_i18n('d/m/Y', strtotime($aviso['fecha_expiracion']))) : '-') . '</td>';
+                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="#" class="button button-small">' . __('Republicar', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay avisos archivados.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de configuración de avisos
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Avisos', 'flavor-chat-ia'));
+
+        $configuracion_actual = $this->get_default_settings();
+
+        echo '<form method="post" action="">';
+        wp_nonce_field('flavor_config_avisos', 'flavor_config_nonce');
+        echo '<table class="form-table">';
+
+        echo '<tr><th scope="row"><label for="enviar_push_notifications">' . __('Notificaciones Push', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="enviar_push_notifications" id="enviar_push_notifications" ' . checked($configuracion_actual['enviar_push_notifications'], true, false) . ' />';
+        echo '<p class="description">' . __('Enviar notificaciones push a los suscriptores.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="enviar_email_notifications">' . __('Notificaciones Email', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="enviar_email_notifications" id="enviar_email_notifications" ' . checked($configuracion_actual['enviar_email_notifications'], true, false) . ' /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="dias_expiracion_default">' . __('Días de expiración por defecto', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="dias_expiracion_default" id="dias_expiracion_default" value="' . esc_attr($configuracion_actual['dias_expiracion_default']) . '" min="0" class="small-text" />';
+        echo '<p class="description">' . __('0 = sin expiración automática.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="avisos_por_pagina">' . __('Avisos por página', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="avisos_por_pagina" id="avisos_por_pagina" value="' . esc_attr($configuracion_actual['avisos_por_pagina']) . '" min="1" max="100" class="small-text" /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="requiere_confirmacion_lectura">' . __('Requiere confirmación de lectura', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="requiere_confirmacion_lectura" id="requiere_confirmacion_lectura" ' . checked($configuracion_actual['requiere_confirmacion_lectura'], true, false) . ' />';
+        echo '<p class="description">' . __('Los usuarios deben confirmar que han leído el aviso.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '</table>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '</form>';
+        echo '</div>';
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('avisos_municipales');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('avisos-municipales');
+        if (!$pagina && !get_option('flavor_avisos_municipales_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['avisos_municipales']);
+            update_option('flavor_avisos_municipales_pages_created', 1, false);
+        }
+    }
+
 }

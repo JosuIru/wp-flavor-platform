@@ -16,13 +16,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'comunidades';
-        $this->name = __('Comunidades', 'flavor-chat-ia');
-        $this->description = __('Crea y gestiona comunidades tematicas con miembros, actividades y contenido compartido', 'flavor-chat-ia');
+        $this->name = 'Comunidades'; // Translation loaded on init
+        $this->description = 'Crea y gestiona comunidades tematicas con miembros, actividades y contenido compartido'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -44,7 +46,15 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Comunidades no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -74,6 +84,651 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestion
+        $this->registrar_en_panel_unificado();
+    }
+
+    // =========================================================================
+    // REST API
+    // =========================================================================
+
+    /**
+     * Registra las rutas de la REST API para el modulo de comunidades
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // GET /flavor/v1/comunidades - Listar comunidades
+        register_rest_route($namespace, '/comunidades', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_listar_comunidades'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'tipo' => [
+                    'type'              => 'string',
+                    'enum'              => ['abierta', 'cerrada'],
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'categoria' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'busqueda' => [
+                    'type'              => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'limite' => [
+                    'type'              => 'integer',
+                    'default'           => 20,
+                    'sanitize_callback' => 'absint',
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/comunidades/{id} - Obtener una comunidad
+        register_rest_route($namespace, '/comunidades/(?P<id>\d+)', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_obtener_comunidad'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function ($valor) {
+                        return is_numeric($valor) && $valor > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/comunidades/{id}/unirse - Unirse a comunidad
+        register_rest_route($namespace, '/comunidades/(?P<id>\d+)/unirse', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [$this, 'api_unirse_comunidad'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function ($valor) {
+                        return is_numeric($valor) && $valor > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // POST /flavor/v1/comunidades/{id}/salir - Salir de comunidad
+        register_rest_route($namespace, '/comunidades/(?P<id>\d+)/salir', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [$this, 'api_salir_comunidad'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args'                => [
+                'id' => [
+                    'required'          => true,
+                    'type'              => 'integer',
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => function ($valor) {
+                        return is_numeric($valor) && $valor > 0;
+                    },
+                ],
+            ],
+        ]);
+
+        // GET /flavor/v1/comunidades/mis-comunidades - Comunidades del usuario
+        register_rest_route($namespace, '/comunidades/mis-comunidades', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [$this, 'api_mis_comunidades'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args'                => [
+                'rol' => [
+                    'type'              => 'string',
+                    'enum'              => ['admin', 'moderador', 'miembro'],
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'estado' => [
+                    'type'              => 'string',
+                    'enum'              => ['activo', 'pendiente'],
+                    'default'           => 'activo',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Verifica si el usuario esta autenticado para la REST API
+     *
+     * @return bool|WP_Error
+     */
+    public function api_verificar_usuario_autenticado() {
+        if (!is_user_logged_in()) {
+            return new \WP_Error(
+                'rest_not_logged_in',
+                __('Debes iniciar sesion para realizar esta accion.', 'flavor-chat-ia'),
+                ['status' => 401]
+            );
+        }
+        return true;
+    }
+
+    /**
+     * API: Listar comunidades
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_listar_comunidades($request) {
+        $parametros = [
+            'tipo'     => $request->get_param('tipo'),
+            'categoria' => $request->get_param('categoria'),
+            'busqueda' => $request->get_param('busqueda'),
+            'limite'   => $request->get_param('limite'),
+        ];
+
+        $resultado = $this->action_listar_comunidades($parametros);
+
+        if (!$resultado['success']) {
+            return new \WP_Error(
+                'comunidades_error',
+                $resultado['error'],
+                ['status' => 400]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener una comunidad especifica
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_obtener_comunidad($request) {
+        $comunidad_id = $request->get_param('id');
+
+        $parametros = [
+            'comunidad_id' => $comunidad_id,
+        ];
+
+        $resultado = $this->action_ver_comunidad($parametros);
+
+        if (!$resultado['success']) {
+            return new \WP_Error(
+                'comunidad_no_encontrada',
+                $resultado['error'],
+                ['status' => 404]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Unirse a una comunidad
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_unirse_comunidad($request) {
+        $comunidad_id = $request->get_param('id');
+
+        $parametros = [
+            'comunidad_id' => $comunidad_id,
+        ];
+
+        $resultado = $this->action_unirse($parametros);
+
+        if (!$resultado['success']) {
+            $codigo_estado = 400;
+
+            // Determinar codigo de estado apropiado
+            if (strpos($resultado['error'], 'baneado') !== false) {
+                $codigo_estado = 403;
+            } elseif (strpos($resultado['error'], 'no encontrada') !== false) {
+                $codigo_estado = 404;
+            }
+
+            return new \WP_Error(
+                'unirse_error',
+                $resultado['error'],
+                ['status' => $codigo_estado]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Salir de una comunidad
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_salir_comunidad($request) {
+        $comunidad_id = $request->get_param('id');
+
+        $parametros = [
+            'comunidad_id' => $comunidad_id,
+        ];
+
+        $resultado = $this->action_salir($parametros);
+
+        if (!$resultado['success']) {
+            $codigo_estado = 400;
+
+            // No es miembro activo
+            if (strpos($resultado['error'], 'no eres miembro') !== false) {
+                $codigo_estado = 403;
+            } elseif (strpos($resultado['error'], 'unico administrador') !== false) {
+                $codigo_estado = 409; // Conflict
+            }
+
+            return new \WP_Error(
+                'salir_error',
+                $resultado['error'],
+                ['status' => $codigo_estado]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * API: Obtener comunidades del usuario autenticado
+     *
+     * @param WP_REST_Request $request Objeto de solicitud REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function api_mis_comunidades($request) {
+        $parametros = [
+            'rol'    => $request->get_param('rol'),
+            'estado' => $request->get_param('estado'),
+        ];
+
+        $resultado = $this->action_mis_comunidades($parametros);
+
+        if (!$resultado['success']) {
+            return new \WP_Error(
+                'mis_comunidades_error',
+                $resultado['error'],
+                ['status' => 400]
+            );
+        }
+
+        return rest_ensure_response($resultado);
+    }
+
+    /**
+     * Configuracion para el Panel Unificado de Gestion
+     *
+     * @return array Configuracion del modulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'comunidades',
+            'label' => __('Comunidades', 'flavor-chat-ia'),
+            'icon' => 'dashicons-groups',
+            'capability' => 'manage_options',
+            'categoria' => 'comunidad',
+            'paginas' => [
+                [
+                    'slug' => 'comunidades-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'comunidades-listado',
+                    'titulo' => __('Comunidades', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                    'badge' => [$this, 'contar_comunidades_activas'],
+                ],
+                [
+                    'slug' => 'comunidades-miembros',
+                    'titulo' => __('Miembros', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_miembros'],
+                    'badge' => [$this, 'contar_solicitudes_pendientes'],
+                ],
+                [
+                    'slug' => 'comunidades-config',
+                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta comunidades activas
+     *
+     * @return int
+     */
+    public function contar_comunidades_activas() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_comunidades WHERE estado = 'activa'"
+        );
+    }
+
+    /**
+     * Cuenta solicitudes de miembros pendientes
+     *
+     * @return int
+     */
+    public function contar_solicitudes_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_miembros WHERE estado = 'pendiente'"
+        );
+    }
+
+    /**
+     * Estadisticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        $estadisticas = [];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
+            return $estadisticas;
+        }
+
+        // Total comunidades activas
+        $comunidades_activas = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_comunidades WHERE estado = 'activa'"
+        );
+        $estadisticas[] = [
+            'icon' => 'dashicons-groups',
+            'valor' => $comunidades_activas,
+            'label' => __('Comunidades activas', 'flavor-chat-ia'),
+            'color' => $comunidades_activas > 0 ? 'blue' : 'gray',
+            'enlace' => admin_url('admin.php?page=comunidades-listado'),
+        ];
+
+        // Total miembros activos
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+            $miembros_activos = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_miembros WHERE estado = 'activo'"
+            );
+            $estadisticas[] = [
+                'icon' => 'dashicons-admin-users',
+                'valor' => $miembros_activos,
+                'label' => __('Miembros activos', 'flavor-chat-ia'),
+                'color' => $miembros_activos > 0 ? 'green' : 'gray',
+                'enlace' => admin_url('admin.php?page=comunidades-miembros'),
+            ];
+
+            // Solicitudes pendientes
+            $solicitudes_pendientes = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_miembros WHERE estado = 'pendiente'"
+            );
+            if ($solicitudes_pendientes > 0) {
+                $estadisticas[] = [
+                    'icon' => 'dashicons-clock',
+                    'valor' => $solicitudes_pendientes,
+                    'label' => __('Solicitudes pendientes', 'flavor-chat-ia'),
+                    'color' => 'orange',
+                    'enlace' => admin_url('admin.php?page=comunidades-miembros&estado=pendiente'),
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de comunidades
+     */
+    public function render_admin_dashboard() {
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Comunidades', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Comunidad', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=comunidades-listado&accion=nueva'), 'class' => 'button-primary'],
+        ]);
+
+        // Estadisticas rapidas
+        $total_comunidades = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_comunidades WHERE estado = 'activa'");
+        $total_miembros = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_miembros WHERE estado = 'activo'");
+        $total_actividad = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actividad");
+        $pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_miembros WHERE estado = 'pendiente'");
+
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_comunidades) . '</span><span class="stat-label">' . __('Comunidades Activas', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_miembros) . '</span><span class="stat-label">' . __('Miembros Totales', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_actividad) . '</span><span class="stat-label">' . __('Publicaciones', 'flavor-chat-ia') . '</span></div>';
+        if ($pendientes > 0) {
+            echo '<div class="flavor-stat-card flavor-stat-warning"><span class="stat-number">' . esc_html($pendientes) . '</span><span class="stat-label">' . __('Solicitudes Pendientes', 'flavor-chat-ia') . '</span></div>';
+        }
+        echo '</div>';
+
+        // Comunidades mas activas
+        echo '<h2>' . __('Comunidades mas activas', 'flavor-chat-ia') . '</h2>';
+        $comunidades_top = $wpdb->get_results(
+            "SELECT * FROM $tabla_comunidades WHERE estado = 'activa' ORDER BY miembros_count DESC LIMIT 5"
+        );
+
+        if ($comunidades_top) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Comunidad', 'flavor-chat-ia') . '</th><th>' . __('Tipo', 'flavor-chat-ia') . '</th><th>' . __('Categoria', 'flavor-chat-ia') . '</th><th>' . __('Miembros', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($comunidades_top as $comunidad) {
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($comunidad->nombre) . '</strong></td>';
+                echo '<td>' . esc_html(ucfirst($comunidad->tipo)) . '</td>';
+                echo '<td>' . esc_html(ucfirst($comunidad->categoria)) . '</td>';
+                echo '<td>' . esc_html($comunidad->miembros_count) . '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay comunidades activas todavia.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la pagina de listado de comunidades
+     */
+    public function render_admin_listado() {
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Gestion de Comunidades', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Comunidad', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=comunidades-listado&accion=nueva'), 'class' => 'button-primary'],
+        ]);
+
+        // Tabs de filtro
+        $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'activa';
+        $this->render_page_tabs([
+            ['slug' => 'activa', 'label' => __('Activas', 'flavor-chat-ia')],
+            ['slug' => 'pausada', 'label' => __('Pausadas', 'flavor-chat-ia')],
+            ['slug' => 'archivada', 'label' => __('Archivadas', 'flavor-chat-ia')],
+            ['slug' => 'todas', 'label' => __('Todas', 'flavor-chat-ia')],
+        ], $estado_filtro);
+
+        // Consulta de comunidades
+        $condicion_estado = ($estado_filtro !== 'todas') ? $wpdb->prepare("WHERE estado = %s", $estado_filtro) : "";
+        $comunidades = $wpdb->get_results(
+            "SELECT * FROM $tabla_comunidades $condicion_estado ORDER BY created_at DESC"
+        );
+
+        if ($comunidades) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr>';
+            echo '<th>' . __('Nombre', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Tipo', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Categoria', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Miembros', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Creada', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead>';
+            echo '<tbody>';
+            foreach ($comunidades as $comunidad) {
+                $creador = get_userdata($comunidad->creador_id);
+                $nombre_creador = $creador ? $creador->display_name : __('Desconocido', 'flavor-chat-ia');
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($comunidad->nombre) . '</strong><br><small>' . esc_html($nombre_creador) . '</small></td>';
+                echo '<td>' . esc_html(ucfirst($comunidad->tipo)) . '</td>';
+                echo '<td>' . esc_html(ucfirst($comunidad->categoria)) . '</td>';
+                echo '<td>' . esc_html($comunidad->miembros_count) . '</td>';
+                echo '<td><span class="status-' . esc_attr($comunidad->estado) . '">' . esc_html(ucfirst($comunidad->estado)) . '</span></td>';
+                echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($comunidad->created_at))) . '</td>';
+                echo '<td>';
+                echo '<a href="' . esc_url(admin_url('admin.php?page=comunidades-listado&accion=ver&id=' . $comunidad->id)) . '" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> ';
+                echo '<a href="' . esc_url(admin_url('admin.php?page=comunidades-listado&accion=editar&id=' . $comunidad->id)) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a>';
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay comunidades en este estado.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la pagina de gestion de miembros
+     */
+    public function render_admin_miembros() {
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Gestion de Miembros', 'flavor-chat-ia'));
+
+        // Tabs de filtro
+        $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'todos';
+        $pendientes_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_miembros WHERE estado = 'pendiente'");
+
+        $this->render_page_tabs([
+            ['slug' => 'todos', 'label' => __('Todos', 'flavor-chat-ia')],
+            ['slug' => 'activo', 'label' => __('Activos', 'flavor-chat-ia')],
+            ['slug' => 'pendiente', 'label' => __('Pendientes', 'flavor-chat-ia'), 'badge' => $pendientes_count],
+            ['slug' => 'suspendido', 'label' => __('Suspendidos', 'flavor-chat-ia')],
+            ['slug' => 'baneado', 'label' => __('Baneados', 'flavor-chat-ia')],
+        ], $estado_filtro);
+
+        // Consulta de miembros
+        $condicion_estado = ($estado_filtro !== 'todos') ? $wpdb->prepare("WHERE m.estado = %s", $estado_filtro) : "";
+        $miembros = $wpdb->get_results(
+            "SELECT m.*, c.nombre as comunidad_nombre, u.display_name, u.user_email
+             FROM $tabla_miembros m
+             LEFT JOIN $tabla_comunidades c ON m.comunidad_id = c.id
+             LEFT JOIN {$wpdb->users} u ON m.user_id = u.ID
+             $condicion_estado
+             ORDER BY m.joined_at DESC
+             LIMIT 100"
+        );
+
+        if ($miembros) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr>';
+            echo '<th>' . __('Usuario', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Comunidad', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Rol', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Fecha Union', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead>';
+            echo '<tbody>';
+            foreach ($miembros as $miembro) {
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($miembro->display_name ?: __('Usuario', 'flavor-chat-ia')) . '</strong><br><small>' . esc_html($miembro->user_email) . '</small></td>';
+                echo '<td>' . esc_html($miembro->comunidad_nombre) . '</td>';
+                echo '<td>' . esc_html(ucfirst($miembro->rol)) . '</td>';
+                echo '<td><span class="status-' . esc_attr($miembro->estado) . '">' . esc_html(ucfirst($miembro->estado)) . '</span></td>';
+                echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($miembro->joined_at))) . '</td>';
+                echo '<td>';
+                if ($miembro->estado === 'pendiente') {
+                    echo '<a href="' . esc_url(wp_nonce_url(admin_url('admin.php?page=comunidades-miembros&accion=aprobar&id=' . $miembro->id), 'aprobar_miembro')) . '" class="button button-small button-primary">' . __('Aprobar', 'flavor-chat-ia') . '</a> ';
+                }
+                echo '<a href="' . esc_url(admin_url('admin.php?page=comunidades-miembros&accion=gestionar&id=' . $miembro->id)) . '" class="button button-small">' . __('Gestionar', 'flavor-chat-ia') . '</a>';
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay miembros con este filtro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la pagina de configuracion
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuracion de Comunidades', 'flavor-chat-ia'));
+
+        // Obtener configuracion actual
+        $configuracion = $this->get_settings();
+
+        echo '<form method="post" action="">';
+        wp_nonce_field('guardar_config_comunidades', 'comunidades_config_nonce');
+
+        echo '<table class="form-table">';
+
+        // Maximo comunidades por usuario
+        echo '<tr>';
+        echo '<th scope="row"><label for="maximo_comunidades">' . __('Max. comunidades por usuario', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" id="maximo_comunidades" name="maximo_comunidades_por_usuario" value="' . esc_attr($configuracion['maximo_comunidades_por_usuario']) . '" min="1" max="100" class="small-text"></td>';
+        echo '</tr>';
+
+        // Requiere aprobacion para crear
+        echo '<tr>';
+        echo '<th scope="row">' . __('Aprobacion para crear', 'flavor-chat-ia') . '</th>';
+        echo '<td><label><input type="checkbox" name="requiere_aprobacion_creacion" value="1" ' . checked($configuracion['requiere_aprobacion_creacion'], true, false) . '> ' . __('Requiere aprobacion de admin para crear comunidades', 'flavor-chat-ia') . '</label></td>';
+        echo '</tr>';
+
+        // Permitir comunidades secretas
+        echo '<tr>';
+        echo '<th scope="row">' . __('Comunidades secretas', 'flavor-chat-ia') . '</th>';
+        echo '<td><label><input type="checkbox" name="permitir_comunidades_secretas" value="1" ' . checked($configuracion['permitir_comunidades_secretas'], true, false) . '> ' . __('Permitir crear comunidades secretas (solo por invitacion)', 'flavor-chat-ia') . '</label></td>';
+        echo '</tr>';
+
+        echo '</table>';
+
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button button-primary" value="' . __('Guardar Configuracion', 'flavor-chat-ia') . '"></p>';
+        echo '</form>';
+
+        echo '</div>';
     }
 
     /**

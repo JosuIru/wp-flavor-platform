@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Instancias de clases auxiliares
      */
@@ -30,8 +32,8 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id          = 'dex_solana';
-        $this->name        = __('DEX Solana', 'flavor-chat-ia');
-        $this->description = __('Exchange descentralizado para tokens Solana. Swap de tokens via Jupiter, pools de liquidez AMM, yield farming y modo dual (paper + real).', 'flavor-chat-ia');
+        $this->name        = 'DEX Solana'; // Translation loaded on init
+        $this->description = 'Exchange descentralizado para tokens Solana. Swap de tokens via Jupiter, pools de liquidez AMM, yield farming y modo dual (paper + real).'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -40,10 +42,12 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        global $wpdb;
-        $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
+        // MÓDULO EN DESARROLLO - Próximamente
+        return false;
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_swaps);
+        // global $wpdb;
+        // $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
+        // return Flavor_Chat_Helpers::tabla_existe($tabla_swaps);
     }
 
     /**
@@ -53,7 +57,15 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas del DEX Solana no estan creadas. Se crearan automaticamente al activar el plugin.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -83,6 +95,12 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
     public function init() {
         $this->cargar_clases_auxiliares();
         $this->inicializar_componentes();
+
+        // Registrar en panel de administracion unificado
+        $this->registrar_en_panel_unificado();
+
+        // Registrar endpoints REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
     }
 
     /**
@@ -120,10 +138,16 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
         $this->farming        = new Flavor_Dex_Solana_Farming();
 
         // Sembrar pools y programas iniciales si corresponde
+        // NOTA: Solo si el registro de tokens tiene datos
         if ($this->get_setting('pools_semilla_activos', true)) {
-            $this->pool_manager->sembrar_pools_iniciales();
+            $tokens_disponibles = $this->token_registry->obtener_todos_conocidos();
+            if (!empty($tokens_disponibles)) {
+                $this->pool_manager->sembrar_pools_iniciales();
+            } else {
+                error_log('[DEX Solana] No se pueden crear pools: registro de tokens vacío');
+            }
         }
-        if ($this->get_setting('farming_activo', true)) {
+        if ($this->get_setting('farming_activo', true) && !empty($tokens_disponibles)) {
             global $wpdb;
             $tabla_pools = $wpdb->prefix . 'flavor_dex_pools';
             $pools_existentes = $wpdb->get_results("SELECT * FROM $tabla_pools WHERE activo = 1", ARRAY_A);
@@ -131,6 +155,448 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
                 $this->farming->sembrar_programas_iniciales($pools_existentes);
             }
         }
+    }
+
+    // =========================================================================
+    // Configuracion del Panel de Administracion Unificado
+    // =========================================================================
+
+    /**
+     * Configuracion para el panel de administracion unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return array(
+            'id'         => $this->id,
+            'label'      => $this->name,
+            'icon'       => 'dashicons-money-alt',
+            'capability' => 'manage_options',
+            'categoria'  => 'economia',
+            'paginas'    => array(
+                array(
+                    'slug'     => 'dex-solana-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => array($this, 'render_admin_dashboard'),
+                ),
+                array(
+                    'slug'     => 'dex-solana-operaciones',
+                    'titulo'   => __('Operaciones', 'flavor-chat-ia'),
+                    'callback' => array($this, 'render_admin_operaciones'),
+                    'badge'    => array($this, 'contar_swaps_recientes'),
+                ),
+                array(
+                    'slug'     => 'dex-solana-configuracion',
+                    'titulo'   => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => array($this, 'render_admin_configuracion'),
+                ),
+            ),
+            'dashboard_widget' => array($this, 'render_dashboard_widget'),
+            'estadisticas'     => array($this, 'get_estadisticas_panel'),
+        );
+    }
+
+    /**
+     * Cuenta los swaps recientes (ultimas 24h) para el badge
+     *
+     * @return int
+     */
+    public function contar_swaps_recientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
+
+        $hace_24h = date('Y-m-d H:i:s', strtotime('-24 hours'));
+
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_swaps} WHERE fecha >= %s",
+            $hace_24h
+        ));
+    }
+
+    /**
+     * Renderiza el dashboard de administracion
+     */
+    public function render_admin_dashboard() {
+        $this->render_page_header(__('DEX Solana - Dashboard', 'flavor-chat-ia'));
+        echo '<div class="wrap dex-solana-admin-dashboard">';
+
+        // Estadisticas generales
+        $estadisticas = $this->get_estadisticas_panel();
+        if (!empty($estadisticas)) {
+            echo '<div class="flavor-stats-grid">';
+            foreach ($estadisticas as $estadistica) {
+                $color_class = isset($estadistica['color']) ? 'stat-' . esc_attr($estadistica['color']) : '';
+                echo '<div class="flavor-stat-card ' . $color_class . '">';
+                if (!empty($estadistica['icon'])) {
+                    echo '<span class="dashicons ' . esc_attr($estadistica['icon']) . '"></span>';
+                }
+                echo '<span class="stat-number">' . esc_html($estadistica['valor']) . '</span>';
+                echo '<span class="stat-label">' . esc_html($estadistica['label']) . '</span>';
+                echo '</div>';
+            }
+            echo '</div>';
+        }
+
+        // Modo actual
+        $modo_activo = $this->get_setting('modo_activo', 'paper');
+        $modo_texto = ($modo_activo === 'paper')
+            ? __('Paper Trading (Simulacion)', 'flavor-chat-ia')
+            : __('Modo Real', 'flavor-chat-ia');
+
+        echo '<div class="postbox" style="margin-top: 20px;">';
+        echo '<h2 class="hndle" style="padding: 12px;"><span class="dashicons dashicons-info" style="margin-right: 8px;"></span>' . __('Estado del DEX', 'flavor-chat-ia') . '</h2>';
+        echo '<div class="inside">';
+        echo '<p><strong>' . __('Modo activo:', 'flavor-chat-ia') . '</strong> ' . esc_html($modo_texto) . '</p>';
+        echo '<p><strong>' . __('Balance inicial USDC:', 'flavor-chat-ia') . '</strong> $' . number_format($this->get_setting('balance_inicial_usdc', 1000), 2) . '</p>';
+        echo '<p><strong>' . __('Slippage por defecto:', 'flavor-chat-ia') . '</strong> ' . esc_html($this->get_setting('slippage_defecto_porcentaje', 0.5)) . '%</p>';
+        echo '</div>';
+        echo '</div>';
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la pagina de operaciones
+     */
+    public function render_admin_operaciones() {
+        $this->render_page_header(
+            __('DEX Solana - Operaciones', 'flavor-chat-ia'),
+            array(
+                array(
+                    'label' => __('Ver pools', 'flavor-chat-ia'),
+                    'url'   => '#pools-liquidez',
+                    'class' => 'button-secondary',
+                ),
+            )
+        );
+        echo '<div class="wrap dex-solana-admin-operaciones">';
+
+        // Tabs para filtrar
+        $tab_actual = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'swaps';
+        $this->render_page_tabs(array(
+            array('slug' => 'swaps', 'label' => __('Swaps', 'flavor-chat-ia')),
+            array('slug' => 'pools', 'label' => __('Pools LP', 'flavor-chat-ia')),
+            array('slug' => 'farming', 'label' => __('Farming', 'flavor-chat-ia')),
+        ), $tab_actual);
+
+        // Contenido segun tab
+        switch ($tab_actual) {
+            case 'pools':
+                $this->render_admin_pools_content();
+                break;
+            case 'farming':
+                $this->render_admin_farming_content();
+                break;
+            default:
+                $this->render_admin_swaps_content();
+                break;
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el contenido de swaps
+     */
+    private function render_admin_swaps_content() {
+        global $wpdb;
+        $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
+        $limite_swaps = 20;
+
+        $swaps_recientes = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$tabla_swaps} ORDER BY fecha DESC LIMIT %d",
+            $limite_swaps
+        ), ARRAY_A);
+
+        if (empty($swaps_recientes)) {
+            echo '<div class="notice notice-info"><p>' . __('No hay swaps registrados aun.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        echo '<table class="wp-list-table widefat fixed striped">';
+        echo '<thead><tr>';
+        echo '<th>' . __('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('De', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('A', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Cantidad', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Recibido', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Modo', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead>';
+        echo '<tbody>';
+
+        foreach ($swaps_recientes as $swap) {
+            echo '<tr>';
+            echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($swap['fecha']))) . '</td>';
+            echo '<td>' . esc_html($swap['token_entrada'] ?? '-') . '</td>';
+            echo '<td>' . esc_html($swap['token_salida'] ?? '-') . '</td>';
+            echo '<td>' . esc_html(number_format((float)($swap['cantidad_entrada'] ?? 0), 4)) . '</td>';
+            echo '<td>' . esc_html(number_format((float)($swap['cantidad_salida'] ?? 0), 4)) . '</td>';
+            echo '<td><span class="badge-' . esc_attr($swap['modo'] ?? 'paper') . '">' . esc_html(ucfirst($swap['modo'] ?? 'paper')) . '</span></td>';
+            echo '</tr>';
+        }
+
+        echo '</tbody></table>';
+    }
+
+    /**
+     * Renderiza el contenido de pools
+     */
+    private function render_admin_pools_content() {
+        $pools = $this->pool_manager ? $this->pool_manager->listar_pools(true) : array();
+
+        if (empty($pools)) {
+            echo '<div class="notice notice-info"><p>' . __('No hay pools de liquidez configurados.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        echo '<table class="wp-list-table widefat fixed striped">';
+        echo '<thead><tr>';
+        echo '<th>' . __('Pool', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Reserva A', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Reserva B', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('TVL', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('APY', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead>';
+        echo '<tbody>';
+
+        foreach ($pools as $pool) {
+            $nombre_pool = (isset($pool['token_a_simbolo']) ? $pool['token_a_simbolo'] : '-') . '/' . (isset($pool['token_b_simbolo']) ? $pool['token_b_simbolo'] : '-');
+            $apy = isset($pool['apy']) ? number_format((float)$pool['apy'], 2) . '%' : '-';
+            $tvl = isset($pool['tvl_usd']) ? '$' . number_format((float)$pool['tvl_usd'], 2) : '-';
+            $estado = isset($pool['activo']) && $pool['activo'] ? __('Activo', 'flavor-chat-ia') : __('Inactivo', 'flavor-chat-ia');
+
+            echo '<tr>';
+            echo '<td><strong>' . esc_html($nombre_pool) . '</strong></td>';
+            echo '<td>' . esc_html(number_format((float)($pool['reserva_a'] ?? 0), 4)) . '</td>';
+            echo '<td>' . esc_html(number_format((float)($pool['reserva_b'] ?? 0), 4)) . '</td>';
+            echo '<td>' . esc_html($tvl) . '</td>';
+            echo '<td>' . esc_html($apy) . '</td>';
+            echo '<td>' . esc_html($estado) . '</td>';
+            echo '</tr>';
+        }
+
+        echo '</tbody></table>';
+    }
+
+    /**
+     * Renderiza el contenido de farming
+     */
+    private function render_admin_farming_content() {
+        $programas = $this->farming ? $this->farming->listar_programas(true) : array();
+
+        if (empty($programas)) {
+            echo '<div class="notice notice-info"><p>' . __('No hay programas de farming activos.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        echo '<table class="wp-list-table widefat fixed striped">';
+        echo '<thead><tr>';
+        echo '<th>' . __('Programa', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Pool', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Token Reward', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('APR', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('TVL Staked', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead>';
+        echo '<tbody>';
+
+        foreach ($programas as $programa) {
+            $apr = isset($programa['apr']) ? number_format((float)$programa['apr'], 2) . '%' : '-';
+            $tvl = isset($programa['tvl_staked']) ? '$' . number_format((float)$programa['tvl_staked'], 2) : '-';
+            $estado = isset($programa['activo']) && $programa['activo'] ? __('Activo', 'flavor-chat-ia') : __('Finalizado', 'flavor-chat-ia');
+
+            echo '<tr>';
+            echo '<td><strong>' . esc_html($programa['nombre'] ?? $programa['programa_id'] ?? '-') . '</strong></td>';
+            echo '<td>' . esc_html($programa['pool_id'] ?? '-') . '</td>';
+            echo '<td>' . esc_html($programa['reward_token'] ?? '-') . '</td>';
+            echo '<td>' . esc_html($apr) . '</td>';
+            echo '<td>' . esc_html($tvl) . '</td>';
+            echo '<td>' . esc_html($estado) . '</td>';
+            echo '</tr>';
+        }
+
+        echo '</tbody></table>';
+    }
+
+    /**
+     * Renderiza la pagina de configuracion
+     */
+    public function render_admin_configuracion() {
+        $this->render_page_header(__('DEX Solana - Configuracion', 'flavor-chat-ia'));
+        echo '<div class="wrap dex-solana-admin-configuracion">';
+
+        // Formulario de configuracion
+        echo '<form method="post" action="">';
+        wp_nonce_field('dex_solana_config', 'dex_solana_config_nonce');
+
+        echo '<table class="form-table">';
+
+        // Modo activo
+        echo '<tr>';
+        echo '<th scope="row"><label for="modo_activo">' . __('Modo de operacion', 'flavor-chat-ia') . '</label></th>';
+        echo '<td>';
+        echo '<select name="modo_activo" id="modo_activo">';
+        echo '<option value="paper"' . selected($this->get_setting('modo_activo'), 'paper', false) . '>' . __('Paper Trading (Simulacion)', 'flavor-chat-ia') . '</option>';
+        echo '<option value="real"' . selected($this->get_setting('modo_activo'), 'real', false) . '>' . __('Modo Real', 'flavor-chat-ia') . '</option>';
+        echo '</select>';
+        echo '<p class="description">' . __('En modo real, las transacciones se preparan sin firmar para tu wallet.', 'flavor-chat-ia') . '</p>';
+        echo '</td>';
+        echo '</tr>';
+
+        // Balance inicial
+        echo '<tr>';
+        echo '<th scope="row"><label for="balance_inicial_usdc">' . __('Balance inicial (USDC)', 'flavor-chat-ia') . '</label></th>';
+        echo '<td>';
+        echo '<input type="number" name="balance_inicial_usdc" id="balance_inicial_usdc" value="' . esc_attr($this->get_setting('balance_inicial_usdc', 1000)) . '" step="0.01" min="0" class="regular-text">';
+        echo '<p class="description">' . __('Balance inicial para nuevos usuarios en paper trading.', 'flavor-chat-ia') . '</p>';
+        echo '</td>';
+        echo '</tr>';
+
+        // Slippage por defecto
+        echo '<tr>';
+        echo '<th scope="row"><label for="slippage_defecto_porcentaje">' . __('Slippage por defecto (%)', 'flavor-chat-ia') . '</label></th>';
+        echo '<td>';
+        echo '<input type="number" name="slippage_defecto_porcentaje" id="slippage_defecto_porcentaje" value="' . esc_attr($this->get_setting('slippage_defecto_porcentaje', 0.5)) . '" step="0.1" min="0.1" max="5" class="small-text">';
+        echo '<p class="description">' . __('Slippage maximo permitido en swaps (0.1% - 5%).', 'flavor-chat-ia') . '</p>';
+        echo '</td>';
+        echo '</tr>';
+
+        // Max swaps por hora
+        echo '<tr>';
+        echo '<th scope="row"><label for="max_swaps_por_hora">' . __('Max swaps por hora', 'flavor-chat-ia') . '</label></th>';
+        echo '<td>';
+        echo '<input type="number" name="max_swaps_por_hora" id="max_swaps_por_hora" value="' . esc_attr($this->get_setting('max_swaps_por_hora', 20)) . '" min="1" max="100" class="small-text">';
+        echo '<p class="description">' . __('Limite de operaciones por hora por usuario.', 'flavor-chat-ia') . '</p>';
+        echo '</td>';
+        echo '</tr>';
+
+        // Pools semilla
+        echo '<tr>';
+        echo '<th scope="row"><label for="pools_semilla_activos">' . __('Pools semilla', 'flavor-chat-ia') . '</label></th>';
+        echo '<td>';
+        echo '<label><input type="checkbox" name="pools_semilla_activos" id="pools_semilla_activos" value="1"' . checked($this->get_setting('pools_semilla_activos', true), true, false) . '>';
+        echo ' ' . __('Crear pools de liquidez por defecto (SOL/USDC, RAY/USDC, etc.)', 'flavor-chat-ia') . '</label>';
+        echo '</td>';
+        echo '</tr>';
+
+        // Farming activo
+        echo '<tr>';
+        echo '<th scope="row"><label for="farming_activo">' . __('Yield Farming', 'flavor-chat-ia') . '</label></th>';
+        echo '<td>';
+        echo '<label><input type="checkbox" name="farming_activo" id="farming_activo" value="1"' . checked($this->get_setting('farming_activo', true), true, false) . '>';
+        echo ' ' . __('Habilitar programas de yield farming', 'flavor-chat-ia') . '</label>';
+        echo '</td>';
+        echo '</tr>';
+
+        echo '</table>';
+
+        echo '<p class="submit">';
+        echo '<input type="submit" name="guardar_config_dex" class="button-primary" value="' . __('Guardar cambios', 'flavor-chat-ia') . '">';
+        echo '</p>';
+
+        echo '</form>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el widget para el dashboard unificado
+     */
+    public function render_dashboard_widget() {
+        $modo_activo = $this->get_setting('modo_activo', 'paper');
+        $estado_modo = ($modo_activo === 'paper')
+            ? __('Paper Trading', 'flavor-chat-ia')
+            : __('Modo Real', 'flavor-chat-ia');
+
+        $swaps_24h = $this->contar_swaps_recientes();
+        $pools_activos = $this->pool_manager ? count($this->pool_manager->listar_pools(true)) : 0;
+        ?>
+        <div class="dex-solana-widget">
+            <p><strong><?php esc_html_e('Modo:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($estado_modo); ?></p>
+            <p><strong><?php esc_html_e('Swaps (24h):', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($swaps_24h); ?></p>
+            <p><strong><?php esc_html_e('Pools activos:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($pools_activos); ?></p>
+            <p style="margin-top: 10px;">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=dex-solana-dashboard')); ?>" class="button button-small">
+                    <?php esc_html_e('Ver Dashboard', 'flavor-chat-ia'); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Estadisticas para el panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_panel() {
+        global $wpdb;
+        $estadisticas = array();
+
+        // Swaps en las ultimas 24 horas
+        $swaps_24h = $this->contar_swaps_recientes();
+        $estadisticas[] = array(
+            'icon'  => 'dashicons-randomize',
+            'valor' => $swaps_24h,
+            'label' => __('Swaps (24h)', 'flavor-chat-ia'),
+            'color' => $swaps_24h > 0 ? 'blue' : 'gray',
+            'enlace' => admin_url('admin.php?page=dex-solana-operaciones'),
+        );
+
+        // Pools activos
+        $total_pools = 0;
+        if ($this->pool_manager) {
+            $pools = $this->pool_manager->listar_pools(true);
+            $total_pools = is_array($pools) ? count($pools) : 0;
+        }
+        $estadisticas[] = array(
+            'icon'  => 'dashicons-chart-pie',
+            'valor' => $total_pools,
+            'label' => __('Pools activos', 'flavor-chat-ia'),
+            'color' => $total_pools > 0 ? 'green' : 'gray',
+            'enlace' => admin_url('admin.php?page=dex-solana-operaciones&tab=pools'),
+        );
+
+        // Programas de farming
+        $total_farming = 0;
+        if ($this->farming) {
+            $programas = $this->farming->listar_programas(true);
+            $total_farming = is_array($programas) ? count($programas) : 0;
+        }
+        $estadisticas[] = array(
+            'icon'  => 'dashicons-carrot',
+            'valor' => $total_farming,
+            'label' => __('Programas farming', 'flavor-chat-ia'),
+            'color' => $total_farming > 0 ? 'purple' : 'gray',
+            'enlace' => admin_url('admin.php?page=dex-solana-operaciones&tab=farming'),
+        );
+
+        // Volumen total (si hay tabla de stats)
+        $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
+        $tabla_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_swaps'") === $tabla_swaps;
+        if ($tabla_existe) {
+            $primer_dia_mes = date('Y-m-01');
+            $volumen_mes = $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(valor_usd), 0) FROM $tabla_swaps WHERE fecha >= %s",
+                $primer_dia_mes
+            ));
+            if ($volumen_mes > 0) {
+                $estadisticas[] = array(
+                    'icon'  => 'dashicons-chart-bar',
+                    'valor' => '$' . number_format((float)$volumen_mes, 2),
+                    'label' => __('Volumen este mes', 'flavor-chat-ia'),
+                    'color' => 'green',
+                    'enlace' => admin_url('admin.php?page=dex-solana-dashboard'),
+                );
+            }
+        }
+
+        return $estadisticas;
     }
 
     // =========================================================================
@@ -1627,5 +2093,361 @@ KNOWLEDGE;
         );
 
         return $configuraciones_formulario[$nombre_accion] ?? array();
+    }
+
+    // =========================================================================
+    // REST API Endpoints
+    // =========================================================================
+
+    /**
+     * Registra los endpoints REST API del modulo DEX Solana
+     *
+     * @return void
+     */
+    public function register_rest_routes() {
+        $namespace_api = 'flavor/v1';
+
+        // GET /flavor/v1/dex/tokens - Listar tokens disponibles
+        register_rest_route($namespace_api, '/dex/tokens', array(
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => array($this, 'api_listar_tokens'),
+            'permission_callback' => array($this, 'api_verificar_permisos_lectura'),
+            'args'                => array(
+                'busqueda' => array(
+                    'type'              => 'string',
+                    'description'       => __('Termino de busqueda para filtrar tokens', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'sanitize_text_field',
+                ),
+                'limite' => array(
+                    'type'              => 'integer',
+                    'default'           => 50,
+                    'sanitize_callback' => 'absint',
+                ),
+            ),
+        ));
+
+        // GET /flavor/v1/dex/pools - Listar pools de liquidez
+        register_rest_route($namespace_api, '/dex/pools', array(
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => array($this, 'api_listar_pools'),
+            'permission_callback' => array($this, 'api_verificar_permisos_lectura'),
+            'args'                => array(
+                'solo_activos' => array(
+                    'type'              => 'boolean',
+                    'default'           => true,
+                    'sanitize_callback' => 'rest_sanitize_boolean',
+                ),
+            ),
+        ));
+
+        // GET /flavor/v1/dex/precios - Obtener precios de tokens
+        register_rest_route($namespace_api, '/dex/precios', array(
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => array($this, 'api_obtener_precios'),
+            'permission_callback' => array($this, 'api_verificar_permisos_lectura'),
+            'args'                => array(
+                'tokens' => array(
+                    'type'              => 'string',
+                    'description'       => __('Lista de simbolos de tokens separados por coma (ej: SOL,USDC,JUP)', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'sanitize_text_field',
+                ),
+            ),
+        ));
+
+        // POST /flavor/v1/dex/swap - Ejecutar intercambio de tokens
+        register_rest_route($namespace_api, '/dex/swap', array(
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => array($this, 'api_ejecutar_swap'),
+            'permission_callback' => array($this, 'api_verificar_permisos_escritura'),
+            'args'                => array(
+                'token_entrada' => array(
+                    'type'              => 'string',
+                    'required'          => true,
+                    'description'       => __('Simbolo del token a vender (ej: SOL)', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'sanitize_text_field',
+                ),
+                'token_salida' => array(
+                    'type'              => 'string',
+                    'required'          => true,
+                    'description'       => __('Simbolo del token a comprar (ej: USDC)', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'sanitize_text_field',
+                ),
+                'cantidad' => array(
+                    'type'              => 'number',
+                    'required'          => true,
+                    'description'       => __('Cantidad del token de entrada', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'floatval',
+                ),
+                'slippage' => array(
+                    'type'              => 'number',
+                    'default'           => 0.5,
+                    'description'       => __('Slippage maximo en porcentaje (por defecto 0.5%)', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'floatval',
+                ),
+            ),
+        ));
+
+        // GET /flavor/v1/dex/historial - Historial de transacciones
+        register_rest_route($namespace_api, '/dex/historial', array(
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => array($this, 'api_obtener_historial'),
+            'permission_callback' => array($this, 'api_verificar_permisos_lectura'),
+            'args'                => array(
+                'limite' => array(
+                    'type'              => 'integer',
+                    'default'           => 20,
+                    'sanitize_callback' => 'absint',
+                ),
+                'tipo' => array(
+                    'type'              => 'string',
+                    'description'       => __('Tipo de operacion: swap, liquidez, farming o todos', 'flavor-chat-ia'),
+                    'default'           => 'todos',
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'enum'              => array('swap', 'liquidez', 'farming', 'todos'),
+                ),
+            ),
+        ));
+
+        // GET /flavor/v1/dex/portfolio - Obtener portfolio del usuario
+        register_rest_route($namespace_api, '/dex/portfolio', array(
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => array($this, 'api_obtener_portfolio'),
+            'permission_callback' => array($this, 'api_verificar_permisos_lectura'),
+        ));
+
+        // GET /flavor/v1/dex/cotizacion - Obtener cotizacion de swap sin ejecutar
+        register_rest_route($namespace_api, '/dex/cotizacion', array(
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => array($this, 'api_obtener_cotizacion'),
+            'permission_callback' => array($this, 'api_verificar_permisos_lectura'),
+            'args'                => array(
+                'token_entrada' => array(
+                    'type'              => 'string',
+                    'required'          => true,
+                    'description'       => __('Simbolo del token de entrada', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'sanitize_text_field',
+                ),
+                'token_salida' => array(
+                    'type'              => 'string',
+                    'required'          => true,
+                    'description'       => __('Simbolo del token de salida', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'sanitize_text_field',
+                ),
+                'cantidad' => array(
+                    'type'              => 'number',
+                    'required'          => true,
+                    'description'       => __('Cantidad del token de entrada', 'flavor-chat-ia'),
+                    'sanitize_callback' => 'floatval',
+                ),
+                'slippage' => array(
+                    'type'              => 'number',
+                    'default'           => 0.5,
+                    'sanitize_callback' => 'floatval',
+                ),
+            ),
+        ));
+    }
+
+    /**
+     * Verifica permisos de lectura para endpoints REST
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return bool|\WP_Error
+     */
+    public function api_verificar_permisos_lectura($request) {
+        // Permitir lectura publica para endpoints de consulta
+        return true;
+    }
+
+    /**
+     * Verifica permisos de escritura para endpoints REST
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return bool|\WP_Error
+     */
+    public function api_verificar_permisos_escritura($request) {
+        // Requerir usuario autenticado para operaciones de escritura
+        if (!is_user_logged_in()) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __('Debes iniciar sesion para realizar esta operacion.', 'flavor-chat-ia'),
+                array('status' => 401)
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * API: Listar tokens disponibles
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return \WP_REST_Response
+     */
+    public function api_listar_tokens($request) {
+        $termino_busqueda = $request->get_param('busqueda');
+        $limite_resultados = $request->get_param('limite');
+
+        if (!empty($termino_busqueda)) {
+            // Buscar token especifico
+            $resultado_busqueda = $this->action_buscar_token(array('busqueda' => $termino_busqueda));
+            return new \WP_REST_Response($resultado_busqueda, $resultado_busqueda['success'] ? 200 : 400);
+        }
+
+        // Listar todos los tokens conocidos
+        $tokens_conocidos = $this->token_registry ? $this->token_registry->obtener_todos_conocidos() : array();
+
+        if ($limite_resultados > 0 && count($tokens_conocidos) > $limite_resultados) {
+            $tokens_conocidos = array_slice($tokens_conocidos, 0, $limite_resultados);
+        }
+
+        return new \WP_REST_Response(array(
+            'success' => true,
+            'total'   => count($tokens_conocidos),
+            'tokens'  => $tokens_conocidos,
+        ), 200);
+    }
+
+    /**
+     * API: Listar pools de liquidez
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return \WP_REST_Response
+     */
+    public function api_listar_pools($request) {
+        $solo_activos = $request->get_param('solo_activos');
+
+        $resultado_pools = $this->action_listar_pools(array());
+
+        if (!$resultado_pools['success']) {
+            return new \WP_REST_Response($resultado_pools, 400);
+        }
+
+        $pools_filtrados = $resultado_pools['pools'];
+
+        if ($solo_activos) {
+            $pools_filtrados = array_filter($pools_filtrados, function($pool) {
+                return isset($pool['activo']) && $pool['activo'];
+            });
+            $pools_filtrados = array_values($pools_filtrados);
+        }
+
+        return new \WP_REST_Response(array(
+            'success' => true,
+            'total'   => count($pools_filtrados),
+            'pools'   => $pools_filtrados,
+        ), 200);
+    }
+
+    /**
+     * API: Obtener precios de tokens
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return \WP_REST_Response
+     */
+    public function api_obtener_precios($request) {
+        $tokens_solicitados = $request->get_param('tokens');
+
+        $parametros_accion = array();
+        if (!empty($tokens_solicitados)) {
+            $parametros_accion['tokens'] = $tokens_solicitados;
+        }
+
+        $resultado_precios = $this->action_obtener_precios($parametros_accion);
+
+        $codigo_respuesta = $resultado_precios['success'] ? 200 : 400;
+        return new \WP_REST_Response($resultado_precios, $codigo_respuesta);
+    }
+
+    /**
+     * API: Ejecutar swap de tokens
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return \WP_REST_Response
+     */
+    public function api_ejecutar_swap($request) {
+        $token_entrada = $request->get_param('token_entrada');
+        $token_salida  = $request->get_param('token_salida');
+        $cantidad_swap = $request->get_param('cantidad');
+        $slippage_swap = $request->get_param('slippage');
+
+        $parametros_swap = array(
+            'token_entrada' => $token_entrada,
+            'token_salida'  => $token_salida,
+            'cantidad'      => $cantidad_swap,
+            'slippage'      => $slippage_swap,
+        );
+
+        $resultado_swap = $this->action_ejecutar_swap($parametros_swap);
+
+        $codigo_respuesta = $resultado_swap['success'] ? 200 : 400;
+        return new \WP_REST_Response($resultado_swap, $codigo_respuesta);
+    }
+
+    /**
+     * API: Obtener historial de transacciones
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return \WP_REST_Response
+     */
+    public function api_obtener_historial($request) {
+        $limite_historial = $request->get_param('limite');
+        $tipo_operacion   = $request->get_param('tipo');
+
+        $resultado_historial = $this->action_obtener_historial_swaps(array('limite' => $limite_historial));
+
+        if (!$resultado_historial['success']) {
+            return new \WP_REST_Response($resultado_historial, 400);
+        }
+
+        // Filtrar por tipo si es necesario
+        if ($tipo_operacion !== 'todos' && !empty($resultado_historial['swaps'])) {
+            $swaps_filtrados = array_filter($resultado_historial['swaps'], function($swap) use ($tipo_operacion) {
+                $tipo_swap = $swap['tipo'] ?? 'swap';
+                return strtolower($tipo_swap) === strtolower($tipo_operacion);
+            });
+            $resultado_historial['swaps'] = array_values($swaps_filtrados);
+            $resultado_historial['total'] = count($resultado_historial['swaps']);
+        }
+
+        return new \WP_REST_Response($resultado_historial, 200);
+    }
+
+    /**
+     * API: Obtener portfolio del usuario
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return \WP_REST_Response
+     */
+    public function api_obtener_portfolio($request) {
+        $resultado_portfolio = $this->action_obtener_portfolio(array());
+
+        $codigo_respuesta = $resultado_portfolio['success'] ? 200 : 400;
+        return new \WP_REST_Response($resultado_portfolio, $codigo_respuesta);
+    }
+
+    /**
+     * API: Obtener cotizacion de swap sin ejecutar
+     *
+     * @param \WP_REST_Request $request Objeto de peticion REST
+     * @return \WP_REST_Response
+     */
+    public function api_obtener_cotizacion($request) {
+        $token_entrada     = $request->get_param('token_entrada');
+        $token_salida      = $request->get_param('token_salida');
+        $cantidad_cotizar  = $request->get_param('cantidad');
+        $slippage_cotizar  = $request->get_param('slippage');
+
+        $parametros_cotizacion = array(
+            'token_entrada' => $token_entrada,
+            'token_salida'  => $token_salida,
+            'cantidad'      => $cantidad_cotizar,
+            'slippage'      => $slippage_cotizar,
+        );
+
+        $resultado_cotizacion = $this->action_obtener_cotizacion_swap($parametros_cotizacion);
+
+        $codigo_respuesta = $resultado_cotizacion['success'] ? 200 : 400;
+        return new \WP_REST_Response($resultado_cotizacion, $codigo_respuesta);
     }
 }

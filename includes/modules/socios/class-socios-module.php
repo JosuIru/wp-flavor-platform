@@ -14,13 +14,19 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'socios';
-        $this->name = __('Gestión de Socios', 'flavor-chat-ia');
-        $this->description = __('Gestión de socios, cuotas y membresías desde la app móvil.', 'flavor-chat-ia');
+        $this->name = 'Gestion de Socios'; // Translation loaded on init
+        $this->description = 'Gestion de socios, cuotas y membresias desde la app movil.'; // Translation loaded on init
+
+        // Configurar visibilidad por defecto: solo miembros pueden ver este módulo
+        $this->default_visibility = 'members_only';
+        $this->required_capability = 'read';
 
         parent::__construct();
     }
@@ -42,7 +48,15 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Socios no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -68,6 +82,11 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
 
         // Cargar sistema de cuotas periodicas
         $ruta_archivo_subscriptions = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
@@ -75,6 +94,469 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             require_once $ruta_archivo_subscriptions;
             Flavor_Socios_Subscriptions::get_instance();
         }
+    }
+
+    /**
+     * Registrar rutas REST API (para apps)
+     */
+    public function register_rest_routes() {
+        register_rest_route('flavor/v1', '/socios/perfil', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_mi_perfil'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        register_rest_route('flavor/v1', '/socios/cuotas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_mis_cuotas'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        register_rest_route('flavor/v1', '/socios/actualizar', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_actualizar_datos'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        register_rest_route('flavor/v1', '/socios/cuotas/pagar', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_pagar_cuota'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        register_rest_route('flavor/v1', '/socios/estadisticas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_estadisticas'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+        ]);
+    }
+
+    public function rest_mi_perfil($request) {
+        return rest_ensure_response($this->action_mi_perfil_socio([]));
+    }
+
+    public function rest_mis_cuotas($request) {
+        return rest_ensure_response($this->action_mis_cuotas([
+            'estado' => $request->get_param('estado'),
+            'limite' => $request->get_param('limite'),
+        ]));
+    }
+
+    public function rest_actualizar_datos($request) {
+        return rest_ensure_response($this->action_actualizar_datos([
+            'telefono' => $request->get_param('telefono'),
+            'direccion' => $request->get_param('direccion'),
+            'iban' => $request->get_param('iban'),
+            'notas' => $request->get_param('notas'),
+        ]));
+    }
+
+    public function rest_pagar_cuota($request) {
+        return rest_ensure_response($this->action_pagar_cuota([
+            'cuota_id' => $request->get_param('cuota_id'),
+            'metodo_pago' => $request->get_param('metodo_pago'),
+            'referencia' => $request->get_param('referencia'),
+        ]));
+    }
+
+    public function rest_estadisticas($request) {
+        return rest_ensure_response($this->action_estadisticas_socios([]));
+    }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'socios',
+            'label' => __('Socios', 'flavor-chat-ia'),
+            'icon' => 'dashicons-groups',
+            'capability' => 'manage_options',
+            'categoria' => 'personas',
+            'paginas' => [
+                [
+                    'slug' => 'socios-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'socios-listado',
+                    'titulo' => __('Listado de Socios', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                ],
+                [
+                    'slug' => 'socios-cuotas',
+                    'titulo' => __('Cuotas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_cuotas'],
+                    'badge' => [$this, 'contar_cuotas_pendientes'],
+                ],
+                [
+                    'slug' => 'socios-altas-bajas',
+                    'titulo' => __('Altas/Bajas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_altas_bajas'],
+                ],
+                [
+                    'slug' => 'socios-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta cuotas pendientes de pago
+     *
+     * @return int
+     */
+    public function contar_cuotas_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_cuotas} WHERE estado = 'pendiente'"
+        );
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+            return $estadisticas;
+        }
+
+        // Socios activos
+        $socios_activos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_socios} WHERE estado = 'activo'"
+        );
+        $estadisticas[] = [
+            'icon' => 'dashicons-groups',
+            'valor' => $socios_activos,
+            'label' => __('Socios activos', 'flavor-chat-ia'),
+            'color' => 'green',
+            'enlace' => admin_url('admin.php?page=socios-listado&estado=activo'),
+        ];
+
+        // Cuotas pendientes
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+            $cuotas_pendientes = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_cuotas} WHERE estado = 'pendiente'"
+            );
+            $estadisticas[] = [
+                'icon' => 'dashicons-money-alt',
+                'valor' => $cuotas_pendientes,
+                'label' => __('Cuotas pendientes', 'flavor-chat-ia'),
+                'color' => $cuotas_pendientes > 0 ? 'orange' : 'green',
+                'enlace' => admin_url('admin.php?page=socios-cuotas&estado=pendiente'),
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de admin de socios
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Socios', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Socio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
+        ]);
+        echo '<p>' . __('Panel de control del módulo de gestión de socios.', 'flavor-chat-ia') . '</p>';
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+
+        $activos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_socios WHERE estado = 'activo'");
+        $suspendidos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_socios WHERE estado = 'suspendido'");
+        $bajas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_socios WHERE estado = 'baja'");
+        $cuotas_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_cuotas WHERE estado = 'pendiente'");
+
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-groups"></span><div class="stat-content"><span class="stat-number">' . esc_html($activos) . '</span><span class="stat-label">' . esc_html__('Socios activos', 'flavor-chat-ia') . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-warning"></span><div class="stat-content"><span class="stat-number">' . esc_html($suspendidos) . '</span><span class="stat-label">' . esc_html__('Suspendidos', 'flavor-chat-ia') . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-dismiss"></span><div class="stat-content"><span class="stat-number">' . esc_html($bajas) . '</span><span class="stat-label">' . esc_html__('Bajas', 'flavor-chat-ia') . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-money-alt"></span><div class="stat-content"><span class="stat-number">' . esc_html($cuotas_pendientes) . '</span><span class="stat-label">' . esc_html__('Cuotas pendientes', 'flavor-chat-ia') . '</span></div></div>';
+        echo '</div>';
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el listado de socios
+     */
+    public function render_admin_listado() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Listado de Socios', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Socio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
+        ]);
+        $this->handle_admin_actions();
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $tipo = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="socios-listado">';
+        echo '<select name="estado">';
+        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        foreach (['activo' => __('Activo', 'flavor-chat-ia'), 'suspendido' => __('Suspendido', 'flavor-chat-ia'), 'baja' => __('Baja', 'flavor-chat-ia')] as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html($label) . '</option>';
+        }
+        echo '</select> ';
+        echo '<select name="tipo">';
+        echo '<option value="">' . esc_html__('Todos los tipos', 'flavor-chat-ia') . '</option>';
+        foreach ($this->get_setting('tipos_socio', []) as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($tipo, $key, false) . '>' . esc_html($label) . '</option>';
+        }
+        echo '</select> ';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por nombre o email', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $tabla_users = $wpdb->users;
+
+        $where = [];
+        $params = [];
+        if ($estado) {
+            $where[] = 's.estado = %s';
+            $params[] = $estado;
+        }
+        if ($tipo) {
+            $where[] = 's.tipo_socio = %s';
+            $params[] = $tipo;
+        }
+        if ($busqueda) {
+            $where[] = '(u.display_name LIKE %s OR u.user_email LIKE %s)';
+            $like = '%' . $wpdb->esc_like($busqueda) . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        $sql = "SELECT s.*, u.display_name, u.user_email FROM $tabla_socios s LEFT JOIN $tabla_users u ON s.usuario_id = u.ID";
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY s.fecha_alta DESC LIMIT 200';
+
+        $socios = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($socios)) {
+            echo '<p>' . esc_html__('No hay socios con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th>';
+        echo '<th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th>';
+        echo '<th>Email</th>';
+        echo '<th>' . esc_html__('Número', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($socios as $socio) {
+            echo '<tr>';
+            echo '<td>' . esc_html($socio->id) . '</td>';
+            echo '<td>' . esc_html($socio->display_name ?: '-') . '</td>';
+            echo '<td>' . esc_html($socio->user_email ?: '-') . '</td>';
+            echo '<td>' . esc_html($socio->numero_socio) . '</td>';
+            echo '<td>' . esc_html($socio->tipo_socio) . '</td>';
+            echo '<td>' . esc_html($socio->estado) . '</td>';
+            echo '<td>' . $this->render_estado_actions($socio->id, $socio->estado, 'socios-listado') . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la gestión de cuotas
+     */
+    public function render_admin_cuotas() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Gestión de Cuotas', 'flavor-chat-ia'), [
+            ['label' => __('Generar Cuotas', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+        ]);
+        $this->handle_admin_actions();
+        $this->handle_admin_cuota_action();
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="socios-cuotas">';
+        echo '<select name="estado">';
+        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        foreach (['pendiente', 'pagada', 'vencida', 'condonada'] as $key) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html(ucfirst($key)) . '</option>';
+        }
+        echo '</select> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        global $wpdb;
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+
+        $where = [];
+        $params = [];
+        if ($estado) {
+            $where[] = 'c.estado = %s';
+            $params[] = $estado;
+        }
+        $sql = "SELECT c.*, s.numero_socio FROM $tabla_cuotas c LEFT JOIN $tabla_socios s ON c.socio_id = s.id";
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY c.fecha_cargo DESC LIMIT 200';
+
+        $cuotas = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($cuotas)) {
+            echo '<p>' . esc_html__('No hay cuotas con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th>';
+        echo '<th>' . esc_html__('Socio', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Periodo', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Importe', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Fecha cargo', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($cuotas as $cuota) {
+            echo '<tr>';
+            echo '<td>' . esc_html($cuota->id) . '</td>';
+            echo '<td>' . esc_html($cuota->numero_socio) . '</td>';
+            echo '<td>' . esc_html($cuota->periodo) . '</td>';
+            echo '<td>' . esc_html(number_format((float) $cuota->importe, 2)) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($cuota->fecha_cargo))) . '</td>';
+            echo '<td>' . esc_html($cuota->estado) . '</td>';
+            echo '<td>' . $this->render_cuota_actions($cuota->id, $cuota->estado) . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de altas y bajas
+     */
+    public function render_admin_altas_bajas() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Altas y Bajas de Socios', 'flavor-chat-ia'));
+        $this->handle_admin_create_socio();
+        $this->handle_admin_baja_socio();
+
+        echo '<h3>' . esc_html__('Alta de socio', 'flavor-chat-ia') . '</h3>';
+        echo '<form method="post">';
+        wp_nonce_field('socios_alta', 'socios_alta_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Usuario ID', 'flavor-chat-ia') . '</th><td><input type="number" name="usuario_id" min="1" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Número de socio', 'flavor-chat-ia') . '</th><td><input type="text" name="numero_socio" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th><td><select name="tipo_socio">';
+        foreach ($this->get_setting('tipos_socio', []) as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '">' . esc_html($label) . '</option>';
+        }
+        echo '</select></td></tr>';
+        echo '<tr><th>' . esc_html__('Cuota mensual', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="cuota_mensual" value="' . esc_attr($this->get_setting('cuota_mensual')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Cuota reducida', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="cuota_reducida" value="1"> ' . esc_html__('Aplicar cuota reducida', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Notas', 'flavor-chat-ia') . '</th><td><textarea name="notas" rows="3" class="large-text"></textarea></td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Dar de alta', 'flavor-chat-ia'));
+        echo '</form>';
+
+        echo '<hr>';
+        echo '<h3>' . esc_html__('Baja de socio', 'flavor-chat-ia') . '</h3>';
+        echo '<form method="post">';
+        wp_nonce_field('socios_baja', 'socios_baja_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('ID Socio', 'flavor-chat-ia') . '</th><td><input type="number" name="socio_id" min="1" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Motivo', 'flavor-chat-ia') . '</th><td><textarea name="motivo" rows="3" class="large-text"></textarea></td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Dar de baja', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la configuración del módulo
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Socios', 'flavor-chat-ia'));
+        $this->handle_admin_save_config();
+        echo '<p>' . __('Configuración del sistema de gestión de socios.', 'flavor-chat-ia') . '</p>';
+
+        $tipos = $this->get_setting('tipos_socio', []);
+        $tipos_lineas = [];
+        foreach ($tipos as $key => $label) {
+            $tipos_lineas[] = $key . '|' . $label;
+        }
+
+        echo '<form method="post">';
+        wp_nonce_field('socios_config', 'socios_config_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Cuota mensual', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="cuota_mensual" value="' . esc_attr($this->get_setting('cuota_mensual')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Cuota anual', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="cuota_anual" value="' . esc_attr($this->get_setting('cuota_anual')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Día de cargo', 'flavor-chat-ia') . '</th><td><input type="number" name="dia_cargo" min="1" max="28" value="' . esc_attr($this->get_setting('dia_cargo')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite cuota reducida', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_cuota_reducida" value="1" ' . checked($this->get_setting('permite_cuota_reducida'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere validación de alta', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_validacion_alta" value="1" ' . checked($this->get_setting('requiere_validacion_alta'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Tipos de socio', 'flavor-chat-ia') . '</th><td>';
+        echo '<textarea name="tipos_socio" rows="5" class="large-text" placeholder="consumidor|Socio Consumidor">' . esc_textarea(implode("\n", $tipos_lineas)) . '</textarea>';
+        echo '<p class="description">' . esc_html__('Un tipo por línea en formato clave|Etiqueta.', 'flavor-chat-ia') . '</p>';
+        echo '</td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
     }
 
     /**
@@ -209,7 +691,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => 'Debes iniciar sesión.',
+                'error' => __('titulo', 'flavor-chat-ia'),
             ];
         }
 
@@ -224,7 +706,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => 'No estás registrado como socio.',
+                'error' => __('Tipos de Membresía', 'flavor-chat-ia'),
             ];
         }
 
@@ -254,7 +736,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => 'Debes iniciar sesión.',
+                'error' => __('toggle', 'flavor-chat-ia'),
             ];
         }
 
@@ -270,7 +752,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => 'No estás registrado como socio.',
+                'error' => __('Lo que dicen nuestros socios', 'flavor-chat-ia'),
             ];
         }
 
@@ -326,7 +808,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!current_user_can('manage_options')) {
             return [
                 'success' => false,
-                'error' => 'No tienes permisos para ver estadísticas.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -703,7 +1185,7 @@ KNOWLEDGE;
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => 'Debes iniciar sesion.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -718,7 +1200,7 @@ KNOWLEDGE;
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => 'No se encontro registro de socio activo.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -734,7 +1216,7 @@ KNOWLEDGE;
         if (empty($datos_actualizar)) {
             return [
                 'success' => false,
-                'error' => 'No se proporcionaron datos para actualizar.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
@@ -747,13 +1229,227 @@ KNOWLEDGE;
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => 'Error al actualizar los datos.',
+                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
             ];
         }
 
         return [
             'success' => true,
-            'mensaje' => 'Datos actualizados correctamente.',
+            'mensaje' => __('Datos actualizados correctamente.', 'flavor-chat-ia'),
         ];
     }
+
+    private function handle_admin_actions() {
+        if (empty($_GET['socio_action']) || empty($_GET['socio_id'])) {
+            return;
+        }
+
+        $action = sanitize_text_field($_GET['socio_action']);
+        $socio_id = absint($_GET['socio_id']);
+        $nonce = $_GET['_wpnonce'] ?? '';
+
+        if (!wp_verify_nonce($nonce, 'socios_estado_' . $socio_id)) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        if (!in_array($action, ['activo', 'suspendido', 'baja'], true)) {
+            return;
+        }
+
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $data = ['estado' => $action];
+        if ($action === 'baja') {
+            $data['fecha_baja'] = date('Y-m-d');
+        }
+        $wpdb->update($tabla_socios, $data, ['id' => $socio_id]);
+        echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function render_estado_actions($socio_id, $estado_actual, $page) {
+        $acciones = [];
+        foreach (['activo' => __('Activo', 'flavor-chat-ia'), 'suspendido' => __('Suspendido', 'flavor-chat-ia'), 'baja' => __('Baja', 'flavor-chat-ia')] as $key => $label) {
+            if ($key === $estado_actual) {
+                continue;
+            }
+            $url = wp_nonce_url(
+                add_query_arg([
+                    'page' => $page,
+                    'socio_action' => $key,
+                    'socio_id' => $socio_id,
+                ], admin_url('admin.php')),
+                'socios_estado_' . $socio_id
+            );
+            $acciones[] = '<a href="' . esc_url($url) . '">' . esc_html($label) . '</a>';
+        }
+        return implode(' | ', $acciones);
+    }
+
+    private function render_cuota_actions($cuota_id, $estado_actual) {
+        $acciones = [];
+        foreach (['pagada' => __('Marcar pagada', 'flavor-chat-ia'), 'vencida' => __('Marcar vencida', 'flavor-chat-ia'), 'condonada' => __('Condonar', 'flavor-chat-ia')] as $key => $label) {
+            if ($key === $estado_actual) {
+                continue;
+            }
+            $url = wp_nonce_url(
+                add_query_arg([
+                    'page' => 'socios-cuotas',
+                    'cuota_action' => $key,
+                    'cuota_id' => $cuota_id,
+                ], admin_url('admin.php')),
+                'socios_cuota_' . $cuota_id
+            );
+            $acciones[] = '<a href="' . esc_url($url) . '">' . esc_html($label) . '</a>';
+        }
+        return implode(' | ', $acciones);
+    }
+
+    private function handle_admin_create_socio() {
+        if (empty($_POST['socios_alta_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['socios_alta_nonce'], 'socios_alta')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $usuario_id = absint($_POST['usuario_id'] ?? 0);
+        $numero_socio = sanitize_text_field($_POST['numero_socio'] ?? '');
+        $tipo_socio = sanitize_text_field($_POST['tipo_socio'] ?? 'consumidor');
+        $cuota_mensual = floatval($_POST['cuota_mensual'] ?? $this->get_setting('cuota_mensual'));
+        $cuota_reducida = !empty($_POST['cuota_reducida']) ? 1 : 0;
+        $notas = sanitize_textarea_field($_POST['notas'] ?? '');
+
+        if (!$usuario_id || !$numero_socio) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Usuario y número de socio son obligatorios.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $exists = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $tabla_socios WHERE usuario_id = %d", $usuario_id));
+        if ($exists) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('El usuario ya es socio.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $wpdb->insert($tabla_socios, [
+            'usuario_id' => $usuario_id,
+            'numero_socio' => $numero_socio,
+            'tipo_socio' => $tipo_socio,
+            'fecha_alta' => date('Y-m-d'),
+            'estado' => 'activo',
+            'cuota_mensual' => $cuota_mensual,
+            'cuota_reducida' => $cuota_reducida,
+            'notas' => $notas,
+        ]);
+
+        echo '<div class="notice notice-success"><p>' . esc_html__('Socio creado.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function handle_admin_baja_socio() {
+        if (empty($_POST['socios_baja_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['socios_baja_nonce'], 'socios_baja')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $socio_id = absint($_POST['socio_id'] ?? 0);
+        if (!$socio_id) {
+            return;
+        }
+
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $wpdb->update($tabla_socios, [
+            'estado' => 'baja',
+            'fecha_baja' => date('Y-m-d'),
+            'notas' => sanitize_textarea_field($_POST['motivo'] ?? ''),
+        ], ['id' => $socio_id]);
+
+        echo '<div class="notice notice-success"><p>' . esc_html__('Socio dado de baja.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function handle_admin_save_config() {
+        if (empty($_POST['socios_config_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['socios_config_nonce'], 'socios_config')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $this->update_setting('cuota_mensual', floatval($_POST['cuota_mensual'] ?? 30));
+        $this->update_setting('cuota_anual', floatval($_POST['cuota_anual'] ?? 300));
+        $this->update_setting('dia_cargo', absint($_POST['dia_cargo'] ?? 1));
+        $this->update_setting('permite_cuota_reducida', !empty($_POST['permite_cuota_reducida']));
+        $this->update_setting('requiere_validacion_alta', !empty($_POST['requiere_validacion_alta']));
+
+        $tipos_raw = sanitize_textarea_field($_POST['tipos_socio'] ?? '');
+        $tipos = [];
+        foreach (array_filter(array_map('trim', explode("\n", $tipos_raw))) as $linea) {
+            $parts = array_map('trim', explode('|', $linea, 2));
+            if (!empty($parts[0])) {
+                $tipos[$parts[0]] = $parts[1] ?? $parts[0];
+            }
+        }
+        if ($tipos) {
+            $this->update_setting('tipos_socio', $tipos);
+        }
+
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function handle_admin_cuota_action() {
+        if (empty($_GET['cuota_action']) || empty($_GET['cuota_id'])) {
+            return;
+        }
+
+        $action = sanitize_text_field($_GET['cuota_action']);
+        $cuota_id = absint($_GET['cuota_id']);
+        $nonce = $_GET['_wpnonce'] ?? '';
+
+        if (!wp_verify_nonce($nonce, 'socios_cuota_' . $cuota_id)) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        if (!in_array($action, ['pagada', 'vencida', 'condonada'], true)) {
+            return;
+        }
+
+        global $wpdb;
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+        $data = ['estado' => $action];
+        if ($action === 'pagada') {
+            $data['fecha_pago'] = date('Y-m-d');
+        }
+        $wpdb->update($tabla_cuotas, $data, ['id' => $cuota_id]);
+        echo '<div class="notice notice-success"><p>' . esc_html__('Cuota actualizada.', 'flavor-chat-ia') . '</p></div>';
+    }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('socios');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('socios');
+        if (!$pagina && !get_option('flavor_socios_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['socios']);
+            update_option('flavor_socios_pages_created', 1, false);
+        }
+    }
+
 }

@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Nombre de tablas
      */
@@ -46,8 +48,8 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $this->id = 'parkings';
-        $this->name = __('Parkings Comunitarios', 'flavor-chat-ia');
-        $this->description = __('Sistema completo de gestion de parkings comunitarios con reservas, asignaciones y lista de espera.', 'flavor-chat-ia');
+        $this->name = 'Parkings Comunitarios'; // Translation loaded on init
+        $this->description = 'Sistema completo de gestion de parkings comunitarios con reservas, asignaciones y lista de espera.'; // Translation loaded on init
 
         $this->tabla_parkings = $wpdb->prefix . 'flavor_parkings';
         $this->tabla_plazas = $wpdb->prefix . 'flavor_parkings_plazas';
@@ -72,7 +74,15 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Parkings no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -128,6 +138,9 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
 
         // Programar tareas cron adicionales
         $this->programar_tareas_cron();
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
 
         if (!wp_next_scheduled('flavor_parkings_check_rotacion')) {
             wp_schedule_event(time(), 'daily', 'flavor_parkings_check_rotacion');
@@ -537,9 +550,9 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
             <div class="disponibilidad-header">
                 <h3><?php echo esc_html($parking->nombre); ?> - <?php _e('Disponibilidad', 'flavor-chat-ia'); ?></h3>
                 <div class="navegacion-fechas">
-                    <button class="btn-fecha-anterior" data-direccion="anterior">&larr;</button>
+                    <button class="btn-fecha-anterior" data-direccion="anterior"><?php echo esc_html__('&larr;', 'flavor-chat-ia'); ?></button>
                     <span class="fecha-actual"><?php echo esc_html(date_i18n('F Y', strtotime($fecha_inicio))); ?></span>
-                    <button class="btn-fecha-siguiente" data-direccion="siguiente">&rarr;</button>
+                    <button class="btn-fecha-siguiente" data-direccion="siguiente"><?php echo esc_html__('&rarr;', 'flavor-chat-ia'); ?></button>
                 </div>
             </div>
 
@@ -701,46 +714,46 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
                     <h4><?php _e('Solicitar plaza de parking', 'flavor-chat-ia'); ?></h4>
                     <form id="form-solicitar-plaza" class="flavor-form">
                         <input type="hidden" name="parking_id" value="<?php echo esc_attr($parking_id); ?>">
-                        <input type="hidden" name="action" value="flavor_parkings">
-                        <input type="hidden" name="subaction" value="solicitar_plaza">
+                        <input type="hidden" name="action" value="<?php echo esc_attr__('flavor_parkings', 'flavor-chat-ia'); ?>">
+                        <input type="hidden" name="subaction" value="<?php echo esc_attr__('solicitar_plaza', 'flavor-chat-ia'); ?>">
                         <?php wp_nonce_field('flavor_parkings_nonce', 'nonce'); ?>
 
                         <div class="campo-form">
                             <label for="tipo_plaza_preferida"><?php _e('Tipo de plaza preferida', 'flavor-chat-ia'); ?></label>
                             <select name="tipo_plaza_preferida" id="tipo_plaza_preferida">
-                                <option value="cualquiera"><?php _e('Cualquiera', 'flavor-chat-ia'); ?></option>
-                                <option value="normal"><?php _e('Normal', 'flavor-chat-ia'); ?></option>
-                                <option value="grande"><?php _e('Grande', 'flavor-chat-ia'); ?></option>
-                                <option value="pequena"><?php _e('Pequena', 'flavor-chat-ia'); ?></option>
-                                <option value="moto"><?php _e('Moto', 'flavor-chat-ia'); ?></option>
-                                <option value="carga_electrica"><?php _e('Con cargador electrico', 'flavor-chat-ia'); ?></option>
-                                <option value="movilidad_reducida"><?php _e('Movilidad reducida', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('cualquiera', 'flavor-chat-ia'); ?>"><?php _e('Cualquiera', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('normal', 'flavor-chat-ia'); ?>"><?php _e('Normal', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('grande', 'flavor-chat-ia'); ?>"><?php _e('Grande', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('pequena', 'flavor-chat-ia'); ?>"><?php _e('Pequena', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('moto', 'flavor-chat-ia'); ?>"><?php _e('Moto', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('carga_electrica', 'flavor-chat-ia'); ?>"><?php _e('Con cargador electrico', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('movilidad_reducida', 'flavor-chat-ia'); ?>"><?php _e('Movilidad reducida', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
 
                         <div class="campo-form">
                             <label for="matricula"><?php _e('Matricula del vehiculo', 'flavor-chat-ia'); ?></label>
-                            <input type="text" name="matricula" id="matricula" placeholder="0000 ABC" required>
+                            <input type="text" name="matricula" id="matricula" placeholder="<?php echo esc_attr__('0000 ABC', 'flavor-chat-ia'); ?>" required>
                         </div>
 
                         <div class="campo-form fila-doble">
                             <div>
                                 <label for="marca_vehiculo"><?php _e('Marca', 'flavor-chat-ia'); ?></label>
-                                <input type="text" name="marca_vehiculo" id="marca_vehiculo" placeholder="Ej: Toyota">
+                                <input type="text" name="marca_vehiculo" id="marca_vehiculo" placeholder="<?php echo esc_attr__('Ej: Toyota', 'flavor-chat-ia'); ?>">
                             </div>
                             <div>
                                 <label for="modelo_vehiculo"><?php _e('Modelo', 'flavor-chat-ia'); ?></label>
-                                <input type="text" name="modelo_vehiculo" id="modelo_vehiculo" placeholder="Ej: Corolla">
+                                <input type="text" name="modelo_vehiculo" id="modelo_vehiculo" placeholder="<?php echo esc_attr__('Ej: Corolla', 'flavor-chat-ia'); ?>">
                             </div>
                         </div>
 
                         <div class="campo-form">
                             <label for="urgencia"><?php _e('Urgencia', 'flavor-chat-ia'); ?></label>
                             <select name="urgencia" id="urgencia">
-                                <option value="baja"><?php _e('Baja - Puedo esperar', 'flavor-chat-ia'); ?></option>
-                                <option value="media" selected><?php _e('Media - Normal', 'flavor-chat-ia'); ?></option>
-                                <option value="alta"><?php _e('Alta - Lo necesito pronto', 'flavor-chat-ia'); ?></option>
-                                <option value="urgente"><?php _e('Urgente - Es prioritario', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('baja', 'flavor-chat-ia'); ?>"><?php _e('Baja - Puedo esperar', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('media', 'flavor-chat-ia'); ?>" selected><?php _e('Media - Normal', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('alta', 'flavor-chat-ia'); ?>"><?php _e('Alta - Lo necesito pronto', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('urgente', 'flavor-chat-ia'); ?>"><?php _e('Urgente - Es prioritario', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
 
@@ -1272,25 +1285,25 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor-chat/v1', '/parkings', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_parkings'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/parkings/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_obtener_parking'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/parkings/(?P<id>\d+)/plazas', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_plazas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/parkings/(?P<id>\d+)/disponibilidad', [
             'methods' => 'GET',
             'callback' => [$this, 'api_disponibilidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/parkings/reservas', [
@@ -1364,7 +1377,7 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         $parking = $this->obtener_parking($parking_id);
 
         if (!$parking) {
-            return new WP_REST_Response(['error' => 'Parking no encontrado'], 404);
+            return new WP_REST_Response(['error' => __('Parking no encontrado', 'flavor-chat-ia')], 404);
         }
 
         return new WP_REST_Response($this->formatear_parking_api($parking, true), 200);
@@ -1423,7 +1436,7 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         $reserva = $this->obtener_reserva($reserva_id);
 
         if (!$reserva || $reserva->usuario_id != get_current_user_id()) {
-            return new WP_REST_Response(['error' => 'Reserva no encontrada'], 404);
+            return new WP_REST_Response(['error' => __('Reserva no encontrada', 'flavor-chat-ia')], 404);
         }
 
         return new WP_REST_Response($this->formatear_reserva_api($reserva), 200);
@@ -3160,25 +3173,25 @@ KNOWLEDGE;
         register_rest_route('flavor-chat/v1', '/parkings/(?P<id>\d+)/ocupacion-tiempo-real', [
             'methods' => 'GET',
             'callback' => [$this, 'api_ocupacion_tiempo_real'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/parkings/(?P<id>\d+)/tarifas', [
             'methods' => 'GET',
             'callback' => [$this, 'api_obtener_tarifas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/parkings/calcular-precio', [
             'methods' => 'POST',
             'callback' => [$this, 'api_calcular_precio'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor-chat/v1', '/parkings/(?P<id>\d+)/historico-ocupacion', [
             'methods' => 'GET',
             'callback' => [$this, 'api_historico_ocupacion'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -3190,7 +3203,7 @@ KNOWLEDGE;
         $ocupacion = $this->obtener_ocupacion_tiempo_real($parking_id);
 
         if (!$ocupacion) {
-            return new WP_REST_Response(['error' => 'Parking no encontrado'], 404);
+            return new WP_REST_Response(['error' => __('Parking no encontrado', 'flavor-chat-ia')], 404);
         }
 
         return new WP_REST_Response($ocupacion, 200);
@@ -3204,7 +3217,7 @@ KNOWLEDGE;
         $tarifas = $this->obtener_tarifas_parking($parking_id);
 
         if (!$tarifas) {
-            return new WP_REST_Response(['error' => 'Parking no encontrado'], 404);
+            return new WP_REST_Response(['error' => __('Parking no encontrado', 'flavor-chat-ia')], 404);
         }
 
         return new WP_REST_Response($tarifas, 200);
@@ -3223,7 +3236,7 @@ KNOWLEDGE;
 
         $plaza = $this->obtener_plaza($plaza_id);
         if (!$plaza) {
-            return new WP_REST_Response(['error' => 'Plaza no encontrada'], 404);
+            return new WP_REST_Response(['error' => __('Plaza no encontrada', 'flavor-chat-ia')], 404);
         }
 
         $precio = $this->calcular_precio_con_descuentos($plaza, $fecha_inicio, $fecha_fin, $usuario_id);
@@ -3599,5 +3612,298 @@ KNOWLEDGE;
     public function registrar_shortcodes_adicionales() {
         add_shortcode('flavor_tarifas_parking', [$this, 'shortcode_tarifas_parking']);
         add_shortcode('flavor_ocupacion_tiempo_real', [$this, 'shortcode_ocupacion_tiempo_real']);
+    }
+
+    /**
+     * Configuración para el panel unificado de gestión
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'parkings',
+            'label' => __('Parkings', 'flavor-chat-ia'),
+            'icon' => 'dashicons-building',
+            'capability' => 'manage_options',
+            'categoria' => 'servicios',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-parkings-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-parkings-plazas',
+                    'titulo' => __('Plazas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_plazas'],
+                    'badge' => [$this, 'contar_plazas_disponibles'],
+                ],
+                [
+                    'slug' => 'flavor-parkings-configuracion',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard de administración de parkings
+     */
+    public function render_admin_dashboard() {
+        $this->render_page_header(
+            __('Dashboard de Parkings', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nueva Plaza', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=flavor-parkings-plazas&action=nueva'),
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+
+        $estadisticas = $this->get_estadisticas_dashboard();
+        ?>
+        <div class="wrap flavor-admin-dashboard">
+            <div class="flavor-stats-grid">
+                <?php foreach ($estadisticas as $estadistica): ?>
+                    <div class="flavor-stat-card" style="border-left-color: <?php echo esc_attr($estadistica['color'] ?? '#0073aa'); ?>">
+                        <span class="dashicons <?php echo esc_attr($estadistica['icon']); ?>"></span>
+                        <div class="stat-content">
+                            <span class="stat-value"><?php echo esc_html($estadistica['valor']); ?></span>
+                            <span class="stat-label"><?php echo esc_html($estadistica['label']); ?></span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de administración de plazas
+     */
+    public function render_admin_plazas() {
+        global $wpdb;
+
+        $this->render_page_header(
+            __('Gestión de Plazas', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nueva Plaza', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=flavor-parkings-plazas&action=nueva'),
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+
+        $plazas = [];
+        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_plazas)) {
+            $plazas = $wpdb->get_results(
+                "SELECT p.*, pk.nombre as parking_nombre
+                 FROM {$this->tabla_plazas} p
+                 LEFT JOIN {$this->tabla_parkings} pk ON p.parking_id = pk.id
+                 ORDER BY pk.nombre, p.numero"
+            );
+        }
+        ?>
+        <div class="wrap">
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('Número', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Parking', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($plazas)): ?>
+                        <tr>
+                            <td colspan="5"><?php esc_html_e('No hay plazas registradas.', 'flavor-chat-ia'); ?></td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($plazas as $plaza): ?>
+                            <tr>
+                                <td><?php echo esc_html($plaza->numero); ?></td>
+                                <td><?php echo esc_html($plaza->parking_nombre); ?></td>
+                                <td><?php echo esc_html(ucfirst($plaza->tipo ?? 'normal')); ?></td>
+                                <td>
+                                    <span class="estado-badge estado-<?php echo esc_attr($plaza->estado); ?>">
+                                        <?php echo esc_html(ucfirst($plaza->estado)); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas&action=editar&id=' . $plaza->id)); ?>" class="button button-small">
+                                        <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de configuración del módulo
+     */
+    public function render_admin_configuracion() {
+        $this->render_page_header(__('Configuración de Parkings', 'flavor-chat-ia'));
+
+        $configuracion = $this->get_settings();
+        ?>
+        <div class="wrap">
+            <form method="post" action="">
+                <?php wp_nonce_field('flavor_parkings_config', 'parkings_config_nonce'); ?>
+
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="precio_hora"><?php esc_html_e('Precio por hora', 'flavor-chat-ia'); ?></label>
+                        </th>
+                        <td>
+                            <input type="number" step="0.01" name="precio_hora" id="precio_hora"
+                                   value="<?php echo esc_attr($configuracion['precio_hora'] ?? '1.50'); ?>" class="small-text"> <?php echo esc_html__('&euro;', 'flavor-chat-ia'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="precio_dia"><?php esc_html_e('Precio por día', 'flavor-chat-ia'); ?></label>
+                        </th>
+                        <td>
+                            <input type="number" step="0.01" name="precio_dia" id="precio_dia"
+                                   value="<?php echo esc_attr($configuracion['precio_dia'] ?? '10.00'); ?>" class="small-text"> <?php echo esc_html__('&euro;', 'flavor-chat-ia'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="precio_mes"><?php esc_html_e('Precio mensual', 'flavor-chat-ia'); ?></label>
+                        </th>
+                        <td>
+                            <input type="number" step="0.01" name="precio_mes" id="precio_mes"
+                                   value="<?php echo esc_attr($configuracion['precio_mes'] ?? '80.00'); ?>" class="small-text"> <?php echo esc_html__('&euro;', 'flavor-chat-ia'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="permite_reserva_temporal"><?php esc_html_e('Permitir reserva temporal', 'flavor-chat-ia'); ?></label>
+                        </th>
+                        <td>
+                            <input type="checkbox" name="permite_reserva_temporal" id="permite_reserva_temporal" value="1"
+                                   <?php checked($configuracion['permite_reserva_temporal'] ?? true); ?>>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="permite_rotacion"><?php esc_html_e('Permitir rotación', 'flavor-chat-ia'); ?></label>
+                        </th>
+                        <td>
+                            <input type="checkbox" name="permite_rotacion" id="permite_rotacion" value="1"
+                                   <?php checked($configuracion['permite_rotacion'] ?? true); ?>>
+                        </td>
+                    </tr>
+                </table>
+
+                <?php submit_button(__('Guardar configuración', 'flavor-chat-ia')); ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Cuenta plazas disponibles para el badge
+     *
+     * @return int
+     */
+    public function contar_plazas_disponibles() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+
+        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_plazas)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$this->tabla_plazas} WHERE estado = %s",
+                self::ESTADO_PLAZA_LIBRE
+            )
+        );
+    }
+
+    /**
+     * Obtiene estadísticas para el dashboard del panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+
+        $total_plazas = 0;
+        $plazas_libres = 0;
+        $plazas_ocupadas = 0;
+        $reservas_activas = 0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_plazas)) {
+            $total_plazas = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_plazas}");
+            $plazas_libres = (int) $wpdb->get_var(
+                $wpdb->prepare("SELECT COUNT(*) FROM {$this->tabla_plazas} WHERE estado = %s", self::ESTADO_PLAZA_LIBRE)
+            );
+            $plazas_ocupadas = (int) $wpdb->get_var(
+                $wpdb->prepare("SELECT COUNT(*) FROM {$this->tabla_plazas} WHERE estado = %s", self::ESTADO_PLAZA_OCUPADA)
+            );
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_reservas)) {
+            $reservas_activas = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE estado = 'activa'"
+            );
+        }
+
+        return [
+            [
+                'icon' => 'dashicons-building',
+                'valor' => $total_plazas,
+                'label' => __('Total plazas', 'flavor-chat-ia'),
+                'color' => '#0073aa',
+                'enlace' => admin_url('admin.php?page=flavor-parkings-plazas'),
+            ],
+            [
+                'icon' => 'dashicons-yes-alt',
+                'valor' => $plazas_libres,
+                'label' => __('Plazas libres', 'flavor-chat-ia'),
+                'color' => '#46b450',
+                'enlace' => admin_url('admin.php?page=flavor-parkings-plazas&estado=libre'),
+            ],
+            [
+                'icon' => 'dashicons-marker',
+                'valor' => $plazas_ocupadas,
+                'label' => __('Plazas ocupadas', 'flavor-chat-ia'),
+                'color' => '#dc3232',
+                'enlace' => admin_url('admin.php?page=flavor-parkings-plazas&estado=ocupada'),
+            ],
+            [
+                'icon' => 'dashicons-calendar-alt',
+                'valor' => $reservas_activas,
+                'label' => __('Reservas activas', 'flavor-chat-ia'),
+                'color' => '#ffb900',
+                'enlace' => admin_url('admin.php?page=flavor-parkings-plazas&tab=reservas'),
+            ],
+        ];
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

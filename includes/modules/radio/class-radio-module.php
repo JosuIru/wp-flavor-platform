@@ -14,13 +14,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'radio';
-        $this->name = __('Radio Comunitaria', 'flavor-chat-ia');
-        $this->description = __('Emisora de radio comunitaria en streaming con programación y participación ciudadana.', 'flavor-chat-ia');
+        $this->name = 'Radio Comunitaria'; // Translation loaded on init
+        $this->description = 'Emisora de radio comunitaria en streaming con programación y participación ciudadana.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -41,7 +43,15 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Radio no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -78,6 +88,9 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        // Registrar en panel de administración unificado
+        $this->registrar_en_panel_unificado();
+
         add_action('init', [$this, 'maybe_create_tables']);
 
         // REST API
@@ -334,35 +347,35 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/radio/stream', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_stream'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Programa actual
         register_rest_route($namespace, '/radio/ahora', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_programa_actual'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Programación
         register_rest_route($namespace, '/radio/programacion', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_programacion'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Programas
         register_rest_route($namespace, '/radio/programas', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_programas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Programa detalle
         register_rest_route($namespace, '/radio/programa/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_programa_detalle'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Enviar dedicatoria
@@ -383,7 +396,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/radio/chat/(?P<emision_id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_chat_mensajes'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Enviar mensaje chat
@@ -404,28 +417,28 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/radio/podcasts', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_podcasts'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Podcast detalle
         register_rest_route($namespace, '/radio/podcast/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_podcast_detalle'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Reportar oyente (heartbeat)
         register_rest_route($namespace, '/radio/oyente', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_reportar_oyente'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Contador de oyentes
         register_rest_route($namespace, '/radio/oyentes', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_contar_oyentes'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -650,11 +663,13 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         // Categorías disponibles
         $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla WHERE estado = 'activo' AND categoria IS NOT NULL ORDER BY categoria");
 
-        return new WP_REST_Response([
+        $respuesta = [
             'success' => true,
             'programas' => $data,
             'categorias' => $categorias,
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_radio_response($respuesta), 200);
     }
 
     /**
@@ -664,7 +679,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $settings = $this->get_settings();
 
         if (!$settings['permite_dedicatorias']) {
-            return new WP_REST_Response(['error' => 'Las dedicatorias están deshabilitadas'], 403);
+            return new WP_REST_Response(['error' => __('Las dedicatorias están deshabilitadas', 'flavor-chat-ia')], 403);
         }
 
         global $wpdb;
@@ -691,7 +706,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $cancion_artista = sanitize_text_field($request->get_param('cancion_artista') ?: '');
 
         if (empty($de) || empty($para) || empty($mensaje)) {
-            return new WP_REST_Response(['error' => 'Completa todos los campos obligatorios'], 400);
+            return new WP_REST_Response(['error' => __('Completa todos los campos obligatorios', 'flavor-chat-ia')], 400);
         }
 
         $wpdb->insert($tabla, [
@@ -715,7 +730,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Tu dedicatoria ha sido enviada y será revisada por nuestro equipo',
+            'mensaje' => __('Tu dedicatoria ha sido enviada y será revisada por nuestro equipo', 'flavor-chat-ia'),
             'dedicatoria_id' => $wpdb->insert_id,
         ], 201);
     }
@@ -797,7 +812,46 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             ];
         }
 
-        return new WP_REST_Response(['success' => true, 'mensajes' => $data], 200);
+        $respuesta = ['success' => true, 'mensajes' => $data];
+
+        return new WP_REST_Response($this->sanitize_public_radio_response($respuesta), 200);
+    }
+
+    private function sanitize_public_radio_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['programas']) && is_array($respuesta['programas'])) {
+            $respuesta['programas'] = array_map(function($programa) {
+                if (!is_array($programa)) {
+                    return $programa;
+                }
+
+                if (!empty($programa['locutor']) && is_array($programa['locutor'])) {
+                    unset($programa['locutor']['id']);
+                }
+
+                return $programa;
+            }, $respuesta['programas']);
+        }
+
+        if (!empty($respuesta['mensajes']) && is_array($respuesta['mensajes'])) {
+            $respuesta['mensajes'] = array_map(function($mensaje) {
+                if (!is_array($mensaje)) {
+                    return $mensaje;
+                }
+
+                if (!empty($mensaje['autor']) && is_array($mensaje['autor'])) {
+                    unset($mensaje['autor']['id']);
+                    $mensaje['autor']['avatar'] = '';
+                }
+
+                return $mensaje;
+            }, $respuesta['mensajes']);
+        }
+
+        return $respuesta;
     }
 
     /**
@@ -807,7 +861,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $settings = $this->get_settings();
 
         if (!$settings['chat_en_vivo']) {
-            return new WP_REST_Response(['error' => 'El chat está deshabilitado'], 403);
+            return new WP_REST_Response(['error' => __('El chat está deshabilitado', 'flavor-chat-ia')], 403);
         }
 
         global $wpdb;
@@ -819,7 +873,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (empty($mensaje)) {
-            return new WP_REST_Response(['error' => 'El mensaje no puede estar vacío'], 400);
+            return new WP_REST_Response(['error' => __('El mensaje no puede estar vacío', 'flavor-chat-ia')], 400);
         }
 
         // Verificar que la emisión tiene chat activo
@@ -829,7 +883,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$emision || !$emision->chat_activo || $emision->estado !== 'en_emision') {
-            return new WP_REST_Response(['error' => 'El chat no está disponible para esta emisión'], 400);
+            return new WP_REST_Response(['error' => __('El chat no está disponible para esta emisión', 'flavor-chat-ia')], 400);
         }
 
         // Rate limiting simple
@@ -839,7 +893,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($ultimo_mensaje && (strtotime('now') - strtotime($ultimo_mensaje)) < 3) {
-            return new WP_REST_Response(['error' => 'Espera unos segundos entre mensajes'], 429);
+            return new WP_REST_Response(['error' => __('Espera unos segundos entre mensajes', 'flavor-chat-ia')], 429);
         }
 
         $tipo = 'mensaje';
@@ -880,7 +934,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $settings = $this->get_settings();
 
         if (!$settings['permite_locutores_comunidad']) {
-            return new WP_REST_Response(['error' => 'Las propuestas de programas están cerradas'], 403);
+            return new WP_REST_Response(['error' => __('Las propuestas de programas están cerradas', 'flavor-chat-ia')], 403);
         }
 
         global $wpdb;
@@ -894,7 +948,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($pendiente) {
-            return new WP_REST_Response(['error' => 'Ya tienes una propuesta pendiente de revisión'], 400);
+            return new WP_REST_Response(['error' => __('Ya tienes una propuesta pendiente de revisión', 'flavor-chat-ia')], 400);
         }
 
         $nombre = sanitize_text_field($request->get_param('nombre'));
@@ -906,7 +960,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $demo_url = esc_url_raw($request->get_param('demo_url') ?: '');
 
         if (empty($nombre) || empty($descripcion)) {
-            return new WP_REST_Response(['error' => 'Nombre y descripción son obligatorios'], 400);
+            return new WP_REST_Response(['error' => __('Nombre y descripción son obligatorios', 'flavor-chat-ia')], 400);
         }
 
         $wpdb->insert($tabla, [
@@ -931,7 +985,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => 'Tu propuesta ha sido enviada. Te contactaremos pronto.',
+            'mensaje' => __('limite', 'flavor-chat-ia'),
         ], 201);
     }
 
@@ -1090,7 +1144,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error('Debes iniciar sesión');
+            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
         }
 
         $request = new WP_REST_Request('POST');
@@ -1106,7 +1160,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         if ($response->get_status() === 201) {
             wp_send_json_success($data);
         } else {
-            wp_send_json_error($data['error'] ?? 'Error');
+            wp_send_json_error($data['error'] ?? __('Error', 'flavor-chat-ia'));
         }
     }
 
@@ -1114,7 +1168,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error('Debes iniciar sesión');
+            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
         }
 
         $request = new WP_REST_Request('POST');
@@ -1127,7 +1181,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         if ($response->get_status() === 201) {
             wp_send_json_success($data);
         } else {
-            wp_send_json_error($data['error'] ?? 'Error');
+            wp_send_json_error($data['error'] ?? __('Error', 'flavor-chat-ia'));
         }
     }
 
@@ -1143,7 +1197,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error('Debes iniciar sesión');
+            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
         }
 
         $request = new WP_REST_Request('POST');
@@ -1161,7 +1215,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         if ($response->get_status() === 201) {
             wp_send_json_success($data);
         } else {
-            wp_send_json_error($data['error'] ?? 'Error');
+            wp_send_json_error($data['error'] ?? __('Error', 'flavor-chat-ia'));
         }
     }
 
@@ -1177,7 +1231,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
     public function ajax_mis_dedicatorias() {
         if (!is_user_logged_in()) {
-            wp_send_json_error('Debes iniciar sesión');
+            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
         }
 
         $request = new WP_REST_Request('GET');
@@ -1203,7 +1257,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Sin permisos');
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1228,14 +1282,15 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             ]);
         }
 
-        wp_send_json_success(['mensaje' => 'Dedicatoria ' . ($accion === 'aprobar' ? 'aprobada' : 'rechazada')]);
+        $estado_dedicatoria = $accion === 'aprobar' ? __('aprobada', 'flavor-chat-ia') : __('rechazada', 'flavor-chat-ia');
+        wp_send_json_success(['mensaje' => sprintf(__('Dedicatoria %s', 'flavor-chat-ia'), $estado_dedicatoria)]);
     }
 
     public function ajax_admin_emitir_dedicatoria() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Sin permisos');
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1248,14 +1303,14 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             'fecha_emision' => current_time('mysql'),
         ], ['id' => $dedicatoria_id], ['%s', '%s'], ['%d']);
 
-        wp_send_json_success(['mensaje' => 'Marcada como emitida']);
+        wp_send_json_success(['mensaje' => __('Marcada como emitida', 'flavor-chat-ia')]);
     }
 
     public function ajax_admin_aprobar_programa() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Sin permisos');
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1268,7 +1323,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $propuesta = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_propuestas WHERE id = %d", $propuesta_id));
 
         if (!$propuesta) {
-            wp_send_json_error('Propuesta no encontrada');
+            wp_send_json_error(__('Propuesta no encontrada', 'flavor-chat-ia'));
         }
 
         if ($accion === 'aprobar') {
@@ -1310,14 +1365,15 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             'nombre' => $propuesta->nombre_programa,
         ]);
 
-        wp_send_json_success(['mensaje' => 'Propuesta ' . ($accion === 'aprobar' ? 'aprobada' : 'rechazada')]);
+        $estado_propuesta = $accion === 'aprobar' ? __('aprobada', 'flavor-chat-ia') : __('rechazada', 'flavor-chat-ia');
+        wp_send_json_success(['mensaje' => sprintf(__('Propuesta %s', 'flavor-chat-ia'), $estado_propuesta)]);
     }
 
     public function ajax_admin_crear_emision() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Sin permisos');
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1331,7 +1387,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $fecha_fin = sanitize_text_field($_POST['fecha_fin']);
 
         if (empty($titulo) || empty($fecha_inicio) || empty($fecha_fin)) {
-            wp_send_json_error('Completa los campos obligatorios');
+            wp_send_json_error(__('Completa los campos obligatorios', 'flavor-chat-ia'));
         }
 
         $wpdb->insert($tabla, [
@@ -1345,7 +1401,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s']);
 
         wp_send_json_success([
-            'mensaje' => 'Emisión programada',
+            'mensaje' => __('Emisión programada', 'flavor-chat-ia'),
             'emision_id' => $wpdb->insert_id,
         ]);
     }
@@ -1354,7 +1410,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Sin permisos');
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1371,14 +1427,14 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             'en_vivo' => 1,
         ], ['id' => $emision_id], ['%s', '%d'], ['%d']);
 
-        wp_send_json_success(['mensaje' => 'Emisión iniciada']);
+        wp_send_json_success(['mensaje' => __('Emisión iniciada', 'flavor-chat-ia')]);
     }
 
     public function ajax_admin_finalizar_emision() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Sin permisos');
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1405,14 +1461,14 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             $this->actualizar_promedio_programa($emision->programa_id);
         }
 
-        wp_send_json_success(['mensaje' => 'Emisión finalizada']);
+        wp_send_json_success(['mensaje' => __('Emisión finalizada', 'flavor-chat-ia')]);
     }
 
     public function ajax_admin_stats() {
         check_ajax_referer('flavor_radio_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Sin permisos');
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
         }
 
         global $wpdb;
@@ -1505,7 +1561,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
                     <input type="range" class="radio-volume-slider" min="0" max="100" value="80">
                 </div>
                 <?php if ($settings['url_stream_hd']): ?>
-                <button class="radio-btn-hd" title="<?php esc_attr_e('Alta Calidad', 'flavor-chat-ia'); ?>">HD</button>
+                <button class="radio-btn-hd" title="<?php esc_attr_e('Alta Calidad', 'flavor-chat-ia'); ?>"><?php echo esc_html__('HD', 'flavor-chat-ia'); ?></button>
                 <?php endif; ?>
             </div>
 
@@ -1537,9 +1593,9 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
              data-dias="<?php echo esc_attr($atts['dias']); ?>">
 
             <div class="programacion-nav">
-                <button class="programacion-nav-prev">&lsaquo;</button>
+                <button class="programacion-nav-prev"><?php echo esc_html__('&lsaquo;', 'flavor-chat-ia'); ?></button>
                 <span class="programacion-nav-titulo"></span>
-                <button class="programacion-nav-next">&rsaquo;</button>
+                <button class="programacion-nav-next"><?php echo esc_html__('&rsaquo;', 'flavor-chat-ia'); ?></button>
             </div>
 
             <div class="programacion-grid">
@@ -1595,7 +1651,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
                         <input type="text" name="cancion_titulo" placeholder="<?php esc_attr_e('Título de la canción', 'flavor-chat-ia'); ?>">
                     </div>
                     <div class="form-grupo-half">
-                        <label>&nbsp;</label>
+                        <label><?php echo esc_html__('&nbsp;', 'flavor-chat-ia'); ?></label>
                         <input type="text" name="cancion_artista" placeholder="<?php esc_attr_e('Artista', 'flavor-chat-ia'); ?>">
                     </div>
                 </div>
@@ -1688,12 +1744,12 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
                     <label><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
                     <select name="categoria">
                         <option value=""><?php _e('Selecciona...', 'flavor-chat-ia'); ?></option>
-                        <option value="musica"><?php _e('Música', 'flavor-chat-ia'); ?></option>
-                        <option value="noticias"><?php _e('Noticias', 'flavor-chat-ia'); ?></option>
-                        <option value="entretenimiento"><?php _e('Entretenimiento', 'flavor-chat-ia'); ?></option>
-                        <option value="cultura"><?php _e('Cultura', 'flavor-chat-ia'); ?></option>
-                        <option value="deportes"><?php _e('Deportes', 'flavor-chat-ia'); ?></option>
-                        <option value="otro"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('musica', 'flavor-chat-ia'); ?>"><?php _e('Música', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('noticias', 'flavor-chat-ia'); ?>"><?php _e('Noticias', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('entretenimiento', 'flavor-chat-ia'); ?>"><?php _e('Entretenimiento', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('cultura', 'flavor-chat-ia'); ?>"><?php _e('Cultura', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('deportes', 'flavor-chat-ia'); ?>"><?php _e('Deportes', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
@@ -1702,10 +1758,10 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
                         <label><?php _e('Frecuencia deseada', 'flavor-chat-ia'); ?></label>
                         <select name="frecuencia">
                             <option value=""><?php _e('Selecciona...', 'flavor-chat-ia'); ?></option>
-                            <option value="diario"><?php _e('Diario', 'flavor-chat-ia'); ?></option>
-                            <option value="semanal"><?php _e('Semanal', 'flavor-chat-ia'); ?></option>
-                            <option value="quincenal"><?php _e('Quincenal', 'flavor-chat-ia'); ?></option>
-                            <option value="mensual"><?php _e('Mensual', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('diario', 'flavor-chat-ia'); ?>"><?php _e('Diario', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('semanal', 'flavor-chat-ia'); ?>"><?php _e('Semanal', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('quincenal', 'flavor-chat-ia'); ?>"><?php _e('Quincenal', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('mensual', 'flavor-chat-ia'); ?>"><?php _e('Mensual', 'flavor-chat-ia'); ?></option>
                         </select>
                     </div>
                     <div class="form-grupo-half">
@@ -1862,7 +1918,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
     private function action_enviar_dedicatoria($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
 
         $request = new WP_REST_Request('POST');
@@ -1877,7 +1933,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
     private function action_mis_dedicatorias($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
         return $this->rest_mis_dedicatorias(new WP_REST_Request('GET'))->get_data();
     }
@@ -1891,7 +1947,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
     private function action_enviar_chat($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
 
         $request = new WP_REST_Request('POST');
@@ -1903,7 +1959,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
     private function action_proponer_programa($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
         }
 
         $request = new WP_REST_Request('POST');
@@ -2052,9 +2108,101 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Configuración del módulo para el panel de administración unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'radio',
+            'label' => __('Radio Comunitaria', 'flavor-chat-ia'),
+            'icon' => 'dashicons-microphone',
+            'capability' => 'manage_options',
+            'categoria' => 'comunicacion',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-radio-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-radio-programas',
+                    'titulo' => __('Programas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_programas'],
+                ],
+                [
+                    'slug' => 'flavor-radio-emisiones',
+                    'titulo' => __('Emisiones', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_emisiones'],
+                    'badge' => [$this, 'contar_emisiones_pendientes'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza la página de dashboard del panel unificado
+     */
+    public function render_pagina_dashboard() {
+        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/dashboard.php';
+        if (file_exists($template_path)) {
+            include $template_path;
+        }
+    }
+
+    /**
+     * Renderiza la página de programas del panel unificado
+     */
+    public function render_pagina_programas() {
+        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/programas.php';
+        if (file_exists($template_path)) {
+            include $template_path;
+        }
+    }
+
+    /**
+     * Renderiza la página de emisiones del panel unificado
+     */
+    public function render_pagina_emisiones() {
+        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/emisiones.php';
+        if (file_exists($template_path)) {
+            include $template_path;
+        }
+    }
+
+    /**
+     * Cuenta las emisiones pendientes para mostrar badge
+     *
+     * @return int
+     */
+    public function contar_emisiones_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_emisiones = $wpdb->prefix . 'flavor_radio_emisiones';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_emisiones)) {
+            return 0;
+        }
+
+        $cantidad_pendientes = $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_emisiones WHERE estado = 'programado'"
+        );
+
+        return (int) $cantidad_pendientes;
+    }
+
+    /**
      * Enqueue frontend assets
      */
     public function enqueue_frontend_assets() {
+        if (!$this->can_activate()) {
+            return;
+        }
+
         $base_url = plugins_url('assets/', __FILE__);
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
@@ -2312,5 +2460,11 @@ KNOWLEDGE;
                 'respuesta' => 'Durante las emisiones puedes participar en el chat enviando mensajes que el locutor puede leer al aire.',
             ],
         ];
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

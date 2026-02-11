@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Versión del módulo
      * @var string
@@ -73,8 +75,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'email_marketing';
-        $this->name = __('Email Marketing', 'flavor-chat-ia');
-        $this->description = __('Newsletter, campañas de email y automatizaciones', 'flavor-chat-ia');
+        $this->name = 'Email Marketing'; // Translation loaded on init
+        $this->description = 'Newsletter, campañas de email y automatizaciones'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -113,6 +115,13 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         }
 
         return '';
+    }
+
+    /**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -247,6 +256,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Hook de activación de módulo
         add_action('flavor_module_activated_' . $this->id, [$this, 'on_module_activated']);
+
+        // Registrar en panel unificado de administración
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -1003,6 +1015,10 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
      * Encolar assets de frontend
      */
     public function enqueue_frontend_assets() {
+        if (!$this->can_activate()) {
+            return;
+        }
+
         wp_enqueue_style(
             'flavor-em-frontend',
             plugins_url('assets/css/em-frontend.css', __FILE__),
@@ -1044,7 +1060,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             [
                 'methods' => WP_REST_Server::CREATABLE,
                 'callback' => [$this, 'rest_create_suscriptor'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ],
         ]);
 
@@ -1071,7 +1087,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             [
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => [$this, 'rest_get_listas'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ],
             [
                 'methods' => WP_REST_Server::CREATABLE,
@@ -1084,7 +1100,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             [
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => [$this, 'rest_get_lista'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_permission_check'],
             ],
             [
                 'methods' => WP_REST_Server::EDITABLE,
@@ -1187,22 +1203,48 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/webhook/bounce', [
             'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, 'rest_webhook_bounce'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Suscripción pública
         register_rest_route($namespace, '/suscribir', [
             'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, 'rest_suscribir_publico'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Baja pública
         register_rest_route($namespace, '/baja', [
             'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, 'rest_baja_publica'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
+    }
+
+    /**
+     * Verifica firma HMAC en webhooks si hay secreto configurado
+     *
+     * @param WP_REST_Request $request
+     * @return true|WP_Error
+     */
+    private function verify_webhook_signature($request) {
+        $secret = (string) get_option('flavor_em_webhook_secret', '');
+        if ($secret === '') {
+            return true;
+        }
+
+        $signature = (string) $request->get_header('X-Flavor-Signature');
+        if ($signature === '') {
+            return new WP_Error('invalid_signature', __('Firma requerida', 'flavor-chat-ia'), ['status' => 403]);
+        }
+
+        $body = $request->get_body();
+        $expected = hash_hmac('sha256', $body, $secret);
+        if (!hash_equals($expected, $signature)) {
+            return new WP_Error('invalid_signature', __('Firma inválida', 'flavor-chat-ia'), ['status' => 403]);
+        }
+
+        return true;
     }
 
     /**
@@ -2050,12 +2092,17 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
      * @return WP_REST_Response
      */
     public function rest_webhook_bounce($request) {
+        $firma = $this->verify_webhook_signature($request);
+        if (is_wp_error($firma)) {
+            return $firma;
+        }
+
         $email = sanitize_email($request->get_param('email'));
         $tipo = sanitize_key($request->get_param('type') ?: 'soft');
         $razon = sanitize_text_field($request->get_param('reason') ?: '');
 
         if (!is_email($email)) {
-            return new WP_REST_Response(['error' => 'Invalid email'], 400);
+            return new WP_REST_Response(['error' => __('Invalid email', 'flavor-chat-ia')], 400);
         }
 
         $this->registrar_rebote($email, $tipo, $razon);
@@ -2508,22 +2555,22 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 <p><?php esc_html_e('Lamentamos verte partir. Por favor, indicanos el motivo:', 'flavor-chat-ia'); ?></p>
 
                 <label class="em-radio">
-                    <input type="radio" name="motivo" value="demasiados_emails">
+                    <input type="radio" name="motivo" value="<?php echo esc_attr__('demasiados_emails', 'flavor-chat-ia'); ?>">
                     <?php esc_html_e('Recibo demasiados emails', 'flavor-chat-ia'); ?>
                 </label>
 
                 <label class="em-radio">
-                    <input type="radio" name="motivo" value="no_relevante">
+                    <input type="radio" name="motivo" value="<?php echo esc_attr__('no_relevante', 'flavor-chat-ia'); ?>">
                     <?php esc_html_e('El contenido no es relevante para mi', 'flavor-chat-ia'); ?>
                 </label>
 
                 <label class="em-radio">
-                    <input type="radio" name="motivo" value="no_recuerdo">
+                    <input type="radio" name="motivo" value="<?php echo esc_attr__('no_recuerdo', 'flavor-chat-ia'); ?>">
                     <?php esc_html_e('No recuerdo haberme suscrito', 'flavor-chat-ia'); ?>
                 </label>
 
                 <label class="em-radio">
-                    <input type="radio" name="motivo" value="otro">
+                    <input type="radio" name="motivo" value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>">
                     <?php esc_html_e('Otro motivo', 'flavor-chat-ia'); ?>
                 </label>
 
@@ -2703,7 +2750,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             <div class="em-popup-overlay"></div>
 
             <div class="em-popup-contenido">
-                <button type="button" class="em-popup-cerrar" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">&times;</button>
+                <button type="button" class="em-popup-cerrar" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
 
                 <?php if (!empty($atts['titulo'])): ?>
                     <h3 class="em-popup-titulo"><?php echo esc_html($atts['titulo']); ?></h3>
@@ -6752,5 +6799,155 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 'respuesta' => 'Es un proceso de confirmación donde recibes un email para verificar tu suscripción.',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el panel de administración unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'email_marketing',
+            'label' => __('Email Marketing', 'flavor-chat-ia'),
+            'icon' => 'dashicons-email-alt',
+            'capability' => 'manage_options',
+            'categoria' => 'comunicacion',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-em-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-em-campanias',
+                    'titulo' => __('Campañas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_campanias'],
+                    'badge' => [$this, 'contar_campanias_activas'],
+                ],
+                [
+                    'slug' => 'flavor-em-suscriptores',
+                    'titulo' => __('Suscriptores', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_suscriptores'],
+                    'badge' => [$this, 'contar_suscriptores_activos'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas' => [$this, 'get_estadisticas_resumen'],
+        ];
+    }
+
+    /**
+     * Cuenta las campañas activas para el badge
+     *
+     * @return int
+     */
+    public function contar_campanias_activas() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_campanias = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
+
+        $contador = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_campanias} WHERE estado IN (%s, %s)",
+            'enviando',
+            'programada'
+        ));
+
+        return (int) $contador;
+    }
+
+    /**
+     * Cuenta los suscriptores activos para el badge
+     *
+     * @return int
+     */
+    public function contar_suscriptores_activos() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_suscriptores = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptores';
+
+        $contador = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_suscriptores} WHERE estado = %s",
+            'activo'
+        ));
+
+        return (int) $contador;
+    }
+
+    /**
+     * Renderiza el widget del dashboard unificado
+     */
+    public function render_dashboard_widget() {
+        $estadisticas = $this->get_estadisticas_resumen();
+        ?>
+        <div class="em-dashboard-widget">
+            <div class="em-widget-stats">
+                <div class="em-stat">
+                    <span class="em-stat-value"><?php echo esc_html(number_format_i18n($estadisticas['total_suscriptores'])); ?></span>
+                    <span class="em-stat-label"><?php esc_html_e('Suscriptores', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="em-stat">
+                    <span class="em-stat-value"><?php echo esc_html(number_format_i18n($estadisticas['campanias_enviadas'])); ?></span>
+                    <span class="em-stat-label"><?php esc_html_e('Campañas enviadas', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="em-stat">
+                    <span class="em-stat-value"><?php echo esc_html($estadisticas['tasa_apertura']); ?>%</span>
+                    <span class="em-stat-label"><?php esc_html_e('Tasa de apertura', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene estadísticas resumen para el panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_resumen() {
+        global $wpdb;
+        $prefix = $wpdb->prefix . self::TABLE_PREFIX;
+
+        $total_suscriptores = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$prefix}suscriptores WHERE estado = 'activo'"
+        );
+
+        $campanias_enviadas = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$prefix}campanias WHERE estado = 'enviada'"
+        );
+
+        $total_enviados = (int) $wpdb->get_var(
+            "SELECT SUM(enviados) FROM {$prefix}campanias WHERE estado = 'enviada'"
+        );
+
+        $total_aperturas = (int) $wpdb->get_var(
+            "SELECT SUM(aperturas) FROM {$prefix}campanias WHERE estado = 'enviada'"
+        );
+
+        $tasa_apertura = $total_enviados > 0
+            ? round(($total_aperturas / $total_enviados) * 100, 1)
+            : 0;
+
+        return [
+            'total_suscriptores' => $total_suscriptores,
+            'campanias_enviadas' => $campanias_enviadas,
+            'total_enviados' => $total_enviados,
+            'total_aperturas' => $total_aperturas,
+            'tasa_apertura' => $tasa_apertura,
+        ];
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

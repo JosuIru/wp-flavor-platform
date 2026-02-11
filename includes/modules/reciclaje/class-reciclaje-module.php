@@ -14,13 +14,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'reciclaje';
-        $this->name = __('Reciclaje Comunitario', 'flavor-chat-ia');
-        $this->description = __('Sistema de gestión de reciclaje, puntos limpios y economía circular en la comunidad.', 'flavor-chat-ia');
+        $this->name = 'Reciclaje Comunitario'; // Translation loaded on init
+        $this->description = 'Sistema de gestión de reciclaje, puntos limpios y economía circular en la comunidad.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -46,6 +48,13 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function get_default_settings() {
@@ -67,6 +76,9 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'register_post_types']);
         add_action('init', [$this, 'register_taxonomies']);
         add_action('init', [$this, 'register_shortcodes']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
 
         // AJAX handlers
         add_action('wp_ajax_reciclaje_registrar_deposito', [$this, 'ajax_registrar_deposito']);
@@ -400,6 +412,279 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'reciclaje',
+            'label' => __('Reciclaje', 'flavor-chat-ia'),
+            'icon' => 'dashicons-image-rotate',
+            'capability' => 'manage_options',
+            'categoria' => 'sostenibilidad',
+            'paginas' => [
+                [
+                    'slug' => 'reciclaje-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'reciclaje-puntos',
+                    'titulo' => __('Puntos de Reciclaje', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_puntos_reciclaje'],
+                    'badge' => [$this, 'contar_puntos_reciclaje'],
+                ],
+                [
+                    'slug' => 'reciclaje-estadisticas',
+                    'titulo' => __('Estadísticas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_estadisticas'],
+                ],
+                [
+                    'slug' => 'reciclaje-campanas',
+                    'titulo' => __('Campañas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_campanas'],
+                ],
+                [
+                    'slug' => 'reciclaje-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta los puntos de reciclaje activos
+     *
+     * @return int
+     */
+    public function contar_puntos_reciclaje() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_puntos WHERE estado = 'activo'");
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
+        $estadisticas = [];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
+            return $estadisticas;
+        }
+
+        // Kg reciclados este mes
+        $primer_dia_mes = date('Y-m-01 00:00:00');
+        $kg_este_mes = (float) $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(SUM(cantidad_kg), 0) FROM $tabla_depositos WHERE verificado = 1 AND fecha_deposito >= %s",
+            $primer_dia_mes
+        ));
+
+        $estadisticas[] = [
+            'icon' => 'dashicons-image-rotate',
+            'valor' => number_format_i18n($kg_este_mes, 1) . ' kg',
+            'label' => __('Kg reciclados este mes', 'flavor-chat-ia'),
+            'color' => $kg_este_mes > 0 ? 'green' : 'gray',
+            'enlace' => admin_url('admin.php?page=reciclaje-estadisticas'),
+        ];
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard del módulo de reciclaje
+     */
+    public function render_admin_dashboard() {
+        global $wpdb;
+        $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
+        $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
+
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Reciclaje', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Punto', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reciclaje-puntos&action=nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        // Estadísticas resumen
+        $estadisticas = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
+            $primer_dia_mes = date('Y-m-01 00:00:00');
+            $estadisticas['kg_mes'] = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad_kg), 0) FROM $tabla_depositos WHERE verificado = 1 AND fecha_deposito >= %s",
+                $primer_dia_mes
+            ));
+            $estadisticas['total_depositos'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_depositos WHERE verificado = 1");
+            $estadisticas['usuarios_activos'] = (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_depositos WHERE verificado = 1");
+        }
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+            $estadisticas['puntos_activos'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_puntos WHERE estado = 'activo'");
+        }
+
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas['kg_mes'] ?? 0, 1)) . ' kg</span><span class="stat-label">' . __('Reciclado este mes', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['total_depositos'] ?? 0) . '</span><span class="stat-label">' . __('Depósitos totales', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['usuarios_activos'] ?? 0) . '</span><span class="stat-label">' . __('Usuarios activos', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['puntos_activos'] ?? 0) . '</span><span class="stat-label">' . __('Puntos de reciclaje', 'flavor-chat-ia') . '</span></div>';
+        echo '</div>';
+
+        echo '<p>' . __('Panel de control del módulo de reciclaje con métricas ambientales y accesos rápidos.', 'flavor-chat-ia') . '</p>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de puntos de reciclaje
+     */
+    public function render_admin_puntos_reciclaje() {
+        global $wpdb;
+        $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
+
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Puntos de Reciclaje', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Punto', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reciclaje-puntos&action=nuevo'), 'class' => 'button-primary'],
+        ]);
+
+        $puntos = $wpdb->get_results("SELECT * FROM $tabla_puntos ORDER BY nombre");
+
+        if (!empty($puntos)) {
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Nombre', 'flavor-chat-ia') . '</th><th>' . __('Tipo', 'flavor-chat-ia') . '</th><th>' . __('Dirección', 'flavor-chat-ia') . '</th><th>' . __('Estado', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($puntos as $punto) {
+                $clase_estado = $punto->estado === 'activo' ? 'status-active' : 'status-inactive';
+                echo '<tr>';
+                echo '<td><strong>' . esc_html($punto->nombre) . '</strong></td>';
+                echo '<td>' . esc_html(ucfirst(str_replace('_', ' ', $punto->tipo))) . '</td>';
+                echo '<td>' . esc_html($punto->direccion) . '</td>';
+                echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($punto->estado)) . '</span></td>';
+                echo '<td><a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No hay puntos de reciclaje registrados.', 'flavor-chat-ia') . '</p>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de estadísticas
+     */
+    public function render_admin_estadisticas() {
+        global $wpdb;
+        $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
+
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Estadísticas de Reciclaje', 'flavor-chat-ia'));
+
+        // Estadísticas generales
+        $estadisticas = $wpdb->get_row("
+            SELECT
+                COUNT(*) as total_depositos,
+                COALESCE(SUM(cantidad_kg), 0) as total_kg,
+                COALESCE(SUM(puntos_ganados), 0) as total_puntos,
+                COUNT(DISTINCT usuario_id) as usuarios_activos
+            FROM $tabla_depositos
+            WHERE verificado = 1
+        ");
+
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_depositos)) . '</span><span class="stat-label">' . __('Depósitos Totales', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_kg, 2)) . ' kg</span><span class="stat-label">' . __('Material Reciclado', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->total_puntos)) . '</span><span class="stat-label">' . __('Puntos Otorgados', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas->usuarios_activos)) . '</span><span class="stat-label">' . __('Usuarios Activos', 'flavor-chat-ia') . '</span></div>';
+        echo '</div>';
+
+        // Estadísticas por tipo de material
+        $por_material = $wpdb->get_results("
+            SELECT tipo_material,
+                   SUM(cantidad_kg) as total_kg,
+                   COUNT(*) as num_depositos
+            FROM $tabla_depositos
+            WHERE verificado = 1
+            GROUP BY tipo_material
+            ORDER BY total_kg DESC
+        ");
+
+        if (!empty($por_material)) {
+            echo '<h3>' . __('Por Tipo de Material', 'flavor-chat-ia') . '</h3>';
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Material', 'flavor-chat-ia') . '</th><th>' . __('Total (kg)', 'flavor-chat-ia') . '</th><th>' . __('Depósitos', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($por_material as $material) {
+                echo '<tr>';
+                echo '<td>' . esc_html(ucfirst($material->tipo_material)) . '</td>';
+                echo '<td>' . esc_html(number_format_i18n($material->total_kg, 2)) . ' kg</td>';
+                echo '<td>' . esc_html(number_format_i18n($material->num_depositos)) . '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de campañas
+     */
+    public function render_admin_campanas() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Campañas de Reciclaje', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Campaña', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reciclaje-campanas&action=nueva'), 'class' => 'button-primary'],
+        ]);
+
+        echo '<p>' . __('Gestiona campañas de concienciación y eventos de reciclaje especiales.', 'flavor-chat-ia') . '</p>';
+        echo '<div class="notice notice-info"><p>' . __('Próximamente: Funcionalidad de campañas de reciclaje.', 'flavor-chat-ia') . '</p></div>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_admin_configuracion() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Reciclaje', 'flavor-chat-ia'));
+
+        $configuracion_actual = $this->get_settings();
+
+        echo '<form method="post" action="">';
+        echo '<table class="form-table">';
+
+        echo '<tr><th scope="row"><label for="puntos_por_kg">' . __('Puntos por Kg', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" name="puntos_por_kg" id="puntos_por_kg" value="' . esc_attr($configuracion_actual['puntos_por_kg'] ?? 10) . '" min="1" class="small-text" />';
+        echo '<p class="description">' . __('Puntos otorgados por cada kilogramo reciclado.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="permite_canje_puntos">' . __('Permitir canje de puntos', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="permite_canje_puntos" id="permite_canje_puntos" ' . checked($configuracion_actual['permite_canje_puntos'] ?? true, true, false) . ' /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="notificar_recogidas">' . __('Notificar recogidas', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="notificar_recogidas" id="notificar_recogidas" ' . checked($configuracion_actual['notificar_recogidas'] ?? true, true, false) . ' />';
+        echo '<p class="description">' . __('Enviar recordatorios de recogidas programadas.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="permite_reportar_contenedores">' . __('Permitir reportes de contenedores', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="checkbox" name="permite_reportar_contenedores" id="permite_reportar_contenedores" ' . checked($configuracion_actual['permite_reportar_contenedores'] ?? true, true, false) . ' /></td></tr>';
+
+        echo '</table>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '</form>';
+        echo '</div>';
+    }
+
+    /**
      * Renderiza la página de administración
      */
     public function render_admin_page() {
@@ -651,11 +936,11 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $base_url = plugins_url('assets/', __FILE__);
+        $base_url = plugins_url('assets/css/', __FILE__);
         $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0';
 
         wp_enqueue_style('flavor-reciclaje', $base_url . 'reciclaje.css', [], $version);
-        wp_enqueue_script('flavor-reciclaje', $base_url . 'reciclaje.js', ['jquery'], $version, true);
+        wp_enqueue_script('flavor-reciclaje', plugins_url('assets/js/reciclaje.js', __FILE__), ['jquery'], $version, true);
 
         wp_localize_script('flavor-reciclaje', 'flavorReciclaje', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -918,7 +1203,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/reciclaje/puntos', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_puntos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/reciclaje/deposito', [
@@ -932,7 +1217,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/reciclaje/calendario', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_calendario'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/reciclaje/stats', [
@@ -1474,5 +1759,11 @@ KNOWLEDGE;
                 'respuesta' => 'Nunca por el fregadero. Guárdalo en botellas y llévalo a puntos de recogida de aceite.',
             ],
         ];
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

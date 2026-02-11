@@ -15,6 +15,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
 
@@ -33,8 +35,8 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $this->id = 'tramites';
-        $this->name = __('Tramites y Gestiones', 'flavor-chat-ia');
-        $this->description = __('Sistema completo de gestion de tramites administrativos online.', 'flavor-chat-ia');
+        $this->name = 'Tramites y Gestiones'; // Translation loaded on init
+        $this->description = 'Sistema completo de gestion de tramites administrativos online.'; // Translation loaded on init
 
         $this->tabla_tipos_tramite = $wpdb->prefix . 'flavor_tipos_tramite';
         $this->tabla_expedientes = $wpdb->prefix . 'flavor_expedientes';
@@ -60,7 +62,121 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Tramites no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_table_schema() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+
+        return [
+            $this->tabla_tipos_tramite => "CREATE TABLE {$this->tabla_tipos_tramite} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                nombre varchar(255) NOT NULL,
+                descripcion text,
+                categoria varchar(100) DEFAULT NULL,
+                icono varchar(50) DEFAULT NULL,
+                plazo_resolucion_dias int(11) DEFAULT NULL,
+                requiere_cita tinyint(1) NOT NULL DEFAULT 0,
+                permite_online tinyint(1) NOT NULL DEFAULT 1,
+                permite_presencial tinyint(1) NOT NULL DEFAULT 1,
+                precio decimal(10,2) DEFAULT NULL,
+                estado enum('activo','inactivo') NOT NULL DEFAULT 'activo',
+                orden int(11) NOT NULL DEFAULT 0,
+                created_at datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY categoria (categoria),
+                KEY estado (estado)
+            ) $charset_collate;",
+
+            $this->tabla_expedientes => "CREATE TABLE {$this->tabla_expedientes} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                numero_expediente varchar(50) NOT NULL,
+                tipo_tramite_id bigint(20) UNSIGNED NOT NULL,
+                solicitante_id bigint(20) UNSIGNED NOT NULL,
+                estado enum('pendiente','en_proceso','requiere_documentacion','resuelto','rechazado','cancelado') NOT NULL DEFAULT 'pendiente',
+                via_tramitacion enum('online','presencial') NOT NULL DEFAULT 'online',
+                datos_formulario longtext,
+                observaciones text,
+                fecha_solicitud datetime NOT NULL,
+                fecha_resolucion datetime DEFAULT NULL,
+                fecha_limite datetime DEFAULT NULL,
+                asignado_a bigint(20) UNSIGNED DEFAULT NULL,
+                prioridad enum('baja','media','alta','urgente') NOT NULL DEFAULT 'media',
+                created_at datetime NOT NULL,
+                updated_at datetime DEFAULT NULL,
+                PRIMARY KEY (id),
+                UNIQUE KEY numero_expediente (numero_expediente),
+                KEY tipo_tramite_id (tipo_tramite_id),
+                KEY solicitante_id (solicitante_id),
+                KEY estado (estado),
+                KEY asignado_a (asignado_a)
+            ) $charset_collate;",
+
+            $this->tabla_documentos => "CREATE TABLE {$this->tabla_documentos} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                expediente_id bigint(20) UNSIGNED NOT NULL,
+                nombre_archivo varchar(255) NOT NULL,
+                ruta_archivo varchar(500) NOT NULL,
+                tipo_documento varchar(100) DEFAULT NULL,
+                tamano_bytes int(11) DEFAULT NULL,
+                subido_por bigint(20) UNSIGNED NOT NULL,
+                fecha_subida datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY expediente_id (expediente_id)
+            ) $charset_collate;",
+
+            $this->tabla_estados => "CREATE TABLE {$this->tabla_estados} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                expediente_id bigint(20) UNSIGNED NOT NULL,
+                estado_anterior varchar(50) DEFAULT NULL,
+                estado_nuevo varchar(50) NOT NULL,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
+                comentario text,
+                fecha_cambio datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY expediente_id (expediente_id)
+            ) $charset_collate;",
+
+            $this->tabla_campos_formulario => "CREATE TABLE {$this->tabla_campos_formulario} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                tipo_tramite_id bigint(20) UNSIGNED NOT NULL,
+                nombre_campo varchar(100) NOT NULL,
+                etiqueta varchar(255) NOT NULL,
+                tipo_campo varchar(50) NOT NULL,
+                opciones text,
+                requerido tinyint(1) NOT NULL DEFAULT 0,
+                placeholder varchar(255) DEFAULT NULL,
+                ayuda text,
+                orden int(11) NOT NULL DEFAULT 0,
+                PRIMARY KEY (id),
+                KEY tipo_tramite_id (tipo_tramite_id)
+            ) $charset_collate;",
+
+            $this->tabla_historial => "CREATE TABLE {$this->tabla_historial} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                expediente_id bigint(20) UNSIGNED NOT NULL,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
+                accion varchar(100) NOT NULL,
+                descripcion text,
+                metadata longtext,
+                fecha datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY expediente_id (expediente_id),
+                KEY usuario_id (usuario_id)
+            ) $charset_collate;"
+        ];
     }
 
     /**
@@ -97,6 +213,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_flavor_tramites_action', [$this, 'handle_ajax_request']);
         add_action('wp_ajax_nopriv_flavor_tramites_action', [$this, 'handle_ajax_request']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -108,6 +227,647 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         add_shortcode('mis_expedientes', [$this, 'shortcode_mis_expedientes']);
         add_shortcode('estado_expediente', [$this, 'shortcode_estado_expediente']);
     }
+
+    // =========================================================================
+    // PANEL UNIFICADO DE GESTIÓN
+    // =========================================================================
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'tramites',
+            'label' => __('Trámites', 'flavor-chat-ia'),
+            'icon' => 'dashicons-clipboard',
+            'capability' => 'manage_options',
+            'categoria' => 'servicios',
+            'paginas' => [
+                [
+                    'slug' => 'tramites-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'tramites-pendientes',
+                    'titulo' => __('Pendientes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_pendientes'],
+                    'badge' => [$this, 'contar_tramites_pendientes'],
+                ],
+                [
+                    'slug' => 'tramites-historial',
+                    'titulo' => __('Historial', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_historial'],
+                ],
+                [
+                    'slug' => 'tramites-tipos',
+                    'titulo' => __('Tipos de Trámite', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_tipos'],
+                ],
+                [
+                    'slug' => 'tramites-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta trámites pendientes de resolución
+     *
+     * @return int
+     */
+    public function contar_tramites_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$this->tabla_expedientes} WHERE estado IN ('pendiente', 'en_proceso', 'requiere_documentacion')"
+        );
+    }
+
+    /**
+     * Cuenta trámites procesados hoy
+     *
+     * @return int
+     */
+    public function contar_tramites_procesados_hoy() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_expedientes)) {
+            return 0;
+        }
+        $fecha_hoy = date('Y-m-d');
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$this->tabla_expedientes}
+             WHERE estado = 'resuelto' AND DATE(fecha_resolucion) = %s",
+            $fecha_hoy
+        ));
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        $estadisticas = [];
+
+        // Trámites pendientes
+        $tramites_pendientes = $this->contar_tramites_pendientes();
+        $estadisticas[] = [
+            'icon' => 'dashicons-clipboard',
+            'valor' => $tramites_pendientes,
+            'label' => __('Trámites pendientes', 'flavor-chat-ia'),
+            'color' => $tramites_pendientes > 0 ? 'orange' : 'green',
+            'enlace' => admin_url('admin.php?page=tramites-pendientes'),
+        ];
+
+        // Procesados hoy
+        $tramites_procesados_hoy = $this->contar_tramites_procesados_hoy();
+        $estadisticas[] = [
+            'icon' => 'dashicons-yes-alt',
+            'valor' => $tramites_procesados_hoy,
+            'label' => __('Procesados hoy', 'flavor-chat-ia'),
+            'color' => 'blue',
+            'enlace' => admin_url('admin.php?page=tramites-historial'),
+        ];
+
+        return $estadisticas;
+    }
+
+    /**
+     * Renderiza el dashboard de administración de trámites
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Trámites', 'flavor-chat-ia'), [
+            ['label' => __('Ver Pendientes', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-pendientes'), 'class' => 'button-primary'],
+            ['label' => __('Tipos de Trámite', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-tipos'), 'class' => ''],
+        ]);
+        $this->handle_admin_actions();
+        echo '<p>' . __('Panel de control del módulo de trámites administrativos.', 'flavor-chat-ia') . '</p>';
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $estadisticas = $this->get_estadisticas_dashboard();
+        if (!empty($estadisticas)) {
+            echo '<div class="flavor-stats-grid">';
+            foreach ($estadisticas as $estadistica) {
+                $color_class = !empty($estadistica['color']) ? 'flavor-stat-' . $estadistica['color'] : '';
+                $enlace = !empty($estadistica['enlace']) ? $estadistica['enlace'] : '';
+                $card_open = $enlace ? '<a class="flavor-stat-card ' . esc_attr($color_class) . '" href="' . esc_url($enlace) . '">' : '<div class="flavor-stat-card ' . esc_attr($color_class) . '">';
+                $card_close = $enlace ? '</a>' : '</div>';
+
+                echo $card_open;
+                echo '<div class="flavor-stat-icon"><span class="dashicons ' . esc_attr($estadistica['icon']) . '"></span></div>';
+                echo '<div class="flavor-stat-content">';
+                echo '<div class="flavor-stat-value">' . esc_html($estadistica['valor']) . '</div>';
+                echo '<div class="flavor-stat-label">' . esc_html($estadistica['label']) . '</div>';
+                echo '</div>';
+                echo $card_close;
+            }
+            echo '</div>';
+        }
+
+        $this->render_tramites_resumen();
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el listado de trámites pendientes
+     */
+    public function render_admin_pendientes() {
+        $this->render_admin_listado_expedientes(true, false);
+    }
+
+    /**
+     * Renderiza el historial de trámites
+     */
+    public function render_admin_historial() {
+        $this->render_admin_listado_expedientes(false, true);
+    }
+
+    /**
+     * Renderiza la gestión de tipos de trámite
+     */
+    public function render_admin_tipos() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Tipos de Trámite', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Tipo', 'flavor-chat-ia'), 'url' => '#nuevo-tipo', 'class' => 'button-primary'],
+        ]);
+        $this->handle_admin_tipo_action();
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        global $wpdb;
+        $tipos = $wpdb->get_results("SELECT * FROM {$this->tabla_tipos_tramite} ORDER BY orden ASC, nombre ASC");
+
+        echo '<p>' . __('Aquí se gestionan los diferentes tipos de trámites disponibles.', 'flavor-chat-ia') . '</p>';
+
+        if (empty($tipos)) {
+            echo '<p>' . esc_html__('No hay tipos registrados todavía.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<table class="widefat striped"><thead><tr>';
+            echo '<th>ID</th><th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Online', 'flavor-chat-ia') . '</th><th>' . esc_html__('Presencial', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '</tr></thead><tbody>';
+            foreach ($tipos as $tipo) {
+                $estado_label = $tipo->estado === 'activo' ? __('Activo', 'flavor-chat-ia') : __('Inactivo', 'flavor-chat-ia');
+                echo '<tr>';
+                echo '<td>' . esc_html($tipo->id) . '</td>';
+                echo '<td>' . esc_html($tipo->nombre) . '</td>';
+                echo '<td>' . esc_html($tipo->categoria ?: '-') . '</td>';
+                echo '<td>' . esc_html($estado_label) . '</td>';
+                echo '<td>' . esc_html($tipo->permite_online ? __('Sí', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . esc_html($tipo->permite_presencial ? __('Sí', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . $this->render_tipo_actions($tipo->id, $tipo->estado) . '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+
+        echo '<hr id="nuevo-tipo">';
+        echo '<h3>' . esc_html__('Nuevo tipo de trámite', 'flavor-chat-ia') . '</h3>';
+        echo '<form method="post">';
+        wp_nonce_field('tramites_tipo', 'tramites_tipo_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th><td><input type="text" name="nombre" class="regular-text" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Descripción', 'flavor-chat-ia') . '</th><td><textarea name="descripcion" rows="3" class="large-text"></textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th><td><input type="text" name="categoria" class="regular-text"></td></tr>';
+        echo '<tr><th>' . esc_html__('Icono (dashicons)', 'flavor-chat-ia') . '</th><td><input type="text" name="icono" class="regular-text" placeholder="dashicons-clipboard"></td></tr>';
+        echo '<tr><th>' . esc_html__('Plazo resolución (días)', 'flavor-chat-ia') . '</th><td><input type="number" name="plazo_resolucion_dias" min="1" value="7"></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere cita', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_cita" value="1"> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite online', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_online" value="1" checked> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite presencial', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_presencial" value="1" checked> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Precio', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="precio" value="0"></td></tr>';
+        echo '<tr><th>' . esc_html__('Orden', 'flavor-chat-ia') . '</th><td><input type="number" name="orden" value="0"></td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Crear Tipo', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza la configuración del módulo
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Trámites', 'flavor-chat-ia'));
+        $this->handle_admin_save_config();
+        echo '<p>' . __('Configuración del sistema de gestión de trámites.', 'flavor-chat-ia') . '</p>';
+
+        echo '<form method="post">';
+        wp_nonce_field('tramites_config', 'tramites_config_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Disponible en app', 'flavor-chat-ia') . '</th><td><select name="disponible_app">';
+        foreach (['cliente' => __('Cliente', 'flavor-chat-ia'), 'admin' => __('Admin', 'flavor-chat-ia'), 'ambas' => __('Ambas', 'flavor-chat-ia')] as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($this->get_setting('disponible_app'), $key, false) . '>' . esc_html($label) . '</option>';
+        }
+        echo '</select></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere aprobación', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_aprobacion" value="1" ' . checked($this->get_setting('requiere_aprobacion'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite trámites online', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_tramites_online" value="1" ' . checked($this->get_setting('permite_tramites_online'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite trámites presenciales', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_tramites_presencial" value="1" ' . checked($this->get_setting('permite_tramites_presencial'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Plazo máximo resolución (días)', 'flavor-chat-ia') . '</th><td><input type="number" name="plazo_resolucion_maximo_dias" min="1" value="' . esc_attr($this->get_setting('plazo_resolucion_maximo_dias')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar cambio de estado', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="notificar_cambio_estado" value="1" ' . checked($this->get_setting('notificar_cambio_estado'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar por email', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="notificar_por_email" value="1" ' . checked($this->get_setting('notificar_por_email'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite cancelación', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_cancelacion" value="1" ' . checked($this->get_setting('permite_cancelacion'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Días límite cancelación', 'flavor-chat-ia') . '</th><td><input type="number" name="dias_limite_cancelacion" min="0" value="' . esc_attr($this->get_setting('dias_limite_cancelacion')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Tamaño máximo archivo (MB)', 'flavor-chat-ia') . '</th><td><input type="number" name="tamanio_maximo_archivo_mb" min="1" value="' . esc_attr($this->get_setting('tamanio_maximo_archivo_mb')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Tipos de archivo permitidos', 'flavor-chat-ia') . '</th><td><input type="text" name="tipos_archivo_permitidos" class="regular-text" value="' . esc_attr($this->get_setting('tipos_archivo_permitidos')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Máx. archivos por expediente', 'flavor-chat-ia') . '</th><td><input type="number" name="max_archivos_por_expediente" min="1" value="' . esc_attr($this->get_setting('max_archivos_por_expediente')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Mostrar timeline público', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="mostrar_timeline_publico" value="1" ' . checked($this->get_setting('mostrar_timeline_publico'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Auto asignar número', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="auto_asignar_numero_expediente" value="1" ' . checked($this->get_setting('auto_asignar_numero_expediente'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Prefijo expediente', 'flavor-chat-ia') . '</th><td><input type="text" name="prefijo_expediente" value="' . esc_attr($this->get_setting('prefijo_expediente')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere login', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_login" value="1" ' . checked($this->get_setting('requiere_login'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    private function render_tramites_resumen() {
+        global $wpdb;
+        $tabla = $this->tabla_expedientes;
+        $tabla_tipos = $this->tabla_tipos_tramite;
+        $tabla_users = $wpdb->users;
+
+        $expedientes = $wpdb->get_results(
+            "SELECT e.id, e.numero_expediente, e.estado, e.prioridad, e.fecha_solicitud, t.nombre as tipo_nombre, u.display_name
+             FROM $tabla e
+             LEFT JOIN $tabla_tipos t ON e.tipo_tramite_id = t.id
+             LEFT JOIN $tabla_users u ON e.solicitante_id = u.ID
+             ORDER BY e.fecha_solicitud DESC
+             LIMIT 10"
+        );
+
+        echo '<h3>' . esc_html__('Expedientes recientes', 'flavor-chat-ia') . '</h3>';
+        if (empty($expedientes)) {
+            echo '<p>' . esc_html__('No hay expedientes registrados aún.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th><th>' . esc_html__('Solicitante', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Prioridad', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($expedientes as $expediente) {
+            echo '<tr>';
+            echo '<td>' . esc_html($expediente->id) . '</td>';
+            echo '<td>' . esc_html($expediente->numero_expediente) . '</td>';
+            echo '<td>' . esc_html($expediente->tipo_nombre ?: '-') . '</td>';
+            echo '<td>' . esc_html($expediente->display_name ?: '-') . '</td>';
+            echo '<td>' . esc_html($expediente->estado) . '</td>';
+            echo '<td>' . esc_html($expediente->prioridad) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($expediente->fecha_solicitud))) . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+    }
+
+    private function render_admin_listado_expedientes($solo_pendientes, $modo_historial) {
+        echo '<div class="wrap flavor-modulo-page">';
+        $titulo = $solo_pendientes ? __('Trámites Pendientes', 'flavor-chat-ia') : __('Historial de Trámites', 'flavor-chat-ia');
+        $this->render_page_header($titulo, [
+            ['label' => __('Tipos de Trámite', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-tipos'), 'class' => ''],
+        ]);
+        $this->handle_admin_actions();
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $prioridad = isset($_GET['prioridad']) ? sanitize_text_field($_GET['prioridad']) : '';
+        $tipo = isset($_GET['tipo']) ? absint($_GET['tipo']) : 0;
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+        $fecha_desde = isset($_GET['desde']) ? sanitize_text_field($_GET['desde']) : '';
+        $fecha_hasta = isset($_GET['hasta']) ? sanitize_text_field($_GET['hasta']) : '';
+
+        if ($solo_pendientes && !$estado) {
+            $estado = 'pendientes';
+        }
+
+        global $wpdb;
+        $tabla = $this->tabla_expedientes;
+        $tabla_tipos = $this->tabla_tipos_tramite;
+        $tabla_users = $wpdb->users;
+
+        $tipos = $wpdb->get_results("SELECT id, nombre FROM $tabla_tipos ORDER BY nombre ASC");
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="' . esc_attr($solo_pendientes ? 'tramites-pendientes' : 'tramites-historial') . '">';
+        echo '<select name="estado">';
+        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        if ($solo_pendientes) {
+            echo '<option value="pendientes" ' . selected($estado, 'pendientes', false) . '>' . esc_html__('Solo pendientes', 'flavor-chat-ia') . '</option>';
+        }
+        foreach (['pendiente','en_proceso','requiere_documentacion','resuelto','rechazado','cancelado'] as $estado_key) {
+            echo '<option value="' . esc_attr($estado_key) . '" ' . selected($estado, $estado_key, false) . '>' . esc_html($estado_key) . '</option>';
+        }
+        echo '</select> ';
+        echo '<select name="prioridad">';
+        echo '<option value="">' . esc_html__('Todas las prioridades', 'flavor-chat-ia') . '</option>';
+        foreach (['baja','media','alta','urgente'] as $prio) {
+            echo '<option value="' . esc_attr($prio) . '" ' . selected($prioridad, $prio, false) . '>' . esc_html(ucfirst($prio)) . '</option>';
+        }
+        echo '</select> ';
+        echo '<select name="tipo">';
+        echo '<option value="0">' . esc_html__('Todos los tipos', 'flavor-chat-ia') . '</option>';
+        foreach ($tipos as $t) {
+            echo '<option value="' . esc_attr($t->id) . '" ' . selected($tipo, $t->id, false) . '>' . esc_html($t->nombre) . '</option>';
+        }
+        echo '</select> ';
+        if ($modo_historial) {
+            echo '<input type="date" name="desde" value="' . esc_attr($fecha_desde) . '"> ';
+            echo '<input type="date" name="hasta" value="' . esc_attr($fecha_hasta) . '"> ';
+        }
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por número', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        $where = [];
+        $params = [];
+        if ($estado === 'pendientes') {
+            $where[] = "e.estado IN ('pendiente','en_proceso','requiere_documentacion')";
+        } else if ($estado) {
+            $where[] = 'e.estado = %s';
+            $params[] = $estado;
+        } elseif ($solo_pendientes) {
+            $where[] = "e.estado IN ('pendiente','en_proceso','requiere_documentacion')";
+        }
+        if ($prioridad) {
+            $where[] = 'e.prioridad = %s';
+            $params[] = $prioridad;
+        }
+        if ($tipo) {
+            $where[] = 'e.tipo_tramite_id = %d';
+            $params[] = $tipo;
+        }
+        if ($busqueda) {
+            $where[] = 'e.numero_expediente LIKE %s';
+            $params[] = '%' . $wpdb->esc_like($busqueda) . '%';
+        }
+        if ($modo_historial && $fecha_desde) {
+            $where[] = 'DATE(e.fecha_solicitud) >= %s';
+            $params[] = $fecha_desde;
+        }
+        if ($modo_historial && $fecha_hasta) {
+            $where[] = 'DATE(e.fecha_solicitud) <= %s';
+            $params[] = $fecha_hasta;
+        }
+
+        $sql = "SELECT e.*, t.nombre as tipo_nombre, u.display_name
+                FROM $tabla e
+                LEFT JOIN $tabla_tipos t ON e.tipo_tramite_id = t.id
+                LEFT JOIN $tabla_users u ON e.solicitante_id = u.ID";
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY e.fecha_solicitud DESC LIMIT 200';
+
+        $expedientes = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($expedientes)) {
+            echo '<p>' . esc_html__('No hay expedientes con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th><th>' . esc_html__('Solicitante', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Prioridad', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($expedientes as $expediente) {
+            echo '<tr>';
+            echo '<td>' . esc_html($expediente->id) . '</td>';
+            echo '<td>' . esc_html($expediente->numero_expediente) . '</td>';
+            echo '<td>' . esc_html($expediente->tipo_nombre ?: '-') . '</td>';
+            echo '<td>' . esc_html($expediente->display_name ?: '-') . '</td>';
+            echo '<td>' . esc_html($expediente->estado) . '</td>';
+            echo '<td>' . esc_html($expediente->prioridad) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($expediente->fecha_solicitud))) . '</td>';
+            echo '<td>' . $this->render_expediente_actions($expediente->id, $expediente->estado, $expediente->prioridad, $solo_pendientes ? 'tramites-pendientes' : 'tramites-historial') . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    private function render_expediente_actions($expediente_id, $estado_actual, $prioridad_actual, $page_slug) {
+        $estados = ['pendiente','en_proceso','requiere_documentacion','resuelto','rechazado','cancelado'];
+        $prioridades = ['baja','media','alta','urgente'];
+
+        $links = [];
+        foreach ($estados as $estado) {
+            if ($estado === $estado_actual) {
+                continue;
+            }
+            $url = add_query_arg([
+                'page' => $page_slug,
+                'tramite_action' => 'estado',
+                'expediente_id' => $expediente_id,
+                'estado' => $estado,
+            ], admin_url('admin.php'));
+            $url = wp_nonce_url($url, 'tramites_admin_' . $expediente_id);
+            $links[] = '<a href="' . esc_url($url) . '">' . esc_html($estado) . '</a>';
+            if (count($links) >= 3) {
+                break;
+            }
+        }
+
+        $prio_links = [];
+        foreach ($prioridades as $prioridad) {
+            if ($prioridad === $prioridad_actual) {
+                continue;
+            }
+            $url = add_query_arg([
+                'page' => $page_slug,
+                'tramite_action' => 'prioridad',
+                'expediente_id' => $expediente_id,
+                'prioridad' => $prioridad,
+            ], admin_url('admin.php'));
+            $url = wp_nonce_url($url, 'tramites_admin_' . $expediente_id);
+            $prio_links[] = '<a href="' . esc_url($url) . '">' . esc_html(ucfirst($prioridad)) . '</a>';
+            if (count($prio_links) >= 2) {
+                break;
+            }
+        }
+
+        $output = '';
+        if (!empty($links)) {
+            $output .= '<div><strong>' . esc_html__('Estado:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $links) . '</div>';
+        }
+        if (!empty($prio_links)) {
+            $output .= '<div><strong>' . esc_html__('Prioridad:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $prio_links) . '</div>';
+        }
+        return $output;
+    }
+
+    private function handle_admin_actions() {
+        if (empty($_GET['tramite_action']) || empty($_GET['expediente_id'])) {
+            return;
+        }
+
+        $accion = sanitize_text_field($_GET['tramite_action']);
+        $expediente_id = absint($_GET['expediente_id']);
+        $nonce = $_GET['_wpnonce'] ?? '';
+
+        if (!$expediente_id) {
+            return;
+        }
+        if (!wp_verify_nonce($nonce, 'tramites_admin_' . $expediente_id)) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $this->tabla_expedientes;
+
+        if ($accion === 'estado') {
+            $nuevo_estado = sanitize_text_field($_GET['estado'] ?? '');
+            if (!$nuevo_estado) {
+                return;
+            }
+            $data = ['estado' => $nuevo_estado];
+            $format = ['%s'];
+            if ($nuevo_estado === 'resuelto') {
+                $data['fecha_resolucion'] = current_time('mysql');
+                $format[] = '%s';
+            }
+            $wpdb->update($tabla, $data, ['id' => $expediente_id], $format, ['%d']);
+            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        if ($accion === 'prioridad') {
+            $nueva_prioridad = sanitize_text_field($_GET['prioridad'] ?? '');
+            if (!$nueva_prioridad) {
+                return;
+            }
+            $wpdb->update($tabla, ['prioridad' => $nueva_prioridad], ['id' => $expediente_id], ['%s'], ['%d']);
+            echo '<div class="notice notice-success"><p>' . esc_html__('Prioridad actualizada.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    private function handle_admin_save_config() {
+        if (empty($_POST['tramites_config_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['tramites_config_nonce'], 'tramites_config')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $this->update_setting('disponible_app', sanitize_text_field($_POST['disponible_app'] ?? 'cliente'));
+        $this->update_setting('requiere_aprobacion', !empty($_POST['requiere_aprobacion']));
+        $this->update_setting('permite_tramites_online', !empty($_POST['permite_tramites_online']));
+        $this->update_setting('permite_tramites_presencial', !empty($_POST['permite_tramites_presencial']));
+        $this->update_setting('plazo_resolucion_maximo_dias', absint($_POST['plazo_resolucion_maximo_dias'] ?? 30));
+        $this->update_setting('notificar_cambio_estado', !empty($_POST['notificar_cambio_estado']));
+        $this->update_setting('notificar_por_email', !empty($_POST['notificar_por_email']));
+        $this->update_setting('permite_cancelacion', !empty($_POST['permite_cancelacion']));
+        $this->update_setting('dias_limite_cancelacion', absint($_POST['dias_limite_cancelacion'] ?? 5));
+        $this->update_setting('tamanio_maximo_archivo_mb', absint($_POST['tamanio_maximo_archivo_mb'] ?? 10));
+        $this->update_setting('tipos_archivo_permitidos', sanitize_text_field($_POST['tipos_archivo_permitidos'] ?? ''));
+        $this->update_setting('max_archivos_por_expediente', absint($_POST['max_archivos_por_expediente'] ?? 20));
+        $this->update_setting('mostrar_timeline_publico', !empty($_POST['mostrar_timeline_publico']));
+        $this->update_setting('auto_asignar_numero_expediente', !empty($_POST['auto_asignar_numero_expediente']));
+        $this->update_setting('prefijo_expediente', sanitize_text_field($_POST['prefijo_expediente'] ?? 'EXP'));
+        $this->update_setting('requiere_login', !empty($_POST['requiere_login']));
+
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function render_tipo_actions($tipo_id, $estado_actual) {
+        $nuevo_estado = $estado_actual === 'activo' ? 'inactivo' : 'activo';
+        $label = $estado_actual === 'activo' ? __('Desactivar', 'flavor-chat-ia') : __('Activar', 'flavor-chat-ia');
+        $url = add_query_arg([
+            'page' => 'tramites-tipos',
+            'tipo_action' => 'estado',
+            'tipo_id' => $tipo_id,
+            'estado' => $nuevo_estado,
+        ], admin_url('admin.php'));
+        $url = wp_nonce_url($url, 'tramites_tipo_' . $tipo_id);
+        return '<a href="' . esc_url($url) . '">' . esc_html($label) . '</a>';
+    }
+
+    private function handle_admin_tipo_action() {
+        if (!empty($_POST['tramites_tipo_nonce'])) {
+            if (!wp_verify_nonce($_POST['tramites_tipo_nonce'], 'tramites_tipo')) {
+                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+                return;
+            }
+
+            global $wpdb;
+            $wpdb->insert($this->tabla_tipos_tramite, [
+                'nombre' => sanitize_text_field($_POST['nombre'] ?? ''),
+                'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+                'categoria' => sanitize_text_field($_POST['categoria'] ?? ''),
+                'icono' => sanitize_text_field($_POST['icono'] ?? ''),
+                'plazo_resolucion_dias' => absint($_POST['plazo_resolucion_dias'] ?? 0),
+                'requiere_cita' => !empty($_POST['requiere_cita']) ? 1 : 0,
+                'permite_online' => !empty($_POST['permite_online']) ? 1 : 0,
+                'permite_presencial' => !empty($_POST['permite_presencial']) ? 1 : 0,
+                'precio' => floatval($_POST['precio'] ?? 0),
+                'estado' => 'activo',
+                'orden' => absint($_POST['orden'] ?? 0),
+                'created_at' => current_time('mysql'),
+            ]);
+
+            echo '<div class="notice notice-success"><p>' . esc_html__('Tipo creado.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        if (empty($_GET['tipo_action']) || empty($_GET['tipo_id'])) {
+            return;
+        }
+
+        $accion = sanitize_text_field($_GET['tipo_action']);
+        $tipo_id = absint($_GET['tipo_id']);
+        $nonce = $_GET['_wpnonce'] ?? '';
+
+        if (!$tipo_id) {
+            return;
+        }
+        if (!wp_verify_nonce($nonce, 'tramites_tipo_' . $tipo_id)) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        if ($accion === 'estado') {
+            $nuevo_estado = sanitize_text_field($_GET['estado'] ?? '');
+            if (!$nuevo_estado) {
+                return;
+            }
+            global $wpdb;
+            $wpdb->update($this->tabla_tipos_tramite, ['estado' => $nuevo_estado], ['id' => $tipo_id], ['%s'], ['%d']);
+            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    // =========================================================================
+    // FIN PANEL UNIFICADO DE GESTIÓN
+    // =========================================================================
 
     /**
      * Encolar assets
@@ -183,206 +943,21 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     /**
      * Crear todas las tablas necesarias
      */
+        /**
+     * Crea las tablas necesarias
+     */
     private function create_tables() {
-        global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
+        $esquemas = $this->get_table_schema();
+
+        if (empty($esquemas)) {
+            return;
+        }
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-        // Tabla tipos_tramite
-        $sql_tipos_tramite = "CREATE TABLE IF NOT EXISTS {$this->tabla_tipos_tramite} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            codigo varchar(50) NOT NULL,
-            nombre varchar(255) NOT NULL,
-            descripcion text,
-            descripcion_corta varchar(500),
-            categoria varchar(100),
-            subcategoria varchar(100),
-            icono varchar(100) DEFAULT 'dashicons-clipboard',
-            color varchar(20) DEFAULT '#0073aa',
-            requisitos longtext,
-            documentos_requeridos longtext,
-            plazo_resolucion_dias int(11) DEFAULT 30,
-            tasa decimal(10,2) DEFAULT 0.00,
-            tasa_urgente decimal(10,2) DEFAULT 0.00,
-            permite_urgente tinyint(1) DEFAULT 0,
-            requiere_cita tinyint(1) DEFAULT 0,
-            requiere_firma_digital tinyint(1) DEFAULT 0,
-            permite_representante tinyint(1) DEFAULT 1,
-            departamento_responsable varchar(255),
-            email_notificacion varchar(255),
-            plantilla_email_inicio text,
-            plantilla_email_resolucion text,
-            orden int(11) DEFAULT 0,
-            estado enum('activo','inactivo','borrador') DEFAULT 'activo',
-            visibilidad enum('publico','registrados','privado') DEFAULT 'publico',
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_modificacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            creado_por bigint(20) unsigned,
-            PRIMARY KEY (id),
-            UNIQUE KEY codigo (codigo),
-            KEY categoria (categoria),
-            KEY estado (estado),
-            KEY orden (orden)
-        ) $charset_collate;";
-        dbDelta($sql_tipos_tramite);
-
-        // Tabla expedientes
-        $sql_expedientes = "CREATE TABLE IF NOT EXISTS {$this->tabla_expedientes} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            numero_expediente varchar(50) NOT NULL,
-            tipo_tramite_id bigint(20) unsigned NOT NULL,
-            user_id bigint(20) unsigned,
-            session_id varchar(100),
-            nombre_solicitante varchar(255) NOT NULL,
-            email_solicitante varchar(255) NOT NULL,
-            telefono_solicitante varchar(50),
-            dni_solicitante varchar(20),
-            direccion_solicitante text,
-            es_representante tinyint(1) DEFAULT 0,
-            nombre_representado varchar(255),
-            dni_representado varchar(20),
-            datos_formulario longtext,
-            notas_solicitante text,
-            notas_internas text,
-            estado_actual varchar(50) DEFAULT 'borrador',
-            prioridad enum('baja','normal','alta','urgente') DEFAULT 'normal',
-            canal_entrada enum('online','presencial','telefono','email') DEFAULT 'online',
-            asignado_a bigint(20) unsigned,
-            departamento varchar(255),
-            tasa_pagada decimal(10,2) DEFAULT 0.00,
-            referencia_pago varchar(100),
-            fecha_pago datetime,
-            fecha_inicio datetime,
-            fecha_limite datetime,
-            fecha_resolucion datetime,
-            resolucion enum('pendiente','favorable','desfavorable','desistimiento','caducidad') DEFAULT 'pendiente',
-            motivo_resolucion text,
-            puntuacion_satisfaccion int(11),
-            comentario_satisfaccion text,
-            ip_creacion varchar(45),
-            user_agent_creacion text,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_modificacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY numero_expediente (numero_expediente),
-            KEY tipo_tramite_id (tipo_tramite_id),
-            KEY user_id (user_id),
-            KEY estado_actual (estado_actual),
-            KEY prioridad (prioridad),
-            KEY fecha_creacion (fecha_creacion),
-            KEY asignado_a (asignado_a)
-        ) $charset_collate;";
-        dbDelta($sql_expedientes);
-
-        // Tabla documentos_expediente
-        $sql_documentos = "CREATE TABLE IF NOT EXISTS {$this->tabla_documentos} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            expediente_id bigint(20) unsigned NOT NULL,
-            tipo_documento varchar(100),
-            nombre_original varchar(255) NOT NULL,
-            nombre_archivo varchar(255) NOT NULL,
-            ruta_archivo varchar(500) NOT NULL,
-            mime_type varchar(100),
-            tamanio_bytes bigint(20) unsigned DEFAULT 0,
-            hash_archivo varchar(64),
-            es_obligatorio tinyint(1) DEFAULT 0,
-            validado tinyint(1) DEFAULT 0,
-            validado_por bigint(20) unsigned,
-            fecha_validacion datetime,
-            notas_validacion text,
-            origen enum('solicitante','administracion','generado') DEFAULT 'solicitante',
-            visible_solicitante tinyint(1) DEFAULT 1,
-            orden int(11) DEFAULT 0,
-            fecha_subida datetime DEFAULT CURRENT_TIMESTAMP,
-            subido_por bigint(20) unsigned,
-            PRIMARY KEY (id),
-            KEY expediente_id (expediente_id),
-            KEY tipo_documento (tipo_documento),
-            KEY validado (validado)
-        ) $charset_collate;";
-        dbDelta($sql_documentos);
-
-        // Tabla estados_tramite
-        $sql_estados = "CREATE TABLE IF NOT EXISTS {$this->tabla_estados} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            codigo varchar(50) NOT NULL,
-            nombre varchar(255) NOT NULL,
-            descripcion text,
-            color varchar(20) DEFAULT '#666666',
-            icono varchar(100) DEFAULT 'dashicons-marker',
-            es_inicial tinyint(1) DEFAULT 0,
-            es_final tinyint(1) DEFAULT 0,
-            permite_edicion tinyint(1) DEFAULT 0,
-            permite_documentos tinyint(1) DEFAULT 1,
-            notifica_solicitante tinyint(1) DEFAULT 1,
-            plantilla_notificacion text,
-            orden int(11) DEFAULT 0,
-            activo tinyint(1) DEFAULT 1,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY codigo (codigo),
-            KEY es_inicial (es_inicial),
-            KEY es_final (es_final),
-            KEY orden (orden)
-        ) $charset_collate;";
-        dbDelta($sql_estados);
-
-        // Tabla campos_formulario
-        $sql_campos = "CREATE TABLE IF NOT EXISTS {$this->tabla_campos_formulario} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            tipo_tramite_id bigint(20) unsigned NOT NULL,
-            nombre_campo varchar(100) NOT NULL,
-            etiqueta varchar(255) NOT NULL,
-            tipo_campo enum('text','textarea','email','tel','number','date','datetime','select','radio','checkbox','file','hidden','dni','iban','cp') DEFAULT 'text',
-            placeholder varchar(255),
-            valor_defecto text,
-            opciones longtext,
-            validacion varchar(255),
-            patron_validacion varchar(255),
-            mensaje_error varchar(255),
-            es_obligatorio tinyint(1) DEFAULT 0,
-            es_readonly tinyint(1) DEFAULT 0,
-            mostrar_en_resumen tinyint(1) DEFAULT 1,
-            grupo varchar(100),
-            ancho enum('full','half','third','quarter') DEFAULT 'full',
-            clase_css varchar(255),
-            ayuda text,
-            condicion_visible text,
-            orden int(11) DEFAULT 0,
-            activo tinyint(1) DEFAULT 1,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY tipo_tramite_id (tipo_tramite_id),
-            KEY nombre_campo (nombre_campo),
-            KEY grupo (grupo),
-            KEY orden (orden)
-        ) $charset_collate;";
-        dbDelta($sql_campos);
-
-        // Tabla historial_expediente
-        $sql_historial = "CREATE TABLE IF NOT EXISTS {$this->tabla_historial} (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            expediente_id bigint(20) unsigned NOT NULL,
-            tipo_evento enum('creacion','cambio_estado','documento_subido','documento_validado','documento_rechazado','nota_agregada','asignacion','resolucion','notificacion','otro') DEFAULT 'otro',
-            estado_anterior varchar(50),
-            estado_nuevo varchar(50),
-            descripcion text NOT NULL,
-            datos_adicionales longtext,
-            es_publico tinyint(1) DEFAULT 1,
-            usuario_id bigint(20) unsigned,
-            nombre_usuario varchar(255),
-            ip_origen varchar(45),
-            fecha_evento datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY expediente_id (expediente_id),
-            KEY tipo_evento (tipo_evento),
-            KEY fecha_evento (fecha_evento),
-            KEY es_publico (es_publico)
-        ) $charset_collate;";
-        dbDelta($sql_historial);
-
-        $this->insert_default_data();
+        foreach ($esquemas as $tabla => $sql) {
+            dbDelta($sql);
+        }
     }
 
     /**
@@ -432,13 +1007,13 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/tipos', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_tipos_tramite'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/tipos/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_tipo_tramite'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/expedientes', [
@@ -450,7 +1025,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/expedientes', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_create_expediente'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/expedientes/(?P<id>\d+)', [
@@ -480,13 +1055,13 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/expedientes/consulta/(?P<numero>[a-zA-Z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_consulta_expediente'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/estados', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_estados'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -853,7 +1428,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
         return rest_ensure_response([
             'success' => true,
-            'mensaje' => 'Expediente actualizado',
+            'mensaje' => __('Expediente actualizado', 'flavor-chat-ia'),
         ]);
     }
 
@@ -939,7 +1514,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
         return rest_ensure_response([
             'success' => true,
-            'mensaje' => 'Documento subido correctamente',
+            'mensaje' => __('Expediente actualizado', 'flavor-chat-ia'),
             'documento' => [
                 'id' => $documento_id,
                 'nombre' => $archivo['name'],
@@ -1055,7 +1630,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         ];
 
         if (!in_array($accion, $acciones_permitidas)) {
-            wp_send_json_error(['mensaje' => 'Accion no permitida']);
+            wp_send_json_error(['mensaje' => __('Accion no permitida', 'flavor-chat-ia')]);
         }
 
         $metodo = 'ajax_' . $accion;
@@ -1067,7 +1642,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 wp_send_json_error($resultado);
             }
         } else {
-            wp_send_json_error(['mensaje' => 'Metodo no implementado']);
+            wp_send_json_error(['mensaje' => __('Metodo no implementado', 'flavor-chat-ia')]);
         }
     }
 
@@ -1078,13 +1653,13 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $tipo_id = isset($_POST['tipo_id']) ? absint($_POST['tipo_id']) : 0;
 
         if (!$tipo_id) {
-            return ['success' => false, 'mensaje' => 'ID de tipo requerido'];
+            return ['success' => false, 'mensaje' => __('ID de tipo requerido', 'flavor-chat-ia')];
         }
 
         $tipo = $this->get_tipo_tramite_completo($tipo_id);
 
         if (!$tipo) {
-            return ['success' => false, 'mensaje' => 'Tipo no encontrado'];
+            return ['success' => false, 'mensaje' => __('Tipo no encontrado', 'flavor-chat-ia')];
         }
 
         return ['success' => true, 'tipo' => $tipo];
@@ -1120,7 +1695,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     private function ajax_listar_expedientes() {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'mensaje' => 'Debes iniciar sesion'];
+            return ['success' => false, 'mensaje' => __('ID de tipo requerido', 'flavor-chat-ia')];
         }
 
         $request = new WP_REST_Request('GET');
@@ -1140,7 +1715,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $numero = isset($_POST['numero_expediente']) ? sanitize_text_field($_POST['numero_expediente']) : '';
 
         if (empty($numero)) {
-            return ['success' => false, 'mensaje' => 'Numero de expediente requerido'];
+            return ['success' => false, 'mensaje' => __('ID de tipo requerido', 'flavor-chat-ia')];
         }
 
         $request = new WP_REST_Request('GET');
@@ -1459,12 +2034,12 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 <div class="flavor-expedientes-filtros">
                     <select id="flavor-filtro-estado">
                         <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="borrador"><?php esc_html_e('Borrador', 'flavor-chat-ia'); ?></option>
-                        <option value="pendiente"><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="en_revision"><?php esc_html_e('En revision', 'flavor-chat-ia'); ?></option>
-                        <option value="en_tramite"><?php esc_html_e('En tramite', 'flavor-chat-ia'); ?></option>
-                        <option value="resuelto_favorable"><?php esc_html_e('Resuelto favorable', 'flavor-chat-ia'); ?></option>
-                        <option value="resuelto_desfavorable"><?php esc_html_e('Resuelto desfavorable', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('borrador', 'flavor-chat-ia'); ?>"><?php esc_html_e('Borrador', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('en_revision', 'flavor-chat-ia'); ?>"><?php esc_html_e('En revision', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('en_tramite', 'flavor-chat-ia'); ?>"><?php esc_html_e('En tramite', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('resuelto_favorable', 'flavor-chat-ia'); ?>"><?php esc_html_e('Resuelto favorable', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('resuelto_desfavorable', 'flavor-chat-ia'); ?>"><?php esc_html_e('Resuelto desfavorable', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
             </div>
@@ -2074,7 +2649,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     private function action_detalle_tramite($params) {
         if (empty($params['tramite_id'])) {
-            return ['success' => false, 'error' => 'Se requiere el ID del tramite'];
+            return ['success' => false, 'error' => __('Se requiere el ID del tramite', 'flavor-chat-ia')];
         }
 
         $request = new WP_REST_Request('GET');
@@ -2094,7 +2669,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     private function action_estado_expediente($params) {
         if (empty($params['numero_expediente'])) {
-            return ['success' => false, 'error' => 'Se requiere el numero de expediente'];
+            return ['success' => false, 'error' => __('Se requiere el ID del tramite', 'flavor-chat-ia')];
         }
 
         $request = new WP_REST_Request('GET');
@@ -2268,5 +2843,11 @@ KNOWLEDGE;
                 'respuesta' => 'Las notificaciones se envian automaticamente al email que proporcionaste al crear el expediente cuando hay cambios de estado.',
             ],
         ];
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

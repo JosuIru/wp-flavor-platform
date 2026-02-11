@@ -15,6 +15,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
 
@@ -29,8 +31,8 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'facturas';
-        $this->name = __('Facturas', 'flavor-chat-ia');
-        $this->description = __('Sistema completo de facturacion para servicios comunitarios con generacion PDF, pagos y recordatorios.', 'flavor-chat-ia');
+        $this->name = 'Facturas'; // Translation loaded on init
+        $this->description = 'Sistema completo de facturacion para servicios comunitarios con generacion PDF, pagos y recordatorios.'; // Translation loaded on init
 
         global $wpdb;
         $this->tabla_prefijo = $wpdb->prefix . 'flavor_';
@@ -60,7 +62,15 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Facturas no estan creadas. Activa el modulo para crearlas automaticamente.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -101,9 +111,13 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
 
         // AJAX handlers
         add_action('wp_ajax_flavor_facturas_listar', [$this, 'ajax_listar_facturas']);
@@ -123,6 +137,516 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         if (!wp_next_scheduled('flavor_facturas_enviar_recordatorios')) {
             wp_schedule_event(time(), 'daily', 'flavor_facturas_enviar_recordatorios');
         }
+    }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     *
+     * @return array Configuración del módulo
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'facturas',
+            'label' => __('Facturas', 'flavor-chat-ia'),
+            'icon' => 'dashicons-media-text',
+            'capability' => 'manage_options',
+            'categoria' => 'economia',
+            'paginas' => [
+                [
+                    'slug' => 'facturas-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'facturas-listado',
+                    'titulo' => __('Todas las Facturas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                    'badge' => [$this, 'contar_facturas_pendientes'],
+                ],
+                [
+                    'slug' => 'facturas-nueva',
+                    'titulo' => __('Nueva Factura', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_nueva'],
+                ],
+                [
+                    'slug' => 'facturas-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta facturas pendientes de pago
+     *
+     * @return int
+     */
+    public function contar_facturas_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['facturas'])) {
+            return 0;
+        }
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$this->tablas['facturas']} WHERE estado = 'pendiente'"
+        );
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $stats = [];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['facturas'])) {
+            return $stats;
+        }
+
+        // Facturas pendientes
+        $pendientes = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$this->tablas['facturas']} WHERE estado = 'pendiente'"
+        );
+        $stats[] = [
+            'icon' => 'dashicons-media-text',
+            'valor' => $pendientes,
+            'label' => __('Facturas pendientes', 'flavor-chat-ia'),
+            'color' => $pendientes > 0 ? 'orange' : 'green',
+            'enlace' => admin_url('admin.php?page=facturas-listado&estado=pendiente'),
+        ];
+
+        // Total facturado este mes
+        $mes_actual = date('Y-m');
+        $total_mes = $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(SUM(total), 0) FROM {$this->tablas['facturas']}
+             WHERE DATE_FORMAT(fecha_emision, '%%Y-%%m') = %s AND estado != 'cancelada'",
+            $mes_actual
+        ));
+        $stats[] = [
+            'icon' => 'dashicons-chart-bar',
+            'valor' => number_format((float) $total_mes, 2) . ' €',
+            'label' => __('Facturado este mes', 'flavor-chat-ia'),
+            'color' => 'blue',
+            'enlace' => admin_url('admin.php?page=facturas-dashboard'),
+        ];
+
+        return $stats;
+    }
+
+    /**
+     * Renderiza el dashboard de admin de facturas
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dashboard de Facturas', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Factura', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=facturas-nueva'), 'class' => 'button-primary'],
+            ['label' => __('Ver Listado', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=facturas-listado'), 'class' => ''],
+        ]);
+        $this->handle_admin_actions();
+        echo '<p>' . __('Panel de control del módulo de facturación.', 'flavor-chat-ia') . '</p>';
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $estadisticas = $this->get_estadisticas_dashboard();
+        if (!empty($estadisticas)) {
+            echo '<div class="flavor-stats-grid">';
+            foreach ($estadisticas as $estadistica) {
+                $color_class = !empty($estadistica['color']) ? 'flavor-stat-' . $estadistica['color'] : '';
+                $enlace = !empty($estadistica['enlace']) ? $estadistica['enlace'] : '';
+                $card_open = $enlace ? '<a class="flavor-stat-card ' . esc_attr($color_class) . '" href="' . esc_url($enlace) . '">' : '<div class="flavor-stat-card ' . esc_attr($color_class) . '">';
+                $card_close = $enlace ? '</a>' : '</div>';
+
+                echo $card_open;
+                echo '<div class="flavor-stat-icon"><span class="dashicons ' . esc_attr($estadistica['icon']) . '"></span></div>';
+                echo '<div class="flavor-stat-content">';
+                echo '<div class="flavor-stat-value">' . esc_html($estadistica['valor']) . '</div>';
+                echo '<div class="flavor-stat-label">' . esc_html($estadistica['label']) . '</div>';
+                echo '</div>';
+                echo $card_close;
+            }
+            echo '</div>';
+        }
+
+        $this->render_facturas_resumen();
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el listado de facturas
+     */
+    public function render_admin_listado() {
+        $this->render_admin_listado_facturas();
+    }
+
+    /**
+     * Renderiza formulario de nueva factura
+     */
+    public function render_admin_nueva() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Nueva Factura', 'flavor-chat-ia'));
+        $this->handle_admin_create_factura();
+        echo '<p>' . __('Formulario para crear nueva factura.', 'flavor-chat-ia') . '</p>';
+
+        echo '<form method="post">';
+        wp_nonce_field('facturas_crear', 'facturas_crear_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Cliente', 'flavor-chat-ia') . '</th><td><input type="text" name="cliente_nombre" class="regular-text" required></td></tr>';
+        echo '<tr><th>' . esc_html__('NIF', 'flavor-chat-ia') . '</th><td><input type="text" name="cliente_nif" class="regular-text"></td></tr>';
+        echo '<tr><th>' . esc_html__('Email', 'flavor-chat-ia') . '</th><td><input type="email" name="cliente_email" class="regular-text"></td></tr>';
+        echo '<tr><th>' . esc_html__('Dirección', 'flavor-chat-ia') . '</th><td><textarea name="cliente_direccion" rows="2" class="large-text"></textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Fecha emisión', 'flavor-chat-ia') . '</th><td><input type="date" name="fecha_emision" value="' . esc_attr(date('Y-m-d')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Fecha vencimiento', 'flavor-chat-ia') . '</th><td><input type="date" name="fecha_vencimiento" value="' . esc_attr(date('Y-m-d', strtotime('+' . $this->get_setting('dias_vencimiento') . ' days'))) . '"></td></tr>';
+        echo '</tbody></table>';
+
+        echo '<h3>' . esc_html__('Línea principal', 'flavor-chat-ia') . '</h3>';
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Concepto', 'flavor-chat-ia') . '</th><td><input type="text" name="linea_concepto" class="regular-text" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Descripción', 'flavor-chat-ia') . '</th><td><textarea name="linea_descripcion" rows="2" class="large-text"></textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Cantidad', 'flavor-chat-ia') . '</th><td><input type="number" step="0.0001" name="linea_cantidad" value="1"></td></tr>';
+        echo '<tr><th>' . esc_html__('Precio unitario', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="linea_precio" value="0"></td></tr>';
+        echo '<tr><th>' . esc_html__('IVA %', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="linea_iva" value="' . esc_attr($this->get_setting('iva_predeterminado')) . '"></td></tr>';
+        echo '</tbody></table>';
+
+        echo '<h3>' . esc_html__('Notas', 'flavor-chat-ia') . '</h3>';
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Observaciones', 'flavor-chat-ia') . '</th><td><textarea name="observaciones" rows="3" class="large-text"></textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Notas internas', 'flavor-chat-ia') . '</th><td><textarea name="notas_internas" rows="3" class="large-text"></textarea></td></tr>';
+        echo '</tbody></table>';
+
+        submit_button(__('Crear Factura', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza configuración del módulo
+     */
+    public function render_admin_config() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Facturas', 'flavor-chat-ia'));
+        $this->handle_admin_save_config();
+        echo '<p>' . __('Configuración del sistema de facturación.', 'flavor-chat-ia') . '</p>';
+
+        $retenciones = $this->get_setting('retenciones', []);
+        $retenciones_lineas = [];
+        foreach ($retenciones as $key => $label) {
+            $retenciones_lineas[] = $key . '|' . $label;
+        }
+
+        echo '<form method="post">';
+        wp_nonce_field('facturas_config', 'facturas_config_nonce');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th>' . esc_html__('Serie predeterminada', 'flavor-chat-ia') . '</th><td><input type="text" name="serie_predeterminada" value="' . esc_attr($this->get_setting('serie_predeterminada')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Numeración inicial', 'flavor-chat-ia') . '</th><td><input type="number" name="numeracion_inicial" value="' . esc_attr($this->get_setting('numeracion_inicial')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('IVA predeterminado', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="iva_predeterminado" value="' . esc_attr($this->get_setting('iva_predeterminado')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere aprobación', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_aprobacion" value="1" ' . checked($this->get_setting('requiere_aprobacion'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Enviar email automático', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="enviar_email_automatico" value="1" ' . checked($this->get_setting('enviar_email_automatico'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Formato número', 'flavor-chat-ia') . '</th><td><input type="text" name="formato_numero" class="regular-text" value="' . esc_attr($this->get_setting('formato_numero')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Días vencimiento', 'flavor-chat-ia') . '</th><td><input type="number" name="dias_vencimiento" value="' . esc_attr($this->get_setting('dias_vencimiento')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Moneda', 'flavor-chat-ia') . '</th><td><input type="text" name="moneda" value="' . esc_attr($this->get_setting('moneda')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Símbolo moneda', 'flavor-chat-ia') . '</th><td><input type="text" name="simbolo_moneda" value="' . esc_attr($this->get_setting('simbolo_moneda')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Decimales', 'flavor-chat-ia') . '</th><td><input type="number" name="decimales" value="' . esc_attr($this->get_setting('decimales')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Empresa nombre', 'flavor-chat-ia') . '</th><td><input type="text" name="empresa_nombre" class="regular-text" value="' . esc_attr($this->get_setting('empresa_nombre')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Empresa NIF', 'flavor-chat-ia') . '</th><td><input type="text" name="empresa_nif" class="regular-text" value="' . esc_attr($this->get_setting('empresa_nif')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Empresa dirección', 'flavor-chat-ia') . '</th><td><textarea name="empresa_direccion" rows="2" class="large-text">' . esc_textarea($this->get_setting('empresa_direccion')) . '</textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Empresa email', 'flavor-chat-ia') . '</th><td><input type="email" name="empresa_email" class="regular-text" value="' . esc_attr($this->get_setting('empresa_email')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Empresa teléfono', 'flavor-chat-ia') . '</th><td><input type="text" name="empresa_telefono" class="regular-text" value="' . esc_attr($this->get_setting('empresa_telefono')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Cuenta bancaria', 'flavor-chat-ia') . '</th><td><input type="text" name="cuenta_bancaria" class="regular-text" value="' . esc_attr($this->get_setting('cuenta_bancaria')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Pie factura', 'flavor-chat-ia') . '</th><td><textarea name="pie_factura" rows="3" class="large-text">' . esc_textarea($this->get_setting('pie_factura')) . '</textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Enviar recordatorios', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="enviar_recordatorios" value="1" ' . checked($this->get_setting('enviar_recordatorios'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Días recordatorio', 'flavor-chat-ia') . '</th><td><input type="text" name="dias_recordatorio" class="regular-text" value="' . esc_attr(implode(',', (array) $this->get_setting('dias_recordatorio'))) . '"><p class="description">' . esc_html__('Separados por coma', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<tr><th>' . esc_html__('Retenciones', 'flavor-chat-ia') . '</th><td><textarea name="retenciones" rows="4" class="large-text" placeholder="irpf_15|IRPF 15%">' . esc_textarea(implode("\n", $retenciones_lineas)) . '</textarea></td></tr>';
+        echo '</tbody></table>';
+        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+    }
+
+    private function render_facturas_resumen() {
+        global $wpdb;
+        $facturas = $wpdb->get_results(
+            "SELECT id, numero_factura, cliente_nombre, total, estado, fecha_emision
+             FROM {$this->tablas['facturas']}
+             ORDER BY fecha_emision DESC
+             LIMIT 10"
+        );
+
+        echo '<h3>' . esc_html__('Facturas recientes', 'flavor-chat-ia') . '</h3>';
+        if (empty($facturas)) {
+            echo '<p>' . esc_html__('No hay facturas registradas aún.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Cliente', 'flavor-chat-ia') . '</th><th>' . esc_html__('Total', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($facturas as $factura) {
+            echo '<tr>';
+            echo '<td>' . esc_html($factura->id) . '</td>';
+            echo '<td>' . esc_html($factura->numero_factura) . '</td>';
+            echo '<td>' . esc_html($factura->cliente_nombre) . '</td>';
+            echo '<td>' . esc_html(number_format((float) $factura->total, 2)) . '</td>';
+            echo '<td>' . esc_html($factura->estado) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($factura->fecha_emision))) . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+    }
+
+    private function render_admin_listado_facturas() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Listado de Facturas', 'flavor-chat-ia'), [
+            ['label' => __('Nueva Factura', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=facturas-nueva'), 'class' => 'button-primary'],
+        ]);
+        $this->handle_admin_actions();
+
+        if (!$this->can_activate()) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $serie = isset($_GET['serie']) ? sanitize_text_field($_GET['serie']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+        $desde = isset($_GET['desde']) ? sanitize_text_field($_GET['desde']) : '';
+        $hasta = isset($_GET['hasta']) ? sanitize_text_field($_GET['hasta']) : '';
+
+        global $wpdb;
+        $series = $wpdb->get_results("SELECT codigo FROM {$this->tablas['series']} ORDER BY codigo ASC");
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="facturas-listado">';
+        echo '<select name="estado">';
+        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        foreach (['borrador','emitida','parcial','pagada','vencida','cancelada'] as $estado_key) {
+            echo '<option value="' . esc_attr($estado_key) . '" ' . selected($estado, $estado_key, false) . '>' . esc_html($estado_key) . '</option>';
+        }
+        echo '</select> ';
+        echo '<select name="serie">';
+        echo '<option value="">' . esc_html__('Todas las series', 'flavor-chat-ia') . '</option>';
+        foreach ($series as $s) {
+            echo '<option value="' . esc_attr($s->codigo) . '" ' . selected($serie, $s->codigo, false) . '>' . esc_html($s->codigo) . '</option>';
+        }
+        echo '</select> ';
+        echo '<input type="date" name="desde" value="' . esc_attr($desde) . '"> ';
+        echo '<input type="date" name="hasta" value="' . esc_attr($hasta) . '"> ';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por número o cliente', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        $where = [];
+        $params = [];
+        if ($estado) {
+            $where[] = 'estado = %s';
+            $params[] = $estado;
+        }
+        if ($serie) {
+            $where[] = 'serie = %s';
+            $params[] = $serie;
+        }
+        if ($desde) {
+            $where[] = 'fecha_emision >= %s';
+            $params[] = $desde;
+        }
+        if ($hasta) {
+            $where[] = 'fecha_emision <= %s';
+            $params[] = $hasta;
+        }
+        if ($busqueda) {
+            $where[] = '(numero_factura LIKE %s OR cliente_nombre LIKE %s)';
+            $like = '%' . $wpdb->esc_like($busqueda) . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        $sql = "SELECT * FROM {$this->tablas['facturas']}";
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY fecha_emision DESC LIMIT 200';
+
+        $facturas = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($facturas)) {
+            echo '<p>' . esc_html__('No hay facturas con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<table class="widefat striped"><thead><tr>';
+        echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Cliente', 'flavor-chat-ia') . '</th><th>' . esc_html__('Total', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '</tr></thead><tbody>';
+        foreach ($facturas as $factura) {
+            echo '<tr>';
+            echo '<td>' . esc_html($factura->id) . '</td>';
+            echo '<td>' . esc_html($factura->numero_factura) . '</td>';
+            echo '<td>' . esc_html($factura->cliente_nombre) . '</td>';
+            echo '<td>' . esc_html(number_format((float) $factura->total, 2)) . '</td>';
+            echo '<td>' . esc_html($factura->estado) . '</td>';
+            echo '<td>' . esc_html(date_i18n(get_option('date_format'), strtotime($factura->fecha_emision))) . '</td>';
+            echo '<td>' . $this->render_factura_actions($factura->id, $factura->estado) . '</td>';
+            echo '</tr>';
+        }
+        echo '</tbody></table>';
+        echo '</div>';
+    }
+
+    private function render_factura_actions($factura_id, $estado_actual) {
+        $estados = ['borrador','emitida','parcial','pagada','vencida','cancelada'];
+        $links = [];
+        foreach ($estados as $estado) {
+            if ($estado === $estado_actual) {
+                continue;
+            }
+            $url = add_query_arg([
+                'page' => 'facturas-listado',
+                'factura_action' => 'estado',
+                'factura_id' => $factura_id,
+                'estado' => $estado,
+            ], admin_url('admin.php'));
+            $url = wp_nonce_url($url, 'facturas_admin_' . $factura_id);
+            $links[] = '<a href="' . esc_url($url) . '">' . esc_html($estado) . '</a>';
+            if (count($links) >= 3) {
+                break;
+            }
+        }
+        if (empty($links)) {
+            return '';
+        }
+        return '<div><strong>' . esc_html__('Estado:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $links) . '</div>';
+    }
+
+    private function handle_admin_actions() {
+        if (empty($_GET['factura_action']) || empty($_GET['factura_id'])) {
+            return;
+        }
+
+        $accion = sanitize_text_field($_GET['factura_action']);
+        $factura_id = absint($_GET['factura_id']);
+        $nonce = $_GET['_wpnonce'] ?? '';
+
+        if (!$factura_id) {
+            return;
+        }
+        if (!wp_verify_nonce($nonce, 'facturas_admin_' . $factura_id)) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        if ($accion === 'estado') {
+            $nuevo_estado = sanitize_text_field($_GET['estado'] ?? '');
+            if (!$nuevo_estado) {
+                return;
+            }
+            $resultado = $this->actualizar_estado_factura($factura_id, $nuevo_estado);
+            if (is_wp_error($resultado)) {
+                echo '<div class="notice notice-error"><p>' . esc_html($resultado->get_error_message()) . '</p></div>';
+            } else {
+                echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+            }
+        }
+    }
+
+    private function handle_admin_create_factura() {
+        if (empty($_POST['facturas_crear_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['facturas_crear_nonce'], 'facturas_crear')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $linea = [
+            'concepto' => sanitize_text_field($_POST['linea_concepto'] ?? ''),
+            'descripcion' => sanitize_textarea_field($_POST['linea_descripcion'] ?? ''),
+            'cantidad' => floatval($_POST['linea_cantidad'] ?? 1),
+            'precio_unitario' => floatval($_POST['linea_precio'] ?? 0),
+            'iva_porcentaje' => floatval($_POST['linea_iva'] ?? $this->get_setting('iva_predeterminado')),
+        ];
+
+        $datos = [
+            'cliente_nombre' => sanitize_text_field($_POST['cliente_nombre'] ?? ''),
+            'cliente_nif' => sanitize_text_field($_POST['cliente_nif'] ?? ''),
+            'cliente_email' => sanitize_email($_POST['cliente_email'] ?? ''),
+            'cliente_direccion' => sanitize_textarea_field($_POST['cliente_direccion'] ?? ''),
+            'fecha_emision' => sanitize_text_field($_POST['fecha_emision'] ?? date('Y-m-d')),
+            'fecha_vencimiento' => sanitize_text_field($_POST['fecha_vencimiento'] ?? ''),
+            'observaciones' => sanitize_textarea_field($_POST['observaciones'] ?? ''),
+            'notas_internas' => sanitize_textarea_field($_POST['notas_internas'] ?? ''),
+            'estado' => 'emitida',
+            'lineas' => [$linea],
+        ];
+
+        $resultado = $this->crear_factura($datos);
+        if (is_wp_error($resultado)) {
+            echo '<div class="notice notice-error"><p>' . esc_html($resultado->get_error_message()) . '</p></div>';
+        } else {
+            echo '<div class="notice notice-success"><p>' . esc_html__('Factura creada.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    private function handle_admin_save_config() {
+        if (empty($_POST['facturas_config_nonce'])) {
+            return;
+        }
+        if (!wp_verify_nonce($_POST['facturas_config_nonce'], 'facturas_config')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $this->update_setting('serie_predeterminada', sanitize_text_field($_POST['serie_predeterminada'] ?? 'F'));
+        $this->update_setting('numeracion_inicial', absint($_POST['numeracion_inicial'] ?? 1));
+        $this->update_setting('iva_predeterminado', floatval($_POST['iva_predeterminado'] ?? 21));
+        $this->update_setting('requiere_aprobacion', !empty($_POST['requiere_aprobacion']));
+        $this->update_setting('enviar_email_automatico', !empty($_POST['enviar_email_automatico']));
+        $this->update_setting('formato_numero', sanitize_text_field($_POST['formato_numero'] ?? '{SERIE}-{YEAR}-{NUM}'));
+        $this->update_setting('dias_vencimiento', absint($_POST['dias_vencimiento'] ?? 30));
+        $this->update_setting('moneda', sanitize_text_field($_POST['moneda'] ?? 'EUR'));
+        $this->update_setting('simbolo_moneda', sanitize_text_field($_POST['simbolo_moneda'] ?? '€'));
+        $this->update_setting('decimales', absint($_POST['decimales'] ?? 2));
+        $this->update_setting('empresa_nombre', sanitize_text_field($_POST['empresa_nombre'] ?? ''));
+        $this->update_setting('empresa_nif', sanitize_text_field($_POST['empresa_nif'] ?? ''));
+        $this->update_setting('empresa_direccion', sanitize_textarea_field($_POST['empresa_direccion'] ?? ''));
+        $this->update_setting('empresa_email', sanitize_email($_POST['empresa_email'] ?? ''));
+        $this->update_setting('empresa_telefono', sanitize_text_field($_POST['empresa_telefono'] ?? ''));
+        $this->update_setting('cuenta_bancaria', sanitize_text_field($_POST['cuenta_bancaria'] ?? ''));
+        $this->update_setting('pie_factura', sanitize_textarea_field($_POST['pie_factura'] ?? ''));
+        $this->update_setting('enviar_recordatorios', !empty($_POST['enviar_recordatorios']));
+        $dias = array_filter(array_map('absint', array_map('trim', explode(',', sanitize_text_field($_POST['dias_recordatorio'] ?? '')))));
+        if (!empty($dias)) {
+            $this->update_setting('dias_recordatorio', $dias);
+        }
+        $retenciones = $this->parse_config_lines($_POST['retenciones'] ?? '');
+        if ($retenciones) {
+            $this->update_setting('retenciones', $retenciones);
+        }
+
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+    }
+
+    private function parse_config_lines($raw) {
+        $raw = is_string($raw) ? $raw : '';
+        $items = [];
+        foreach (array_filter(array_map('trim', explode("\n", $raw))) as $line) {
+            $parts = array_map('trim', explode('|', $line, 2));
+            if (!empty($parts[0])) {
+                $items[$parts[0]] = $parts[1] ?? $parts[0];
+            }
+        }
+        return $items;
     }
 
     /**
@@ -1227,7 +1751,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_facturas_nonce', 'nonce');
 
         if (!current_user_can('read')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $filtros = $_POST['filtros'] ?? [];
@@ -1243,7 +1767,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_facturas_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $datos = [
@@ -1266,7 +1790,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json_success([
             'factura_id' => $resultado,
-            'message' => 'Factura creada correctamente',
+            'message' => __('Factura creada correctamente', 'flavor-chat-ia'),
         ]);
     }
 
@@ -1277,7 +1801,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_facturas_nonce', 'nonce');
 
         if (!current_user_can('read')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $factura_id = absint($_POST['factura_id'] ?? 0);
@@ -1300,7 +1824,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_facturas_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $datos = [
@@ -1319,7 +1843,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json_success([
             'pago_id' => $resultado,
-            'message' => 'Pago registrado correctamente',
+            'message' => __('parcial', 'flavor-chat-ia'),
         ]);
     }
 
@@ -1330,14 +1854,14 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_facturas_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $factura_id = absint($_POST['factura_id'] ?? 0);
         $email = sanitize_email($_POST['email'] ?? '');
 
         if (!$email) {
-            wp_send_json_error(['message' => 'Email invalido']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $opciones = [
@@ -1352,9 +1876,9 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         }
 
         if ($resultado) {
-            wp_send_json_success(['message' => 'Email enviado correctamente']);
+            wp_send_json_success(['message' => __('Email enviado correctamente', 'flavor-chat-ia')]);
         } else {
-            wp_send_json_error(['message' => 'Error al enviar email']);
+            wp_send_json_error(['message' => __('Error al enviar email', 'flavor-chat-ia')]);
         }
     }
 
@@ -1365,7 +1889,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_facturas_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $factura_id = absint($_POST['factura_id'] ?? 0);
@@ -1375,7 +1899,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             wp_send_json_error(['message' => $resultado->get_error_message()]);
         }
 
-        wp_send_json_success(['message' => 'Factura cancelada']);
+        wp_send_json_success(['message' => __('Factura cancelada', 'flavor-chat-ia')]);
     }
 
     /**
@@ -1385,7 +1909,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_facturas_nonce', 'nonce');
 
         if (!current_user_can('read')) {
-            wp_send_json_error(['message' => 'Sin permisos']);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
         $periodo = sanitize_text_field($_POST['periodo'] ?? 'mes');
@@ -1510,7 +2034,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         $factura = $this->obtener_factura($factura_id);
 
         if (!$factura) {
-            return new WP_REST_Response(['error' => 'Factura no encontrada'], 404);
+            return new WP_REST_Response(['error' => __('Factura no encontrada', 'flavor-chat-ia')], 404);
         }
 
         return rest_ensure_response($factura);
@@ -1542,11 +2066,11 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         $factura = $this->obtener_factura($factura_id);
 
         if (!$factura) {
-            return new WP_REST_Response(['error' => 'Factura no encontrada'], 404);
+            return new WP_REST_Response(['error' => __('Factura no encontrada', 'flavor-chat-ia')], 404);
         }
 
         if ($factura->estado !== 'borrador') {
-            return new WP_REST_Response(['error' => 'Solo se pueden eliminar facturas en borrador'], 400);
+            return new WP_REST_Response(['error' => __('Solo se pueden eliminar facturas en borrador', 'flavor-chat-ia')], 400);
         }
 
         global $wpdb;
@@ -1651,9 +2175,9 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
                     <label class="facturas-filtro-label"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
                     <select id="filtro-estado" class="facturas-select facturas-filtro-select">
                         <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="emitida"><?php _e('Pendientes', 'flavor-chat-ia'); ?></option>
-                        <option value="pagada"><?php _e('Pagadas', 'flavor-chat-ia'); ?></option>
-                        <option value="vencida"><?php _e('Vencidas', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('emitida', 'flavor-chat-ia'); ?>"><?php _e('Pendientes', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pagada', 'flavor-chat-ia'); ?>"><?php _e('Pagadas', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('vencida', 'flavor-chat-ia'); ?>"><?php _e('Vencidas', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
             </div>
@@ -1971,10 +2495,10 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
                         <div class="facturas-form-grupo">
                             <label class="facturas-form-label"><?php _e('Metodo de pago', 'flavor-chat-ia'); ?></label>
                             <select name="metodo_pago" class="facturas-form-input">
-                                <option value="transferencia"><?php _e('Transferencia', 'flavor-chat-ia'); ?></option>
-                                <option value="efectivo"><?php _e('Efectivo', 'flavor-chat-ia'); ?></option>
-                                <option value="tarjeta"><?php _e('Tarjeta', 'flavor-chat-ia'); ?></option>
-                                <option value="bizum"><?php _e('Bizum', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('transferencia', 'flavor-chat-ia'); ?>"><?php _e('Transferencia', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('efectivo', 'flavor-chat-ia'); ?>"><?php _e('Efectivo', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('tarjeta', 'flavor-chat-ia'); ?>"><?php _e('Tarjeta', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('bizum', 'flavor-chat-ia'); ?>"><?php _e('Bizum', 'flavor-chat-ia'); ?></option>
                             </select>
                         </div>
 
@@ -2009,7 +2533,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
                                     <option value="0">0%</option>
                                 </select>
                                 <span class="linea-total-valor">0.00</span>
-                                <button type="button" class="facturas-btn facturas-btn-danger facturas-btn-sm btn-eliminar-linea">X</button>
+                                <button type="button" class="facturas-btn facturas-btn-danger facturas-btn-sm btn-eliminar-linea"><?php echo esc_html__('X', 'flavor-chat-ia'); ?></button>
                             </div>
                         </div>
                     </div>
@@ -2120,7 +2644,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      */
     private function action_listar_facturas($params) {
         if (!current_user_can('read')) {
-            return ['success' => false, 'error' => 'Sin permisos'];
+            return ['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')];
         }
 
         $resultado = $this->listar_facturas($params);
@@ -2147,14 +2671,14 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      */
     private function action_ver_factura($params) {
         if (!current_user_can('read')) {
-            return ['success' => false, 'error' => 'Sin permisos'];
+            return ['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')];
         }
 
         $factura_id = absint($params['factura_id'] ?? 0);
         $factura = $this->obtener_factura($factura_id);
 
         if (!$factura) {
-            return ['success' => false, 'error' => 'Factura no encontrada'];
+            return ['success' => false, 'error' => __('Factura no encontrada', 'flavor-chat-ia')];
         }
 
         return [
@@ -2351,4 +2875,26 @@ KNOWLEDGE;
             ],
         ];
     }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('facturas');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('facturas');
+        if (!$pagina && !get_option('flavor_facturas_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['facturas']);
+            update_option('flavor_facturas_pages_created', 1, false);
+        }
+    }
+
 }

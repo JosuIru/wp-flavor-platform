@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
 
@@ -28,8 +30,8 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'red_social';
-        $this->name = __('Red Social Comunitaria', 'flavor-chat-ia');
-        $this->description = __('Red social alternativa sin publicidad, centrada en la comunidad y sus intereses.', 'flavor-chat-ia');
+        $this->name = 'Red Social Comunitaria'; // Translation loaded on init
+        $this->description = 'Red social alternativa sin publicidad, centrada en la comunidad y sus intereses.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -50,7 +52,186 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         if (!$this->can_activate()) {
             return __('Las tablas de Red Social no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
         }
-        return '';
+        
+    return '';
+    }
+
+/**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_table_schema() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+        $tabla_comentarios = $wpdb->prefix . 'flavor_social_comentarios';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_social_reacciones';
+        $tabla_seguimientos = $wpdb->prefix . 'flavor_social_seguimientos';
+        $tabla_hashtags = $wpdb->prefix . 'flavor_social_hashtags';
+        $tabla_hashtags_posts = $wpdb->prefix . 'flavor_social_hashtags_posts';
+        $tabla_historias = $wpdb->prefix . 'flavor_social_historias';
+        $tabla_notificaciones = $wpdb->prefix . 'flavor_social_notificaciones';
+        $tabla_guardados = $wpdb->prefix . 'flavor_social_guardados';
+        $tabla_perfiles = $wpdb->prefix . 'flavor_social_perfiles';
+
+        return [
+            $tabla_publicaciones => "CREATE TABLE $tabla_publicaciones (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                autor_id bigint(20) unsigned NOT NULL,
+                contenido text NOT NULL,
+                tipo enum('texto','imagen','video','enlace','evento','compartido') DEFAULT 'texto',
+                adjuntos longtext DEFAULT NULL COMMENT 'JSON con URLs de archivos',
+                visibilidad enum('publica','comunidad','seguidores','privada') DEFAULT 'comunidad',
+                ubicacion varchar(255) DEFAULT NULL,
+                estado enum('borrador','publicado','moderacion','oculto','eliminado') DEFAULT 'publicado',
+                publicacion_original_id bigint(20) unsigned DEFAULT NULL,
+                es_fijado tinyint(1) DEFAULT 0,
+                me_gusta int(11) DEFAULT 0,
+                comentarios int(11) DEFAULT 0,
+                compartidos int(11) DEFAULT 0,
+                vistas int(11) DEFAULT 0,
+                fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
+                fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY autor_id (autor_id),
+                KEY estado (estado),
+                KEY fecha_publicacion (fecha_publicacion),
+                KEY visibilidad (visibilidad),
+                FULLTEXT KEY contenido (contenido)
+            ) $charset_collate;",
+
+            $tabla_comentarios => "CREATE TABLE $tabla_comentarios (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                publicacion_id bigint(20) unsigned NOT NULL,
+                autor_id bigint(20) unsigned NOT NULL,
+                comentario_padre_id bigint(20) unsigned DEFAULT NULL,
+                contenido text NOT NULL,
+                me_gusta int(11) DEFAULT 0,
+                estado enum('publicado','moderacion','oculto','eliminado') DEFAULT 'publicado',
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY publicacion_id (publicacion_id),
+                KEY autor_id (autor_id),
+                KEY comentario_padre_id (comentario_padre_id),
+                KEY estado (estado)
+            ) $charset_collate;",
+
+            $tabla_reacciones => "CREATE TABLE $tabla_reacciones (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                publicacion_id bigint(20) unsigned DEFAULT NULL,
+                comentario_id bigint(20) unsigned DEFAULT NULL,
+                usuario_id bigint(20) unsigned NOT NULL,
+                tipo enum('me_gusta','me_encanta','me_divierte','me_entristece','me_enfada') DEFAULT 'me_gusta',
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY publicacion_usuario (publicacion_id, usuario_id),
+                UNIQUE KEY comentario_usuario (comentario_id, usuario_id),
+                KEY usuario_id (usuario_id),
+                KEY tipo (tipo)
+            ) $charset_collate;",
+
+            $tabla_seguimientos => "CREATE TABLE $tabla_seguimientos (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                seguidor_id bigint(20) unsigned NOT NULL,
+                seguido_id bigint(20) unsigned NOT NULL,
+                notificaciones_activas tinyint(1) DEFAULT 1,
+                fecha_seguimiento datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY seguidor_seguido (seguidor_id, seguido_id),
+                KEY seguido_id (seguido_id),
+                KEY fecha_seguimiento (fecha_seguimiento)
+            ) $charset_collate;",
+
+            $tabla_hashtags => "CREATE TABLE $tabla_hashtags (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                hashtag varchar(100) NOT NULL,
+                total_usos int(11) DEFAULT 0,
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                fecha_ultimo_uso datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY hashtag (hashtag),
+                KEY total_usos (total_usos)
+            ) $charset_collate;",
+
+            $tabla_hashtags_posts => "CREATE TABLE $tabla_hashtags_posts (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                hashtag_id bigint(20) unsigned NOT NULL,
+                publicacion_id bigint(20) unsigned NOT NULL,
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY hashtag_publicacion (hashtag_id, publicacion_id),
+                KEY publicacion_id (publicacion_id)
+            ) $charset_collate;",
+
+            $tabla_historias => "CREATE TABLE $tabla_historias (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                autor_id bigint(20) unsigned NOT NULL,
+                tipo enum('imagen','video','texto') DEFAULT 'imagen',
+                contenido_url varchar(500) DEFAULT NULL,
+                texto text DEFAULT NULL,
+                color_fondo varchar(20) DEFAULT NULL,
+                vistas int(11) DEFAULT 0,
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                fecha_expiracion datetime NOT NULL,
+                PRIMARY KEY (id),
+                KEY autor_id (autor_id),
+                KEY fecha_expiracion (fecha_expiracion)
+            ) $charset_collate;",
+
+            $tabla_notificaciones => "CREATE TABLE $tabla_notificaciones (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                actor_id bigint(20) unsigned NOT NULL,
+                tipo enum('like','comentario','seguidor','mencion','compartido','historia') NOT NULL,
+                referencia_id bigint(20) unsigned DEFAULT NULL,
+                referencia_tipo varchar(50) DEFAULT NULL,
+                mensaje text DEFAULT NULL,
+                leida tinyint(1) DEFAULT 0,
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY usuario_id (usuario_id),
+                KEY leida (leida),
+                KEY fecha_creacion (fecha_creacion)
+            ) $charset_collate;",
+
+            $tabla_guardados => "CREATE TABLE $tabla_guardados (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                publicacion_id bigint(20) unsigned NOT NULL,
+                fecha_guardado datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY usuario_publicacion (usuario_id, publicacion_id),
+                KEY publicacion_id (publicacion_id)
+            ) $charset_collate;",
+
+            $tabla_perfiles => "CREATE TABLE $tabla_perfiles (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                nombre_completo varchar(255) DEFAULT NULL,
+                bio text DEFAULT NULL,
+                ubicacion varchar(255) DEFAULT NULL,
+                sitio_web varchar(255) DEFAULT NULL,
+                fecha_nacimiento date DEFAULT NULL,
+                cover_url varchar(500) DEFAULT NULL,
+                es_verificado tinyint(1) DEFAULT 0,
+                es_privado tinyint(1) DEFAULT 0,
+                total_publicaciones int(11) DEFAULT 0,
+                total_seguidores int(11) DEFAULT 0,
+                total_siguiendo int(11) DEFAULT 0,
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY usuario_id (usuario_id)
+            ) $charset_collate;"
+        ];
     }
 
     /**
@@ -80,6 +261,9 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        // Registrar en panel de administración unificado
+        $this->registrar_en_panel_unificado();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
@@ -156,195 +340,46 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
-     * Crea las tablas si no existen
+     * Crea las tablas necesarias
      */
-    public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+    private function create_tables() {
+        $esquemas = $this->get_table_schema();
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
-            $this->create_tables();
+        if (empty($esquemas)) {
+            return;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        foreach ($esquemas as $tabla => $sql) {
+            dbDelta($sql);
         }
     }
 
     /**
-     * Crea las tablas necesarias
+     * Crea las tablas si no existen usando SQL directo (más confiable que dbDelta)
      */
-    private function create_tables() {
+    public function maybe_create_tables() {
         global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
 
-        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
-        $tabla_comentarios = $wpdb->prefix . 'flavor_social_comentarios';
-        $tabla_reacciones = $wpdb->prefix . 'flavor_social_reacciones';
-        $tabla_seguimientos = $wpdb->prefix . 'flavor_social_seguimientos';
-        $tabla_hashtags = $wpdb->prefix . 'flavor_social_hashtags';
-        $tabla_hashtags_posts = $wpdb->prefix . 'flavor_social_hashtags_posts';
-        $tabla_historias = $wpdb->prefix . 'flavor_social_historias';
-        $tabla_notificaciones = $wpdb->prefix . 'flavor_social_notificaciones';
-        $tabla_guardados = $wpdb->prefix . 'flavor_social_guardados';
-        $tabla_perfiles = $wpdb->prefix . 'flavor_social_perfiles';
+        $esquemas = $this->get_table_schema();
 
-        $sql_publicaciones = "CREATE TABLE IF NOT EXISTS $tabla_publicaciones (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            autor_id bigint(20) unsigned NOT NULL,
-            contenido text NOT NULL,
-            tipo enum('texto','imagen','video','enlace','evento','compartido') DEFAULT 'texto',
-            adjuntos longtext DEFAULT NULL COMMENT 'JSON con URLs de archivos',
-            visibilidad enum('publica','comunidad','seguidores','privada') DEFAULT 'comunidad',
-            ubicacion varchar(255) DEFAULT NULL,
-            estado enum('borrador','publicado','moderacion','oculto','eliminado') DEFAULT 'publicado',
-            publicacion_original_id bigint(20) unsigned DEFAULT NULL,
-            es_fijado tinyint(1) DEFAULT 0,
-            me_gusta int(11) DEFAULT 0,
-            comentarios int(11) DEFAULT 0,
-            compartidos int(11) DEFAULT 0,
-            vistas int(11) DEFAULT 0,
-            fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY autor_id (autor_id),
-            KEY estado (estado),
-            KEY fecha_publicacion (fecha_publicacion),
-            KEY visibilidad (visibilidad),
-            FULLTEXT KEY contenido (contenido)
-        ) $charset_collate;";
+        if (empty($esquemas)) {
+            return;
+        }
 
-        $sql_comentarios = "CREATE TABLE IF NOT EXISTS $tabla_comentarios (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            publicacion_id bigint(20) unsigned NOT NULL,
-            autor_id bigint(20) unsigned NOT NULL,
-            comentario_padre_id bigint(20) unsigned DEFAULT NULL,
-            contenido text NOT NULL,
-            me_gusta int(11) DEFAULT 0,
-            estado enum('publicado','moderacion','oculto','eliminado') DEFAULT 'publicado',
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY publicacion_id (publicacion_id),
-            KEY autor_id (autor_id),
-            KEY comentario_padre_id (comentario_padre_id),
-            KEY estado (estado)
-        ) $charset_collate;";
+        foreach ($esquemas as $tabla => $sql) {
+            // Verificar si la tabla existe
+            if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                continue;
+            }
 
-        $sql_reacciones = "CREATE TABLE IF NOT EXISTS $tabla_reacciones (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            publicacion_id bigint(20) unsigned DEFAULT NULL,
-            comentario_id bigint(20) unsigned DEFAULT NULL,
-            usuario_id bigint(20) unsigned NOT NULL,
-            tipo enum('me_gusta','me_encanta','me_divierte','me_entristece','me_enfada') DEFAULT 'me_gusta',
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY publicacion_usuario (publicacion_id, usuario_id),
-            UNIQUE KEY comentario_usuario (comentario_id, usuario_id),
-            KEY usuario_id (usuario_id),
-            KEY tipo (tipo)
-        ) $charset_collate;";
+            // Convertir CREATE TABLE a CREATE TABLE IF NOT EXISTS para evitar errores
+            $sql = str_replace('CREATE TABLE ', 'CREATE TABLE IF NOT EXISTS ', $sql);
 
-        $sql_seguimientos = "CREATE TABLE IF NOT EXISTS $tabla_seguimientos (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            seguidor_id bigint(20) unsigned NOT NULL,
-            seguido_id bigint(20) unsigned NOT NULL,
-            notificaciones_activas tinyint(1) DEFAULT 1,
-            fecha_seguimiento datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY seguidor_seguido (seguidor_id, seguido_id),
-            KEY seguido_id (seguido_id),
-            KEY fecha_seguimiento (fecha_seguimiento)
-        ) $charset_collate;";
-
-        $sql_hashtags = "CREATE TABLE IF NOT EXISTS $tabla_hashtags (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            hashtag varchar(100) NOT NULL,
-            total_usos int(11) DEFAULT 0,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_ultimo_uso datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY hashtag (hashtag),
-            KEY total_usos (total_usos)
-        ) $charset_collate;";
-
-        $sql_hashtags_posts = "CREATE TABLE IF NOT EXISTS $tabla_hashtags_posts (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            hashtag_id bigint(20) unsigned NOT NULL,
-            publicacion_id bigint(20) unsigned NOT NULL,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY hashtag_publicacion (hashtag_id, publicacion_id),
-            KEY publicacion_id (publicacion_id)
-        ) $charset_collate;";
-
-        $sql_historias = "CREATE TABLE IF NOT EXISTS $tabla_historias (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            autor_id bigint(20) unsigned NOT NULL,
-            tipo enum('imagen','video','texto') DEFAULT 'imagen',
-            contenido_url varchar(500) DEFAULT NULL,
-            texto text DEFAULT NULL,
-            color_fondo varchar(20) DEFAULT NULL,
-            vistas int(11) DEFAULT 0,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_expiracion datetime NOT NULL,
-            PRIMARY KEY (id),
-            KEY autor_id (autor_id),
-            KEY fecha_expiracion (fecha_expiracion)
-        ) $charset_collate;";
-
-        $sql_notificaciones = "CREATE TABLE IF NOT EXISTS $tabla_notificaciones (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            usuario_id bigint(20) unsigned NOT NULL,
-            actor_id bigint(20) unsigned NOT NULL,
-            tipo enum('like','comentario','seguidor','mencion','compartido','historia') NOT NULL,
-            referencia_id bigint(20) unsigned DEFAULT NULL,
-            referencia_tipo varchar(50) DEFAULT NULL,
-            mensaje text DEFAULT NULL,
-            leida tinyint(1) DEFAULT 0,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY usuario_id (usuario_id),
-            KEY leida (leida),
-            KEY fecha_creacion (fecha_creacion)
-        ) $charset_collate;";
-
-        $sql_guardados = "CREATE TABLE IF NOT EXISTS $tabla_guardados (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            usuario_id bigint(20) unsigned NOT NULL,
-            publicacion_id bigint(20) unsigned NOT NULL,
-            fecha_guardado datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY usuario_publicacion (usuario_id, publicacion_id),
-            KEY publicacion_id (publicacion_id)
-        ) $charset_collate;";
-
-        $sql_perfiles = "CREATE TABLE IF NOT EXISTS $tabla_perfiles (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            usuario_id bigint(20) unsigned NOT NULL,
-            bio text DEFAULT NULL,
-            ubicacion varchar(255) DEFAULT NULL,
-            sitio_web varchar(255) DEFAULT NULL,
-            fecha_nacimiento date DEFAULT NULL,
-            cover_url varchar(500) DEFAULT NULL,
-            es_verificado tinyint(1) DEFAULT 0,
-            es_privado tinyint(1) DEFAULT 0,
-            total_publicaciones int(11) DEFAULT 0,
-            total_seguidores int(11) DEFAULT 0,
-            total_siguiendo int(11) DEFAULT 0,
-            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
-            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY usuario_id (usuario_id)
-        ) $charset_collate;";
-
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql_publicaciones);
-        dbDelta($sql_comentarios);
-        dbDelta($sql_reacciones);
-        dbDelta($sql_seguimientos);
-        dbDelta($sql_hashtags);
-        dbDelta($sql_hashtags_posts);
-        dbDelta($sql_historias);
-        dbDelta($sql_notificaciones);
-        dbDelta($sql_guardados);
-        dbDelta($sql_perfiles);
+            // Ejecutar con query directo en lugar de dbDelta
+            $wpdb->query($sql);
+        }
     }
 
     // ========================================
@@ -359,7 +394,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $contenido = sanitize_textarea_field($_POST['contenido'] ?? '');
@@ -368,7 +403,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $adjuntos_json = null;
 
         if (empty($contenido) && empty($_FILES['adjuntos'])) {
-            wp_send_json_error(['message' => 'El contenido no puede estar vacio']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $max_caracteres = $this->get_setting('max_caracteres_publicacion');
@@ -405,7 +440,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s']);
 
         if ($resultado_insercion === false) {
-            wp_send_json_error(['message' => 'Error al crear la publicacion']);
+            wp_send_json_error(['message' => __('publicacion_id', 'flavor-chat-ia')]);
         }
 
         $publicacion_id = $wpdb->insert_id;
@@ -423,7 +458,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $publicacion_html = $this->renderizar_publicacion($publicacion_id);
 
         wp_send_json_success([
-            'message' => 'Publicacion creada',
+            'message' => __('Publicacion creada', 'flavor-chat-ia'),
             'publicacion_id' => $publicacion_id,
             'html' => $publicacion_html,
         ]);
@@ -437,14 +472,14 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
         $tipo_reaccion = sanitize_text_field($_POST['tipo'] ?? 'me_gusta');
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => 'ID de publicacion invalido']);
+            wp_send_json_error(['message' => __('usuario_id', 'flavor-chat-ia')]);
         }
 
         if (!in_array($tipo_reaccion, self::TIPOS_REACCION)) {
@@ -521,7 +556,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
@@ -529,7 +564,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $padre_id = absint($_POST['padre_id'] ?? 0);
 
         if (!$publicacion_id || empty($contenido)) {
-            wp_send_json_error(['message' => 'Datos incompletos']);
+            wp_send_json_error(['message' => __('publicacion', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -546,7 +581,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ], ['%d', '%d', '%d', '%s', '%s', '%s']);
 
         if ($resultado_insercion === false) {
-            wp_send_json_error(['message' => 'Error al crear comentario']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $comentario_id = $wpdb->insert_id;
@@ -589,7 +624,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $offset = absint($_POST['offset'] ?? 0);
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => 'ID invalido']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -632,13 +667,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $comentario_id = absint($_POST['comentario_id'] ?? 0);
 
         if (!$comentario_id) {
-            wp_send_json_error(['message' => 'ID invalido']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -691,13 +726,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $seguidor_id = get_current_user_id();
         if (!$seguidor_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('total_seguidores', 'flavor-chat-ia')]);
         }
 
         $seguido_id = absint($_POST['usuario_id'] ?? 0);
 
         if (!$seguido_id || $seguidor_id === $seguido_id) {
-            wp_send_json_error(['message' => 'Usuario invalido']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -781,7 +816,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $limite = absint($_POST['limite'] ?? 10);
 
         if (strlen($query) < 2) {
-            wp_send_json_error(['message' => 'Busqueda muy corta']);
+            wp_send_json_error(['message' => __('Usuario invalido', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -816,7 +851,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $usuario_id = absint($_POST['usuario_id'] ?? 0);
 
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Usuario invalido']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -860,11 +895,11 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('fecha_creacion', 'flavor-chat-ia')]);
         }
 
         if (!$this->get_setting('permite_historias')) {
-            wp_send_json_error(['message' => 'Las historias no estan habilitadas']);
+            wp_send_json_error(['message' => __('Historia creada', 'flavor-chat-ia')]);
         }
 
         $tipo_historia = sanitize_text_field($_POST['tipo'] ?? 'imagen');
@@ -880,7 +915,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         }
 
         if (empty($contenido_url) && empty($texto)) {
-            wp_send_json_error(['message' => 'Contenido vacio']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -899,7 +934,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             'fecha_expiracion' => $fecha_expiracion,
         ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s']);
 
-        wp_send_json_success(['message' => 'Historia creada']);
+        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
     }
 
     /**
@@ -910,13 +945,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => 'ID invalido']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -954,7 +989,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('SELECT COUNT(*) FROM $tabla_notificaciones WHERE usuario_id = %d AND leida = 0', 'flavor-chat-ia')]);
         }
 
         $limite = absint($_POST['limite'] ?? 20);
@@ -1007,7 +1042,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $notificacion_id = absint($_POST['notificacion_id'] ?? 0);
@@ -1034,7 +1069,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             );
         }
 
-        wp_send_json_success(['message' => 'Marcada como leida']);
+        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
     }
 
     /**
@@ -1047,13 +1082,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $usuario_actual = get_current_user_id();
 
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Usuario invalido']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $perfil = $this->obtener_perfil_completo($usuario_id);
 
         if (!$perfil) {
-            wp_send_json_error(['message' => 'Perfil no encontrado']);
+            wp_send_json_error(['message' => __('sitio_web', 'flavor-chat-ia')]);
         }
 
         $perfil['es_propio'] = ($usuario_id === $usuario_actual);
@@ -1070,7 +1105,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $bio = sanitize_textarea_field($_POST['bio'] ?? '');
@@ -1108,7 +1143,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             }
         }
 
-        wp_send_json_success(['message' => 'Perfil actualizado']);
+        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
     }
 
     /**
@@ -1119,13 +1154,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => 'ID invalido']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -1137,7 +1172,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$publicacion || ($publicacion->autor_id != $usuario_id && !current_user_can('manage_options'))) {
-            wp_send_json_error(['message' => 'No tienes permiso']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $wpdb->update(
@@ -1150,7 +1185,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $this->actualizar_contador_perfil($publicacion->autor_id, 'total_publicaciones', -1);
 
-        wp_send_json_success(['message' => 'Publicacion eliminada']);
+        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
     }
 
     /**
@@ -1161,7 +1196,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => 'Debes iniciar sesion']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         $tipo_contenido = sanitize_text_field($_POST['tipo'] ?? '');
@@ -1169,7 +1204,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $motivo = sanitize_textarea_field($_POST['motivo'] ?? '');
 
         if (!$tipo_contenido || !$contenido_id) {
-            wp_send_json_error(['message' => 'Datos incompletos']);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
         }
 
         // Aqui se guardaria el reporte en una tabla de reportes
@@ -1186,7 +1221,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         wp_mail($admin_email, $asunto, $mensaje);
 
-        wp_send_json_success(['message' => 'Reporte enviado']);
+        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
     }
 
     // ========================================
@@ -1202,7 +1237,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/red-social/feed', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_feed'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/red-social/publicacion', [
@@ -1214,19 +1249,19 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/red-social/publicacion/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_publicacion'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/red-social/perfil/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_perfil'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route($namespace, '/red-social/trending', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_obtener_trending'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -1248,10 +1283,12 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $publicaciones = $this->obtener_publicaciones_feed($tipo, $usuario_id, $desde, $limite);
 
-        return new WP_REST_Response([
+        $respuesta = [
             'success' => true,
             'publicaciones' => array_map([$this, 'formatear_publicacion_api'], $publicaciones),
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_social_response($respuesta), 200);
     }
 
     /**
@@ -1263,7 +1300,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $visibilidad = $request->get_param('visibilidad') ?? 'comunidad';
 
         if (empty($contenido)) {
-            return new WP_REST_Response(['success' => false, 'message' => 'Contenido vacio'], 400);
+            return new WP_REST_Response(['success' => false, 'message' => __('Contenido vacio', 'flavor-chat-ia')], 400);
         }
 
         global $wpdb;
@@ -1301,13 +1338,15 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$publicacion) {
-            return new WP_REST_Response(['success' => false, 'message' => 'No encontrada'], 404);
+            return new WP_REST_Response(['success' => false, 'message' => __('trending', 'flavor-chat-ia')], 404);
         }
 
-        return new WP_REST_Response([
+        $respuesta = [
             'success' => true,
             'publicacion' => $this->formatear_publicacion_api($publicacion),
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_social_response($respuesta), 200);
     }
 
     /**
@@ -1318,13 +1357,15 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $perfil = $this->obtener_perfil_completo($usuario_id);
 
         if (!$perfil) {
-            return new WP_REST_Response(['success' => false, 'message' => 'No encontrado'], 404);
+            return new WP_REST_Response(['success' => false, 'message' => __('No encontrada', 'flavor-chat-ia')], 404);
         }
 
-        return new WP_REST_Response([
+        $respuesta = [
             'success' => true,
             'perfil' => $perfil,
-        ], 200);
+        ];
+
+        return new WP_REST_Response($this->sanitize_public_social_response($respuesta), 200);
     }
 
     /**
@@ -1338,6 +1379,57 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'trending' => $trending,
         ], 200);
+    }
+
+    private function sanitize_public_social_response($respuesta) {
+        if (is_user_logged_in() || empty($respuesta['success'])) {
+            return $respuesta;
+        }
+
+        if (!empty($respuesta['publicaciones']) && is_array($respuesta['publicaciones'])) {
+            $respuesta['publicaciones'] = array_map([$this, 'sanitize_public_publicacion'], $respuesta['publicaciones']);
+        }
+
+        if (!empty($respuesta['publicacion']) && is_array($respuesta['publicacion'])) {
+            $respuesta['publicacion'] = $this->sanitize_public_publicacion($respuesta['publicacion']);
+        }
+
+        if (!empty($respuesta['perfil']) && is_array($respuesta['perfil'])) {
+            $respuesta['perfil'] = $this->sanitize_public_perfil($respuesta['perfil']);
+        }
+
+        return $respuesta;
+    }
+
+    private function sanitize_public_publicacion($publicacion) {
+        if (!is_array($publicacion)) {
+            return $publicacion;
+        }
+
+        if (!empty($publicacion['autor']) && is_array($publicacion['autor'])) {
+            unset($publicacion['autor']['id'], $publicacion['autor']['username']);
+            $publicacion['autor']['avatar'] = '';
+        }
+
+        return $publicacion;
+    }
+
+    private function sanitize_public_perfil($perfil) {
+        if (!is_array($perfil)) {
+            return $perfil;
+        }
+
+        unset(
+            $perfil['id'],
+            $perfil['username'],
+            $perfil['ubicacion'],
+            $perfil['sitio_web'],
+            $perfil['fecha_registro']
+        );
+        $perfil['avatar'] = '';
+        $perfil['cover_url'] = '';
+
+        return $perfil;
     }
 
     // ========================================
@@ -1368,9 +1460,9 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
                     <div class="rs-feed-header">
                         <div class="rs-feed-tabs">
-                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'timeline' ? 'active' : ''; ?>" data-tipo="timeline">Para ti</button>
-                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'comunidad' ? 'active' : ''; ?>" data-tipo="comunidad">Comunidad</button>
-                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'trending' ? 'active' : ''; ?>" data-tipo="trending">Trending</button>
+                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'timeline' ? 'active' : ''; ?>" data-tipo="timeline"><?php echo esc_html__('Para ti', 'flavor-chat-ia'); ?></button>
+                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'comunidad' ? 'active' : ''; ?>" data-tipo="comunidad"><?php echo esc_html__('Comunidad', 'flavor-chat-ia'); ?></button>
+                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'trending' ? 'active' : ''; ?>" data-tipo="trending"><?php echo esc_html__('Trending', 'flavor-chat-ia'); ?></button>
                         </div>
                     </div>
 
@@ -1451,15 +1543,15 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                     <div class="rs-perfil-stats">
                         <div class="rs-perfil-stat">
                             <span class="rs-perfil-stat-num"><?php echo number_format($perfil['total_publicaciones']); ?></span>
-                            <span class="rs-perfil-stat-label">Publicaciones</span>
+                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Publicaciones', 'flavor-chat-ia'); ?></span>
                         </div>
                         <div class="rs-perfil-stat" data-tipo="seguidores">
                             <span class="rs-perfil-stat-num"><?php echo number_format($perfil['total_seguidores']); ?></span>
-                            <span class="rs-perfil-stat-label">Seguidores</span>
+                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Seguidores', 'flavor-chat-ia'); ?></span>
                         </div>
                         <div class="rs-perfil-stat">
                             <span class="rs-perfil-stat-num"><?php echo number_format($perfil['total_siguiendo']); ?></span>
-                            <span class="rs-perfil-stat-label">Siguiendo</span>
+                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Siguiendo', 'flavor-chat-ia'); ?></span>
                         </div>
                     </div>
                 </div>
@@ -1570,7 +1662,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         <div class="rs-container">
             <div class="rs-notificaciones">
                 <?php if (empty($notificaciones)): ?>
-                    <p style="text-align: center; padding: 40px; color: var(--rs-text-muted);">No tienes notificaciones</p>
+                    <p style="text-align: center; padding: 40px; color: var(--rs-text-muted);"><?php echo esc_html__('No tienes notificaciones', 'flavor-chat-ia'); ?></p>
                 <?php else: ?>
                     <?php foreach ($notificaciones as $notificacion): ?>
                         <?php
@@ -1644,7 +1736,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
                     </div>
-                    <span class="rs-historia-nombre">Tu historia</span>
+                    <span class="rs-historia-nombre"><?php echo esc_html__('Tu historia', 'flavor-chat-ia'); ?></span>
                 </div>
             <?php endif; ?>
 
@@ -2084,7 +2176,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                     <img class="rs-crear-post-avatar" src="<?php echo esc_url($avatar); ?>" alt="">
                     <div class="rs-crear-post-input">
                         <textarea class="rs-crear-post-textarea"
-                                  placeholder="¿Que quieres compartir con la comunidad?"
+                                  placeholder="<?php echo esc_attr__('¿Que quieres compartir con la comunidad?', 'flavor-chat-ia'); ?>"
                                   maxlength="<?php echo esc_attr($this->get_setting('max_caracteres_publicacion')); ?>"></textarea>
                     </div>
                 </div>
@@ -2096,7 +2188,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                                 <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
                                 <path d="M21 15l-5-5L5 21"/>
                             </svg>
-                            Foto
+                            <?php echo esc_html__('Foto', 'flavor-chat-ia'); ?>
                         </button>
                         <?php endif; ?>
                         <?php if ($this->get_setting('permite_videos')): ?>
@@ -2104,12 +2196,12 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
                             </svg>
-                            Video
+                            <?php echo esc_html__('Video', 'flavor-chat-ia'); ?>
                         </button>
                         <?php endif; ?>
                     </div>
-                    <input type="hidden" name="visibilidad" value="comunidad">
-                    <button type="submit" class="rs-btn-publicar">Publicar</button>
+                    <input type="hidden" name="visibilidad" value="<?php echo esc_attr__('comunidad', 'flavor-chat-ia'); ?>">
+                    <button type="submit" class="rs-btn-publicar"><?php echo esc_html__('Publicar', 'flavor-chat-ia'); ?></button>
                 </div>
             </form>
         </div>
@@ -2224,7 +2316,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                         <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
                         <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
                     </svg>
-                    <span>Compartir</span>
+                    <span><?php echo esc_html__('Compartir', 'flavor-chat-ia'); ?></span>
                 </button>
                 <button class="rs-post-accion" data-accion="guardar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2293,7 +2385,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <div class="rs-comentario-acciones">
                     <button class="rs-comentario-like"><?php echo $comentario->me_gusta > 0 ? $comentario->me_gusta . ' Me gusta' : 'Me gusta'; ?></button>
-                    <button class="rs-comentario-responder">Responder</button>
+                    <button class="rs-comentario-responder"><?php echo esc_html__('Responder', 'flavor-chat-ia'); ?></button>
                     <span><?php echo human_time_diff(strtotime($comentario->fecha_creacion), current_time('timestamp')); ?></span>
                 </div>
             </div>
@@ -2319,8 +2411,8 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 <img class="rs-comentario-avatar"
                      src="<?php echo esc_url(get_avatar_url($usuario_id, ['size' => 40])); ?>"
                      alt="">
-                <input type="text" class="rs-comentar-input" placeholder="Escribe un comentario...">
-                <button type="submit" class="rs-comentar-enviar">Enviar</button>
+                <input type="text" class="rs-comentar-input" placeholder="<?php echo esc_attr__('Escribe un comentario...', 'flavor-chat-ia'); ?>">
+                <button type="submit" class="rs-comentar-enviar"><?php echo esc_html__('Enviar', 'flavor-chat-ia'); ?></button>
             </form>
             <?php endif; ?>
         </div>
@@ -2346,7 +2438,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="rs-widget">
-            <h3 class="rs-widget-titulo">Sugerencias para ti</h3>
+            <h3 class="rs-widget-titulo"><?php echo esc_html__('Sugerencias para ti', 'flavor-chat-ia'); ?></h3>
             <div class="rs-sugerencias-lista">
                 <?php foreach ($sugerencias as $sugerencia): ?>
                     <?php $usuario = get_userdata($sugerencia->ID); ?>
@@ -2356,10 +2448,10 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                              alt="">
                         <div class="rs-sugerencia-info">
                             <h4 class="rs-sugerencia-nombre"><?php echo esc_html($usuario->display_name); ?></h4>
-                            <span class="rs-sugerencia-motivo">Sugerido para ti</span>
+                            <span class="rs-sugerencia-motivo"><?php echo esc_html__('Sugerido para ti', 'flavor-chat-ia'); ?></span>
                         </div>
                         <button class="rs-btn-seguir" data-usuario-id="<?php echo esc_attr($sugerencia->ID); ?>">
-                            Seguir
+                            <?php echo esc_html__('Seguir', 'flavor-chat-ia'); ?>
                         </button>
                     </div>
                 <?php endforeach; ?>
@@ -2401,7 +2493,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="rs-widget">
-            <h3 class="rs-widget-titulo">Tendencias</h3>
+            <h3 class="rs-widget-titulo"><?php echo esc_html__('Tendencias', 'flavor-chat-ia'); ?></h3>
             <div class="rs-trending-lista">
                 <?php foreach ($trending as $index => $hashtag): ?>
                     <div class="rs-trending-item" onclick="window.location='?rs_hashtag=<?php echo esc_attr($hashtag->hashtag); ?>'">
@@ -2501,7 +2593,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => 'Debes iniciar sesion.'];
+            return ['success' => false, 'error' => __('fields', 'flavor-chat-ia')];
         }
 
         $limite = absint($params['limite'] ?? 20);
@@ -2710,5 +2802,401 @@ KNOWLEDGE;
                 'respuesta' => 'Usa # seguido de una palabra (ej: #comunidad) para categorizar tu publicacion. Los hashtags populares aparecen en tendencias.',
             ],
         ];
+    }
+
+    // =========================================================================
+    // PANEL DE ADMINISTRACIÓN UNIFICADO
+    // =========================================================================
+
+    /**
+     * Configuración para el Panel de Administración Unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'red_social',
+            'label' => __('Red Social', 'flavor-chat-ia'),
+            'icon' => 'dashicons-share',
+            'capability' => 'manage_options',
+            'categoria' => 'comunidad',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-red-social-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'flavor-red-social-publicaciones',
+                    'titulo' => __('Publicaciones', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_publicaciones'],
+                    'badge' => [$this, 'contar_publicaciones_pendientes'],
+                ],
+                [
+                    'slug' => 'flavor-red-social-moderacion',
+                    'titulo' => __('Moderación', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_moderacion'],
+                    'badge' => [$this, 'contar_reportes_pendientes'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas' => [$this, 'get_estadisticas_admin'],
+        ];
+    }
+
+    /**
+     * Renderizar dashboard del panel unificado
+     */
+    public function render_admin_dashboard() {
+        $ruta_template = FLAVOR_CHAT_IA_PATH . 'includes/modules/red-social/views/dashboard.php';
+        if (file_exists($ruta_template)) {
+            include $ruta_template;
+        } else {
+            $this->render_admin_dashboard_fallback();
+        }
+    }
+
+    /**
+     * Renderizar dashboard fallback cuando no existe template
+     */
+    private function render_admin_dashboard_fallback() {
+        global $wpdb;
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+        $tabla_perfiles = $wpdb->prefix . 'flavor_social_perfiles';
+
+        $total_publicaciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_publicaciones");
+        $total_usuarios = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_perfiles");
+        $publicaciones_hoy = (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_publicaciones WHERE DATE(fecha_publicacion) = %s",
+                current_time('Y-m-d')
+            )
+        );
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Dashboard Red Social', 'flavor-chat-ia'); ?></h1>
+
+            <div class="flavor-admin-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-format-aside" style="font-size: 32px; color: #0073aa;"></span>
+                    <h3 style="margin: 10px 0 5px;"><?php echo esc_html($total_publicaciones); ?></h3>
+                    <p style="margin: 0; color: #666;"><?php esc_html_e('Total Publicaciones', 'flavor-chat-ia'); ?></p>
+                </div>
+
+                <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-groups" style="font-size: 32px; color: #00a32a;"></span>
+                    <h3 style="margin: 10px 0 5px;"><?php echo esc_html($total_usuarios); ?></h3>
+                    <p style="margin: 0; color: #666;"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></p>
+                </div>
+
+                <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-calendar-alt" style="font-size: 32px; color: #dba617;"></span>
+                    <h3 style="margin: 10px 0 5px;"><?php echo esc_html($publicaciones_hoy); ?></h3>
+                    <p style="margin: 0; color: #666;"><?php esc_html_e('Publicaciones Hoy', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+
+            <div class="flavor-admin-section" style="margin-top: 30px;">
+                <h2><?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?></h2>
+                <p>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-red-social-publicaciones')); ?>" class="button button-primary">
+                        <?php esc_html_e('Ver Publicaciones', 'flavor-chat-ia'); ?>
+                    </a>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-red-social-moderacion')); ?>" class="button">
+                        <?php esc_html_e('Moderar Contenido', 'flavor-chat-ia'); ?>
+                    </a>
+                </p>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderizar página de publicaciones del panel unificado
+     */
+    public function render_admin_publicaciones() {
+        $ruta_template = FLAVOR_CHAT_IA_PATH . 'includes/modules/red-social/views/publicaciones.php';
+        if (file_exists($ruta_template)) {
+            include $ruta_template;
+        } else {
+            $this->render_admin_publicaciones_fallback();
+        }
+    }
+
+    /**
+     * Renderizar publicaciones fallback cuando no existe template
+     */
+    private function render_admin_publicaciones_fallback() {
+        global $wpdb;
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+
+        $publicaciones = $wpdb->get_results(
+            "SELECT p.*, u.display_name as autor_nombre
+             FROM $tabla_publicaciones p
+             LEFT JOIN {$wpdb->users} u ON p.usuario_id = u.ID
+             ORDER BY p.fecha_creacion DESC
+             LIMIT 50"
+        );
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></h1>
+
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Contenido', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($publicaciones)): ?>
+                        <tr>
+                            <td colspan="6"><?php esc_html_e('No hay publicaciones.', 'flavor-chat-ia'); ?></td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($publicaciones as $publicacion): ?>
+                            <tr>
+                                <td><?php echo esc_html($publicacion->id); ?></td>
+                                <td><?php echo esc_html($publicacion->autor_nombre ?: __('Usuario eliminado', 'flavor-chat-ia')); ?></td>
+                                <td><?php echo esc_html(wp_trim_words(strip_tags($publicacion->contenido), 15)); ?></td>
+                                <td>
+                                    <span class="status-<?php echo esc_attr($publicacion->estado ?? 'publicado'); ?>">
+                                        <?php echo esc_html(ucfirst($publicacion->estado ?? 'publicado')); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($publicacion->fecha_creacion))); ?></td>
+                                <td>
+                                    <button class="button button-small" onclick="alert('Ver publicación #<?php echo esc_js($publicacion->id); ?>')">
+                                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderizar página de moderación del panel unificado
+     */
+    public function render_admin_moderacion() {
+        $ruta_template = FLAVOR_CHAT_IA_PATH . 'includes/modules/red-social/views/moderacion.php';
+        if (file_exists($ruta_template)) {
+            include $ruta_template;
+        } else {
+            $this->render_admin_moderacion_fallback();
+        }
+    }
+
+    /**
+     * Renderizar moderación fallback cuando no existe template
+     */
+    private function render_admin_moderacion_fallback() {
+        global $wpdb;
+        $tabla_reportes = $wpdb->prefix . 'flavor_social_reportes';
+
+        $tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_reportes));
+        $reportes = [];
+
+        if ($tabla_existe) {
+            $reportes = $wpdb->get_results(
+                "SELECT r.*, u.display_name as reportador_nombre
+                 FROM $tabla_reportes r
+                 LEFT JOIN {$wpdb->users} u ON r.usuario_id = u.ID
+                 WHERE r.estado = 'pendiente'
+                 ORDER BY r.fecha_creacion DESC
+                 LIMIT 50"
+            );
+        }
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Moderación de Contenido', 'flavor-chat-ia'); ?></h1>
+
+            <div class="notice notice-info">
+                <p><?php esc_html_e('Revisa y gestiona los reportes de contenido de la red social.', 'flavor-chat-ia'); ?></p>
+            </div>
+
+            <?php if (empty($reportes)): ?>
+                <div class="notice notice-success">
+                    <p><?php esc_html_e('No hay reportes pendientes de revisión.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Motivo', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Reportado por', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($reportes as $reporte): ?>
+                            <tr>
+                                <td><?php echo esc_html($reporte->id); ?></td>
+                                <td><?php echo esc_html($reporte->tipo_contenido ?? 'publicacion'); ?></td>
+                                <td><?php echo esc_html($reporte->motivo ?? '-'); ?></td>
+                                <td><?php echo esc_html($reporte->reportador_nombre ?: __('Anónimo', 'flavor-chat-ia')); ?></td>
+                                <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($reporte->fecha_creacion))); ?></td>
+                                <td>
+                                    <button class="button button-small"><?php esc_html_e('Revisar', 'flavor-chat-ia'); ?></button>
+                                    <button class="button button-small"><?php esc_html_e('Descartar', 'flavor-chat-ia'); ?></button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Contar publicaciones pendientes de moderación
+     *
+     * @return int
+     */
+    public function contar_publicaciones_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+
+        $tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_publicaciones));
+        if (!$tabla_existe) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_publicaciones WHERE estado = 'pendiente'"
+        );
+    }
+
+    /**
+     * Contar reportes pendientes de revisión
+     *
+     * @return int
+     */
+    public function contar_reportes_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        global $wpdb;
+        $tabla_reportes = $wpdb->prefix . 'flavor_social_reportes';
+
+        $tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_reportes));
+        if (!$tabla_existe) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_reportes WHERE estado = 'pendiente'"
+        );
+    }
+
+    /**
+     * Renderizar widget del dashboard unificado
+     */
+    public function render_dashboard_widget() {
+        global $wpdb;
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+        $tabla_perfiles = $wpdb->prefix . 'flavor_social_perfiles';
+
+        $total_publicaciones = 0;
+        $total_usuarios = 0;
+        $publicaciones_semana = 0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+            $total_publicaciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_publicaciones");
+            $publicaciones_semana = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_publicaciones WHERE fecha_publicacion >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+            );
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+            $total_usuarios = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_perfiles");
+        }
+        ?>
+        <div class="flavor-widget-stats">
+            <div class="stat-item">
+                <span class="stat-numero"><?php echo esc_html($total_publicaciones); ?></span>
+                <span class="stat-etiqueta"><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-numero"><?php echo esc_html($total_usuarios); ?></span>
+                <span class="stat-etiqueta"><?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-numero"><?php echo esc_html($publicaciones_semana); ?></span>
+                <span class="stat-etiqueta"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <p>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-red-social-dashboard')); ?>" class="button">
+                <?php esc_html_e('Ver Dashboard', 'flavor-chat-ia'); ?>
+            </a>
+        </p>
+        <?php
+    }
+
+    /**
+     * Obtener estadísticas para el panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_admin() {
+        global $wpdb;
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+        $tabla_perfiles = $wpdb->prefix . 'flavor_social_perfiles';
+
+        $estadisticas = [
+            'total_publicaciones' => 0,
+            'total_usuarios' => 0,
+            'publicaciones_hoy' => 0,
+            'publicaciones_semana' => 0,
+            'nuevos_usuarios_semana' => 0,
+        ];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+            $estadisticas['total_publicaciones'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_publicaciones");
+            $estadisticas['publicaciones_hoy'] = (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_publicaciones WHERE DATE(fecha_publicacion) = %s",
+                    current_time('Y-m-d')
+                )
+            );
+            $estadisticas['publicaciones_semana'] = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_publicaciones WHERE fecha_publicacion >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+            );
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
+            $estadisticas['total_usuarios'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_perfiles");
+            $estadisticas['nuevos_usuarios_semana'] = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_perfiles WHERE fecha_registro >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+            );
+        }
+
+        return $estadisticas;
+    }
+
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
 }

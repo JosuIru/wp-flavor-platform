@@ -16,13 +16,15 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Constructor
      */
     public function __construct() {
         $this->id = 'marketplace';
-        $this->name = __('Marketplace', 'flavor-chat-ia');
-        $this->description = __('Plataforma para publicar anuncios de regalo, venta, cambio y alquiler entre usuarios.', 'flavor-chat-ia');
+        $this->name = 'Marketplace'; // Translation loaded on init
+        $this->description = 'Plataforma para publicar anuncios de regalo, venta, cambio y alquiler entre usuarios.'; // Translation loaded on init
 
         parent::__construct();
     }
@@ -32,6 +34,13 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
      */
     public function can_activate() {
         return true; // No tiene dependencias externas
+    }
+
+    /**
+     * Verifica si el módulo está activo
+     */
+    public function is_active() {
+        return $this->can_activate();
     }
 
     /**
@@ -54,6 +63,10 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        add_action('init', [$this, 'maybe_create_pages']);
+        // Registrar en el panel de administración unificado
+        $this->registrar_en_panel_unificado();
+
         // Registrar Custom Post Type
         add_action('init', [$this, 'registrar_custom_post_type']);
 
@@ -75,6 +88,207 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         // AJAX para frontend
         add_action('wp_ajax_marketplace_crear_anuncio', [$this, 'ajax_crear_anuncio']);
         add_action('wp_ajax_nopriv_marketplace_crear_anuncio', [$this, 'ajax_crear_anuncio']);
+    }
+
+    /**
+     * Configuración de páginas de administración para el panel unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'marketplace',
+            'label' => __('Marketplace', 'flavor-chat-ia'),
+            'icon' => 'dashicons-store',
+            'capability' => 'manage_options',
+            'categoria' => 'economia',
+            'paginas' => [
+                [
+                    'slug' => 'marketplace-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                    'badge' => [$this, 'contar_anuncios_pendientes'],
+                ],
+                [
+                    'slug' => 'marketplace-anuncios',
+                    'titulo' => __('Anuncios', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_anuncios'],
+                ],
+                [
+                    'slug' => 'marketplace-categorias',
+                    'titulo' => __('Categorías', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_categorias'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas' => [$this, 'get_estadisticas_marketplace'],
+        ];
+    }
+
+    /**
+     * Cuenta los anuncios pendientes de moderación
+     *
+     * @return int
+     */
+    public function contar_anuncios_pendientes() {
+        // Verificar que el módulo esté activo
+        if (!$this->can_activate()) {
+            return 0;
+        }
+
+        $contador_pendientes = wp_count_posts('marketplace_item');
+        return isset($contador_pendientes->pending) ? $contador_pendientes->pending : 0;
+    }
+
+    /**
+     * Renderiza el dashboard del módulo en el panel de administración
+     */
+    public function render_admin_dashboard() {
+        $estadisticas = $this->get_estadisticas_marketplace();
+        $this->render_page_header(__('Dashboard Marketplace', 'flavor-chat-ia'), [
+            [
+                'label' => __('Nuevo Anuncio', 'flavor-chat-ia'),
+                'url' => admin_url('post-new.php?post_type=marketplace_item'),
+                'class' => 'button-primary',
+            ],
+        ]);
+        ?>
+        <div class="marketplace-dashboard-stats">
+            <div class="stat-card">
+                <span class="dashicons dashicons-megaphone"></span>
+                <div class="stat-content">
+                    <h3><?php echo esc_html($estadisticas['total_anuncios']); ?></h3>
+                    <p><?php _e('Anuncios Activos', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="dashicons dashicons-clock"></span>
+                <div class="stat-content">
+                    <h3><?php echo esc_html($estadisticas['pendientes']); ?></h3>
+                    <p><?php _e('Pendientes de Moderación', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="dashicons dashicons-category"></span>
+                <div class="stat-content">
+                    <h3><?php echo esc_html($estadisticas['categorias']); ?></h3>
+                    <p><?php _e('Categorías', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="dashicons dashicons-groups"></span>
+                <div class="stat-content">
+                    <h3><?php echo esc_html($estadisticas['usuarios_activos']); ?></h3>
+                    <p><?php _e('Usuarios con Anuncios', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la lista de anuncios en el panel de administración
+     */
+    public function render_admin_anuncios() {
+        $this->render_page_header(__('Gestión de Anuncios', 'flavor-chat-ia'), [
+            [
+                'label' => __('Nuevo Anuncio', 'flavor-chat-ia'),
+                'url' => admin_url('post-new.php?post_type=marketplace_item'),
+                'class' => 'button-primary',
+            ],
+            [
+                'label' => __('Ver Todos', 'flavor-chat-ia'),
+                'url' => admin_url('edit.php?post_type=marketplace_item'),
+                'class' => '',
+            ],
+        ]);
+        ?>
+        <div class="marketplace-admin-content">
+            <p><?php _e('Administra todos los anuncios del marketplace desde aquí.', 'flavor-chat-ia'); ?></p>
+            <p>
+                <a href="<?php echo esc_url(admin_url('edit.php?post_type=marketplace_item')); ?>" class="button">
+                    <?php _e('Ir al listado de anuncios', 'flavor-chat-ia'); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la gestión de categorías en el panel de administración
+     */
+    public function render_admin_categorias() {
+        $this->render_page_header(__('Categorías del Marketplace', 'flavor-chat-ia'), [
+            [
+                'label' => __('Gestionar Categorías', 'flavor-chat-ia'),
+                'url' => admin_url('edit-tags.php?taxonomy=marketplace_categoria&post_type=marketplace_item'),
+                'class' => 'button-primary',
+            ],
+            [
+                'label' => __('Tipos de Transacción', 'flavor-chat-ia'),
+                'url' => admin_url('edit-tags.php?taxonomy=marketplace_tipo&post_type=marketplace_item'),
+                'class' => '',
+            ],
+        ]);
+        ?>
+        <div class="marketplace-admin-content">
+            <h3><?php _e('Categorías de Productos', 'flavor-chat-ia'); ?></h3>
+            <p><?php _e('Organiza los anuncios por tipo de producto.', 'flavor-chat-ia'); ?></p>
+
+            <h3><?php _e('Tipos de Transacción', 'flavor-chat-ia'); ?></h3>
+            <p><?php _e('Define cómo se realizan las transacciones: Regalo, Venta, Cambio o Alquiler.', 'flavor-chat-ia'); ?></p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el widget del dashboard principal
+     */
+    public function render_dashboard_widget() {
+        $estadisticas = $this->get_estadisticas_marketplace();
+        ?>
+        <div class="marketplace-widget">
+            <p><strong><?php echo esc_html($estadisticas['total_anuncios']); ?></strong> <?php _e('anuncios activos', 'flavor-chat-ia'); ?></p>
+            <?php if ($estadisticas['pendientes'] > 0): ?>
+                <p class="warning">
+                    <strong><?php echo esc_html($estadisticas['pendientes']); ?></strong>
+                    <?php _e('pendientes de moderación', 'flavor-chat-ia'); ?>
+                </p>
+            <?php endif; ?>
+            <a href="<?php echo esc_url($this->admin_page_url('marketplace-dashboard')); ?>" class="button">
+                <?php _e('Ver Dashboard', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene las estadísticas del marketplace
+     *
+     * @return array
+     */
+    public function get_estadisticas_marketplace() {
+        $contador_posts = wp_count_posts('marketplace_item');
+        $total_anuncios = isset($contador_posts->publish) ? $contador_posts->publish : 0;
+        $anuncios_pendientes = isset($contador_posts->pending) ? $contador_posts->pending : 0;
+
+        $terminos_categorias = get_terms([
+            'taxonomy' => 'marketplace_categoria',
+            'hide_empty' => false,
+        ]);
+        $total_categorias = is_array($terminos_categorias) ? count($terminos_categorias) : 0;
+
+        global $wpdb;
+        $total_usuarios_activos = $wpdb->get_var(
+            "SELECT COUNT(DISTINCT post_author) FROM {$wpdb->posts} WHERE post_type = 'marketplace_item' AND post_status = 'publish'"
+        );
+
+        return [
+            'total_anuncios' => $total_anuncios,
+            'pendientes' => $anuncios_pendientes,
+            'categorias' => $total_categorias,
+            'usuarios_activos' => $total_usuarios_activos ?: 0,
+        ];
     }
 
     /**
@@ -205,11 +419,11 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                 <td>
                     <select id="marketplace_estado" name="marketplace_estado">
                         <option value=""><?php _e('Selecciona...', 'flavor-chat-ia'); ?></option>
-                        <option value="nuevo" <?php selected($estado_conservacion, 'nuevo'); ?>><?php _e('Nuevo', 'flavor-chat-ia'); ?></option>
-                        <option value="como_nuevo" <?php selected($estado_conservacion, 'como_nuevo'); ?>><?php _e('Como nuevo', 'flavor-chat-ia'); ?></option>
-                        <option value="buen_estado" <?php selected($estado_conservacion, 'buen_estado'); ?>><?php _e('Buen estado', 'flavor-chat-ia'); ?></option>
-                        <option value="usado" <?php selected($estado_conservacion, 'usado'); ?>><?php _e('Usado', 'flavor-chat-ia'); ?></option>
-                        <option value="reparar" <?php selected($estado_conservacion, 'reparar'); ?>><?php _e('Necesita reparación', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('nuevo', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'nuevo'); ?>><?php _e('Nuevo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('como_nuevo', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'como_nuevo'); ?>><?php _e('Como nuevo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('buen_estado', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'buen_estado'); ?>><?php _e('Buen estado', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('usado', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'usado'); ?>><?php _e('Usado', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('reparar', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'reparar'); ?>><?php _e('Necesita reparación', 'flavor-chat-ia'); ?></option>
                     </select>
                 </td>
             </tr>
@@ -225,10 +439,10 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                 <th><label for="marketplace_contacto"><?php _e('Contacto Preferido', 'flavor-chat-ia'); ?></label></th>
                 <td>
                     <select id="marketplace_contacto" name="marketplace_contacto">
-                        <option value="chat" <?php selected($contacto_preferido, 'chat'); ?>><?php _e('Chat interno', 'flavor-chat-ia'); ?></option>
-                        <option value="email" <?php selected($contacto_preferido, 'email'); ?>><?php _e('Email', 'flavor-chat-ia'); ?></option>
-                        <option value="whatsapp" <?php selected($contacto_preferido, 'whatsapp'); ?>><?php _e('WhatsApp', 'flavor-chat-ia'); ?></option>
-                        <option value="telefono" <?php selected($contacto_preferido, 'telefono'); ?>><?php _e('Teléfono', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('chat', 'flavor-chat-ia'); ?>" <?php selected($contacto_preferido, 'chat'); ?>><?php _e('Chat interno', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('email', 'flavor-chat-ia'); ?>" <?php selected($contacto_preferido, 'email'); ?>><?php _e('Email', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('whatsapp', 'flavor-chat-ia'); ?>" <?php selected($contacto_preferido, 'whatsapp'); ?>><?php _e('WhatsApp', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('telefono', 'flavor-chat-ia'); ?>" <?php selected($contacto_preferido, 'telefono'); ?>><?php _e('Teléfono', 'flavor-chat-ia'); ?></option>
                     </select>
                 </td>
             </tr>
@@ -720,4 +934,26 @@ KNOWLEDGE;
             ],
         ];
     }
+    /**
+     * Crea/actualiza páginas del módulo si es necesario
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('marketplace');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen (solo una vez)
+        $pagina = get_page_by_path('marketplace');
+        if (!$pagina && !get_option('flavor_marketplace_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['marketplace']);
+            update_option('flavor_marketplace_pages_created', 1, false);
+        }
+    }
+
 }
