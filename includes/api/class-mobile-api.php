@@ -14,6 +14,11 @@ if (!defined('ABSPATH')) {
 class Chat_IA_Mobile_API {
 
     /**
+     * Version de contrato de API
+     */
+    const API_VERSION = '1.0.0';
+
+    /**
      * Instancia singleton
      */
     private static $instance = null;
@@ -47,6 +52,8 @@ class Chat_IA_Mobile_API {
         add_action('template_redirect', [$this, 'handle_mobile_cart_redirect']);
         // Habilitar CORS para apps móviles
         add_action('rest_api_init', [$this, 'add_cors_headers'], 15);
+        // Header de version de contrato
+        add_filter('rest_post_dispatch', [$this, 'add_version_header'], 10, 3);
     }
 
     /**
@@ -109,7 +116,7 @@ class Chat_IA_Mobile_API {
         // Verificar firma
         $expected_sig = substr(hash_hmac('sha256', $token, wp_salt('auth')), 0, 16);
         if (!hash_equals($expected_sig, $signature)) {
-            wp_die('Enlace inválido o expirado', 'Error', ['response' => 403]);
+            wp_die(__('Enlace inválido o expirado', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 403]);
         }
 
         // Decodificar datos (base64url: convertir -_ a +/ y añadir padding)
@@ -117,17 +124,17 @@ class Chat_IA_Mobile_API {
         $base64_padded = str_pad($base64, strlen($base64) + (4 - strlen($base64) % 4) % 4, '=');
         $cart_data = json_decode(base64_decode($base64_padded), true);
         if (!$cart_data || !isset($cart_data['date']) || !isset($cart_data['tickets'])) {
-            wp_die('Datos del carrito inválidos', 'Error', ['response' => 400]);
+            wp_die(__('Datos del carrito inválidos', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 400]);
         }
 
         // Verificar que no sea muy antiguo (máx 1 hora)
         if (isset($cart_data['timestamp']) && (time() - $cart_data['timestamp']) > 3600) {
-            wp_die('Este enlace ha expirado. Por favor, vuelve a la app y genera uno nuevo.', 'Enlace Expirado', ['response' => 410]);
+            wp_die(__('Este enlace ha expirado. Por favor, vuelve a la app y genera uno nuevo.', 'flavor-chat-ia'), __('Enlace Expirado', 'flavor-chat-ia'), ['response' => 410]);
         }
 
         // Asegurarse de que WooCommerce está cargado
         if (!class_exists('WooCommerce') || !function_exists('WC')) {
-            wp_die('WooCommerce no disponible', 'Error', ['response' => 500]);
+            wp_die(__('WooCommerce no disponible', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 500]);
         }
 
         // Inicializar sesión y carrito
@@ -202,7 +209,7 @@ class Chat_IA_Mobile_API {
             wp_redirect(wc_get_checkout_url());
             exit;
         } else {
-            wp_die('No se pudieron añadir productos al carrito. Por favor, inténtalo de nuevo.', 'Error', ['response' => 500]);
+            wp_die(__('No se pudieron añadir productos al carrito. Por favor, inténtalo de nuevo.', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 500]);
         }
     }
 
@@ -330,14 +337,21 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/site-info', [
             'methods' => 'GET',
             'callback' => [$this, 'get_site_info'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Contenido inteligente del sitio (autoconfiguración)
         register_rest_route(self::API_NAMESPACE, '/site-content', [
             'methods' => 'GET',
             'callback' => [$this, 'get_site_content'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // Configuración completa de la app cliente (tabs, features, info_sections)
+        register_rest_route(self::API_NAMESPACE, '/client-app-config', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_client_app_config'],
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ==========================================
@@ -346,7 +360,7 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/auth/login', [
             'methods' => 'POST',
             'callback' => [$this, 'handle_login'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/auth/verify', [
@@ -361,13 +375,13 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/chat/send', [
             'methods' => 'POST',
             'callback' => [$this, 'handle_chat_message'],
-            'permission_callback' => '__return_true', // Público para clientes
+            'permission_callback' => [$this, 'public_permission_check'], // Público para clientes
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/chat/session', [
             'methods' => 'POST',
             'callback' => [$this, 'create_chat_session'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ==========================================
@@ -376,37 +390,37 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/public/business-info', [
             'methods' => 'GET',
             'callback' => [$this, 'get_business_info'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/public/availability', [
             'methods' => 'GET',
             'callback' => [$this, 'get_availability'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/public/tickets', [
             'methods' => 'GET',
             'callback' => [$this, 'get_ticket_types'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/public/experiences', [
             'methods' => 'GET',
             'callback' => [$this, 'get_experiences'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/public/posts', [
             'methods' => 'GET',
             'callback' => [$this, 'get_latest_posts'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/public/updates', [
             'methods' => 'GET',
             'callback' => [$this, 'get_site_updates'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ==========================================
@@ -415,32 +429,32 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/reservations/check', [
             'methods' => 'POST',
             'callback' => [$this, 'check_availability'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/reservations/prepare', [
             'methods' => 'POST',
             'callback' => [$this, 'prepare_reservation'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/reservations/add-to-cart', [
             'methods' => 'POST',
             'callback' => [$this, 'add_to_cart'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/reservations/cart-url', [
             'methods' => 'GET',
             'callback' => [$this, 'get_cart_url'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Endpoint especial para checkout desde móvil (genera URL con datos)
         register_rest_route(self::API_NAMESPACE, '/reservations/mobile-checkout-url', [
             'methods' => 'POST',
             'callback' => [$this, 'get_mobile_checkout_url'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ==========================================
@@ -455,13 +469,13 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/client/reservation/(?P<code>[a-zA-Z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_client_reservation_by_code'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/client/config', [
             'methods' => 'GET',
             'callback' => [$this, 'get_client_app_config'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ==========================================
@@ -470,19 +484,19 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/client/email/send-code', [
             'methods' => 'POST',
             'callback' => [$this, 'send_verification_code'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/client/email/verify-code', [
             'methods' => 'POST',
             'callback' => [$this, 'verify_email_code'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/client/email/status', [
             'methods' => 'GET',
             'callback' => [$this, 'get_email_verification_status'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // ==========================================
@@ -632,7 +646,7 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/app-config/generate', [
             'methods' => 'GET',
             'callback' => [$this, 'generate_app_config'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         // Vista previa de configuración (admin)
@@ -648,7 +662,7 @@ class Chat_IA_Mobile_API {
         register_rest_route(self::API_NAMESPACE, '/admin/validate-site-token', [
             'methods' => 'POST',
             'callback' => [$this, 'validate_admin_site_token'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
     }
 
@@ -699,7 +713,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Token válido',
+            'message' => __('Token válido', 'flavor-chat-ia'),
             'site_name' => get_bloginfo('name'),
             'site_url' => home_url(),
         ]);
@@ -716,8 +730,11 @@ class Chat_IA_Mobile_API {
 
         return [
             'url' => home_url(),
+            'server_url' => home_url(),
             'name' => $mobile_settings['business_name'] ?? get_bloginfo('name'),
             'api' => '/wp-json/chat-ia-mobile/v1',
+            'api_namespace' => '/wp-json/chat-ia-mobile/v1',
+            'api_url' => home_url('/wp-json/chat-ia-mobile/v1'),
             'type' => 'admin',
             'token' => self::get_admin_site_secret(),
         ];
@@ -734,8 +751,11 @@ class Chat_IA_Mobile_API {
 
         return [
             'url' => home_url(),
+            'server_url' => home_url(),
             'name' => $mobile_settings['business_name'] ?? get_bloginfo('name'),
             'api' => '/wp-json/chat-ia-mobile/v1',
+            'api_namespace' => '/wp-json/chat-ia-mobile/v1',
+            'api_url' => home_url('/wp-json/chat-ia-mobile/v1'),
             'type' => 'client',
         ];
     }
@@ -774,6 +794,7 @@ class Chat_IA_Mobile_API {
             'favicon_url' => $favicon_url,
             'url' => home_url(),
             'api_url' => home_url('/wp-json/chat-ia-mobile/v1'),
+            'api_version' => self::API_VERSION,
             'config' => [
                 'primary_color' => $mobile_settings['primary_color'] ?? '#2196F3',
                 'client_enabled' => $mobile_settings['client_enabled'] ?? true,
@@ -782,6 +803,20 @@ class Chat_IA_Mobile_API {
                 'debug_mode' => !empty($mobile_settings['debug_mode']),
             ],
         ]);
+    }
+
+
+    public function add_version_header($response, $server, $request) {
+        $route = $request->get_route();
+        if (strpos($route, '/chat-ia-mobile/v1') !== 0) {
+            return $response;
+        }
+
+        if ($response instanceof WP_REST_Response) {
+            $response->header('X-Flavor-API-Version', self::API_VERSION);
+        }
+
+        return $response;
     }
 
     /**
@@ -1676,6 +1711,12 @@ class Chat_IA_Mobile_API {
         return true;
     }
 
+    public function public_permission_check($request) {
+        $method = strtoupper($request->get_method());
+        $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
+        return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+
     /**
      * Verifica el token actual
      */
@@ -2361,7 +2402,7 @@ class Chat_IA_Mobile_API {
         return [
             'success' => true,
             'checkout_url' => $checkout_url,
-            'message' => 'URL de checkout generada',
+            'message' => __('Token válido', 'flavor-chat-ia'),
         ];
     }
 
@@ -2673,7 +2714,7 @@ class Chat_IA_Mobile_API {
         ), ARRAY_A);
 
         if (!$reserva) {
-            return new WP_Error('not_found', 'Reserva no encontrada', ['status' => 404]);
+            return new WP_Error('not_found', __('Reserva no encontrada', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         $ticket_types = get_option('calendario_experiencias_ticket_types', []);
@@ -2753,7 +2794,7 @@ class Chat_IA_Mobile_API {
         ), ARRAY_A);
 
         if (!$reserva) {
-            return new WP_Error('not_found', 'Reserva no encontrada', ['status' => 404]);
+            return new WP_Error('not_found', __('Reserva no encontrada', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         if ($reserva['estado'] === 'usado') {
@@ -2782,7 +2823,7 @@ class Chat_IA_Mobile_API {
 
         return [
             'success' => true,
-            'message' => 'Check-in realizado correctamente',
+            'message' => __('Cancelada desde app admin', 'flavor-chat-ia'),
             'checkin_time' => current_time('mysql'),
         ];
     }
@@ -2803,7 +2844,7 @@ class Chat_IA_Mobile_API {
         ), ARRAY_A);
 
         if (!$reserva) {
-            return new WP_Error('not_found', 'Reserva no encontrada', ['status' => 404]);
+            return new WP_Error('not_found', __('Reserva no encontrada', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         if ($reserva['estado'] === 'cancelado') {
@@ -2832,7 +2873,7 @@ class Chat_IA_Mobile_API {
 
         return [
             'success' => true,
-            'message' => 'Reserva cancelada correctamente',
+            'message' => __('Token válido', 'flavor-chat-ia'),
         ];
     }
 
@@ -2854,7 +2895,7 @@ class Chat_IA_Mobile_API {
         ), ARRAY_A);
 
         if (!$reserva) {
-            return new WP_Error('not_found', 'Reserva no encontrada', ['status' => 404]);
+            return new WP_Error('not_found', __('Reserva no encontrada', 'flavor-chat-ia'), ['status' => 404]);
         }
 
         $ticket_types = get_option('calendario_experiencias_ticket_types', []);
@@ -3388,7 +3429,7 @@ class Chat_IA_Mobile_API {
             return rest_ensure_response([
                 'success' => true,
                 'customers' => [],
-                'message' => 'Tabla de clientes manuales no existe'
+                'message' => __('Tabla de clientes manuales no existe', 'flavor-chat-ia')
             ]);
         }
 
@@ -3513,7 +3554,7 @@ class Chat_IA_Mobile_API {
         return rest_ensure_response([
             'success' => true,
             'id' => $cliente_id,
-            'message' => 'Cliente creado correctamente'
+            'message' => __('clientes_manuales_tickets', 'flavor-chat-ia')
         ]);
     }
 
@@ -3574,7 +3615,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Cliente actualizado correctamente'
+            'message' => __('clientes_manuales_tickets', 'flavor-chat-ia')
         ]);
     }
 
@@ -3600,7 +3641,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Cliente eliminado correctamente'
+            'message' => __('Cliente creado correctamente', 'flavor-chat-ia')
         ]);
     }
 
@@ -3649,7 +3690,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Notas guardadas correctamente'
+            'message' => __('Cliente creado correctamente', 'flavor-chat-ia')
         ]);
     }
 
@@ -3831,7 +3872,7 @@ class Chat_IA_Mobile_API {
 
         return [
             'success' => true,
-            'message' => 'Token registrado correctamente',
+            'message' => __('Token válido', 'flavor-chat-ia'),
         ];
     }
 
@@ -3921,7 +3962,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Código enviado a ' . $this->mask_email($email),
+            'message' => __('Cliente creado correctamente', 'flavor-chat-ia') . $this->mask_email($email),
             'expires_in' => 15 * 60, // segundos
         ]);
     }
@@ -3980,7 +4021,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => 'Email verificado correctamente',
+            'message' => __('Token válido', 'flavor-chat-ia'),
             'email' => $verification_data['email'],
             'verified_at' => date('c'),
         ]);
@@ -4066,7 +4107,7 @@ class Chat_IA_Mobile_API {
                 return rest_ensure_response([
                     'success' => true,
                     'requires_verification' => true,
-                    'message' => 'Por favor, verifica tu email para ver tus tickets',
+                    'message' => __('reservations', 'flavor-chat-ia'),
                     'reservations' => [],
                 ]);
             }
@@ -4079,7 +4120,7 @@ class Chat_IA_Mobile_API {
             return rest_ensure_response([
                 'success' => true,
                 'reservations' => [],
-                'message' => 'No hay sistema de reservas configurado',
+                'message' => __('Token válido', 'flavor-chat-ia'),
             ]);
         }
 
@@ -4145,12 +4186,17 @@ class Chat_IA_Mobile_API {
      * Obtiene una reserva específica por código (para verificación QR)
      */
     public function get_client_reservation_by_code($request) {
+        $rate_limit = Flavor_API_Rate_Limiter::check_rate_limit('get');
+        if (is_wp_error($rate_limit)) {
+            return $rate_limit;
+        }
+
         global $wpdb;
 
         $code = sanitize_text_field($request->get_param('code'));
 
         if (empty($code)) {
-            return new WP_Error('missing_code', 'Código requerido', ['status' => 400]);
+            return new WP_Error('missing_code', __('Código requerido', 'flavor-chat-ia'), ['status' => 400]);
         }
 
         $tabla_tickets = $wpdb->prefix . 'reservas_tickets';
@@ -4163,7 +4209,7 @@ class Chat_IA_Mobile_API {
         if (!$reservation) {
             return rest_ensure_response([
                 'success' => false,
-                'message' => 'Reserva no encontrada',
+                'message' => __('Reserva no encontrada', 'flavor-chat-ia'),
             ]);
         }
 
@@ -4178,7 +4224,6 @@ class Chat_IA_Mobile_API {
                 'time' => $reservation['hora'] ?? '',
                 'status' => $reservation['estado'] ?? 'pendiente',
                 'status_display' => $this->get_client_status_display($reservation['estado'] ?? 'pendiente'),
-                'customer_name' => $reservation['nombre'] ?? '',
                 'checkin' => $reservation['checkin'] ?? null,
                 'qr_data' => $reservation['codigo_ticket'] ?? $reservation['ticket_code'] ?? '',
             ],
@@ -4207,15 +4252,81 @@ class Chat_IA_Mobile_API {
         $mobile_config = $settings['mobile_apps'] ?? [];
         $client_config = $mobile_config['client_config'] ?? [];
 
-        // Configuración de pestañas/navegación
-        $default_tabs = [
-            ['id' => 'chat', 'label' => 'Chat', 'icon' => 'chat_bubble', 'enabled' => true, 'order' => 0],
-            ['id' => 'reservations', 'label' => 'Reservar', 'icon' => 'calendar_today', 'enabled' => true, 'order' => 1],
-            ['id' => 'my_tickets', 'label' => 'Mis Tickets', 'icon' => 'confirmation_number', 'enabled' => true, 'order' => 2],
-            ['id' => 'info', 'label' => 'Info', 'icon' => 'info', 'enabled' => true, 'order' => 3],
+        // Obtener módulos activos desde flavor_apps_config
+        $app_config = get_option('flavor_apps_config', []);
+        $enabled_modules = [];
+        if (isset($app_config['modules']) && is_array($app_config['modules'])) {
+            foreach ($app_config['modules'] as $module_id => $module_settings) {
+                if (!empty($module_settings['enabled'])) {
+                    $enabled_modules[] = $module_id;
+                }
+            }
+        }
+
+        // Tabs base (siempre disponibles)
+        $base_tabs = [
+            ['id' => 'info', 'label' => 'Info', 'icon' => 'info', 'enabled' => true, 'order' => 0],
         ];
 
-        $tabs = $client_config['tabs'] ?? $default_tabs;
+        // Tabs adicionales según configuración de WP
+        $order = 1;
+        $additional_tabs = [];
+
+        // Chat (si está habilitado)
+        if (isset($client_config['chat_enabled']) && $client_config['chat_enabled']) {
+            $additional_tabs[] = ['id' => 'chat', 'label' => 'Chat', 'icon' => 'chat_bubble', 'enabled' => true, 'order' => $order++];
+        }
+
+        // Reservas (si calendario-experiencias está activo)
+        if (isset($client_config['reservations_enabled']) && $client_config['reservations_enabled']) {
+            $additional_tabs[] = ['id' => 'reservations', 'label' => 'Reservar', 'icon' => 'calendar_today', 'enabled' => true, 'order' => $order++];
+            $additional_tabs[] = ['id' => 'my_tickets', 'label' => 'Mis Tickets', 'icon' => 'confirmation_number', 'enabled' => true, 'order' => $order++];
+        }
+
+        // Módulos dinámicos desde flavor_apps_config
+        $module_metadata = [
+            'grupos_consumo' => ['label' => 'Grupos Consumo', 'icon' => 'groups'],
+            'grupos-consumo' => ['label' => 'Grupos Consumo', 'icon' => 'groups'],
+            'banco_tiempo' => ['label' => 'Banco de Tiempo', 'icon' => 'handyman'],
+            'banco-tiempo' => ['label' => 'Banco de Tiempo', 'icon' => 'handyman'],
+            'marketplace' => ['label' => 'Marketplace', 'icon' => 'store'],
+            'eventos' => ['label' => 'Eventos', 'icon' => 'event'],
+            'socios' => ['label' => 'Socios', 'icon' => 'card_membership'],
+            'facturas' => ['label' => 'Facturas', 'icon' => 'receipt'],
+            'chat-grupos' => ['label' => 'Grupos', 'icon' => 'forum'],
+            'chat_grupos' => ['label' => 'Grupos', 'icon' => 'forum'],
+            'chat-interno' => ['label' => 'Mensajes', 'icon' => 'message'],
+            'chat_interno' => ['label' => 'Mensajes', 'icon' => 'message'],
+        ];
+
+        foreach ($enabled_modules as $module_id) {
+            // Omitir módulos base que ya están gestionados
+            if (in_array($module_id, ['chat', 'reservas', 'reservations'])) {
+                continue;
+            }
+
+            $metadata = $module_metadata[$module_id] ?? [
+                'label' => ucwords(str_replace(['_', '-'], ' ', $module_id)),
+                'icon' => 'extension'
+            ];
+
+            $additional_tabs[] = [
+                'id' => $module_id,
+                'label' => $metadata['label'],
+                'icon' => $metadata['icon'],
+                'enabled' => true,
+                'order' => $order++
+            ];
+        }
+
+        // Combinar tabs base con adicionales
+        $tabs = array_merge($base_tabs, $additional_tabs);
+
+        // Permitir override manual si existe
+        if (!empty($client_config['tabs'])) {
+            $tabs = $client_config['tabs'];
+        }
+
         $default_tab = $client_config['default_tab'] ?? 'info';
 
         // Funcionalidades habilitadas
@@ -4257,23 +4368,39 @@ class Chat_IA_Mobile_API {
             'welcome_message' => $client_config['welcome_message'] ?? '¡Bienvenido! ¿En qué podemos ayudarte?',
         ];
 
-        // Secciones de Info visibles
-        $saved_info_sections = $mobile_config['info_sections'] ?? [];
-        $default_info_sections = [
-            'business_info' => true,
-            'latest_posts' => true,
-            'site_updates' => true,
-            'contact' => true,
-            'social_links' => true,
-            'services' => true,
-            'gallery' => true,
-            'schedule' => true,
-            'location' => true,
-        ];
-        $info_sections = [];
-        foreach ($default_info_sections as $key => $default_value) {
-            $info_sections[$key] = isset($saved_info_sections[$key]) ? (bool)$saved_info_sections[$key] : $default_value;
+        // Secciones de Info desde flavor_apps_config
+        $info_sections_config = $app_config['info_sections'] ?? [];
+
+        // Si no hay configuración, usar defaults
+        if (empty($info_sections_config)) {
+            $info_sections_config = [
+                'header' => ['label' => 'Cabecera', 'icon' => 'image', 'enabled' => true, 'order' => 0, 'type' => 'predefined'],
+                'about' => ['label' => 'Sobre nosotros', 'icon' => 'info', 'enabled' => true, 'order' => 1, 'type' => 'predefined'],
+                'hours' => ['label' => 'Horarios', 'icon' => 'access_time', 'enabled' => true, 'order' => 2, 'type' => 'predefined'],
+                'contact' => ['label' => 'Contacto', 'icon' => 'phone', 'enabled' => true, 'order' => 3, 'type' => 'predefined'],
+                'location' => ['label' => 'Ubicación', 'icon' => 'location_on', 'enabled' => true, 'order' => 4, 'type' => 'predefined'],
+                'social' => ['label' => 'Redes sociales', 'icon' => 'share', 'enabled' => true, 'order' => 5, 'type' => 'predefined'],
+            ];
         }
+
+        // Filtrar solo las secciones habilitadas y ordenarlas
+        $info_sections = [];
+        foreach ($info_sections_config as $section_id => $section_data) {
+            if (is_array($section_data) && !empty($section_data['enabled'])) {
+                $info_sections[] = [
+                    'id' => $section_id,
+                    'label' => $section_data['label'] ?? $section_id,
+                    'icon' => $section_data['icon'] ?? 'article',
+                    'order' => $section_data['order'] ?? 0,
+                    'type' => $section_data['type'] ?? 'predefined',
+                ];
+            }
+        }
+
+        // Ordenar por orden
+        usort($info_sections, function($a, $b) {
+            return ($a['order'] ?? 0) - ($b['order'] ?? 0);
+        });
 
         // Textos personalizados extendidos
         $saved_texts = $mobile_config['texts'] ?? [];
