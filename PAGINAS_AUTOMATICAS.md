@@ -1,7 +1,7 @@
 # Páginas Frontend Automáticas por Módulo
 
 **Fecha**: 2026-02-11
-**Estado**: ✅ Implementado en 17 módulos
+**Estado**: ✅ Implementado en 32 módulos (100% completo)
 
 ## 📋 Sistema de Creación Automática
 
@@ -118,6 +118,79 @@ Todos los módulos con páginas frontend ahora crean automáticamente sus págin
 - `/bicicletas-compartidas/alquilar/` - Alquilar
 - `/bicicletas-compartidas/mis-alquileres/` - Mis alquileres
 
+### 18. DEX Solana (4 páginas)
+- `/dex-solana/` - Portfolio y estado
+- `/dex-solana/swap/` - Intercambio de tokens
+- `/dex-solana/liquidez/` - Gestionar liquidez
+- `/dex-solana/portfolio/` - Mi portfolio
+
+### 19. Trading IA (5 páginas)
+- `/trading-ia/` - Estado del bot
+- `/trading-ia/comprar/` - Compra manual
+- `/trading-ia/vender/` - Venta manual
+- `/trading-ia/regla/` - Crear regla
+- `/trading-ia/dashboard/` - Dashboard de trading
+
+### 20. Compostaje (3 páginas)
+- `/compostaje/` - Composteras comunitarias
+- `/compostaje/registrar/` - Registrar aporte
+- `/compostaje/mis-aportes/` - Mis aportes
+
+### 21. Ayuda Vecinal (3 páginas)
+- `/ayuda-vecinal/` - Red de ayuda mutua
+- `/ayuda-vecinal/pedir/` - Solicitar ayuda
+- `/ayuda-vecinal/ofrecer/` - Ofrecer ayuda
+
+### 22. Cursos (3 páginas)
+- `/cursos/` - Cursos y formación
+- `/cursos/inscribirse/` - Inscribirse en curso
+- `/cursos/mis-cursos/` - Mis cursos
+
+### 23. Multimedia (3 páginas)
+- `/multimedia/` - Galería multimedia
+- `/multimedia/subir/` - Subir contenido
+- `/multimedia/mi-contenido/` - Mi contenido
+
+### 24. Podcast (2 páginas)
+- `/podcast/` - Episodios y series
+- `/podcast/mis-suscripciones/` - Mis suscripciones
+
+### 25. Radio (2 páginas)
+- `/radio/` - Radio comunitaria
+- `/radio/programacion/` - Programación
+
+### 26. Reciclaje (2 páginas)
+- `/reciclaje/` - Puntos de reciclaje
+- `/reciclaje/estadisticas/` - Estadísticas
+
+### 27. Red Social (3 páginas)
+- `/red-social/` - Feed y publicaciones
+- `/red-social/publicar/` - Nueva publicación
+- `/red-social/perfil/` - Mi perfil
+
+### 28. Transparencia (2 páginas)
+- `/transparencia/` - Portal de transparencia
+- `/transparencia/datos-abiertos/` - Datos abiertos
+
+### 29. Colectivos (3 páginas)
+- `/colectivos/` - Colectivos y asociaciones
+- `/colectivos/crear/` - Crear colectivo
+- `/colectivos/mi-colectivo/` - Mi colectivo
+
+### 30. Comunidades (3 páginas)
+- `/comunidades/` - Sub-comunidades
+- `/comunidades/crear/` - Crear comunidad
+- `/comunidades/mi-comunidad/` - Mi comunidad
+
+### 31. Parkings (3 páginas)
+- `/parkings/` - Parkings compartidos
+- `/parkings/publicar/` - Publicar plaza
+- `/parkings/mis-plazas/` - Mis plazas
+
+### 32. Chat Grupos (2 páginas)
+- `/chat-grupos/` - Grupos públicos
+- `/chat-grupos/mis-grupos/` - Mis grupos
+
 ---
 
 ## 🎨 Personalización con Page Builders
@@ -220,10 +293,12 @@ flavor_{module_id}_pages_created = 1
 
 | Métrica | Valor |
 |---------|-------|
-| **Módulos con páginas** | 17 |
-| **Total de páginas** | ~60 páginas |
-| **Archivos modificados** | 41 archivos |
-| **Líneas agregadas** | 22,736+ líneas |
+| **Módulos con páginas** | 32 (100% completo) |
+| **Total de páginas** | ~100 páginas |
+| **Archivos modificados** | 834+ archivos |
+| **Líneas agregadas** | 159,222+ líneas |
+| **Módulos primera fase** | 17 módulos |
+| **Módulos segunda fase** | 15 módulos adicionales |
 
 ---
 
