@@ -7,6 +7,7 @@ import '../../core/providers/admin_modules_provider.dart';
 import 'admin_reservations_screen.dart';
 import 'camps/camps_management_screen.dart';
 import 'module_placeholder_screen.dart';
+import '../modules/facturas/facturas_screen.dart';
 
 /// Dashboard dinámico de módulos administrativos
 ///
@@ -377,19 +378,26 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
   void _navigateToModule(BuildContext context, String moduleId, String moduleName) {
     Widget? screen;
 
-    // Mapear módulos a sus pantallas administrativas
+    // Mapear módulos activos a sus pantallas
+    // Los IDs vienen del endpoint /app-discovery/v1/modules
     switch (moduleId) {
       case 'reservas':
-      case 'basabere-campamentos':
-      case 'calendario-experiencias':
         screen = const AdminReservationsScreen();
         break;
 
+      case 'facturas':
+        screen = const FacturasScreen();
+        break;
+
       case 'campamentos':
+      case 'basabere-campamentos':
         screen = const CampsManagementScreen();
         break;
 
-      // Para todos los demás módulos, mostrar pantalla placeholder
+      // Módulos sin pantalla específica: fichaje_empleados, bares, woocommerce
+      case 'fichaje_empleados':
+      case 'bares':
+      case 'woocommerce':
       default:
         screen = ModulePlaceholderScreen(
           moduleId: moduleId,
