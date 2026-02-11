@@ -2372,6 +2372,7 @@ class Flavor_App_Profile_Admin {
         $menu_id = $locations['primary'] ?? 0;
 
         if (!$menu_id) {
+            error_log('[SYNC_MENU] No hay menú principal configurado, saltando sincronización');
             return;
         }
 
@@ -2385,6 +2386,8 @@ class Flavor_App_Profile_Admin {
         }
         $modulos_activos = $this->normalizar_ids_modulos($modulos_activos);
         $menu_sync = $opciones['menu_sync'] ?? 'merge';
+
+        error_log('[SYNC_MENU] Sincronizando menú ID: ' . $menu_id . ' con modo: ' . $menu_sync);
 
         $items = wp_get_nav_menu_items($menu_id);
         $existing_page_ids = [];
@@ -2404,14 +2407,13 @@ class Flavor_App_Profile_Admin {
             $existing_page_ids = [];
         }
 
-        $pages_to_add = [];
-
+        // Recopilar todas las páginas de módulos (padres e hijos)
+        $all_pages = [];
         foreach ($modulos_activos as $modulo_id) {
             $pages = get_posts([
                 'post_type' => 'page',
                 'post_status' => 'publish',
-                'posts_per_page' => 10,
-                'post_parent' => 0,
+                'posts_per_page' => -1, // Todas las páginas
                 'meta_query' => [
                     [
                         'key' => '_flavor_auto_page_modules',
@@ -2422,22 +2424,47 @@ class Flavor_App_Profile_Admin {
             ]);
 
             foreach ($pages as $page) {
-                $pages_to_add[$page->ID] = $page;
+                $all_pages[$page->ID] = $page;
             }
         }
 
-        if (!empty($pages_to_add)) {
-            uasort($pages_to_add, function($a, $b) {
+        if (empty($all_pages)) {
+            error_log('[SYNC_MENU] No se encontraron páginas para añadir al menú');
+            return;
+        }
+
+        // Separar páginas padre e hijos
+        $parent_pages = [];
+        $child_pages = [];
+
+        foreach ($all_pages as $page) {
+            if ($page->post_parent == 0) {
+                $parent_pages[$page->ID] = $page;
+            } else {
+                $child_pages[$page->ID] = $page;
+            }
+        }
+
+        // Ordenar páginas padre alfabéticamente
+        if (!empty($parent_pages)) {
+            uasort($parent_pages, function($a, $b) {
                 return strcasecmp($a->post_title, $b->post_title);
             });
         }
 
-        foreach ($pages_to_add as $page) {
+        error_log('[SYNC_MENU] Páginas padre: ' . count($parent_pages) . ', Páginas hijo: ' . count($child_pages));
+
+        // Mapa de page_id => menu_item_id
+        $page_to_menu_item = [];
+
+        // Primero añadir todas las páginas padre
+        foreach ($parent_pages as $page) {
             if (in_array((int) $page->ID, $existing_page_ids, true)) {
+                error_log('[SYNC_MENU] Página padre ya existe en menú: ' . $page->post_title);
                 continue;
             }
 
-            wp_update_nav_menu_item($menu_id, 0, [
+            $menu_item_id = wp_update_nav_menu_item($menu_id, 0, [
                 'menu-item-title' => $page->post_title,
                 'menu-item-object' => 'page',
                 'menu-item-object-id' => $page->ID,
@@ -2445,7 +2472,50 @@ class Flavor_App_Profile_Admin {
                 'menu-item-status' => 'publish',
             ]);
 
-            $existing_page_ids[] = (int) $page->ID;
+            if (!is_wp_error($menu_item_id)) {
+                $page_to_menu_item[$page->ID] = $menu_item_id;
+                $existing_page_ids[] = (int) $page->ID;
+                error_log('[SYNC_MENU] Añadida página padre al menú: ' . $page->post_title . ' (menu_item: ' . $menu_item_id . ')');
+            }
+        }
+
+        // Luego añadir páginas hijo bajo sus padres
+        foreach ($child_pages as $page) {
+            if (in_array((int) $page->ID, $existing_page_ids, true)) {
+                error_log('[SYNC_MENU] Página hijo ya existe en menú: ' . $page->post_title);
+                continue;
+            }
+
+            // Verificar si el padre está en el menú
+            $parent_menu_item_id = $page_to_menu_item[$page->post_parent] ?? 0;
+
+            if (!$parent_menu_item_id) {
+                // Si el padre no está en el menú, buscar si ya existe
+                $parent_items = wp_get_nav_menu_items($menu_id);
+                if ($parent_items) {
+                    foreach ($parent_items as $item) {
+                        if ($item->object === 'page' && $item->object_id == $page->post_parent) {
+                            $parent_menu_item_id = $item->ID;
+                            $page_to_menu_item[$page->post_parent] = $item->ID;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $menu_item_id = wp_update_nav_menu_item($menu_id, 0, [
+                'menu-item-title' => $page->post_title,
+                'menu-item-object' => 'page',
+                'menu-item-object-id' => $page->ID,
+                'menu-item-type' => 'post_type',
+                'menu-item-status' => 'publish',
+                'menu-item-parent-id' => $parent_menu_item_id, // Establecer el padre
+            ]);
+
+            if (!is_wp_error($menu_item_id)) {
+                $existing_page_ids[] = (int) $page->ID;
+                error_log('[SYNC_MENU] Añadida página hijo al menú: ' . $page->post_title . ' bajo parent_id: ' . $parent_menu_item_id);
+            }
         }
     }
 
