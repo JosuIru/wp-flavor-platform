@@ -38,6 +38,9 @@ class Flavor_Module_Shortcodes {
         add_action('init', [$this, 'register_module_shortcodes'], 20);
         // Registrar shortcode de formularios
         add_shortcode('flavor_module_form', [$this, 'render_module_form']);
+        // Registrar handler AJAX para formularios
+        add_action('wp_ajax_flavor_module_action', [$this, 'handle_form_submission']);
+        add_action('wp_ajax_nopriv_flavor_module_action', [$this, 'handle_form_submission']);
     }
 
     /**
@@ -57,6 +60,82 @@ class Flavor_Module_Shortcodes {
             add_shortcode($shortcode_name, function($atts) use ($id, $instance) {
                 return $this->render_module_shortcode($id, $instance, $atts);
             });
+        }
+    }
+
+    /**
+     * Maneja el envío de formularios vía AJAX
+     */
+    public function handle_form_submission() {
+        // Verificar nonce
+        $module_id = sanitize_text_field($_POST['flavor_module'] ?? '');
+
+        if (!check_ajax_referer('flavor_module_action_' . $module_id, 'flavor_nonce', false)) {
+            wp_send_json_error(__('Token de seguridad inválido', 'flavor-chat-ia'));
+            return;
+        }
+
+        $action = sanitize_text_field($_POST['flavor_action'] ?? '');
+
+        if (empty($module_id) || empty($action)) {
+            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
+            return;
+        }
+
+        // Obtener módulo
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            wp_send_json_error(__('Sistema no disponible', 'flavor-chat-ia'));
+            return;
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $instance = $loader->get_module($module_id);
+
+        if (!$instance) {
+            wp_send_json_error(__('Módulo no encontrado', 'flavor-chat-ia'));
+            return;
+        }
+
+        // Verificar que el usuario tenga permisos
+        if (class_exists('Flavor_Module_Access_Control')) {
+            $control = Flavor_Module_Access_Control::get_instance();
+            if (!$control->user_can_access($module_id)) {
+                wp_send_json_error(__('No tienes permisos para esta acción', 'flavor-chat-ia'));
+                return;
+            }
+        }
+
+        // Preparar parámetros
+        $params = [];
+        foreach ($_POST as $key => $value) {
+            if (!in_array($key, ['action', 'flavor_module', 'flavor_action', 'flavor_nonce'])) {
+                $params[$key] = is_array($value) ? array_map('sanitize_text_field', $value) : sanitize_text_field($value);
+            }
+        }
+
+        // Ejecutar acción del módulo
+        try {
+            if (method_exists($instance, 'execute_action')) {
+                $result = $instance->execute_action($action, $params);
+            } else {
+                $result = ['success' => false, 'message' => __('Módulo no soporta acciones', 'flavor-chat-ia')];
+            }
+
+            if (is_array($result)) {
+                if ($result['success'] ?? false) {
+                    wp_send_json_success([
+                        'message' => $result['message'] ?? __('Operación completada', 'flavor-chat-ia'),
+                        'data' => $result['data'] ?? [],
+                        'redirect' => $result['redirect'] ?? '',
+                    ]);
+                } else {
+                    wp_send_json_error($result['message'] ?? __('Error al procesar', 'flavor-chat-ia'));
+                }
+            } else {
+                wp_send_json_error(__('Respuesta inválida del módulo', 'flavor-chat-ia'));
+            }
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
         }
     }
 
