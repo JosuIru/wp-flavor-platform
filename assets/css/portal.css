@@ -411,15 +411,27 @@
    ======================================================================== */
 
 .flavor-dashboard-stats {
-    width: 100%;
-    margin: 0 0 40px;
-    padding: 0;
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    padding: 40px 20px;
+    position: relative;
 }
 
 /* Cuando está dentro del portal, usar todo el ancho */
 .flavor-mi-portal .flavor-dashboard-stats {
-    width: 100%;
+    width: 100vw;
     max-width: none;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Container interno para mantener padding razonable */
+.flavor-dashboard-stats > .flavor-stats-cards {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
 }
 
 .flavor-dashboard-stats__header {
