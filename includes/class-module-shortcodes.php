@@ -36,6 +36,8 @@ class Flavor_Module_Shortcodes {
      */
     private function __construct() {
         add_action('init', [$this, 'register_module_shortcodes'], 20);
+        // Registrar shortcode de formularios
+        add_shortcode('flavor_module_form', [$this, 'render_module_form']);
     }
 
     /**
@@ -56,6 +58,360 @@ class Flavor_Module_Shortcodes {
                 return $this->render_module_shortcode($id, $instance, $atts);
             });
         }
+    }
+
+    /**
+     * Renderiza un formulario de módulo
+     * Uso: [flavor_module_form module="eventos" action="inscribirse_evento"]
+     */
+    public function render_module_form($atts) {
+        $atts = shortcode_atts([
+            'module' => '',
+            'action' => '',
+            'titulo' => '',
+            'descripcion' => '',
+            'mostrar_titulo' => 'yes',
+        ], $atts);
+
+        if (empty($atts['module']) || empty($atts['action'])) {
+            return '<div class="flavor-error">' . __('Error: Debes especificar module y action', 'flavor-chat-ia') . '</div>';
+        }
+
+        // Obtener instancia del módulo
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return '<div class="flavor-error">' . __('Error: Module Loader no disponible', 'flavor-chat-ia') . '</div>';
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $instance = $loader->get_module($atts['module']);
+
+        if (!$instance) {
+            return '<div class="flavor-error">' . sprintf(__('Error: Módulo "%s" no encontrado', 'flavor-chat-ia'), $atts['module']) . '</div>';
+        }
+
+        // Verificar que el módulo tenga el método get_form_config
+        if (!method_exists($instance, 'get_form_config')) {
+            return '<div class="flavor-error">' . __('Error: Este módulo no soporta formularios', 'flavor-chat-ia') . '</div>';
+        }
+
+        // Obtener configuración del formulario
+        $form_config = $instance->get_form_config($atts['action']);
+
+        if (!$form_config) {
+            return '<div class="flavor-error">' . sprintf(__('Error: Acción "%s" no tiene configuración de formulario', 'flavor-chat-ia'), $atts['action']) . '</div>';
+        }
+
+        // Preparar datos del formulario
+        $form_data = [
+            'module_id' => $atts['module'],
+            'action' => $atts['action'],
+            'title' => $atts['titulo'] ?: ($form_config['title'] ?? ucfirst($atts['action'])),
+            'description' => $atts['descripcion'] ?: ($form_config['description'] ?? ''),
+            'fields' => $form_config['fields'] ?? [],
+            'submit_text' => $form_config['submit_text'] ?? __('Enviar', 'flavor-chat-ia'),
+            'ajax' => $form_config['ajax'] ?? true,
+        ];
+
+        // Renderizar el formulario
+        ob_start();
+        $this->render_form_html($form_data, $atts);
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el HTML del formulario
+     */
+    private function render_form_html($form_data, $atts) {
+        ?>
+        <div class="flavor-module-form-wrapper">
+            <?php if ($atts['mostrar_titulo'] === 'yes' && !empty($form_data['title'])) : ?>
+                <div class="flavor-form-header">
+                    <h3 class="flavor-form-title"><?php echo esc_html($form_data['title']); ?></h3>
+                    <?php if (!empty($form_data['description'])) : ?>
+                        <p class="flavor-form-description"><?php echo esc_html($form_data['description']); ?></p>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
+            <form class="flavor-module-form"
+                  data-module="<?php echo esc_attr($form_data['module_id']); ?>"
+                  data-action="<?php echo esc_attr($form_data['action']); ?>"
+                  data-ajax="<?php echo $form_data['ajax'] ? '1' : '0'; ?>"
+                  method="post">
+
+                <?php wp_nonce_field('flavor_module_action_' . $form_data['module_id'], 'flavor_nonce'); ?>
+                <input type="hidden" name="flavor_module" value="<?php echo esc_attr($form_data['module_id']); ?>">
+                <input type="hidden" name="flavor_action" value="<?php echo esc_attr($form_data['action']); ?>">
+
+                <div class="flavor-form-fields">
+                    <?php foreach ($form_data['fields'] as $field_name => $field_config) : ?>
+                        <?php $this->render_form_field($field_name, $field_config); ?>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="flavor-form-messages"></div>
+
+                <div class="flavor-form-actions">
+                    <button type="submit" class="flavor-button flavor-button--primary">
+                        <?php echo esc_html($form_data['submit_text']); ?>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <style>
+        .flavor-module-form-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .flavor-form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .flavor-form-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 12px;
+        }
+        .flavor-form-description {
+            font-size: 16px;
+            color: #6b7280;
+            margin: 0;
+        }
+        .flavor-form-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .flavor-form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .flavor-form-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+        .flavor-form-label--required::after {
+            content: " *";
+            color: #ef4444;
+        }
+        .flavor-form-input,
+        .flavor-form-textarea,
+        .flavor-form-select {
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .flavor-form-input:focus,
+        .flavor-form-textarea:focus,
+        .flavor-form-select:focus {
+            outline: none;
+            border-color: var(--flavor-primary, #3b82f6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .flavor-form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .flavor-form-help {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        .flavor-form-messages {
+            margin: 20px 0;
+        }
+        .flavor-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .flavor-message--success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+        .flavor-message--error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .flavor-form-actions {
+            margin-top: 24px;
+        }
+        .flavor-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .flavor-button--primary {
+            background: var(--flavor-primary, #3b82f6);
+            color: white;
+        }
+        .flavor-button--primary:hover {
+            background: var(--flavor-primary-dark, #2563eb);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .flavor-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        @media (max-width: 640px) {
+            .flavor-module-form-wrapper {
+                padding: 20px;
+            }
+            .flavor-form-title {
+                font-size: 24px;
+            }
+        }
+        </style>
+
+        <script>
+        (function() {
+            document.addEventListener('DOMContentLoaded', function() {
+                const forms = document.querySelectorAll('.flavor-module-form');
+
+                forms.forEach(function(form) {
+                    if (form.dataset.ajax !== '1') return;
+
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+
+                        const button = form.querySelector('button[type="submit"]');
+                        const messages = form.querySelector('.flavor-form-messages');
+                        const formData = new FormData(form);
+
+                        formData.append('action', 'flavor_module_action');
+
+                        button.disabled = true;
+                        button.textContent = '<?php _e('Enviando...', 'flavor-chat-ia'); ?>';
+                        messages.innerHTML = '';
+
+                        fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                messages.innerHTML = '<div class="flavor-message flavor-message--success">' +
+                                    (data.data.message || '<?php _e('Operación completada con éxito', 'flavor-chat-ia'); ?>') +
+                                    '</div>';
+                                form.reset();
+
+                                // Redirigir si se especifica
+                                if (data.data.redirect) {
+                                    setTimeout(function() {
+                                        window.location.href = data.data.redirect;
+                                    }, 1500);
+                                }
+                            } else {
+                                messages.innerHTML = '<div class="flavor-message flavor-message--error">' +
+                                    (data.data || '<?php _e('Error al procesar el formulario', 'flavor-chat-ia'); ?>') +
+                                    '</div>';
+                            }
+                        })
+                        .catch(error => {
+                            messages.innerHTML = '<div class="flavor-message flavor-message--error">' +
+                                '<?php _e('Error de conexión', 'flavor-chat-ia'); ?>' +
+                                '</div>';
+                        })
+                        .finally(function() {
+                            button.disabled = false;
+                            button.textContent = '<?php echo esc_js($form_data['submit_text'] ?? __('Enviar', 'flavor-chat-ia')); ?>';
+                        });
+                    });
+                });
+            });
+        })();
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza un campo del formulario
+     */
+    private function render_form_field($field_name, $field_config) {
+        $type = $field_config['type'] ?? 'text';
+        $label = $field_config['label'] ?? ucfirst(str_replace('_', ' ', $field_name));
+        $required = $field_config['required'] ?? false;
+        $placeholder = $field_config['placeholder'] ?? '';
+        $help = $field_config['help'] ?? '';
+        $options = $field_config['options'] ?? [];
+        $value = $field_config['value'] ?? '';
+
+        ?>
+        <div class="flavor-form-field">
+            <label for="flavor_field_<?php echo esc_attr($field_name); ?>"
+                   class="flavor-form-label <?php echo $required ? 'flavor-form-label--required' : ''; ?>">
+                <?php echo esc_html($label); ?>
+            </label>
+
+            <?php if ($type === 'textarea') : ?>
+                <textarea
+                    id="flavor_field_<?php echo esc_attr($field_name); ?>"
+                    name="<?php echo esc_attr($field_name); ?>"
+                    class="flavor-form-textarea"
+                    placeholder="<?php echo esc_attr($placeholder); ?>"
+                    <?php echo $required ? 'required' : ''; ?>
+                    <?php if (isset($field_config['rows'])) : ?>rows="<?php echo intval($field_config['rows']); ?>"<?php endif; ?>
+                ><?php echo esc_textarea($value); ?></textarea>
+
+            <?php elseif ($type === 'select') : ?>
+                <select
+                    id="flavor_field_<?php echo esc_attr($field_name); ?>"
+                    name="<?php echo esc_attr($field_name); ?>"
+                    class="flavor-form-select"
+                    <?php echo $required ? 'required' : ''; ?>>
+                    <?php if (!$required || $placeholder) : ?>
+                        <option value=""><?php echo esc_html($placeholder ?: __('Selecciona una opción', 'flavor-chat-ia')); ?></option>
+                    <?php endif; ?>
+                    <?php foreach ($options as $opt_value => $opt_label) : ?>
+                        <option value="<?php echo esc_attr($opt_value); ?>" <?php selected($value, $opt_value); ?>>
+                            <?php echo esc_html($opt_label); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+            <?php else : ?>
+                <input
+                    type="<?php echo esc_attr($type); ?>"
+                    id="flavor_field_<?php echo esc_attr($field_name); ?>"
+                    name="<?php echo esc_attr($field_name); ?>"
+                    class="flavor-form-input"
+                    placeholder="<?php echo esc_attr($placeholder); ?>"
+                    value="<?php echo esc_attr($value); ?>"
+                    <?php echo $required ? 'required' : ''; ?>
+                    <?php if (isset($field_config['min'])) : ?>min="<?php echo esc_attr($field_config['min']); ?>"<?php endif; ?>
+                    <?php if (isset($field_config['max'])) : ?>max="<?php echo esc_attr($field_config['max']); ?>"<?php endif; ?>
+                    <?php if (isset($field_config['step'])) : ?>step="<?php echo esc_attr($field_config['step']); ?>"<?php endif; ?>
+                    <?php if (isset($field_config['pattern'])) : ?>pattern="<?php echo esc_attr($field_config['pattern']); ?>"<?php endif; ?>
+                >
+            <?php endif; ?>
+
+            <?php if ($help) : ?>
+                <span class="flavor-form-help"><?php echo esc_html($help); ?></span>
+            <?php endif; ?>
+        </div>
+        <?php
     }
 
     /**
