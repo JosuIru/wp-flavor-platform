@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -1328,5 +1329,49 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         $estadisticas['productos_sin_stock'] = $sin_stock_query->found_posts;
 
         return $estadisticas;
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Tienda', 'flavor-chat-ia'),
+                'slug' => 'tienda-woo',
+                'content' => '<h1>' . __('Tienda', 'flavor-chat-ia') . '</h1>
+<p>' . __('Explora nuestros productos', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="woocommerce" action="productos" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Categorías', 'flavor-chat-ia'),
+                'slug' => 'categorias-tienda',
+                'content' => '<h1>' . __('Categorías', 'flavor-chat-ia') . '</h1>
+<p>' . __('Navega por categorías de productos', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="woocommerce" action="categorias"]',
+                'parent' => 'tienda-woo',
+            ],
+            [
+                'title' => __('Mis Pedidos', 'flavor-chat-ia'),
+                'slug' => 'mis-pedidos-woo',
+                'content' => '<h1>' . __('Mis Pedidos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta el estado de tus pedidos', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="woocommerce" action="mis_pedidos"]',
+                'parent' => 'tienda-woo',
+            ],
+            [
+                'title' => __('Ofertas', 'flavor-chat-ia'),
+                'slug' => 'ofertas-tienda',
+                'content' => '<h1>' . __('Ofertas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Descubre las mejores ofertas', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="woocommerce" action="ofertas"]',
+                'parent' => 'tienda-woo',
+            ],
+        ];
     }
 }
