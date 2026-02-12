@@ -1,0 +1,516 @@
+/**
+ * Flavor Chat IA - Keyboard Shortcuts Styles
+ *
+ * Estilos para el sistema de atajos de teclado,
+ * panel de ayuda modal y badges de teclas.
+ *
+ * @package Flavor_Chat_IA
+ * @since 1.0.0
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+
+:root {
+    --flavor-kbd-bg: #f7f7f7;
+    --flavor-kbd-bg-dark: #e0e0e0;
+    --flavor-kbd-border: #c4c4c4;
+    --flavor-kbd-shadow: #999;
+    --flavor-kbd-text: #333;
+    --flavor-kbd-font-size: 0.75rem;
+    --flavor-kbd-padding: 0.2em 0.5em;
+    --flavor-kbd-radius: 4px;
+
+    --flavor-modal-bg: #fff;
+    --flavor-modal-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    --flavor-modal-backdrop: rgba(0, 0, 0, 0.5);
+    --flavor-modal-radius: 12px;
+    --flavor-modal-max-width: 600px;
+    --flavor-modal-z-index: 999999;
+
+    --flavor-notification-bg: #333;
+    --flavor-notification-text: #fff;
+    --flavor-notification-success: #46b450;
+    --flavor-notification-error: #dc3232;
+    --flavor-notification-info: #0073aa;
+    --flavor-notification-warning: #ffb900;
+
+    --flavor-primary-color: #2271b1;
+    --flavor-text-color: #1e1e1e;
+    --flavor-text-muted: #757575;
+    --flavor-border-color: #dcdcde;
+}
+
+/* ==========================================================================
+   KBD - Keyboard Key Badges
+   ========================================================================== */
+
+.flavor-kbd,
+kbd.flavor-kbd {
+    display: inline-block;
+    padding: var(--flavor-kbd-padding);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: var(--flavor-kbd-font-size);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--flavor-kbd-text);
+    background: linear-gradient(180deg, var(--flavor-kbd-bg) 0%, var(--flavor-kbd-bg-dark) 100%);
+    border: 1px solid var(--flavor-kbd-border);
+    border-radius: var(--flavor-kbd-radius);
+    box-shadow:
+        0 1px 0 0 var(--flavor-kbd-shadow),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+    white-space: nowrap;
+    vertical-align: middle;
+    text-transform: capitalize;
+    min-width: 1.5em;
+    text-align: center;
+}
+
+/* Variante más grande */
+.flavor-kbd--lg {
+    font-size: 0.875rem;
+    padding: 0.3em 0.6em;
+}
+
+/* Variante pequeña */
+.flavor-kbd--sm {
+    font-size: 0.65rem;
+    padding: 0.15em 0.4em;
+}
+
+/* Estado hover sutil */
+.flavor-kbd:hover {
+    background: linear-gradient(180deg, #fff 0%, var(--flavor-kbd-bg) 100%);
+}
+
+/* Separador entre teclas */
+.flavor-shortcut-item__keys .flavor-kbd + .flavor-kbd::before {
+    content: "+";
+    display: inline-block;
+    margin: 0 0.3em;
+    color: var(--flavor-text-muted);
+    font-weight: normal;
+}
+
+/* ==========================================================================
+   Modal - Panel de Ayuda de Atajos
+   ========================================================================== */
+
+/* Backdrop del modal */
+.flavor-shortcuts-modal {
+    position: fixed;
+    inset: 0;
+    z-index: var(--flavor-modal-z-index);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.flavor-shortcuts-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.flavor-shortcuts-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--flavor-modal-backdrop);
+    backdrop-filter: blur(2px);
+}
+
+/* Contenedor del contenido */
+.flavor-shortcuts-modal__content {
+    position: relative;
+    width: 90%;
+    max-width: var(--flavor-modal-max-width);
+    max-height: 80vh;
+    background: var(--flavor-modal-bg);
+    border-radius: var(--flavor-modal-radius);
+    box-shadow: var(--flavor-modal-shadow);
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-20px) scale(0.95);
+    transition: transform 0.2s ease;
+    overflow: hidden;
+}
+
+.flavor-shortcuts-modal.is-open .flavor-shortcuts-modal__content {
+    transform: translateY(0) scale(1);
+}
+
+/* Header del modal */
+.flavor-shortcuts-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--flavor-border-color);
+    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+}
+
+.flavor-shortcuts-modal__header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--flavor-text-color);
+}
+
+/* Botón de cerrar */
+.flavor-shortcuts-modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--flavor-text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.flavor-shortcuts-modal__close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--flavor-text-color);
+}
+
+.flavor-shortcuts-modal__close:focus {
+    outline: 2px solid var(--flavor-primary-color);
+    outline-offset: 2px;
+}
+
+/* Body del modal */
+.flavor-shortcuts-modal__body {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* Footer del modal */
+.flavor-shortcuts-modal__footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--flavor-border-color);
+    background: #fafafa;
+}
+
+.flavor-shortcuts-modal__hint {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--flavor-text-muted);
+    text-align: center;
+}
+
+/* ==========================================================================
+   Lista de Atajos
+   ========================================================================== */
+
+.flavor-shortcuts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Categoría */
+.flavor-shortcuts-category {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-shortcuts-category__title {
+    margin: 0;
+    padding-bottom: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--flavor-primary-color);
+    border-bottom: 2px solid var(--flavor-primary-color);
+}
+
+.flavor-shortcuts-category__list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Item de atajo */
+.flavor-shortcut-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.625rem 0.75rem;
+    background: #fafafa;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+}
+
+.flavor-shortcut-item:hover {
+    background: #f0f0f0;
+}
+
+.flavor-shortcut-item__keys {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.flavor-shortcut-item__description {
+    margin: 0;
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--flavor-text-color);
+    text-align: right;
+}
+
+/* ==========================================================================
+   Notificaciones
+   ========================================================================== */
+
+.flavor-shortcut-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--flavor-notification-text);
+    background: var(--flavor-notification-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    z-index: calc(var(--flavor-modal-z-index) + 1);
+}
+
+.flavor-shortcut-notification.is-visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Variantes de notificación */
+.flavor-shortcut-notification--success {
+    background: var(--flavor-notification-success);
+}
+
+.flavor-shortcut-notification--error {
+    background: var(--flavor-notification-error);
+}
+
+.flavor-shortcut-notification--info {
+    background: var(--flavor-notification-info);
+}
+
+.flavor-shortcut-notification--warning {
+    background: var(--flavor-notification-warning);
+    color: #1e1e1e;
+}
+
+/* ==========================================================================
+   Estados del body cuando el modal está abierto
+   ========================================================================== */
+
+body.flavor-shortcuts-modal-open {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Tema Oscuro (Dark Mode)
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --flavor-kbd-bg: #3a3a3a;
+        --flavor-kbd-bg-dark: #2a2a2a;
+        --flavor-kbd-border: #555;
+        --flavor-kbd-shadow: #222;
+        --flavor-kbd-text: #e0e0e0;
+
+        --flavor-modal-bg: #2c2c2c;
+        --flavor-modal-backdrop: rgba(0, 0, 0, 0.7);
+
+        --flavor-text-color: #e0e0e0;
+        --flavor-text-muted: #999;
+        --flavor-border-color: #444;
+    }
+
+    .flavor-shortcuts-modal__header {
+        background: linear-gradient(180deg, #3a3a3a 0%, #333 100%);
+    }
+
+    .flavor-shortcuts-modal__footer {
+        background: #333;
+    }
+
+    .flavor-shortcut-item {
+        background: #333;
+    }
+
+    .flavor-shortcut-item:hover {
+        background: #3a3a3a;
+    }
+}
+
+/* Soporte para clase de tema oscuro en body */
+body.flavor-dark-mode,
+body.dark-mode,
+.flavor-dark-theme {
+    --flavor-kbd-bg: #3a3a3a;
+    --flavor-kbd-bg-dark: #2a2a2a;
+    --flavor-kbd-border: #555;
+    --flavor-kbd-shadow: #222;
+    --flavor-kbd-text: #e0e0e0;
+
+    --flavor-modal-bg: #2c2c2c;
+    --flavor-modal-backdrop: rgba(0, 0, 0, 0.7);
+
+    --flavor-text-color: #e0e0e0;
+    --flavor-text-muted: #999;
+    --flavor-border-color: #444;
+}
+
+body.flavor-dark-mode .flavor-shortcuts-modal__header,
+body.dark-mode .flavor-shortcuts-modal__header,
+.flavor-dark-theme .flavor-shortcuts-modal__header {
+    background: linear-gradient(180deg, #3a3a3a 0%, #333 100%);
+}
+
+body.flavor-dark-mode .flavor-shortcuts-modal__footer,
+body.dark-mode .flavor-shortcuts-modal__footer,
+.flavor-dark-theme .flavor-shortcuts-modal__footer {
+    background: #333;
+}
+
+body.flavor-dark-mode .flavor-shortcut-item,
+body.dark-mode .flavor-shortcut-item,
+.flavor-dark-theme .flavor-shortcut-item {
+    background: #333;
+}
+
+body.flavor-dark-mode .flavor-shortcut-item:hover,
+body.dark-mode .flavor-shortcut-item:hover,
+.flavor-dark-theme .flavor-shortcut-item:hover {
+    background: #3a3a3a;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 600px) {
+    .flavor-shortcuts-modal__content {
+        width: 95%;
+        max-height: 90vh;
+        border-radius: 8px;
+    }
+
+    .flavor-shortcuts-modal__header {
+        padding: 1rem;
+    }
+
+    .flavor-shortcuts-modal__header h2 {
+        font-size: 1.125rem;
+    }
+
+    .flavor-shortcuts-modal__body {
+        padding: 1rem;
+    }
+
+    .flavor-shortcut-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .flavor-shortcut-item__description {
+        text-align: left;
+        font-size: 0.8125rem;
+    }
+
+    .flavor-kbd {
+        font-size: 0.7rem;
+    }
+}
+
+/* ==========================================================================
+   Accesibilidad
+   ========================================================================== */
+
+/* Focus visible para navegación por teclado */
+.flavor-shortcuts-modal *:focus-visible {
+    outline: 2px solid var(--flavor-primary-color);
+    outline-offset: 2px;
+}
+
+/* Reducir movimiento para usuarios que lo prefieren */
+@media (prefers-reduced-motion: reduce) {
+    .flavor-shortcuts-modal,
+    .flavor-shortcuts-modal__content,
+    .flavor-shortcut-notification {
+        transition: none;
+    }
+
+    .flavor-shortcuts-modal.is-open .flavor-shortcuts-modal__content {
+        transform: none;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    .flavor-kbd {
+        border-width: 2px;
+        font-weight: 700;
+    }
+
+    .flavor-shortcuts-modal__content {
+        border: 2px solid var(--flavor-text-color);
+    }
+
+    .flavor-shortcut-item {
+        border: 1px solid var(--flavor-border-color);
+    }
+}
+
+/* ==========================================================================
+   Print
+   ========================================================================== */
+
+@media print {
+    .flavor-shortcuts-modal {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .flavor-shortcuts-modal__backdrop {
+        display: none;
+    }
+
+    .flavor-shortcuts-modal__content {
+        max-height: none;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+
+    .flavor-shortcut-notification {
+        display: none;
+    }
+}
