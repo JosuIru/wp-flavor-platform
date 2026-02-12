@@ -223,6 +223,8 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-landing-shortcodes.php';
         // Shortcodes del Portal del Cliente
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-portal-shortcodes.php';
+        // Shortcodes Automáticos de Módulos
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-shortcodes.php';
         // Fallback de shortcodes GC cuando el módulo no está cargado
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-gc-shortcodes-fallback.php';
 
@@ -556,6 +558,11 @@ final class Flavor_Chat_IA {
             Flavor_Portal_Shortcodes::get_instance();
             // Crear páginas del portal si no existen
             $this->maybe_create_portal_pages();
+        }
+
+        // Inicializar Shortcodes Automáticos de Módulos
+        if (class_exists('Flavor_Module_Shortcodes')) {
+            Flavor_Module_Shortcodes::get_instance();
         }
 
         // Inicializar Sistema de Layouts Predefinidos

@@ -1,8 +1,8 @@
 <?php
 /**
- * Sistema de Shortcodes Universales para Módulos
+ * Shortcodes Automáticos de Módulos
  *
- * Proporciona shortcodes genéricos que funcionan con cualquier módulo
+ * Registra shortcodes automáticamente para cada módulo activo
  *
  * @package FlavorChatIA
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Clase para shortcodes de módulos
+ * Clase para shortcodes automáticos de módulos
  */
 class Flavor_Module_Shortcodes {
 
@@ -20,11 +20,6 @@ class Flavor_Module_Shortcodes {
      * Instancia singleton
      */
     private static $instance = null;
-
-    /**
-     * Instancia del control de acceso
-     */
-    private $control_acceso = null;
 
     /**
      * Obtiene la instancia singleton
@@ -40,353 +35,212 @@ class Flavor_Module_Shortcodes {
      * Constructor privado
      */
     private function __construct() {
-        $this->register_shortcodes();
-        $this->inicializar_control_acceso();
+        add_action('init', [$this, 'register_module_shortcodes'], 20);
     }
 
     /**
-     * Inicializa el controlador de acceso
+     * Registra shortcodes para todos los módulos activos
      */
-    private function inicializar_control_acceso() {
-        if (class_exists('Flavor_Module_Access_Control')) {
-            $this->control_acceso = Flavor_Module_Access_Control::get_instance();
+    public function register_module_shortcodes() {
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return;
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $modulos = $loader->get_loaded_modules();
+
+        foreach ($modulos as $id => $instance) {
+            // Registrar shortcode: [flavor_{modulo_id}]
+            $shortcode_name = 'flavor_' . $id;
+            add_shortcode($shortcode_name, function($atts) use ($id, $instance) {
+                return $this->render_module_shortcode($id, $instance, $atts);
+            });
         }
     }
 
     /**
-     * Verifica si el usuario tiene acceso al módulo
-     *
-     * @param string $module_slug Slug del módulo
-     * @return bool|string True si tiene acceso, o HTML de mensaje de error
+     * Renderiza el shortcode de un módulo
      */
-    private function verificar_acceso_modulo($module_slug) {
-        // Si no hay control de acceso, permitir todo
-        if (!$this->control_acceso) {
-            return true;
-        }
-
-        // Verificar acceso
-        if ($this->control_acceso->user_can_access($module_slug)) {
-            return true;
-        }
-
-        // No tiene acceso - determinar qué mensaje mostrar
-        if (!is_user_logged_in()) {
-            $url_redireccion = $this->obtener_url_actual();
-            return $this->control_acceso->render_login_required($url_redireccion);
-        }
-
-        return $this->control_acceso->render_access_denied($module_slug);
-    }
-
-    /**
-     * Obtiene la URL actual
-     *
-     * @return string
-     */
-    private function obtener_url_actual() {
-        global $wp;
-        return home_url(add_query_arg([], $wp->request));
-    }
-
-    /**
-     * Registra los shortcodes
-     */
-    public function register_shortcodes() {
-        // [flavor_module_listing module="talleres" action="talleres_disponibles"]
-        add_shortcode('flavor_module_listing', [$this, 'render_listing']);
-
-        // [flavor_module_form module="talleres" action="inscribirse"]
-        add_shortcode('flavor_module_form', [$this, 'render_form']);
-
-        // [flavor_module_detail module="talleres" id="123"]
-        add_shortcode('flavor_module_detail', [$this, 'render_detail']);
-
-        // [flavor_module_dashboard module="talleres"]
-        add_shortcode('flavor_module_dashboard', [$this, 'render_dashboard']);
-    }
-
-    /**
-     * Renderiza un listado de items del módulo
-     */
-    public function render_listing($atts) {
+    private function render_module_shortcode($modulo_id, $instance, $atts) {
         $atts = shortcode_atts([
-            'module' => '',
-            'action' => '',
-            'filters' => '',
-            'columnas' => '3',
+            'vista' => 'grid', // grid, lista, calendario
             'limite' => '12',
-            'require_access' => 'yes', // Permitir desactivar verificación de acceso
+            'columnas' => '3',
+            'mostrar_filtros' => 'yes',
+            'tipo' => '', // Para filtrar por tipo específico
         ], $atts);
 
-        if (empty($atts['module'])) {
-            return '<p class="flavor-error">' . __('Falta especificar el módulo', 'flavor-chat-ia') . '</p>';
-        }
+        // Buscar template del módulo
+        $template_paths = [
+            // Componente específico
+            FLAVOR_CHAT_IA_PATH . "templates/components/{$modulo_id}/{$modulo_id}-{$atts['vista']}.php",
+            FLAVOR_CHAT_IA_PATH . "templates/components/{$modulo_id}/grid.php",
 
-        // Verificar acceso al módulo (si no está desactivado)
-        if ($atts['require_access'] !== 'no') {
-            $verificacion_acceso = $this->verificar_acceso_modulo($atts['module']);
-            if ($verificacion_acceso !== true) {
-                return $verificacion_acceso;
-            }
-        }
+            // Frontend archive
+            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$modulo_id}/archive.php",
 
-        // Obtener el módulo
-        $loader = Flavor_Chat_Module_Loader::get_instance();
-        $module = $loader->get_module($atts['module']);
-
-        if (!$module) {
-            return '<p class="flavor-error">' . sprintf(__('Módulo no encontrado: %s', 'flavor-chat-ia'), $atts['module']) . '</p>';
-        }
-
-        // Parsear filtros
-        $filtros = $this->parse_filters($atts['filters']);
-        $filtros['limite'] = intval($atts['limite']);
-
-        // Ejecutar acción
-        $action_name = !empty($atts['action']) ? $atts['action'] : $this->get_default_listing_action($atts['module']);
-        $resultado = $module->execute_action($action_name, $filtros);
-
-        if (!$resultado['success']) {
-            return '<p class="flavor-error">' . esc_html($resultado['error'] ?? __('Error al cargar datos', 'flavor-chat-ia')) . '</p>';
-        }
-
-        // Renderizar usando template del procesador de formularios
-        return Flavor_Form_Processor::render_listing(
-            $atts['module'],
-            $resultado,
-            intval($atts['columnas'])
-        );
-    }
-
-    /**
-     * Renderiza un formulario de acción
-     */
-    public function render_form($atts) {
-        $atts = shortcode_atts([
-            'module' => '',
-            'action' => '',
-            'require_access' => 'yes',
-        ], $atts);
-
-        if (empty($atts['module']) || empty($atts['action'])) {
-            return '<p class="flavor-error">' . __('Falta especificar módulo o acción', 'flavor-chat-ia') . '</p>';
-        }
-
-        // Verificar acceso al módulo
-        if ($atts['require_access'] !== 'no') {
-            $verificacion_acceso = $this->verificar_acceso_modulo($atts['module']);
-            if ($verificacion_acceso !== true) {
-                return $verificacion_acceso;
-            }
-        }
-
-        // Obtener el módulo
-        $loader = Flavor_Chat_Module_Loader::get_instance();
-        $module = $loader->get_module($atts['module']);
-
-        if (!$module) {
-            return '<p class="flavor-error">' . sprintf(__('Módulo no encontrado: %s', 'flavor-chat-ia'), $atts['module']) . '</p>';
-        }
-
-        // Obtener configuración del formulario
-        if (!method_exists($module, 'get_form_config')) {
-            return '<p class="flavor-error">' . __('Este módulo no soporta formularios', 'flavor-chat-ia') . '</p>';
-        }
-
-        $form_config = $module->get_form_config($atts['action']);
-
-        if (empty($form_config)) {
-            return '<p class="flavor-error">' . sprintf(__('Formulario no encontrado: %s', 'flavor-chat-ia'), $atts['action']) . '</p>';
-        }
-
-        // Renderizar formulario
-        return Flavor_Form_Processor::render_form(
-            $atts['module'],
-            $atts['action'],
-            $form_config,
-            $atts
-        );
-    }
-
-    /**
-     * Renderiza detalle de un item
-     */
-    public function render_detail($atts) {
-        $atts = shortcode_atts([
-            'module' => '',
-            'id' => '',
-            'require_access' => 'yes',
-        ], $atts);
-
-        if (empty($atts['module']) || empty($atts['id'])) {
-            return '<p class="flavor-error">' . __('Falta especificar módulo o ID', 'flavor-chat-ia') . '</p>';
-        }
-
-        // Verificar acceso al módulo
-        if ($atts['require_access'] !== 'no') {
-            $verificacion_acceso = $this->verificar_acceso_modulo($atts['module']);
-            if ($verificacion_acceso !== true) {
-                return $verificacion_acceso;
-            }
-        }
-
-        // Obtener el módulo
-        $loader = Flavor_Chat_Module_Loader::get_instance();
-        $module = $loader->get_module($atts['module']);
-
-        if (!$module) {
-            return '<p class="flavor-error">' . sprintf(__('Módulo no encontrado: %s', 'flavor-chat-ia'), $atts['module']) . '</p>';
-        }
-
-        // Buscar acción de detalle (puede variar según módulo)
-        $action_name = 'detalle_' . $atts['module'];
-        if (!array_key_exists($action_name, $module->get_actions())) {
-            // Buscar alternativas comunes
-            $acciones = $module->get_actions();
-            $posibles = ['ver_detalle', 'obtener_detalle', 'detalle'];
-            foreach ($posibles as $posible) {
-                if (array_key_exists($posible, $acciones)) {
-                    $action_name = $posible;
-                    break;
-                }
-            }
-        }
-
-        $resultado = $module->execute_action($action_name, ['id' => intval($atts['id'])]);
-
-        if (!$resultado['success']) {
-            return '<p class="flavor-error">' . esc_html($resultado['error'] ?? __('Error al cargar detalle', 'flavor-chat-ia')) . '</p>';
-        }
-
-        return Flavor_Form_Processor::render_detail(
-            $atts['module'],
-            $resultado
-        );
-    }
-
-    /**
-     * Renderiza dashboard del usuario para un módulo
-     */
-    public function render_dashboard($atts) {
-        $atts = shortcode_atts([
-            'module' => '',
-            'require_access' => 'yes',
-        ], $atts);
-
-        if (empty($atts['module'])) {
-            return '<p class="flavor-error">' . __('Falta especificar el módulo', 'flavor-chat-ia') . '</p>';
-        }
-
-        // Verificar si usuario está logueado
-        if (!is_user_logged_in()) {
-            // Mostrar formulario de login en lugar de solo un mensaje
-            if ($this->control_acceso) {
-                return $this->control_acceso->render_login_required($this->obtener_url_actual());
-            }
-            return '<p class="flavor-error">' . __('Debes iniciar sesion para ver tu dashboard', 'flavor-chat-ia') . '</p>';
-        }
-
-        // Verificar acceso al módulo
-        if ($atts['require_access'] !== 'no') {
-            $verificacion_acceso = $this->verificar_acceso_modulo($atts['module']);
-            if ($verificacion_acceso !== true) {
-                return $verificacion_acceso;
-            }
-        }
-
-        // Obtener el módulo
-        $loader = Flavor_Chat_Module_Loader::get_instance();
-        $module = $loader->get_module($atts['module']);
-
-        if (!$module) {
-            return '<p class="flavor-error">' . sprintf(__('Módulo no encontrado: %s', 'flavor-chat-ia'), $atts['module']) . '</p>';
-        }
-
-        // Buscar acción de dashboard del usuario
-        $acciones = $module->get_actions();
-        $action_name = null;
-
-        // Lista de patrones a buscar, en orden de prioridad
-        $posibles_acciones = [
-            'mi_' . $atts['module'],
-            'mis_' . $atts['module'],
-            'dashboard',
-            'mi_dashboard',
-            'estado_actual',
-            'ver_fichajes_hoy',
-            'resumen_mensual',
-            'historial_fichajes',
-            'mis_talleres',
-            'mis_facturas',
-            'mis_eventos',
-            'mi_perfil',
-            'listar',
+            // Fallback genérico
+            FLAVOR_CHAT_IA_PATH . "templates/components/unified/_generic-grid.php",
         ];
 
-        foreach ($posibles_acciones as $posible) {
-            if (array_key_exists($posible, $acciones)) {
-                $action_name = $posible;
+        $template = null;
+        foreach ($template_paths as $path) {
+            if (file_exists($path)) {
+                $template = $path;
                 break;
             }
         }
 
-        // Si no encontró ninguna, usar la primera acción disponible
-        if (!$action_name && !empty($acciones)) {
-            $action_name = array_key_first($acciones);
+        if (!$template) {
+            return $this->render_fallback($modulo_id, $instance, $atts);
         }
 
-        if (!$action_name) {
-            return '<p class="flavor-error">' . __('Dashboard no disponible para este módulo', 'flavor-chat-ia') . '</p>';
-        }
+        // Preparar datos para el template
+        $data = $this->prepare_module_data($modulo_id, $instance, $atts);
 
-        $resultado = $module->execute_action($action_name, []);
+        // Renderizar template
+        ob_start();
 
-        if (!$resultado['success']) {
-            return '<p class="flavor-info">' . esc_html($resultado['error'] ?? __('No hay datos disponibles', 'flavor-chat-ia')) . '</p>';
-        }
+        // Hacer disponibles las variables en el scope del template
+        extract($data);
 
-        return Flavor_Form_Processor::render_dashboard(
-            $atts['module'],
-            $resultado
-        );
+        // Wrapper para estilos consistentes
+        echo '<div class="flavor-module-shortcode flavor-module-' . esc_attr($modulo_id) . '">';
+        include $template;
+        echo '</div>';
+
+        return ob_get_clean();
     }
 
     /**
-     * Parsea filtros del atributo filters
-     *
-     * Formato: "categoria:frutas,fecha_desde:2024-01-01"
+     * Prepara los datos del módulo para el template
      */
-    private function parse_filters($filters_string) {
-        if (empty($filters_string)) {
-            return [];
-        }
+    private function prepare_module_data($modulo_id, $instance, $atts) {
+        global $wpdb;
 
-        $filtros = [];
-        $pares = explode(',', $filters_string);
-
-        foreach ($pares as $par) {
-            $partes = explode(':', $par);
-            if (count($partes) === 2) {
-                $filtros[trim($partes[0])] = trim($partes[1]);
-            }
-        }
-
-        return $filtros;
-    }
-
-    /**
-     * Obtiene la acción por defecto para listados según el módulo
-     */
-    private function get_default_listing_action($module_id) {
-        $defaults = [
-            'talleres' => 'talleres_disponibles',
-            'eventos' => 'eventos_proximos',
-            'facturas' => 'mis_facturas',
-            'socios' => 'listar_socios',
-            'grupos_consumo' => 'listar_productos',
+        $data = [
+            'modulo_id' => $modulo_id,
+            'modulo_nombre' => $instance->name ?? ucfirst(str_replace('_', ' ', $modulo_id)),
+            'atts' => $atts,
+            'items' => [],
         ];
 
-        return $defaults[$module_id] ?? 'listar';
+        // Intentar obtener datos del módulo
+        $tabla = $wpdb->prefix . 'flavor_' . $modulo_id;
+
+        if ($this->tabla_existe($tabla)) {
+            $limite = intval($atts['limite']);
+            $tipo = sanitize_text_field($atts['tipo']);
+
+            $where = "WHERE 1=1";
+            $params = [];
+
+            // Filtro por estado publicado si existe la columna
+            $columns = $wpdb->get_col("DESCRIBE {$tabla}");
+            if (in_array('estado', $columns)) {
+                $where .= " AND estado = %s";
+                $params[] = 'publicado';
+            }
+
+            // Filtro por tipo si se especifica
+            if (!empty($tipo) && in_array('tipo', $columns)) {
+                $where .= " AND tipo = %s";
+                $params[] = $tipo;
+            }
+
+            // Filtro por fecha futura para eventos
+            if ($modulo_id === 'eventos' && in_array('fecha_inicio', $columns)) {
+                $where .= " AND fecha_inicio >= %s";
+                $params[] = current_time('mysql');
+            }
+
+            // Orden
+            $order = "ORDER BY id DESC";
+            if (in_array('fecha_inicio', $columns)) {
+                $order = "ORDER BY fecha_inicio ASC";
+            } elseif (in_array('fecha_creacion', $columns)) {
+                $order = "ORDER BY fecha_creacion DESC";
+            } elseif (in_array('created_at', $columns)) {
+                $order = "ORDER BY created_at DESC";
+            }
+
+            $query = "SELECT * FROM {$tabla} {$where} {$order} LIMIT {$limite}";
+
+            if (!empty($params)) {
+                $query = $wpdb->prepare($query, ...$params);
+            }
+
+            $data['items'] = $wpdb->get_results($query, ARRAY_A);
+        }
+
+        // Si no hay datos reales, proporcionar datos de ejemplo según el módulo
+        if (empty($data['items'])) {
+            $data['items'] = $this->get_sample_data($modulo_id);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Verifica si una tabla existe
+     */
+    private function tabla_existe($tabla) {
+        global $wpdb;
+        $query = $wpdb->prepare('SHOW TABLES LIKE %s', $tabla);
+        return $wpdb->get_var($query) === $tabla;
+    }
+
+    /**
+     * Obtiene datos de ejemplo para un módulo
+     */
+    private function get_sample_data($modulo_id) {
+        switch ($modulo_id) {
+            case 'eventos':
+                return [
+                    ['id'=>1, 'titulo'=>'Conferencia de Tecnología', 'tipo'=>'conferencia', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+3 days')), 'ubicacion'=>'Centro de Convenciones', 'precio'=>15.00, 'aforo_maximo'=>100, 'inscritos_count'=>45, 'estado'=>'publicado', 'descripcion'=>'Últimas tendencias en tecnología'],
+                    ['id'=>2, 'titulo'=>'Taller de Cerámica', 'tipo'=>'taller', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+5 days')), 'ubicacion'=>'Sala de Artes', 'precio'=>25.00, 'aforo_maximo'=>20, 'inscritos_count'=>18, 'estado'=>'publicado', 'descripcion'=>'Técnicas de cerámica artesanal'],
+                    ['id'=>3, 'titulo'=>'Charla: Alimentación Saludable', 'tipo'=>'charla', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+7 days')), 'ubicacion'=>'Biblioteca', 'precio'=>0, 'aforo_maximo'=>50, 'inscritos_count'=>12, 'estado'=>'publicado', 'descripcion'=>'Consejos para una dieta equilibrada'],
+                ];
+
+            case 'talleres':
+                return [
+                    ['id'=>1, 'titulo'=>'Taller de Fotografía', 'categoria'=>'Arte', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+5 days')), 'plazas_disponibles'=>15, 'precio'=>30.00],
+                    ['id'=>2, 'titulo'=>'Cocina Mediterránea', 'categoria'=>'Gastronomía', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+10 days')), 'plazas_disponibles'=>12, 'precio'=>40.00],
+                ];
+
+            case 'grupos_consumo':
+                return [
+                    ['id'=>1, 'nombre'=>'Grupo Ecológico Norte', 'descripcion'=>'Productos ecológicos locales', 'miembros'=>25],
+                    ['id'=>2, 'nombre'=>'Cooperativa Sur', 'descripcion'=>'Compra conjunta de productos frescos', 'miembros'=>40],
+                ];
+
+            default:
+                return [];
+        }
+    }
+
+    /**
+     * Renderiza fallback cuando no hay template
+     */
+    private function render_fallback($modulo_id, $instance, $atts) {
+        $nombre = $instance->name ?? ucfirst(str_replace('_', ' ', $modulo_id));
+
+        ob_start();
+        ?>
+        <div class="flavor-module-fallback" style="padding: 40px 20px; text-align: center; background: #f9fafb; border-radius: 12px; border: 1px dashed #e5e7eb;">
+            <h3 style="font-size: 24px; font-weight: 600; margin: 0 0 12px; color: #111827;">
+                <?php echo esc_html($nombre); ?>
+            </h3>
+            <p style="color: #6b7280; margin: 0 0 20px;">
+                <?php echo esc_html($instance->description ?? __('Módulo disponible', 'flavor-chat-ia')); ?>
+            </p>
+            <a href="<?php echo esc_url(home_url('/' . str_replace('_', '-', $modulo_id) . '/')); ?>"
+               class="flavor-button"
+               style="display: inline-block; padding: 12px 24px; background: #3b82f6; color: white; border-radius: 8px; text-decoration: none; font-weight: 500;">
+                <?php _e('Ver', 'flavor-chat-ia'); ?> →
+            </a>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 }
