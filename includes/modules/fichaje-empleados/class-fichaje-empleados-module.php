@@ -77,6 +77,27 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Obtiene la configuración del módulo
+     *
+     * @return array Configuración actual mezclada con valores por defecto
+     */
+    public function get_settings() {
+        $defaults = $this->get_default_settings();
+        $saved = get_option('flavor_fichaje_settings', []);
+        return wp_parse_args($saved, $defaults);
+    }
+
+    /**
+     * Guarda la configuración del módulo
+     *
+     * @param array $settings Configuración a guardar
+     * @return bool
+     */
+    public function save_settings($settings) {
+        return update_option('flavor_fichaje_settings', $settings);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
@@ -906,6 +927,37 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         submit_button(__('Guardar horario', 'flavor-chat-ia'));
         echo '</form>';
         echo '</div>';
+    }
+
+    /**
+     * Maneja el guardado de la configuración desde el admin
+     */
+    private function handle_admin_save_config() {
+        if (empty($_POST['fichaje_config_nonce'])) {
+            return;
+        }
+
+        if (!wp_verify_nonce($_POST['fichaje_config_nonce'], 'fichaje_config')) {
+            return;
+        }
+
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $settings = [
+            'horario_entrada' => sanitize_text_field($_POST['horario_entrada'] ?? '09:00'),
+            'horario_salida' => sanitize_text_field($_POST['horario_salida'] ?? '18:00'),
+            'tiempo_gracia' => absint($_POST['tiempo_gracia'] ?? 15),
+            'requiere_geolocalizacion' => !empty($_POST['requiere_geolocalizacion']),
+            'radio_maximo' => absint($_POST['radio_maximo'] ?? 100),
+            'permite_fichaje_remoto' => !empty($_POST['permite_fichaje_remoto']),
+            'notificar_retrasos' => !empty($_POST['notificar_retrasos']),
+        ];
+
+        $this->save_settings($settings);
+
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
     }
 
     /**
