@@ -7,7 +7,7 @@
  * Plugin Name: Flavor Platform
  * Plugin URI: https://gailu.net
  * Description: Plataforma integral para WordPress: Red de Comunidades, Asistente IA, Page Builder, Deep Links, Matching, Newsletter, Sellos de Calidad y más.
- * Version: 3.0.0
+ * Version: 3.1.1
  * Author: Gailu Labs
  * Author URI: https://gailu.net
  * License: GPL v2 or later
@@ -33,7 +33,7 @@ if (defined('FLAVOR_CHAT_IA_LOADED')) {
 define('FLAVOR_CHAT_IA_LOADED', true);
 
 // Constantes del plugin
-define('FLAVOR_CHAT_IA_VERSION', '3.1.0');
+define('FLAVOR_CHAT_IA_VERSION', '3.1.1');
 define('FLAVOR_CHAT_IA_PATH', plugin_dir_path(__FILE__));
 define('FLAVOR_CHAT_IA_URL', plugin_dir_url(__FILE__));
 define('FLAVOR_CHAT_IA_BASENAME', plugin_basename(__FILE__));
