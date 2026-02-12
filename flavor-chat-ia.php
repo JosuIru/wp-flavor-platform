@@ -368,6 +368,9 @@ final class Flavor_Chat_IA {
         // Limpiar rewrite rules una sola vez tras desactivar controladores frontend
         add_action('init', [$this, 'maybe_flush_frontend_rewrite_rules'], 999);
 
+        // Encolar estilos globales para romper containers del tema
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_global_styles'], 5);
+
         // Aviso y activación opcional del tema companion
         add_action('admin_notices', [$this, 'maybe_show_starter_theme_notice']);
         add_action('admin_post_flavor_activate_starter_theme', [$this, 'handle_activate_starter_theme']);
@@ -1310,6 +1313,20 @@ final class Flavor_Chat_IA {
             'flavor-chat-ia',
             false,
             dirname(FLAVOR_CHAT_IA_BASENAME) . '/languages/'
+        );
+    }
+
+    /**
+     * Encola estilos globales para override de containers del tema
+     */
+    public function enqueue_global_styles() {
+        // CSS para romper limitaciones de ancho del tema
+        wp_enqueue_style(
+            'flavor-container-override',
+            FLAVOR_CHAT_IA_URL . 'assets/css/flavor-container-override.css',
+            [],
+            FLAVOR_CHAT_IA_VERSION,
+            'all'
         );
     }
 

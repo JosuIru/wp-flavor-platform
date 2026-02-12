@@ -1394,6 +1394,21 @@ class Flavor_Page_Creator {
             if (!is_wp_error($page_id)) {
                 update_post_meta($page_id, '_flavor_auto_page', 1);
                 update_post_meta($page_id, '_flavor_auto_page_modules', implode(',', self::extract_modules_from_page($page_data)));
+                update_post_meta($page_id, '_flavor_full_width', 1);
+
+                // Intentar asignar template full-width si el tema lo soporta
+                if ($page_data['full_width'] ?? true) {
+                    // Buscar template full-width disponible en el tema
+                    $templates = ['template-full-width.php', 'full-width.php', 'page-templates/full-width.php'];
+                    foreach ($templates as $template) {
+                        $template_file = get_template_directory() . '/' . $template;
+                        if (file_exists($template_file)) {
+                            update_post_meta($page_id, '_wp_page_template', $template);
+                            break;
+                        }
+                    }
+                }
+
                 $created[] = $page_data['title'];
             }
         }
