@@ -401,6 +401,195 @@
 }
 
 /* ========================================================================
+   DASHBOARD DE ESTADÍSTICAS (Tarjetas)
+   ======================================================================== */
+
+.flavor-dashboard-stats {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.flavor-dashboard-stats__header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.flavor-dashboard-stats__title {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: #111827;
+}
+
+.flavor-dashboard-stats__subtitle {
+    font-size: 18px;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Grid de Tarjetas */
+.flavor-stats-cards {
+    display: grid;
+    gap: 24px;
+    margin: 30px 0;
+}
+
+.flavor-stats-cards--col-2 {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+.flavor-stats-cards--col-3 {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.flavor-stats-cards--col-4 {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* Tarjeta Individual */
+.flavor-stat-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.flavor-stat-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-4px);
+    border-color: var(--flavor-primary, #3b82f6);
+}
+
+/* Header de la Tarjeta */
+.flavor-stat-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.flavor-stat-card__icon-wrapper {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--flavor-primary, #3b82f6) 0%, var(--flavor-secondary, #8b5cf6) 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+}
+
+.flavor-stat-card__icon {
+    font-size: 28px;
+    filter: grayscale(100%) brightness(200%);
+}
+
+.flavor-stat-card__badge {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* Cuerpo de la Tarjeta */
+.flavor-stat-card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.flavor-stat-card__value {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--flavor-primary, #3b82f6);
+    line-height: 1;
+}
+
+.flavor-stat-card__label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+/* Estadísticas Secundarias */
+.flavor-stat-card__secondary {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.flavor-stat-card__secondary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flavor-stat-card__secondary-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.flavor-stat-card__secondary-label {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Footer de la Tarjeta */
+.flavor-stat-card__footer {
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.flavor-stat-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--flavor-primary, #3b82f6);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.flavor-stat-card__link:hover {
+    color: var(--flavor-primary-dark, #2563eb);
+    gap: 12px;
+}
+
+.flavor-stat-card__arrow {
+    font-size: 18px;
+    transition: transform 0.2s ease;
+}
+
+.flavor-stat-card__link:hover .flavor-stat-card__arrow {
+    transform: translateX(4px);
+}
+
+/* Mensajes de Estado */
+.flavor-no-stats {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 16px;
+    padding: 60px 20px;
+}
+
+/* ========================================================================
    RESPONSIVE
    ======================================================================== */
 
@@ -447,5 +636,33 @@
 
     .flavor-accesos-rapidos {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Dashboard Stats Responsive */
+    .flavor-dashboard-stats__title {
+        font-size: 28px;
+    }
+
+    .flavor-dashboard-stats__subtitle {
+        font-size: 16px;
+    }
+
+    .flavor-stats-cards--col-2,
+    .flavor-stats-cards--col-3,
+    .flavor-stats-cards--col-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-stat-card__value {
+        font-size: 36px;
+    }
+
+    .flavor-stat-card__icon-wrapper {
+        width: 48px;
+        height: 48px;
+    }
+
+    .flavor-stat-card__icon {
+        font-size: 24px;
     }
 }
