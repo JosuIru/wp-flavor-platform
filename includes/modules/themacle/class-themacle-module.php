@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -1092,6 +1093,50 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
                 ],
                 'template' => 'themacle/pagination',
                 'preview' => '',
+            ],
+        ];
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Themacle', 'flavor-chat-ia'),
+                'slug' => 'themacle',
+                'content' => '<h1>' . __('Themacle', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestión de contenido temático', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="themacle" action="dashboard" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Temas', 'flavor-chat-ia'),
+                'slug' => 'temas-themacle',
+                'content' => '<h1>' . __('Temas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Explora los temas disponibles', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="themacle" action="temas"]',
+                'parent' => 'themacle',
+            ],
+            [
+                'title' => __('Crear Tema', 'flavor-chat-ia'),
+                'slug' => 'crear-tema',
+                'content' => '<h1>' . __('Crear Tema', 'flavor-chat-ia') . '</h1>
+<p>' . __('Crea un nuevo tema', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="themacle" action="crear_tema"]',
+                'parent' => 'themacle',
+            ],
+            [
+                'title' => __('Mis Temas', 'flavor-chat-ia'),
+                'slug' => 'mis-temas-themacle',
+                'content' => '<h1>' . __('Mis Temas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tus temas creados', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="themacle" action="mis_temas"]',
+                'parent' => 'themacle',
             ],
         ];
     }

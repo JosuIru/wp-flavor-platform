@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2054,6 +2055,50 @@ KNOWLEDGE;
                     ],
                 ],
                 'template' => 'clientes/estadisticas',
+            ],
+        ];
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Clientes', 'flavor-chat-ia'),
+                'slug' => 'clientes',
+                'content' => '<h1>' . __('Gestión de Clientes', 'flavor-chat-ia') . '</h1>
+<p>' . __('Administra tu cartera de clientes', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="clientes" action="listar_clientes" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Nuevo Cliente', 'flavor-chat-ia'),
+                'slug' => 'nuevo-cliente',
+                'content' => '<h1>' . __('Nuevo Cliente', 'flavor-chat-ia') . '</h1>
+<p>' . __('Registra un nuevo cliente', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="clientes" action="crear_cliente"]',
+                'parent' => 'clientes',
+            ],
+            [
+                'title' => __('Segmentos', 'flavor-chat-ia'),
+                'slug' => 'segmentos-clientes',
+                'content' => '<h1>' . __('Segmentos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Organiza clientes por segmentos', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="clientes" action="segmentos"]',
+                'parent' => 'clientes',
+            ],
+            [
+                'title' => __('Historial', 'flavor-chat-ia'),
+                'slug' => 'historial-clientes',
+                'content' => '<h1>' . __('Historial', 'flavor-chat-ia') . '</h1>
+<p>' . __('Revisa el historial de interacciones', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="clientes" action="historial"]',
+                'parent' => 'clientes',
             ],
         ];
     }

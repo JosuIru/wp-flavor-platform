@@ -12,6 +12,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     protected $module_id = 'empresarial';
     protected $module_name = 'Sector Empresarial';
@@ -2176,5 +2177,49 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['empresarial']);
             update_option('flavor_empresarial_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Empresarial', 'flavor-chat-ia'),
+                'slug' => 'empresarial',
+                'content' => '<h1>' . __('Portal Empresarial', 'flavor-chat-ia') . '</h1>
+<p>' . __('Soluciones empresariales para tu negocio', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="empresarial" action="dashboard" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Servicios', 'flavor-chat-ia'),
+                'slug' => 'servicios-empresariales',
+                'content' => '<h1>' . __('Servicios', 'flavor-chat-ia') . '</h1>
+<p>' . __('Conoce nuestros servicios empresariales', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="empresarial" action="servicios"]',
+                'parent' => 'empresarial',
+            ],
+            [
+                'title' => __('Contacto', 'flavor-chat-ia'),
+                'slug' => 'contacto-empresarial',
+                'content' => '<h1>' . __('Contacto Empresarial', 'flavor-chat-ia') . '</h1>
+<p>' . __('Ponte en contacto con nosotros', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="empresarial" action="contacto"]',
+                'parent' => 'empresarial',
+            ],
+            [
+                'title' => __('Casos de Éxito', 'flavor-chat-ia'),
+                'slug' => 'casos-exito',
+                'content' => '<h1>' . __('Casos de Éxito', 'flavor-chat-ia') . '</h1>
+<p>' . __('Descubre nuestros casos de éxito', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="empresarial" action="casos_exito"]',
+                'parent' => 'empresarial',
+            ],
+        ];
     }
 }

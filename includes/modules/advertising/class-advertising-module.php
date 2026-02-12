@@ -14,6 +14,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2111,5 +2112,49 @@ KNOWLEDGE;
         $method = strtoupper($request->get_method());
         $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
         return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Publicidad', 'flavor-chat-ia'),
+                'slug' => 'publicidad',
+                'content' => '<h1>' . __('Publicidad', 'flavor-chat-ia') . '</h1>
+<p>' . __('Promociona tu negocio o servicios', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="advertising" action="listar_anuncios" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Crear Anuncio', 'flavor-chat-ia'),
+                'slug' => 'crear-anuncio',
+                'content' => '<h1>' . __('Crear Anuncio', 'flavor-chat-ia') . '</h1>
+<p>' . __('Crea un nuevo anuncio publicitario', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="advertising" action="crear_anuncio"]',
+                'parent' => 'publicidad',
+            ],
+            [
+                'title' => __('Mis Campañas', 'flavor-chat-ia'),
+                'slug' => 'mis-campanas',
+                'content' => '<h1>' . __('Mis Campañas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tus campañas publicitarias', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="advertising" action="mis_campanas"]',
+                'parent' => 'publicidad',
+            ],
+            [
+                'title' => __('Estadísticas', 'flavor-chat-ia'),
+                'slug' => 'estadisticas-publicidad',
+                'content' => '<h1>' . __('Estadísticas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Analiza el rendimiento de tus anuncios', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="advertising" action="estadisticas"]',
+                'parent' => 'publicidad',
+            ],
+        ];
     }
 }

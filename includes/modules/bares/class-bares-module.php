@@ -21,6 +21,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2099,5 +2100,49 @@ KNOWLEDGE;
             'cocteleria'  => '#EC4899',
         ];
         return $mapa_colores[$tipo_establecimiento] ?? '#6B7280';
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Bares', 'flavor-chat-ia'),
+                'slug' => 'bares',
+                'content' => '<h1>' . __('Bares', 'flavor-chat-ia') . '</h1>
+<p>' . __('Descubre los mejores bares de tu zona', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="bares" action="listar_bares" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Mapa', 'flavor-chat-ia'),
+                'slug' => 'mapa-bares',
+                'content' => '<h1>' . __('Mapa de Bares', 'flavor-chat-ia') . '</h1>
+<p>' . __('Encuentra bares cerca de ti', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="bares" action="mapa"]',
+                'parent' => 'bares',
+            ],
+            [
+                'title' => __('Reservar', 'flavor-chat-ia'),
+                'slug' => 'reservar-bar',
+                'content' => '<h1>' . __('Reservar Mesa', 'flavor-chat-ia') . '</h1>
+<p>' . __('Haz una reserva en tu bar favorito', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="bares" action="reservar"]',
+                'parent' => 'bares',
+            ],
+            [
+                'title' => __('Mis Reservas', 'flavor-chat-ia'),
+                'slug' => 'mis-reservas-bares',
+                'content' => '<h1>' . __('Mis Reservas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta tus reservas de bares', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="bares" action="mis_reservas"]',
+                'parent' => 'bares',
+            ],
+        ];
     }
 }

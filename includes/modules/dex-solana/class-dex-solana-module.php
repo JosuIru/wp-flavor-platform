@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Instancias de clases auxiliares
@@ -2472,5 +2473,49 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['dex_solana']);
             update_option('flavor_dex_solana_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('DEX Solana', 'flavor-chat-ia'),
+                'slug' => 'dex-solana',
+                'content' => '<h1>' . __('DEX Solana', 'flavor-chat-ia') . '</h1>
+<p>' . __('Exchange descentralizado en la red Solana', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="dex_solana" action="dashboard" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Swap', 'flavor-chat-ia'),
+                'slug' => 'swap-solana',
+                'content' => '<h1>' . __('Swap de Tokens', 'flavor-chat-ia') . '</h1>
+<p>' . __('Intercambia tokens en Solana', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="dex_solana" action="swap"]',
+                'parent' => 'dex-solana',
+            ],
+            [
+                'title' => __('Pools', 'flavor-chat-ia'),
+                'slug' => 'pools-solana',
+                'content' => '<h1>' . __('Pools de Liquidez', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tus pools de liquidez', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="dex_solana" action="pools"]',
+                'parent' => 'dex-solana',
+            ],
+            [
+                'title' => __('Mi Cartera', 'flavor-chat-ia'),
+                'slug' => 'mi-cartera-solana',
+                'content' => '<h1>' . __('Mi Cartera', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta el estado de tu cartera', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="dex_solana" action="cartera"]',
+                'parent' => 'dex-solana',
+            ],
+        ];
     }
 }

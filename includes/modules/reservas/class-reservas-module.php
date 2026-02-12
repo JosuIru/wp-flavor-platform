@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -1435,6 +1436,50 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
             ['pregunta' => 'Puedo cancelar mi reserva?', 'respuesta' => 'Si, puedes cancelar tu reserva en cualquier momento siempre que no se haya completado ya. Solo necesito el numero de reserva.'],
             ['pregunta' => 'Como cambio la fecha u hora de mi reserva?', 'respuesta' => 'Indicame el numero de reserva y los nuevos datos. Compruebo disponibilidad y la modifico al momento.'],
             ['pregunta' => 'Como puedo ver mis reservas?', 'respuesta' => 'Si tienes cuenta, veo tus reservas automaticamente. Si no, indicame tu email y busco las reservas asociadas.'],
+        ];
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Reservas', 'flavor-chat-ia'),
+                'slug' => 'reservas',
+                'content' => '<h1>' . __('Reservas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tus reservas de forma fácil y rápida', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="reservas" action="listar_reservas" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Nueva Reserva', 'flavor-chat-ia'),
+                'slug' => 'nueva-reserva',
+                'content' => '<h1>' . __('Nueva Reserva', 'flavor-chat-ia') . '</h1>
+<p>' . __('Crea una nueva reserva', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="reservas" action="crear_reserva"]',
+                'parent' => 'reservas',
+            ],
+            [
+                'title' => __('Mis Reservas', 'flavor-chat-ia'),
+                'slug' => 'mis-reservas',
+                'content' => '<h1>' . __('Mis Reservas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta el estado de tus reservas', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="reservas" action="mis_reservas"]',
+                'parent' => 'reservas',
+            ],
+            [
+                'title' => __('Calendario', 'flavor-chat-ia'),
+                'slug' => 'calendario-reservas',
+                'content' => '<h1>' . __('Calendario de Reservas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta la disponibilidad', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="reservas" action="calendario"]',
+                'parent' => 'reservas',
+            ],
         ];
     }
 }

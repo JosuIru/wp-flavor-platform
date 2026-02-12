@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Hook de WP Cron
@@ -3361,5 +3362,49 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['trading_ia']);
             update_option('flavor_trading_ia_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Trading IA', 'flavor-chat-ia'),
+                'slug' => 'trading-ia',
+                'content' => '<h1>' . __('Trading IA', 'flavor-chat-ia') . '</h1>
+<p>' . __('Análisis de mercados con inteligencia artificial', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="trading_ia" action="dashboard" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Señales', 'flavor-chat-ia'),
+                'slug' => 'senales-trading',
+                'content' => '<h1>' . __('Señales de Trading', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta las señales generadas por IA', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="trading_ia" action="senales"]',
+                'parent' => 'trading-ia',
+            ],
+            [
+                'title' => __('Estrategias', 'flavor-chat-ia'),
+                'slug' => 'estrategias-trading',
+                'content' => '<h1>' . __('Estrategias de Trading', 'flavor-chat-ia') . '</h1>
+<p>' . __('Configura tus estrategias automatizadas', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="trading_ia" action="estrategias"]',
+                'parent' => 'trading-ia',
+            ],
+            [
+                'title' => __('Historial', 'flavor-chat-ia'),
+                'slug' => 'historial-trading',
+                'content' => '<h1>' . __('Historial de Operaciones', 'flavor-chat-ia') . '</h1>
+<p>' . __('Revisa tu historial de operaciones', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="trading_ia" action="historial"]',
+                'parent' => 'trading-ia',
+            ],
+        ];
     }
 }

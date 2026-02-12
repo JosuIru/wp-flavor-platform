@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Versión del módulo
@@ -6949,5 +6950,49 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $method = strtoupper($request->get_method());
         $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
         return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+
+    /**
+     * Define las páginas del módulo para V3
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Email Marketing', 'flavor-chat-ia'),
+                'slug' => 'email-marketing',
+                'content' => '<h1>' . __('Email Marketing', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tus campañas de email', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="email_marketing" action="dashboard" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Crear Campaña', 'flavor-chat-ia'),
+                'slug' => 'crear-campana-email',
+                'content' => '<h1>' . __('Crear Campaña', 'flavor-chat-ia') . '</h1>
+<p>' . __('Crea una nueva campaña de email', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="email_marketing" action="crear_campana"]',
+                'parent' => 'email-marketing',
+            ],
+            [
+                'title' => __('Mis Listas', 'flavor-chat-ia'),
+                'slug' => 'listas-email',
+                'content' => '<h1>' . __('Mis Listas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tus listas de suscriptores', 'flavor-chat-ia') . '</p>
+
+[flavor_module_dashboard module="email_marketing" action="listas"]',
+                'parent' => 'email-marketing',
+            ],
+            [
+                'title' => __('Estadísticas', 'flavor-chat-ia'),
+                'slug' => 'estadisticas-email',
+                'content' => '<h1>' . __('Estadísticas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Analiza el rendimiento de tus campañas', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="email_marketing" action="estadisticas"]',
+                'parent' => 'email-marketing',
+            ],
+        ];
     }
 }
