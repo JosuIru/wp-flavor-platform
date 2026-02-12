@@ -1,0 +1,51 @@
+# Dependencias
+node_modules/
+vendor/
+
+# Scripts de desarrollo
+dev-scripts/
+
+# Archivos de compilación
+*.min.css.map
+*.min.js.map
+
+# Logs
+*.log
+debug.log
+error.log
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporales
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Backups
+*.backup
+*-backup.*
+
+# Configuración local
+.env
+.env.local
+config.local.php
+
+# Mobile apps build
+mobile-apps/build/
+mobile-apps/.dart_tool/
+mobile-apps/release/
+mobile-apps/dist/
+mobile-apps/android/.gradle/
+mobile-apps/android/app/build/
+mobile-apps/ios/Pods/
+mobile-apps/ios/.symlinks/
+mobile-apps/.flutter-plugins
+mobile-apps/.flutter-plugins-dependencies

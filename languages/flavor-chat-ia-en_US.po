@@ -1,0 +1,662 @@
+# English (US) translation for Flavor Platform
+# Copyright (C) 2026 Gailu Labs
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Flavor Platform 3.1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/flavor-chat-ia/issues\n"
+"POT-Creation-Date: 2026-02-12 00:00:00+00:00\n"
+"PO-Revision-Date: 2026-02-12 00:00:00+00:00\n"
+"Last-Translator: Gailu Labs <hello@gailu.net>\n"
+"Language-Team: English (US)\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Plugin Name of the plugin
+msgid "Flavor Platform"
+msgstr "Flavor Platform"
+
+#. Description of the plugin
+msgid "Plataforma integral para WordPress: Red de Comunidades, Asistente IA, Page Builder, Deep Links, Matching, Newsletter, Sellos de Calidad y más."
+msgstr "Comprehensive WordPress platform: Community Network, AI Assistant, Page Builder, Deep Links, Matching, Newsletter, Quality Seals and more."
+
+#: flavor-chat-ia.php
+msgid "Servicios"
+msgstr "Services"
+
+#: flavor-chat-ia.php
+msgid "Mi Portal"
+msgstr "My Portal"
+
+#: flavor-chat-ia.php
+msgid "Flavor Starter disponible"
+msgstr "Flavor Starter available"
+
+#: flavor-chat-ia.php
+msgid "El tema companion \"Flavor Starter\" está instalado y optimizado para este plugin. ¿Quieres activarlo ahora?"
+msgstr "The companion theme \"Flavor Starter\" is installed and optimized for this plugin. Would you like to activate it now?"
+
+#: flavor-chat-ia.php
+msgid "Activar tema"
+msgstr "Activate theme"
+
+#: flavor-chat-ia.php
+msgid "Instalar y activar"
+msgstr "Install and activate"
+
+#: flavor-chat-ia.php
+msgid "Ahora no"
+msgstr "Not now"
+
+#. Common UI strings
+msgid "Guardar"
+msgstr "Save"
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+msgid "Eliminar"
+msgstr "Delete"
+
+msgid "Editar"
+msgstr "Edit"
+
+msgid "Ver"
+msgstr "View"
+
+msgid "Buscar"
+msgstr "Search"
+
+msgid "Filtrar"
+msgstr "Filter"
+
+msgid "Ordenar"
+msgstr "Sort"
+
+msgid "Cargar más"
+msgstr "Load more"
+
+msgid "Anterior"
+msgstr "Previous"
+
+msgid "Siguiente"
+msgstr "Next"
+
+msgid "Inicio"
+msgstr "Start"
+
+msgid "Fin"
+msgstr "End"
+
+msgid "Todos"
+msgstr "All"
+
+msgid "Ninguno"
+msgstr "None"
+
+msgid "Sí"
+msgstr "Yes"
+
+msgid "No"
+msgstr "No"
+
+msgid "Activo"
+msgstr "Active"
+
+msgid "Inactivo"
+msgstr "Inactive"
+
+msgid "Pendiente"
+msgstr "Pending"
+
+msgid "Completado"
+msgstr "Completed"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Éxito"
+msgstr "Success"
+
+msgid "Advertencia"
+msgstr "Warning"
+
+msgid "Información"
+msgstr "Information"
+
+#. Authentication
+msgid "Usuario o contraseña incorrectos"
+msgstr "Invalid username or password"
+
+msgid "Token inválido"
+msgstr "Invalid token"
+
+msgid "Token expirado"
+msgstr "Token expired"
+
+msgid "No autorizado"
+msgstr "Unauthorized"
+
+msgid "Acceso denegado"
+msgstr "Access denied"
+
+msgid "Sesión expirada"
+msgstr "Session expired"
+
+#. Chat
+msgid "Escriba su mensaje..."
+msgstr "Type your message..."
+
+msgid "Enviar"
+msgstr "Send"
+
+msgid "Escalando conversación..."
+msgstr "Escalating conversation..."
+
+msgid "Un momento, estoy pensando..."
+msgstr "One moment, I'm thinking..."
+
+msgid "¿En qué puedo ayudarte?"
+msgstr "How can I help you?"
+
+msgid "Lo siento, ha ocurrido un error. Por favor, inténtalo de nuevo."
+msgstr "Sorry, an error occurred. Please try again."
+
+#. Reservations
+msgid "Reserva confirmada"
+msgstr "Reservation confirmed"
+
+msgid "Reserva cancelada"
+msgstr "Reservation cancelled"
+
+msgid "Check-in realizado"
+msgstr "Check-in completed"
+
+msgid "No hay disponibilidad"
+msgstr "No availability"
+
+msgid "Fecha inválida"
+msgstr "Invalid date"
+
+msgid "Cantidad inválida"
+msgstr "Invalid quantity"
+
+#. Email Marketing
+msgid "El nombre es obligatorio"
+msgstr "Name is required"
+
+msgid "Ya existe una lista con ese nombre"
+msgstr "A list with that name already exists"
+
+msgid "Lista no encontrada"
+msgstr "List not found"
+
+msgid "No se pueden eliminar listas del sistema"
+msgstr "System lists cannot be deleted"
+
+msgid "Error al crear lista"
+msgstr "Error creating list"
+
+msgid "Error al actualizar lista"
+msgstr "Error updating list"
+
+msgid "Error al eliminar lista"
+msgstr "Error deleting list"
+
+msgid "No hay datos para actualizar"
+msgstr "No data to update"
+
+msgid "Email inválido: %s"
+msgstr "Invalid email: %s"
+
+msgid "Suscriptor no encontrado"
+msgstr "Subscriber not found"
+
+msgid "Email ya registrado"
+msgstr "Email already registered"
+
+msgid "Campaña no encontrada"
+msgstr "Campaign not found"
+
+msgid "Error al crear campaña"
+msgstr "Error creating campaign"
+
+msgid "Error al programar campaña"
+msgstr "Error scheduling campaign"
+
+#. Modules - Common
+msgid "Módulo activado"
+msgstr "Module activated"
+
+msgid "Módulo desactivado"
+msgstr "Module deactivated"
+
+msgid "Configuración guardada"
+msgstr "Settings saved"
+
+msgid "Error al guardar configuración"
+msgstr "Error saving settings"
+
+#. Admin
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Configuración"
+msgstr "Settings"
+
+msgid "Módulos"
+msgstr "Modules"
+
+msgid "Usuarios"
+msgstr "Users"
+
+msgid "Estadísticas"
+msgstr "Statistics"
+
+msgid "Exportar"
+msgstr "Export"
+
+msgid "Importar"
+msgstr "Import"
+
+msgid "Ayuda"
+msgstr "Help"
+
+msgid "Acerca de"
+msgstr "About"
+
+#. Banco de Tiempo
+msgid "Servicio"
+msgstr "Service"
+
+msgid "Intercambio"
+msgstr "Exchange"
+
+msgid "Horas"
+msgstr "Hours"
+
+msgid "Ofrecer servicio"
+msgstr "Offer service"
+
+msgid "Solicitar servicio"
+msgstr "Request service"
+
+#. Biblioteca
+msgid "Libro"
+msgstr "Book"
+
+msgid "Préstamo"
+msgstr "Loan"
+
+msgid "Reserva"
+msgstr "Reservation"
+
+msgid "Devolver"
+msgstr "Return"
+
+msgid "Renovar préstamo"
+msgstr "Renew loan"
+
+#. Cursos
+msgid "Curso"
+msgstr "Course"
+
+msgid "Instructor"
+msgstr "Instructor"
+
+msgid "Alumno"
+msgstr "Student"
+
+msgid "Matrícula"
+msgstr "Enrollment"
+
+msgid "Inscribirse"
+msgstr "Enroll"
+
+#. Espacios Comunes
+msgid "Espacio"
+msgstr "Space"
+
+msgid "Reservar espacio"
+msgstr "Book space"
+
+msgid "Cancelar reserva"
+msgstr "Cancel reservation"
+
+#. Eventos
+msgid "Evento"
+msgstr "Event"
+
+msgid "Asistente"
+msgstr "Attendee"
+
+msgid "Confirmar asistencia"
+msgstr "Confirm attendance"
+
+msgid "Cancelar asistencia"
+msgstr "Cancel attendance"
+
+#. Grupos de Consumo
+msgid "Grupo de consumo"
+msgstr "Consumer group"
+
+msgid "Pedido"
+msgstr "Order"
+
+msgid "Producto"
+msgstr "Product"
+
+msgid "Añadir al pedido"
+msgstr "Add to order"
+
+msgid "Confirmar pedido"
+msgstr "Confirm order"
+
+#. Huertos Urbanos
+msgid "Huerto"
+msgstr "Garden"
+
+msgid "Parcela"
+msgstr "Plot"
+
+msgid "Solicitar parcela"
+msgstr "Request plot"
+
+#. Incidencias
+msgid "Incidencia"
+msgstr "Incident"
+
+msgid "Reportar incidencia"
+msgstr "Report incident"
+
+msgid "En proceso"
+msgstr "In progress"
+
+msgid "Resuelta"
+msgstr "Resolved"
+
+#. Marketplace
+msgid "Anuncio"
+msgstr "Listing"
+
+msgid "Vendedor"
+msgstr "Seller"
+
+msgid "Publicar anuncio"
+msgstr "Post listing"
+
+msgid "Contactar vendedor"
+msgstr "Contact seller"
+
+#. Reciclaje
+msgid "Punto de reciclaje"
+msgstr "Recycling point"
+
+msgid "Contenedor"
+msgstr "Container"
+
+msgid "Guía de reciclaje"
+msgstr "Recycling guide"
+
+#. Talleres
+msgid "Taller"
+msgstr "Workshop"
+
+msgid "Material"
+msgstr "Material"
+
+msgid "Inscribirse al taller"
+msgstr "Register for workshop"
+
+#. Trámites
+msgid "Trámite"
+msgstr "Procedure"
+
+msgid "Solicitud"
+msgstr "Request"
+
+msgid "Iniciar trámite"
+msgstr "Start procedure"
+
+#. Transparencia
+msgid "Documento"
+msgstr "Document"
+
+msgid "Solicitar información"
+msgstr "Request information"
+
+#. Days of week
+msgid "Lunes"
+msgstr "Monday"
+
+msgid "Martes"
+msgstr "Tuesday"
+
+msgid "Miércoles"
+msgstr "Wednesday"
+
+msgid "Jueves"
+msgstr "Thursday"
+
+msgid "Viernes"
+msgstr "Friday"
+
+msgid "Sábado"
+msgstr "Saturday"
+
+msgid "Domingo"
+msgstr "Sunday"
+
+#. Months
+msgid "Enero"
+msgstr "January"
+
+msgid "Febrero"
+msgstr "February"
+
+msgid "Marzo"
+msgstr "March"
+
+msgid "Abril"
+msgstr "April"
+
+msgid "Mayo"
+msgstr "May"
+
+msgid "Junio"
+msgstr "June"
+
+msgid "Julio"
+msgstr "July"
+
+msgid "Agosto"
+msgstr "August"
+
+msgid "Septiembre"
+msgstr "September"
+
+msgid "Octubre"
+msgstr "October"
+
+msgid "Noviembre"
+msgstr "November"
+
+msgid "Diciembre"
+msgstr "December"
+
+#. Time periods
+msgid "Hoy"
+msgstr "Today"
+
+msgid "Ayer"
+msgstr "Yesterday"
+
+msgid "Esta semana"
+msgstr "This week"
+
+msgid "Este mes"
+msgstr "This month"
+
+msgid "Este año"
+msgstr "This year"
+
+#. Notifications
+msgid "Nueva notificación"
+msgstr "New notification"
+
+msgid "Marcar como leída"
+msgstr "Mark as read"
+
+msgid "Marcar todas como leídas"
+msgstr "Mark all as read"
+
+msgid "Sin notificaciones"
+msgstr "No notifications"
+
+#. Mobile App
+msgid "Token de sitio requerido"
+msgstr "Site token required"
+
+msgid "Token de sitio inválido"
+msgstr "Invalid site token"
+
+msgid "Token válido"
+msgstr "Valid token"
+
+msgid "Enlace inválido o expirado"
+msgstr "Invalid or expired link"
+
+msgid "Datos del carrito inválidos"
+msgstr "Invalid cart data"
+
+msgid "Este enlace ha expirado. Por favor, vuelve a la app y genera uno nuevo."
+msgstr "This link has expired. Please go back to the app and generate a new one."
+
+msgid "WooCommerce no disponible"
+msgstr "WooCommerce not available"
+
+msgid "No se pudieron añadir productos al carrito. Por favor, inténtalo de nuevo."
+msgstr "Could not add products to cart. Please try again."
+
+#. Validation messages
+msgid "Campo obligatorio"
+msgstr "Required field"
+
+msgid "Email inválido"
+msgstr "Invalid email"
+
+msgid "Formato inválido"
+msgstr "Invalid format"
+
+msgid "Valor fuera de rango"
+msgstr "Value out of range"
+
+msgid "Archivo demasiado grande"
+msgstr "File too large"
+
+msgid "Tipo de archivo no permitido"
+msgstr "File type not allowed"
+
+#. Export/Import
+msgid "Exportar configuración"
+msgstr "Export settings"
+
+msgid "Importar configuración"
+msgstr "Import settings"
+
+msgid "Archivo de exportación"
+msgstr "Export file"
+
+msgid "Seleccionar archivo"
+msgstr "Select file"
+
+msgid "Exportación completada"
+msgstr "Export completed"
+
+msgid "Importación completada"
+msgstr "Import completed"
+
+msgid "Error en la exportación"
+msgstr "Export error"
+
+msgid "Error en la importación"
+msgstr "Import error"
+
+#. Settings
+msgid "Configuración general"
+msgstr "General settings"
+
+msgid "Configuración de chat"
+msgstr "Chat settings"
+
+msgid "Configuración de módulos"
+msgstr "Module settings"
+
+msgid "API Keys"
+msgstr "API Keys"
+
+msgid "Guardar cambios"
+msgstr "Save changes"
+
+msgid "Restablecer valores predeterminados"
+msgstr "Reset to defaults"
+
+#. Permissions
+msgid "No tienes permisos para realizar esta acción"
+msgstr "You do not have permission to perform this action"
+
+msgid "Acceso restringido"
+msgstr "Restricted access"
+
+msgid "Requiere inicio de sesión"
+msgstr "Login required"
+
+#. Security
+msgid "Clave de API encriptada correctamente"
+msgstr "API key encrypted successfully"
+
+msgid "Error al encriptar clave de API"
+msgstr "Error encrypting API key"
+
+msgid "Formato de clave inválido"
+msgstr "Invalid key format"
+
+#. Flutter App
+msgid "Cargando..."
+msgstr "Loading..."
+
+msgid "Sin conexión"
+msgstr "No connection"
+
+msgid "Reintentar"
+msgstr "Retry"
+
+msgid "Actualizar"
+msgstr "Refresh"
+
+msgid "Cerrar sesión"
+msgstr "Log out"
+
+msgid "Mi perfil"
+msgstr "My profile"
+
+msgid "Ajustes"
+msgstr "Settings"
+
+msgid "Notificaciones"
+msgstr "Notifications"
+
+msgid "Idioma"
+msgstr "Language"
+
+msgid "Tema oscuro"
+msgstr "Dark mode"
+
+msgid "Soporte"
+msgstr "Support"
+
+msgid "Versión"
+msgstr "Version"
