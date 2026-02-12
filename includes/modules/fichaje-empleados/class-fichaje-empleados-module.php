@@ -1019,26 +1019,6 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         echo '<div class="notice notice-success"><p>' . esc_html__('Horario guardado.', 'flavor-chat-ia') . '</p></div>';
     }
 
-    private function handle_admin_save_config() {
-        if (empty($_POST['fichaje_config_nonce'])) {
-            return;
-        }
-        if (!wp_verify_nonce($_POST['fichaje_config_nonce'], 'fichaje_config')) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
-            return;
-        }
-
-        $this->update_setting('horario_entrada', sanitize_text_field($_POST['horario_entrada'] ?? '09:00'));
-        $this->update_setting('horario_salida', sanitize_text_field($_POST['horario_salida'] ?? '18:00'));
-        $this->update_setting('tiempo_gracia', absint($_POST['tiempo_gracia'] ?? 15));
-        $this->update_setting('requiere_geolocalizacion', !empty($_POST['requiere_geolocalizacion']));
-        $this->update_setting('radio_maximo', absint($_POST['radio_maximo'] ?? 100));
-        $this->update_setting('permite_fichaje_remoto', !empty($_POST['permite_fichaje_remoto']));
-        $this->update_setting('notificar_retrasos', !empty($_POST['notificar_retrasos']));
-
-        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
-    }
-
     /**
      * Crea las tablas si no existen
      */
