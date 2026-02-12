@@ -1,12 +1,19 @@
 /**
  * Flavor Form Validation
  * Sistema de validacion de formularios para Flavor Chat IA
+ * Cumple con WCAG 3.3.1 (Error Identification)
  *
  * @package Flavor_Chat_IA
  * @since 1.0.0
  */
 (function() {
     'use strict';
+
+    /**
+     * Contador para generar IDs unicos de error
+     * @type {number}
+     */
+    let errorIdCounter = 0;
 
     /**
      * Sistema global de validacion de formularios
@@ -22,7 +29,8 @@
             errorMessageClass: 'flavor-field-error',
             validateAttribute: 'data-validate',
             formAttribute: 'data-flavor-validate',
-            debounceDelay: 300
+            debounceDelay: 300,
+            errorIdPrefix: 'flavor-error'
         },
 
         /**
@@ -325,26 +333,81 @@
         },
 
         /**
+         * Genera un ID unico para mensajes de error
+         * @param {HTMLElement} field - Campo asociado
+         * @returns {string} - ID unico
+         */
+        generateErrorId: function(field) {
+            errorIdCounter++;
+            const fieldIdentifier = field.id || field.name || '';
+            const sanitizedIdentifier = fieldIdentifier.replace(/[^a-zA-Z0-9-_]/g, '-');
+            return this.config.errorIdPrefix + '-' + sanitizedIdentifier + '-' + errorIdCounter;
+        },
+
+        /**
+         * Obtiene los aria-describedby existentes del campo (excluyendo errores previos)
+         * @param {HTMLElement} field - Campo
+         * @returns {string} - IDs existentes separados por espacio
+         */
+        getExistingAriaDescribedBy: function(field) {
+            const currentDescribedBy = field.getAttribute('data-original-describedby');
+            return currentDescribedBy || '';
+        },
+
+        /**
+         * Guarda el aria-describedby original del campo
+         * @param {HTMLElement} field - Campo
+         */
+        saveOriginalAriaDescribedBy: function(field) {
+            if (!field.hasAttribute('data-original-describedby')) {
+                const existingDescribedBy = field.getAttribute('aria-describedby') || '';
+                field.setAttribute('data-original-describedby', existingDescribedBy);
+            }
+        },
+
+        /**
          * Muestra un error en el campo
+         * Cumple con WCAG 3.3.1: Identificacion de errores
          * @param {HTMLElement} field - Campo
          * @param {string} errorMessage - Mensaje de error
          */
         showError: function(field, errorMessage) {
+            // Guardar aria-describedby original antes de modificar
+            this.saveOriginalAriaDescribedBy(field);
+
             this.clearError(field);
             field.classList.add(this.config.errorClass);
             field.classList.remove(this.config.successClass);
+
+            // WCAG 3.3.1: Establecer aria-invalid para indicar error
             field.setAttribute('aria-invalid', 'true');
 
+            // Crear elemento de error con atributos de accesibilidad
             const errorElement = document.createElement('span');
             errorElement.className = this.config.errorMessageClass;
+
+            // WCAG: role="alert" anuncia inmediatamente el error
             errorElement.setAttribute('role', 'alert');
-            errorElement.setAttribute('aria-live', 'polite');
+
+            // WCAG: aria-live="assertive" para errores (mas urgente que polite)
+            errorElement.setAttribute('aria-live', 'assertive');
+
+            // WCAG: aria-atomic asegura que se lea el mensaje completo
+            errorElement.setAttribute('aria-atomic', 'true');
+
             errorElement.textContent = errorMessage;
 
-            // Generar ID unico para el error
-            const errorId = 'error-' + (field.id || field.name || Math.random().toString(36).substr(2, 9));
+            // WCAG 3.3.1: Generar ID unico garantizado para el mensaje de error
+            const errorId = this.generateErrorId(field);
             errorElement.id = errorId;
-            field.setAttribute('aria-describedby', errorId);
+
+            // WCAG 3.3.1: Conectar el error con el campo usando aria-describedby
+            // Preservar aria-describedby existentes (ej: instrucciones del campo)
+            const existingDescribedBy = this.getExistingAriaDescribedBy(field);
+            const newDescribedBy = existingDescribedBy
+                ? existingDescribedBy + ' ' + errorId
+                : errorId;
+            field.setAttribute('aria-describedby', newDescribedBy);
 
             // Insertar despues del campo o su contenedor
             const fieldContainer = field.closest('.flavor-field') || field.parentNode;
@@ -352,7 +415,7 @@
 
             // Disparar evento personalizado
             field.dispatchEvent(new CustomEvent('flavor:validation:error', {
-                detail: { message: errorMessage, field: field },
+                detail: { message: errorMessage, field: field, errorId: errorId },
                 bubbles: true
             }));
         },
@@ -365,6 +428,8 @@
             this.clearError(field);
             field.classList.add(this.config.successClass);
             field.classList.remove(this.config.errorClass);
+
+            // WCAG 3.3.1: Indicar que el campo ya no tiene error
             field.setAttribute('aria-invalid', 'false');
 
             // Disparar evento personalizado
@@ -376,13 +441,24 @@
 
         /**
          * Limpia errores de un campo
+         * Restaura los atributos ARIA al estado original
          * @param {HTMLElement} field - Campo
          */
         clearError: function(field) {
             field.classList.remove(this.config.errorClass, this.config.successClass);
-            field.removeAttribute('aria-invalid');
-            field.removeAttribute('aria-describedby');
 
+            // WCAG 3.3.1: Remover aria-invalid cuando se corrige el error
+            field.removeAttribute('aria-invalid');
+
+            // WCAG 3.3.1: Restaurar aria-describedby original o removerlo
+            const originalDescribedBy = field.getAttribute('data-original-describedby');
+            if (originalDescribedBy) {
+                field.setAttribute('aria-describedby', originalDescribedBy);
+            } else {
+                field.removeAttribute('aria-describedby');
+            }
+
+            // Eliminar el elemento de error del DOM
             const fieldContainer = field.closest('.flavor-field') || field.parentNode;
             const existingError = fieldContainer.querySelector('.' + this.config.errorMessageClass);
             if (existingError) {

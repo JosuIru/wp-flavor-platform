@@ -26,8 +26,8 @@
     --flavor-bg-dark-secondary: #16213e;
     --flavor-bg-dark-tertiary: #0f0f1a;
     --flavor-text-dark: #e4e4e7;
-    --flavor-text-dark-secondary: #c9c9cc;
-    --flavor-text-dark-muted: #a1a1aa;
+    --flavor-text-dark-secondary: #D1D5DB;
+    --flavor-text-dark-muted: #D1D5DB;
     --flavor-border-dark: #27272a;
     --flavor-border-dark-light: #3f3f46;
     --flavor-card-dark: #1f1f2e;
@@ -177,7 +177,7 @@
 /* Select dropdown arrow en dark mode */
 [data-theme="dark"] .flavor-select,
 .flavor-dark .flavor-select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a1a1aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23D1D5DB' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
 }
 
 /* Tablas en dark mode */
@@ -552,7 +552,6 @@ a.flavor-btn--primary {
 .flavor-input:focus,
 .flavor-textarea:focus,
 .flavor-select:focus {
-    outline: none;
     border-color: var(--flavor-primary);
     box-shadow: 0 0 0 3px var(--flavor-primary-light);
 }
@@ -1292,4 +1291,223 @@ a.flavor-btn--primary {
     --flavor-border-light: #f3f4f6;
 
     color-scheme: light;
+}
+
+/* ==========================================================================
+   10. ACCESIBILIDAD - Focus Visible (WCAG 2.4.7)
+   Indicadores de foco consistentes para navegacion por teclado
+   ========================================================================== */
+
+:root {
+    /* Variables de focus para personalizacion */
+    --flavor-focus-color: var(--flavor-primary);
+    --flavor-focus-width: 2px;
+    --flavor-focus-offset: 2px;
+    --flavor-focus-shadow: 0 0 0 4px rgba(79, 70, 229, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   10a. Estilo base de :focus-visible para todos los elementos interactivos
+   -------------------------------------------------------------------------- */
+
+/* Botones Flavor */
+.flavor-btn:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    box-shadow: var(--flavor-focus-shadow);
+}
+
+/* Botones nativos dentro de contenedores Flavor */
+.flavor-card button:focus-visible,
+.flavor-alert button:focus-visible,
+.flavor-form-field button:focus-visible,
+[class*="flavor-"] button:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    box-shadow: var(--flavor-focus-shadow);
+}
+
+/* Enlaces Flavor */
+.flavor-link:focus-visible,
+.flavor-card a:focus-visible,
+[class*="flavor-"] a:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    box-shadow: var(--flavor-focus-shadow);
+    border-radius: var(--flavor-radius-sm);
+}
+
+/* Inputs, Selects y Textareas */
+.flavor-input:focus-visible,
+.flavor-select:focus-visible,
+.flavor-textarea:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    border-color: var(--flavor-primary);
+    box-shadow: var(--flavor-focus-shadow);
+}
+
+/* Inputs nativos dentro de contenedores Flavor */
+.flavor-form-field input:focus-visible,
+.flavor-form-field select:focus-visible,
+.flavor-form-field textarea:focus-visible,
+[class*="flavor-"] input:not([type="hidden"]):focus-visible,
+[class*="flavor-"] select:focus-visible,
+[class*="flavor-"] textarea:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    box-shadow: var(--flavor-focus-shadow);
+}
+
+/* Checkboxes y Radios */
+.flavor-checkbox input[type="checkbox"]:focus-visible,
+.flavor-radio input[type="radio"]:focus-visible,
+[class*="flavor-"] input[type="checkbox"]:focus-visible,
+[class*="flavor-"] input[type="radio"]:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    box-shadow: var(--flavor-focus-shadow);
+}
+
+/* Labels de checkbox/radio cuando el input tiene focus */
+.flavor-checkbox:has(input:focus-visible),
+.flavor-radio:has(input:focus-visible) {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    border-radius: var(--flavor-radius-sm);
+}
+
+/* Cards interactivas (con hover) */
+.flavor-card--hover:focus-visible,
+a.flavor-card:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    box-shadow: var(--flavor-focus-shadow), var(--flavor-shadow-lg);
+}
+
+/* Toggle de dark mode */
+.flavor-dark-mode-toggle:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    box-shadow: var(--flavor-focus-shadow);
+}
+
+/* Tablas interactivas - filas clicables */
+.flavor-table--hover tbody tr:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: calc(-1 * var(--flavor-focus-width));
+    background: var(--flavor-bg-tertiary);
+}
+
+/* Alertas con dismiss button */
+.flavor-alert__dismiss:focus-visible {
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+    border-radius: var(--flavor-radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   10b. Dark Mode - Colores de focus mas claros para mejor contraste
+   -------------------------------------------------------------------------- */
+
+[data-theme="dark"],
+.flavor-dark {
+    --flavor-focus-color: #818cf8; /* indigo-400 - mas claro para dark mode */
+    --flavor-focus-shadow: 0 0 0 4px rgba(129, 140, 248, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not(.flavor-light) {
+        --flavor-focus-color: #818cf8;
+        --flavor-focus-shadow: 0 0 0 4px rgba(129, 140, 248, 0.35);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   10c. High Contrast Mode - Soporte para usuarios con preferencia
+   -------------------------------------------------------------------------- */
+
+@media (prefers-contrast: more) {
+    :root {
+        --flavor-focus-width: 3px;
+        --flavor-focus-color: currentColor;
+        --flavor-focus-shadow: none;
+    }
+
+    /* Focus mas visible en high contrast */
+    .flavor-btn:focus-visible,
+    .flavor-link:focus-visible,
+    .flavor-input:focus-visible,
+    .flavor-select:focus-visible,
+    .flavor-textarea:focus-visible,
+    [class*="flavor-"] button:focus-visible,
+    [class*="flavor-"] a:focus-visible,
+    [class*="flavor-"] input:focus-visible,
+    [class*="flavor-"] select:focus-visible,
+    [class*="flavor-"] textarea:focus-visible {
+        outline-width: 3px;
+        outline-style: solid;
+        box-shadow: none;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   10d. Reduced Motion - Transiciones suaves deshabilitadas
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .flavor-btn:focus-visible,
+    .flavor-link:focus-visible,
+    .flavor-input:focus-visible,
+    .flavor-select:focus-visible,
+    .flavor-textarea:focus-visible,
+    .flavor-card--hover:focus-visible {
+        transition: none;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   10e. Skip Link para navegacion por teclado
+   -------------------------------------------------------------------------- */
+
+.flavor-skip-link {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    z-index: 9999;
+    padding: var(--flavor-spacing-sm) var(--flavor-spacing);
+    background: var(--flavor-primary);
+    color: var(--flavor-bg);
+    font-weight: var(--flavor-font-weight-semibold);
+    text-decoration: none;
+    border-radius: 0 0 var(--flavor-radius) 0;
+    transition: top var(--flavor-transition-fast);
+}
+
+.flavor-skip-link:focus {
+    top: 0;
+    outline: var(--flavor-focus-width) solid var(--flavor-focus-color);
+    outline-offset: var(--flavor-focus-offset);
+}
+
+/* --------------------------------------------------------------------------
+   10f. Focus Within para grupos de formularios
+   -------------------------------------------------------------------------- */
+
+.flavor-form-field:focus-within {
+    border-radius: var(--flavor-radius);
+}
+
+.flavor-form-field:focus-within .flavor-field-label {
+    color: var(--flavor-primary);
+}
+
+/* --------------------------------------------------------------------------
+   10g. Clase utilitaria para ocultar focus en interacciones con mouse
+   (Solo mostrar focus-visible, no focus regular)
+   -------------------------------------------------------------------------- */
+
+.flavor-focus-visible-only:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
 }

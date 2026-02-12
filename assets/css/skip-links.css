@@ -1,0 +1,183 @@
+/**
+ * Skip Links - Accesibilidad WCAG 2.4.1
+ *
+ * Permite a usuarios de teclado y lectores de pantalla
+ * saltar directamente al contenido principal.
+ *
+ * @package FlavorChatIA
+ * @since 3.2.0
+ */
+
+/* ==========================================================================
+   SKIP LINK - Contenedor
+   ========================================================================== */
+
+.flavor-skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+    background-color: var(--flavor-primary, #0073aa);
+    color: var(--flavor-text-inverse, #ffffff);
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: top 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    white-space: nowrap;
+    outline: none;
+    border: 2px solid transparent;
+}
+
+/* ==========================================================================
+   SKIP LINK - Estado visible (focus)
+   ========================================================================== */
+
+.flavor-skip-link:focus {
+    top: 0;
+    outline: none;
+    border-color: var(--flavor-text-inverse, #ffffff);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        0 0 0 4px rgba(0, 115, 170, 0.3);
+}
+
+.flavor-skip-link:focus-visible {
+    top: 0;
+    outline: 3px solid var(--flavor-text-inverse, #ffffff);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   SKIP LINK - Estados interactivos
+   ========================================================================== */
+
+.flavor-skip-link:hover {
+    background-color: var(--flavor-primary-dark, #005177);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.35),
+        0 0 0 4px rgba(0, 115, 170, 0.4);
+}
+
+.flavor-skip-link:active {
+    transform: translateX(-50%) translateY(2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   SKIP LINK - Icono (opcional)
+   ========================================================================== */
+
+.flavor-skip-link__icon {
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.flavor-skip-link__icon svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+/* ==========================================================================
+   SKIP LINK - Texto
+   ========================================================================== */
+
+.flavor-skip-link__text {
+    vertical-align: middle;
+}
+
+/* ==========================================================================
+   MAIN CONTENT TARGET - Outline al recibir foco
+   ========================================================================== */
+
+#main-content:target,
+#main-content:focus,
+[role="main"]:target,
+[role="main"]:focus,
+main:target,
+main:focus {
+    outline: 2px dashed var(--flavor-primary, #0073aa);
+    outline-offset: 4px;
+}
+
+/* Elimina outline despues de la animacion inicial */
+#main-content:focus:not(:focus-visible),
+[role="main"]:focus:not(:focus-visible),
+main:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* ==========================================================================
+   DARK MODE - Ajustes
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not(.flavor-light) .flavor-skip-link {
+        background-color: var(--flavor-primary, #4da6d9);
+        color: var(--flavor-bg-dark, #1a1a2e);
+        border-color: transparent;
+    }
+
+    :root:not([data-theme="light"]):not(.flavor-light) .flavor-skip-link:focus {
+        border-color: var(--flavor-bg-dark, #1a1a2e);
+    }
+}
+
+[data-theme="dark"] .flavor-skip-link,
+.flavor-dark .flavor-skip-link {
+    background-color: var(--flavor-primary, #4da6d9);
+    color: var(--flavor-bg-dark, #1a1a2e);
+    border-color: transparent;
+}
+
+[data-theme="dark"] .flavor-skip-link:focus,
+.flavor-dark .flavor-skip-link:focus {
+    border-color: var(--flavor-bg-dark, #1a1a2e);
+}
+
+/* ==========================================================================
+   HIGH CONTRAST MODE - Soporte
+   ========================================================================== */
+
+@media (prefers-contrast: more) {
+    .flavor-skip-link {
+        background-color: #000000;
+        color: #ffffff;
+        border: 3px solid #ffffff;
+    }
+
+    .flavor-skip-link:focus {
+        outline: 4px solid #ffff00;
+        outline-offset: 2px;
+    }
+}
+
+/* ==========================================================================
+   REDUCED MOTION - Sin transiciones
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .flavor-skip-link {
+        transition: none;
+    }
+
+    .flavor-skip-link:active {
+        transform: translateX(-50%);
+    }
+}
+
+/* ==========================================================================
+   PRINT - Ocultar skip links
+   ========================================================================== */
+
+@media print {
+    .flavor-skip-link {
+        display: none;
+    }
+}

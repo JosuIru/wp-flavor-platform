@@ -339,6 +339,9 @@ final class Flavor_Chat_IA {
         // Sistema de Ayuda Contextual con Tooltips
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-contextual-help.php';
 
+        // Sistema de Accesibilidad (WCAG 2.4.1 - Skip Links)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-accessibility.php';
+
         // Admin
         // Design settings se necesita tambien en frontend (preview handler)
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-design-settings.php';
@@ -534,6 +537,11 @@ final class Flavor_Chat_IA {
         // Inicializar Sistema de Ayuda Contextual
         if (is_admin() && class_exists('Flavor_Contextual_Help')) {
             Flavor_Contextual_Help::get_instance();
+        }
+
+        // Inicializar Sistema de Accesibilidad (Skip Links WCAG 2.4.1)
+        if (class_exists('Flavor_Accessibility')) {
+            Flavor_Accessibility::get_instance();
         }
 
         // Inicializar Performance Cache y precarga
