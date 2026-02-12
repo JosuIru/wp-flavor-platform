@@ -7,6 +7,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/config/app_config.dart';
 import 'core/utils/logger.dart';
+import 'core/utils/haptics.dart';
 import 'core/config/server_config.dart';
 import 'core/api/api_client.dart';
 import 'core/providers/providers.dart'; // Importar providers compartidos
@@ -1485,6 +1486,7 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
+          Haptics.selection();
           setState(() => _currentIndex = index);
         },
         destinations: bottomTabs

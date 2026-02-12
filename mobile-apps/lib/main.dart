@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/config/app_config.dart';
+import 'core/utils/haptics.dart';
 import 'main_client.dart' as client;
 import 'main_admin.dart' as admin;
 
@@ -132,6 +133,7 @@ class AppSelectorScreen extends StatelessWidget {
   }
 
   void _openClientApp(BuildContext context) {
+    Haptics.medium();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (_) => const ProviderScope(
@@ -142,6 +144,7 @@ class AppSelectorScreen extends StatelessWidget {
   }
 
   void _openAdminApp(BuildContext context) {
+    Haptics.medium();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (_) => const ProviderScope(

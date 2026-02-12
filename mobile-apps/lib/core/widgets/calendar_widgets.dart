@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/models.dart';
+import '../utils/haptics.dart';
 
 /// Widget de calendario de disponibilidad
 class AvailabilityCalendar extends StatelessWidget {
@@ -68,6 +69,7 @@ class AvailabilityCalendar extends StatelessWidget {
         return selected != null && isSameDay(selected, day);
       },
       onDaySelected: (selectedDay, focusedDay) {
+        Haptics.selection();
         final dateStr = _formatDate(selectedDay);
         final dayInfo = _getDayInfo(selectedDay);
         if (dayInfo != null) {
@@ -161,37 +163,45 @@ class CalendarLegend extends StatelessWidget {
   const CalendarLegend({super.key});
 
   Widget _buildLegendItem(BuildContext context, Color color, String label) {
-    return Row(
-      children: [
-        Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.3),
-            border: Border.all(color: color, width: 2),
-            borderRadius: BorderRadius.circular(4),
+    return Semantics(
+      label: 'Color $label',
+      child: Row(
+        children: [
+          ExcludeSemantics(
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.3),
+                border: Border.all(color: color, width: 2),
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ],
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 16,
-      runSpacing: 8,
-      children: [
-        _buildLegendItem(context, Colors.green, 'Disponible'),
-        _buildLegendItem(context, Colors.orange, 'Limitado'),
-        _buildLegendItem(context, Colors.red, 'Completo'),
-        _buildLegendItem(context, Colors.grey, 'Cerrado'),
-      ],
+    return Semantics(
+      label: 'Leyenda del calendario',
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 8,
+        children: [
+          _buildLegendItem(context, Colors.green, 'Disponible'),
+          _buildLegendItem(context, Colors.orange, 'Limitado'),
+          _buildLegendItem(context, Colors.red, 'Completo'),
+          _buildLegendItem(context, Colors.grey, 'Cerrado'),
+        ],
+      ),
     );
   }
 }
@@ -245,60 +255,76 @@ class DayInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final stateColor = _getStateColor(day.state);
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return MergeSemantics(
+      child: Semantics(
+        label: 'Dia ${day.date}, estado: ${day.state}',
+        child: Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.calendar_today,
-                  size: 20,
-                  color: Theme.of(context).colorScheme.primary,
+                Row(
+                  children: [
+                    ExcludeSemantics(
+                      child: Icon(
+                        Icons.calendar_today,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      day.date,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  day.date,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    ExcludeSemantics(
+                      child: Icon(
+                        _getStateIcon(day.state),
+                        color: stateColor,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      day.state,
+                      style: TextStyle(
+                        color: stateColor,
                         fontWeight: FontWeight.bold,
                       ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Icon(
-                  _getStateIcon(day.state),
-                  color: stateColor,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  day.state,
-                  style: TextStyle(
-                    color: stateColor,
-                    fontWeight: FontWeight.bold,
+                // TODO: Agregar message y availableSpaces al modelo AvailabilityDay
+                // si son necesarios para mostrar información adicional
+                if (onSelect != null && day.state.toLowerCase() != 'cerrado') ...[
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Semantics(
+                      label: 'Seleccionar dia ${day.date}',
+                      button: true,
+                      child: FilledButton(
+                        onPressed: () {
+                          Haptics.light();
+                          onSelect?.call();
+                        },
+                        child: const Text('Seleccionar día'),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
-            // TODO: Agregar message y availableSpaces al modelo AvailabilityDay
-            // si son necesarios para mostrar información adicional
-            if (onSelect != null && day.state.toLowerCase() != 'cerrado') ...[
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: onSelect,
-                  child: const Text('Seleccionar día'),
-                ),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

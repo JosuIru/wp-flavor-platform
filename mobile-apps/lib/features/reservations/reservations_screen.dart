@@ -6,6 +6,7 @@ import '../../core/models/models.dart';
 import '../../core/widgets/calendar_widgets.dart';
 import '../../core/widgets/ticket_widgets.dart';
 import '../../core/widgets/common_widgets.dart';
+import '../../core/utils/haptics.dart';
 import 'checkout_webview.dart';
 
 /// Pantalla de reservas para clientes
@@ -32,6 +33,7 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
   }
 
   void _onDateSelected(String date, AvailabilityDay day) {
+    Haptics.selection();
     setState(() {
       _selectedDate = date;
       _selectedDay = day;
@@ -86,7 +88,8 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
       );
 
       if (result == true && mounted) {
-        // Compra completada
+        // Compra completada - feedback haptico de exito
+        Haptics.success();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('¡Reserva completada con éxito!')),
         );
@@ -100,6 +103,8 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
         cartNotifier.clear();
       }
     } else if (mounted) {
+      // Feedback haptico de error
+      Haptics.error();
       final error = ref.read(cartProvider).error;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

@@ -12,10 +12,10 @@ $servicios_relacionados = $servicios_relacionados ?? [];
 
 <div class="flavor-frontend flavor-banco-tiempo-single">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6" role="navigation" aria-label="<?php esc_attr_e('Migas de pan', 'flavor-chat-ia'); ?>">
         <a href="<?php echo esc_url(home_url('/banco-tiempo/')); ?>" class="hover:text-violet-600 transition-colors"><?php echo esc_html__('Banco de Tiempo', 'flavor-chat-ia'); ?></a>
-        <span>›</span>
-        <span class="text-gray-700"><?php echo esc_html($servicio['titulo'] ?? 'Servicio'); ?></span>
+        <span aria-hidden="true">›</span>
+        <span class="text-gray-700" aria-current="page"><?php echo esc_html($servicio['titulo'] ?? 'Servicio'); ?></span>
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">

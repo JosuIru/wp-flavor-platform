@@ -157,10 +157,18 @@ $categorias = $categorias ?? [];
     <!-- Paginación -->
     <?php if ($total_servicios > 12): ?>
     <div class="flex justify-center mt-8">
-        <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?></button>
-            <span class="px-4 py-2 text-gray-600">Página 1 de <?php echo ceil($total_servicios / 12); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-violet-500 text-white hover:bg-violet-600 transition-colors"><?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?></button>
+        <nav class="flex items-center gap-2" role="navigation" aria-label="<?php esc_attr_e('Paginación de servicios', 'flavor-chat-ia'); ?>">
+            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+                    aria-label="<?php esc_attr_e('Página anterior', 'flavor-chat-ia'); ?>">
+                <?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?>
+            </button>
+            <span class="px-4 py-2 text-gray-600" aria-live="polite">
+                <?php printf(esc_html__('Página 1 de %d', 'flavor-chat-ia'), ceil($total_servicios / 12)); ?>
+            </span>
+            <button class="px-4 py-2 rounded-lg bg-violet-500 text-white hover:bg-violet-600 transition-colors"
+                    aria-label="<?php esc_attr_e('Página siguiente', 'flavor-chat-ia'); ?>">
+                <?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?>
+            </button>
         </nav>
     </div>
     <?php endif; ?>

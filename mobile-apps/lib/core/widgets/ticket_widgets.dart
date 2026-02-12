@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
+import '../utils/haptics.dart';
 
 /// Widget de lista de selección de tickets
 class TicketSelectionList extends StatelessWidget {
@@ -65,29 +66,49 @@ class TicketSelectionList extends StatelessWidget {
                     const Text('Cantidad:'),
                     Row(
                       children: [
-                        IconButton(
-                          onPressed: quantity > 0
-                              ? () => onQuantityChanged(ticket.slug, quantity - 1)
-                              : null,
-                          icon: const Icon(Icons.remove_circle_outline),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            quantity.toString(),
-                            style: Theme.of(context).textTheme.titleMedium,
+                        Semantics(
+                          label: 'Disminuir cantidad de ${ticket.name}',
+                          button: true,
+                          enabled: quantity > 0,
+                          child: IconButton(
+                            onPressed: quantity > 0
+                                ? () {
+                                    Haptics.selection();
+                                    onQuantityChanged(ticket.slug, quantity - 1);
+                                  }
+                                : null,
+                            icon: const Icon(Icons.remove_circle_outline),
+                            tooltip: 'Disminuir cantidad',
                           ),
                         ),
-                        IconButton(
-                          onPressed: () => onQuantityChanged(ticket.slug, quantity + 1),
-                          icon: const Icon(Icons.add_circle_outline),
+                        Semantics(
+                          label: '$quantity tickets de ${ticket.name} seleccionados',
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              quantity.toString(),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                        ),
+                        Semantics(
+                          label: 'Aumentar cantidad de ${ticket.name}',
+                          button: true,
+                          child: IconButton(
+                            onPressed: () {
+                              Haptics.selection();
+                              onQuantityChanged(ticket.slug, quantity + 1);
+                            },
+                            icon: const Icon(Icons.add_circle_outline),
+                            tooltip: 'Aumentar cantidad',
+                          ),
                         ),
                       ],
                     ),
@@ -202,15 +223,24 @@ class CartSummary extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 16),
-            FilledButton(
-              onPressed: isLoading ? null : onCheckout,
-              child: isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Proceder al pago'),
+            Semantics(
+              label: isLoading
+                  ? 'Procesando pago'
+                  : 'Proceder al pago. Total: ${total.toStringAsFixed(2)} euros',
+              button: true,
+              enabled: !isLoading,
+              child: FilledButton(
+                onPressed: isLoading ? null : onCheckout,
+                child: isLoading
+                    ? ExcludeSemantics(
+                        child: const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : const Text('Proceder al pago'),
+              ),
             ),
           ],
         ),

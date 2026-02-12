@@ -9,10 +9,12 @@
 /// - Configurar los items de navegación
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../layouts/layout_config.dart';
 import '../../../core/providers/sync_provider.dart';
+import '../../../core/widgets/common_widgets.dart';
 
 /// Shell adaptativo que cambia según la configuración del sitio
 class AdaptiveAppShell extends ConsumerStatefulWidget {
@@ -90,21 +92,32 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
     final layoutConfig = ref.watch(layoutConfigProvider);
     final useBottomNav = ref.watch(useBottomNavigationProvider);
 
-    return Scaffold(
-      appBar: _buildAppBar(syncState, layoutConfig),
-      drawer: useBottomNav ? null : _buildDrawer(layoutConfig),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        physics: useBottomNav
-            ? const NeverScrollableScrollPhysics()
-            : const BouncingScrollPhysics(),
-        children: widget.pages,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldExit = await showExitConfirmation(context);
+        if (shouldExit && context.mounted) {
+          // Cerrar la aplicación
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        appBar: _buildAppBar(syncState, layoutConfig),
+        drawer: useBottomNav ? null : _buildDrawer(layoutConfig),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          physics: useBottomNav
+              ? const NeverScrollableScrollPhysics()
+              : const BouncingScrollPhysics(),
+          children: widget.pages,
+        ),
+        bottomNavigationBar: useBottomNav
+            ? _buildBottomNavigationBar(layoutConfig)
+            : null,
+        floatingActionButton: widget.floatingActionButton,
       ),
-      bottomNavigationBar: useBottomNav
-          ? _buildBottomNavigationBar(layoutConfig)
-          : null,
-      floatingActionButton: widget.floatingActionButton,
     );
   }
 

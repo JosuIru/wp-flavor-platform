@@ -14,10 +14,10 @@ $es_miembro = $es_miembro ?? false;
 
 <div class="flavor-frontend flavor-grupos-consumo-single">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6" role="navigation" aria-label="<?php esc_attr_e('Migas de pan', 'flavor-chat-ia'); ?>">
         <a href="<?php echo esc_url(home_url('/grupos-consumo/')); ?>" class="hover:text-lime-600 transition-colors"><?php echo esc_html__('Grupos de Consumo', 'flavor-chat-ia'); ?></a>
-        <span>›</span>
-        <span class="text-gray-700"><?php echo esc_html($grupo['nombre'] ?? 'Grupo'); ?></span>
+        <span aria-hidden="true">›</span>
+        <span class="text-gray-700" aria-current="page"><?php echo esc_html($grupo['nombre'] ?? 'Grupo'); ?></span>
     </nav>
 
     <!-- Header del grupo -->

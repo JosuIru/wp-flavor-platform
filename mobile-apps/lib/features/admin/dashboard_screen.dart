@@ -6,6 +6,7 @@ import '../../core/providers/providers.dart';
 import '../../core/providers/admin_modules_provider.dart';
 import '../../core/widgets/common_widgets.dart';
 import '../../core/api/api_client.dart';
+import '../../core/utils/haptics.dart';
 import 'qr_scanner_screen.dart';
 import 'export_screen.dart';
 import 'stats_screen.dart';
@@ -114,10 +115,14 @@ class DashboardScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(i18n.dashboard2938c7),
         actions: [
-          IconButton(
-            onPressed: () => ref.invalidate(dashboardProvider),
-            icon: const Icon(Icons.refresh),
-            tooltip: i18n.actualizar2e7be1,
+          Semantics(
+            label: i18n.actualizar2e7be1,
+            button: true,
+            child: IconButton(
+              onPressed: () => ref.invalidate(dashboardProvider),
+              icon: const Icon(Icons.refresh),
+              tooltip: i18n.actualizar2e7be1,
+            ),
           ),
         ],
       ),
@@ -493,12 +498,20 @@ class _QuickActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
-    return ActionChip(
-      avatar: Icon(icon, size: 18, color: color),
-      label: Text(label),
-      onPressed: onTap,
-      side: color != null ? BorderSide(color: color!.withOpacity(0.3)) : null,
+    return Semantics(
+      label: label,
+      button: true,
+      child: ActionChip(
+        avatar: ExcludeSemantics(
+          child: Icon(icon, size: 18, color: color),
+        ),
+        label: Text(label),
+        onPressed: () {
+          Haptics.light();
+          onTap();
+        },
+        side: color != null ? BorderSide(color: color!.withOpacity(0.3)) : null,
+      ),
     );
   }
 }

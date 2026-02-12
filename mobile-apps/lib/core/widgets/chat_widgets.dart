@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
+import '../utils/haptics.dart';
 
 /// Widget de lista de mensajes de chat
 class ChatMessageList extends StatelessWidget {
@@ -40,33 +41,42 @@ class _ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUser = message.isUser;
+    final senderLabel = isUser ? 'Tu mensaje' : 'Respuesta del asistente';
 
-    return Align(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        padding: const EdgeInsets.all(12),
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.75,
-        ),
-        decoration: BoxDecoration(
-          color: isUser
-              ? Theme.of(context).colorScheme.primary
-              : Colors.grey.shade300,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: message.isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Text(
-                message.content,
-                style: TextStyle(
-                  color: isUser ? Colors.white : Colors.black87,
+    return Semantics(
+      label: message.isLoading
+          ? 'Cargando respuesta del asistente'
+          : '$senderLabel: ${message.content}',
+      child: Align(
+        alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          padding: const EdgeInsets.all(12),
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.75,
+          ),
+          decoration: BoxDecoration(
+            color: isUser
+                ? Theme.of(context).colorScheme.primary
+                : Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: message.isLoading
+              ? Semantics(
+                  excludeSemantics: true,
+                  child: const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+              : Text(
+                  message.content,
+                  style: TextStyle(
+                    color: isUser ? Colors.white : Colors.black87,
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }
@@ -95,6 +105,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
   void _handleSend() {
     final text = _controller.text.trim();
     if (text.isNotEmpty && widget.enabled) {
+      Haptics.light();
       widget.onSend(text);
       _controller.clear();
     }
@@ -137,16 +148,25 @@ class _ChatInputFieldState extends State<ChatInputField> {
             ),
           ),
           const SizedBox(width: 8),
-          IconButton(
-            onPressed: widget.enabled ? _handleSend : null,
-            icon: !widget.enabled
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.send),
-            color: Theme.of(context).colorScheme.primary,
+          Semantics(
+            label: widget.enabled ? 'Enviar mensaje' : 'Enviando mensaje',
+            button: true,
+            enabled: widget.enabled,
+            child: IconButton(
+              onPressed: widget.enabled ? _handleSend : null,
+              icon: !widget.enabled
+                  ? Semantics(
+                      excludeSemantics: true,
+                      child: const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                  : const Icon(Icons.send),
+              color: Theme.of(context).colorScheme.primary,
+              tooltip: 'Enviar mensaje',
+            ),
           ),
         ],
       ),

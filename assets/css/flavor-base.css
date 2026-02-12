@@ -20,6 +20,238 @@
     --flavor-text-inverse: var(--flavor-bg);
     --flavor-border-color: var(--flavor-border);
     --flavor-border-focus: var(--flavor-primary);
+
+    /* Dark mode variables */
+    --flavor-bg-dark: #1a1a2e;
+    --flavor-bg-dark-secondary: #16213e;
+    --flavor-bg-dark-tertiary: #0f0f1a;
+    --flavor-text-dark: #e4e4e7;
+    --flavor-text-dark-secondary: #c9c9cc;
+    --flavor-text-dark-muted: #a1a1aa;
+    --flavor-border-dark: #27272a;
+    --flavor-border-dark-light: #3f3f46;
+    --flavor-card-dark: #1f1f2e;
+    --flavor-shadow-dark: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --flavor-shadow-dark-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    --flavor-shadow-dark-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}
+
+/* ==========================================================================
+   DARK MODE - Automatico por preferencia del sistema
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not(.flavor-light) {
+        --flavor-bg: var(--flavor-bg-dark);
+        --flavor-bg-secondary: var(--flavor-bg-dark-secondary);
+        --flavor-bg-tertiary: var(--flavor-bg-dark-tertiary);
+        --flavor-text: var(--flavor-text-dark);
+        --flavor-text-secondary: var(--flavor-text-dark-secondary);
+        --flavor-text-muted: var(--flavor-text-dark-muted);
+        --flavor-border: var(--flavor-border-dark);
+        --flavor-border-light: var(--flavor-border-dark-light);
+        --flavor-shadow: var(--flavor-shadow-dark);
+        --flavor-shadow-sm: var(--flavor-shadow-dark-sm);
+        --flavor-shadow-lg: var(--flavor-shadow-dark-lg);
+
+        color-scheme: dark;
+    }
+}
+
+/* ==========================================================================
+   DARK MODE - Por clase o atributo (toggle manual)
+   ========================================================================== */
+[data-theme="dark"],
+.flavor-dark {
+    --flavor-bg: var(--flavor-bg-dark);
+    --flavor-bg-secondary: var(--flavor-bg-dark-secondary);
+    --flavor-bg-tertiary: var(--flavor-bg-dark-tertiary);
+    --flavor-text: var(--flavor-text-dark);
+    --flavor-text-secondary: var(--flavor-text-dark-secondary);
+    --flavor-text-muted: var(--flavor-text-dark-muted);
+    --flavor-border: var(--flavor-border-dark);
+    --flavor-border-light: var(--flavor-border-dark-light);
+    --flavor-shadow: var(--flavor-shadow-dark);
+    --flavor-shadow-sm: var(--flavor-shadow-dark-sm);
+    --flavor-shadow-lg: var(--flavor-shadow-dark-lg);
+
+    color-scheme: dark;
+}
+
+/* ==========================================================================
+   DARK MODE - Ajustes especificos de componentes
+   ========================================================================== */
+
+/* Cards en dark mode */
+[data-theme="dark"] .flavor-card,
+.flavor-dark .flavor-card,
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not(.flavor-light) .flavor-card {
+        background: var(--flavor-card-dark);
+        border-color: var(--flavor-border-dark);
+    }
+}
+
+[data-theme="dark"] .flavor-card--flat,
+.flavor-dark .flavor-card--flat {
+    background: var(--flavor-bg-dark-secondary);
+}
+
+[data-theme="dark"] .flavor-card__footer,
+.flavor-dark .flavor-card__footer {
+    background: var(--flavor-bg-dark-tertiary);
+}
+
+/* Botones en dark mode */
+[data-theme="dark"] .flavor-btn--secondary,
+.flavor-dark .flavor-btn--secondary {
+    background: var(--flavor-bg-dark-secondary);
+    border-color: var(--flavor-border-dark);
+    color: var(--flavor-text-dark);
+}
+
+[data-theme="dark"] .flavor-btn--secondary:hover,
+.flavor-dark .flavor-btn--secondary:hover {
+    background: var(--flavor-bg-dark-tertiary);
+}
+
+[data-theme="dark"] .flavor-btn--outline,
+.flavor-dark .flavor-btn--outline {
+    border-color: var(--flavor-border-dark-light);
+    color: var(--flavor-text-dark);
+}
+
+[data-theme="dark"] .flavor-btn--outline:hover,
+.flavor-dark .flavor-btn--outline:hover {
+    background: var(--flavor-bg-dark-secondary);
+}
+
+[data-theme="dark"] .flavor-btn--ghost,
+.flavor-dark .flavor-btn--ghost {
+    color: var(--flavor-text-dark-secondary);
+}
+
+[data-theme="dark"] .flavor-btn--ghost:hover,
+.flavor-dark .flavor-btn--ghost:hover {
+    background: var(--flavor-bg-dark-secondary);
+    color: var(--flavor-text-dark);
+}
+
+/* Formularios en dark mode */
+[data-theme="dark"] .flavor-input,
+[data-theme="dark"] .flavor-select,
+[data-theme="dark"] .flavor-textarea,
+.flavor-dark .flavor-input,
+.flavor-dark .flavor-select,
+.flavor-dark .flavor-textarea {
+    background: var(--flavor-bg-dark-secondary);
+    color: var(--flavor-text-dark);
+    border-color: var(--flavor-border-dark);
+}
+
+[data-theme="dark"] .flavor-input:focus,
+[data-theme="dark"] .flavor-select:focus,
+[data-theme="dark"] .flavor-textarea:focus,
+.flavor-dark .flavor-input:focus,
+.flavor-dark .flavor-select:focus,
+.flavor-dark .flavor-textarea:focus {
+    border-color: var(--flavor-primary);
+    box-shadow: 0 0 0 3px rgba(var(--flavor-primary-rgb, 79, 70, 229), 0.2);
+}
+
+[data-theme="dark"] .flavor-input::placeholder,
+[data-theme="dark"] .flavor-textarea::placeholder,
+.flavor-dark .flavor-input::placeholder,
+.flavor-dark .flavor-textarea::placeholder {
+    color: var(--flavor-text-dark-muted);
+}
+
+[data-theme="dark"] .flavor-input:disabled,
+[data-theme="dark"] .flavor-select:disabled,
+[data-theme="dark"] .flavor-textarea:disabled,
+.flavor-dark .flavor-input:disabled,
+.flavor-dark .flavor-select:disabled,
+.flavor-dark .flavor-textarea:disabled {
+    background: var(--flavor-bg-dark-tertiary);
+}
+
+/* Select dropdown arrow en dark mode */
+[data-theme="dark"] .flavor-select,
+.flavor-dark .flavor-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a1a1aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
+/* Tablas en dark mode */
+[data-theme="dark"] .flavor-table th,
+.flavor-dark .flavor-table th {
+    background: var(--flavor-bg-dark-secondary);
+    color: var(--flavor-text-dark-secondary);
+}
+
+[data-theme="dark"] .flavor-table--striped tbody tr:nth-child(even),
+.flavor-dark .flavor-table--striped tbody tr:nth-child(even) {
+    background: var(--flavor-bg-dark-secondary);
+}
+
+[data-theme="dark"] .flavor-table--hover tbody tr:hover,
+.flavor-dark .flavor-table--hover tbody tr:hover {
+    background: var(--flavor-bg-dark-tertiary);
+}
+
+/* Alertas en dark mode */
+[data-theme="dark"] .flavor-alert,
+.flavor-dark .flavor-alert {
+    background: var(--flavor-bg-dark-secondary);
+    border-color: var(--flavor-border-dark);
+}
+
+[data-theme="dark"] .flavor-alert--success,
+.flavor-dark .flavor-alert--success {
+    background: color-mix(in srgb, var(--flavor-success) 15%, var(--flavor-bg-dark));
+    border-color: color-mix(in srgb, var(--flavor-success) 40%, transparent);
+}
+
+[data-theme="dark"] .flavor-alert--warning,
+.flavor-dark .flavor-alert--warning {
+    background: color-mix(in srgb, var(--flavor-warning) 15%, var(--flavor-bg-dark));
+    border-color: color-mix(in srgb, var(--flavor-warning) 40%, transparent);
+}
+
+[data-theme="dark"] .flavor-alert--error,
+.flavor-dark .flavor-alert--error {
+    background: color-mix(in srgb, var(--flavor-error) 15%, var(--flavor-bg-dark));
+    border-color: color-mix(in srgb, var(--flavor-error) 40%, transparent);
+}
+
+[data-theme="dark"] .flavor-alert--info,
+.flavor-dark .flavor-alert--info {
+    background: color-mix(in srgb, var(--flavor-info) 15%, var(--flavor-bg-dark));
+    border-color: color-mix(in srgb, var(--flavor-info) 40%, transparent);
+}
+
+/* Badges en dark mode */
+[data-theme="dark"] .flavor-badge--outline,
+.flavor-dark .flavor-badge--outline {
+    border-color: var(--flavor-border-dark-light);
+    color: var(--flavor-text-dark-secondary);
+}
+
+/* Codigo en dark mode */
+[data-theme="dark"] .flavor-code,
+.flavor-dark .flavor-code {
+    background: var(--flavor-bg-dark-tertiary);
+    color: var(--flavor-text-dark);
+}
+
+/* Divider en dark mode */
+[data-theme="dark"] .flavor-divider,
+.flavor-dark .flavor-divider {
+    border-color: var(--flavor-border-dark);
+}
+
+/* Background utilities en dark mode */
+[data-theme="dark"] .flavor-bg-white,
+.flavor-dark .flavor-bg-white {
+    background-color: var(--flavor-bg-dark);
 }
 
 /* Bridge chat-ia: el widget hereda los colores del tema activo */
@@ -954,3 +1186,110 @@ a.flavor-btn--primary {
 .flavor-transition-fast { transition: all var(--flavor-transition-fast); }
 .flavor-transition      { transition: all var(--flavor-transition); }
 .flavor-transition-slow { transition: all var(--flavor-transition-slow); }
+
+/* ==========================================================================
+   9l. UTILIDADES - Dark Mode Toggle
+   ========================================================================== */
+
+/* Transiciones suaves al cambiar de tema (evita flash inicial) */
+.flavor-theme-transitions,
+.flavor-theme-transitions *,
+.flavor-theme-transitions *::before,
+.flavor-theme-transitions *::after {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+/* Boton de toggle de dark mode */
+.flavor-dark-mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--flavor-spacing-xs);
+    padding: var(--flavor-spacing-xs) var(--flavor-spacing-sm);
+    background: transparent;
+    border: 1px solid var(--flavor-border);
+    border-radius: var(--flavor-radius);
+    cursor: pointer;
+    color: var(--flavor-text);
+    transition: all var(--flavor-transition-fast);
+}
+
+.flavor-dark-mode-toggle:hover {
+    background: var(--flavor-bg-secondary);
+    border-color: var(--flavor-primary);
+}
+
+.flavor-dark-mode-toggle:focus-visible {
+    outline: 2px solid var(--flavor-primary);
+    outline-offset: 2px;
+}
+
+/* Iconos del toggle */
+.flavor-dark-mode-toggle .icon-sun,
+.flavor-dark-mode-toggle .icon-moon,
+.flavor-dark-mode-toggle .flavor-icon-sun,
+.flavor-dark-mode-toggle .flavor-icon-moon {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: currentColor;
+}
+
+/* Estado inicial - mostrar luna por defecto (para modo light) */
+.flavor-dark-mode-toggle .icon-sun,
+.flavor-dark-mode-toggle .flavor-icon-sun {
+    display: none;
+}
+
+.flavor-dark-mode-toggle .icon-moon,
+.flavor-dark-mode-toggle .flavor-icon-moon {
+    display: block;
+}
+
+/* En dark mode - mostrar sol */
+[data-theme="dark"] .flavor-dark-mode-toggle .icon-sun,
+[data-theme="dark"] .flavor-dark-mode-toggle .flavor-icon-sun,
+.flavor-dark .flavor-dark-mode-toggle .icon-sun,
+.flavor-dark .flavor-dark-mode-toggle .flavor-icon-sun {
+    display: block;
+}
+
+[data-theme="dark"] .flavor-dark-mode-toggle .icon-moon,
+[data-theme="dark"] .flavor-dark-mode-toggle .flavor-icon-moon,
+.flavor-dark .flavor-dark-mode-toggle .icon-moon,
+.flavor-dark .flavor-dark-mode-toggle .flavor-icon-moon {
+    display: none;
+}
+
+/* Variante con texto */
+.flavor-dark-mode-toggle--with-text {
+    padding: var(--flavor-spacing-sm) var(--flavor-spacing);
+}
+
+.flavor-dark-mode-toggle .flavor-theme-text {
+    font-size: var(--flavor-font-size-sm);
+    font-weight: var(--flavor-font-weight-medium);
+}
+
+/* Variante solo icono (circular) */
+.flavor-dark-mode-toggle--icon-only {
+    padding: var(--flavor-spacing-sm);
+    border-radius: var(--flavor-radius-full);
+}
+
+/* Forzar modo light (override de preferencia del sistema) */
+[data-theme="light"],
+.flavor-light {
+    --flavor-bg: #ffffff;
+    --flavor-bg-secondary: #f9fafb;
+    --flavor-bg-tertiary: #f3f4f6;
+    --flavor-text: #111827;
+    --flavor-text-secondary: #374151;
+    --flavor-text-muted: #6b7280;
+    --flavor-border: #e5e7eb;
+    --flavor-border-light: #f3f4f6;
+
+    color-scheme: light;
+}

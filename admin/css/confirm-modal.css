@@ -1,0 +1,324 @@
+/**
+ * Flavor Confirm Modal Styles
+ * Estilos para modales de confirmación accesibles
+ *
+ * @package Flavor_Chat_IA
+ * @since 1.0.0
+ */
+
+/* ==========================================================================
+   Modal Base
+   ========================================================================== */
+
+.flavor-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-modal--open {
+    display: flex;
+}
+
+/* Prevenir scroll del body cuando el modal está abierto */
+body.flavor-modal-open {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Backdrop
+   ========================================================================== */
+
+.flavor-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    animation: flavor-fade-in 0.2s ease-out;
+}
+
+/* ==========================================================================
+   Container
+   ========================================================================== */
+
+.flavor-modal__container {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    max-width: 480px;
+    width: 90%;
+    animation: flavor-slide-up 0.3s ease-out;
+    max-height: 90vh;
+    overflow: auto;
+}
+
+/* Variantes de tipo */
+.flavor-modal--warning .flavor-modal__header {
+    border-left: 4px solid #dba617;
+}
+
+.flavor-modal--danger .flavor-modal__header {
+    border-left: 4px solid #d63638;
+}
+
+.flavor-modal--info .flavor-modal__header {
+    border-left: 4px solid #2271b1;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.flavor-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #dcdcde;
+    background: #f6f7f7;
+    border-radius: 8px 8px 0 0;
+}
+
+.flavor-modal__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1d2327;
+    line-height: 1.4;
+}
+
+.flavor-modal__close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    color: #646970;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.flavor-modal__close:hover {
+    color: #1d2327;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.flavor-modal__close:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Body
+   ========================================================================== */
+
+.flavor-modal__body {
+    padding: 24px 20px;
+}
+
+.flavor-modal__body p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3c434a;
+}
+
+/* Icono opcional según tipo */
+.flavor-modal--warning .flavor-modal__body::before,
+.flavor-modal--danger .flavor-modal__body::before {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 32px;
+    line-height: 1;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.flavor-modal__footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 16px 20px;
+    background: #f6f7f7;
+    border-top: 1px solid #dcdcde;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Botones */
+.flavor-modal__cancel {
+    min-width: 100px;
+}
+
+.flavor-modal__confirm {
+    min-width: 100px;
+}
+
+/* Botón de peligro */
+.flavor-modal--danger .flavor-modal__confirm {
+    background: #d63638;
+    border-color: #d63638;
+    color: #fff;
+}
+
+.flavor-modal--danger .flavor-modal__confirm:hover {
+    background: #b32d2e;
+    border-color: #b32d2e;
+}
+
+.flavor-modal--danger .flavor-modal__confirm:focus {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px #d63638;
+}
+
+/* Botón de advertencia */
+.flavor-modal--warning .flavor-modal__confirm {
+    background: #dba617;
+    border-color: #dba617;
+    color: #fff;
+}
+
+.flavor-modal--warning .flavor-modal__confirm:hover {
+    background: #c09008;
+    border-color: #c09008;
+}
+
+.flavor-modal--warning .flavor-modal__confirm:focus {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px #dba617;
+}
+
+/* Botón info - usa el estilo por defecto de WordPress */
+.flavor-modal--info .flavor-modal__confirm {
+    /* Usa button-primary por defecto */
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+
+@keyframes flavor-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes flavor-slide-up {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 600px) {
+    .flavor-modal__container {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .flavor-modal__header {
+        padding: 12px 16px;
+    }
+
+    .flavor-modal__title {
+        font-size: 16px;
+    }
+
+    .flavor-modal__body {
+        padding: 20px 16px;
+    }
+
+    .flavor-modal__footer {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+    }
+
+    .flavor-modal__footer .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ==========================================================================
+   Preferencias de movimiento reducido
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .flavor-modal__backdrop,
+    .flavor-modal__container {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Alto contraste
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+    .flavor-modal__container {
+        border: 2px solid #1d2327;
+    }
+
+    .flavor-modal__header,
+    .flavor-modal__footer {
+        background: #fff;
+    }
+
+    .flavor-modal--warning .flavor-modal__header,
+    .flavor-modal--danger .flavor-modal__header,
+    .flavor-modal--info .flavor-modal__header {
+        border-left-width: 6px;
+    }
+}
+
+/* ==========================================================================
+   RTL Support
+   ========================================================================== */
+
+[dir="rtl"] .flavor-modal--warning .flavor-modal__header,
+[dir="rtl"] .flavor-modal--danger .flavor-modal__header,
+[dir="rtl"] .flavor-modal--info .flavor-modal__header {
+    border-left: none;
+    border-right: 4px solid;
+}
+
+[dir="rtl"] .flavor-modal--warning .flavor-modal__header {
+    border-right-color: #dba617;
+}
+
+[dir="rtl"] .flavor-modal--danger .flavor-modal__header {
+    border-right-color: #d63638;
+}
+
+[dir="rtl"] .flavor-modal--info .flavor-modal__header {
+    border-right-color: #2271b1;
+}
+
+[dir="rtl"] .flavor-modal__footer {
+    flex-direction: row-reverse;
+}
+
+@media screen and (max-width: 600px) {
+    [dir="rtl"] .flavor-modal__footer {
+        flex-direction: column-reverse;
+    }
+}

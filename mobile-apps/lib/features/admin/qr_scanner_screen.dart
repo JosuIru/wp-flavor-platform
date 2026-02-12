@@ -192,15 +192,27 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
       appBar: AppBar(
         title: Text(i18n.serverConfigQrScanTitle),
         actions: [
-          IconButton(
-            onPressed: _toggleTorch,
-            icon: Icon(_torchEnabled ? Icons.flash_on : Icons.flash_off),
-            tooltip: i18n.linterna8f3689,
+          Semantics(
+            label: _torchEnabled
+                ? 'Desactivar linterna'
+                : 'Activar linterna',
+            button: true,
+            child: IconButton(
+              onPressed: _toggleTorch,
+              icon: Icon(_torchEnabled ? Icons.flash_on : Icons.flash_off),
+              tooltip: i18n.linterna8f3689,
+            ),
           ),
-          IconButton(
-            onPressed: _switchCamera,
-            icon: Icon(_frontCamera ? Icons.camera_front : Icons.camera_rear),
-            tooltip: i18n.cambiarCamara5a36e3,
+          Semantics(
+            label: _frontCamera
+                ? 'Cambiar a camara trasera'
+                : 'Cambiar a camara frontal',
+            button: true,
+            child: IconButton(
+              onPressed: _switchCamera,
+              icon: Icon(_frontCamera ? Icons.camera_front : Icons.camera_rear),
+              tooltip: i18n.cambiarCamara5a36e3,
+            ),
           ),
         ],
       ),
@@ -349,38 +361,50 @@ class _ScanResultCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final isSuccess = result.success;
 
-    return Card(
-      color: isSuccess ? Colors.green.shade50 : Colors.red.shade50,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  isSuccess ? Icons.check_circle : Icons.error,
-                  color: isSuccess ? Colors.green : Colors.red,
-                  size: 32,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    result.message,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: isSuccess ? Colors.green.shade700 : Colors.red.shade700,
-                        ),
+    return Semantics(
+      label: isSuccess
+          ? 'Check-in exitoso: ${result.message}'
+          : 'Error de escaneo: ${result.message}',
+      liveRegion: true,
+      child: Card(
+        color: isSuccess ? Colors.green.shade50 : Colors.red.shade50,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  ExcludeSemantics(
+                    child: Icon(
+                      isSuccess ? Icons.check_circle : Icons.error,
+                      color: isSuccess ? Colors.green : Colors.red,
+                      size: 32,
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: onDismiss,
-                  icon: const Icon(Icons.close),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ],
-            ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      result.message,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isSuccess ? Colors.green.shade700 : Colors.red.shade700,
+                          ),
+                    ),
+                  ),
+                  Semantics(
+                    label: 'Cerrar resultado',
+                    button: true,
+                    child: IconButton(
+                      onPressed: onDismiss,
+                      icon: const Icon(Icons.close),
+                      visualDensity: VisualDensity.compact,
+                      tooltip: 'Cerrar',
+                    ),
+                  ),
+                ],
+              ),
             if (result.details != null) ...[
               const SizedBox(height: 12),
               const Divider(),
@@ -413,6 +437,7 @@ class _ScanResultCard extends StatelessWidget {
           ],
         ),
       ),
+      ),
     );
   }
 }
@@ -430,26 +455,34 @@ class _DetailItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: Colors.grey),
-          const SizedBox(width: 8),
-          Text(
-            '$label: ',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey,
-                ),
-          ),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-          ),
-        ],
+    return Semantics(
+      label: '$label: $value',
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            ExcludeSemantics(
+              child: Icon(icon, size: 16, color: Colors.grey),
+            ),
+            const SizedBox(width: 8),
+            ExcludeSemantics(
+              child: Text(
+                '$label: ',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey,
+                    ),
+              ),
+            ),
+            ExcludeSemantics(
+              child: Text(
+                value,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -5,6 +5,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../core/config/server_config.dart';
 import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart' show apiClientProvider;
+import '../../core/widgets/common_widgets.dart';
+import '../../core/utils/haptics.dart';
 import 'dart:convert';
 
 /// Pantalla de configuración inicial del servidor
@@ -32,10 +34,28 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   bool _showScanner = false;
   String? _error;
   String? _successMessage;
+  bool _hasUnsavedChanges = false;
+  String _initialUrl = '';
   AppLocalizations get i18n => AppLocalizations.of(context)!;
 
   @override
+  void initState() {
+    super.initState();
+    _urlController.addListener(_onUrlChanged);
+  }
+
+  void _onUrlChanged() {
+    final hasChanges = _urlController.text.trim() != _initialUrl;
+    if (hasChanges != _hasUnsavedChanges) {
+      setState(() {
+        _hasUnsavedChanges = hasChanges;
+      });
+    }
+  }
+
+  @override
   void dispose() {
+    _urlController.removeListener(_onUrlChanged);
     _urlController.dispose();
     super.dispose();
   }
@@ -79,17 +99,22 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           _successMessage = i18n.setupConnectedSuccess;
         });
 
+        // Feedback haptico de exito
+        Haptics.success();
+
         // Esperar un momento para mostrar el mensaje
         await Future.delayed(const Duration(milliseconds: 800));
 
         widget.onSetupComplete();
       } else {
+        Haptics.error();
         setState(() {
           _isLoading = false;
           _error = i18n.setupConnectionFailed;
         });
       }
     } catch (e) {
+      Haptics.error();
       setState(() {
         _isLoading = false;
         _error = i18n.setupConnectionError(e.toString());
@@ -228,193 +253,203 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       return _buildScanner(context);
     }
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 40),
+    return PopScope(
+      canPop: !_hasUnsavedChanges,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldDiscard = await showDiscardChangesDialog(context);
+        if (shouldDiscard && context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 40),
 
-                // Logo/Icono
-                Icon(
-                  Icons.settings_applications,
-                  size: 80,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: 24),
-
-                // Título
-                Text(
-                  i18n.setupTitle,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                  // Logo/Icono
+                  Icon(
+                    Icons.settings_applications,
+                    size: 80,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
+                  const SizedBox(height: 24),
 
-                // Subtítulo
-                Text(
-                  i18n.setupSubtitle,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-
-                // Campo de URL
-                TextFormField(
-                  controller: _urlController,
-                  decoration: InputDecoration(
-                    labelText: i18n.siteUrlLabel,
-                    hintText: i18n.siteUrlExampleHint,
-                    prefixIcon: const Icon(Icons.language),
-                    prefixText: _urlController.text.isEmpty ? 'https://' : null,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  // Titulo
+                  Text(
+                    i18n.setupTitle,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  keyboardType: TextInputType.url,
-                  textInputAction: TextInputAction.done,
-                  autocorrect: false,
-                  onFieldSubmitted: (_) => _validateAndSave(),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return i18n.setupUrlRequired;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+                  const SizedBox(height: 8),
 
-                // Mensaje de error
-                if (_error != null)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(8),
+                  // Subtitulo
+                  Text(
+                    i18n.setupSubtitle,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            _error!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+
+                  // Campo de URL
+                  TextFormField(
+                    controller: _urlController,
+                    decoration: InputDecoration(
+                      labelText: i18n.siteUrlLabel,
+                      hintText: i18n.siteUrlExampleHint,
+                      prefixIcon: const Icon(Icons.language),
+                      prefixText: _urlController.text.isEmpty ? 'https://' : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.done,
+                    autocorrect: false,
+                    onFieldSubmitted: (_) => _validateAndSave(),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return i18n.setupUrlRequired;
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Mensaje de error
+                  if (_error != null)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.errorContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: Theme.of(context).colorScheme.error,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                // Mensaje de éxito
-                if (_successMessage != null)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.check_circle, color: Colors.green),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            _successMessage!,
-                            style: const TextStyle(color: Colors.green),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                const SizedBox(height: 24),
-
-                // Botón conectar
-                FilledButton.icon(
-                  onPressed: _isLoading ? null : _validateAndSave,
-                  icon: _isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.check),
-                  label: Text(_isLoading ? i18n.setupConnecting : i18n.setupConnect),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Botón escanear QR
-                OutlinedButton.icon(
-                  onPressed: _isLoading ? null : () {
-                    setState(() => _showScanner = true);
-                  },
-                  icon: const Icon(Icons.qr_code_scanner),
-                  label: Text(i18n.setupScanQr),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                ),
-
-                // Botón cancelar (solo si viene de ajustes)
-                if (widget.isFromSettings) ...[
-                  const SizedBox(height: 12),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(i18n.commonCancel),
-                  ),
-                ],
-
-                const SizedBox(height: 40),
-
-                // Ayuda
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.help_outline,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              i18n.setupHowToGetQr,
-                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _error!,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          i18n.setupQrSteps,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  // Mensaje de exito
+                  if (_successMessage != null)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.check_circle, color: Colors.green),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _successMessage!,
+                              style: const TextStyle(color: Colors.green),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  const SizedBox(height: 24),
+
+                  // Boton conectar
+                  FilledButton.icon(
+                    onPressed: _isLoading ? null : _validateAndSave,
+                    icon: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.check),
+                    label: Text(_isLoading ? i18n.setupConnecting : i18n.setupConnect),
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 12),
+
+                  // Boton escanear QR
+                  OutlinedButton.icon(
+                    onPressed: _isLoading ? null : () {
+                      setState(() => _showScanner = true);
+                    },
+                    icon: const Icon(Icons.qr_code_scanner),
+                    label: Text(i18n.setupScanQr),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+
+                  // Boton cancelar (solo si viene de ajustes)
+                  if (widget.isFromSettings) ...[
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(i18n.commonCancel),
+                    ),
+                  ],
+
+                  const SizedBox(height: 40),
+
+                  // Ayuda
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.help_outline,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                i18n.setupHowToGetQr,
+                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            i18n.setupQrSteps,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

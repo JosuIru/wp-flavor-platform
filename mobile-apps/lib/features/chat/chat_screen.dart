@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
 import '../../core/widgets/chat_widgets.dart';
+import '../../core/utils/haptics.dart';
 
 /// Pantalla de chat para clientes
 class ChatScreen extends ConsumerStatefulWidget {
@@ -60,31 +61,37 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         title: Text(i18n.chat55dcdf),
         actions: [
           if (chatState.messages.isNotEmpty)
-            IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text(i18n.limpiarChatE7dfdf),
-                    content: Text(i18n.seguroQueQuieresBorrarElHistorialDE3b015),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(i18n.commonCancel),
-                      ),
-                      FilledButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          ref.read(chatProvider.notifier).clearChat();
-                        },
-                        child: Text(i18n.borrarA96f30),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              icon: const Icon(Icons.delete_outline),
-              tooltip: i18n.limpiarChatE7dfdf,
+            Semantics(
+              label: i18n.limpiarChatE7dfdf,
+              button: true,
+              child: IconButton(
+                onPressed: () {
+                  Haptics.light();
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(i18n.limpiarChatE7dfdf),
+                      content: Text(i18n.seguroQueQuieresBorrarElHistorialDE3b015),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(i18n.commonCancel),
+                        ),
+                        FilledButton(
+                          onPressed: () {
+                            Haptics.medium();
+                            Navigator.pop(context);
+                            ref.read(chatProvider.notifier).clearChat();
+                          },
+                          child: Text(i18n.borrarA96f30),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.delete_outline),
+                tooltip: i18n.limpiarChatE7dfdf,
+              ),
             ),
         ],
       ),
@@ -154,13 +161,22 @@ class _QuickSuggestions extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: suggestions.map((suggestion) {
-              return ActionChip(
-                label: Text(
-                  suggestion,
-                  style: Theme.of(context).textTheme.bodySmall,
+              return Semantics(
+                label: 'Pregunta sugerida: $suggestion',
+                button: true,
+                child: ActionChip(
+                  label: Text(
+                    suggestion,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  onPressed: () {
+                    Haptics.light();
+                    onSuggestionTap(suggestion);
+                  },
+                  avatar: ExcludeSemantics(
+                    child: const Icon(Icons.chat_bubble_outline, size: 16),
+                  ),
                 ),
-                onPressed: () => onSuggestionTap(suggestion),
-                avatar: const Icon(Icons.chat_bubble_outline, size: 16),
               );
             }).toList(),
           ),

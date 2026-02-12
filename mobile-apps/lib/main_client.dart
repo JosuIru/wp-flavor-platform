@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'core/config/app_config.dart';
 import 'core/utils/logger.dart';
+import 'core/utils/haptics.dart';
 import 'core/config/server_config.dart';
 import 'core/config/dynamic_config.dart';
 import 'core/api/api_client.dart';
@@ -924,6 +925,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
           ? NavigationBar(
               selectedIndex: _currentIndex,
               onDestinationSelected: (index) {
+                Haptics.selection();
                 setState(() => _currentIndex = index);
               },
               destinations: bottomTabs.map((tab) => NavigationDestination(
