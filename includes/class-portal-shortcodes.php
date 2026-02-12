@@ -309,12 +309,258 @@ class Flavor_Portal_Shortcodes {
      * Obtiene estadísticas del módulo
      */
     private function get_modulo_stats($modulo_id, $instance) {
-        // Intentar obtener stats del módulo
-        if (method_exists($instance, 'get_public_stats')) {
-            return $instance->get_public_stats();
+        $stats = [];
+
+        // Si el usuario está logueado, obtener stats personalizadas
+        if (is_user_logged_in()) {
+            $user_id = get_current_user_id();
+
+            // Intentar obtener stats personalizadas del usuario
+            if (method_exists($instance, 'get_user_stats')) {
+                $user_stats = $instance->get_user_stats($user_id);
+                if (!empty($user_stats)) {
+                    return $user_stats;
+                }
+            }
+
+            // Fallback: generar stats básicas según el módulo
+            $stats = $this->get_modulo_stats_fallback($modulo_id, $user_id);
+        } else {
+            // Para usuarios no logueados, intentar stats públicas
+            if (method_exists($instance, 'get_public_stats')) {
+                return $instance->get_public_stats();
+            }
         }
 
-        return [];
+        return $stats;
+    }
+
+    /**
+     * Obtiene stats básicas cuando el módulo no tiene get_user_stats()
+     */
+    private function get_modulo_stats_fallback($modulo_id, $user_id) {
+        global $wpdb;
+        $stats = [];
+
+        switch ($modulo_id) {
+            case 'banco_tiempo':
+                $tabla = $wpdb->prefix . 'flavor_banco_tiempo_usuarios';
+                $saldo = $wpdb->get_var($wpdb->prepare(
+                    "SELECT saldo_horas FROM $tabla WHERE usuario_id = %d",
+                    $user_id
+                ));
+                if ($saldo !== null) {
+                    $stats[] = sprintf(__('%s horas disponibles', 'flavor-chat-ia'), number_format($saldo, 1));
+                }
+                break;
+
+            case 'talleres':
+                $tabla = $wpdb->prefix . 'flavor_talleres_inscripciones';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'confirmada'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d talleres inscritos', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'grupos_consumo':
+                // Verificar si es miembro de algún grupo
+                $tabla = $wpdb->prefix . 'flavor_gc_miembros';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'activo'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('Miembro de %d grupo(s)', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'ayuda_vecinal':
+                $tabla = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE solicitante_id = %d AND estado = 'abierta'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d solicitudes activas', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'eventos':
+                $tabla = $wpdb->prefix . 'flavor_eventos_asistentes';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'confirmado'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d eventos próximos', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'socios':
+                $tabla = $wpdb->prefix . 'flavor_socios';
+                $socio = $wpdb->get_row($wpdb->prepare(
+                    "SELECT estado FROM $tabla WHERE usuario_id = %d",
+                    $user_id
+                ));
+                if ($socio) {
+                    $estados = [
+                        'activo' => '✅ ' . __('Socio Activo', 'flavor-chat-ia'),
+                        'pendiente' => '⏳ ' . __('Pendiente de aprobación', 'flavor-chat-ia'),
+                        'baja' => '❌ ' . __('De baja', 'flavor-chat-ia'),
+                    ];
+                    $stats[] = $estados[$socio->estado] ?? $socio->estado;
+                }
+                break;
+
+            case 'biblioteca':
+                $tabla = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'prestado'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d libros prestados', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'espacios_comunes':
+                $tabla = $wpdb->prefix . 'flavor_espacios_reservas';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND fecha >= CURDATE() AND estado = 'confirmada'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d reservas activas', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'huertos_urbanos':
+                $tabla = $wpdb->prefix . 'flavor_huertos_parcelas';
+                $parcela = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'asignada'",
+                    $user_id
+                ));
+                if ($parcela > 0) {
+                    $stats[] = '🌱 ' . sprintf(__('%d parcela(s) asignadas', 'flavor-chat-ia'), $parcela);
+                }
+                break;
+
+            case 'incidencias':
+                $tabla = $wpdb->prefix . 'flavor_incidencias';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado IN ('pendiente', 'en_progreso')",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d incidencias abiertas', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'bicicletas_compartidas':
+                $tabla = $wpdb->prefix . 'flavor_bicicletas_prestamos';
+                $activo = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND fecha_devolucion IS NULL",
+                    $user_id
+                ));
+                if ($activo > 0) {
+                    $stats[] = '🚲 ' . __('Bicicleta en uso', 'flavor-chat-ia');
+                }
+                break;
+
+            case 'carpooling':
+                $tabla = $wpdb->prefix . 'flavor_carpooling_reservas';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'confirmada' AND fecha >= CURDATE()",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d viajes reservados', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'foros':
+                $tabla = $wpdb->prefix . 'flavor_foros_temas';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE autor_id = %d",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d temas creados', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'marketplace':
+                $tabla = $wpdb->prefix . 'flavor_marketplace_anuncios';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE vendedor_id = %d AND estado = 'publicado'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d anuncios activos', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'reciclaje':
+                $tabla = $wpdb->prefix . 'flavor_reciclaje_puntos';
+                $puntos = $wpdb->get_var($wpdb->prepare(
+                    "SELECT puntos_acumulados FROM $tabla WHERE usuario_id = %d",
+                    $user_id
+                ));
+                if ($puntos > 0) {
+                    $stats[] = '♻️ ' . sprintf(__('%d puntos verdes', 'flavor-chat-ia'), $puntos);
+                }
+                break;
+
+            case 'cursos':
+                $tabla = $wpdb->prefix . 'flavor_cursos_matriculas';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE alumno_id = %d AND estado = 'activo'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d cursos activos', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'comunidades':
+                $tabla = $wpdb->prefix . 'flavor_comunidades_miembros';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'activo'",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('Miembro de %d comunidad(es)', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'radio':
+            case 'podcast':
+                $tabla = $wpdb->prefix . 'flavor_' . $modulo_id . '_suscripciones';
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d",
+                    $user_id
+                ));
+                if ($count > 0) {
+                    $stats[] = sprintf(__('%d suscripciones', 'flavor-chat-ia'), $count);
+                }
+                break;
+
+            case 'parkings':
+                $tabla = $wpdb->prefix . 'flavor_parkings_reservas';
+                $reserva = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND fecha_inicio <= NOW() AND fecha_fin >= NOW()",
+                    $user_id
+                ));
+                if ($reserva > 0) {
+                    $stats[] = '🅿️ ' . __('Plaza reservada', 'flavor-chat-ia');
+                }
+                break;
+        }
+
+        return $stats;
     }
 
     /**

@@ -200,6 +200,10 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
                 'description' => 'Publicar un servicio que puedes ofrecer',
                 'params' => ['titulo', 'descripcion', 'categoria', 'horas_estimadas'],
             ],
+            'crear_servicio' => [
+                'description' => 'Crear un nuevo servicio (alias de ofrecer_servicio)',
+                'params' => ['titulo', 'descripcion', 'categoria', 'horas_estimadas'],
+            ],
             'buscar_servicios' => [
                 'description' => 'Buscar servicios disponibles',
                 'params' => ['busqueda', 'categoria', 'limite'],
@@ -231,6 +235,11 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        // Alias: crear_servicio es lo mismo que ofrecer_servicio
+        if ($action_name === 'crear_servicio') {
+            $action_name = 'ofrecer_servicio';
+        }
+
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -534,6 +543,133 @@ KNOWLEDGE;
                 'respuesta' => 'Sí, puedes ofrecer cualquier habilidad o servicio que puedas realizar de forma segura y legal.',
             ],
         ];
+    }
+
+    /**
+     * Configuración de formularios del módulo
+     */
+    public function get_form_config($action_name) {
+        $settings = $this->get_default_settings();
+
+        $configs = [
+            'ofrecer_servicio' => [
+                'title' => __('Ofrecer un Servicio', 'flavor-chat-ia'),
+                'description' => __('Publica un servicio que puedes ofrecer a la comunidad', 'flavor-chat-ia'),
+                'fields' => [
+                    'titulo' => [
+                        'type' => 'text',
+                        'label' => __('Título del servicio', 'flavor-chat-ia'),
+                        'required' => true,
+                        'placeholder' => __('Ej: Clases de guitarra', 'flavor-chat-ia'),
+                    ],
+                    'descripcion' => [
+                        'type' => 'textarea',
+                        'label' => __('Descripción', 'flavor-chat-ia'),
+                        'required' => true,
+                        'rows' => 5,
+                        'placeholder' => __('Describe tu servicio en detalle...', 'flavor-chat-ia'),
+                    ],
+                    'categoria' => [
+                        'type' => 'select',
+                        'label' => __('Categoría', 'flavor-chat-ia'),
+                        'required' => true,
+                        'options' => $settings['categorias_servicios'],
+                    ],
+                    'horas_estimadas' => [
+                        'type' => 'number',
+                        'label' => __('Horas estimadas', 'flavor-chat-ia'),
+                        'required' => true,
+                        'min' => $settings['hora_minima_intercambio'],
+                        'max' => $settings['hora_maxima_intercambio'],
+                        'step' => 0.5,
+                        'default' => 1,
+                        'description' => sprintf(
+                            __('Mínimo %s horas, máximo %s horas', 'flavor-chat-ia'),
+                            $settings['hora_minima_intercambio'],
+                            $settings['hora_maxima_intercambio']
+                        ),
+                    ],
+                    'disponibilidad' => [
+                        'type' => 'textarea',
+                        'label' => __('Disponibilidad', 'flavor-chat-ia'),
+                        'rows' => 3,
+                        'placeholder' => __('Ej: Tardes entre semana, fines de semana...', 'flavor-chat-ia'),
+                    ],
+                ],
+                'submit_text' => __('Publicar Servicio', 'flavor-chat-ia'),
+            ],
+            'solicitar_servicio' => [
+                'title' => __('Solicitar un Servicio', 'flavor-chat-ia'),
+                'description' => __('Solicita este servicio al usuario que lo ofrece', 'flavor-chat-ia'),
+                'fields' => [
+                    'servicio_id' => [
+                        'type' => 'hidden',
+                        'required' => true,
+                    ],
+                    'mensaje' => [
+                        'type' => 'textarea',
+                        'label' => __('Mensaje', 'flavor-chat-ia'),
+                        'required' => true,
+                        'rows' => 4,
+                        'placeholder' => __('Explica qué necesitas y cuándo...', 'flavor-chat-ia'),
+                    ],
+                    'fecha_preferida' => [
+                        'type' => 'date',
+                        'label' => __('Fecha preferida', 'flavor-chat-ia'),
+                        'description' => __('¿Cuándo necesitas este servicio?', 'flavor-chat-ia'),
+                    ],
+                    'horas_solicitadas' => [
+                        'type' => 'number',
+                        'label' => __('Horas solicitadas', 'flavor-chat-ia'),
+                        'min' => $settings['hora_minima_intercambio'],
+                        'max' => $settings['hora_maxima_intercambio'],
+                        'step' => 0.5,
+                        'default' => 1,
+                    ],
+                ],
+                'submit_text' => __('Enviar Solicitud', 'flavor-chat-ia'),
+            ],
+            'crear_servicio' => [
+                'title' => __('Crear Servicio', 'flavor-chat-ia'),
+                'description' => __('Publica un nuevo servicio que puedes ofrecer', 'flavor-chat-ia'),
+                'fields' => [
+                    'titulo' => [
+                        'type' => 'text',
+                        'label' => __('Título del servicio', 'flavor-chat-ia'),
+                        'required' => true,
+                    ],
+                    'descripcion' => [
+                        'type' => 'textarea',
+                        'label' => __('Descripción', 'flavor-chat-ia'),
+                        'required' => true,
+                        'rows' => 5,
+                    ],
+                    'categoria' => [
+                        'type' => 'select',
+                        'label' => __('Categoría', 'flavor-chat-ia'),
+                        'required' => true,
+                        'options' => $settings['categorias_servicios'],
+                    ],
+                    'horas_estimadas' => [
+                        'type' => 'number',
+                        'label' => __('Horas estimadas', 'flavor-chat-ia'),
+                        'required' => true,
+                        'min' => $settings['hora_minima_intercambio'],
+                        'max' => $settings['hora_maxima_intercambio'],
+                        'step' => 0.5,
+                        'default' => 1,
+                    ],
+                ],
+                'submit_text' => __('Publicar Servicio', 'flavor-chat-ia'),
+            ],
+        ];
+
+        // Alias: crear_servicio es lo mismo que ofrecer_servicio
+        if ($action_name === 'crear_servicio' && !isset($configs['crear_servicio'])) {
+            $action_name = 'ofrecer_servicio';
+        }
+
+        return $configs[$action_name] ?? [];
     }
 
     /**
