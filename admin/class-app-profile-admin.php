@@ -2466,6 +2466,18 @@ class Flavor_App_Profile_Admin {
         foreach ($parent_pages as $page) {
             if (in_array((int) $page->ID, $existing_page_ids, true)) {
                 error_log('[SYNC_MENU] Página padre ya existe en menú: ' . $page->post_title);
+
+                // IMPORTANTE: Buscar el menu_item_id existente y añadirlo al mapeo
+                $existing_items = wp_get_nav_menu_items($menu_id);
+                if ($existing_items) {
+                    foreach ($existing_items as $item) {
+                        if ($item->object === 'page' && $item->object_id == $page->ID) {
+                            $page_to_menu_item[$page->ID] = $item->ID;
+                            error_log('[SYNC_MENU] Añadido al mapeo página padre existente: ' . $page->post_title . ' (menu_item: ' . $item->ID . ')');
+                            break;
+                        }
+                    }
+                }
                 continue;
             }
 
@@ -2493,6 +2505,20 @@ class Flavor_App_Profile_Admin {
 
             if (in_array((int) $page->ID, $existing_page_ids, true)) {
                 error_log('[SYNC_MENU] Página hijo ya existe en menú: ' . $page->post_title);
+
+                // Verificar que el padre también esté en el mapeo para futuros hijos
+                if (!isset($page_to_menu_item[$page->post_parent])) {
+                    $existing_items = wp_get_nav_menu_items($menu_id);
+                    if ($existing_items) {
+                        foreach ($existing_items as $item) {
+                            if ($item->object === 'page' && $item->object_id == $page->post_parent) {
+                                $page_to_menu_item[$page->post_parent] = $item->ID;
+                                error_log('[SYNC_MENU] Añadido al mapeo padre de hijo existente: ID=' . $page->post_parent . ' (menu_item: ' . $item->ID . ')');
+                                break;
+                            }
+                        }
+                    }
+                }
                 continue;
             }
 

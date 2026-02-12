@@ -86,6 +86,15 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Obtiene los settings del módulo (guardados o por defecto)
+     */
+    public function get_settings() {
+        $defaults = $this->get_default_settings();
+        $saved = get_option('flavor_talleres_settings', []);
+        return wp_parse_args($saved, $defaults);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
@@ -478,6 +487,10 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
                 'description' => 'Proponer nuevo taller',
                 'params' => ['titulo', 'descripcion', 'categoria'],
             ],
+            'crear_taller' => [
+                'description' => 'Crear nuevo taller (alias de proponer_taller)',
+                'params' => ['titulo', 'descripcion', 'categoria'],
+            ],
             'calendario_talleres' => [
                 'description' => 'Ver calendario de talleres',
                 'params' => ['mes', 'anio'],
@@ -493,6 +506,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        // Alias: crear_taller es lo mismo que proponer_taller
+        if ($action_name === 'crear_taller') {
+            $action_name = 'proponer_taller';
+        }
+
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -2246,6 +2264,11 @@ Ubicación: %s
     // =========================================================================
 
     public function get_form_config($action_name) {
+        // Alias: crear_taller es lo mismo que proponer_taller
+        if ($action_name === 'crear_taller') {
+            $action_name = 'proponer_taller';
+        }
+
         $configs = [
             'inscribirse' => [
                 'title' => __('Inscribirse en Taller', 'flavor-chat-ia'),
@@ -2293,7 +2316,7 @@ Ubicación: %s
                         'type' => 'select',
                         'label' => __('Categoría', 'flavor-chat-ia'),
                         'required' => true,
-                        'options' => $this->get_settings()['categorias'],
+                        'options' => $this->get_default_settings()['categorias'],
                     ],
                     'nivel' => [
                         'type' => 'select',

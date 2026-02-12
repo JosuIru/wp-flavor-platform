@@ -209,6 +209,10 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
      */
     public function get_actions() {
         return [
+            'listar_solicitudes' => [
+                'description' => 'Listar todas las solicitudes de ayuda',
+                'params' => ['estado', 'categoria', 'limit', 'offset'],
+            ],
             'solicitudes_activas' => [
                 'description' => 'Ver solicitudes de ayuda activas',
                 'params' => ['categoria', 'urgencia'],
@@ -274,6 +278,74 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => false,
             'error' => "Acción no implementada: {$action_name}",
+        ];
+    }
+
+    /**
+     * Acción: Listar solicitudes (genérica con filtros)
+     */
+    private function action_listar_solicitudes($params) {
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+
+        $where = ['1=1'];
+        $prepare_values = [];
+
+        // Filtro por estado (si no se especifica, mostrar activas por defecto)
+        $estado = $params['estado'] ?? 'abierta';
+        if (!empty($estado) && $estado !== 'todas') {
+            $where[] = 'estado = %s';
+            $prepare_values[] = sanitize_text_field($estado);
+        }
+
+        // Filtro por categoría
+        if (!empty($params['categoria'])) {
+            $where[] = 'categoria = %s';
+            $prepare_values[] = sanitize_text_field($params['categoria']);
+        }
+
+        // Paginación
+        $limit = isset($params['limit']) ? absint($params['limit']) : 20;
+        $offset = isset($params['offset']) ? absint($params['offset']) : 0;
+
+        $sql = "SELECT * FROM $tabla_solicitudes WHERE " . implode(' AND ', $where) . " ORDER BY fecha_solicitud DESC LIMIT %d OFFSET %d";
+        $prepare_values[] = $limit;
+        $prepare_values[] = $offset;
+
+        $solicitudes = $wpdb->get_results($wpdb->prepare($sql, ...$prepare_values));
+
+        // Contar total
+        $sql_count = "SELECT COUNT(*) FROM $tabla_solicitudes WHERE " . implode(' AND ', $where);
+        if (count($prepare_values) > 2) {
+            $count_values = array_slice($prepare_values, 0, -2);
+            $total = $wpdb->get_var($wpdb->prepare($sql_count, ...$count_values));
+        } else {
+            $total = $wpdb->get_var($sql_count);
+        }
+
+        return [
+            'success' => true,
+            'solicitudes' => array_map(function($s) {
+                $solicitante = get_userdata($s->solicitante_id);
+                return [
+                    'id' => $s->id,
+                    'titulo' => $s->titulo,
+                    'descripcion' => $s->descripcion,
+                    'categoria' => $s->categoria,
+                    'urgencia' => $s->urgencia,
+                    'estado' => $s->estado,
+                    'solicitante' => $solicitante ? $solicitante->display_name : 'Vecino',
+                    'solicitante_id' => $s->solicitante_id,
+                    'fecha_necesaria' => $s->fecha_necesaria ? date('d/m/Y H:i', strtotime($s->fecha_necesaria)) : null,
+                    'duracion_estimada' => $s->duracion_estimada_minutos,
+                    'ubicacion' => $s->ubicacion,
+                    'fecha_solicitud' => date('d/m/Y H:i', strtotime($s->fecha_solicitud)),
+                    'tiempo_publicada' => human_time_diff(strtotime($s->fecha_solicitud), current_time('timestamp')) . ' atrás',
+                ];
+            }, $solicitudes),
+            'total' => (int) $total,
+            'limit' => $limit,
+            'offset' => $offset,
         ];
     }
 

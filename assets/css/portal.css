@@ -1,0 +1,451 @@
+/**
+ * Estilos del Portal del Cliente
+ * Landing de Servicios + Dashboard Mi Portal
+ */
+
+/* ========================================================================
+   SERVICIOS LANDING
+   ======================================================================== */
+
+.flavor-servicios-landing {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.flavor-hero--servicios {
+    background: linear-gradient(135deg, var(--flavor-primary, #3b82f6) 0%, var(--flavor-secondary, #8b5cf6) 100%);
+    color: white;
+    padding: 60px 40px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.flavor-hero__title {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0 0 16px;
+}
+
+.flavor-hero__subtitle {
+    font-size: 20px;
+    opacity: 0.95;
+    margin: 0 0 30px;
+}
+
+/* Stats Bar */
+.flavor-stats-bar {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.flavor-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.flavor-stat-item__value {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.flavor-stat-item__label {
+    font-size: 14px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* CTA Box */
+.flavor-servicios__cta {
+    margin-top: 60px;
+    padding: 40px;
+    background: #f9fafb;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.flavor-cta-box h2 {
+    font-size: 28px;
+    margin: 0 0 12px;
+}
+
+.flavor-cta-box p {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0 0 24px;
+}
+
+.flavor-cta-box .flavor-button {
+    margin: 0 8px;
+}
+
+/* ========================================================================
+   MÓDULOS GRID (Compartido entre Landing y Portal)
+   ======================================================================== */
+
+.flavor-modulos-grid {
+    display: grid;
+    gap: 24px;
+    margin: 30px 0;
+}
+
+.flavor-modulos-grid--col-2 {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+.flavor-modulos-grid--col-3 {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.flavor-modulos-grid--col-4 {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.flavor-modulo-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.flavor-modulo-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.flavor-modulo-card__icon {
+    font-size: 48px;
+    text-align: center;
+}
+
+.flavor-modulo-card__content {
+    flex: 1;
+}
+
+.flavor-modulo-card__title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: #111827;
+}
+
+.flavor-modulo-card__description {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.flavor-modulo-card__stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.flavor-stat {
+    font-size: 12px;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.flavor-modulo-card__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.flavor-modulo-card__locked {
+    color: #9ca3af;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ========================================================================
+   MI PORTAL (Dashboard)
+   ======================================================================== */
+
+.flavor-mi-portal {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.flavor-portal__header {
+    padding: 40px 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 40px;
+}
+
+.flavor-portal__title {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: #111827;
+}
+
+.flavor-portal__subtitle {
+    font-size: 18px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.flavor-portal__layout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+}
+
+.flavor-portal__main {
+    min-width: 0;
+}
+
+.flavor-portal__section {
+    margin-bottom: 40px;
+}
+
+.flavor-portal__section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    color: #111827;
+}
+
+/* Sidebar */
+.flavor-portal__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.flavor-portal__widget {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 20px;
+}
+
+.flavor-portal__widget-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 16px;
+    color: #111827;
+}
+
+/* Notificaciones */
+.flavor-notificaciones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.flavor-notificacion {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+}
+
+.flavor-notificacion--info {
+    background: #eff6ff;
+    border-color: #3b82f6;
+}
+
+.flavor-notificacion__icon {
+    font-size: 20px;
+}
+
+.flavor-notificacion__content p {
+    margin: 0;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* Accesos Rápidos */
+.flavor-accesos-rapidos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.flavor-acceso-rapido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    transition: all 0.2s ease;
+}
+
+.flavor-acceso-rapido:hover {
+    background: #f9fafb;
+    border-color: var(--flavor-primary, #3b82f6);
+    color: var(--flavor-primary, #3b82f6);
+    transform: translateY(-2px);
+}
+
+.flavor-acceso-rapido__icon {
+    font-size: 32px;
+}
+
+.flavor-acceso-rapido__text {
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Actividad Reciente */
+.flavor-actividad-reciente__empty {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 14px;
+    padding: 20px;
+}
+
+/* Mis Stats */
+.flavor-mis-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.flavor-stat-personal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.flavor-stat-personal:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.flavor-stat-personal__label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.flavor-stat-personal__value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--flavor-primary, #3b82f6);
+}
+
+/* Login Required */
+.flavor-login-required {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.flavor-login-required p {
+    font-size: 18px;
+    color: #6b7280;
+    margin: 0 0 24px;
+}
+
+/* Botones */
+.flavor-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.flavor-button--primary {
+    background: var(--flavor-primary, #3b82f6);
+    color: white;
+}
+
+.flavor-button--primary:hover {
+    background: var(--flavor-primary-dark, #2563eb);
+}
+
+.flavor-button--secondary {
+    background: white;
+    color: var(--flavor-primary, #3b82f6);
+    border: 1px solid var(--flavor-primary, #3b82f6);
+}
+
+.flavor-button--secondary:hover {
+    background: #eff6ff;
+}
+
+/* ========================================================================
+   RESPONSIVE
+   ======================================================================== */
+
+@media (max-width: 1024px) {
+    .flavor-portal__layout {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-portal__sidebar {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .flavor-hero--servicios {
+        padding: 40px 24px;
+    }
+
+    .flavor-hero__title {
+        font-size: 32px;
+    }
+
+    .flavor-hero__subtitle {
+        font-size: 16px;
+    }
+
+    .flavor-stats-bar {
+        gap: 20px;
+    }
+
+    .flavor-stat-item__value {
+        font-size: 28px;
+    }
+
+    .flavor-modulos-grid--col-2,
+    .flavor-modulos-grid--col-3,
+    .flavor-modulos-grid--col-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-portal__title {
+        font-size: 28px;
+    }
+
+    .flavor-accesos-rapidos {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

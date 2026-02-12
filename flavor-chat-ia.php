@@ -221,6 +221,8 @@ final class Flavor_Chat_IA {
 
         // Shortcodes para Landing Pages
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-landing-shortcodes.php';
+        // Shortcodes del Portal del Cliente
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-portal-shortcodes.php';
         // Fallback de shortcodes GC cuando el módulo no está cargado
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-gc-shortcodes-fallback.php';
 
@@ -358,7 +360,7 @@ final class Flavor_Chat_IA {
         // Declarar compatibilidad HPOS de WooCommerce
         add_action('before_woocommerce_init', [$this, 'declare_hpos_compatibility']);
 
-        // Internacionalización (debe cargarse en init según WP 6.7+)
+        // Internacionalización - Cargar en init según requiere WP 6.7+
         add_action('init', [$this, 'load_textdomain'], 0);
 
         // Limpiar rewrite rules una sola vez tras desactivar controladores frontend
@@ -547,6 +549,13 @@ final class Flavor_Chat_IA {
         // Inicializar Shortcodes de Landing Pages (frontend y admin para previews)
         if (class_exists('Flavor_Landing_Shortcodes')) {
             Flavor_Landing_Shortcodes::get_instance();
+        }
+
+        // Inicializar Shortcodes del Portal del Cliente
+        if (class_exists('Flavor_Portal_Shortcodes')) {
+            Flavor_Portal_Shortcodes::get_instance();
+            // Crear páginas del portal si no existen
+            $this->maybe_create_portal_pages();
         }
 
         // Inicializar Sistema de Layouts Predefinidos
@@ -775,6 +784,46 @@ final class Flavor_Chat_IA {
         if (class_exists('Flavor_Chat_Ajax')) {
             Flavor_Chat_Ajax::register_hooks();
         }
+    }
+
+    /**
+     * Crea páginas del portal si no existen
+     */
+    private function maybe_create_portal_pages() {
+        // Solo crear una vez
+        if (get_option('flavor_portal_pages_created')) {
+            return;
+        }
+
+        // Página de Servicios (Landing)
+        if (!get_page_by_path('servicios')) {
+            wp_insert_post([
+                'post_title' => __('Servicios', 'flavor-chat-ia'),
+                'post_name' => 'servicios',
+                'post_content' => '[flavor_servicios mostrar_stats="yes" columnas="3"]',
+                'post_status' => 'publish',
+                'post_type' => 'page',
+                'post_author' => 1,
+                'comment_status' => 'closed',
+                'ping_status' => 'closed',
+            ]);
+        }
+
+        // Página Mi Portal (Dashboard)
+        if (!get_page_by_path('mi-portal')) {
+            wp_insert_post([
+                'post_title' => __('Mi Portal', 'flavor-chat-ia'),
+                'post_name' => 'mi-portal',
+                'post_content' => '[flavor_mi_portal mostrar_actividad="yes" mostrar_notificaciones="yes" columnas="3"]',
+                'post_status' => 'publish',
+                'post_type' => 'page',
+                'post_author' => 1,
+                'comment_status' => 'closed',
+                'ping_status' => 'closed',
+            ]);
+        }
+
+        update_option('flavor_portal_pages_created', true);
     }
 
     /**
