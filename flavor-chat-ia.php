@@ -200,6 +200,9 @@ final class Flavor_Chat_IA {
         // API de Contenido Nativo (renderizado nativo en apps, sin WebViews)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-native-content-api.php';
 
+        // API REST para Dashboard de Cliente (estadisticas, actividad, widgets)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-client-dashboard-api.php';
+
         // Sistema de Red de Comunidades (Network)
         // NOTA: Las clases de Network se cargan desde el addon flavor-network-communities
         // El addon debe estar activo para usar el sistema de Network
@@ -317,6 +320,9 @@ final class Flavor_Chat_IA {
         // Dashboard de usuario frontend (Mi Cuenta)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-user-dashboard.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-user-dashboard-api.php';
+
+        // Dashboard de Cliente (panel completo con widgets, estadisticas, actividad)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-client-dashboard.php';
 
         // Gestor de Newsletter (campanas, tracking, cola de envio)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/newsletter/class-newsletter-manager.php';
@@ -471,6 +477,11 @@ final class Flavor_Chat_IA {
         // Inicializar API REST para apps móviles
         if (class_exists('Chat_IA_Mobile_API')) {
             Chat_IA_Mobile_API::get_instance();
+        }
+
+        // Inicializar API REST para Dashboard de Cliente
+        if (class_exists('Flavor_Client_Dashboard_API')) {
+            Flavor_Client_Dashboard_API::get_instance();
         }
 
         // Inicializar Gestor de Roles

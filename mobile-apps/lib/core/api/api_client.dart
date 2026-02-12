@@ -3181,6 +3181,81 @@ class ApiClient {
     }
   }
 
+  // ==========================================
+  // METODOS GENERICOS
+  // ==========================================
+
+  /// Metodo GET generico para endpoints personalizados
+  /// [endpoint] - El endpoint relativo a la baseUrl (ej: '/client/dashboard')
+  Future<ApiResponse<Map<String, dynamic>>> get(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.get(
+        endpoint,
+        queryParameters: queryParameters,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Metodo POST generico para endpoints personalizados
+  /// [endpoint] - El endpoint relativo a la baseUrl
+  /// [data] - Datos a enviar en el body
+  Future<ApiResponse<Map<String, dynamic>>> post(
+    String endpoint, {
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.post(
+        endpoint,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Metodo PUT generico para endpoints personalizados
+  Future<ApiResponse<Map<String, dynamic>>> put(
+    String endpoint, {
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.put(
+        endpoint,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Metodo DELETE generico para endpoints personalizados
+  Future<ApiResponse<Map<String, dynamic>>> delete(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        endpoint,
+        queryParameters: queryParameters,
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
   String _handleError(DioException error) {
     if (error.response != null) {
       final data = error.response!.data;
@@ -3197,9 +3272,9 @@ class ApiClient {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return 'Tiempo de conexión agotado';
+        return 'Tiempo de conexion agotado';
       case DioExceptionType.connectionError:
-        return 'Error de conexión. Verifica tu internet.';
+        return 'Error de conexion. Verifica tu internet.';
       default:
         return 'Error de red desconocido';
     }
