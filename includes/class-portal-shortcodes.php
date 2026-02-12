@@ -146,7 +146,7 @@ class Flavor_Portal_Shortcodes {
             </div>
 
             <!-- Dashboard de Estadísticas -->
-            <div class="flavor-portal__section">
+            <div class="flavor-portal__section flavor-portal__section--full-width">
                 <?php echo $this->render_dashboard_stats(['columnas' => '4', 'mostrar_titulo' => 'no']); ?>
             </div>
 

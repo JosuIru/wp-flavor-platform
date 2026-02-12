@@ -218,6 +218,12 @@
     margin-bottom: 40px;
 }
 
+/* Section que contiene el dashboard debe usar todo el ancho */
+.flavor-portal__section--full-width {
+    width: 100%;
+    max-width: none;
+}
+
 .flavor-portal__section-title {
     font-size: 24px;
     font-weight: 600;
@@ -405,9 +411,15 @@
    ======================================================================== */
 
 .flavor-dashboard-stats {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
+    width: 100%;
+    margin: 0 0 40px;
+    padding: 0;
+}
+
+/* Cuando está dentro del portal, usar todo el ancho */
+.flavor-mi-portal .flavor-dashboard-stats {
+    width: 100%;
+    max-width: none;
 }
 
 .flavor-dashboard-stats__header {
@@ -436,15 +448,29 @@
 }
 
 .flavor-stats-cards--col-2 {
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .flavor-stats-cards--col-3 {
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .flavor-stats-cards--col-4 {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Para pantallas medianas, ajustar columnas */
+@media (max-width: 1200px) {
+    .flavor-stats-cards--col-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .flavor-stats-cards--col-3,
+    .flavor-stats-cards--col-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* Tarjeta Individual */
