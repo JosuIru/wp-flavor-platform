@@ -11,6 +11,7 @@ require_once __DIR__ . '/class-eventos-api.php';
 class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     protected $id = 'eventos';
     protected $name = 'Eventos y Calendario';
@@ -1276,6 +1277,90 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
     private function action_inscribirse_evento($params) {
         return $this->action_inscribirse($params);
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        if (!class_exists('Flavor_Page_Creator_V3')) {
+            return [];
+        }
+
+        return [
+            // Página principal
+            [
+                'title' => __('Eventos', 'flavor-chat-ia'),
+                'slug' => 'eventos',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Calendario de Eventos', 'flavor-chat-ia'),
+                    'subtitle' => __('Descubre actividades y eventos de la comunidad', 'flavor-chat-ia'),
+                    'background' => 'gradient',
+                    'module' => 'eventos',
+                    'current' => 'listado',
+                    'content_after' => '[flavor_module_listing module="eventos" action="eventos_proximos" columnas="3" limite="12"]',
+                ]),
+                'parent' => 0,
+            ],
+
+            // Calendario
+            [
+                'title' => __('Calendario', 'flavor-chat-ia'),
+                'slug' => 'calendario',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Calendario de Eventos', 'flavor-chat-ia'),
+                    'subtitle' => __('Vista mensual de todos los eventos', 'flavor-chat-ia'),
+                    'module' => 'eventos',
+                    'current' => 'calendario',
+                    'content_after' => '[flavor_module_calendar module="eventos"]',
+                ]),
+                'parent' => 'eventos',
+            ],
+
+            // Crear evento
+            [
+                'title' => __('Crear Evento', 'flavor-chat-ia'),
+                'slug' => 'crear',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Crear Evento', 'flavor-chat-ia'),
+                    'subtitle' => __('Organiza un evento para la comunidad', 'flavor-chat-ia'),
+                    'module' => 'eventos',
+                    'current' => 'crear',
+                    'content_after' => '[flavor_module_form module="eventos" action="crear_evento"]',
+                ]),
+                'parent' => 'eventos',
+            ],
+
+            // Mis eventos
+            [
+                'title' => __('Mis Eventos', 'flavor-chat-ia'),
+                'slug' => 'mis-eventos',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mis Eventos', 'flavor-chat-ia'),
+                    'subtitle' => __('Eventos en los que participo u organizo', 'flavor-chat-ia'),
+                    'module' => 'eventos',
+                    'current' => 'mis_eventos',
+                    'content_after' => '[flavor_module_listing module="eventos" action="mis_eventos" user_specific="yes"]',
+                ]),
+                'parent' => 'eventos',
+            ],
+
+            // Asistentes
+            [
+                'title' => __('Asistentes', 'flavor-chat-ia'),
+                'slug' => 'asistentes',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Gestión de Asistentes', 'flavor-chat-ia'),
+                    'subtitle' => __('Controla las inscripciones a tus eventos', 'flavor-chat-ia'),
+                    'module' => 'eventos',
+                    'current' => 'asistentes',
+                    'content_after' => '[flavor_module_listing module="eventos" action="gestionar_asistentes"]',
+                ]),
+                'parent' => 'eventos',
+            ],
+        ];
     }
 
 }

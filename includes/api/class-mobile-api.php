@@ -369,6 +369,13 @@ class Chat_IA_Mobile_API {
             'permission_callback' => [$this, 'check_auth_token'],
         ]);
 
+        // Endpoint para renovar token usando refresh_token
+        register_rest_route(self::API_NAMESPACE, '/auth/refresh', [
+            'methods' => 'POST',
+            'callback' => [$this, 'handle_refresh_token'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
         // ==========================================
         // CHAT (CLIENTES Y ADMIN)
         // ==========================================
@@ -1579,7 +1586,17 @@ class Chat_IA_Mobile_API {
     // ==========================================
 
     /**
-     * Maneja el login y devuelve un token JWT
+     * Duración del access token (1 hora)
+     */
+    private const ACCESS_TOKEN_EXPIRY = HOUR_IN_SECONDS;
+
+    /**
+     * Duración del refresh token (30 días)
+     */
+    private const REFRESH_TOKEN_EXPIRY = 30 * DAY_IN_SECONDS;
+
+    /**
+     * Maneja el login y devuelve tokens JWT (access + refresh)
      */
     public function handle_login($request) {
         $username = sanitize_text_field($request->get_param('username'));
@@ -1601,38 +1618,152 @@ class Chat_IA_Mobile_API {
             return new WP_Error('insufficient_permissions', 'No tienes permisos de administrador', ['status' => 403]);
         }
 
-        // Generar token
-        $token = $this->generate_auth_token($user->ID, $app_type);
+        // Generar tokens
+        $access_token = $this->generate_auth_token($user->ID, $app_type, self::ACCESS_TOKEN_EXPIRY);
+        $refresh_token = $this->generate_refresh_token($user->ID, $app_type);
 
         return [
             'success' => true,
-            'token' => $token,
+            'token' => $access_token,
+            'refresh_token' => $refresh_token,
+            'expires_in' => self::ACCESS_TOKEN_EXPIRY,
             'user' => [
                 'id' => $user->ID,
                 'name' => $user->display_name,
                 'email' => $user->user_email,
                 'is_admin' => user_can($user, 'manage_options'),
             ],
-            'expires_at' => time() + (7 * DAY_IN_SECONDS),
         ];
     }
 
     /**
-     * Genera un token de autenticación
+     * Maneja la renovación de tokens usando refresh_token
      */
-    private function generate_auth_token($user_id, $app_type = 'client') {
+    public function handle_refresh_token($request) {
+        $refresh_token = sanitize_text_field($request->get_param('refresh_token'));
+
+        if (empty($refresh_token)) {
+            return new WP_Error('missing_token', 'Refresh token requerido', ['status' => 400]);
+        }
+
+        // Validar refresh token
+        $token_data = $this->validate_refresh_token($refresh_token);
+
+        if (!$token_data) {
+            return new WP_Error('invalid_token', 'Refresh token inválido o expirado', ['status' => 401]);
+        }
+
+        $user_id = $token_data['user_id'];
+        $app_type = $token_data['app_type'];
+
+        // Verificar que el usuario sigue existiendo y activo
+        $user = get_user_by('ID', $user_id);
+        if (!$user) {
+            return new WP_Error('user_not_found', 'Usuario no encontrado', ['status' => 401]);
+        }
+
+        // Generar nuevos tokens
+        $new_access_token = $this->generate_auth_token($user_id, $app_type, self::ACCESS_TOKEN_EXPIRY);
+        $new_refresh_token = $this->generate_refresh_token($user_id, $app_type);
+
+        return [
+            'success' => true,
+            'token' => $new_access_token,
+            'refresh_token' => $new_refresh_token,
+            'expires_in' => self::ACCESS_TOKEN_EXPIRY,
+        ];
+    }
+
+    /**
+     * Genera un token de autenticación (access token)
+     *
+     * @param int $user_id ID del usuario
+     * @param string $app_type Tipo de app (client/admin)
+     * @param int $expiry Duración en segundos
+     * @return string Token generado
+     */
+    private function generate_auth_token($user_id, $app_type = 'client', $expiry = null) {
+        if ($expiry === null) {
+            $expiry = self::ACCESS_TOKEN_EXPIRY;
+        }
+
         $secret_key = defined('AUTH_KEY') ? AUTH_KEY : wp_generate_password(64, true, true);
+        $now = time();
+
         $payload = [
             'user_id' => $user_id,
             'app_type' => $app_type,
-            'issued_at' => time(),
-            'expires_at' => time() + (7 * DAY_IN_SECONDS),
+            'type' => 'access',
+            'iat' => $now,            // issued at (estándar JWT)
+            'exp' => $now + $expiry,  // expires (estándar JWT)
+            'issued_at' => $now,      // compatibilidad
+            'expires_at' => $now + $expiry, // compatibilidad
         ];
 
         $payload_json = json_encode($payload);
         $signature = hash_hmac('sha256', $payload_json, $secret_key);
 
         return base64_encode($payload_json) . '.' . $signature;
+    }
+
+    /**
+     * Genera un refresh token
+     *
+     * @param int $user_id ID del usuario
+     * @param string $app_type Tipo de app
+     * @return string Refresh token
+     */
+    private function generate_refresh_token($user_id, $app_type = 'client') {
+        $secret_key = defined('SECURE_AUTH_KEY') ? SECURE_AUTH_KEY : AUTH_KEY;
+        $now = time();
+
+        $payload = [
+            'user_id' => $user_id,
+            'app_type' => $app_type,
+            'type' => 'refresh',
+            'iat' => $now,
+            'exp' => $now + self::REFRESH_TOKEN_EXPIRY,
+            'jti' => wp_generate_password(16, false), // unique token ID
+        ];
+
+        $payload_json = json_encode($payload);
+        $signature = hash_hmac('sha256', $payload_json, $secret_key);
+
+        return base64_encode($payload_json) . '.' . $signature;
+    }
+
+    /**
+     * Valida un refresh token
+     *
+     * @param string $token Refresh token a validar
+     * @return array|false Datos del token o false si inválido
+     */
+    private function validate_refresh_token($token) {
+        $parts = explode('.', $token);
+        if (count($parts) !== 2) {
+            return false;
+        }
+
+        $payload_json = base64_decode($parts[0]);
+        $signature = $parts[1];
+
+        $secret_key = defined('SECURE_AUTH_KEY') ? SECURE_AUTH_KEY : AUTH_KEY;
+        $expected_signature = hash_hmac('sha256', $payload_json, $secret_key);
+
+        if (!hash_equals($expected_signature, $signature)) {
+            return false;
+        }
+
+        $payload = json_decode($payload_json, true);
+
+        // Verificar tipo y expiración
+        if (!$payload ||
+            ($payload['type'] ?? '') !== 'refresh' ||
+            ($payload['exp'] ?? 0) < time()) {
+            return false;
+        }
+
+        return $payload;
     }
 
     /**

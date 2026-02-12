@@ -361,6 +361,9 @@ class Flavor_App_Profiles {
         $perfil_id = $this->obtener_perfil_activo();
         $perfil = $this->obtener_perfil($perfil_id);
 
+        error_log('[Flavor] obtener_modulos_requeridos() - Perfil activo: ' . $perfil_id);
+        error_log('[Flavor] Módulos requeridos: ' . implode(', ', $perfil['modulos_requeridos'] ?? []));
+
         return $perfil['modulos_requeridos'] ?? [];
     }
 
@@ -544,13 +547,42 @@ class Flavor_App_Profiles {
             return false;
         }
 
+        // Hook para validar dependencias antes de activar
+        $can_activate = apply_filters('flavor_before_activate_module', true, $modulo_id);
+
+        if (is_wp_error($can_activate)) {
+            error_log("[Flavor] No se puede activar '{$modulo_id}': " . $can_activate->get_error_message());
+            return false;
+        }
+
+        if (!$can_activate) {
+            error_log("[Flavor] No se puede activar '{$modulo_id}': validación falló");
+            return false;
+        }
+
         $configuracion = get_option('flavor_chat_ia_settings', []);
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         if (!in_array($modulo_id, $modulos_activos)) {
             $modulos_activos[] = $modulo_id;
             $configuracion['active_modules'] = $modulos_activos;
-            update_option('flavor_chat_ia_settings', $configuracion);
+
+            // CRÍTICO: Remover hooks que puedan interferir
+            remove_all_actions('update_option_flavor_chat_ia_settings');
+
+            // Guardar directamente en BD
+            global $wpdb;
+            $value = maybe_serialize($configuracion);
+            $wpdb->update(
+                $wpdb->options,
+                ['option_value' => $value],
+                ['option_name' => 'flavor_chat_ia_settings'],
+                ['%s'],
+                ['%s']
+            );
+
+            // Limpiar TODO el caché
+            wp_cache_flush();
 
             // Crear tablas del módulo automáticamente
             $this->crear_tablas_modulo($modulo_id);
@@ -705,20 +737,66 @@ class Flavor_App_Profiles {
      * @return bool
      */
     public function desactivar_modulo_opcional($modulo_id) {
+        // Hook para validar si hay módulos dependientes antes de desactivar
+        $can_deactivate = apply_filters('flavor_before_deactivate_module', true, $modulo_id);
+
+        if (is_wp_error($can_deactivate)) {
+            error_log("[Flavor] No se puede desactivar '{$modulo_id}': " . $can_deactivate->get_error_message());
+            return false;
+        }
+
+        if (!$can_deactivate) {
+            error_log("[Flavor] No se puede desactivar '{$modulo_id}': validación falló");
+            return false;
+        }
+
         $modulos_requeridos = $this->obtener_modulos_requeridos();
 
+        error_log("[Flavor] desactivar_modulo_opcional('{$modulo_id}')");
+        error_log('[Flavor] Módulos requeridos: ' . implode(', ', $modulos_requeridos));
+
         if (in_array($modulo_id, $modulos_requeridos)) {
+            error_log("[Flavor] '{$modulo_id}' ES REQUERIDO - Retornando false");
             return false; // No se puede desactivar un módulo requerido
         }
 
         $configuracion = get_option('flavor_chat_ia_settings', []);
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
+        error_log('[Flavor] Módulos activos ANTES: ' . implode(', ', $modulos_activos));
+
         $clave = array_search($modulo_id, $modulos_activos);
         if ($clave !== false) {
+            error_log("[Flavor] Encontrado en posición {$clave} - Eliminando...");
             unset($modulos_activos[$clave]);
             $configuracion['active_modules'] = array_values($modulos_activos);
-            update_option('flavor_chat_ia_settings', $configuracion);
+
+            // CRÍTICO: Remover hooks que puedan interferir
+            remove_all_actions('update_option_flavor_chat_ia_settings');
+
+            // Guardar directamente en BD
+            global $wpdb;
+            $value = maybe_serialize($configuracion);
+            $result = $wpdb->update(
+                $wpdb->options,
+                ['option_value' => $value],
+                ['option_name' => 'flavor_chat_ia_settings'],
+                ['%s'],
+                ['%s']
+            );
+
+            // Limpiar TODO el caché
+            wp_cache_flush();
+
+            error_log('[Flavor] Módulos activos DESPUÉS: ' . implode(', ', $configuracion['active_modules']));
+            error_log("[Flavor] update_option DIRECTO resultado: {$result}");
+
+            // Verificar que se guardó correctamente (leer directo de BD)
+            $verificacion_raw = $wpdb->get_var("SELECT option_value FROM {$wpdb->options} WHERE option_name = 'flavor_chat_ia_settings'");
+            $verificacion = maybe_unserialize($verificacion_raw);
+            error_log('[Flavor] VERIFICACIÓN DIRECTA BD - Módulos: ' . implode(', ', $verificacion['active_modules'] ?? []));
+        } else {
+            error_log("[Flavor] '{$modulo_id}' NO encontrado en módulos activos");
         }
 
         return true;

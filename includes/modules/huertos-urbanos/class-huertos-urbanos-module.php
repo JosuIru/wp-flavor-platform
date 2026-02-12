@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Versión del módulo
@@ -2916,4 +2917,48 @@ KNOWLEDGE;
         }
     }
 
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Huertos Urbanos', 'flavor-chat-ia'),
+                'slug' => 'huertos-urbanos',
+                'content' => '<h1>' . __('Huertos Urbanos Comunitarios', 'flavor-chat-ia') . '</h1>
+<p>' . __('Cultiva tus propios alimentos en la ciudad', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="huertos_urbanos" action="listar_huertos" columnas="2" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Solicitar Parcela', 'flavor-chat-ia'),
+                'slug' => 'solicitar',
+                'content' => '<h1>' . __('Solicitar Parcela', 'flavor-chat-ia') . '</h1>
+<p>' . __('Solicita tu parcela en el huerto comunitario', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="huertos_urbanos" action="solicitar_parcela"]',
+                'parent' => 'huertos-urbanos',
+            ],
+            [
+                'title' => __('Mi Parcela', 'flavor-chat-ia'),
+                'slug' => 'mi-parcela',
+                'content' => '<h1>' . __('Mi Parcela', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_dashboard module="huertos_urbanos"]',
+                'parent' => 'huertos-urbanos',
+            ],
+            [
+                'title' => __('Intercambios', 'flavor-chat-ia'),
+                'slug' => 'intercambios',
+                'content' => '<h1>' . __('Intercambios de Productos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Intercambia semillas, plantones y cosecha con otros hortelanos', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="huertos_urbanos" action="listar_intercambios" columnas="3"]',
+                'parent' => 'huertos-urbanos',
+            ],
+        ];
+    }
 }

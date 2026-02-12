@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2241,5 +2242,103 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['cursos']);
             update_option('flavor_cursos_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        if (!class_exists('Flavor_Page_Creator_V3')) {
+            return [];
+        }
+
+        return [
+            // Página principal
+            [
+                'title' => __('Cursos', 'flavor-chat-ia'),
+                'slug' => 'cursos',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Cursos y Formación', 'flavor-chat-ia'),
+                    'subtitle' => __('Programas educativos para todos los niveles', 'flavor-chat-ia'),
+                    'background' => 'gradient',
+                    'module' => 'cursos',
+                    'current' => 'listado',
+                    'content_after' => '[flavor_module_listing module="cursos" action="cursos_disponibles" columnas="3" limite="12"]',
+                ]),
+                'parent' => 0,
+            ],
+
+            // Categorías
+            [
+                'title' => __('Categorías', 'flavor-chat-ia'),
+                'slug' => 'categorias',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Categorías de Cursos', 'flavor-chat-ia'),
+                    'subtitle' => __('Explora cursos por categoría', 'flavor-chat-ia'),
+                    'module' => 'cursos',
+                    'current' => 'categorias',
+                    'content_after' => '[flavor_module_listing module="cursos" action="categorias"]',
+                ]),
+                'parent' => 'cursos',
+            ],
+
+            // Mis cursos
+            [
+                'title' => __('Mis Cursos', 'flavor-chat-ia'),
+                'slug' => 'mis-cursos',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mis Cursos', 'flavor-chat-ia'),
+                    'subtitle' => __('Cursos en los que estás matriculado', 'flavor-chat-ia'),
+                    'module' => 'cursos',
+                    'current' => 'mis_cursos',
+                    'content_after' => '[flavor_module_listing module="cursos" action="mis_cursos" user_specific="yes"]',
+                ]),
+                'parent' => 'cursos',
+            ],
+
+            // Crear curso
+            [
+                'title' => __('Crear Curso', 'flavor-chat-ia'),
+                'slug' => 'crear',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Crear un Curso', 'flavor-chat-ia'),
+                    'subtitle' => __('Comparte tu conocimiento como instructor', 'flavor-chat-ia'),
+                    'module' => 'cursos',
+                    'current' => 'crear',
+                    'content_after' => '[flavor_module_form module="cursos" action="crear_curso"]',
+                ]),
+                'parent' => 'cursos',
+            ],
+
+            // Matricularse
+            [
+                'title' => __('Matricularse', 'flavor-chat-ia'),
+                'slug' => 'matricularse',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Matricularse en Curso', 'flavor-chat-ia'),
+                    'subtitle' => __('Completa tu inscripción', 'flavor-chat-ia'),
+                    'module' => 'cursos',
+                    'current' => 'matricularse',
+                    'content_after' => '[flavor_module_form module="cursos" action="matricularse"]',
+                ]),
+                'parent' => 'cursos',
+            ],
+
+            // Instructores
+            [
+                'title' => __('Instructores', 'flavor-chat-ia'),
+                'slug' => 'instructores',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Nuestros Instructores', 'flavor-chat-ia'),
+                    'subtitle' => __('Conoce a los profesionales que imparten los cursos', 'flavor-chat-ia'),
+                    'module' => 'cursos',
+                    'current' => 'instructores',
+                    'content_after' => '[flavor_module_listing module="cursos" action="instructores" columnas="4"]',
+                ]),
+                'parent' => 'cursos',
+            ],
+        ];
     }
 }

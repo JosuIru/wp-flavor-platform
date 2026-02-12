@@ -2,12 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api/api_client.dart';
 import '../models/models.dart';
+import '../utils/logger.dart';
 
 /// Provider para el cliente API
 /// NOTA: Este provider se sobreescribe en main_admin.dart y main_client.dart
 /// con la URL correcta del servidor
 final apiClientProvider = Provider<ApiClient>((ref) {
-  debugPrint('WARNING: apiClientProvider usado sin override - usando URL por defecto');
+  Logger.w(' apiClientProvider usado sin override - usando URL por defecto');
   return ApiClient();
 });
 
@@ -367,7 +368,7 @@ class CartNotifier extends StateNotifier<CartState> {
       'quantity': entry.value,
     }).toList();
 
-    debugPrint('[Cart] Checkout iniciado: fecha=${state.date}, tickets=$ticketsList');
+    Logger.d('Checkout iniciado: fecha=${state.date}, tickets=$ticketsList', tag: 'Cart');
 
     // Obtener URL de checkout móvil (con datos del carrito codificados)
     // Esta URL añade los productos al carrito del navegador cuando se abre
@@ -376,15 +377,15 @@ class CartNotifier extends StateNotifier<CartState> {
       tickets: ticketsList,
     );
 
-    debugPrint('[Cart] getMobileCheckoutUrl response: success=${response.success}, data=${response.data}');
+    Logger.d('getMobileCheckoutUrl response: success=${response.success}, data=${response.data}', tag: 'Cart');
 
     if (response.success && response.data != null) {
       final checkoutUrl = response.data!['checkout_url'] as String?;
-      debugPrint('[Cart] checkoutUrl: $checkoutUrl');
+      Logger.d('checkoutUrl: $checkoutUrl', tag: 'Cart');
       state = state.copyWith(isLoading: false);
       return checkoutUrl;
     } else {
-      debugPrint('[Cart] Error: ${response.error}');
+      Logger.e('Error: ${response.error}', tag: 'Cart');
       state = state.copyWith(
         isLoading: false,
         error: response.error ?? 'Error al procesar el carrito',
@@ -412,22 +413,22 @@ final adminUserProvider = StateProvider<User?>((ref) => null);
 final dashboardProvider = FutureProvider<DashboardData>((ref) async {
   final api = ref.read(apiClientProvider);
   try {
-    debugPrint('[Dashboard] Solicitando datos...');
+    Logger.d('Solicitando datos...', tag: 'Dashboard');
     final response = await api.getAdminDashboard();
-    debugPrint('[Dashboard] Respuesta: success=${response.success}, data=${response.data != null}');
+    Logger.d('Respuesta: success=${response.success}, data=${response.data != null}', tag: 'Dashboard');
 
     if (response.success && response.data != null) {
-      debugPrint('[Dashboard] Parseando datos...');
+      Logger.d('Parseando datos...', tag: 'Dashboard');
       final data = DashboardData.fromJson(response.data!);
-      debugPrint('[Dashboard] Datos parseados correctamente');
+      Logger.d('Datos parseados correctamente', tag: 'Dashboard');
       return data;
     }
 
-    debugPrint('[Dashboard] Error: ${response.error}');
+    Logger.e('Error: ${response.error}', tag: 'Dashboard');
     throw Exception(response.error ?? 'Error al obtener dashboard');
   } catch (e, stack) {
-    debugPrint('[Dashboard] Excepción: $e');
-    debugPrint('[Dashboard] Stack: $stack');
+    Logger.e('Excepción: $e', tag: 'Dashboard', error: e);
+    Logger.e('Stack: $stack', tag: 'Dashboard');
     rethrow;
   }
 });
@@ -435,7 +436,7 @@ final dashboardProvider = FutureProvider<DashboardData>((ref) async {
 final adminReservationsProvider = FutureProvider.family<List<Reservation>, Map<String, String?>>((ref, params) async {
   final api = ref.read(apiClientProvider);
   try {
-    debugPrint('[AdminReservations] Solicitando datos: $params');
+    Logger.d('Solicitando datos: $params', tag: 'Reservations');
     final response = await api.getAdminReservations(
       date: params['date'],
       status: params['status'],
@@ -444,23 +445,23 @@ final adminReservationsProvider = FutureProvider.family<List<Reservation>, Map<S
       from: params['from'],
       to: params['to'],
     );
-    debugPrint('[AdminReservations] Respuesta: success=${response.success}, hasData=${response.data != null}');
+    Logger.d('Respuesta: success=${response.success}, hasData=${response.data != null}', tag: 'Reservations');
 
     if (response.success && response.data != null) {
       final reservationsData = response.data!['reservations'];
       if (reservationsData == null) {
-        debugPrint('[AdminReservations] reservations es null, devolviendo lista vacía');
+        Logger.d('reservations es null, devolviendo lista vacía', tag: 'Reservations');
         return [];
       }
       final reservations = reservationsData as List? ?? [];
-      debugPrint('[AdminReservations] Parseando ${reservations.length} reservas');
+      Logger.d('Parseando ${reservations.length} reservas', tag: 'Reservations');
       return reservations.map((r) => Reservation.fromJson(r as Map<String, dynamic>)).toList();
     }
-    debugPrint('[AdminReservations] Error del servidor: ${response.error}');
+    Logger.e('Error del servidor: ${response.error}', tag: 'Reservations');
     throw Exception(response.error ?? 'Error al obtener reservas');
   } catch (e, stack) {
-    debugPrint('[AdminReservations] Excepción: $e');
-    debugPrint('[AdminReservations] Stack: $stack');
+    Logger.e('Excepción: $e', tag: 'Reservations', error: e);
+    Logger.e('Stack: $stack', tag: 'Reservations');
     rethrow;
   }
 });
@@ -468,25 +469,25 @@ final adminReservationsProvider = FutureProvider.family<List<Reservation>, Map<S
 final customersProvider = FutureProvider.family<List<Customer>, String?>((ref, search) async {
   final api = ref.read(apiClientProvider);
   try {
-    debugPrint('[CustomersProvider] Solicitando datos: search=$search');
+    Logger.d('Solicitando datos: search=$search', tag: 'Customers');
     final response = await api.getCustomers(search: search);
-    debugPrint('[CustomersProvider] Respuesta: success=${response.success}, hasData=${response.data != null}');
+    Logger.d('Respuesta: success=${response.success}, hasData=${response.data != null}', tag: 'Customers');
 
     if (response.success && response.data != null) {
       final customersData = response.data!['customers'];
       if (customersData == null) {
-        debugPrint('[CustomersProvider] customers es null, devolviendo lista vacía');
+        Logger.d('customers es null, devolviendo lista vacía', tag: 'Customers');
         return [];
       }
       final customers = customersData as List? ?? [];
-      debugPrint('[CustomersProvider] Parseando ${customers.length} clientes');
+      Logger.d('Parseando ${customers.length} clientes', tag: 'Customers');
       return customers.map((c) => Customer.fromJson(c as Map<String, dynamic>)).toList();
     }
-    debugPrint('[CustomersProvider] Error del servidor: ${response.error}');
+    Logger.e('Error del servidor: ${response.error}', tag: 'Customers');
     throw Exception(response.error ?? 'Error al obtener clientes');
   } catch (e, stack) {
-    debugPrint('[CustomersProvider] Excepción: $e');
-    debugPrint('[CustomersProvider] Stack: $stack');
+    Logger.e('Excepción: $e', tag: 'Customers', error: e);
+    Logger.e('Stack: $stack', tag: 'Customers');
     rethrow;
   }
 });

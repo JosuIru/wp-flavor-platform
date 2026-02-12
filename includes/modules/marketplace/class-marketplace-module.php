@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -956,4 +957,47 @@ KNOWLEDGE;
         }
     }
 
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Marketplace', 'flavor-chat-ia'),
+                'slug' => 'marketplace',
+                'content' => '<h1>' . __('Marketplace Local', 'flavor-chat-ia') . '</h1>
+<p>' . __('Compra y vende productos y servicios en tu comunidad', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="marketplace" action="listar_anuncios" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Publicar Anuncio', 'flavor-chat-ia'),
+                'slug' => 'publicar',
+                'content' => '<h1>' . __('Publicar Anuncio', 'flavor-chat-ia') . '</h1>
+<p>' . __('Anuncia tu producto o servicio', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="marketplace" action="publicar_anuncio"]',
+                'parent' => 'marketplace',
+            ],
+            [
+                'title' => __('Mis Anuncios', 'flavor-chat-ia'),
+                'slug' => 'mis-anuncios',
+                'content' => '<h1>' . __('Mis Anuncios', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_dashboard module="marketplace"]',
+                'parent' => 'marketplace',
+            ],
+            [
+                'title' => __('Mis Compras', 'flavor-chat-ia'),
+                'slug' => 'mis-compras',
+                'content' => '<h1>' . __('Mis Compras', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_listing module="marketplace" action="mis_compras" user_specific="yes"]',
+                'parent' => 'marketplace',
+            ],
+        ];
+    }
 }

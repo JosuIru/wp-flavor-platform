@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2966,6 +2967,34 @@ KNOWLEDGE;
                 'label' => __('Chats activos', 'flavor-chat-ia'),
                 'color' => 'purple',
                 'enlace' => admin_url('admin.php?page=flavor-chat-interno-conversaciones'),
+            ],
+        ];
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Chat Interno', 'flavor-chat-ia'),
+                'slug' => 'chat-interno',
+                'content' => '<h1>' . __('Chat Interno', 'flavor-chat-ia') . '</h1>
+<p>' . __('Mensajería privada entre usuarios de la comunidad. Comunícate de forma directa y segura.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="chat_interno" action="listar"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Conversaciones', 'flavor-chat-ia'),
+                'slug' => 'conversaciones',
+                'content' => '<h1>' . __('Mis Conversaciones', 'flavor-chat-ia') . '</h1>
+<p>' . __('Accede a todas tus conversaciones activas y archivadas.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="chat_interno" action="conversaciones"]',
+                'parent' => 'chat-interno',
             ],
         ];
     }

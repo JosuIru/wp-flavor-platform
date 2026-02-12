@@ -124,6 +124,9 @@ final class Flavor_Chat_IA {
         // Helpers/Utilities
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-helpers.php';
 
+        // Sistema de Seguridad - Encriptación de API Keys
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/security/class-api-key-encryption.php';
+
         // Autenticación JWT para REST API (debe cargarse temprano)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-jwt-auth.php';
 
@@ -178,6 +181,9 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/interface-chat-module.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-module-loader.php';
 
+        // Trait de notificaciones para módulos
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-notifications.php';
+
         // Sistema de Control de Acceso a Módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-access-control.php';
 
@@ -189,6 +195,7 @@ final class Flavor_Chat_IA {
 
         // API REST para apps móviles
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-mobile-api.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-mobile-api-extensions.php';
 
         // API de Contenido Nativo (renderizado nativo en apps, sin WebViews)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-native-content-api.php';
@@ -282,6 +289,31 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-page-creator.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-lifecycle.php';
 
+        // Sistema de Navegación y Control de Acceso a Páginas
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-breadcrumbs.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-user-messages.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-page-access-control.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-navigation.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-menu-manager.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-dependency-resolver.php';
+
+        // Page Creator V2 y Migrador
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-page-creator-v2.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-page-migrator.php';
+
+        // Page Creator V3 - Sistema modular de páginas
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-page-creator-v3.php';
+
+        // Menú Adaptativo
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-adaptive-menu.php';
+
+        // Sistema de Notificaciones
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-notifications-system.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-notification-center.php';
+
+        // Theme Customizer (Dark Mode + Colores)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-theme-customizer.php';
+
         // Dashboard de usuario frontend (Mi Cuenta)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-user-dashboard.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-user-dashboard-api.php';
@@ -294,6 +326,7 @@ final class Flavor_Chat_IA {
         // Admin para creación de páginas
         if (is_admin()) {
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-pages-admin.php';
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-pages-admin-v2.php';
         }
 
         // Sistema de Layouts Predefinidos (menús y footers)
@@ -310,9 +343,23 @@ final class Flavor_Chat_IA {
         // Design settings se necesita tambien en frontend (preview handler)
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-design-settings.php';
 
+        // Integración de Theme Customizer con Design Settings
+        if (is_admin()) {
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-design-integration.php';
+        }
+
         if (is_admin()) {
             // Gestor centralizado del menú admin (carga antes que las demás clases admin)
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-admin-menu-manager.php';
+
+            // Panel Unificado de Gestión (Dashboard principal)
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-flavor-unified-dashboard.php';
+
+            // Panel de Administración de Sistemas V3
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-flavor-systems-admin-panel.php';
+
+            // Simplificador de Menús (limpia menús duplicados)
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-flavor-menu-simplifier.php';
 
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-chat-settings.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-chat-analytics.php';
@@ -431,6 +478,11 @@ final class Flavor_Chat_IA {
         // Inicializar Control de Acceso a Módulos
         if (class_exists('Flavor_Module_Access_Control')) {
             Flavor_Module_Access_Control::get_instance();
+        }
+
+        // Inicializar Control de Acceso a Páginas (middleware de login/permisos)
+        if (class_exists('Flavor_Page_Access_Control')) {
+            Flavor_Page_Access_Control::get_instance();
         }
 
         // Inicializar Admin de Visibilidad de Módulos (solo admin)
@@ -566,6 +618,21 @@ final class Flavor_Chat_IA {
         // Inicializar Shortcodes Automáticos de Módulos
         if (class_exists('Flavor_Module_Shortcodes')) {
             Flavor_Module_Shortcodes::get_instance();
+        }
+
+        // Inicializar Gestor Automático de Menús
+        if (class_exists('Flavor_Module_Menu_Manager')) {
+            Flavor_Module_Menu_Manager::get_instance();
+        }
+
+        // Inicializar Centro de Notificaciones
+        if (class_exists('Flavor_Notification_Center')) {
+            Flavor_Notification_Center::get_instance();
+        }
+
+        // Inicializar Page Creator V3 (sistema modular de páginas)
+        if (class_exists('Flavor_Page_Creator_V3')) {
+            Flavor_Page_Creator_V3::get_instance();
         }
 
         // Inicializar Sistema de Layouts Predefinidos
@@ -746,6 +813,17 @@ final class Flavor_Chat_IA {
      * @param array $value
      */
     public function handle_modules_role_assignment($old_value, $value) {
+        // Invalidar caché de metadatos de módulos cuando cambian los módulos activos
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $old_modules = isset($old_value['active_modules']) ? $old_value['active_modules'] : [];
+            $new_modules = isset($value['active_modules']) ? $value['active_modules'] : [];
+
+            if ($old_modules !== $new_modules) {
+                $loader = Flavor_Chat_Module_Loader::get_instance();
+                $loader->invalidate_metadata_cache();
+            }
+        }
+
         if (!is_admin() || !class_exists('Flavor_Permission_Helper')) {
             return;
         }
@@ -888,6 +966,12 @@ final class Flavor_Chat_IA {
 
         // Crear tablas de módulos
         $this->create_module_tables();
+
+        // Reconstruir caché de metadatos de módulos para optimizar rendimiento
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $loader = Flavor_Chat_Module_Loader::get_instance();
+            $loader->rebuild_metadata_cache();
+        }
 
         // Programar cron de cuotas periodicas de socios
         $ruta_subscriptions_activacion = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
@@ -1271,6 +1355,14 @@ final class Flavor_Chat_IA {
             $notifications = Flavor_Notification_Manager::get_instance();
             if (method_exists($notifications, 'create_tables')) {
                 $notifications->create_tables();
+            }
+        }
+
+        // Centro de Notificaciones
+        if (class_exists('Flavor_Notification_Center')) {
+            $notification_center = Flavor_Notification_Center::get_instance();
+            if (method_exists($notification_center, 'maybe_create_table')) {
+                $notification_center->maybe_create_table();
             }
         }
 

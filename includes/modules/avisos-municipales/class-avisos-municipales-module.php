@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
@@ -2401,6 +2402,7 @@ KNOWLEDGE;
         $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
         return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
     }
+
     /**
      * Crea/actualiza páginas del módulo si es necesario
      */
@@ -2421,6 +2423,34 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['avisos_municipales']);
             update_option('flavor_avisos_municipales_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Avisos Municipales', 'flavor-chat-ia'),
+                'slug' => 'avisos-municipales',
+                'content' => '<h1>' . __('Avisos Municipales', 'flavor-chat-ia') . '</h1>
+<p>' . __('Mantente informado de los avisos y comunicados oficiales del ayuntamiento y tu comunidad.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="avisos_municipales" action="listar" columnas="2" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Mis Avisos', 'flavor-chat-ia'),
+                'slug' => 'avisos-municipales/mis-avisos',
+                'content' => '<h1>' . __('Mis Avisos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Revisa los avisos que te afectan directamente y confirma su lectura.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="avisos_municipales" action="mis_avisos" columnas="1" limite="20"]',
+                'parent' => 'avisos-municipales',
+            ],
+        ];
     }
 
 }

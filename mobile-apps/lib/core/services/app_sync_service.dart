@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api/api_client.dart';
 import '../config/server_config.dart';
 import '../config/dynamic_config.dart';
+import '../utils/logger.dart';
 import '../../features/layouts/layout_config.dart';
 
 /// Estado de sincronización
@@ -127,9 +128,9 @@ class AppSyncService {
       // Cargar configuración de layouts desde caché
       await LayoutService().loadFromCache();
 
-      debugPrint('AppSyncService: Initialized - Site: $_currentSiteName');
+      Logger.i('Initialized - Site: $_currentSiteName', tag: 'AppSync');
     } catch (e) {
-      debugPrint('AppSyncService: Error initializing: $e');
+      Logger.e('Error initializing', tag: 'AppSync', error: e);
     }
   }
 
@@ -157,7 +158,7 @@ class AppSyncService {
         throw Exception('URL no válida');
       }
 
-      debugPrint('AppSyncService: Syncing with $cleanUrl');
+      Logger.i('Syncing with $cleanUrl', tag: 'AppSync');
 
       // Limpiar cachés para forzar configuración nueva
       await DynamicConfig().clearCache();
@@ -224,9 +225,9 @@ class AppSyncService {
           siteInfo['layouts'],
           themeData: layoutTheme,
         );
-        debugPrint('AppSyncService: Layouts updated from site');
+        Logger.i('Layouts updated from site', tag: 'AppSync');
       } else {
-        debugPrint('AppSyncService: No layouts available, using defaults');
+        Logger.d('No layouts available, using defaults', tag: 'AppSync');
       }
 
       // 4. Guardar estado de sincronización
@@ -245,7 +246,7 @@ class AppSyncService {
       _status = SyncStatus.success;
       _notifyListeners();
 
-      debugPrint('AppSyncService: Sync successful - $siteName');
+      Logger.i('Sync successful - $siteName', tag: 'AppSync');
 
       final resolvedSiteName =
           (siteName != null && siteName.trim().isNotEmpty) ? siteName : cleanUrl;
@@ -254,7 +255,7 @@ class AppSyncService {
         siteInfo: siteInfo,
       );
     } catch (e) {
-      debugPrint('AppSyncService: Sync error - $e');
+      Logger.e('Sync error', tag: 'AppSync', error: e);
       _status = SyncStatus.error;
       _notifyListeners();
 
@@ -291,7 +292,7 @@ class AppSyncService {
     await ServerConfig.resetToDefaults();
 
     _notifyListeners();
-    debugPrint('AppSyncService: Disconnected');
+    Logger.i('Disconnected', tag: 'AppSync');
   }
 
   /// Verificar si necesita sincronización

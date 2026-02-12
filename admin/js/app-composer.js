@@ -117,7 +117,7 @@ const flavorComposerFactory = () => ({
         },
 
         /**
-         * Toggle de módulo vía submit
+         * Toggle de módulo vía AJAX (sin recargar página)
          */
         toggleModulo(idModulo) {
             if (this.cargando) return;
@@ -126,27 +126,88 @@ const flavorComposerFactory = () => ({
             this.cargando = true;
             const activar = !this.esModuloActivo(idModulo);
 
-            const formulario = document.createElement('form');
-            formulario.method = 'POST';
-            formulario.action = this.adminPostUrl;
+            console.log('[Toggle] Módulo:', idModulo, 'Activar:', activar);
+            console.log('[Toggle] Módulos activos antes:', this.modulosActivos);
 
-            const campos = {
-                'action': 'flavor_chat_ia_toggle_modulo',
-                'modulo_id': idModulo,
-                'activar': activar ? '1' : '0',
-                '_wpnonce': this.nonces.toggleModulo
-            };
+            // Crear FormData para AJAX
+            const formData = new FormData();
+            formData.append('action', 'flavor_toggle_modulo');
+            formData.append('modulo_id', idModulo);
+            formData.append('activar', activar ? '1' : '0');
+            formData.append('_ajax_nonce', this.nonces.toggleModulo);
 
-            Object.entries(campos).forEach(([nombre, valor]) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = nombre;
-                input.value = valor;
-                formulario.appendChild(input);
+            // Petición AJAX
+            fetch(ajaxurl, {
+                method: 'POST',
+                credentials: 'same-origin',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('[Toggle] Respuesta del servidor:', data);
+
+                if (data.success) {
+                    console.log('[Toggle] ✅ Operación exitosa');
+                    console.log('[Toggle] Módulos activos desde servidor:', data.data.modulos_activos);
+
+                    // Actualizar estado local con los datos del servidor (fuente única de verdad)
+                    this.modulosActivos = data.data.modulos_activos || [];
+
+                    // Actualizar también en flavorComposerData para que persista
+                    if (window.flavorComposerData) {
+                        window.flavorComposerData.modulosActivos = this.modulosActivos;
+                    }
+
+                    console.log('[Toggle] Módulos activos después:', this.modulosActivos);
+
+                    // Mostrar notificación de éxito
+                    this.mostrarNotificacion(data.data.message, 'success');
+                } else {
+                    console.error('[Toggle] ❌ Error del servidor:', data.data);
+
+                    // Si es un módulo requerido, mostrar advertencia especial
+                    if (data.data && data.data.modulo_requerido) {
+                        this.mostrarNotificacion(data.data.message, 'warning');
+                    } else {
+                        this.mostrarNotificacion(data.data.message || 'Error al actualizar el módulo', 'error');
+                    }
+
+                    // NO actualizar el estado local - mantener el estado anterior
+                    console.warn('[Toggle] Estado local NO modificado por error');
+                }
+            })
+            .catch(error => {
+                console.error('[Toggle] Error en fetch:', error);
+                this.mostrarNotificacion('Error de conexión al actualizar el módulo', 'error');
+            })
+            .finally(() => {
+                this.cargando = false;
             });
+        },
 
-            document.body.appendChild(formulario);
-            formulario.submit();
+        /**
+         * Muestra notificación temporal
+         */
+        mostrarNotificacion(mensaje, tipo = 'success') {
+            const notificacion = document.createElement('div');
+            notificacion.className = `notice notice-${tipo} is-dismissible`;
+            notificacion.innerHTML = `<p>${mensaje}</p>`;
+
+            // Buscar contenedor de notices
+            const wrap = document.querySelector('.wrap');
+            if (wrap) {
+                const h1 = wrap.querySelector('h1');
+                if (h1) {
+                    h1.insertAdjacentElement('afterend', notificacion);
+                } else {
+                    wrap.insertAdjacentElement('afterbegin', notificacion);
+                }
+
+                // Auto-cerrar después de 3 segundos
+                setTimeout(() => {
+                    notificacion.remove();
+                }, 3000);
+            }
         },
 
         /**

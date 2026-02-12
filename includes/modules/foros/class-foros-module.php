@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2213,4 +2214,45 @@ KNOWLEDGE;
         }
     }
 
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Foros', 'flavor-chat-ia'),
+                'slug' => 'foros',
+                'content' => '<h1>' . __('Foros de la Comunidad', 'flavor-chat-ia') . '</h1>
+<p>' . __('Participa en las discusiones de la comunidad', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="foros" action="listar_temas" columnas="1"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Nuevo Tema', 'flavor-chat-ia'),
+                'slug' => 'nuevo-tema',
+                'content' => '<h1>' . __('Crear Nuevo Tema', 'flavor-chat-ia') . '</h1>
+<p>' . __('Inicia una nueva discusión', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="foros" action="crear_tema"]',
+                'parent' => 'foros',
+            ],
+            [
+                'title' => __('Ver Tema', 'flavor-chat-ia'),
+                'slug' => 'tema',
+                'content' => '[flavor_module_form module="foros" action="responder_tema"]',
+                'parent' => 'foros',
+            ],
+            [
+                'title' => __('Mis Temas', 'flavor-chat-ia'),
+                'slug' => 'mis-temas',
+                'content' => '<h1>' . __('Mis Temas', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_dashboard module="foros"]',
+                'parent' => 'foros',
+            ],
+        ];
+    }
 }

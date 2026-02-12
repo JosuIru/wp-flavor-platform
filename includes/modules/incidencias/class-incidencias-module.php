@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Versión de las tablas
@@ -30,6 +31,134 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Reportar y gestionar incidencias del barrio: baches, alumbrado, limpieza, etc.'; // Translation loaded on init
 
         parent::__construct();
+
+        // Integrar sistema de notificaciones
+        $this->init_notifications();
+    }
+
+    /**
+     * Inicializar sistema de notificaciones
+     */
+    private function init_notifications() {
+        add_action('incidencia_created', [$this, 'notify_ticket_created'], 10, 2);
+        add_action('incidencia_status_changed', [$this, 'notify_status_changed'], 10, 3);
+        add_action('incidencia_comment_added', [$this, 'notify_new_comment'], 10, 3);
+        add_action('incidencia_resolved', [$this, 'notify_ticket_resolved'], 10, 2);
+    }
+
+    /**
+     * Notificación: Ticket creado
+     */
+    public function notify_ticket_created($ticket_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Incidencia reportada', 'flavor-chat-ia'),
+            sprintf(__('Tu incidencia #%d ha sido registrada. Te mantendremos informado del progreso.', 'flavor-chat-ia'), $ticket_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'success',
+                'link' => home_url("/incidencias/mis-incidencias?ticket={$ticket_id}"),
+                'metadata' => [
+                    'ticket_id' => $ticket_id,
+                    'action' => 'ticket_created'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Cambio de estado
+     */
+    public function notify_status_changed($ticket_id, $user_id, $new_status) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $status_labels = [
+            'pending' => __('Pendiente', 'flavor-chat-ia'),
+            'in_progress' => __('En progreso', 'flavor-chat-ia'),
+            'resolved' => __('Resuelta', 'flavor-chat-ia'),
+            'closed' => __('Cerrada', 'flavor-chat-ia'),
+        ];
+
+        $status_label = $status_labels[$new_status] ?? $new_status;
+
+        $nc->send(
+            $user_id,
+            __('Estado de incidencia actualizado', 'flavor-chat-ia'),
+            sprintf(__('El estado de tu incidencia #%d cambió a: %s', 'flavor-chat-ia'), $ticket_id, $status_label),
+            [
+                'module_id' => $this->id,
+                'type' => 'info',
+                'link' => home_url("/incidencias/mis-incidencias?ticket={$ticket_id}"),
+                'metadata' => [
+                    'ticket_id' => $ticket_id,
+                    'action' => 'status_changed',
+                    'new_status' => $new_status
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Nuevo comentario
+     */
+    public function notify_new_comment($ticket_id, $user_id, $comment_author) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Nuevo comentario en tu incidencia', 'flavor-chat-ia'),
+            sprintf(__('%s ha comentado en tu incidencia #%d', 'flavor-chat-ia'), $comment_author, $ticket_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'info',
+                'link' => home_url("/incidencias/mis-incidencias?ticket={$ticket_id}#comments"),
+                'metadata' => [
+                    'ticket_id' => $ticket_id,
+                    'action' => 'new_comment',
+                    'comment_author' => $comment_author
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Incidencia resuelta
+     */
+    public function notify_ticket_resolved($ticket_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Incidencia resuelta', 'flavor-chat-ia'),
+            sprintf(__('¡Tu incidencia #%d ha sido resuelta! Gracias por reportarla.', 'flavor-chat-ia'), $ticket_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'success',
+                'link' => home_url("/incidencias/mis-incidencias?ticket={$ticket_id}"),
+                'metadata' => [
+                    'ticket_id' => $ticket_id,
+                    'action' => 'ticket_resolved'
+                ]
+            ]
+        );
     }
 
     /**
@@ -2988,6 +3117,90 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['incidencias']);
             update_option('flavor_incidencias_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        if (!class_exists('Flavor_Page_Creator_V3')) {
+            return [];
+        }
+
+        return [
+            // Página principal
+            [
+                'title' => __('Incidencias', 'flavor-chat-ia'),
+                'slug' => 'incidencias',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Gestión de Incidencias', 'flavor-chat-ia'),
+                    'subtitle' => __('Reporta problemas y consulta el estado de tus tickets', 'flavor-chat-ia'),
+                    'background' => 'gradient',
+                    'module' => 'incidencias',
+                    'current' => 'listado',
+                    'content_after' => '[flavor_module_listing module="incidencias" action="tickets_publicos" columnas="2"]',
+                ]),
+                'parent' => 0,
+            ],
+
+            // Crear incidencia
+            [
+                'title' => __('Crear Incidencia', 'flavor-chat-ia'),
+                'slug' => 'nueva',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Reportar Incidencia', 'flavor-chat-ia'),
+                    'subtitle' => __('Describe el problema que quieres reportar', 'flavor-chat-ia'),
+                    'module' => 'incidencias',
+                    'current' => 'crear',
+                    'content_after' => '[flavor_module_form module="incidencias" action="crear_ticket"]',
+                ]),
+                'parent' => 'incidencias',
+            ],
+
+            // Mis incidencias
+            [
+                'title' => __('Mis Incidencias', 'flavor-chat-ia'),
+                'slug' => 'mis-tickets',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mis Incidencias', 'flavor-chat-ia'),
+                    'subtitle' => __('Seguimiento de tus tickets', 'flavor-chat-ia'),
+                    'module' => 'incidencias',
+                    'current' => 'mis_tickets',
+                    'content_after' => '[flavor_module_listing module="incidencias" action="mis_tickets" user_specific="yes"]',
+                ]),
+                'parent' => 'incidencias',
+            ],
+
+            // Mapa de incidencias
+            [
+                'title' => __('Mapa', 'flavor-chat-ia'),
+                'slug' => 'mapa',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mapa de Incidencias', 'flavor-chat-ia'),
+                    'subtitle' => __('Visualiza las incidencias en el mapa', 'flavor-chat-ia'),
+                    'module' => 'incidencias',
+                    'current' => 'mapa',
+                    'content_after' => '[flavor_module_map module="incidencias" action="mapa_incidencias"]',
+                ]),
+                'parent' => 'incidencias',
+            ],
+
+            // Estadísticas
+            [
+                'title' => __('Estadísticas', 'flavor-chat-ia'),
+                'slug' => 'estadisticas',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Estadísticas de Incidencias', 'flavor-chat-ia'),
+                    'subtitle' => __('Datos sobre las incidencias reportadas y resueltas', 'flavor-chat-ia'),
+                    'module' => 'incidencias',
+                    'current' => 'estadisticas',
+                    'content_after' => '[flavor_module_stats module="incidencias"]',
+                ]),
+                'parent' => 'incidencias',
+            ],
+        ];
     }
 
 }

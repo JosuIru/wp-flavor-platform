@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Notifications_Trait;
+
     /**
      * Constructor
      */
@@ -2372,6 +2374,90 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['biblioteca']);
             update_option('flavor_biblioteca_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        if (!class_exists('Flavor_Page_Creator_V3')) {
+            return [];
+        }
+
+        return [
+            // Página principal
+            [
+                'title' => __('Biblioteca', 'flavor-chat-ia'),
+                'slug' => 'biblioteca',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Biblioteca Comunitaria', 'flavor-chat-ia'),
+                    'subtitle' => __('Comparte y toma prestados libros de la comunidad', 'flavor-chat-ia'),
+                    'background' => 'gradient',
+                    'module' => 'biblioteca',
+                    'current' => 'listado',
+                    'content_after' => '[flavor_module_listing module="biblioteca" action="libros_disponibles" columnas="4" limite="16"]',
+                ]),
+                'parent' => 0,
+            ],
+
+            // Catálogo
+            [
+                'title' => __('Catálogo', 'flavor-chat-ia'),
+                'slug' => 'catalogo',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Catálogo de Libros', 'flavor-chat-ia'),
+                    'subtitle' => __('Explora todos los libros disponibles', 'flavor-chat-ia'),
+                    'module' => 'biblioteca',
+                    'current' => 'catalogo',
+                    'content_after' => '[flavor_module_listing module="biblioteca" action="catalogo_completo" columnas="4"]',
+                ]),
+                'parent' => 'biblioteca',
+            ],
+
+            // Mis préstamos
+            [
+                'title' => __('Mis Préstamos', 'flavor-chat-ia'),
+                'slug' => 'mis-prestamos',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mis Préstamos', 'flavor-chat-ia'),
+                    'subtitle' => __('Libros que tienes en préstamo', 'flavor-chat-ia'),
+                    'module' => 'biblioteca',
+                    'current' => 'prestamos',
+                    'content_after' => '[flavor_module_listing module="biblioteca" action="mis_prestamos" user_specific="yes"]',
+                ]),
+                'parent' => 'biblioteca',
+            ],
+
+            // Añadir libro
+            [
+                'title' => __('Añadir Libro', 'flavor-chat-ia'),
+                'slug' => 'anadir',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Añadir un Libro', 'flavor-chat-ia'),
+                    'subtitle' => __('Comparte tus libros con la comunidad', 'flavor-chat-ia'),
+                    'module' => 'biblioteca',
+                    'current' => 'anadir',
+                    'content_after' => '[flavor_module_form module="biblioteca" action="anadir_libro"]',
+                ]),
+                'parent' => 'biblioteca',
+            ],
+
+            // Reservas
+            [
+                'title' => __('Reservas', 'flavor-chat-ia'),
+                'slug' => 'reservas',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mis Reservas', 'flavor-chat-ia'),
+                    'subtitle' => __('Libros que has reservado', 'flavor-chat-ia'),
+                    'module' => 'biblioteca',
+                    'current' => 'reservas',
+                    'content_after' => '[flavor_module_listing module="biblioteca" action="mis_reservas" user_specific="yes"]',
+                ]),
+                'parent' => 'biblioteca',
+            ],
+        ];
     }
 
 }

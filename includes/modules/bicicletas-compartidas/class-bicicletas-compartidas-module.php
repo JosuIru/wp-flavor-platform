@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -1551,6 +1552,45 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['bicicletas_compartidas']);
             update_option('flavor_bicicletas_compartidas_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Bicicletas Compartidas', 'flavor-chat-ia'),
+                'slug' => 'bicicletas-compartidas',
+                'content' => '<h1>' . __('Bicicletas Compartidas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Sistema de préstamo de bicicletas comunitario. Encuentra estaciones cercanas, reserva tu bici y disfruta de movilidad sostenible.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="bicicletas_compartidas" action="estaciones" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Alquilar Bicicleta', 'flavor-chat-ia'),
+                'slug' => 'alquilar',
+                'content' => '<h1>' . __('Alquilar Bicicleta', 'flavor-chat-ia') . '</h1>
+<p>' . __('Selecciona una bicicleta disponible y comienza tu viaje.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="bicicletas_compartidas" action="bicicletas_disponibles" columnas="3" limite="12"]
+
+[flavor_module_form module="bicicletas_compartidas" action="reservar_bicicleta"]',
+                'parent' => 'bicicletas-compartidas',
+            ],
+            [
+                'title' => __('Mis Alquileres', 'flavor-chat-ia'),
+                'slug' => 'mis-alquileres',
+                'content' => '<h1>' . __('Mis Alquileres', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta tu historial de préstamos y alquileres de bicicletas.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="bicicletas_compartidas" action="mis_prestamos" columnas="2" limite="20"]',
+                'parent' => 'bicicletas-compartidas',
+            ],
+        ];
     }
 
 }

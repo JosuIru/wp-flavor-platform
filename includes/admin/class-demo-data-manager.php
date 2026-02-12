@@ -179,20 +179,45 @@ class Flavor_Demo_Data_Manager {
      */
     private function get_modulos_con_demo_disponibles() {
         return [
-            'banco_tiempo',
-            'eventos',
-            'marketplace',
-            'grupos_consumo',
+            'advertising',
+            'avisos_municipales',
             'ayuda_vecinal',
+            'banco_tiempo',
+            'bares',
+            'biblioteca',
+            'bicicletas_compartidas',
+            'carpooling',
+            'chat_grupos',
+            'chat_interno',
+            'clientes',
+            'colectivos',
+            'compostaje',
+            'comunidades',
+            'cursos',
+            'empresarial',
+            'espacios_comunes',
+            'eventos',
+            'facturas',
+            'fichaje_empleados',
+            'foros',
+            'grupos_consumo',
+            'huertos_urbanos',
+            'incidencias',
+            'marketplace',
+            'multimedia',
+            'network',
+            'parkings',
+            'participacion',
+            'podcast',
+            'presupuestos_participativos',
+            'radio',
+            'reciclaje',
+            'red_social',
             'reservas',
             'socios',
-            'facturas',
-            'incidencias',
             'talleres',
             'tramites',
-            'avisos_municipales',
-            'red_social',
-            'network',
+            'transparencia',
         ];
     }
 
@@ -857,6 +882,9 @@ class Flavor_Demo_Data_Manager {
             'productores' => [],
             'productos' => [],
             'ciclos' => [],
+            'pedidos' => [],
+            'entregas' => [],
+            'consolidados' => [],
         ];
 
         // Productores demo
@@ -975,24 +1003,145 @@ class Flavor_Demo_Data_Manager {
             $ids_insertados['consumidores'][] = $usuario_id_compartido;
         }
 
+        // Crear pedidos de prueba si hay ciclo y productos
+        if ($ciclo_id && !empty($ids_insertados['productos']) && !empty($usuarios_para_gc)) {
+            global $wpdb;
+            $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+            // Crear entre 3-8 pedidos por usuario
+            foreach ($usuarios_para_gc as $usuario_id_compartido) {
+                $num_pedidos = rand(3, 8);
+                $productos_disponibles = $ids_insertados['productos'];
+                shuffle($productos_disponibles);
+                $productos_elegidos = array_slice($productos_disponibles, 0, $num_pedidos);
+
+                foreach ($productos_elegidos as $producto_id) {
+                    $precio = get_post_meta($producto_id, '_gc_precio', true);
+                    $cantidad = rand(1, 5) * 0.5; // 0.5, 1, 1.5, 2, 2.5 kg
+
+                    $pedido_id = $wpdb->insert(
+                        $tabla_pedidos,
+                        [
+                            'ciclo_id' => $ciclo_id,
+                            'usuario_id' => $usuario_id_compartido,
+                            'producto_id' => $producto_id,
+                            'cantidad' => $cantidad,
+                            'precio_unitario' => $precio,
+                            'estado' => 'confirmado',
+                            'fecha_pedido' => current_time('mysql'),
+                            'fecha_modificacion' => current_time('mysql'),
+                        ],
+                        ['%d', '%d', '%d', '%f', '%f', '%s', '%s', '%s']
+                    );
+
+                    if ($pedido_id) {
+                        $ids_insertados['pedidos'][] = $wpdb->insert_id;
+                    }
+                }
+            }
+
+            // Crear entregas para los usuarios con pedidos
+            if (!empty($ids_insertados['pedidos'])) {
+                $tabla_entregas = $wpdb->prefix . 'flavor_gc_entregas';
+
+                foreach ($usuarios_para_gc as $usuario_id_compartido) {
+                    // Calcular total de pedidos del usuario
+                    $pedidos_usuario = $wpdb->get_results($wpdb->prepare(
+                        "SELECT SUM(cantidad * precio_unitario) as total
+                         FROM $tabla_pedidos
+                         WHERE ciclo_id = %d AND usuario_id = %d",
+                        $ciclo_id,
+                        $usuario_id_compartido
+                    ));
+
+                    if ($pedidos_usuario && $pedidos_usuario[0]->total > 0) {
+                        $total_pedido = $pedidos_usuario[0]->total;
+                        $gastos_gestion = $total_pedido * 0.05; // 5% de gastos
+                        $total_final = $total_pedido + $gastos_gestion;
+
+                        $entrega_id = $wpdb->insert(
+                            $tabla_entregas,
+                            [
+                                'ciclo_id' => $ciclo_id,
+                                'usuario_id' => $usuario_id_compartido,
+                                'total_pedido' => $total_pedido,
+                                'gastos_gestion' => $gastos_gestion,
+                                'total_final' => $total_final,
+                                'estado_pago' => rand(0, 1) ? 'pagado' : 'pendiente',
+                                'fecha_pago' => rand(0, 1) ? current_time('mysql') : null,
+                                'metodo_pago' => rand(0, 1) ? 'transferencia' : null,
+                                'estado_recogida' => 'pendiente',
+                                'fecha_creacion' => current_time('mysql'),
+                            ],
+                            ['%d', '%d', '%f', '%f', '%f', '%s', '%s', '%s', '%s', '%s']
+                        );
+
+                        if ($entrega_id) {
+                            $ids_insertados['entregas'][] = $wpdb->insert_id;
+                        }
+                    }
+                }
+            }
+
+            // Crear consolidado por producto
+            if (!empty($ids_insertados['productos'])) {
+                $tabla_consolidado = $wpdb->prefix . 'flavor_gc_consolidado';
+
+                foreach ($ids_insertados['productos'] as $producto_id) {
+                    $productor_id = get_post_meta($producto_id, '_gc_productor_id', true);
+
+                    // Calcular cantidad total pedida
+                    $consolidado = $wpdb->get_results($wpdb->prepare(
+                        "SELECT SUM(cantidad) as total, COUNT(*) as num_pedidos
+                         FROM $tabla_pedidos
+                         WHERE ciclo_id = %d AND producto_id = %d",
+                        $ciclo_id,
+                        $producto_id
+                    ));
+
+                    if ($consolidado && $consolidado[0]->total > 0) {
+                        $wpdb->insert(
+                            $tabla_consolidado,
+                            [
+                                'ciclo_id' => $ciclo_id,
+                                'productor_id' => $productor_id,
+                                'producto_id' => $producto_id,
+                                'cantidad_total' => $consolidado[0]->total,
+                                'numero_pedidos' => $consolidado[0]->num_pedidos,
+                                'estado' => 'pendiente',
+                                'fecha_solicitud' => current_time('mysql'),
+                            ],
+                            ['%d', '%d', '%d', '%f', '%d', '%s', '%s']
+                        );
+
+                        if ($wpdb->insert_id) {
+                            $ids_insertados['consolidados'][] = $wpdb->insert_id;
+                        }
+                    }
+                }
+            }
+        }
+
         $this->mark_as_demo('grupos_consumo', $ids_insertados);
 
         $total_productores = count($ids_insertados['productores']);
         $total_productos = count($ids_insertados['productos']);
         $total_ciclos = count($ids_insertados['ciclos']);
-        $total_usuarios = count($ids_insertados['usuarios']);
+        $total_usuarios = count($ids_insertados['consumidores']);
         $total_pedidos = count($ids_insertados['pedidos']);
+        $total_entregas = isset($ids_insertados['entregas']) ? count($ids_insertados['entregas']) : 0;
 
         return [
             'success' => true,
-            'count' => $total_productores + $total_productos + $total_ciclos + $total_usuarios + $total_pedidos,
+            'count' => $total_productores + $total_productos + $total_ciclos + $total_usuarios + $total_pedidos + $total_entregas,
             'message' => sprintf(
-                'Se insertaron %d productores, %d productos, %d ciclo, %d consumidores y %d pedidos',
+                'Se insertaron %d productores, %d productos, %d ciclo, %d consumidores, %d pedidos y %d entregas',
                 $total_productores,
                 $total_productos,
                 $total_ciclos,
                 $total_usuarios,
-                $total_pedidos
+                $total_pedidos,
+                $total_entregas
             ),
         ];
     }
@@ -1096,8 +1245,26 @@ class Flavor_Demo_Data_Manager {
             }
         }
 
-        // Eliminar pedidos de la tabla
+        // Eliminar consolidados primero (dependen de productos)
         global $wpdb;
+        if (!empty($ids['consolidados'])) {
+            $tabla_consolidado = $wpdb->prefix . 'flavor_gc_consolidado';
+            foreach ($ids['consolidados'] as $consolidado_id) {
+                $wpdb->delete($tabla_consolidado, ['id' => $consolidado_id], ['%d']);
+                $eliminados++;
+            }
+        }
+
+        // Eliminar entregas
+        if (!empty($ids['entregas'])) {
+            $tabla_entregas = $wpdb->prefix . 'flavor_gc_entregas';
+            foreach ($ids['entregas'] as $entrega_id) {
+                $wpdb->delete($tabla_entregas, ['id' => $entrega_id], ['%d']);
+                $eliminados++;
+            }
+        }
+
+        // Eliminar pedidos de la tabla
         if (!empty($ids['pedidos'])) {
             $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
             foreach ($ids['pedidos'] as $pedido_id) {

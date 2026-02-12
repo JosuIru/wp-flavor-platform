@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -1874,5 +1875,50 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['ayuda_vecinal']);
             update_option('flavor_ayuda_vecinal_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+                'slug' => 'ayuda-vecinal',
+                'content' => '<h1>' . __('Ayuda Vecinal', 'flavor-chat-ia') . '</h1>
+<p>' . __('Solicita o ofrece ayuda a tus vecinos', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="ayuda_vecinal" action="listar_solicitudes" columnas="2" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Solicitar Ayuda', 'flavor-chat-ia'),
+                'slug' => 'solicitar',
+                'content' => '<h1>' . __('Solicitar Ayuda', 'flavor-chat-ia') . '</h1>
+<p>' . __('Describe qué necesitas', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="ayuda_vecinal" action="crear_solicitud"]',
+                'parent' => 'ayuda-vecinal',
+            ],
+            [
+                'title' => __('Ofrecer Ayuda', 'flavor-chat-ia'),
+                'slug' => 'ofrecer',
+                'content' => '<h1>' . __('Ofrecer Ayuda', 'flavor-chat-ia') . '</h1>
+<p>' . __('Indica en qué puedes ayudar', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="ayuda_vecinal" action="ofrecer_ayuda"]',
+                'parent' => 'ayuda-vecinal',
+            ],
+            [
+                'title' => __('Mis Solicitudes', 'flavor-chat-ia'),
+                'slug' => 'mis-solicitudes',
+                'content' => '<h1>' . __('Mis Solicitudes', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_dashboard module="ayuda_vecinal"]',
+                'parent' => 'ayuda-vecinal',
+            ],
+        ];
     }
 }

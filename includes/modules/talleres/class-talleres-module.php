@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -3139,6 +3140,80 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['talleres']);
             update_option('flavor_talleres_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        if (!class_exists('Flavor_Page_Creator_V3')) {
+            return [];
+        }
+
+        return [
+            // Página principal de talleres
+            [
+                'title' => __('Talleres', 'flavor-chat-ia'),
+                'slug' => 'talleres',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Talleres de la Comunidad', 'flavor-chat-ia'),
+                    'subtitle' => __('Aprende nuevas habilidades y comparte tus conocimientos', 'flavor-chat-ia'),
+                    'background' => 'gradient',
+                    'module' => 'talleres',
+                    'current' => 'listado',
+                    'content_after' => '[flavor_module_listing module="talleres" action="talleres_disponibles" columnas="3" limite="12"]',
+                ]),
+                'parent' => 0,
+                'template' => 'page-full-width.php',
+            ],
+
+            // Página para proponer taller
+            [
+                'title' => __('Proponer Taller', 'flavor-chat-ia'),
+                'slug' => 'crear',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Proponer un Taller', 'flavor-chat-ia'),
+                    'subtitle' => __('Comparte tu conocimiento con la comunidad', 'flavor-chat-ia'),
+                    'module' => 'talleres',
+                    'current' => 'crear',
+                    'content_after' => '[flavor_module_form module="talleres" action="crear_taller"]',
+                ]),
+                'parent' => 'talleres',
+                'template' => 'page-full-width.php',
+            ],
+
+            // Página de inscripción
+            [
+                'title' => __('Inscribirse en Taller', 'flavor-chat-ia'),
+                'slug' => 'inscribirse',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Inscribirse en el Taller', 'flavor-chat-ia'),
+                    'subtitle' => __('Reserva tu plaza en el taller', 'flavor-chat-ia'),
+                    'module' => 'talleres',
+                    'current' => 'inscribirse',
+                    'content_after' => '[flavor_module_form module="talleres" action="inscribirse"]',
+                ]),
+                'parent' => 'talleres',
+                'template' => 'page-full-width.php',
+            ],
+
+            // Página de mis talleres
+            [
+                'title' => __('Mis Talleres', 'flavor-chat-ia'),
+                'slug' => 'mis-talleres',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mis Talleres', 'flavor-chat-ia'),
+                    'subtitle' => __('Talleres en los que estás inscrito', 'flavor-chat-ia'),
+                    'module' => 'talleres',
+                    'current' => 'mis_talleres',
+                    'content_after' => '[flavor_module_listing module="talleres" action="mis_talleres" user_specific="yes"]',
+                ]),
+                'parent' => 'talleres',
+                'template' => 'page-full-width.php',
+            ],
+        ];
     }
 
 }

@@ -60,6 +60,9 @@ class Flavor_App_Profile_Admin {
         add_action('admin_post_flavor_activar_plantilla', [$this, 'procesar_activacion_plantilla']);
         add_action('wp_ajax_flavor_template_preview', [$this, 'ajax_obtener_preview']);
         add_action('wp_ajax_flavor_template_install_step', [$this, 'ajax_ejecutar_paso_instalacion']);
+
+        // AJAX para toggle de módulos sin recargar página
+        add_action('wp_ajax_flavor_toggle_modulo', [$this, 'ajax_toggle_modulo']);
     }
 
 
@@ -766,6 +769,123 @@ class Flavor_App_Profile_Admin {
             admin_url('admin.php')
         ));
         exit;
+    }
+
+    /**
+     * AJAX handler para toggle de módulos (sin recargar página)
+     */
+    public function ajax_toggle_modulo() {
+        // Verificar nonce
+        if (!check_ajax_referer('toggle_modulo', '_ajax_nonce', false)) {
+            wp_send_json_error([
+                'message' => __('Nonce de seguridad inválido.', 'flavor-chat-ia')
+            ]);
+            return;
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message' => __('No tienes permisos para realizar esta acción.', 'flavor-chat-ia')
+            ]);
+            return;
+        }
+
+        $modulo_id = sanitize_text_field($_POST['modulo_id'] ?? '');
+        $activar = isset($_POST['activar']) && $_POST['activar'] === '1';
+
+        if (empty($modulo_id)) {
+            wp_send_json_error([
+                'message' => __('ID de módulo no válido.', 'flavor-chat-ia')
+            ]);
+            return;
+        }
+
+        // Log para debug
+        error_log(sprintf('[Flavor AJAX] Toggle módulo: %s, activar: %s', $modulo_id, $activar ? 'SÍ' : 'NO'));
+
+        try {
+            // Verificar si es un módulo requerido ANTES de intentar desactivarlo
+            if (!$activar) {
+                $modulos_requeridos = $this->gestor_perfiles->obtener_modulos_requeridos();
+                error_log('[Flavor AJAX] Módulos requeridos del perfil: ' . implode(', ', $modulos_requeridos));
+                error_log('[Flavor AJAX] Intentando desactivar: ' . $modulo_id);
+                error_log('[Flavor AJAX] ¿Es requerido?: ' . (in_array($modulo_id, $modulos_requeridos) ? 'SÍ' : 'NO'));
+
+                if (in_array($modulo_id, $modulos_requeridos)) {
+                    wp_send_json_error([
+                        'message' => sprintf(
+                            __('No se puede desactivar "%s" porque es un módulo requerido por el perfil actual.', 'flavor-chat-ia'),
+                            $modulo_id
+                        ),
+                        'modulo_requerido' => true
+                    ]);
+                    return;
+                }
+            }
+
+            $resultado = false;
+
+            if ($activar) {
+                $resultado = $this->gestor_perfiles->activar_modulo_opcional($modulo_id);
+            } else {
+                $resultado = $this->gestor_perfiles->desactivar_modulo_opcional($modulo_id);
+            }
+
+            // Log del resultado
+            error_log(sprintf('[Flavor AJAX] Resultado operación: %s', $resultado ? 'OK' : 'FAIL'));
+
+            // Si la operación falló, enviar error
+            if ($resultado === false) {
+                wp_send_json_error([
+                    'message' => $activar
+                        ? __('No se pudo activar el módulo. Verifica que exista y cumpla los requisitos.', 'flavor-chat-ia')
+                        : __('No se pudo desactivar el módulo. Puede ser un módulo requerido.', 'flavor-chat-ia')
+                ]);
+                return;
+            }
+
+            // Forzar limpieza TOTAL de caché
+            wp_cache_flush();
+
+            // Leer DIRECTAMENTE de la base de datos para evitar cualquier caché
+            global $wpdb;
+            $configuracion_raw = $wpdb->get_var("SELECT option_value FROM {$wpdb->options} WHERE option_name = 'flavor_chat_ia_settings'");
+            $configuracion = maybe_unserialize($configuracion_raw);
+            $modulos_activos = $configuracion['active_modules'] ?? [];
+
+            // Log de módulos activos
+            error_log('[Flavor AJAX] Módulos activos después del cambio (DIRECTO DE BD): ' . implode(', ', $modulos_activos));
+            error_log('[Flavor AJAX] ¿Módulo está en el array?: ' . (in_array($modulo_id, $modulos_activos) ? 'SÍ' : 'NO'));
+
+            // Verificar que el cambio se aplicó correctamente
+            $modulo_esta_activo = in_array($modulo_id, $modulos_activos);
+            if ($activar && !$modulo_esta_activo) {
+                wp_send_json_error([
+                    'message' => __('El módulo no se activó correctamente. Verifica los logs del servidor.', 'flavor-chat-ia')
+                ]);
+                return;
+            }
+            if (!$activar && $modulo_esta_activo) {
+                wp_send_json_error([
+                    'message' => __('El módulo no se desactivó correctamente. Puede ser un módulo requerido.', 'flavor-chat-ia')
+                ]);
+                return;
+            }
+
+            wp_send_json_success([
+                'message' => $activar
+                    ? __('Módulo activado correctamente.', 'flavor-chat-ia')
+                    : __('Módulo desactivado correctamente.', 'flavor-chat-ia'),
+                'modulo_id' => $modulo_id,
+                'activado' => $activar,
+                'modulos_activos' => array_values($modulos_activos)
+            ]);
+        } catch (Exception $e) {
+            error_log('[Flavor AJAX] Error en toggle: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     /**

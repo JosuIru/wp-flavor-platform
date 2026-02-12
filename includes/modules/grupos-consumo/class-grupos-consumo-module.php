@@ -18,6 +18,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -34,6 +35,184 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
         // Cargar API REST para móviles
         $this->cargar_api_rest();
+
+        // Integrar sistema de notificaciones
+        $this->init_notifications();
+    }
+
+    /**
+     * Inicializar sistema de notificaciones
+     */
+    private function init_notifications() {
+        // Hooks para notificaciones de pedidos
+        add_action('gc_order_created', [$this, 'notify_order_created'], 10, 2);
+        add_action('gc_order_confirmed', [$this, 'notify_order_confirmed'], 10, 2);
+        add_action('gc_order_ready', [$this, 'notify_order_ready'], 10, 2);
+        add_action('gc_order_reminder', [$this, 'notify_pickup_reminder'], 10, 2);
+        add_action('gc_new_product', [$this, 'notify_new_product'], 10, 2);
+    }
+
+    /**
+     * Notificación: Pedido creado
+     */
+    public function notify_order_created($order_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Pedido registrado', 'flavor-chat-ia'),
+            sprintf(__('Tu pedido #%d ha sido registrado correctamente.', 'flavor-chat-ia'), $order_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'success',
+                'link' => home_url("/grupos-consumo/mis-pedidos?order={$order_id}"),
+                'metadata' => [
+                    'order_id' => $order_id,
+                    'action' => 'order_created'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Pedido confirmado
+     */
+    public function notify_order_confirmed($order_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Pedido confirmado', 'flavor-chat-ia'),
+            sprintf(__('Tu pedido #%d ha sido confirmado por el coordinador.', 'flavor-chat-ia'), $order_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'success',
+                'link' => home_url("/grupos-consumo/mis-pedidos?order={$order_id}"),
+                'metadata' => [
+                    'order_id' => $order_id,
+                    'action' => 'order_confirmed'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Pedido listo para recoger
+     */
+    public function notify_order_ready($order_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Pedido listo para recoger', 'flavor-chat-ia'),
+            sprintf(__('Tu pedido #%d ya está listo. Pasa a recogerlo cuando puedas.', 'flavor-chat-ia'), $order_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'info',
+                'link' => home_url("/grupos-consumo/mis-pedidos?order={$order_id}"),
+                'metadata' => [
+                    'order_id' => $order_id,
+                    'action' => 'order_ready'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Recordatorio de recogida (24h antes)
+     */
+    public function notify_pickup_reminder($order_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Recordatorio de recogida', 'flavor-chat-ia'),
+            sprintf(__('Recuerda recoger tu pedido #%d mañana. No olvides traer tus bolsas reutilizables.', 'flavor-chat-ia'), $order_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'warning',
+                'link' => home_url("/grupos-consumo/mis-pedidos?order={$order_id}"),
+                'metadata' => [
+                    'order_id' => $order_id,
+                    'action' => 'pickup_reminder'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Nuevo producto disponible (envío masivo)
+     */
+    public function notify_new_product($product_id, $user_ids = []) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        if (empty($user_ids)) {
+            // Obtener todos los miembros activos del grupo
+            $user_ids = $this->get_active_members();
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+        $product = get_post($product_id);
+
+        if (!$product) {
+            return;
+        }
+
+        $messages = [];
+        foreach ($user_ids as $user_id) {
+            $messages[] = [
+                'user_id' => $user_id,
+                'title' => __('Nuevo producto disponible', 'flavor-chat-ia'),
+                'message' => sprintf(
+                    __('Ya puedes pedir: %s. ¡No te quedes sin tu parte!', 'flavor-chat-ia'),
+                    $product->post_title
+                ),
+                'options' => [
+                    'module_id' => $this->id,
+                    'type' => 'info',
+                    'link' => home_url("/grupos-consumo/productos?product={$product_id}"),
+                    'metadata' => [
+                        'product_id' => $product_id,
+                        'action' => 'new_product'
+                    ]
+                ]
+            ];
+        }
+
+        // Envío masivo
+        $nc->send_bulk($messages);
+    }
+
+    /**
+     * Obtener miembros activos del grupo
+     */
+    private function get_active_members() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'gc_consumidores';
+
+        $user_ids = $wpdb->get_col(
+            "SELECT user_id FROM {$table_name} WHERE estado = 'activo'"
+        );
+
+        return array_map('intval', $user_ids);
     }
 
     /**
@@ -4023,5 +4202,89 @@ KNOWLEDGE;
         </script>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        if (!class_exists('Flavor_Page_Creator_V3')) {
+            return [];
+        }
+
+        return [
+            // Página principal
+            [
+                'title' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                'slug' => 'grupos-consumo',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Grupos de Consumo Responsable', 'flavor-chat-ia'),
+                    'subtitle' => __('Productos locales y ecológicos de temporada', 'flavor-chat-ia'),
+                    'background' => 'gradient',
+                    'module' => 'grupos_consumo',
+                    'current' => 'listado',
+                    'content_after' => '[flavor_module_listing module="grupos_consumo" action="grupos_activos" columnas="3"]',
+                ]),
+                'parent' => 0,
+            ],
+
+            // Catálogo de productos
+            [
+                'title' => __('Catálogo', 'flavor-chat-ia'),
+                'slug' => 'catalogo',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Catálogo de Productos', 'flavor-chat-ia'),
+                    'subtitle' => __('Explora nuestra selección de productos ecológicos', 'flavor-chat-ia'),
+                    'module' => 'grupos_consumo',
+                    'current' => 'catalogo',
+                    'content_after' => '[gc_catalogo]',
+                ]),
+                'parent' => 'grupos-consumo',
+            ],
+
+            // Mis pedidos
+            [
+                'title' => __('Mis Pedidos', 'flavor-chat-ia'),
+                'slug' => 'mis-pedidos',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mis Pedidos', 'flavor-chat-ia'),
+                    'subtitle' => __('Gestiona tus pedidos y suscripciones', 'flavor-chat-ia'),
+                    'module' => 'grupos_consumo',
+                    'current' => 'pedidos',
+                    'content_after' => '[flavor_module_listing module="grupos_consumo" action="mis_pedidos" user_specific="yes"]',
+                ]),
+                'parent' => 'grupos-consumo',
+            ],
+
+            // Calendario de pedidos
+            [
+                'title' => __('Calendario', 'flavor-chat-ia'),
+                'slug' => 'calendario',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Calendario de Pedidos', 'flavor-chat-ia'),
+                    'subtitle' => __('Próximos cierres de pedidos y entregas', 'flavor-chat-ia'),
+                    'module' => 'grupos_consumo',
+                    'current' => 'calendario',
+                    'content_after' => '[gc_calendario]',
+                ]),
+                'parent' => 'grupos-consumo',
+            ],
+
+            // Productores
+            [
+                'title' => __('Productores', 'flavor-chat-ia'),
+                'slug' => 'productores',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Nuestros Productores', 'flavor-chat-ia'),
+                    'subtitle' => __('Conoce a los productores locales que nos abastecen', 'flavor-chat-ia'),
+                    'module' => 'grupos_consumo',
+                    'current' => 'productores',
+                    'content_after' => '[flavor_module_listing module="grupos_consumo" action="productores" columnas="3"]',
+                ]),
+                'parent' => 'grupos-consumo',
+            ],
+        ];
     }
 }

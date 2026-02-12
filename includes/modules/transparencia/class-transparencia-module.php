@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Version del modulo
@@ -2724,5 +2725,42 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['transparencia']);
             update_option('flavor_transparencia_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Portal de Transparencia', 'flavor-chat-ia'),
+                'slug' => 'transparencia',
+                'content' => '<h1>' . __('Portal de Transparencia', 'flavor-chat-ia') . '</h1>
+<p>' . __('Accede a la información pública de nuestra organización. Consulta presupuestos, contratos, actas y toda la documentación disponible para los ciudadanos.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="transparencia" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Solicitar Información', 'flavor-chat-ia'),
+                'slug' => 'solicitar',
+                'content' => '<h1>' . __('Solicitar Información', 'flavor-chat-ia') . '</h1>
+<p>' . __('Ejerce tu derecho de acceso a la información pública. Realiza una solicitud formal y recibe respuesta en el plazo establecido por la ley.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="transparencia" action="crear"]',
+                'parent' => 'transparencia',
+            ],
+            [
+                'title' => __('Mis Solicitudes', 'flavor-chat-ia'),
+                'slug' => 'mis-solicitudes',
+                'content' => '<h1>' . __('Mis Solicitudes', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta el estado de tus solicitudes de acceso a información pública y descarga las respuestas recibidas.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="transparencia" action="mis_items"]',
+                'parent' => 'transparencia',
+            ],
+        ];
     }
 }

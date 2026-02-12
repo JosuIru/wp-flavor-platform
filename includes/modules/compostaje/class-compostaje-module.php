@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Version del modulo
@@ -2469,5 +2470,42 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['compostaje']);
             update_option('flavor_compostaje_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Compostaje Comunitario', 'flavor-chat-ia'),
+                'slug' => 'compostaje',
+                'content' => '<h1>' . __('Compostaje Comunitario', 'flavor-chat-ia') . '</h1>
+<p>' . __('Transforma tus residuos orgánicos en abono de calidad. Únete al programa de compostaje comunitario y contribuye a un barrio más sostenible.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="compostaje" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Registrar Aporte', 'flavor-chat-ia'),
+                'slug' => 'compostaje/registrar',
+                'content' => '<h1>' . __('Registrar Aporte de Compost', 'flavor-chat-ia') . '</h1>
+<p>' . __('Registra tu aporte de residuos orgánicos a la compostera comunitaria. Cada aporte suma puntos para tu ranking.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="compostaje" action="registrar"]',
+                'parent' => 'compostaje',
+            ],
+            [
+                'title' => __('Mis Aportes', 'flavor-chat-ia'),
+                'slug' => 'compostaje/mis-aportes',
+                'content' => '<h1>' . __('Mis Aportes de Compostaje', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta tu historial de aportes, tus estadísticas y tu posición en el ranking de compostadores.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="compostaje" action="mis_aportes" columnas="2" limite="20"]',
+                'parent' => 'compostaje',
+            ],
+        ];
     }
 }

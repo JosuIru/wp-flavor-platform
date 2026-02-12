@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
@@ -2895,6 +2896,54 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['facturas']);
             update_option('flavor_facturas_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Facturas', 'flavor-chat-ia'),
+                'slug' => 'facturas',
+                'content' => '<h1>' . __('Gestión de Facturas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Administra tus facturas, crea nuevas, consulta el historial y gestiona los pagos de forma sencilla.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="facturas" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Nueva Factura', 'flavor-chat-ia'),
+                'slug' => 'nueva',
+                'content' => '<h1>' . __('Crear Nueva Factura', 'flavor-chat-ia') . '</h1>
+<p>' . __('Completa el formulario para generar una nueva factura.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="facturas" action="crear_factura"]',
+                'parent' => 'facturas',
+            ],
+            [
+                'title' => __('Mis Facturas', 'flavor-chat-ia'),
+                'slug' => 'mis-facturas',
+                'content' => '<h1>' . __('Mis Facturas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta todas tus facturas emitidas y recibidas.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="facturas" action="mis_facturas" columnas="2" limite="20"]',
+                'parent' => 'facturas',
+            ],
+            [
+                'title' => __('Buscar Facturas', 'flavor-chat-ia'),
+                'slug' => 'buscar',
+                'content' => '<h1>' . __('Buscar Facturas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Encuentra facturas por número, cliente, fecha o estado.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_search module="facturas"]
+
+[flavor_module_listing module="facturas" action="buscar" columnas="3" limite="12"]',
+                'parent' => 'facturas',
+            ],
+        ];
     }
 
 }

@@ -56,6 +56,58 @@ class Flavor_Activity_Log {
         global $wpdb;
         if (!Flavor_Chat_Helpers::tabla_existe($this->nombre_tabla)) {
             $this->create_table();
+        } else {
+            // Verificar y actualizar estructura si es necesario
+            $this->verify_and_update_structure();
+        }
+    }
+
+    /**
+     * Verificar y actualizar la estructura de la tabla
+     */
+    private function verify_and_update_structure() {
+        global $wpdb;
+
+        // Verificar si existe la columna 'fecha'
+        $column_exists = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = %s
+                AND TABLE_NAME = %s
+                AND COLUMN_NAME = 'fecha'",
+                DB_NAME,
+                $this->nombre_tabla
+            )
+        );
+
+        // Si no existe, agregarla
+        if (empty($column_exists)) {
+            $wpdb->query(
+                "ALTER TABLE {$this->nombre_tabla}
+                ADD COLUMN fecha datetime DEFAULT CURRENT_TIMESTAMP AFTER ip_address"
+            );
+
+            // Agregar índice
+            $wpdb->query(
+                "ALTER TABLE {$this->nombre_tabla}
+                ADD KEY idx_fecha (fecha)"
+            );
+
+            // Si existe created_at, copiar datos
+            $has_created_at = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = %s
+                    AND TABLE_NAME = %s
+                    AND COLUMN_NAME = 'created_at'",
+                    DB_NAME,
+                    $this->nombre_tabla
+                )
+            );
+
+            if (!empty($has_created_at)) {
+                $wpdb->query("UPDATE {$this->nombre_tabla} SET fecha = created_at WHERE fecha IS NULL");
+            }
         }
     }
 

@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2797,5 +2798,42 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['multimedia']);
             update_option('flavor_multimedia_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Galería Multimedia', 'flavor-chat-ia'),
+                'slug' => 'multimedia',
+                'content' => '<h1>' . __('Galería Multimedia', 'flavor-chat-ia') . '</h1>
+<p>' . __('Explora la galería multimedia de nuestra comunidad. Descubre fotos, videos y contenido compartido por los vecinos.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="multimedia" action="listar" columnas="4" limite="16"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Subir Contenido', 'flavor-chat-ia'),
+                'slug' => 'subir',
+                'content' => '<h1>' . __('Subir Contenido', 'flavor-chat-ia') . '</h1>
+<p>' . __('Comparte tus fotos y videos con la comunidad. Sube contenido multimedia y contribuye a nuestra galería colectiva.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="multimedia" action="crear"]',
+                'parent' => 'multimedia',
+            ],
+            [
+                'title' => __('Mis Archivos', 'flavor-chat-ia'),
+                'slug' => 'mis-archivos',
+                'content' => '<h1>' . __('Mis Archivos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tu contenido multimedia. Revisa, edita y organiza las fotos y videos que has compartido.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="multimedia" action="mis_items"]',
+                'parent' => 'multimedia',
+            ],
+        ];
     }
 }

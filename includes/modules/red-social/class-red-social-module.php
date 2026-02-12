@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
@@ -3221,5 +3222,51 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['red_social']);
             update_option('flavor_red_social_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Red Social', 'flavor-chat-ia'),
+                'slug' => 'red-social',
+                'content' => '<h1>' . __('Red Social', 'flavor-chat-ia') . '</h1>
+<p>' . __('Conecta con tu comunidad, comparte publicaciones y sigue a otros usuarios.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="red_social" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Mi Perfil', 'flavor-chat-ia'),
+                'slug' => 'mi-perfil',
+                'content' => '<h1>' . __('Mi Perfil', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tu perfil, tus publicaciones y tu información personal.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="red_social" action="mi_perfil"]',
+                'parent' => 'red-social',
+            ],
+            [
+                'title' => __('Amigos', 'flavor-chat-ia'),
+                'slug' => 'amigos',
+                'content' => '<h1>' . __('Amigos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Descubre personas, gestiona tus seguidores y a quiénes sigues.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="red_social" action="amigos" columnas="4" limite="20"]',
+                'parent' => 'red-social',
+            ],
+            [
+                'title' => __('Mensajes', 'flavor-chat-ia'),
+                'slug' => 'mensajes',
+                'content' => '<h1>' . __('Mensajes', 'flavor-chat-ia') . '</h1>
+<p>' . __('Envía y recibe mensajes privados con otros usuarios de la comunidad.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="red_social" action="mensajes"]',
+                'parent' => 'red-social',
+            ],
+        ];
     }
 }

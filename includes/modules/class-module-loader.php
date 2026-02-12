@@ -36,6 +36,21 @@ class Flavor_Chat_Module_Loader {
     private $loaded_modules = [];
 
     /**
+     * Caché de metadatos de módulos (para evitar cargarlos)
+     */
+    private $modules_metadata_cache = null;
+
+    /**
+     * Clave de caché para metadatos
+     */
+    private const METADATA_CACHE_KEY = 'flavor_modules_metadata_cache';
+
+    /**
+     * Versión del caché (incrementar al cambiar estructura)
+     */
+    private const METADATA_CACHE_VERSION = 1;
+
+    /**
      * Obtiene la instancia singleton
      *
      * @return Flavor_Chat_Module_Loader
@@ -52,6 +67,116 @@ class Flavor_Chat_Module_Loader {
      */
     private function __construct() {
         $this->discover_modules();
+        $this->load_metadata_cache();
+    }
+
+    /**
+     * Carga la caché de metadatos de módulos
+     */
+    private function load_metadata_cache() {
+        $cached = get_transient(self::METADATA_CACHE_KEY);
+
+        if ($cached && isset($cached['version']) && $cached['version'] === self::METADATA_CACHE_VERSION) {
+            $this->modules_metadata_cache = $cached['data'];
+        }
+    }
+
+    /**
+     * Guarda la caché de metadatos
+     *
+     * @param array $metadata
+     */
+    private function save_metadata_cache($metadata) {
+        $this->modules_metadata_cache = $metadata;
+
+        set_transient(self::METADATA_CACHE_KEY, [
+            'version' => self::METADATA_CACHE_VERSION,
+            'data' => $metadata,
+        ], DAY_IN_SECONDS);
+    }
+
+    /**
+     * Invalida la caché de metadatos
+     */
+    public function invalidate_metadata_cache() {
+        delete_transient(self::METADATA_CACHE_KEY);
+        $this->modules_metadata_cache = null;
+    }
+
+    /**
+     * Obtiene metadatos de un módulo sin cargarlo completamente
+     *
+     * @param string $module_id
+     * @return array|null
+     */
+    public function get_module_metadata($module_id) {
+        // Primero verificar caché
+        if ($this->modules_metadata_cache && isset($this->modules_metadata_cache[$module_id])) {
+            return $this->modules_metadata_cache[$module_id];
+        }
+
+        // Si el módulo está cargado, obtener de la instancia
+        if (isset($this->loaded_modules[$module_id])) {
+            $module = $this->loaded_modules[$module_id];
+            return [
+                'id' => $module->get_id(),
+                'name' => $module->get_name(),
+                'description' => $module->get_description(),
+                'visibility' => method_exists($module, 'get_default_visibility')
+                    ? $module->get_default_visibility()
+                    : 'public',
+                'capability' => method_exists($module, 'get_default_capability')
+                    ? $module->get_default_capability()
+                    : 'read',
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Regenera la caché de metadatos de todos los módulos
+     * Solo llamar cuando sea necesario (instalación, actualización)
+     *
+     * @return array
+     */
+    public function rebuild_metadata_cache() {
+        $metadata = [];
+
+        foreach ($this->registered_modules as $module_id => $module_data) {
+            if (!file_exists($module_data['file'])) {
+                continue;
+            }
+
+            // Solo cargar si no está ya en memoria
+            if (!isset($this->loaded_modules[$module_id])) {
+                require_once $module_data['file'];
+            }
+
+            if (!class_exists($module_data['class'])) {
+                continue;
+            }
+
+            $module = isset($this->loaded_modules[$module_id])
+                ? $this->loaded_modules[$module_id]
+                : new $module_data['class']();
+
+            $metadata[$module_id] = [
+                'id' => $module->get_id(),
+                'name' => $module->get_name(),
+                'description' => $module->get_description(),
+                'visibility' => method_exists($module, 'get_default_visibility')
+                    ? $module->get_default_visibility()
+                    : 'public',
+                'capability' => method_exists($module, 'get_default_capability')
+                    ? $module->get_default_capability()
+                    : 'read',
+            ];
+        }
+
+        $this->save_metadata_cache($metadata);
+
+        return $metadata;
     }
 
     /**
@@ -380,7 +505,7 @@ class Flavor_Chat_Module_Loader {
         }
 
         $allow_lazy_load = apply_filters('flavor_chat_ia_lazy_load_modules', true, $module_id);
-        if ($allow_lazy_load || $this->is_module_active($module_id)) {
+        if ($allow_lazy_load || self::is_module_active($module_id)) {
             $this->load_module($module_id);
         }
 
@@ -534,6 +659,7 @@ class Flavor_Chat_Module_Loader {
 
     /**
      * Obtiene la visibilidad de un módulo específico
+     * Optimizado con caché para evitar cargar módulos
      *
      * @param string $module_id ID del módulo
      * @return string|null Visibilidad del módulo o null si no existe
@@ -551,7 +677,13 @@ class Flavor_Chat_Module_Loader {
             return $this->loaded_modules[$module_id]->get_visibility();
         }
 
-        // Si no está cargado, intentar cargar temporalmente para obtener info
+        // Usar caché de metadatos si está disponible
+        $metadata = $this->get_module_metadata($module_id);
+        if ($metadata && isset($metadata['visibility'])) {
+            return $metadata['visibility'];
+        }
+
+        // Fallback: cargar módulo temporalmente (evitar si es posible)
         if (isset($this->registered_modules[$module_id])) {
             $module_data = $this->registered_modules[$module_id];
 
@@ -570,6 +702,7 @@ class Flavor_Chat_Module_Loader {
 
     /**
      * Obtiene la capacidad requerida de un módulo específico
+     * Optimizado con caché para evitar cargar módulos
      *
      * @param string $module_id ID del módulo
      * @return string|null Capacidad requerida o null si no existe
@@ -587,7 +720,13 @@ class Flavor_Chat_Module_Loader {
             return $this->loaded_modules[$module_id]->get_required_capability();
         }
 
-        // Si no está cargado, intentar cargar temporalmente para obtener info
+        // Usar caché de metadatos si está disponible
+        $metadata = $this->get_module_metadata($module_id);
+        if ($metadata && isset($metadata['capability'])) {
+            return $metadata['capability'];
+        }
+
+        // Fallback: cargar módulo temporalmente (evitar si es posible)
         if (isset($this->registered_modules[$module_id])) {
             $module_data = $this->registered_modules[$module_id];
 
@@ -606,6 +745,7 @@ class Flavor_Chat_Module_Loader {
 
     /**
      * Obtiene información de visibilidad de todos los módulos registrados
+     * Usa caché para evitar cargar todos los módulos en cada petición
      *
      * @return array Array con información de visibilidad por módulo
      */
@@ -614,7 +754,31 @@ class Flavor_Chat_Module_Loader {
         $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
         $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
 
+        // Intentar usar caché de metadatos primero
+        if ($this->modules_metadata_cache === null) {
+            // Si no hay caché, reconstruir (solo una vez)
+            $this->rebuild_metadata_cache();
+        }
+
         foreach ($this->registered_modules as $module_id => $module_data) {
+            // Usar caché si está disponible
+            $cached_meta = $this->modules_metadata_cache[$module_id] ?? null;
+
+            if ($cached_meta) {
+                $informacion_visibilidad[$module_id] = [
+                    'id' => $module_id,
+                    'name' => $cached_meta['name'],
+                    'default_visibility' => $cached_meta['visibility'],
+                    'current_visibility' => $visibilidades_configuradas[$module_id]
+                        ?? $cached_meta['visibility'],
+                    'default_capability' => $cached_meta['capability'],
+                    'current_capability' => $capacidades_configuradas[$module_id]
+                        ?? $cached_meta['capability'],
+                ];
+                continue;
+            }
+
+            // Fallback: cargar módulo si no está en caché (no debería ocurrir)
             if (file_exists($module_data['file'])) {
                 require_once $module_data['file'];
 
@@ -678,5 +842,59 @@ class Flavor_Chat_Module_Loader {
         $capacidad_requerida = $this->get_module_required_capability($module_id);
 
         return user_can($user_id, $capacidad_requerida);
+    }
+
+    /**
+     * Verifica si un módulo existe (está registrado)
+     *
+     * @param string $module_id
+     * @return bool
+     */
+    public function module_exists($module_id) {
+        $registered = $this->get_registered_modules();
+        return isset($registered[$module_id]);
+    }
+
+    /**
+     * Verifica si un módulo está cargado en memoria
+     *
+     * @param string $module_id
+     * @return bool
+     */
+    public function is_module_loaded($module_id) {
+        $loaded = $this->get_loaded_modules();
+        return isset($loaded[$module_id]);
+    }
+
+    /**
+     * Obtiene la instancia de un módulo (cargado o registrado)
+     *
+     * @param string $module_id
+     * @return Flavor_Chat_Module_Interface|null
+     */
+    public function get_module_instance($module_id) {
+        // Primero intentar obtener de módulos cargados
+        $loaded = $this->get_loaded_modules();
+        if (isset($loaded[$module_id])) {
+            return $loaded[$module_id];
+        }
+
+        // Si no está cargado, intentar instanciar desde registrados
+        $registered = $this->get_registered_modules();
+        if (!isset($registered[$module_id])) {
+            return null;
+        }
+
+        $class_name = $registered[$module_id]['class'];
+        if (!class_exists($class_name)) {
+            return null;
+        }
+
+        try {
+            return new $class_name();
+        } catch (Exception $e) {
+            error_log("[Flavor Loader] Error al instanciar módulo '{$module_id}': " . $e->getMessage());
+            return null;
+        }
     }
 }

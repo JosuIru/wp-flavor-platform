@@ -115,75 +115,462 @@ class Flavor_Portal_Shortcodes {
     }
 
     /**
-     * Renderiza el dashboard personalizado
+     * Renderiza el dashboard personalizado mejorado
      */
     public function render_mi_portal($atts) {
         // Requerir login
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">
-                <p>' . __('Debes iniciar sesión para acceder a tu portal.', 'flavor-chat-ia') . '</p>
-                <a href="' . wp_login_url(get_permalink()) . '" class="flavor-button flavor-button--primary">' . __('Iniciar Sesión', 'flavor-chat-ia') . '</a>
-            </div>';
+            return $this->render_login_gate();
         }
 
         $atts = shortcode_atts([
             'mostrar_actividad' => 'yes',
             'mostrar_notificaciones' => 'yes',
-            'columnas' => '3',
+            'mostrar_breadcrumbs' => 'yes',
+            'columnas' => '4',
         ], $atts);
 
         $current_user = wp_get_current_user();
 
         ob_start();
         ?>
-        <div class="flavor-mi-portal">
-            <!-- Header del Portal -->
-            <div class="flavor-portal__header">
-                <h1 class="flavor-portal__title">
-                    <?php printf(__('Bienvenido/a, %s', 'flavor-chat-ia'), esc_html($current_user->display_name)); ?>
-                </h1>
-                <p class="flavor-portal__subtitle"><?php _e('Tu centro de control comunitario', 'flavor-chat-ia'); ?></p>
+        <div class="flavor-mi-portal flavor-portal-hub">
+            <?php if ($atts['mostrar_breadcrumbs'] === 'yes' && class_exists('Flavor_Breadcrumbs')) : ?>
+                <?php echo Flavor_Breadcrumbs::render(); ?>
+            <?php endif; ?>
+
+            <!-- Hero Header -->
+            <div class="flavor-portal__hero">
+                <div class="flavor-portal__hero-content">
+                    <div class="flavor-portal__greeting">
+                        <h1 class="flavor-portal__title">
+                            <?php
+                            $hora = (int) current_time('H');
+                            if ($hora < 12) {
+                                printf(__('Buenos días, %s', 'flavor-chat-ia'), esc_html($current_user->display_name));
+                            } elseif ($hora < 20) {
+                                printf(__('Buenas tardes, %s', 'flavor-chat-ia'), esc_html($current_user->display_name));
+                            } else {
+                                printf(__('Buenas noches, %s', 'flavor-chat-ia'), esc_html($current_user->display_name));
+                            }
+                            ?>
+                        </h1>
+                        <p class="flavor-portal__subtitle">
+                            <?php _e('Tu centro de control comunitario', 'flavor-chat-ia'); ?>
+                        </p>
+                    </div>
+
+                    <div class="flavor-portal__header-actions">
+                        <?php echo $this->render_header_actions(); ?>
+                    </div>
+                </div>
             </div>
 
+            <?php if ($atts['mostrar_notificaciones'] === 'yes') : ?>
+                <!-- Notificaciones Destacadas -->
+                <div class="flavor-portal__notifications-bar">
+                    <?php echo $this->render_notifications_bar(); ?>
+                </div>
+            <?php endif; ?>
+
             <!-- Dashboard de Estadísticas -->
-            <div class="flavor-portal__section flavor-portal__section--full-width">
-                <?php echo $this->render_dashboard_stats(['columnas' => '4', 'mostrar_titulo' => 'no']); ?>
+            <div class="flavor-portal__section">
+                <div class="flavor-section-header">
+                    <h2 class="flavor-section-title"><?php _e('Resumen de Actividad', 'flavor-chat-ia'); ?></h2>
+                    <a href="<?php echo home_url('/servicios/'); ?>" class="flavor-link-all">
+                        <?php _e('Ver todos los servicios', 'flavor-chat-ia'); ?> →
+                    </a>
+                </div>
+                <?php echo $this->render_dashboard_stats(['columnas' => $atts['columnas'], 'mostrar_titulo' => 'no']); ?>
             </div>
 
             <div class="flavor-portal__layout">
                 <!-- Columna Principal -->
                 <div class="flavor-portal__main">
-                    <?php if ($atts['mostrar_notificaciones'] === 'yes') : ?>
-                        <!-- Notificaciones -->
+                    <!-- Accesos Rápidos Mejorados -->
+                    <div class="flavor-portal__section">
+                        <h2 class="flavor-portal__section-title">
+                            <span class="flavor-title-icon">⚡</span>
+                            <?php _e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+                        </h2>
+                        <?php echo $this->render_quick_actions_enhanced(); ?>
+                    </div>
+
+                    <?php if ($atts['mostrar_actividad'] === 'yes') : ?>
+                        <!-- Feed de Actividad -->
                         <div class="flavor-portal__section">
-                            <h2 class="flavor-portal__section-title"><?php _e('Notificaciones', 'flavor-chat-ia'); ?></h2>
-                            <?php echo $this->render_notificaciones(); ?>
+                            <h2 class="flavor-portal__section-title">
+                                <span class="flavor-title-icon">📋</span>
+                                <?php _e('Actividad Reciente', 'flavor-chat-ia'); ?>
+                            </h2>
+                            <?php echo $this->render_activity_feed(); ?>
                         </div>
                     <?php endif; ?>
-
-                    <!-- Accesos Rápidos -->
-                    <div class="flavor-portal__section">
-                        <h2 class="flavor-portal__section-title"><?php _e('Accesos Rápidos', 'flavor-chat-ia'); ?></h2>
-                        <?php echo $this->render_accesos_rapidos(); ?>
-                    </div>
                 </div>
 
-                <?php if ($atts['mostrar_actividad'] === 'yes') : ?>
-                    <!-- Sidebar con Actividad -->
-                    <aside class="flavor-portal__sidebar">
-                        <div class="flavor-portal__widget">
-                            <h3 class="flavor-portal__widget-title"><?php _e('Actividad Reciente', 'flavor-chat-ia'); ?></h3>
-                            <?php echo $this->render_actividad_reciente(); ?>
-                        </div>
+                <!-- Sidebar -->
+                <aside class="flavor-portal__sidebar">
+                    <!-- Widget de Perfil -->
+                    <div class="flavor-portal__widget flavor-portal__widget--profile">
+                        <?php echo $this->render_profile_widget($current_user); ?>
+                    </div>
 
-                        <div class="flavor-portal__widget">
-                            <h3 class="flavor-portal__widget-title"><?php _e('Mis Estadísticas Generales', 'flavor-chat-ia'); ?></h3>
-                            <?php echo $this->render_mis_stats(); ?>
-                        </div>
-                    </aside>
-                <?php endif; ?>
+                    <!-- Próximas Acciones -->
+                    <div class="flavor-portal__widget">
+                        <h3 class="flavor-portal__widget-title">
+                            <?php _e('Próximas Acciones', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php echo $this->render_upcoming_actions(); ?>
+                    </div>
+
+                    <!-- Enlaces Útiles -->
+                    <div class="flavor-portal__widget">
+                        <h3 class="flavor-portal__widget-title">
+                            <?php _e('Enlaces Útiles', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php echo $this->render_useful_links(); ?>
+                    </div>
+                </aside>
             </div>
         </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza pantalla de login requerido
+     */
+    private function render_login_gate() {
+        ob_start();
+        ?>
+        <div class="flavor-login-gate">
+            <div class="flavor-login-gate__card">
+                <div class="flavor-login-gate__icon">🔐</div>
+                <h2 class="flavor-login-gate__title">
+                    <?php _e('Acceso a Mi Portal', 'flavor-chat-ia'); ?>
+                </h2>
+                <p class="flavor-login-gate__text">
+                    <?php _e('Inicia sesión para acceder a tu panel de control personalizado y gestionar todos tus servicios comunitarios.', 'flavor-chat-ia'); ?>
+                </p>
+                <div class="flavor-login-gate__actions">
+                    <a href="<?php echo wp_login_url(get_permalink()); ?>" class="flavor-button flavor-button--primary">
+                        <?php _e('Iniciar Sesión', 'flavor-chat-ia'); ?>
+                    </a>
+                    <?php if (get_option('users_can_register')) : ?>
+                        <a href="<?php echo wp_registration_url(); ?>" class="flavor-button flavor-button--secondary">
+                            <?php _e('Crear Cuenta', 'flavor-chat-ia'); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <style>
+        .flavor-login-gate {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            padding: 40px 20px;
+        }
+        .flavor-login-gate__card {
+            max-width: 500px;
+            text-align: center;
+            background: white;
+            padding: 48px 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        .flavor-login-gate__icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+        .flavor-login-gate__title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 16px;
+        }
+        .flavor-login-gate__text {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin: 0 0 32px;
+        }
+        .flavor-login-gate__actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza acciones del header
+     */
+    private function render_header_actions() {
+        ob_start();
+        ?>
+        <div class="flavor-header-actions">
+            <a href="<?php echo home_url('/servicios/'); ?>" class="flavor-header-action">
+                <span class="flavor-header-action__icon">🔍</span>
+                <span class="flavor-header-action__text"><?php _e('Explorar', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo admin_url('profile.php'); ?>" class="flavor-header-action">
+                <span class="flavor-header-action__icon">⚙️</span>
+                <span class="flavor-header-action__text"><?php _e('Ajustes', 'flavor-chat-ia'); ?></span>
+            </a>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza barra de notificaciones
+     */
+    private function render_notifications_bar() {
+        // TODO: Integrar con sistema real de notificaciones
+        $notifications = $this->get_user_notifications();
+
+        if (empty($notifications)) {
+            return '';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-notifications-bar">
+            <?php foreach (array_slice($notifications, 0, 3) as $notification) : ?>
+                <div class="flavor-notification-item flavor-notification-item--<?php echo esc_attr($notification['type']); ?>">
+                    <span class="flavor-notification-item__icon"><?php echo $notification['icon']; ?></span>
+                    <span class="flavor-notification-item__text"><?php echo esc_html($notification['text']); ?></span>
+                    <?php if (!empty($notification['link'])) : ?>
+                        <a href="<?php echo esc_url($notification['link']); ?>" class="flavor-notification-item__action">
+                            <?php _e('Ver', 'flavor-chat-ia'); ?> →
+                        </a>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene notificaciones del usuario
+     */
+    private function get_user_notifications() {
+        // Ejemplo de notificaciones - integrar con sistema real
+        return [
+            [
+                'type' => 'info',
+                'icon' => 'ℹ️',
+                'text' => __('Bienvenido a tu nuevo portal comunitario', 'flavor-chat-ia'),
+                'link' => '',
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza accesos rápidos mejorados
+     */
+    private function render_quick_actions_enhanced() {
+        $accesos = $this->get_quick_actions_smart();
+
+        if (empty($accesos)) {
+            return '<p class="flavor-no-content">' . __('No hay accesos rápidos disponibles.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-quick-actions-grid">
+            <?php foreach ($accesos as $acceso) : ?>
+                <a href="<?php echo esc_url($acceso['url']); ?>" class="flavor-quick-action-card">
+                    <div class="flavor-quick-action-card__icon">
+                        <?php echo $acceso['icon']; ?>
+                    </div>
+                    <div class="flavor-quick-action-card__content">
+                        <h4 class="flavor-quick-action-card__title"><?php echo esc_html($acceso['title']); ?></h4>
+                        <?php if (!empty($acceso['description'])) : ?>
+                            <p class="flavor-quick-action-card__description"><?php echo esc_html($acceso['description']); ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <span class="flavor-quick-action-card__arrow">→</span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene accesos rápidos inteligentes basados en módulos activos
+     */
+    private function get_quick_actions_smart() {
+        $accesos = [];
+        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
+
+        if (!$loader) {
+            return $accesos;
+        }
+
+        $modulos = $loader->get_loaded_modules();
+
+        // Mapeo de acciones rápidas por módulo
+        $quick_actions_map = [
+            'eventos' => [
+                'icon' => '📅',
+                'title' => __('Crear Evento', 'flavor-chat-ia'),
+                'description' => __('Organiza un evento para la comunidad', 'flavor-chat-ia'),
+                'url' => home_url('/eventos/crear/'),
+            ],
+            'talleres' => [
+                'icon' => '🎓',
+                'title' => __('Proponer Taller', 'flavor-chat-ia'),
+                'description' => __('Comparte tus conocimientos', 'flavor-chat-ia'),
+                'url' => home_url('/talleres/crear/'),
+            ],
+            'ayuda_vecinal' => [
+                'icon' => '🤝',
+                'title' => __('Solicitar Ayuda', 'flavor-chat-ia'),
+                'description' => __('Pide ayuda a tus vecinos', 'flavor-chat-ia'),
+                'url' => home_url('/ayuda-vecinal/solicitar/'),
+            ],
+            'banco_tiempo' => [
+                'icon' => '⏰',
+                'title' => __('Ofrecer Servicio', 'flavor-chat-ia'),
+                'description' => __('Ofrece tu tiempo a la comunidad', 'flavor-chat-ia'),
+                'url' => home_url('/banco-tiempo/ofrecer/'),
+            ],
+            'grupos_consumo' => [
+                'icon' => '🥬',
+                'title' => __('Ver Catálogo', 'flavor-chat-ia'),
+                'description' => __('Explora productos locales', 'flavor-chat-ia'),
+                'url' => home_url('/grupos-consumo/productos/'),
+            ],
+            'incidencias' => [
+                'icon' => '🔧',
+                'title' => __('Reportar Incidencia', 'flavor-chat-ia'),
+                'description' => __('Comunica un problema', 'flavor-chat-ia'),
+                'url' => home_url('/incidencias/crear/'),
+            ],
+        ];
+
+        foreach ($modulos as $id => $instance) {
+            if (isset($quick_actions_map[$id])) {
+                // Verificar que la página existe
+                $action = $quick_actions_map[$id];
+                $page_slug = str_replace(home_url('/'), '', $action['url']);
+                $page_slug = trim($page_slug, '/');
+
+                if (get_page_by_path($page_slug)) {
+                    $accesos[] = $action;
+                }
+            }
+        }
+
+        return array_slice($accesos, 0, 6); // Máximo 6 accesos rápidos
+    }
+
+    /**
+     * Renderiza feed de actividad mejorado
+     */
+    private function render_activity_feed() {
+        $activities = $this->get_user_activities();
+
+        if (empty($activities)) {
+            return '<div class="flavor-empty-state">
+                <span class="flavor-empty-state__icon">📝</span>
+                <p>' . __('No hay actividad reciente', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-activity-feed">
+            <?php foreach ($activities as $activity) : ?>
+                <div class="flavor-activity-item">
+                    <div class="flavor-activity-item__icon"><?php echo $activity['icon']; ?></div>
+                    <div class="flavor-activity-item__content">
+                        <p class="flavor-activity-item__text"><?php echo esc_html($activity['text']); ?></p>
+                        <time class="flavor-activity-item__time"><?php echo esc_html($activity['time']); ?></time>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene actividades del usuario
+     */
+    private function get_user_activities() {
+        // TODO: Integrar con Activity Log real
+        return [];
+    }
+
+    /**
+     * Renderiza widget de perfil
+     */
+    private function render_profile_widget($user) {
+        $avatar = get_avatar($user->ID, 80);
+
+        ob_start();
+        ?>
+        <div class="flavor-profile-widget">
+            <div class="flavor-profile-widget__avatar">
+                <?php echo $avatar; ?>
+            </div>
+            <div class="flavor-profile-widget__info">
+                <h4 class="flavor-profile-widget__name"><?php echo esc_html($user->display_name); ?></h4>
+                <p class="flavor-profile-widget__email"><?php echo esc_html($user->user_email); ?></p>
+            </div>
+            <a href="<?php echo admin_url('profile.php'); ?>" class="flavor-profile-widget__link">
+                <?php _e('Editar perfil', 'flavor-chat-ia'); ?> →
+            </a>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza próximas acciones
+     */
+    private function render_upcoming_actions() {
+        // TODO: Implementar lógica real
+        ob_start();
+        ?>
+        <div class="flavor-upcoming-actions">
+            <p class="flavor-no-content"><?php _e('No tienes acciones pendientes', 'flavor-chat-ia'); ?></p>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza enlaces útiles
+     */
+    private function render_useful_links() {
+        $links = [
+            ['url' => home_url('/servicios/'), 'text' => __('Explorar Servicios', 'flavor-chat-ia'), 'icon' => '🔍'],
+            ['url' => admin_url('profile.php'), 'text' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => '👤'],
+        ];
+
+        ob_start();
+        ?>
+        <ul class="flavor-useful-links">
+            <?php foreach ($links as $link) : ?>
+                <li class="flavor-useful-link">
+                    <a href="<?php echo esc_url($link['url']); ?>">
+                        <span class="flavor-useful-link__icon"><?php echo $link['icon']; ?></span>
+                        <span class="flavor-useful-link__text"><?php echo esc_html($link['text']); ?></span>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
         <?php
         return ob_get_clean();
     }

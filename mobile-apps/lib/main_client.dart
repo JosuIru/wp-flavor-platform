@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'core/config/app_config.dart';
+import 'core/utils/logger.dart';
 import 'core/config/server_config.dart';
 import 'core/config/dynamic_config.dart';
 import 'core/api/api_client.dart';
@@ -16,6 +17,7 @@ import 'features/reservations/reservations_screen.dart';
 import 'features/reservations/my_reservations_screen.dart';
 import 'features/info/info_screen.dart';
 import 'features/info/directory_screen.dart';
+import 'features/client/client_dashboard_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'features/setup/setup_screen.dart';
 import 'features/client/camps/camps_screen.dart';
@@ -184,12 +186,12 @@ void main() async {
       ? await ServerConfig.getFullApiUrl()
       : 'https://placeholder.local/wp-json/chat-ia-mobile/v1';
 
-  debugPrint('Client app starting with API URL: $apiUrl');
+  Logger.i('Client app starting with API URL: $apiUrl', tag: 'ClientMain');
 
   // Registrar todas las pantallas de módulos
   final registry = ModuleScreenRegistry();
   registry.registerAllScreens();
-  debugPrint('[CLIENT MAIN] Pantallas de módulos registradas');
+  Logger.d('Pantallas de módulos registradas', tag: 'ClientMain');
 
   runApp(
     ProviderScope(
@@ -265,27 +267,27 @@ class DynamicConfigNotifier extends StateNotifier<DynamicConfigState> {
 
   Future<void> refreshConfig() async {
     state = state.copyWith(isLoading: true);
-    debugPrint('[DynamicConfig] Cargando configuración del servidor...');
+    Logger.d('Cargando configuración del servidor...', tag: 'DynamicConfig');
 
     try {
       final response = await _api.getClientAppConfig();
-      debugPrint('[DynamicConfig] Respuesta: success=${response.success}, hasData=${response.data != null}');
+      Logger.d('Respuesta: success=${response.success}, hasData=${response.data != null}', tag: 'DynamicConfig');
 
       if (response.success && response.data != null) {
-        debugPrint('[DynamicConfig] Data keys: ${response.data!.keys.toList()}');
+        Logger.d('Data keys: ${response.data!.keys.toList()}', tag: 'DynamicConfig');
         final configData = response.data!['config'] as Map<String, dynamic>?;
 
         if (configData != null) {
-          debugPrint('[DynamicConfig] Config keys: ${configData.keys.toList()}');
-          debugPrint('[DynamicConfig] Colors: ${configData['colors']}');
-          debugPrint('[DynamicConfig] Branding: ${configData['branding']}');
+          Logger.d('Config keys: ${configData.keys.toList()}', tag: 'DynamicConfig');
+          Logger.d('Colors: ${configData['colors']}', tag: 'DynamicConfig');
+          Logger.d('Branding: ${configData['branding']}', tag: 'DynamicConfig');
 
           final config = DynamicConfig();
           await config.updateConfig(configData);
 
-          debugPrint('[DynamicConfig] Config actualizado: isLoaded=${config.isLoaded}');
-          debugPrint('[DynamicConfig] Primary color: ${config.primaryColor}');
-          debugPrint('[DynamicConfig] Logo URL: ${config.logoUrl}');
+          Logger.d('Config actualizado: isLoaded=${config.isLoaded}', tag: 'DynamicConfig');
+          Logger.d('Primary color: ${config.primaryColor}', tag: 'DynamicConfig');
+          Logger.d('Logo URL: ${config.logoUrl}', tag: 'DynamicConfig');
 
           state = state.copyWith(
             isLoading: false,
@@ -294,18 +296,18 @@ class DynamicConfigNotifier extends StateNotifier<DynamicConfigState> {
           );
           return;
         } else {
-          debugPrint('[DynamicConfig] ERROR: configData es null');
+          Logger.e('configData es null', tag: 'DynamicConfig');
         }
       }
 
-      debugPrint('[DynamicConfig] Error del servidor: ${response.error}');
+      Logger.e('Error del servidor: ${response.error}', tag: 'DynamicConfig');
       state = state.copyWith(
         isLoading: false,
         error: response.error ?? 'Error al cargar configuración',
       );
     } catch (e, stack) {
-      debugPrint('[DynamicConfig] Excepción: $e');
-      debugPrint('[DynamicConfig] Stack: $stack');
+      Logger.e('Excepción: $e', tag: 'DynamicConfig', error: e);
+      Logger.e('Stack: $stack', tag: 'DynamicConfig');
       state = state.copyWith(
         isLoading: false,
         error: e.toString(),
@@ -399,7 +401,7 @@ class _AppStartupState extends ConsumerState<_AppStartup> {
 
     // Sincronizar layouts y tema con el nuevo servidor
     if (serverUrl.isNotEmpty) {
-      debugPrint('[ClientApp] Sincronizando con servidor: $serverUrl');
+      Logger.i('Sincronizando con servidor: $serverUrl', tag: 'ClientApp');
       ref.read(syncProvider.notifier).syncWithSite(serverUrl);
     }
 
@@ -554,7 +556,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
           _currentIndex = layoutConfig.defaultTabIndex;
           _configLoaded = true;
         });
-        debugPrint('[ClientHomeScreen] Layout config aplicado con ${tabs.length} clientTabs');
+        Logger.d('Layout config aplicado con ${tabs.length} clientTabs', tag: 'ClientHomeScreen');
         return;
       }
     }
@@ -582,7 +584,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
           _currentIndex = 0;
           _configLoaded = true;
         });
-        debugPrint('[ClientHomeScreen] Layout config aplicado con ${tabs.length} navigationItems');
+        Logger.d('Layout config aplicado con ${tabs.length} navigationItems', tag: 'ClientHomeScreen');
         return;
       }
     }
@@ -790,7 +792,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
     // Si encontramos un builder registrado, usarlo
     if (builder != null) {
-      debugPrint('✅ Usando pantalla registrada para: ${tab.id}');
+      Logger.d('Usando pantalla registrada para: ${tab.id}', tag: 'ClientHomeScreen');
       return builder(context);
     }
 
@@ -812,12 +814,20 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
       case 'my_tickets':
         return const MyReservationsScreen();
       case 'info':
-        return InfoScreen(onNavigateToTab: _navigateToTab);
+        return ClientDashboardScreen(
+          onNavigateToModule: (moduleId) {
+            // Navegar al módulo si está disponible
+            final tabIndex = _tabs.indexWhere((tab) => tab.id == moduleId);
+            if (tabIndex != -1) {
+              setState(() => _currentIndex = tabIndex);
+            }
+          },
+        );
       case 'camps':
         return const CampsScreen();
       default:
         // Para pestañas desconocidas, mostrar placeholder
-        debugPrint('⚠️ No se encontró pantalla para: ${tab.id}');
+        Logger.w('No se encontró pantalla para: ${tab.id}', tag: 'ClientHomeScreen');
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

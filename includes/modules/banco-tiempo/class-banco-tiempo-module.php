@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -1151,5 +1152,53 @@ KNOWLEDGE;
             'rechazado' => 'status-rejected',
         ];
         return $clases[$estado] ?? 'status-default';
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            // Página principal
+            [
+                'title' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'slug' => 'banco-tiempo',
+                'content' => '<h1>' . __('Banco de Tiempo', 'flavor-chat-ia') . '</h1>
+<p>' . __('Intercambia servicios y tiempo con tu comunidad', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="banco_tiempo" action="listar_servicios" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            // Ofrecer servicio
+            [
+                'title' => __('Ofrecer Servicio', 'flavor-chat-ia'),
+                'slug' => 'ofrecer',
+                'content' => '<h1>' . __('Ofrecer un Servicio', 'flavor-chat-ia') . '</h1>
+<p>' . __('Comparte tus habilidades con la comunidad', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="banco_tiempo" action="crear_servicio"]',
+                'parent' => 'banco-tiempo',
+            ],
+            // Solicitar servicio
+            [
+                'title' => __('Solicitar Servicio', 'flavor-chat-ia'),
+                'slug' => 'solicitar',
+                'content' => '<h1>' . __('Solicitar un Servicio', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_form module="banco_tiempo" action="solicitar_servicio"]',
+                'parent' => 'banco-tiempo',
+            ],
+            // Mis intercambios
+            [
+                'title' => __('Mis Intercambios', 'flavor-chat-ia'),
+                'slug' => 'mis-intercambios',
+                'content' => '<h1>' . __('Mis Intercambios', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_dashboard module="banco_tiempo"]',
+                'parent' => 'banco-tiempo',
+            ],
+        ];
     }
 }

@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -1695,6 +1696,52 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['fichaje_empleados']);
             update_option('flavor_fichaje_empleados_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Fichaje de Empleados', 'flavor-chat-ia'),
+                'slug' => 'fichaje-empleados',
+                'content' => '<h1>' . __('Control de Presencia', 'flavor-chat-ia') . '</h1>
+<p>' . __('Sistema de fichaje para el control de horarios y asistencia de empleados.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="fichaje_empleados" action="estado_actual" columnas="1" limite="1"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Fichar Entrada', 'flavor-chat-ia'),
+                'slug' => 'entrada',
+                'content' => '<h1>' . __('Fichar Entrada', 'flavor-chat-ia') . '</h1>
+<p>' . __('Registra tu entrada al trabajo.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="fichaje_empleados" action="fichar_entrada"]',
+                'parent' => 'fichaje-empleados',
+            ],
+            [
+                'title' => __('Fichar Salida', 'flavor-chat-ia'),
+                'slug' => 'salida',
+                'content' => '<h1>' . __('Fichar Salida', 'flavor-chat-ia') . '</h1>
+<p>' . __('Registra tu salida del trabajo.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="fichaje_empleados" action="fichar_salida"]',
+                'parent' => 'fichaje-empleados',
+            ],
+            [
+                'title' => __('Mis Fichajes', 'flavor-chat-ia'),
+                'slug' => 'mis-fichajes',
+                'content' => '<h1>' . __('Mis Fichajes', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta tu historial de fichajes y horas trabajadas.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="fichaje_empleados" action="ver_fichajes_hoy" columnas="1" limite="30"]',
+                'parent' => 'fichaje-empleados',
+            ],
+        ];
     }
 
 }

@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -1788,5 +1789,49 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['reciclaje']);
             update_option('flavor_reciclaje_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Reciclaje', 'flavor-chat-ia'),
+                'slug' => 'reciclaje',
+                'content' => '<h1>' . __('Reciclaje en la Comunidad', 'flavor-chat-ia') . '</h1>
+<p>' . __('Encuentra puntos de reciclaje y registra tu contribución', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="reciclaje" action="listar_puntos" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Mapa de Puntos', 'flavor-chat-ia'),
+                'slug' => 'mapa',
+                'content' => '<h1>' . __('Mapa de Puntos de Reciclaje', 'flavor-chat-ia') . '</h1>
+
+[flavor_reciclaje_mapa]',
+                'parent' => 'reciclaje',
+            ],
+            [
+                'title' => __('Registrar Reciclaje', 'flavor-chat-ia'),
+                'slug' => 'registrar',
+                'content' => '<h1>' . __('Registrar Reciclaje', 'flavor-chat-ia') . '</h1>
+<p>' . __('Registra tu aportación y gana puntos', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="reciclaje" action="registrar_aportacion"]',
+                'parent' => 'reciclaje',
+            ],
+            [
+                'title' => __('Mis Estadísticas', 'flavor-chat-ia'),
+                'slug' => 'mis-estadisticas',
+                'content' => '<h1>' . __('Mis Estadísticas de Reciclaje', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_dashboard module="reciclaje"]',
+                'parent' => 'reciclaje',
+            ],
+        ];
     }
 }

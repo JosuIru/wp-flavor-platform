@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2869,5 +2870,42 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['chat_grupos']);
             update_option('flavor_chat_grupos_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Chat en Grupos', 'flavor-chat-ia'),
+                'slug' => 'chat-grupos',
+                'content' => '<h1>' . __('Chat en Grupos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Únete a grupos de chat, comparte mensajes y conecta con comunidades de interés.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="chat_grupos" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Crear Grupo', 'flavor-chat-ia'),
+                'slug' => 'crear-grupo',
+                'content' => '<h1>' . __('Crear Grupo de Chat', 'flavor-chat-ia') . '</h1>
+<p>' . __('Crea tu propio grupo de chat y reúne a personas con intereses comunes.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="chat_grupos" action="crear"]',
+                'parent' => 'chat-grupos',
+            ],
+            [
+                'title' => __('Mis Grupos', 'flavor-chat-ia'),
+                'slug' => 'mis-grupos',
+                'content' => '<h1>' . __('Mis Grupos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona los grupos de chat a los que perteneces y los que has creado.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="chat_grupos" action="mis_grupos" columnas="3" limite="12"]',
+                'parent' => 'chat-grupos',
+            ],
+        ];
     }
 }

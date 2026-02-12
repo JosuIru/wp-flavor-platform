@@ -17,6 +17,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2191,5 +2192,42 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['comunidades']);
             update_option('flavor_comunidades_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Comunidades', 'flavor-chat-ia'),
+                'slug' => 'comunidades',
+                'content' => '<h1>' . __('Comunidades', 'flavor-chat-ia') . '</h1>
+<p>' . __('Descubre y únete a comunidades de tu interés, comparte experiencias y conecta con personas afines.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="comunidades" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Crear Comunidad', 'flavor-chat-ia'),
+                'slug' => 'crear',
+                'content' => '<h1>' . __('Crear Comunidad', 'flavor-chat-ia') . '</h1>
+<p>' . __('Crea tu propia comunidad y reúne a personas con intereses comunes.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="comunidades" action="crear"]',
+                'parent' => 'comunidades',
+            ],
+            [
+                'title' => __('Mis Comunidades', 'flavor-chat-ia'),
+                'slug' => 'mis-comunidades',
+                'content' => '<h1>' . __('Mis Comunidades', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona las comunidades a las que perteneces y las que has creado.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="comunidades" action="mis_comunidades" columnas="3" limite="12"]',
+                'parent' => 'comunidades',
+            ],
+        ];
     }
 }

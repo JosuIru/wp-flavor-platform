@@ -118,7 +118,7 @@ class Flavor_Guided_Tours {
                     'destacar' => true,
                 ],
                 [
-                    'elemento' => '.flavor-dashboard-hero',
+                    'elemento' => '.flavor-dashboard-hero, .dashboard-hero, .app-profile-card, .flavor-active-app',
                     'titulo' => __('Tu App Activa', 'flavor-chat-ia'),
                     'contenido' => __('Aquí ves el perfil de app activo actualmente, con información sobre módulos activos, addons y usuarios.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
@@ -157,7 +157,7 @@ class Flavor_Guided_Tours {
             'descripcion' => __('Aprende a activar y configurar módulos especializados', 'flavor-chat-ia'),
             'icono' => 'dashicons-admin-plugins',
             'duracion' => '3 min',
-            'paginas' => ['flavor-platform_page_flavor-modules', 'flavor-platform_page_flavor-addons'],
+            'paginas' => ['flavor-platform_page_flavor-app-composer', 'toplevel_page_flavor-app-composer'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -201,7 +201,7 @@ class Flavor_Guided_Tours {
             'descripcion' => __('Personaliza colores, tipografías y apariencia del chat', 'flavor-chat-ia'),
             'icono' => 'dashicons-art',
             'duracion' => '4 min',
-            'paginas' => ['flavor-platform_page_flavor-design', 'flavor-platform_page_flavor-design-settings'],
+            'paginas' => ['flavor-platform_page_flavor-design-settings', 'toplevel_page_flavor-design-settings'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -251,7 +251,7 @@ class Flavor_Guided_Tours {
             'descripcion' => __('Crea páginas de aterrizaje para tus aplicaciones', 'flavor-chat-ia'),
             'icono' => 'dashicons-welcome-widgets-menus',
             'duracion' => '5 min',
-            'paginas' => ['edit-flavor_landing', 'flavor_landing', 'flavor-platform_page_flavor-landing'],
+            'paginas' => ['flavor-platform_page_flavor-landing-editor', 'toplevel_page_flavor-landing-editor'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -301,7 +301,7 @@ class Flavor_Guided_Tours {
             'descripcion' => __('Conecta tu sitio a la red distribuida de Flavor', 'flavor-chat-ia'),
             'icono' => 'dashicons-networking',
             'duracion' => '3 min',
-            'paginas' => ['flavor-platform_page_flavor-network', 'flavor-platform_page_flavor-nodes'],
+            'paginas' => ['flavor-platform_page_flavor-network', 'toplevel_page_flavor-network'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -345,7 +345,7 @@ class Flavor_Guided_Tours {
             'descripcion' => __('Configura el motor de IA y personaliza las respuestas', 'flavor-chat-ia'),
             'icono' => 'dashicons-format-chat',
             'duracion' => '4 min',
-            'paginas' => ['flavor-platform_page_flavor-chat-ia', 'flavor-platform_page_flavor-chat-settings'],
+            'paginas' => ['flavor-platform_page_flavor-chat-config', 'toplevel_page_flavor-chat-config'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -395,7 +395,7 @@ class Flavor_Guided_Tours {
             'descripcion' => __('Gestiona perfiles para tus aplicaciones móviles', 'flavor-chat-ia'),
             'icono' => 'dashicons-smartphone',
             'duracion' => '3 min',
-            'paginas' => ['flavor-platform_page_flavor-apps', 'flavor-platform_page_flavor-app-profiles'],
+            'paginas' => ['flavor-platform_page_flavor-apps-config', 'toplevel_page_flavor-apps-config'],
             'video_url' => '',
             'pasos' => [
                 [

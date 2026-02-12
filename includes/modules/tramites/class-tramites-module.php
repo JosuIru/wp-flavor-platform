@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
@@ -2849,5 +2850,64 @@ KNOWLEDGE;
         $method = strtoupper($request->get_method());
         $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
         return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+
+    /**
+     * Crea páginas frontend automáticamente
+     */
+    public function maybe_create_pages() {
+        if (!class_exists('Flavor_Page_Creator')) {
+            return;
+        }
+
+        // En admin: refrescar páginas del módulo
+        if (is_admin()) {
+            Flavor_Page_Creator::refresh_module_pages('tramites');
+            return;
+        }
+
+        // En frontend: crear páginas si no existen
+        $pagina = get_page_by_path('tramites');
+        if (!$pagina && !get_option('flavor_tramites_pages_created')) {
+            Flavor_Page_Creator::create_pages_for_modules(['tramites']);
+            update_option('flavor_tramites_pages_created', 1, false);
+        }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Trámites Online', 'flavor-chat-ia'),
+                'slug' => 'tramites',
+                'content' => '<h1>' . __('Trámites Online', 'flavor-chat-ia') . '</h1>
+<p>' . __('Realiza tus trámites de forma rápida y sencilla. Consulta el catálogo de servicios disponibles, inicia solicitudes y haz seguimiento de tus expedientes.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="tramites" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Iniciar Trámite', 'flavor-chat-ia'),
+                'slug' => 'iniciar',
+                'content' => '<h1>' . __('Iniciar Trámite', 'flavor-chat-ia') . '</h1>
+<p>' . __('Selecciona el tipo de trámite que deseas realizar, completa el formulario con la información requerida y adjunta la documentación necesaria.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="tramites" action="crear"]',
+                'parent' => 'tramites',
+            ],
+            [
+                'title' => __('Mis Trámites', 'flavor-chat-ia'),
+                'slug' => 'mis-tramites',
+                'content' => '<h1>' . __('Mis Trámites', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta el estado de tus expedientes, revisa las notificaciones y gestiona tus solicitudes en curso.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="tramites" action="mis_items"]',
+                'parent' => 'tramites',
+            ],
+        ];
     }
 }

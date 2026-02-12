@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../config/app_config.dart';
 import '../config/server_config.dart';
+import '../security/http_security.dart';
 
 /// Cliente HTTP para comunicación con la API de WordPress
 class ApiClient {
@@ -12,7 +13,7 @@ class ApiClient {
   static const String _tokenKey = 'auth_token';
 
   /// Constructor con URL por defecto desde configuracion
-  ApiClient({String? baseUrl}) : _customBaseUrl = baseUrl {
+  ApiClient({String? baseUrl, bool enableSecurityFeatures = true}) : _customBaseUrl = baseUrl {
     final effectiveBaseUrl = baseUrl ?? AppConfig.apiUrl;
 
     _dio = Dio(BaseOptions(
@@ -24,6 +25,11 @@ class ApiClient {
         'Accept': 'application/json',
       },
     ));
+
+    // Aplicar configuración de seguridad HTTP
+    if (enableSecurityFeatures) {
+      _dio.applySecurityConfig(enablePinning: !AppConfig.isDebug);
+    }
 
     // Interceptor para añadir token de autenticación
     _dio.interceptors.add(InterceptorsWrapper(
@@ -3148,6 +3154,27 @@ class ApiClient {
         if (limite != null) 'limite': limite,
         if (pagina != null) 'pagina': pagina,
       });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Obtiene datos de gráficos para dashboards
+  /// [type] - Tipo de gráfico: 'activity', 'trends', 'distribution'
+  /// [days] - Número de días a consultar (default: 7)
+  Future<ApiResponse<Map<String, dynamic>>> getDashboardCharts({
+    required String type,
+    int days = 7,
+  }) async {
+    try {
+      final response = await _dio.get(
+        '/chat-ia-mobile/v1/dashboard/charts',
+        queryParameters: {
+          'type': type,
+          'days': days,
+        },
+      );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));

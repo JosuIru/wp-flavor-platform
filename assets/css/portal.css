@@ -176,7 +176,7 @@
 }
 
 /* ========================================================================
-   MI PORTAL (Dashboard)
+   MI PORTAL (Dashboard Mejorado)
    ======================================================================== */
 
 .flavor-mi-portal {
@@ -185,23 +185,161 @@
     padding: 20px;
 }
 
-.flavor-portal__header {
-    padding: 40px 0;
-    border-bottom: 1px solid #e5e7eb;
-    margin-bottom: 40px;
+/* Hero Header */
+.flavor-portal__hero {
+    background: linear-gradient(135deg, var(--flavor-primary, #3b82f6) 0%, var(--flavor-secondary, #8b5cf6) 100%);
+    border-radius: 16px;
+    padding: 48px 40px;
+    margin-bottom: 32px;
+    color: white;
+}
+
+.flavor-portal__hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.flavor-portal__greeting {
+    flex: 1;
 }
 
 .flavor-portal__title {
-    font-size: 36px;
+    font-size: 42px;
     font-weight: 700;
     margin: 0 0 8px;
-    color: #111827;
+    color: white;
 }
 
 .flavor-portal__subtitle {
     font-size: 18px;
-    color: #6b7280;
+    color: rgba(255,255,255,0.9);
     margin: 0;
+}
+
+.flavor-header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.flavor-header-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+}
+
+.flavor-header-action:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+.flavor-header-action__icon {
+    font-size: 20px;
+}
+
+.flavor-header-action__text {
+    font-size: 14px;
+}
+
+/* Notifications Bar */
+.flavor-notifications-bar {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.flavor-notification-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: white;
+    border-left: 4px solid;
+}
+
+.flavor-notification-item--info {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.flavor-notification-item--success {
+    border-color: #10b981;
+    background: #d1fae5;
+}
+
+.flavor-notification-item--warning {
+    border-color: #f59e0b;
+    background: #fef3c7;
+}
+
+.flavor-notification-item__icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.flavor-notification-item__text {
+    flex: 1;
+    font-size: 14px;
+    color: #374151;
+}
+
+.flavor-notification-item__action {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--flavor-primary, #3b82f6);
+    text-decoration: none;
+}
+
+/* Section Headers */
+.flavor-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.flavor-section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.flavor-title-icon {
+    font-size: 28px;
+}
+
+.flavor-link-all {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--flavor-primary, #3b82f6);
+    text-decoration: none;
+}
+
+.flavor-link-all:hover {
+    color: var(--flavor-primary-dark, #2563eb);
+}
+
+/* Legacy Header (deprecate) */
+.flavor-portal__header {
+    padding: 40px 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 40px;
 }
 
 .flavor-portal__layout {
@@ -702,5 +840,470 @@
 
     .flavor-stat-card__icon {
         font-size: 24px;
+    }
+}
+
+/* ========================================================================
+   ACCIONES RÁPIDAS MEJORADAS (Enhanced Quick Actions)
+   ======================================================================== */
+
+.flavor-quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.flavor-quick-action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 24px;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.flavor-quick-action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--flavor-primary, #3b82f6) 0%, var(--flavor-secondary, #8b5cf6) 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.flavor-quick-action-card:hover::before {
+    transform: scaleX(1);
+}
+
+.flavor-quick-action-card:hover {
+    border-color: var(--flavor-primary, #3b82f6);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.2);
+}
+
+.flavor-quick-action-card__icon {
+    font-size: 36px;
+    line-height: 1;
+}
+
+.flavor-quick-action-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.flavor-quick-action-card__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.flavor-quick-action-card__description {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.flavor-quick-action-card__arrow {
+    align-self: flex-end;
+    font-size: 20px;
+    color: var(--flavor-primary, #3b82f6);
+    transition: transform 0.3s ease;
+}
+
+.flavor-quick-action-card:hover .flavor-quick-action-card__arrow {
+    transform: translateX(4px);
+}
+
+@media (max-width: 640px) {
+    .flavor-quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========================================================================
+   FEED DE ACTIVIDAD (Activity Feed)
+   ======================================================================== */
+
+.flavor-activity-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.flavor-activity-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.flavor-activity-item:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-color: #d1d5db;
+}
+
+.flavor-activity-item__icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    border-radius: 10px;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.flavor-activity-item__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flavor-activity-item__text {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.flavor-activity-item__text strong {
+    font-weight: 600;
+    color: #111827;
+}
+
+.flavor-activity-item__time {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.flavor-activity-feed__empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+}
+
+.flavor-activity-feed__empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.flavor-activity-feed__empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* ========================================================================
+   WIDGET DE PERFIL (Profile Widget)
+   ======================================================================== */
+
+.flavor-profile-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+}
+
+.flavor-profile-widget__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--flavor-primary, #3b82f6);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-profile-widget__avatar--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--flavor-primary, #3b82f6) 0%, var(--flavor-secondary, #8b5cf6) 100%);
+    color: white;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.flavor-profile-widget__name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.flavor-profile-widget__email {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.flavor-profile-widget__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.flavor-profile-widget__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flavor-profile-widget__stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--flavor-primary, #3b82f6);
+}
+
+.flavor-profile-widget__stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flavor-profile-widget__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.flavor-profile-widget__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.flavor-profile-widget__link:hover {
+    background: white;
+    border-color: var(--flavor-primary, #3b82f6);
+    color: var(--flavor-primary, #3b82f6);
+}
+
+/* ========================================================================
+   ACCIONES PENDIENTES (Upcoming Actions)
+   ======================================================================== */
+
+.flavor-upcoming-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.flavor-upcoming-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.flavor-upcoming-action:hover {
+    background: #f3f4f6;
+}
+
+.flavor-upcoming-action__checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.flavor-upcoming-action__text {
+    flex: 1;
+    font-size: 14px;
+    color: #374151;
+}
+
+.flavor-upcoming-actions__empty {
+    text-align: center;
+    padding: 20px;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* ========================================================================
+   ENLACES ÚTILES (Useful Links)
+   ======================================================================== */
+
+.flavor-useful-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.flavor-useful-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.flavor-useful-link:hover {
+    background: #f9fafb;
+    color: var(--flavor-primary, #3b82f6);
+}
+
+.flavor-useful-link__icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.flavor-useful-link__arrow {
+    margin-left: auto;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.2s ease;
+}
+
+.flavor-useful-link:hover .flavor-useful-link__arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ========================================================================
+   LOGIN GATE MEJORADO (Enhanced Login Required)
+   ======================================================================== */
+
+.flavor-login-gate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 60px 20px;
+}
+
+.flavor-login-gate__card {
+    max-width: 500px;
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 48px;
+    text-align: center;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-login-gate__icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+    opacity: 0.8;
+}
+
+.flavor-login-gate__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 12px;
+}
+
+.flavor-login-gate__message {
+    font-size: 16px;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0 0 32px;
+}
+
+.flavor-login-gate__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.flavor-login-gate__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.flavor-login-gate__button--primary {
+    background: linear-gradient(135deg, var(--flavor-primary, #3b82f6) 0%, var(--flavor-secondary, #8b5cf6) 100%);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+}
+
+.flavor-login-gate__button--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+}
+
+.flavor-login-gate__button--secondary {
+    background: white;
+    color: var(--flavor-primary, #3b82f6);
+    border: 2px solid var(--flavor-primary, #3b82f6);
+}
+
+.flavor-login-gate__button--secondary:hover {
+    background: #eff6ff;
+}
+
+@media (max-width: 640px) {
+    .flavor-login-gate__card {
+        padding: 32px 24px;
+    }
+
+    .flavor-login-gate__title {
+        font-size: 24px;
+    }
+
+    .flavor-login-gate__actions {
+        flex-direction: column;
+    }
+
+    .flavor-login-gate__button {
+        width: 100%;
     }
 }

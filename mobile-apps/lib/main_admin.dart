@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/config/app_config.dart';
+import 'core/utils/logger.dart';
 import 'core/config/server_config.dart';
 import 'core/api/api_client.dart';
 import 'core/providers/providers.dart'; // Importar providers compartidos
@@ -15,7 +16,7 @@ import 'core/providers/admin_modules_provider.dart';
 import 'core/modules/lazy/module_lazy_loader.dart';
 import 'core/modules/module_screen_registry.dart';
 import 'features/layouts/layout_config.dart';
-import 'features/admin/dashboard_screen.dart';
+import 'features/admin/dashboard_screen_v2.dart';
 import 'features/admin/admin_reservations_screen.dart';
 import 'features/admin/admin_chat_screen.dart';
 import 'features/admin/stats_screen.dart';
@@ -34,25 +35,25 @@ import 'features/admin/camps/camps_management_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  debugPrint('[ADMIN MAIN] Iniciando app...');
+  Logger.i('Iniciando app...', tag: 'AdminMain');
 
   // Cargar la URL del servidor antes de iniciar la app
   final serverUrl = await ServerConfig.getServerUrl();
-  debugPrint('[ADMIN MAIN] serverUrl obtenida: $serverUrl');
+  Logger.d('serverUrl obtenida: $serverUrl', tag: 'AdminMain');
 
   final apiUrl = serverUrl.isNotEmpty
       ? await ServerConfig.getFullApiUrl()
       : 'https://placeholder.local/wp-json/chat-ia-mobile/v1'; // URL temporal hasta que se configure
 
-  debugPrint('[ADMIN MAIN] apiUrl final: $apiUrl');
+  Logger.d('apiUrl final: $apiUrl', tag: 'AdminMain');
 
   final apiClient = ApiClient(baseUrl: apiUrl);
-  debugPrint('[ADMIN MAIN] ApiClient creado con baseUrl: ${apiClient.currentBaseUrl}');
+  Logger.d('ApiClient creado con baseUrl: ${apiClient.currentBaseUrl}', tag: 'AdminMain');
 
   // Registrar todas las pantallas de módulos
   final registry = ModuleScreenRegistry();
   registry.registerAllScreens();
-  debugPrint('[ADMIN MAIN] Pantallas de módulos registradas');
+  Logger.d('Pantallas de módulos registradas', tag: 'AdminMain');
 
   runApp(
     ProviderScope(
@@ -64,7 +65,7 @@ void main() async {
     ),
   );
 
-  debugPrint('[ADMIN MAIN] App iniciada con override de apiClientProvider');
+  Logger.i('App iniciada con override de apiClientProvider', tag: 'AdminMain');
 }
 
 // apiClientProvider se importa de providers.dart y se sobreescribe en main()
@@ -494,7 +495,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
     String serverUrl = url.trim();
     String? adminToken;
 
-    debugPrint('QR escaneado: $serverUrl');
+    Logger.d('QR escaneado: $serverUrl', tag: 'AdminSetup');
 
     // Si es JSON, extraer URL y validar token admin
     if (serverUrl.contains('{') && serverUrl.contains('}')) {
@@ -523,10 +524,10 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
 
         // Extraer URL
         serverUrl = (jsonData['url'] as String? ?? '').replaceAll(r'\/', '/');
-        debugPrint('URL extraída del JSON: $serverUrl, token presente: ${adminToken.isNotEmpty}');
+        Logger.d('URL extraída del JSON: $serverUrl, token presente: ${adminToken.isNotEmpty}', tag: 'AdminSetup');
       } catch (e) {
         // Fallback: intentar extraer URL con regex
-        debugPrint('Error parseando JSON: $e');
+        Logger.e('Error parseando JSON: $e', tag: 'AdminSetup', error: e);
         var urlMatch = RegExp(r'"url"\s*:\s*"([^"]+)"').firstMatch(serverUrl);
         if (urlMatch != null) {
           serverUrl = urlMatch.group(1)!.replaceAll(r'\/', '/');
@@ -573,7 +574,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
     try {
       // Probar conexión
       final fullUrl = '$serverUrl/wp-json/chat-ia-mobile/v1';
-      debugPrint('Conectando a: $fullUrl');
+      Logger.d('Conectando a: $fullUrl', tag: 'AdminSetup');
 
       final testClient = ApiClient(baseUrl: fullUrl);
       final response = await testClient.getBusinessInfo().timeout(
@@ -583,12 +584,12 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
         ),
       );
 
-      debugPrint('Respuesta: success=${response.success}, error=${response.error}');
+      Logger.d('Respuesta: success=${response.success}, error=${response.error}', tag: 'AdminSetup');
 
       if (response.success) {
         // Validar token de seguridad admin antes de guardar
         if (adminToken != null && adminToken.isNotEmpty) {
-          debugPrint('Validando token de admin...');
+          Logger.d('Validando token de admin...', tag: 'AdminSetup');
           final tokenResponse = await testClient.validateAdminSiteToken(adminToken).timeout(
             const Duration(seconds: 10),
             onTimeout: () => ApiResponse<Map<String, dynamic>>.error(
@@ -603,7 +604,7 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
             });
             return;
           }
-          debugPrint('Token de admin validado correctamente');
+          Logger.i('Token de admin validado correctamente', tag: 'AdminSetup');
         }
 
         // Guardar configuración
@@ -612,10 +613,10 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
 
         // IMPORTANTE: Actualizar la URL del apiClient existente
         ref.read(apiClientProvider).updateBaseUrl(fullUrl);
-        debugPrint('ApiClient actualizado con URL: $fullUrl');
+        Logger.d('ApiClient actualizado con URL: $fullUrl', tag: 'AdminSetup');
 
         // Sincronizar layouts y tema con el servidor
-        debugPrint('[AdminApp] Sincronizando layouts y tema con servidor: $serverUrl');
+        Logger.i('Sincronizando layouts y tema con servidor: $serverUrl', tag: 'AdminApp');
         ref.read(syncProvider.notifier).syncWithSite(serverUrl);
 
         // Forzar recarga de providers
@@ -639,8 +640,8 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
         });
       }
     } catch (e, stack) {
-      debugPrint('Error de conexión: $e');
-      debugPrint('Stack: $stack');
+      Logger.e('Error de conexión: $e', tag: 'AdminSetup', error: e);
+      Logger.e('Stack: $stack', tag: 'AdminSetup');
       setState(() {
         _error = i18n.adminSetupConnectionError(e.toString(), serverUrl);
       });
@@ -1296,7 +1297,7 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
         ),
       ),
       error: (error, stack) {
-        debugPrint('❌ Error al cargar módulos: $error');
+        Logger.e('Error al cargar módulos: $error', tag: 'AdminHome', error: error);
         return Scaffold(
           body: Center(
             child: Column(
@@ -1333,7 +1334,7 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
       label: i18n.adminBottomNavDashboard,
       icon: Icons.dashboard_outlined,
       selectedIcon: Icons.dashboard,
-      screen: DashboardScreen(
+      screen: DashboardScreenV2(
         onNavigateToReservations: () {},
         onNavigateToChat: () {},
       ),

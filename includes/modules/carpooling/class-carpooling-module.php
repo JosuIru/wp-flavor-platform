@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Nombre tabla viajes
@@ -2630,4 +2631,47 @@ KNOWLEDGE;
         }
     }
 
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Carpooling', 'flavor-chat-ia'),
+                'slug' => 'carpooling',
+                'content' => '<h1>' . __('Carpooling Comunitario', 'flavor-chat-ia') . '</h1>
+<p>' . __('Comparte coche y reduce tu huella de carbono', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="carpooling" action="listar_viajes" columnas="2" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Publicar Viaje', 'flavor-chat-ia'),
+                'slug' => 'publicar',
+                'content' => '<h1>' . __('Publicar Viaje', 'flavor-chat-ia') . '</h1>
+<p>' . __('Ofrece plazas en tu coche', 'flavor-chat-ia') . '</p>
+
+[flavor_module_form module="carpooling" action="publicar_viaje"]',
+                'parent' => 'carpooling',
+            ],
+            [
+                'title' => __('Buscar Viaje', 'flavor-chat-ia'),
+                'slug' => 'buscar',
+                'content' => '<h1>' . __('Buscar Viaje', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_form module="carpooling" action="buscar_viaje"]',
+                'parent' => 'carpooling',
+            ],
+            [
+                'title' => __('Mis Viajes', 'flavor-chat-ia'),
+                'slug' => 'mis-viajes',
+                'content' => '<h1>' . __('Mis Viajes', 'flavor-chat-ia') . '</h1>
+
+[flavor_module_dashboard module="carpooling"]',
+                'parent' => 'carpooling',
+            ],
+        ];
+    }
 }

@@ -695,10 +695,32 @@ class Flavor_Export_Import {
         // Intentar obtener de archivo subido
         if (!empty($_FILES['import_file'])) {
             $archivo_subido = $_FILES['import_file'];
-            $info_archivo = wp_check_filetype($archivo_subido['name'], array('json' => 'application/json'));
 
+            // Validar extensión
+            $info_archivo = wp_check_filetype($archivo_subido['name'], array('json' => 'application/json'));
             if (empty($info_archivo['ext'])) {
                 wp_send_json_error(array('message' => __('El archivo debe ser de tipo JSON.', 'flavor-chat-ia')));
+            }
+
+            // Validar tamaño máximo (5MB)
+            $max_size = 5 * MB_IN_BYTES;
+            if ($archivo_subido['size'] > $max_size) {
+                wp_send_json_error(array('message' => sprintf(
+                    __('El archivo es demasiado grande. Máximo permitido: %s', 'flavor-chat-ia'),
+                    size_format($max_size)
+                )));
+            }
+
+            // Validar MIME type real del archivo
+            if (function_exists('finfo_open')) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime_real = finfo_file($finfo, $archivo_subido['tmp_name']);
+                finfo_close($finfo);
+
+                $mimes_permitidos = ['application/json', 'text/plain', 'text/json'];
+                if (!in_array($mime_real, $mimes_permitidos)) {
+                    wp_send_json_error(array('message' => __('El contenido del archivo no es JSON válido.', 'flavor-chat-ia')));
+                }
             }
 
             $contenido_json = file_get_contents($archivo_subido['tmp_name']);
@@ -706,7 +728,18 @@ class Flavor_Export_Import {
                 wp_send_json_error(array('message' => __('No se pudo leer el archivo.', 'flavor-chat-ia')));
             }
 
+            // Limpiar archivo temporal
+            @unlink($archivo_subido['tmp_name']);
+
             $datos_json = json_decode($contenido_json, true);
+
+            // Validar que sea JSON válido
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                wp_send_json_error(array('message' => sprintf(
+                    __('Error de JSON: %s', 'flavor-chat-ia'),
+                    json_last_error_msg()
+                )));
+            }
         }
         // Intentar obtener de JSON pegado
         elseif (!empty($_POST['json_content'])) {
@@ -742,14 +775,23 @@ class Flavor_Export_Import {
         check_ajax_referer('flavor_export_import_nonce', 'nonce');
 
         $datos_exportados = $this->export_full_config();
-        $datos_exportados['checksum'] = md5(wp_json_encode($datos_exportados));
 
-        $nombre_archivo = 'flavor-platform-export-' . gmdate('Y-m-d-His') . '.json';
+        // Usar SHA-256 en lugar de MD5 para checksum (más seguro)
+        $datos_sin_checksum = $datos_exportados;
+        $datos_exportados['checksum'] = hash('sha256', wp_json_encode($datos_sin_checksum));
+        $datos_exportados['export_timestamp'] = time();
+        $datos_exportados['export_site'] = get_site_url();
+
+        // Sanitizar nombre de archivo
+        $nombre_archivo = sanitize_file_name('flavor-platform-export-' . gmdate('Y-m-d-His') . '.json');
         $contenido_json = wp_json_encode($datos_exportados, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-        header('Content-Type: application/json');
+        // Headers de seguridad mejorados
+        header('Content-Type: application/json; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . $nombre_archivo . '"');
         header('Content-Length: ' . strlen($contenido_json));
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
         header('Expires: 0');
 

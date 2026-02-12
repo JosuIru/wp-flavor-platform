@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /** @var string Versión del módulo */
     const VERSION = '2.0.0';
@@ -2576,5 +2577,42 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['podcast']);
             update_option('flavor_podcast_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Podcasts', 'flavor-chat-ia'),
+                'slug' => 'podcast',
+                'content' => '<h1>' . __('Podcasts', 'flavor-chat-ia') . '</h1>
+<p>' . __('Descubre y escucha los mejores podcasts de nuestra comunidad. Explora programas sobre diversos temas, suscríbete a tus favoritos y disfruta de contenido de calidad.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="podcast" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Crear Podcast', 'flavor-chat-ia'),
+                'slug' => 'crear-podcast',
+                'content' => '<h1>' . __('Crear Podcast', 'flavor-chat-ia') . '</h1>
+<p>' . __('Crea tu propio programa de podcast y comparte tu contenido con la comunidad. Sube episodios, gestiona suscriptores y haz crecer tu audiencia.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="podcast" action="crear"]',
+                'parent' => 'podcast',
+            ],
+            [
+                'title' => __('Mis Podcasts', 'flavor-chat-ia'),
+                'slug' => 'mis-podcasts',
+                'content' => '<h1>' . __('Mis Podcasts', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tus programas de podcast, revisa estadísticas y administra tus episodios publicados.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="podcast" action="mis_items"]',
+                'parent' => 'podcast',
+            ],
+        ];
     }
 }

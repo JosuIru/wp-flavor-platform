@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Notifications_Trait;
+
     /**
      * Constructor
      */
@@ -23,6 +25,156 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         $this->description = __('Sistema de reserva y gestión de espacios comunes y equipamientos de la comunidad.', 'flavor-chat-ia');
 
         parent::__construct();
+
+        // Integrar sistema de notificaciones
+        $this->init_notifications();
+    }
+
+    /**
+     * Inicializar sistema de notificaciones
+     */
+    private function init_notifications() {
+        add_action('ec_reservation_created', [$this, 'notify_reservation_created'], 10, 2);
+        add_action('ec_reservation_approved', [$this, 'notify_reservation_approved'], 10, 2);
+        add_action('ec_reservation_rejected', [$this, 'notify_reservation_rejected'], 10, 3);
+        add_action('ec_reservation_reminder', [$this, 'notify_reservation_reminder'], 10, 2);
+        add_action('ec_reservation_cancelled', [$this, 'notify_reservation_cancelled'], 10, 2);
+    }
+
+    /**
+     * Notificación: Reserva creada
+     */
+    public function notify_reservation_created($reservation_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Reserva solicitada', 'flavor-chat-ia'),
+            sprintf(__('Tu solicitud de reserva #%d ha sido enviada. Recibirás una notificación cuando sea revisada.', 'flavor-chat-ia'), $reservation_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'info',
+                'link' => home_url("/espacios-comunes/mis-reservas?reservation={$reservation_id}"),
+                'metadata' => [
+                    'reservation_id' => $reservation_id,
+                    'action' => 'reservation_created'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Reserva aprobada
+     */
+    public function notify_reservation_approved($reservation_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Reserva aprobada', 'flavor-chat-ia'),
+            sprintf(__('¡Tu reserva #%d ha sido aprobada! Ya puedes usar el espacio en la fecha solicitada.', 'flavor-chat-ia'), $reservation_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'success',
+                'link' => home_url("/espacios-comunes/mis-reservas?reservation={$reservation_id}"),
+                'metadata' => [
+                    'reservation_id' => $reservation_id,
+                    'action' => 'reservation_approved'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Reserva rechazada
+     */
+    public function notify_reservation_rejected($reservation_id, $user_id, $reason = '') {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $message = sprintf(__('Tu reserva #%d no ha sido aprobada.', 'flavor-chat-ia'), $reservation_id);
+        if (!empty($reason)) {
+            $message .= ' ' . sprintf(__('Motivo: %s', 'flavor-chat-ia'), $reason);
+        }
+
+        $nc->send(
+            $user_id,
+            __('Reserva no aprobada', 'flavor-chat-ia'),
+            $message,
+            [
+                'module_id' => $this->id,
+                'type' => 'warning',
+                'link' => home_url("/espacios-comunes/mis-reservas?reservation={$reservation_id}"),
+                'metadata' => [
+                    'reservation_id' => $reservation_id,
+                    'action' => 'reservation_rejected',
+                    'reason' => $reason
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Recordatorio de reserva
+     */
+    public function notify_reservation_reminder($reservation_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Recordatorio de reserva', 'flavor-chat-ia'),
+            sprintf(__('Tu reserva #%d es mañana. No olvides recoger las llaves en recepción.', 'flavor-chat-ia'), $reservation_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'info',
+                'link' => home_url("/espacios-comunes/mis-reservas?reservation={$reservation_id}"),
+                'metadata' => [
+                    'reservation_id' => $reservation_id,
+                    'action' => 'reservation_reminder'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Notificación: Reserva cancelada
+     */
+    public function notify_reservation_cancelled($reservation_id, $user_id) {
+        if (!class_exists('Flavor_Notification_Center')) {
+            return;
+        }
+
+        $nc = Flavor_Notification_Center::get_instance();
+
+        $nc->send(
+            $user_id,
+            __('Reserva cancelada', 'flavor-chat-ia'),
+            sprintf(__('Tu reserva #%d ha sido cancelada.', 'flavor-chat-ia'), $reservation_id),
+            [
+                'module_id' => $this->id,
+                'type' => 'warning',
+                'link' => home_url("/espacios-comunes/mis-reservas"),
+                'metadata' => [
+                    'reservation_id' => $reservation_id,
+                    'action' => 'reservation_cancelled'
+                ]
+            ]
+        );
     }
 
     /**
@@ -1725,6 +1877,90 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['espacios_comunes']);
             update_option('flavor_espacios_comunes_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        if (!class_exists('Flavor_Page_Creator_V3')) {
+            return [];
+        }
+
+        return [
+            // Página principal
+            [
+                'title' => __('Espacios Comunes', 'flavor-chat-ia'),
+                'slug' => 'espacios-comunes',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Reserva de Espacios', 'flavor-chat-ia'),
+                    'subtitle' => __('Salas de reuniones, zonas deportivas y más', 'flavor-chat-ia'),
+                    'background' => 'white',
+                    'module' => 'espacios_comunes',
+                    'current' => 'listado',
+                    'content_after' => '[flavor_module_listing module="espacios_comunes" action="espacios_disponibles" columnas="3"]',
+                ]),
+                'parent' => 0,
+            ],
+
+            // Hacer reserva
+            [
+                'title' => __('Hacer Reserva', 'flavor-chat-ia'),
+                'slug' => 'reservar',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Reservar Espacio', 'flavor-chat-ia'),
+                    'subtitle' => __('Completa el formulario para solicitar tu reserva', 'flavor-chat-ia'),
+                    'module' => 'espacios_comunes',
+                    'current' => 'reservar',
+                    'content_after' => '[flavor_module_form module="espacios_comunes" action="crear_reserva"]',
+                ]),
+                'parent' => 'espacios-comunes',
+            ],
+
+            // Mis reservas
+            [
+                'title' => __('Mis Reservas', 'flavor-chat-ia'),
+                'slug' => 'mis-reservas',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Mis Reservas', 'flavor-chat-ia'),
+                    'subtitle' => __('Consulta y gestiona tus reservas', 'flavor-chat-ia'),
+                    'module' => 'espacios_comunes',
+                    'current' => 'mis_reservas',
+                    'content_after' => '[flavor_module_listing module="espacios_comunes" action="mis_reservas" user_specific="yes"]',
+                ]),
+                'parent' => 'espacios-comunes',
+            ],
+
+            // Calendario
+            [
+                'title' => __('Calendario', 'flavor-chat-ia'),
+                'slug' => 'calendario',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Calendario de Reservas', 'flavor-chat-ia'),
+                    'subtitle' => __('Consulta la disponibilidad de los espacios', 'flavor-chat-ia'),
+                    'module' => 'espacios_comunes',
+                    'current' => 'calendario',
+                    'content_after' => '[flavor_module_calendar module="espacios_comunes"]',
+                ]),
+                'parent' => 'espacios-comunes',
+            ],
+
+            // Normas de uso
+            [
+                'title' => __('Normas de Uso', 'flavor-chat-ia'),
+                'slug' => 'normas',
+                'content' => Flavor_Page_Creator_V3::page_content([
+                    'title' => __('Normas de Uso', 'flavor-chat-ia'),
+                    'subtitle' => __('Reglas para el uso responsable de los espacios', 'flavor-chat-ia'),
+                    'module' => 'espacios_comunes',
+                    'current' => 'normas',
+                    'content_after' => '[flavor_module_content module="espacios_comunes" action="mostrar_normas"]',
+                ]),
+                'parent' => 'espacios-comunes',
+            ],
+        ];
     }
 
 }

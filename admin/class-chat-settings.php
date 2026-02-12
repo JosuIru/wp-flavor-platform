@@ -124,11 +124,34 @@ class Flavor_Chat_Settings {
                 ? $input['active_provider']
                 : 'claude';
 
-            $sanitized['api_key'] = sanitize_text_field($input['api_key'] ?? $existing['api_key'] ?? '');
-            $sanitized['claude_api_key'] = sanitize_text_field($input['claude_api_key'] ?? '');
-            $sanitized['openai_api_key'] = sanitize_text_field($input['openai_api_key'] ?? '');
-            $sanitized['deepseek_api_key'] = sanitize_text_field($input['deepseek_api_key'] ?? '');
-            $sanitized['mistral_api_key'] = sanitize_text_field($input['mistral_api_key'] ?? '');
+            // Encriptar API keys antes de guardar (seguridad)
+            $encryption = class_exists('Flavor_API_Key_Encryption')
+                ? Flavor_API_Key_Encryption::get_instance()
+                : null;
+
+            $api_key_fields = [
+                'api_key' => $input['api_key'] ?? $existing['api_key'] ?? '',
+                'claude_api_key' => $input['claude_api_key'] ?? '',
+                'openai_api_key' => $input['openai_api_key'] ?? '',
+                'deepseek_api_key' => $input['deepseek_api_key'] ?? '',
+                'mistral_api_key' => $input['mistral_api_key'] ?? '',
+            ];
+
+            foreach ($api_key_fields as $field => $value) {
+                $sanitized_value = sanitize_text_field($value);
+
+                // Si el valor está vacío y ya existía uno encriptado, mantener el existente
+                if (empty($sanitized_value) && !empty($existing[$field])) {
+                    $sanitized[$field] = $existing[$field];
+                } else if (!empty($sanitized_value)) {
+                    // Encriptar si hay clase de encriptación disponible
+                    $sanitized[$field] = $encryption
+                        ? $encryption->encrypt($sanitized_value)
+                        : $sanitized_value;
+                } else {
+                    $sanitized[$field] = '';
+                }
+            }
 
             $sanitized['claude_model'] = sanitize_text_field($input['claude_model'] ?? 'claude-sonnet-4-20250514');
             $sanitized['openai_model'] = sanitize_text_field($input['openai_model'] ?? 'gpt-4o-mini');

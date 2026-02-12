@@ -115,17 +115,26 @@ abstract class Chat_IA_Engine_Base implements Chat_IA_Engine_Interface {
         $settings = get_option('flavor_chat_ia_settings', []);
         $provider_id = $this->get_id();
 
+        // Obtener API key (puede estar encriptada)
+        $encrypted_key = $settings[$provider_id . '_api_key'] ?? '';
+
+        // Compatibilidad con api_key legacy (Claude)
+        if ($provider_id === 'claude' && empty($encrypted_key)) {
+            $encrypted_key = $settings['api_key'] ?? '';
+        }
+
+        // Desencriptar API key si la clase de encriptación está disponible
+        $api_key = $encrypted_key;
+        if (!empty($encrypted_key) && function_exists('flavor_decrypt_api_key')) {
+            $api_key = flavor_decrypt_api_key($encrypted_key);
+        }
+
         // Cargar configuración con el formato {provider}_{key}
         $this->config = [
-            'api_key' => $settings[$provider_id . '_api_key'] ?? '',
+            'api_key' => $api_key,
             'model' => $settings[$provider_id . '_model'] ?? '',
             'max_tokens' => $settings['max_tokens'] ?? 1000,
         ];
-
-        // Compatibilidad con api_key legacy (Claude)
-        if ($provider_id === 'claude' && empty($this->config['api_key'])) {
-            $this->config['api_key'] = $settings['api_key'] ?? '';
-        }
     }
 
     /**

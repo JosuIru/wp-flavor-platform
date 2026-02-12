@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Version del modulo
@@ -2823,5 +2824,51 @@ KNOWLEDGE;
         $method = strtoupper($request->get_method());
         $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
         return Flavor_API_Rate_Limiter::check_rate_limit($tipo);
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Participación Ciudadana', 'flavor-chat-ia'),
+                'slug' => 'participacion',
+                'content' => '<h1>' . __('Participación Ciudadana', 'flavor-chat-ia') . '</h1>
+<p>' . __('Tu voz importa. Participa en las decisiones de tu comunidad, propón ideas y vota por las iniciativas que quieres ver realizadas.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="participacion" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Crear Propuesta', 'flavor-chat-ia'),
+                'slug' => 'participacion/propuesta',
+                'content' => '<h1>' . __('Crear Nueva Propuesta', 'flavor-chat-ia') . '</h1>
+<p>' . __('Comparte tu idea con la comunidad. Describe tu propuesta y consigue el apoyo de tus vecinos.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="participacion" action="crear_propuesta"]',
+                'parent' => 'participacion',
+            ],
+            [
+                'title' => __('Votar Propuestas', 'flavor-chat-ia'),
+                'slug' => 'participacion/votar',
+                'content' => '<h1>' . __('Votar Propuestas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Apoya las propuestas que más te interesan. Tu voto ayuda a priorizar las iniciativas comunitarias.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="participacion" action="votar" columnas="2" limite="20"]',
+                'parent' => 'participacion',
+            ],
+            [
+                'title' => __('Mis Propuestas', 'flavor-chat-ia'),
+                'slug' => 'participacion/mis-propuestas',
+                'content' => '<h1>' . __('Mis Propuestas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta el estado de las propuestas que has creado y el apoyo que han recibido.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="participacion" action="mis_propuestas" columnas="2" limite="10"]',
+                'parent' => 'participacion',
+            ],
+        ];
     }
 }

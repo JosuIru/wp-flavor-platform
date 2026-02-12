@@ -121,7 +121,7 @@ class Flavor_Admin_Menu_Manager {
             'manage_options',
             'flavor-create-pages',
             [$this, 'callback_pages'],
-            13
+            14
         );
 
         add_submenu_page(
@@ -131,7 +131,7 @@ class Flavor_Admin_Menu_Manager {
             'manage_options',
             'flavor-landing-editor',
             [$this, 'callback_landing_editor'],
-            14
+            15
         );
 
         add_submenu_page(
@@ -141,7 +141,7 @@ class Flavor_Admin_Menu_Manager {
             'manage_options',
             'flavor-permissions',
             [$this, 'callback_permissions'],
-            15
+            16
         );
 
         // ══════════════════════════════════════════════════════════════
@@ -395,6 +395,10 @@ class Flavor_Admin_Menu_Manager {
         $slugs_a_remover = [
             // Cualquier duplicado del menú principal
             self::MENU_SLUG,
+            // Módulos que se movieron a categorías
+            'flavor-multimedia',
+            'flavor-radio',
+            'flavor-reciclaje',
         ];
 
         foreach ($slugs_a_remover as $slug) {
@@ -424,9 +428,10 @@ class Flavor_Admin_Menu_Manager {
             'flavor-separator-10' => 10,
             'flavor-app-composer' => 11,
             'flavor-design-settings' => 12,
-            'flavor-create-pages' => 13,
-            'flavor-landing-editor' => 14,
-            'flavor-permissions' => 15,
+            'flavor-layouts' => 13,
+            'flavor-create-pages' => 14,
+            'flavor-landing-editor' => 15,
+            'flavor-permissions' => 16,
             'flavor-separator-20' => 20,
             'flavor-chat-config' => 21,
             'flavor-chat-ia-escalations' => 22,

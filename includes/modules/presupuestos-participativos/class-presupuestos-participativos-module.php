@@ -1695,4 +1695,50 @@ KNOWLEDGE;
         }
     }
 
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Presupuestos Participativos', 'flavor-chat-ia'),
+                'slug' => 'presupuestos-participativos',
+                'content' => '<h1>' . __('Presupuestos Participativos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Decide en qué se invierte el presupuesto de tu barrio. Propón proyectos, vota y sigue la ejecución de los ganadores.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="presupuestos_participativos" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Proponer Proyecto', 'flavor-chat-ia'),
+                'slug' => 'presupuestos-participativos/proponer',
+                'content' => '<h1>' . __('Proponer Nuevo Proyecto', 'flavor-chat-ia') . '</h1>
+<p>' . __('Presenta tu idea de proyecto para el barrio. Indica el presupuesto estimado y la ubicación propuesta.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="presupuestos_participativos" action="proponer"]',
+                'parent' => 'presupuestos-participativos',
+            ],
+            [
+                'title' => __('Votar Proyectos', 'flavor-chat-ia'),
+                'slug' => 'presupuestos-participativos/votar',
+                'content' => '<h1>' . __('Votar Proyectos', 'flavor-chat-ia') . '</h1>
+<p>' . __('Selecciona tus proyectos favoritos. Puedes votar hasta 3 proyectos diferentes.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="presupuestos_participativos" action="votar" columnas="2" limite="20"]',
+                'parent' => 'presupuestos-participativos',
+            ],
+            [
+                'title' => __('Resultados', 'flavor-chat-ia'),
+                'slug' => 'presupuestos-participativos/resultados',
+                'content' => '<h1>' . __('Resultados de la Votación', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta los proyectos ganadores y el estado de ejecución de cada uno.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="presupuestos_participativos" action="resultados" columnas="2" limite="10"]',
+                'parent' => 'presupuestos-participativos',
+            ],
+        ];
+    }
+
 }

@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Notifications_Trait;
 
     /**
      * Constructor
@@ -2489,5 +2490,42 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['radio']);
             update_option('flavor_radio_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Define las páginas del módulo (Page Creator V3)
+     *
+     * @return array Definiciones de páginas
+     */
+    public function get_pages_definition() {
+        return [
+            [
+                'title' => __('Radio Comunitaria', 'flavor-chat-ia'),
+                'slug' => 'radio',
+                'content' => '<h1>' . __('Radio Comunitaria', 'flavor-chat-ia') . '</h1>
+<p>' . __('Sintoniza nuestra radio comunitaria en vivo. Disfruta de programas variados, música, noticias locales y contenido creado por vecinos para vecinos.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="radio" action="listar" columnas="3" limite="12"]',
+                'parent' => 0,
+            ],
+            [
+                'title' => __('Programación', 'flavor-chat-ia'),
+                'slug' => 'programacion',
+                'content' => '<h1>' . __('Programación', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta la programación completa de nuestra radio. Conoce los horarios de emisión de todos los programas y no te pierdas tus favoritos.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="radio" action="programacion"]',
+                'parent' => 'radio',
+            ],
+            [
+                'title' => __('Mis Programas', 'flavor-chat-ia'),
+                'slug' => 'mis-programas',
+                'content' => '<h1>' . __('Mis Programas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Gestiona tus programas de radio, revisa las estadísticas de audiencia y administra tus emisiones.', 'flavor-chat-ia') . '</p>
+
+[flavor_module_listing module="radio" action="mis_items"]',
+                'parent' => 'radio',
+            ],
+        ];
     }
 }

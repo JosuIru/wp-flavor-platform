@@ -106,6 +106,20 @@ interface Flavor_Chat_Module_Interface {
      * @return string Capacidad de WordPress (ej: 'read', 'edit_posts', 'manage_options')
      */
     public function get_required_capability();
+
+    /**
+     * Obtiene las dependencias del módulo (IDs de otros módulos requeridos)
+     *
+     * @return array Array de IDs de módulos requeridos
+     */
+    public function get_dependencies();
+
+    /**
+     * Obtiene las definiciones de páginas del módulo
+     *
+     * @return array Array de definiciones de páginas para el Page Creator
+     */
+    public function get_pages_definition();
 }
 
 /**
@@ -304,5 +318,23 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      */
     public function get_default_capability() {
         return $this->required_capability;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_dependencies() {
+        // Por defecto, ningún módulo tiene dependencias
+        // Los módulos específicos pueden sobrescribir este método
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_pages_definition() {
+        // Por defecto, los módulos no declaran páginas
+        // Los módulos que necesiten páginas deben sobrescribir este método
+        return [];
     }
 }
