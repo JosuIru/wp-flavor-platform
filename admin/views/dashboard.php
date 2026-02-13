@@ -398,6 +398,309 @@ if (!defined('ABSPATH')) {
             </div>
         </div>
 
+        <!-- Fila 5: Red de Comunidades -->
+        <div class="flavor-widgets-row flavor-widgets-row-2">
+            <!-- Widget: Estado de la Red -->
+            <div class="flavor-dashboard-widget flavor-widget-network" data-widget="network-status">
+                <div class="flavor-widget-header">
+                    <h3><span class="dashicons dashicons-networking"></span> <?php echo esc_html__('Red de Comunidades', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-widget-actions">
+                        <button type="button" class="button button-small" id="flavor-sync-network" title="<?php echo esc_attr__('Sincronizar ahora', 'flavor-chat-ia'); ?>">
+                            <span class="dashicons dashicons-update"></span>
+                        </button>
+                        <span class="flavor-widget-handle dashicons dashicons-move"></span>
+                    </div>
+                </div>
+                <div class="flavor-widget-content">
+                    <?php if (!empty($estadisticas_red['nodo_local'])): ?>
+                        <!-- Nodo local -->
+                        <div class="flavor-network-local-node">
+                            <div class="flavor-network-local-badge">
+                                <span class="dashicons dashicons-admin-home"></span>
+                                <strong><?php echo esc_html($estadisticas_red['nodo_local']['nombre']); ?></strong>
+                                <?php if ($estadisticas_red['nodo_local']['verificado']): ?>
+                                    <span class="flavor-verified-badge" title="<?php echo esc_attr__('Verificado', 'flavor-chat-ia'); ?>">
+                                        <span class="dashicons dashicons-yes-alt"></span>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- Estadisticas de red -->
+                        <div class="flavor-network-stats-grid">
+                            <div class="flavor-network-stat">
+                                <span class="flavor-network-stat-value flavor-stat-active"><?php echo esc_html($estadisticas_red['nodos_activos']); ?></span>
+                                <span class="flavor-network-stat-label"><?php echo esc_html__('Nodos activos', 'flavor-chat-ia'); ?></span>
+                            </div>
+                            <div class="flavor-network-stat">
+                                <span class="flavor-network-stat-value"><?php echo esc_html($estadisticas_red['conexiones_federadas']); ?></span>
+                                <span class="flavor-network-stat-label"><?php echo esc_html__('Federados', 'flavor-chat-ia'); ?></span>
+                            </div>
+                            <div class="flavor-network-stat">
+                                <span class="flavor-network-stat-value"><?php echo esc_html($estadisticas_red['mensajes_sin_leer']); ?></span>
+                                <span class="flavor-network-stat-label"><?php echo esc_html__('Mensajes', 'flavor-chat-ia'); ?></span>
+                            </div>
+                            <div class="flavor-network-stat">
+                                <span class="flavor-network-stat-value"><?php echo esc_html($estadisticas_red['contenido_compartido']); ?></span>
+                                <span class="flavor-network-stat-label"><?php echo esc_html__('Compartidos', 'flavor-chat-ia'); ?></span>
+                            </div>
+                        </div>
+
+                        <!-- Alertas de nodos desconectados -->
+                        <?php if (!empty($estadisticas_red['alertas_nodos'])): ?>
+                        <div class="flavor-network-alerts">
+                            <h4><span class="dashicons dashicons-warning"></span> <?php echo esc_html__('Nodos sin conexion reciente', 'flavor-chat-ia'); ?></h4>
+                            <ul class="flavor-network-alerts-list">
+                                <?php foreach (array_slice($estadisticas_red['alertas_nodos'], 0, 5) as $alerta_nodo): ?>
+                                    <li class="flavor-network-alert-item">
+                                        <span class="flavor-alert-node-name"><?php echo esc_html($alerta_nodo['nombre']); ?></span>
+                                        <span class="flavor-alert-days">
+                                            <?php
+                                            if ($alerta_nodo['dias_sin_sync'] !== null) {
+                                                printf(esc_html__('%d dias', 'flavor-chat-ia'), $alerta_nodo['dias_sin_sync']);
+                                            } else {
+                                                echo esc_html__('Nunca sincronizado', 'flavor-chat-ia');
+                                            }
+                                            ?>
+                                        </span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Ultima sincronizacion -->
+                        <div class="flavor-network-sync-info">
+                            <span class="dashicons dashicons-clock"></span>
+                            <?php echo esc_html__('Ultima sincronizacion:', 'flavor-chat-ia'); ?>
+                            <strong id="flavor-last-sync-time">
+                                <?php echo $estadisticas_red['ultima_sincronizacion'] ? esc_html(human_time_diff(strtotime($estadisticas_red['ultima_sincronizacion']))) . ' ' . esc_html__('hace', 'flavor-chat-ia') : esc_html__('Nunca', 'flavor-chat-ia'); ?>
+                            </strong>
+                        </div>
+                    <?php else: ?>
+                        <div class="flavor-network-empty">
+                            <span class="dashicons dashicons-networking"></span>
+                            <p><?php echo esc_html__('No hay nodo local configurado', 'flavor-chat-ia'); ?></p>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network-settings')); ?>" class="button button-primary">
+                                <?php echo esc_html__('Configurar Red', 'flavor-chat-ia'); ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Widget: Modulos Compartidos -->
+            <div class="flavor-dashboard-widget flavor-widget-shared-modules" data-widget="shared-modules">
+                <div class="flavor-widget-header">
+                    <h3><span class="dashicons dashicons-share"></span> <?php echo esc_html__('Modulos Compartidos', 'flavor-chat-ia'); ?></h3>
+                    <span class="flavor-widget-handle dashicons dashicons-move"></span>
+                </div>
+                <div class="flavor-widget-content">
+                    <?php if (!empty($modulos_compartidos)): ?>
+                        <div class="flavor-shared-modules-list">
+                            <?php foreach ($modulos_compartidos as $modulo): ?>
+                                <div class="flavor-shared-module-item">
+                                    <div class="flavor-shared-module-icon">
+                                        <span class="dashicons <?php echo esc_attr($modulo['icono']); ?>"></span>
+                                    </div>
+                                    <div class="flavor-shared-module-info">
+                                        <span class="flavor-shared-module-name"><?php echo esc_html($modulo['etiqueta']); ?></span>
+                                        <span class="flavor-shared-module-stats">
+                                            <?php printf(esc_html__('%d activos / %d total', 'flavor-chat-ia'), $modulo['activos'], $modulo['total']); ?>
+                                        </span>
+                                    </div>
+                                    <div class="flavor-shared-module-bar">
+                                        <div class="flavor-shared-module-bar-fill" style="width: <?php echo $modulo['total'] > 0 ? esc_attr(round(($modulo['activos'] / $modulo['total']) * 100)) : 0; ?>%;"></div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network-content')); ?>" class="flavor-view-all-link">
+                            <?php echo esc_html__('Gestionar contenido compartido', 'flavor-chat-ia'); ?>
+                            <span class="dashicons dashicons-arrow-right-alt2"></span>
+                        </a>
+                    <?php else: ?>
+                        <div class="flavor-shared-modules-empty">
+                            <span class="dashicons dashicons-share"></span>
+                            <p><?php echo esc_html__('No hay contenido compartido aun', 'flavor-chat-ia'); ?></p>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network-content&action=new')); ?>" class="button">
+                                <?php echo esc_html__('Compartir contenido', 'flavor-chat-ia'); ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila 6: Mapa de Actividad -->
+        <div class="flavor-widgets-row flavor-widgets-row-1">
+            <div class="flavor-dashboard-widget flavor-widget-map flavor-widget-large" data-widget="activity-map">
+                <div class="flavor-widget-header">
+                    <h3><span class="dashicons dashicons-location-alt"></span> <?php echo esc_html__('Mapa de Actividad', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-widget-actions">
+                        <div class="flavor-map-filters">
+                            <select id="flavor-map-filter-type" class="flavor-map-filter">
+                                <option value=""><?php echo esc_html__('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                                <option value="comunidad"><?php echo esc_html__('Comunidades', 'flavor-chat-ia'); ?></option>
+                                <option value="cooperativa"><?php echo esc_html__('Cooperativas', 'flavor-chat-ia'); ?></option>
+                                <option value="asociacion"><?php echo esc_html__('Asociaciones', 'flavor-chat-ia'); ?></option>
+                                <option value="empresa"><?php echo esc_html__('Empresas', 'flavor-chat-ia'); ?></option>
+                            </select>
+                            <button type="button" class="button button-small" id="flavor-map-toggle-heatmap" title="<?php echo esc_attr__('Alternar heatmap', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-chart-area"></span>
+                            </button>
+                        </div>
+                        <span class="flavor-widget-handle dashicons dashicons-move"></span>
+                    </div>
+                </div>
+                <div class="flavor-widget-content">
+                    <div id="flavor-activity-map" class="flavor-activity-map" data-center='<?php echo wp_json_encode($datos_mapa_actividad['centro']); ?>' data-zoom="<?php echo esc_attr($datos_mapa_actividad['zoom']); ?>">
+                        <div class="flavor-map-loading">
+                            <span class="spinner is-active"></span>
+                            <p><?php echo esc_html__('Cargando mapa...', 'flavor-chat-ia'); ?></p>
+                        </div>
+                    </div>
+                    <div class="flavor-map-legend">
+                        <div class="flavor-map-legend-item">
+                            <span class="flavor-legend-marker flavor-marker-comunidad"></span>
+                            <?php echo esc_html__('Comunidades', 'flavor-chat-ia'); ?>
+                        </div>
+                        <div class="flavor-map-legend-item">
+                            <span class="flavor-legend-marker flavor-marker-cooperativa"></span>
+                            <?php echo esc_html__('Cooperativas', 'flavor-chat-ia'); ?>
+                        </div>
+                        <div class="flavor-map-legend-item">
+                            <span class="flavor-legend-marker flavor-marker-empresa"></span>
+                            <?php echo esc_html__('Empresas', 'flavor-chat-ia'); ?>
+                        </div>
+                        <div class="flavor-map-legend-item">
+                            <span class="flavor-legend-marker flavor-marker-otro"></span>
+                            <?php echo esc_html__('Otros', 'flavor-chat-ia'); ?>
+                        </div>
+                    </div>
+                    <!-- Estadisticas por zona -->
+                    <?php if (!empty($datos_mapa_actividad['estadisticas_zona'])): ?>
+                    <div class="flavor-map-zone-stats">
+                        <h4><?php echo esc_html__('Zonas mas activas', 'flavor-chat-ia'); ?></h4>
+                        <div class="flavor-zone-stats-list">
+                            <?php foreach (array_slice($datos_mapa_actividad['estadisticas_zona'], 0, 5) as $zona): ?>
+                                <div class="flavor-zone-stat-item">
+                                    <span class="flavor-zone-name"><?php echo esc_html($zona['ciudad'] . ', ' . $zona['pais']); ?></span>
+                                    <span class="flavor-zone-count"><?php printf(esc_html__('%d nodos', 'flavor-chat-ia'), $zona['total_nodos']); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila 7: KPIs con Tendencias y Graficos Avanzados -->
+        <div class="flavor-widgets-row flavor-widgets-row-2">
+            <!-- Widget: KPIs Principales -->
+            <div class="flavor-dashboard-widget flavor-widget-kpis" data-widget="kpis">
+                <div class="flavor-widget-header">
+                    <h3><span class="dashicons dashicons-performance"></span> <?php echo esc_html__('KPIs Principales', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-widget-actions">
+                        <button type="button" class="button button-small" id="flavor-export-stats" title="<?php echo esc_attr__('Exportar a CSV', 'flavor-chat-ia'); ?>">
+                            <span class="dashicons dashicons-download"></span>
+                        </button>
+                        <span class="flavor-widget-handle dashicons dashicons-move"></span>
+                    </div>
+                </div>
+                <div class="flavor-widget-content">
+                    <div class="flavor-kpis-grid">
+                        <?php foreach ($kpis_principales as $clave_kpi => $kpi): ?>
+                            <div class="flavor-kpi-card" data-kpi="<?php echo esc_attr($clave_kpi); ?>">
+                                <div class="flavor-kpi-icon">
+                                    <span class="dashicons <?php echo esc_attr($kpi['icono']); ?>"></span>
+                                </div>
+                                <div class="flavor-kpi-content">
+                                    <span class="flavor-kpi-value"><?php echo esc_html(number_format_i18n($kpi['valor'])); ?></span>
+                                    <span class="flavor-kpi-label"><?php echo esc_html($kpi['etiqueta']); ?></span>
+                                    <?php if (isset($kpi['subtitulo'])): ?>
+                                        <span class="flavor-kpi-subtitle"><?php echo esc_html($kpi['subtitulo']); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if ($kpi['tendencia'] != 0): ?>
+                                    <div class="flavor-kpi-trend flavor-trend-<?php echo esc_attr($kpi['tendencia_tipo']); ?>">
+                                        <span class="dashicons <?php echo $kpi['tendencia'] > 0 ? 'dashicons-arrow-up-alt' : 'dashicons-arrow-down-alt'; ?>"></span>
+                                        <span class="flavor-trend-value"><?php echo esc_html(abs($kpi['tendencia'])); ?>%</span>
+                                        <?php if (isset($kpi['periodo'])): ?>
+                                            <span class="flavor-trend-period"><?php echo esc_html($kpi['periodo']); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget: Comparativas Temporales -->
+            <div class="flavor-dashboard-widget flavor-widget-comparatives" data-widget="comparatives">
+                <div class="flavor-widget-header">
+                    <h3><span class="dashicons dashicons-chart-area"></span> <?php echo esc_html__('Comparativas', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-widget-actions">
+                        <select id="flavor-chart-period" class="flavor-chart-select">
+                            <option value="weekly"><?php echo esc_html__('Semanal', 'flavor-chat-ia'); ?></option>
+                            <option value="monthly"><?php echo esc_html__('Mensual', 'flavor-chat-ia'); ?></option>
+                            <option value="hourly"><?php echo esc_html__('Por hora', 'flavor-chat-ia'); ?></option>
+                        </select>
+                        <span class="flavor-widget-handle dashicons dashicons-move"></span>
+                    </div>
+                </div>
+                <div class="flavor-widget-content">
+                    <div class="flavor-comparatives-chart-container">
+                        <canvas id="flavor-chart-comparatives"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila 8: Nodos Recientes -->
+        <?php if (!empty($estadisticas_red['nodos_recientes'])): ?>
+        <div class="flavor-widgets-row flavor-widgets-row-1">
+            <div class="flavor-dashboard-widget flavor-widget-recent-nodes" data-widget="recent-nodes">
+                <div class="flavor-widget-header">
+                    <h3><span class="dashicons dashicons-welcome-add-page"></span> <?php echo esc_html__('Nodos Conectados Recientemente', 'flavor-chat-ia'); ?></h3>
+                    <span class="flavor-widget-handle dashicons dashicons-move"></span>
+                </div>
+                <div class="flavor-widget-content">
+                    <div class="flavor-recent-nodes-grid">
+                        <?php foreach ($estadisticas_red['nodos_recientes'] as $nodo_reciente): ?>
+                            <div class="flavor-recent-node-card">
+                                <div class="flavor-recent-node-logo">
+                                    <?php if (!empty($nodo_reciente->logo_url)): ?>
+                                        <img src="<?php echo esc_url($nodo_reciente->logo_url); ?>" alt="<?php echo esc_attr($nodo_reciente->nombre); ?>">
+                                    <?php else: ?>
+                                        <span class="dashicons dashicons-admin-site-alt3"></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="flavor-recent-node-info">
+                                    <strong class="flavor-recent-node-name"><?php echo esc_html($nodo_reciente->nombre); ?></strong>
+                                    <span class="flavor-recent-node-type"><?php echo esc_html(ucfirst($nodo_reciente->tipo_entidad)); ?></span>
+                                    <span class="flavor-recent-node-location">
+                                        <span class="dashicons dashicons-location"></span>
+                                        <?php echo esc_html($nodo_reciente->ciudad . ', ' . $nodo_reciente->pais); ?>
+                                    </span>
+                                </div>
+                                <div class="flavor-recent-node-date">
+                                    <?php echo esc_html(human_time_diff(strtotime($nodo_reciente->fecha_registro))); ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network-directory')); ?>" class="flavor-view-all-link">
+                        <?php echo esc_html__('Ver directorio completo', 'flavor-chat-ia'); ?>
+                        <span class="dashicons dashicons-arrow-right-alt2"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
     </div><!-- /.flavor-widgets-container -->
 
 </div><!-- /.flavor-dashboard-wrapper -->

@@ -101,6 +101,39 @@ class Flavor_Dashboard {
                 return current_user_can('manage_options');
             },
         ]);
+
+        // Endpoints para Red de Comunidades
+        register_rest_route('flavor/v1', '/admin/network-stats', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_obtener_estadisticas_red'],
+            'permission_callback' => function () {
+                return current_user_can('manage_options');
+            },
+        ]);
+
+        register_rest_route('flavor/v1', '/admin/network-sync', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'api_sincronizar_red'],
+            'permission_callback' => function () {
+                return current_user_can('manage_options');
+            },
+        ]);
+
+        register_rest_route('flavor/v1', '/admin/activity-map', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_obtener_mapa_actividad'],
+            'permission_callback' => function () {
+                return current_user_can('manage_options');
+            },
+        ]);
+
+        register_rest_route('flavor/v1', '/admin/export-stats', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'api_exportar_estadisticas_csv'],
+            'permission_callback' => function () {
+                return current_user_can('manage_options');
+            },
+        ]);
     }
 
     /**
@@ -194,6 +227,13 @@ class Flavor_Dashboard {
         $alertas = $this->obtener_alertas_pendientes();
         $actividad_reciente = $this->obtener_actividad_reciente();
         $acciones_rapidas = $this->obtener_acciones_rapidas_completas($datos_perfil_activo['id']);
+
+        // Datos de Red de Comunidades
+        $estadisticas_red = $this->obtener_estadisticas_red();
+        $modulos_compartidos = $this->obtener_modulos_compartidos();
+        $datos_mapa_actividad = $this->obtener_datos_mapa_actividad();
+        $kpis_principales = $this->obtener_kpis_principales();
+        $comparativas_temporales = $this->obtener_comparativas_temporales();
 
         // Incluir la vista del dashboard
         include FLAVOR_CHAT_IA_PATH . 'admin/views/dashboard.php';
@@ -478,7 +518,7 @@ class Flavor_Dashboard {
         global $wpdb;
         $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_pedidos)) {
+        if (!$this->tabla_existe($tabla_pedidos)) {
             return 0;
         }
 
@@ -496,7 +536,7 @@ class Flavor_Dashboard {
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_socios_solicitudes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+        if (!$this->tabla_existe($tabla_solicitudes)) {
             return 0;
         }
 
@@ -514,7 +554,7 @@ class Flavor_Dashboard {
         global $wpdb;
         $tabla_ciclos = $wpdb->prefix . 'flavor_gc_ciclos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_ciclos)) {
+        if (!$this->tabla_existe($tabla_ciclos)) {
             return [];
         }
 
@@ -538,7 +578,7 @@ class Flavor_Dashboard {
         global $wpdb;
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+        if (!$this->tabla_existe($tabla_eventos)) {
             return 0;
         }
 
@@ -563,7 +603,7 @@ class Flavor_Dashboard {
         global $wpdb;
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        if (!$this->tabla_existe($tabla_incidencias)) {
             return 0;
         }
 
@@ -603,7 +643,7 @@ class Flavor_Dashboard {
         global $wpdb;
         $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversations';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+        if (!$this->tabla_existe($tabla_conversaciones)) {
             return [];
         }
 
@@ -797,14 +837,14 @@ class Flavor_Dashboard {
         // Conversaciones
         $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversations';
         $conversaciones = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+        if ($this->tabla_existe($tabla_conversaciones)) {
             $conversaciones = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_conversaciones}");
         }
 
         // Mensajes
         $tabla_mensajes = $wpdb->prefix . 'flavor_chat_messages';
         $mensajes = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
+        if ($this->tabla_existe($tabla_mensajes)) {
             $mensajes = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_mensajes}");
         }
 
@@ -891,7 +931,7 @@ class Flavor_Dashboard {
         global $wpdb;
         $tabla_socios = $wpdb->prefix . 'flavor_socios';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+        if (!$this->tabla_existe($tabla_socios)) {
             return 0;
         }
 
@@ -1033,8 +1073,800 @@ class Flavor_Dashboard {
     }
 
     // =========================================================================
+    // RED DE COMUNIDADES - ESTADISTICAS Y DATOS
+    // =========================================================================
+
+    /**
+     * Verifica si una tabla existe en la base de datos
+     *
+     * @param string $nombre_tabla Nombre completo de la tabla
+     * @return bool
+     */
+    private function tabla_existe($nombre_tabla) {
+        global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $resultado = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $nombre_tabla));
+        return $resultado === $nombre_tabla;
+    }
+
+    /**
+     * Obtiene estadisticas de la red de comunidades
+     *
+     * @return array
+     */
+    public function obtener_estadisticas_red() {
+        global $wpdb;
+
+        $cache_key = 'flavor_network_stats';
+        $estadisticas_cacheadas = get_transient($cache_key);
+
+        if ($estadisticas_cacheadas !== false) {
+            return $estadisticas_cacheadas;
+        }
+
+        // Verificar si existe la tabla de nodos
+        $tabla_nodos = $wpdb->prefix . 'flavor_network_nodes';
+        $tabla_conexiones = $wpdb->prefix . 'flavor_network_connections';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_network_messages';
+        $tabla_contenido = $wpdb->prefix . 'flavor_network_shared_content';
+
+        // Valores por defecto
+        $estadisticas = [
+            'nodos_conectados'      => 0,
+            'nodos_activos'         => 0,
+            'nodos_inactivos'       => 0,
+            'nodos_pendientes'      => 0,
+            'conexiones_totales'    => 0,
+            'conexiones_federadas'  => 0,
+            'mensajes_enviados'     => 0,
+            'mensajes_recibidos'    => 0,
+            'mensajes_sin_leer'     => 0,
+            'contenido_compartido'  => 0,
+            'ultima_sincronizacion' => null,
+            'nodo_local'            => null,
+            'alertas_nodos'         => [],
+            'nodos_recientes'       => [],
+        ];
+
+        // Verificar existencia de tablas
+        if (!$this->tabla_existe($tabla_nodos)) {
+            return $estadisticas;
+        }
+
+        // Obtener nodo local
+        $nodo_local = $wpdb->get_row(
+            "SELECT * FROM {$tabla_nodos} WHERE es_nodo_local = 1 LIMIT 1"
+        );
+
+        if ($nodo_local) {
+            $estadisticas['nodo_local'] = [
+                'id'                    => (int) $nodo_local->id,
+                'nombre'                => $nodo_local->nombre,
+                'slug'                  => $nodo_local->slug,
+                'estado'                => $nodo_local->estado,
+                'ultima_sincronizacion' => $nodo_local->ultima_sincronizacion,
+                'verificado'            => (bool) $nodo_local->verificado,
+            ];
+        }
+
+        // Contar nodos por estado
+        $conteos_nodos = $wpdb->get_results(
+            "SELECT estado, COUNT(*) as total FROM {$tabla_nodos} WHERE es_nodo_local = 0 GROUP BY estado"
+        );
+
+        foreach ($conteos_nodos as $conteo) {
+            switch ($conteo->estado) {
+                case 'activo':
+                    $estadisticas['nodos_activos'] = (int) $conteo->total;
+                    break;
+                case 'inactivo':
+                    $estadisticas['nodos_inactivos'] = (int) $conteo->total;
+                    break;
+                case 'pendiente':
+                    $estadisticas['nodos_pendientes'] = (int) $conteo->total;
+                    break;
+            }
+        }
+
+        $estadisticas['nodos_conectados'] = $estadisticas['nodos_activos'] + $estadisticas['nodos_inactivos'] + $estadisticas['nodos_pendientes'];
+
+        // Contar conexiones
+        if ($this->tabla_existe($tabla_conexiones)) {
+            $estadisticas['conexiones_totales'] = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_conexiones} WHERE estado = 'aprobada'"
+            );
+            $estadisticas['conexiones_federadas'] = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_conexiones} WHERE estado = 'aprobada' AND nivel = 'federado'"
+            );
+        }
+
+        // Contar mensajes
+        if ($this->tabla_existe($tabla_mensajes) && $nodo_local) {
+            $estadisticas['mensajes_enviados'] = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_mensajes} WHERE de_nodo_id = %d",
+                $nodo_local->id
+            ));
+            $estadisticas['mensajes_recibidos'] = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_mensajes} WHERE a_nodo_id = %d",
+                $nodo_local->id
+            ));
+            $estadisticas['mensajes_sin_leer'] = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_mensajes} WHERE a_nodo_id = %d AND leido = 0",
+                $nodo_local->id
+            ));
+        }
+
+        // Contar contenido compartido
+        if ($this->tabla_existe($tabla_contenido)) {
+            $estadisticas['contenido_compartido'] = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_contenido} WHERE estado = 'activo'"
+            );
+        }
+
+        // Ultima sincronizacion
+        $ultima_sincronizacion = get_option('flavor_last_node_sync', null);
+        $estadisticas['ultima_sincronizacion'] = $ultima_sincronizacion;
+
+        // Alertas de nodos desconectados (sin sincronizar en ultimos 7 dias)
+        $fecha_limite_alerta = gmdate('Y-m-d H:i:s', strtotime('-7 days'));
+        $nodos_desconectados = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, nombre, slug, ultima_sincronizacion
+             FROM {$tabla_nodos}
+             WHERE es_nodo_local = 0
+             AND estado = 'activo'
+             AND (ultima_sincronizacion IS NULL OR ultima_sincronizacion < %s)
+             ORDER BY ultima_sincronizacion ASC
+             LIMIT 10",
+            $fecha_limite_alerta
+        ));
+
+        foreach ($nodos_desconectados as $nodo_desconectado) {
+            $estadisticas['alertas_nodos'][] = [
+                'id'                    => (int) $nodo_desconectado->id,
+                'nombre'                => $nodo_desconectado->nombre,
+                'slug'                  => $nodo_desconectado->slug,
+                'ultima_sincronizacion' => $nodo_desconectado->ultima_sincronizacion,
+                'dias_sin_sync'         => $nodo_desconectado->ultima_sincronizacion
+                    ? round((time() - strtotime($nodo_desconectado->ultima_sincronizacion)) / DAY_IN_SECONDS)
+                    : null,
+            ];
+        }
+
+        // Nodos conectados recientemente
+        $estadisticas['nodos_recientes'] = $wpdb->get_results(
+            "SELECT id, nombre, slug, tipo_entidad, ciudad, pais, logo_url, fecha_registro, ultima_sincronizacion
+             FROM {$tabla_nodos}
+             WHERE es_nodo_local = 0 AND estado = 'activo'
+             ORDER BY fecha_registro DESC
+             LIMIT 5"
+        );
+
+        // Cachear por 5 minutos
+        set_transient($cache_key, $estadisticas, 5 * MINUTE_IN_SECONDS);
+
+        return $estadisticas;
+    }
+
+    /**
+     * Obtiene modulos que comparten datos en la red
+     *
+     * @return array
+     */
+    public function obtener_modulos_compartidos() {
+        global $wpdb;
+
+        $modulos_compartidos = [];
+
+        $tabla_contenido = $wpdb->prefix . 'flavor_network_shared_content';
+
+        if (!$this->tabla_existe($tabla_contenido)) {
+            return $modulos_compartidos;
+        }
+
+        // Obtener estadisticas por tipo de contenido
+        $resultados = $wpdb->get_results(
+            "SELECT tipo, COUNT(*) as total,
+                    SUM(CASE WHEN estado = 'activo' THEN 1 ELSE 0 END) as activos,
+                    MAX(fecha_actualizacion) as ultima_actualizacion
+             FROM {$tabla_contenido}
+             GROUP BY tipo
+             ORDER BY total DESC"
+        );
+
+        $iconos_tipo = [
+            'producto'     => 'dashicons-cart',
+            'servicio'     => 'dashicons-businessman',
+            'espacio'      => 'dashicons-building',
+            'recurso'      => 'dashicons-hammer',
+            'evento'       => 'dashicons-calendar-alt',
+            'banco_tiempo' => 'dashicons-clock',
+            'saber'        => 'dashicons-book',
+            'excedente'    => 'dashicons-update',
+            'necesidad'    => 'dashicons-sos',
+        ];
+
+        $etiquetas_tipo = [
+            'producto'     => __('Productos', 'flavor-chat-ia'),
+            'servicio'     => __('Servicios', 'flavor-chat-ia'),
+            'espacio'      => __('Espacios', 'flavor-chat-ia'),
+            'recurso'      => __('Recursos', 'flavor-chat-ia'),
+            'evento'       => __('Eventos', 'flavor-chat-ia'),
+            'banco_tiempo' => __('Banco de Tiempo', 'flavor-chat-ia'),
+            'saber'        => __('Saberes', 'flavor-chat-ia'),
+            'excedente'    => __('Excedentes', 'flavor-chat-ia'),
+            'necesidad'    => __('Necesidades', 'flavor-chat-ia'),
+        ];
+
+        foreach ($resultados as $fila) {
+            $modulos_compartidos[] = [
+                'tipo'                 => $fila->tipo,
+                'etiqueta'             => $etiquetas_tipo[$fila->tipo] ?? ucfirst($fila->tipo),
+                'icono'                => $iconos_tipo[$fila->tipo] ?? 'dashicons-admin-generic',
+                'total'                => (int) $fila->total,
+                'activos'              => (int) $fila->activos,
+                'ultima_actualizacion' => $fila->ultima_actualizacion,
+            ];
+        }
+
+        return $modulos_compartidos;
+    }
+
+    /**
+     * Obtiene datos para el mapa de actividad geolocalizado
+     *
+     * @param array $filtros Filtros opcionales
+     * @return array
+     */
+    public function obtener_datos_mapa_actividad($filtros = []) {
+        global $wpdb;
+
+        $tabla_nodos = $wpdb->prefix . 'flavor_network_nodes';
+        $datos_mapa = [
+            'nodos'       => [],
+            'heatmap'     => [],
+            'centro'      => ['lat' => 40.4168, 'lng' => -3.7038], // Default: Madrid
+            'zoom'        => 6,
+            'estadisticas_zona' => [],
+        ];
+
+        if (!$this->tabla_existe($tabla_nodos)) {
+            return $datos_mapa;
+        }
+
+        // Obtener nodos con coordenadas
+        $where_clauses = ["estado = 'activo'", "latitud IS NOT NULL", "longitud IS NOT NULL"];
+        $where_values = [];
+
+        if (!empty($filtros['tipo_entidad'])) {
+            $where_clauses[] = 'tipo_entidad = %s';
+            $where_values[] = sanitize_text_field($filtros['tipo_entidad']);
+        }
+
+        if (!empty($filtros['pais'])) {
+            $where_clauses[] = 'pais = %s';
+            $where_values[] = sanitize_text_field($filtros['pais']);
+        }
+
+        $where_sql = implode(' AND ', $where_clauses);
+        $sql_query = "SELECT id, nombre, slug, tipo_entidad, sector, latitud, longitud, ciudad, pais, logo_url, miembros_count
+                FROM {$tabla_nodos}
+                WHERE {$where_sql}";
+
+        if (!empty($where_values)) {
+            $nodos = $wpdb->get_results($wpdb->prepare($sql_query, $where_values));
+        } else {
+            $nodos = $wpdb->get_results($sql_query);
+        }
+
+        // Preparar datos de nodos para el mapa
+        foreach ($nodos as $nodo) {
+            $datos_mapa['nodos'][] = [
+                'id'             => (int) $nodo->id,
+                'nombre'         => $nodo->nombre,
+                'slug'           => $nodo->slug,
+                'tipo_entidad'   => $nodo->tipo_entidad,
+                'sector'         => $nodo->sector,
+                'lat'            => (float) $nodo->latitud,
+                'lng'            => (float) $nodo->longitud,
+                'ciudad'         => $nodo->ciudad,
+                'pais'           => $nodo->pais,
+                'logo_url'       => $nodo->logo_url,
+                'miembros_count' => (int) $nodo->miembros_count,
+            ];
+
+            // Datos para heatmap (intensidad basada en miembros)
+            $datos_mapa['heatmap'][] = [
+                'lat'       => (float) $nodo->latitud,
+                'lng'       => (float) $nodo->longitud,
+                'intensity' => max(1, (int) $nodo->miembros_count),
+            ];
+        }
+
+        // Calcular centro automatico si hay nodos
+        if (!empty($datos_mapa['nodos'])) {
+            $suma_lat = 0;
+            $suma_lng = 0;
+            foreach ($datos_mapa['nodos'] as $nodo_item) {
+                $suma_lat += $nodo_item['lat'];
+                $suma_lng += $nodo_item['lng'];
+            }
+            $cantidad_nodos = count($datos_mapa['nodos']);
+            $datos_mapa['centro'] = [
+                'lat' => $suma_lat / $cantidad_nodos,
+                'lng' => $suma_lng / $cantidad_nodos,
+            ];
+        }
+
+        // Estadisticas por zona (pais/ciudad)
+        $estadisticas_zona = $wpdb->get_results(
+            "SELECT pais, ciudad, COUNT(*) as total_nodos, SUM(miembros_count) as total_miembros
+             FROM {$tabla_nodos}
+             WHERE estado = 'activo'
+             GROUP BY pais, ciudad
+             ORDER BY total_nodos DESC
+             LIMIT 10"
+        );
+
+        foreach ($estadisticas_zona as $zona) {
+            $datos_mapa['estadisticas_zona'][] = [
+                'pais'           => $zona->pais,
+                'ciudad'         => $zona->ciudad,
+                'total_nodos'    => (int) $zona->total_nodos,
+                'total_miembros' => (int) $zona->total_miembros,
+            ];
+        }
+
+        return $datos_mapa;
+    }
+
+    /**
+     * Obtiene KPIs principales con tendencias
+     *
+     * @return array
+     */
+    public function obtener_kpis_principales() {
+        global $wpdb;
+
+        $kpis = [];
+
+        // Usuario activos con tendencia
+        $usuarios_actuales = $this->contar_usuarios_activos(30);
+        $usuarios_periodo_anterior = $this->contar_usuarios_activos_periodo(60, 30);
+        $tendencia_usuarios = $usuarios_periodo_anterior > 0
+            ? round((($usuarios_actuales - $usuarios_periodo_anterior) / $usuarios_periodo_anterior) * 100, 1)
+            : 0;
+
+        $kpis['usuarios'] = [
+            'valor'           => $usuarios_actuales,
+            'etiqueta'        => __('Usuarios activos (30d)', 'flavor-chat-ia'),
+            'icono'           => 'dashicons-admin-users',
+            'tendencia'       => $tendencia_usuarios,
+            'tendencia_tipo'  => $tendencia_usuarios >= 0 ? 'positiva' : 'negativa',
+            'periodo'         => __('vs. mes anterior', 'flavor-chat-ia'),
+        ];
+
+        // Conversaciones con tendencia
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversations';
+        $conversaciones_mes = 0;
+        $conversaciones_anterior = 0;
+
+        if ($this->tabla_existe($tabla_conversaciones)) {
+            $fecha_inicio_mes = gmdate('Y-m-01');
+            $fecha_inicio_anterior = gmdate('Y-m-01', strtotime('-1 month'));
+
+            $conversaciones_mes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_conversaciones} WHERE started_at >= %s",
+                $fecha_inicio_mes . ' 00:00:00'
+            ));
+
+            $conversaciones_anterior = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_conversaciones}
+                 WHERE started_at >= %s AND started_at < %s",
+                $fecha_inicio_anterior . ' 00:00:00',
+                $fecha_inicio_mes . ' 00:00:00'
+            ));
+        }
+
+        $tendencia_conversaciones = $conversaciones_anterior > 0
+            ? round((($conversaciones_mes - $conversaciones_anterior) / $conversaciones_anterior) * 100, 1)
+            : 0;
+
+        $kpis['conversaciones'] = [
+            'valor'           => $conversaciones_mes,
+            'etiqueta'        => __('Conversaciones este mes', 'flavor-chat-ia'),
+            'icono'           => 'dashicons-format-chat',
+            'tendencia'       => $tendencia_conversaciones,
+            'tendencia_tipo'  => $tendencia_conversaciones >= 0 ? 'positiva' : 'negativa',
+            'periodo'         => __('vs. mes anterior', 'flavor-chat-ia'),
+        ];
+
+        // Nodos de red
+        $estadisticas_red = $this->obtener_estadisticas_red();
+        $kpis['nodos_red'] = [
+            'valor'           => $estadisticas_red['nodos_activos'],
+            'etiqueta'        => __('Nodos activos', 'flavor-chat-ia'),
+            'icono'           => 'dashicons-networking',
+            'tendencia'       => 0,
+            'tendencia_tipo'  => 'neutral',
+            'subtitulo'       => sprintf(__('%d conexiones federadas', 'flavor-chat-ia'), $estadisticas_red['conexiones_federadas']),
+        ];
+
+        // Contenido compartido
+        $kpis['contenido_compartido'] = [
+            'valor'           => $estadisticas_red['contenido_compartido'],
+            'etiqueta'        => __('Items compartidos', 'flavor-chat-ia'),
+            'icono'           => 'dashicons-share',
+            'tendencia'       => 0,
+            'tendencia_tipo'  => 'neutral',
+            'subtitulo'       => __('En la red', 'flavor-chat-ia'),
+        ];
+
+        return $kpis;
+    }
+
+    /**
+     * Cuenta usuarios activos en un periodo especifico
+     *
+     * @param int $dias_inicio Dias desde hoy
+     * @param int $dias_fin Dias desde hoy
+     * @return int
+     */
+    private function contar_usuarios_activos_periodo($dias_inicio, $dias_fin) {
+        global $wpdb;
+
+        $fecha_inicio = gmdate('Y-m-d H:i:s', strtotime("-{$dias_inicio} days"));
+        $fecha_fin = gmdate('Y-m-d H:i:s', strtotime("-{$dias_fin} days"));
+
+        $conteo_usuarios = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*)
+             FROM {$wpdb->users}
+             WHERE user_registered >= %s AND user_registered < %s",
+            $fecha_inicio,
+            $fecha_fin
+        ));
+
+        return intval($conteo_usuarios ?: 0);
+    }
+
+    /**
+     * Obtiene comparativas temporales para graficos
+     *
+     * @return array
+     */
+    public function obtener_comparativas_temporales() {
+        global $wpdb;
+
+        $comparativas = [
+            'usuarios_mensual'       => $this->obtener_usuarios_mensual(),
+            'conversaciones_semanal' => $this->obtener_conversaciones_semanal(),
+            'actividad_por_hora'     => $this->obtener_actividad_por_hora(),
+        ];
+
+        return $comparativas;
+    }
+
+    /**
+     * Obtiene usuarios registrados por mes (ultimos 6 meses)
+     *
+     * @return array
+     */
+    private function obtener_usuarios_mensual() {
+        global $wpdb;
+
+        $datos = ['etiquetas' => [], 'actual' => [], 'anterior' => []];
+
+        for ($mes = 5; $mes >= 0; $mes--) {
+            $fecha_mes = strtotime("-{$mes} months");
+            $fecha_inicio = gmdate('Y-m-01', $fecha_mes);
+            $fecha_fin = gmdate('Y-m-t', $fecha_mes);
+
+            $conteo = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->users}
+                 WHERE user_registered >= %s AND user_registered <= %s",
+                $fecha_inicio . ' 00:00:00',
+                $fecha_fin . ' 23:59:59'
+            ));
+
+            $datos['etiquetas'][] = gmdate_i18n('M', $fecha_mes);
+            $datos['actual'][] = (int) $conteo;
+        }
+
+        return $datos;
+    }
+
+    /**
+     * Obtiene conversaciones por semana (ultimas 8 semanas)
+     *
+     * @return array
+     */
+    private function obtener_conversaciones_semanal() {
+        global $wpdb;
+
+        $datos = ['etiquetas' => [], 'valores' => []];
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversations';
+
+        if (!$this->tabla_existe($tabla_conversaciones)) {
+            return $datos;
+        }
+
+        for ($semana = 7; $semana >= 0; $semana--) {
+            $fecha_inicio = gmdate('Y-m-d', strtotime("-{$semana} weeks monday"));
+            $fecha_fin = gmdate('Y-m-d', strtotime("-{$semana} weeks sunday"));
+
+            $conteo = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_conversaciones}
+                 WHERE started_at >= %s AND started_at <= %s",
+                $fecha_inicio . ' 00:00:00',
+                $fecha_fin . ' 23:59:59'
+            ));
+
+            $datos['etiquetas'][] = gmdate_i18n('d M', strtotime($fecha_inicio));
+            $datos['valores'][] = (int) $conteo;
+        }
+
+        return $datos;
+    }
+
+    /**
+     * Obtiene actividad por hora del dia (ultimos 7 dias)
+     *
+     * @return array
+     */
+    private function obtener_actividad_por_hora() {
+        global $wpdb;
+
+        $datos = ['etiquetas' => [], 'valores' => []];
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversations';
+
+        if (!$this->tabla_existe($tabla_conversaciones)) {
+            // Generar datos por defecto
+            for ($hora = 0; $hora < 24; $hora++) {
+                $datos['etiquetas'][] = sprintf('%02d:00', $hora);
+                $datos['valores'][] = 0;
+            }
+            return $datos;
+        }
+
+        $fecha_limite = gmdate('Y-m-d H:i:s', strtotime('-7 days'));
+
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT HOUR(started_at) as hora, COUNT(*) as total
+             FROM {$tabla_conversaciones}
+             WHERE started_at >= %s
+             GROUP BY HOUR(started_at)
+             ORDER BY hora ASC",
+            $fecha_limite
+        ));
+
+        $actividad_por_hora = array_fill(0, 24, 0);
+        foreach ($resultados as $fila) {
+            $actividad_por_hora[(int) $fila->hora] = (int) $fila->total;
+        }
+
+        for ($hora = 0; $hora < 24; $hora++) {
+            $datos['etiquetas'][] = sprintf('%02d:00', $hora);
+            $datos['valores'][] = $actividad_por_hora[$hora];
+        }
+
+        return $datos;
+    }
+
+    /**
+     * Sincroniza manualmente con la red de nodos
+     *
+     * @return array
+     */
+    public function sincronizar_red_manual() {
+        if (class_exists('Flavor_Network_Manager')) {
+            $gestor_red = Flavor_Network_Manager::get_instance();
+            $gestor_red->sync_with_peers();
+
+            update_option('flavor_last_node_sync', current_time('mysql'));
+
+            // Limpiar cache de estadisticas
+            delete_transient('flavor_network_stats');
+            delete_transient('flavor_dashboard_stats');
+
+            return [
+                'success'    => true,
+                'message'    => __('Sincronizacion completada', 'flavor-chat-ia'),
+                'timestamp'  => current_time('c'),
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => __('El sistema de red no esta disponible', 'flavor-chat-ia'),
+        ];
+    }
+
+    // =========================================================================
     // ENDPOINTS API REST
     // =========================================================================
+
+    /**
+     * Endpoint API para estadisticas de red
+     *
+     * @param WP_REST_Request $peticion
+     * @return WP_REST_Response
+     */
+    public function api_obtener_estadisticas_red($peticion) {
+        $estadisticas_red = $this->obtener_estadisticas_red();
+        $modulos_compartidos = $this->obtener_modulos_compartidos();
+        $kpis = $this->obtener_kpis_principales();
+
+        return new WP_REST_Response([
+            'success' => true,
+            'data'    => [
+                'estadisticas'         => $estadisticas_red,
+                'modulos_compartidos'  => $modulos_compartidos,
+                'kpis'                 => $kpis,
+                'timestamp'            => current_time('c'),
+            ],
+        ], 200);
+    }
+
+    /**
+     * Endpoint API para sincronizacion manual de red
+     *
+     * @param WP_REST_Request $peticion
+     * @return WP_REST_Response
+     */
+    public function api_sincronizar_red($peticion) {
+        $resultado = $this->sincronizar_red_manual();
+
+        return new WP_REST_Response($resultado, $resultado['success'] ? 200 : 500);
+    }
+
+    /**
+     * Endpoint API para mapa de actividad
+     *
+     * @param WP_REST_Request $peticion
+     * @return WP_REST_Response
+     */
+    public function api_obtener_mapa_actividad($peticion) {
+        $filtros = [
+            'tipo_entidad' => $peticion->get_param('tipo'),
+            'pais'         => $peticion->get_param('pais'),
+            'modulo'       => $peticion->get_param('modulo'),
+        ];
+
+        $filtros = array_filter($filtros);
+
+        $datos_mapa = $this->obtener_datos_mapa_actividad($filtros);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'data'    => $datos_mapa,
+        ], 200);
+    }
+
+    /**
+     * Endpoint API para exportar estadisticas a CSV
+     *
+     * @param WP_REST_Request $peticion
+     * @return WP_REST_Response
+     */
+    public function api_exportar_estadisticas_csv($peticion) {
+        $tipo = sanitize_text_field($peticion->get_param('tipo') ?? 'general');
+
+        $datos_exportar = [];
+        $nombre_archivo = 'flavor_stats_' . gmdate('Y-m-d') . '.csv';
+
+        switch ($tipo) {
+            case 'usuarios':
+                $datos_exportar = $this->exportar_estadisticas_usuarios();
+                $nombre_archivo = 'flavor_usuarios_' . gmdate('Y-m-d') . '.csv';
+                break;
+            case 'red':
+                $datos_exportar = $this->exportar_estadisticas_red();
+                $nombre_archivo = 'flavor_red_' . gmdate('Y-m-d') . '.csv';
+                break;
+            case 'conversaciones':
+                $datos_exportar = $this->exportar_estadisticas_conversaciones();
+                $nombre_archivo = 'flavor_conversaciones_' . gmdate('Y-m-d') . '.csv';
+                break;
+            default:
+                $datos_exportar = $this->exportar_estadisticas_generales();
+        }
+
+        return new WP_REST_Response([
+            'success'  => true,
+            'data'     => $datos_exportar,
+            'filename' => $nombre_archivo,
+        ], 200);
+    }
+
+    /**
+     * Exporta estadisticas generales para CSV
+     *
+     * @return array
+     */
+    private function exportar_estadisticas_generales() {
+        $estadisticas = $this->get_dashboard_stats();
+        $estadisticas_red = $this->obtener_estadisticas_red();
+
+        return [
+            ['Metrica', 'Valor', 'Fecha'],
+            ['Usuarios activos (30d)', $estadisticas['usuarios_activos_30d'], current_time('Y-m-d')],
+            ['Modulos activos', $estadisticas['modulos_activos'], current_time('Y-m-d')],
+            ['Conversaciones totales', $estadisticas['conversaciones_raw'], current_time('Y-m-d')],
+            ['Mensajes totales', $estadisticas['mensajes_raw'], current_time('Y-m-d')],
+            ['Nodos en red', $estadisticas_red['nodos_conectados'], current_time('Y-m-d')],
+            ['Nodos activos', $estadisticas_red['nodos_activos'], current_time('Y-m-d')],
+            ['Conexiones federadas', $estadisticas_red['conexiones_federadas'], current_time('Y-m-d')],
+        ];
+    }
+
+    /**
+     * Exporta estadisticas de usuarios para CSV
+     *
+     * @return array
+     */
+    private function exportar_estadisticas_usuarios() {
+        $datos_mensuales = $this->obtener_usuarios_mensual();
+        $filas_csv = [['Mes', 'Usuarios Nuevos']];
+
+        foreach ($datos_mensuales['etiquetas'] as $indice => $mes) {
+            $filas_csv[] = [$mes, $datos_mensuales['actual'][$indice]];
+        }
+
+        return $filas_csv;
+    }
+
+    /**
+     * Exporta estadisticas de red para CSV
+     *
+     * @return array
+     */
+    private function exportar_estadisticas_red() {
+        global $wpdb;
+
+        $tabla_nodos = $wpdb->prefix . 'flavor_network_nodes';
+
+        if (!$this->tabla_existe($tabla_nodos)) {
+            return [['Sin datos de red disponibles']];
+        }
+
+        $nodos = $wpdb->get_results(
+            "SELECT nombre, tipo_entidad, ciudad, pais, estado, miembros_count, fecha_registro
+             FROM {$tabla_nodos}
+             WHERE es_nodo_local = 0
+             ORDER BY nombre ASC"
+        );
+
+        $filas_csv = [['Nombre', 'Tipo', 'Ciudad', 'Pais', 'Estado', 'Miembros', 'Fecha Registro']];
+
+        foreach ($nodos as $nodo) {
+            $filas_csv[] = [
+                $nodo->nombre,
+                $nodo->tipo_entidad,
+                $nodo->ciudad,
+                $nodo->pais,
+                $nodo->estado,
+                $nodo->miembros_count,
+                $nodo->fecha_registro,
+            ];
+        }
+
+        return $filas_csv;
+    }
+
+    /**
+     * Exporta estadisticas de conversaciones para CSV
+     *
+     * @return array
+     */
+    private function exportar_estadisticas_conversaciones() {
+        $datos_semanales = $this->obtener_conversaciones_semanal();
+        $filas_csv = [['Semana', 'Conversaciones']];
+
+        foreach ($datos_semanales['etiquetas'] as $indice => $semana) {
+            $filas_csv[] = [$semana, $datos_semanales['valores'][$indice]];
+        }
+
+        return $filas_csv;
+    }
 
     /**
      * Endpoint API para estadisticas
@@ -1066,6 +1898,9 @@ class Flavor_Dashboard {
      */
     public function api_obtener_datos_graficos($request) {
         $datos_graficos = $this->obtener_datos_graficos();
+
+        // Agregar datos comparativos
+        $datos_graficos['comparativas'] = $this->obtener_comparativas_temporales();
 
         return new WP_REST_Response([
             'success' => true,

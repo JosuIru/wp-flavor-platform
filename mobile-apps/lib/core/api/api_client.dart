@@ -405,6 +405,30 @@ class ApiClient {
   }
 
   // ==========================================
+  // DASHBOARD CHARTS
+  // ==========================================
+
+  /// Obtener datos para graficos del dashboard del cliente
+  /// [type] puede ser: 'weekly_activity', 'distribution', 'trends'
+  /// [days] numero de dias de datos a obtener (por defecto 7)
+  Future<ApiResponse<Map<String, dynamic>>> getDashboardCharts({
+    required String type,
+    int days = 7,
+    String? moduleFilter,
+  }) async {
+    try {
+      final response = await _dio.get('/client/charts', queryParameters: {
+        'type': type,
+        'days': days,
+        if (moduleFilter != null) 'module': moduleFilter,
+      });
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
   // ADMIN
   // ==========================================
 

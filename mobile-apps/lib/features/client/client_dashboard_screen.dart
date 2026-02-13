@@ -12,6 +12,9 @@ import '../../core/utils/haptics.dart';
 import 'widgets/client_stats_card.dart';
 import 'widgets/quick_actions_grid.dart';
 import 'widgets/activity_timeline.dart';
+import 'widgets/dashboard_map_widget.dart';
+import 'widgets/network_status_widget.dart';
+import 'widgets/stats_charts_widget.dart';
 
 /// Provider para metricas del usuario desde el servicio
 final enhancedUserMetricsProvider = FutureProvider<List<UserStatistic>>((ref) async {
@@ -225,6 +228,13 @@ class _ClientDashboardScreenState extends ConsumerState<ClientDashboardScreen> {
     ref.invalidate(userNotificationsProvider);
     ref.invalidate(userProfileProvider);
 
+    // Invalidar nuevos providers de widgets mejorados
+    ref.invalidate(mapPointsOfInterestProvider);
+    ref.invalidate(networkStatusProvider);
+    ref.invalidate(quickStatsProvider);
+    ref.invalidate(weeklyActivityProvider);
+    ref.invalidate(distributionChartProvider);
+
     // Esperar un poco para feedback visual
     await Future.delayed(const Duration(milliseconds: 500));
 
@@ -263,6 +273,19 @@ class _ClientDashboardScreenState extends ConsumerState<ClientDashboardScreen> {
               ),
             ),
 
+            // Quick Stats Panel horizontal
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                child: QuickStatsPanel(
+                  onStatTap: (quickStat) {
+                    Haptics.light();
+                    debugPrint('Tap on quick stat: ${quickStat.id}');
+                  },
+                ),
+              ),
+            ),
+
             // Metricas del usuario
             SliverToBoxAdapter(
               child: Padding(
@@ -281,11 +304,54 @@ class _ClientDashboardScreenState extends ConsumerState<ClientDashboardScreen> {
               ),
             ),
 
-            // Graficos de actividad
+            // Mapa interactivo de puntos de interes
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                child: _ChartsSection(),
+                child: DashboardMapWidget(
+                  height: 220,
+                  showControls: true,
+                  enableClustering: true,
+                  onPointTap: (point) {
+                    Haptics.medium();
+                    // Navegar al modulo correspondiente
+                    if (widget.onNavigateToModule != null) {
+                      widget.onNavigateToModule!(point.moduleType);
+                    }
+                  },
+                ),
+              ),
+            ),
+
+            // Estado de la red y comunidades
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                child: NetworkStatusWidget(
+                  showDetails: true,
+                  onTap: () {
+                    Haptics.light();
+                    widget.onNavigateToModule?.call('network');
+                  },
+                  onViewCommunities: () {
+                    Haptics.light();
+                    widget.onNavigateToModule?.call('communities');
+                  },
+                  onViewResources: () {
+                    Haptics.light();
+                    widget.onNavigateToModule?.call('shared_resources');
+                  },
+                ),
+              ),
+            ),
+
+            // Graficos de actividad mejorados
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                child: _EnhancedChartsSection(
+                  onNavigateToModule: widget.onNavigateToModule,
+                ),
               ),
             ),
 
@@ -905,6 +971,63 @@ class _DistributionPieChartWidget extends ConsumerWidget {
         debugPrint('[DistributionPieChart] Error: $error');
         return const SizedBox.shrink();
       },
+    );
+  }
+}
+
+/// Seccion de graficos mejorada con animaciones y graficos interactivos
+class _EnhancedChartsSection extends StatelessWidget {
+  final Function(String)? onNavigateToModule;
+
+  const _EnhancedChartsSection({this.onNavigateToModule});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(
+            'Mi Actividad',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // Grafico de actividad semanal animado
+        AnimatedWeeklyActivityChart(
+          title: 'Actividad de los ultimos 7 dias',
+          onBarTap: (activityData) {
+            Haptics.selection();
+            debugPrint('Tap on day: ${activityData.dayLabel}');
+          },
+        ),
+
+        const SizedBox(height: 16),
+
+        // Grafico de distribucion circular animado
+        AnimatedDistributionPieChart(
+          title: 'Distribucion por actividad',
+          onSectionTap: (distributionData) {
+            Haptics.selection();
+            debugPrint('Tap on section: ${distributionData.label}');
+            // Navegar al modulo correspondiente si es posible
+            final moduleRoutes = {
+              'Reservas': 'reservations',
+              'Pedidos': 'grupos_consumo',
+              'Intercambios': 'banco_tiempo',
+              'Eventos': 'eventos',
+            };
+            final route = moduleRoutes[distributionData.label];
+            if (route != null) {
+              onNavigateToModule?.call(route);
+            }
+          },
+        ),
+      ],
     );
   }
 }
