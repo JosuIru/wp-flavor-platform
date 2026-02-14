@@ -33,11 +33,17 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         // Cargar clases auxiliares
         $this->cargar_clases_auxiliares();
 
+        // Cargar sistema de pagos
+        $this->cargar_sistema_pagos();
+
         // Cargar API REST para móviles
         $this->cargar_api_rest();
 
         // Integrar sistema de notificaciones
         $this->init_notifications();
+
+        // Registrar widget de dashboard
+        add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
     }
 
     /**
@@ -229,6 +235,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             'class-gc-dashboard-tab.php',
             'class-gc-notification-channels.php',
             'class-gc-export.php',
+            'class-gc-conciencia-features.php', // v4.2.0: Sello de Conciencia
         ];
 
         foreach ($clases as $clase) {
@@ -265,6 +272,10 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         }
         if (class_exists('Flavor_GC_Frontend_Controller')) {
             Flavor_GC_Frontend_Controller::get_instance();
+        }
+        // v4.2.0: Funcionalidades Sello de Conciencia
+        if (class_exists('Flavor_GC_Conciencia_Features')) {
+            Flavor_GC_Conciencia_Features::get_instance();
         }
     }
 
@@ -4286,5 +4297,84 @@ KNOWLEDGE;
                 'parent' => 'grupos-consumo',
             ],
         ];
+    }
+
+    /**
+     * Carga el sistema de pagos
+     *
+     * @return void
+     * @since 4.1.0
+     */
+    private function cargar_sistema_pagos() {
+        $base = dirname(__FILE__);
+
+        // Cargar clase base y manager
+        $payment_files = [
+            'class-gc-payment-gateway.php',
+            'class-gc-payment-manager.php',
+        ];
+
+        foreach ($payment_files as $file) {
+            $path = $base . '/' . $file;
+            if (file_exists($path)) {
+                require_once $path;
+            }
+        }
+
+        // Cargar pasarelas de pago
+        $gateway_path = $base . '/gateways/';
+        if (is_dir($gateway_path)) {
+            $gateways = [
+                'class-gc-gateway-pickup.php',
+                'class-gc-gateway-stripe.php',
+                'class-gc-gateway-paypal.php',
+                'class-gc-gateway-woocommerce.php',
+            ];
+
+            foreach ($gateways as $gateway_file) {
+                $full_path = $gateway_path . $gateway_file;
+                if (file_exists($full_path)) {
+                    require_once $full_path;
+                }
+            }
+        }
+
+        // Inicializar manager y registrar pasarelas
+        if (class_exists('Flavor_GC_Payment_Manager')) {
+            $manager = Flavor_GC_Payment_Manager::get_instance();
+
+            // Registrar pasarelas disponibles
+            if (class_exists('Flavor_GC_Gateway_Pickup')) {
+                $manager->register_gateway(new Flavor_GC_Gateway_Pickup());
+            }
+            if (class_exists('Flavor_GC_Gateway_Stripe')) {
+                $manager->register_gateway(new Flavor_GC_Gateway_Stripe());
+            }
+            if (class_exists('Flavor_GC_Gateway_PayPal')) {
+                $manager->register_gateway(new Flavor_GC_Gateway_PayPal());
+            }
+            if (class_exists('Flavor_GC_Gateway_WooCommerce')) {
+                $manager->register_gateway(new Flavor_GC_Gateway_WooCommerce());
+            }
+        }
+    }
+
+    /**
+     * Registra el widget de dashboard
+     *
+     * @param Flavor_Widget_Registry $registry Registro de widgets
+     * @return void
+     * @since 4.1.0
+     */
+    public function register_dashboard_widget($registry) {
+        $widget_path = dirname(__FILE__) . '/class-gc-dashboard-widget.php';
+
+        if (!class_exists('Flavor_GC_Dashboard_Widget') && file_exists($widget_path)) {
+            require_once $widget_path;
+        }
+
+        if (class_exists('Flavor_GC_Dashboard_Widget')) {
+            $registry->register(new Flavor_GC_Dashboard_Widget());
+        }
     }
 }

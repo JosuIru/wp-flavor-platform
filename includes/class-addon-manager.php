@@ -114,6 +114,18 @@ class Flavor_Addon_Manager {
 
         // Hook para admin notices
         add_action('admin_notices', [$this, 'show_addon_notices']);
+
+        // Página de administración
+        add_action('admin_menu', [$this, 'register_admin_menu'], 90);
+
+        // Handler de acciones de formulario
+        add_action('admin_init', [$this, 'handle_addon_actions']);
+
+        // AJAX handlers
+        add_action('wp_ajax_flavor_toggle_addon', [$this, 'ajax_toggle_addon']);
+
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
     }
 
     /**
@@ -559,5 +571,392 @@ class Flavor_Addon_Manager {
                 return !empty($addon['is_premium']);
             }))
         ];
+    }
+
+    /**
+     * Registra el menú de administración
+     *
+     * @return void
+     */
+    public function register_admin_menu() {
+        add_submenu_page(
+            'flavor-chat-ia',
+            __('Addons', 'flavor-chat-ia'),
+            __('Addons', 'flavor-chat-ia'),
+            'manage_options',
+            'flavor-addons',
+            [$this, 'render_admin_page']
+        );
+    }
+
+    /**
+     * Renderiza la página de administración de addons
+     *
+     * @return void
+     */
+    public function render_admin_page() {
+        $addons = $this->addons_registrados;
+        $total_activos = count($this->addons_activos);
+        $total_addons = count($addons);
+
+        ?>
+        <div class="wrap flavor-addons-page">
+            <h1 class="wp-heading-inline">
+                <span class="dashicons dashicons-admin-plugins" style="margin-right: 10px;"></span>
+                <?php esc_html_e('Gestión de Addons', 'flavor-chat-ia'); ?>
+            </h1>
+
+            <div class="flavor-addons-summary">
+                <span class="flavor-addons-count">
+                    <?php printf(
+                        esc_html__('%d de %d addons activos', 'flavor-chat-ia'),
+                        $total_activos,
+                        $total_addons
+                    ); ?>
+                </span>
+            </div>
+
+            <hr class="wp-header-end">
+
+            <?php if (empty($addons)): ?>
+                <div class="flavor-addons-empty">
+                    <span class="dashicons dashicons-plugins-checked"></span>
+                    <h2><?php esc_html_e('No hay addons instalados', 'flavor-chat-ia'); ?></h2>
+                    <p><?php esc_html_e('Los addons extienden las funcionalidades de Flavor Chat IA.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Coloca los addons en la carpeta /addons/ del plugin.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="flavor-addons-grid">
+                    <?php foreach ($addons as $addon_id => $addon):
+                        $esta_activo = in_array($addon_id, $this->addons_activos, true);
+                        $esta_cargado = isset($this->addons_cargados[$addon_id]);
+                    ?>
+                        <div class="flavor-addon-card <?php echo $esta_activo ? 'addon-active' : 'addon-inactive'; ?>" data-addon-id="<?php echo esc_attr($addon_id); ?>">
+                            <div class="addon-header">
+                                <span class="addon-icon dashicons <?php echo esc_attr($addon['icon'] ?? 'dashicons-admin-plugins'); ?>"></span>
+                                <div class="addon-info">
+                                    <h3 class="addon-name">
+                                        <?php echo esc_html($addon['name']); ?>
+                                        <?php if (!empty($addon['is_premium'])): ?>
+                                            <span class="addon-premium-badge"><?php esc_html_e('PRO', 'flavor-chat-ia'); ?></span>
+                                        <?php endif; ?>
+                                    </h3>
+                                    <span class="addon-version">v<?php echo esc_html($addon['version']); ?></span>
+                                </div>
+                                <div class="addon-status">
+                                    <?php if ($esta_activo): ?>
+                                        <span class="status-badge status-active"><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></span>
+                                    <?php else: ?>
+                                        <span class="status-badge status-inactive"><?php esc_html_e('Inactivo', 'flavor-chat-ia'); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <div class="addon-body">
+                                <p class="addon-description"><?php echo esc_html($addon['description']); ?></p>
+
+                                <?php if (!empty($addon['author'])): ?>
+                                    <p class="addon-author">
+                                        <strong><?php esc_html_e('Autor:', 'flavor-chat-ia'); ?></strong>
+                                        <?php if (!empty($addon['author_uri'])): ?>
+                                            <a href="<?php echo esc_url($addon['author_uri']); ?>" target="_blank">
+                                                <?php echo esc_html($addon['author']); ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <?php echo esc_html($addon['author']); ?>
+                                        <?php endif; ?>
+                                    </p>
+                                <?php endif; ?>
+
+                                <?php if (!empty($addon['requires_core']) && version_compare(FLAVOR_CHAT_IA_VERSION, $addon['requires_core'], '<')): ?>
+                                    <div class="addon-requirements-error">
+                                        <span class="dashicons dashicons-warning"></span>
+                                        <?php printf(
+                                            esc_html__('Requiere Flavor Chat IA %s o superior', 'flavor-chat-ia'),
+                                            esc_html($addon['requires_core'])
+                                        ); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="addon-footer">
+                                <div class="addon-actions">
+                                    <?php if ($esta_activo): ?>
+                                        <form method="post" style="display:inline;">
+                                            <?php wp_nonce_field('flavor_addon_action', 'addon_nonce'); ?>
+                                            <input type="hidden" name="addon_id" value="<?php echo esc_attr($addon_id); ?>">
+                                            <input type="hidden" name="addon_action" value="deactivate">
+                                            <button type="submit" class="button addon-deactivate">
+                                                <?php esc_html_e('Desactivar', 'flavor-chat-ia'); ?>
+                                            </button>
+                                        </form>
+                                        <?php if (!empty($addon['settings_page'])): ?>
+                                            <a href="<?php echo esc_url($addon['settings_page']); ?>" class="button button-primary">
+                                                <?php esc_html_e('Configurar', 'flavor-chat-ia'); ?>
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <form method="post" style="display:inline;">
+                                            <?php wp_nonce_field('flavor_addon_action', 'addon_nonce'); ?>
+                                            <input type="hidden" name="addon_id" value="<?php echo esc_attr($addon_id); ?>">
+                                            <input type="hidden" name="addon_action" value="activate">
+                                            <button type="submit" class="button button-primary addon-activate">
+                                                <?php esc_html_e('Activar', 'flavor-chat-ia'); ?>
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
+
+                                    <?php if (!empty($addon['documentation_url'])): ?>
+                                        <a href="<?php echo esc_url($addon['documentation_url']); ?>" class="button addon-docs" target="_blank" title="<?php esc_attr_e('Documentación', 'flavor-chat-ia'); ?>">
+                                            <span class="dashicons dashicons-book-alt"></span>
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .flavor-addons-page { max-width: 1400px; }
+        .flavor-addons-summary { margin: 1rem 0; color: #666; }
+        .flavor-addons-empty { text-align: center; padding: 4rem 2rem; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
+        .flavor-addons-empty .dashicons { font-size: 4rem; width: 4rem; height: 4rem; color: #ccc; }
+        .flavor-addons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .flavor-addon-card { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        .flavor-addon-card.addon-active { border-color: #4caf50; box-shadow: 0 0 0 1px #4caf50; }
+        .addon-header { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border-bottom: 1px solid #eee; background: #f9f9f9; }
+        .addon-icon { font-size: 2rem; width: 2rem; height: 2rem; color: #2271b1; }
+        .addon-info { flex: 1; }
+        .addon-name { margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .addon-version { font-size: 0.8rem; color: #666; }
+        .addon-premium-badge { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 600; }
+        .status-badge { padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+        .status-active { background: #e8f5e9; color: #2e7d32; }
+        .status-inactive { background: #f5f5f5; color: #666; }
+        .addon-body { padding: 1rem; flex: 1; }
+        .addon-description { margin: 0 0 0.75rem; font-size: 0.9rem; color: #555; line-height: 1.5; }
+        .addon-author { font-size: 0.85rem; color: #666; margin: 0; }
+        .addon-requirements-error { background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 0.5rem; margin-top: 0.75rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+        .addon-requirements-error .dashicons { color: #ff9800; }
+        .addon-footer { padding: 0.75rem 1rem; border-top: 1px solid #eee; background: #f9f9f9; }
+        .addon-actions { display: flex; gap: 0.5rem; }
+        .addon-docs .dashicons { vertical-align: middle; margin: 0; }
+        @media (max-width: 782px) {
+            .flavor-addons-grid { grid-template-columns: 1fr; }
+        }
+        </style>
+        <?php
+    }
+
+    /**
+     * Maneja las acciones de addon desde formularios
+     *
+     * @return void
+     */
+    public function handle_addon_actions() {
+        if (!isset($_POST['addon_action']) || !isset($_POST['addon_id'])) {
+            return;
+        }
+
+        if (!check_admin_referer('flavor_addon_action', 'addon_nonce')) {
+            return;
+        }
+
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $addon_id = sanitize_text_field($_POST['addon_id']);
+        $action = sanitize_text_field($_POST['addon_action']);
+
+        $resultado = null;
+
+        switch ($action) {
+            case 'activate':
+                $resultado = $this->activate_addon($addon_id);
+                break;
+
+            case 'deactivate':
+                $resultado = $this->deactivate_addon($addon_id);
+                break;
+        }
+
+        // Guardar resultado para mostrar
+        if (is_wp_error($resultado)) {
+            set_transient('flavor_addon_action_result', [
+                'success' => false,
+                'message' => $resultado->get_error_message(),
+            ], 30);
+        } else {
+            $mensaje = $action === 'activate'
+                ? sprintf(__('Addon "%s" activado correctamente', 'flavor-chat-ia'), $this->addons_registrados[$addon_id]['name'] ?? $addon_id)
+                : sprintf(__('Addon "%s" desactivado correctamente', 'flavor-chat-ia'), $this->addons_registrados[$addon_id]['name'] ?? $addon_id);
+
+            set_transient('flavor_addon_action_result', [
+                'success' => true,
+                'message' => $mensaje,
+            ], 30);
+        }
+
+        // Redirigir
+        wp_redirect(admin_url('admin.php?page=flavor-addons'));
+        exit;
+    }
+
+    /**
+     * AJAX: Alternar estado de addon
+     *
+     * @return void
+     */
+    public function ajax_toggle_addon() {
+        check_ajax_referer('flavor_addon_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $addon_id = sanitize_text_field($_POST['addon_id'] ?? '');
+        $action = sanitize_text_field($_POST['action_type'] ?? 'toggle');
+
+        if (empty($addon_id)) {
+            wp_send_json_error(['message' => __('ID de addon requerido', 'flavor-chat-ia')]);
+        }
+
+        if ($action === 'activate' || (!in_array($addon_id, $this->addons_activos) && $action === 'toggle')) {
+            $resultado = $this->activate_addon($addon_id);
+        } else {
+            $resultado = $this->deactivate_addon($addon_id);
+        }
+
+        if (is_wp_error($resultado)) {
+            wp_send_json_error(['message' => $resultado->get_error_message()]);
+        }
+
+        wp_send_json_success([
+            'message' => __('Operación completada', 'flavor-chat-ia'),
+            'is_active' => in_array($addon_id, $this->addons_activos),
+        ]);
+    }
+
+    /**
+     * Registra rutas REST API
+     *
+     * @return void
+     */
+    public function register_rest_routes() {
+        register_rest_route('flavor/v1', '/addons', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_get_addons'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+        ]);
+
+        register_rest_route('flavor/v1', '/addons/(?P<id>[a-zA-Z0-9_-]+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_get_addon'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+        ]);
+
+        register_rest_route('flavor/v1', '/addons/(?P<id>[a-zA-Z0-9_-]+)/activate', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_activate_addon'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+        ]);
+
+        register_rest_route('flavor/v1', '/addons/(?P<id>[a-zA-Z0-9_-]+)/deactivate', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_deactivate_addon'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
+        ]);
+    }
+
+    /**
+     * REST: Obtener todos los addons
+     *
+     * @param WP_REST_Request $request Request
+     * @return WP_REST_Response
+     */
+    public function rest_get_addons($request) {
+        $addons = [];
+        foreach ($this->addons_registrados as $id => $addon) {
+            $addons[$id] = array_merge($addon, [
+                'id' => $id,
+                'is_active' => in_array($id, $this->addons_activos, true),
+                'is_loaded' => isset($this->addons_cargados[$id]),
+            ]);
+        }
+
+        return new WP_REST_Response([
+            'addons' => $addons,
+            'stats' => self::get_stats(),
+        ], 200);
+    }
+
+    /**
+     * REST: Obtener un addon
+     *
+     * @param WP_REST_Request $request Request
+     * @return WP_REST_Response
+     */
+    public function rest_get_addon($request) {
+        $addon_id = $request['id'];
+
+        if (!isset($this->addons_registrados[$addon_id])) {
+            return new WP_REST_Response(['message' => 'Addon not found'], 404);
+        }
+
+        $addon = $this->addons_registrados[$addon_id];
+        $addon['id'] = $addon_id;
+        $addon['is_active'] = in_array($addon_id, $this->addons_activos, true);
+        $addon['is_loaded'] = isset($this->addons_cargados[$addon_id]);
+
+        return new WP_REST_Response($addon, 200);
+    }
+
+    /**
+     * REST: Activar addon
+     *
+     * @param WP_REST_Request $request Request
+     * @return WP_REST_Response
+     */
+    public function rest_activate_addon($request) {
+        $resultado = $this->activate_addon($request['id']);
+
+        if (is_wp_error($resultado)) {
+            return new WP_REST_Response([
+                'success' => false,
+                'message' => $resultado->get_error_message(),
+            ], 400);
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'message' => __('Addon activado', 'flavor-chat-ia'),
+        ], 200);
+    }
+
+    /**
+     * REST: Desactivar addon
+     *
+     * @param WP_REST_Request $request Request
+     * @return WP_REST_Response
+     */
+    public function rest_deactivate_addon($request) {
+        $resultado = $this->deactivate_addon($request['id']);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'message' => __('Addon desactivado', 'flavor-chat-ia'),
+        ], 200);
     }
 }

@@ -193,6 +193,174 @@ function flavor_grupos_consumo_install() {
         KEY estado (estado)
     ) $charset_collate;";
 
+    // Tabla de pagos (v4.1.0)
+    $tabla_pagos = $wpdb->prefix . 'flavor_gc_pagos';
+    $sql_pagos = "CREATE TABLE $tabla_pagos (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        entrega_id bigint(20) unsigned NOT NULL,
+        usuario_id bigint(20) unsigned NOT NULL,
+        ciclo_id bigint(20) unsigned NOT NULL,
+        pasarela varchar(50) NOT NULL,
+        transaction_id varchar(255) DEFAULT NULL,
+        importe decimal(10,2) NOT NULL,
+        moneda varchar(3) DEFAULT 'EUR',
+        estado enum('pendiente','procesando','completado','fallido','reembolsado','cancelado') DEFAULT 'pendiente',
+        datos_pasarela longtext DEFAULT NULL,
+        ip_cliente varchar(45) DEFAULT NULL,
+        fecha_creacion datetime DEFAULT NULL,
+        fecha_actualizacion datetime DEFAULT NULL,
+        PRIMARY KEY (id),
+        KEY entrega_id (entrega_id),
+        KEY usuario_id (usuario_id),
+        KEY ciclo_id (ciclo_id),
+        KEY pasarela (pasarela),
+        KEY estado (estado),
+        KEY transaction_id (transaction_id(191)),
+        KEY fecha_creacion (fecha_creacion)
+    ) $charset_collate;";
+
+    // =====================================================
+    // TABLAS v4.2.0 - Sello de Conciencia (+7 pts)
+    // =====================================================
+
+    // Tabla de excedentes solidarios
+    // Gestiona productos sobrantes de cada ciclo para donar o redistribuir
+    $tabla_excedentes = $wpdb->prefix . 'flavor_gc_excedentes';
+    $sql_excedentes = "CREATE TABLE $tabla_excedentes (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        ciclo_id bigint(20) unsigned NOT NULL,
+        producto_id bigint(20) unsigned NOT NULL,
+        cantidad_sobrante decimal(10,2) NOT NULL,
+        cantidad_reclamada decimal(10,2) DEFAULT 0.00,
+        cantidad_donada decimal(10,2) DEFAULT 0.00,
+        estado enum('disponible','parcial','agotado','donado','descartado') DEFAULT 'disponible',
+        destino_donacion varchar(255) DEFAULT NULL,
+        precio_solidario decimal(10,2) DEFAULT NULL,
+        motivo_excedente varchar(100) DEFAULT NULL,
+        notas text DEFAULT NULL,
+        fecha_registro datetime DEFAULT NULL,
+        fecha_cierre datetime DEFAULT NULL,
+        PRIMARY KEY (id),
+        KEY ciclo_id (ciclo_id),
+        KEY producto_id (producto_id),
+        KEY estado (estado),
+        KEY fecha_registro (fecha_registro)
+    ) $charset_collate;";
+
+    // Tabla de reclamaciones de excedentes
+    $tabla_excedentes_reclamaciones = $wpdb->prefix . 'flavor_gc_excedentes_reclamaciones';
+    $sql_excedentes_reclamaciones = "CREATE TABLE $tabla_excedentes_reclamaciones (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        excedente_id bigint(20) unsigned NOT NULL,
+        usuario_id bigint(20) unsigned NOT NULL,
+        cantidad decimal(10,2) NOT NULL,
+        precio_pagado decimal(10,2) DEFAULT 0.00,
+        estado enum('pendiente','confirmada','recogida','cancelada') DEFAULT 'pendiente',
+        fecha_reclamacion datetime DEFAULT NULL,
+        fecha_recogida datetime DEFAULT NULL,
+        notas varchar(255) DEFAULT NULL,
+        PRIMARY KEY (id),
+        KEY excedente_id (excedente_id),
+        KEY usuario_id (usuario_id),
+        KEY estado (estado)
+    ) $charset_collate;";
+
+    // Tabla de huella de ciclo (impacto ecológico)
+    // Calcula y muestra métricas de sostenibilidad por ciclo
+    $tabla_huella_ciclo = $wpdb->prefix . 'flavor_gc_huella_ciclo';
+    $sql_huella_ciclo = "CREATE TABLE $tabla_huella_ciclo (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        ciclo_id bigint(20) unsigned NOT NULL,
+        km_evitados decimal(10,2) DEFAULT 0.00,
+        co2_evitado_kg decimal(10,2) DEFAULT 0.00,
+        plastico_evitado_kg decimal(10,4) DEFAULT 0.00,
+        agua_ahorrada_litros decimal(12,2) DEFAULT 0.00,
+        productores_locales int(11) DEFAULT 0,
+        productos_eco_porcentaje decimal(5,2) DEFAULT 0.00,
+        km_medio_producto decimal(8,2) DEFAULT 0.00,
+        num_participantes int(11) DEFAULT 0,
+        total_kg_productos decimal(10,2) DEFAULT 0.00,
+        puntuacion_sostenibilidad int(3) DEFAULT 0,
+        datos_detalle longtext DEFAULT NULL,
+        fecha_calculo datetime DEFAULT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY ciclo_id (ciclo_id),
+        KEY puntuacion_sostenibilidad (puntuacion_sostenibilidad)
+    ) $charset_collate;";
+
+    // Tabla de precio justo visible (desglose transparente)
+    // Almacena el desglose de costes para cada producto/ciclo
+    $tabla_precio_desglose = $wpdb->prefix . 'flavor_gc_precio_desglose';
+    $sql_precio_desglose = "CREATE TABLE $tabla_precio_desglose (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        producto_id bigint(20) unsigned NOT NULL,
+        ciclo_id bigint(20) unsigned DEFAULT NULL,
+        precio_productor decimal(10,2) NOT NULL,
+        coste_transporte decimal(10,2) DEFAULT 0.00,
+        coste_gestion decimal(10,2) DEFAULT 0.00,
+        coste_mermas decimal(10,2) DEFAULT 0.00,
+        aportacion_fondo_social decimal(10,2) DEFAULT 0.00,
+        iva decimal(10,2) DEFAULT 0.00,
+        precio_final decimal(10,2) NOT NULL,
+        margen_productor_porcentaje decimal(5,2) DEFAULT NULL,
+        origen_km int(11) DEFAULT NULL,
+        certificaciones varchar(255) DEFAULT NULL,
+        visible_publico tinyint(1) DEFAULT 1,
+        fecha_actualizacion datetime DEFAULT NULL,
+        PRIMARY KEY (id),
+        KEY producto_id (producto_id),
+        KEY ciclo_id (ciclo_id),
+        KEY visible_publico (visible_publico)
+    ) $charset_collate;";
+
+    // Tabla de cestas de trueque
+    // Permite intercambios de productos entre consumidores
+    $tabla_trueque = $wpdb->prefix . 'flavor_gc_trueque';
+    $sql_trueque = "CREATE TABLE $tabla_trueque (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        usuario_ofrece_id bigint(20) unsigned NOT NULL,
+        usuario_recibe_id bigint(20) unsigned DEFAULT NULL,
+        titulo varchar(255) NOT NULL,
+        descripcion text DEFAULT NULL,
+        productos_ofrecidos longtext NOT NULL,
+        productos_deseados longtext DEFAULT NULL,
+        valor_estimado decimal(10,2) DEFAULT NULL,
+        tipo enum('trueque','regalo','prestamo') DEFAULT 'trueque',
+        estado enum('abierto','en_negociacion','acordado','completado','cancelado','expirado') DEFAULT 'abierto',
+        fecha_publicacion datetime DEFAULT NULL,
+        fecha_expiracion datetime DEFAULT NULL,
+        fecha_acuerdo datetime DEFAULT NULL,
+        fecha_completado datetime DEFAULT NULL,
+        ubicacion_intercambio varchar(255) DEFAULT NULL,
+        notas_intercambio text DEFAULT NULL,
+        valoracion_ofrece tinyint(1) DEFAULT NULL,
+        valoracion_recibe tinyint(1) DEFAULT NULL,
+        PRIMARY KEY (id),
+        KEY usuario_ofrece_id (usuario_ofrece_id),
+        KEY usuario_recibe_id (usuario_recibe_id),
+        KEY estado (estado),
+        KEY tipo (tipo),
+        KEY fecha_publicacion (fecha_publicacion),
+        KEY fecha_expiracion (fecha_expiracion)
+    ) $charset_collate;";
+
+    // Tabla de mensajes de trueque
+    $tabla_trueque_mensajes = $wpdb->prefix . 'flavor_gc_trueque_mensajes';
+    $sql_trueque_mensajes = "CREATE TABLE $tabla_trueque_mensajes (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        trueque_id bigint(20) unsigned NOT NULL,
+        usuario_id bigint(20) unsigned NOT NULL,
+        mensaje text NOT NULL,
+        propuesta_modificada longtext DEFAULT NULL,
+        fecha_mensaje datetime DEFAULT NULL,
+        leido tinyint(1) DEFAULT 0,
+        PRIMARY KEY (id),
+        KEY trueque_id (trueque_id),
+        KEY usuario_id (usuario_id),
+        KEY fecha_mensaje (fecha_mensaje),
+        KEY leido (leido)
+    ) $charset_collate;";
+
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta($sql_pedidos);
     dbDelta($sql_entregas);
@@ -203,6 +371,15 @@ function flavor_grupos_consumo_install() {
     dbDelta($sql_cestas_tipo);
     dbDelta($sql_lista_compra);
     dbDelta($sql_suscripciones_historial);
+    dbDelta($sql_pagos);
+
+    // Tablas v4.2.0 - Sello de Conciencia
+    dbDelta($sql_excedentes);
+    dbDelta($sql_excedentes_reclamaciones);
+    dbDelta($sql_huella_ciclo);
+    dbDelta($sql_precio_desglose);
+    dbDelta($sql_trueque);
+    dbDelta($sql_trueque_mensajes);
 
     // Insertar cestas tipo por defecto
     flavor_grupos_consumo_insertar_cestas_defecto();

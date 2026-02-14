@@ -124,6 +124,9 @@ final class Flavor_Chat_IA {
         // Helpers/Utilities
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-helpers.php';
 
+        // Instalador de Base de Datos (tablas de módulos)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-database-installer.php';
+
         // Sistema de Seguridad - Encriptación de API Keys
         require_once FLAVOR_CHAT_IA_PATH . 'includes/security/class-api-key-encryption.php';
 
@@ -181,8 +184,11 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/interface-chat-module.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-module-loader.php';
 
-        // Trait de notificaciones para módulos
+        // Traits para módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-notifications.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-frontend-actions.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-admin-ui.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-dashboard-widget.php';
 
         // Sistema de Control de Acceso a Módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-access-control.php';
@@ -238,6 +244,16 @@ final class Flavor_Chat_IA {
         // Fallback de shortcodes GC cuando el módulo no está cargado
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-gc-shortcodes-fallback.php';
 
+        // Dashboards Frontend (Mi Cuenta, Dashboard Cliente)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-user-dashboard.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-client-dashboard.php';
+
+        // Sistema de Páginas Dinámicas (una sola página para todos los módulos)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-dynamic-pages.php';
+
+        // Sistema de CRUD Dinámico (formularios y listados automáticos para módulos)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-dynamic-crud.php';
+
         // Push Notifications via Firebase Cloud Messaging (debe cargarse ANTES del notification manager)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/notifications/class-push-notification-channel.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/notifications/class-push-token-manager.php';
@@ -251,13 +267,19 @@ final class Flavor_Chat_IA {
         // Busqueda Global Cross-Module
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-global-search.php';
 
-        // Editor Visual Mejorado
+        // Editor Visual Mejorado (utilidades compartidas)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-editor-history.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-color-picker.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-landing-editor.php';
+        // DESACTIVADO: Landing Editor antiguo - reemplazado por Visual Builder
+        // require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-landing-editor.php';
 
-        // Visual Builder Unificado (v3.0+)
+        // Visual Builder Unificado (v3.0+) - Sistema único de construcción visual
+        // Sistema base del Visual Builder
         require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-visual-builder.php';
+        // Componentes unificados: Landing sections + Themacle + Básicos
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-vb-all-components.php';
+        // Widgets de Dashboard (separado por complejidad)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-dashboard-vb-widgets.php';
 
         // Sistema de Animaciones
         require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
@@ -269,6 +291,12 @@ final class Flavor_Chat_IA {
         if (is_admin()) {
             require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-manager.php';
         }
+
+        // Dashboard Unificado (frontend y admin - widgets de todos los módulos)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-widget-registry.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-widget-renderer.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-unified-dashboard.php';
 
         // Configuración de Módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/config/class-module-config.php';
@@ -361,9 +389,6 @@ final class Flavor_Chat_IA {
             // Gestor centralizado del menú admin (carga antes que las demás clases admin)
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-admin-menu-manager.php';
 
-            // Panel Unificado de Gestión (Dashboard principal)
-            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-flavor-unified-dashboard.php';
-
             // Panel de Administración de Sistemas V3
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-flavor-systems-admin-panel.php';
 
@@ -373,6 +398,7 @@ final class Flavor_Chat_IA {
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-chat-settings.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-chat-analytics.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-profile-admin.php';
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-unified-modules-view.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-layout-admin.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-activity-log-page.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-health-check.php';
@@ -453,6 +479,9 @@ final class Flavor_Chat_IA {
     public function init() {
         // Ensure shortcodes render in content even if another theme/plugin removed the filter.
         add_filter('the_content', 'do_shortcode', 99);
+
+        // Verificar e instalar tablas de módulos si no existen
+        $this->maybe_install_module_tables();
 
         // Inicializar Registro de Actividad (antes que los modulos para que puedan usarlo)
         if (class_exists('Flavor_Activity_Log')) {
@@ -634,9 +663,30 @@ final class Flavor_Chat_IA {
             $this->maybe_create_portal_pages();
         }
 
-        // Inicializar Shortcodes Automáticos de Módulos
-        if (class_exists('Flavor_Module_Shortcodes')) {
-            Flavor_Module_Shortcodes::get_instance();
+        // NOTA: Flavor_Module_Shortcodes se inicializa en load_modules()
+        // DESPUÉS de cargar los módulos para evitar conflictos de shortcodes
+
+        // Inicializar Dashboards Frontend (Mi Cuenta, Dashboard Cliente)
+        if (class_exists('Flavor_User_Dashboard')) {
+            new Flavor_User_Dashboard();
+        }
+        if (class_exists('Flavor_Client_Dashboard')) {
+            Flavor_Client_Dashboard::get_instance();
+        }
+
+        // Inicializar Dashboard Unificado (frontend con widgets de todos los módulos)
+        if (class_exists('Flavor_Unified_Dashboard')) {
+            Flavor_Unified_Dashboard::get_instance();
+        }
+
+        // Inicializar Sistema de Páginas Dinámicas (una sola página para todos los módulos)
+        if (class_exists('Flavor_Dynamic_Pages')) {
+            Flavor_Dynamic_Pages::get_instance();
+        }
+
+        // Inicializar Sistema de CRUD Dinámico (formularios y listados automáticos)
+        if (class_exists('Flavor_Dynamic_CRUD')) {
+            Flavor_Dynamic_CRUD::get_instance();
         }
 
         // Inicializar Gestor Automático de Menús
@@ -740,6 +790,11 @@ final class Flavor_Chat_IA {
             Flavor_Dashboard_Manager::get_instance();
         }
 
+        // Inicializar Dashboard Unificado (frontend y admin)
+        if (class_exists('Flavor_Unified_Dashboard')) {
+            Flavor_Unified_Dashboard::get_instance();
+        }
+
         // Inicializar Configuración de Módulos
         if (class_exists('Flavor_Module_Config')) {
             Flavor_Module_Config::get_instance();
@@ -789,10 +844,7 @@ final class Flavor_Chat_IA {
             Flavor_Grupos_Consumo_API::get_instance();
         }
 
-        // Inicializar Sistema de Shortcodes de Módulos
-        if (class_exists('Flavor_Module_Shortcodes')) {
-            Flavor_Module_Shortcodes::get_instance();
-        }
+        // NOTA: Flavor_Module_Shortcodes se inicializa en load_modules()
 
         // Inicializar Assets Frontend
         if (class_exists('Flavor_Frontend_Assets')) {
@@ -802,6 +854,11 @@ final class Flavor_Chat_IA {
         // Inicializar Dashboard de usuario frontend (Mi Cuenta)
         if (class_exists('Flavor_User_Dashboard')) {
             new Flavor_User_Dashboard();
+        }
+
+        // Inicializar Dashboard de cliente frontend
+        if (class_exists('Flavor_Client_Dashboard')) {
+            Flavor_Client_Dashboard::get_instance();
         }
 
         // Inicializar API AJAX del Dashboard de usuario
@@ -876,6 +933,13 @@ final class Flavor_Chat_IA {
         if (class_exists('Flavor_Chat_Module_Loader')) {
             $loader = Flavor_Chat_Module_Loader::get_instance();
             $this->modules = $loader->load_active_modules();
+        }
+
+        // Inicializar Shortcodes Automáticos de Módulos DESPUÉS de cargar los módulos
+        // Esto permite que los módulos registren sus shortcodes primero,
+        // y los fallbacks solo se registren si no existen
+        if (class_exists('Flavor_Module_Shortcodes')) {
+            Flavor_Module_Shortcodes::get_instance();
         }
     }
 
@@ -985,6 +1049,11 @@ final class Flavor_Chat_IA {
 
         // Crear tablas de módulos
         $this->create_module_tables();
+
+        // Instalar tablas de todos los módulos (sistema centralizado)
+        if (class_exists('Flavor_Database_Installer')) {
+            Flavor_Database_Installer::install_tables();
+        }
 
         // Reconstruir caché de metadatos de módulos para optimizar rendimiento
         if (class_exists('Flavor_Chat_Module_Loader')) {
@@ -1471,6 +1540,37 @@ final class Flavor_Chat_IA {
      */
     public function is_module_active($module_id) {
         return isset($this->modules[$module_id]);
+    }
+
+    /**
+     * Verifica e instala tablas de módulos si no existen
+     */
+    private function maybe_install_module_tables() {
+        // Solo ejecutar si no está instalado aún
+        $db_version = get_option('flavor_db_version', '');
+        if (!empty($db_version)) {
+            return;
+        }
+
+        // Verificar si hay al menos una tabla crítica
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_existe = $wpdb->get_var($wpdb->prepare(
+            "SHOW TABLES LIKE %s",
+            $tabla_eventos
+        ));
+
+        if ($tabla_existe === $tabla_eventos) {
+            // Ya existen las tablas, marcar como instalado
+            update_option('flavor_db_version', '1.0.0');
+            return;
+        }
+
+        // Instalar tablas
+        if (class_exists('Flavor_Database_Installer')) {
+            Flavor_Database_Installer::install_tables();
+            flavor_chat_ia_log('Tablas de módulos instaladas automáticamente', 'info');
+        }
     }
 }
 

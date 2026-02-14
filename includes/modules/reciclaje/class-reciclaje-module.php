@@ -16,6 +16,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Admin_UI_Trait;
 
     /**
      * Constructor
@@ -104,12 +105,29 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
             wp_schedule_event(time(), 'twicedaily', 'reciclaje_verificar_contenedores');
         }
 
+        // Cargar funcionalidades del Sello de Conciencia (+13 pts)
+        $this->cargar_funcionalidades_conciencia();
+
         // Enqueue scripts
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 
         // Admin menu
         add_action('admin_menu', [$this, 'register_admin_menu']);
+    }
+
+    /**
+     * Carga las funcionalidades del Sello de Conciencia
+     * Economía circular, huella de carbono, retos comunitarios, red de reparadores
+     */
+    private function cargar_funcionalidades_conciencia() {
+        $archivo_conciencia = dirname(__FILE__) . '/class-reciclaje-conciencia-features.php';
+        if (file_exists($archivo_conciencia)) {
+            require_once $archivo_conciencia;
+            if (class_exists('Flavor_Reciclaje_Conciencia_Features')) {
+                Flavor_Reciclaje_Conciencia_Features::get_instance();
+            }
+        }
     }
 
     /**

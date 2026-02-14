@@ -55,6 +55,9 @@ class Flavor_Network_Manager {
         // Verificar/actualizar BD al cargar
         add_action('admin_init', [$this, 'check_db_version']);
 
+        // Registrar widget de dashboard
+        add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+
         // Shortcodes públicos
         add_shortcode('flavor_network_directory', [$this, 'shortcode_directory']);
         add_shortcode('flavor_network_map', [$this, 'shortcode_map']);
@@ -617,5 +620,33 @@ class Flavor_Network_Manager {
             self::VERSION,
             true
         );
+    }
+
+    /**
+     * Registra el widget de dashboard de la red
+     *
+     * @param Flavor_Widget_Registry $registry Registro de widgets
+     * @return void
+     * @since 4.1.0
+     */
+    public function register_dashboard_widget($registry) {
+        // Cargar la clase del widget si no existe
+        $widget_path = FLAVOR_CHAT_IA_PATH . 'includes/network/class-network-dashboard-widget.php';
+
+        if (!class_exists('Flavor_Network_Dashboard_Widget') && file_exists($widget_path)) {
+            require_once $widget_path;
+        }
+
+        // Registrar solo si la clase existe y las tablas de red están disponibles
+        if (class_exists('Flavor_Network_Dashboard_Widget')) {
+            $widget = new Flavor_Network_Dashboard_Widget();
+
+            // Solo registrar si el widget puede mostrarse (tablas existen)
+            if (method_exists($widget, 'can_display') && !$widget->can_display()) {
+                return;
+            }
+
+            $registry->register($widget);
+        }
     }
 }
