@@ -1943,18 +1943,38 @@ class Flavor_Unified_Dashboard {
 
             case 'fichaje-empleados':
                 $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
-                if ($this->table_exists($tabla_fichajes) && $this->column_exists($tabla_fichajes, 'hora_entrada')) {
-                    $fichaje_hoy = $wpdb->get_row($wpdb->prepare(
-                        "SELECT hora_entrada, hora_salida FROM {$tabla_fichajes}
-                         WHERE user_id = %d AND DATE(fecha) = CURDATE()
-                         ORDER BY hora_entrada DESC LIMIT 1",
-                        $user_id
-                    ));
-                    if ($fichaje_hoy) {
-                        $estado = $fichaje_hoy->hora_salida ? __('Salida', 'flavor-chat-ia') : __('Entrada', 'flavor-chat-ia');
-                        $stats[] = ['value' => $estado, 'label' => __('Hoy', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
-                    } else {
-                        $stats[] = ['value' => '-', 'label' => __('Sin fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
+                if ($this->table_exists($tabla_fichajes)) {
+                    // Detectar estructura de la tabla
+                    $col_usuario = $this->column_exists($tabla_fichajes, 'user_id') ? 'user_id' :
+                                  ($this->column_exists($tabla_fichajes, 'usuario_id') ? 'usuario_id' : null);
+
+                    if ($col_usuario && $this->column_exists($tabla_fichajes, 'hora_entrada')) {
+                        $col_fecha = $this->column_exists($tabla_fichajes, 'fecha') ? 'fecha' : 'created_at';
+                        $fichaje_hoy = $wpdb->get_row($wpdb->prepare(
+                            "SELECT hora_entrada, hora_salida FROM {$tabla_fichajes}
+                             WHERE {$col_usuario} = %d AND DATE({$col_fecha}) = CURDATE()
+                             ORDER BY hora_entrada DESC LIMIT 1",
+                            $user_id
+                        ));
+                        if ($fichaje_hoy) {
+                            $estado = $fichaje_hoy->hora_salida ? __('Salida', 'flavor-chat-ia') : __('Entrada', 'flavor-chat-ia');
+                            $stats[] = ['value' => $estado, 'label' => __('Hoy', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
+                        } else {
+                            $stats[] = ['value' => '-', 'label' => __('Sin fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
+                        }
+                    } elseif ($col_usuario && $this->column_exists($tabla_fichajes, 'tipo')) {
+                        // Estructura alternativa con tipo entrada/salida
+                        $entrada = $wpdb->get_var($wpdb->prepare(
+                            "SELECT fecha_hora FROM {$tabla_fichajes}
+                             WHERE {$col_usuario} = %d AND tipo = 'entrada' AND DATE(fecha_hora) = CURDATE()
+                             ORDER BY fecha_hora DESC LIMIT 1",
+                            $user_id
+                        ));
+                        if ($entrada) {
+                            $stats[] = ['value' => date('H:i', strtotime($entrada)), 'label' => __('Entrada', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
+                        } else {
+                            $stats[] = ['value' => '-', 'label' => __('Sin fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
+                        }
                     }
                 }
                 break;
@@ -2034,19 +2054,26 @@ class Flavor_Unified_Dashboard {
 
             case 'reservas':
                 $tabla_reservas_general = $wpdb->prefix . 'flavor_reservas';
-                if ($this->table_exists($tabla_reservas_general)) {
-                    $mis_reservas = (int) $wpdb->get_var($wpdb->prepare(
-                        "SELECT COUNT(*) FROM {$tabla_reservas_general}
-                         WHERE usuario_id = %d AND estado IN ('confirmada', 'pendiente') AND fecha >= CURDATE()",
-                        $user_id
-                    ));
-                    $stats[] = ['value' => $mis_reservas, 'label' => __('Activas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'];
+                if ($this->table_exists($tabla_reservas_general) && $this->column_exists($tabla_reservas_general, 'usuario_id')) {
+                    // Detectar columna de fecha
+                    $col_fecha = $this->column_exists($tabla_reservas_general, 'fecha') ? 'fecha' :
+                                ($this->column_exists($tabla_reservas_general, 'fecha_inicio') ? 'fecha_inicio' : null);
+
+                    if ($col_fecha) {
+                        $mis_reservas = (int) $wpdb->get_var($wpdb->prepare(
+                            "SELECT COUNT(*) FROM {$tabla_reservas_general}
+                             WHERE usuario_id = %d AND estado IN ('confirmada', 'pendiente') AND {$col_fecha} >= CURDATE()",
+                            $user_id
+                        ));
+                        $stats[] = ['value' => $mis_reservas, 'label' => __('Activas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'];
+                    }
                 }
                 break;
 
             case 'ayuda-vecinal':
                 $tabla_ayuda = $wpdb->prefix . 'flavor_ayuda_vecinal';
-                if ($this->table_exists($tabla_ayuda)) {
+                // Verificar que existen las columnas necesarias antes de consultar
+                if ($this->table_exists($tabla_ayuda) && $this->column_exists($tabla_ayuda, 'ayudante_id')) {
                     $ayudas_dadas = (int) $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM {$tabla_ayuda}
                          WHERE ayudante_id = %d AND estado = 'completada'",
