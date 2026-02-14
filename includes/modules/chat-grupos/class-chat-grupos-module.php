@@ -2891,10 +2891,10 @@ KNOWLEDGE;
 
         $usuario_id = get_current_user_id();
         if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
-            // Mis grupos
+            // Mis grupos (todos los registros en miembros son activos)
             $mis_grupos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_miembros}
-                 WHERE usuario_id = %d AND estado = 'activo'",
+                 WHERE usuario_id = %d",
                 $usuario_id
             ));
 
@@ -2905,14 +2905,14 @@ KNOWLEDGE;
                 'color' => $mis_grupos > 0 ? 'purple' : 'gray',
             ];
 
-            // Mensajes sin leer
+            // Mensajes sin leer (comparando IDs de mensaje)
             if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
                 $sin_leer = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_mensajes} m
                      INNER JOIN {$tabla_miembros} mb ON m.grupo_id = mb.grupo_id
                      WHERE mb.usuario_id = %d
-                     AND m.fecha > mb.ultimo_leido
-                     AND m.autor_id != %d",
+                     AND m.id > COALESCE(mb.ultimo_mensaje_leido, 0)
+                     AND m.usuario_id != %d",
                     $usuario_id,
                     $usuario_id
                 ));

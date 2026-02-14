@@ -3006,14 +3006,14 @@ KNOWLEDGE;
                 'color' => $mis_chats > 0 ? 'purple' : 'gray',
             ];
 
-            // Mensajes sin leer
+            // Mensajes sin leer (comparando IDs de mensaje)
             if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
                 $sin_leer = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_mensajes} m
                      INNER JOIN {$tabla_participantes} p ON m.conversacion_id = p.conversacion_id
                      WHERE p.usuario_id = %d
-                     AND m.fecha > COALESCE(p.ultimo_leido, '1970-01-01')
-                     AND m.autor_id != %d",
+                     AND m.id > COALESCE(p.ultimo_mensaje_leido, 0)
+                     AND m.remitente_id != %d",
                     $usuario_id,
                     $usuario_id
                 ));

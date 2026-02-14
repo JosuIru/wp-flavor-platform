@@ -3375,7 +3375,7 @@ KNOWLEDGE;
 
         $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
         $tabla_portfolio = $wpdb->prefix . 'flavor_trading_ia_portfolio';
-        $tabla_alertas = $wpdb->prefix . 'flavor_trading_ia_alertas';
+        $tabla_reglas = $wpdb->prefix . 'flavor_trading_ia_reglas';
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
@@ -3383,35 +3383,35 @@ KNOWLEDGE;
         }
 
         if (Flavor_Chat_Helpers::tabla_existe($tabla_trades)) {
-            // Trades activos
-            $trades_activos = (int) $wpdb->get_var($wpdb->prepare(
+            // Total de trades del usuario
+            $total_trades = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_trades}
-                 WHERE usuario_id = %d AND estado = 'abierto'",
+                 WHERE usuario_id = %d",
                 $usuario_id
             ));
 
-            $estadisticas['trades_activos'] = [
+            $estadisticas['trades'] = [
                 'icon' => 'dashicons-chart-area',
-                'valor' => $trades_activos,
-                'label' => __('Trades activos', 'flavor-chat-ia'),
-                'color' => $trades_activos > 0 ? 'green' : 'gray',
+                'valor' => $total_trades,
+                'label' => __('Trades', 'flavor-chat-ia'),
+                'color' => $total_trades > 0 ? 'green' : 'gray',
             ];
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_alertas)) {
-            // Alertas pendientes
-            $alertas = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$tabla_alertas}
-                 WHERE usuario_id = %d AND estado = 'activa'",
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_reglas)) {
+            // Reglas activas
+            $reglas_activas = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_reglas}
+                 WHERE usuario_id = %d AND activa = 1",
                 $usuario_id
             ));
 
-            if ($alertas > 0) {
-                $estadisticas['alertas'] = [
-                    'icon' => 'dashicons-bell',
-                    'valor' => $alertas,
-                    'label' => __('Alertas', 'flavor-chat-ia'),
-                    'color' => 'orange',
+            if ($reglas_activas > 0) {
+                $estadisticas['reglas'] = [
+                    'icon' => 'dashicons-admin-settings',
+                    'valor' => $reglas_activas,
+                    'label' => __('Reglas activas', 'flavor-chat-ia'),
+                    'color' => 'blue',
                 ];
             }
         }

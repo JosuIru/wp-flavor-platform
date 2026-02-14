@@ -2818,7 +2818,7 @@ KNOWLEDGE;
 
         // Total de archivos públicos
         $total_archivos = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$tabla_multimedia} WHERE estado = 'publicado'"
+            "SELECT COUNT(*) FROM {$tabla_multimedia} WHERE estado = 'publico'"
         );
 
         $estadisticas['archivos'] = [
@@ -2833,7 +2833,7 @@ KNOWLEDGE;
             // Mis archivos
             $mis_archivos = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_multimedia}
-                 WHERE autor_id = %d",
+                 WHERE usuario_id = %d",
                 $usuario_id
             ));
 

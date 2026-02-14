@@ -2596,9 +2596,9 @@ KNOWLEDGE;
             return $estadisticas;
         }
 
-        // Total de series
+        // Total de series publicadas
         $total_series = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$tabla_series} WHERE estado = 'activo'"
+            "SELECT COUNT(*) FROM {$tabla_series} WHERE estado = 'publicado'"
         );
 
         $estadisticas['series'] = [
@@ -2624,10 +2624,10 @@ KNOWLEDGE;
 
         $usuario_id = get_current_user_id();
         if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_suscripciones)) {
-            // Mis suscripciones
+            // Mis suscripciones (todas las suscripciones activas, no hay columna estado)
             $mis_suscripciones = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_suscripciones}
-                 WHERE usuario_id = %d AND estado = 'activa'",
+                 WHERE usuario_id = %d",
                 $usuario_id
             ));
 
