@@ -28,6 +28,25 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         // Integrar sistema de notificaciones
         $this->init_notifications();
+
+        // Cargar funcionalidades del Sello de Conciencia (+5 pts)
+        $this->cargar_funcionalidades_conciencia();
+    }
+
+    /**
+     * Carga las funcionalidades del Sello de Conciencia
+     * Uso Solidario, Huella de Uso, Cuidado Comunitario y Dashboard de Sostenibilidad
+     */
+    private function cargar_funcionalidades_conciencia() {
+        $archivo_conciencia = dirname(__FILE__) . '/class-ec-conciencia-features.php';
+
+        if (file_exists($archivo_conciencia)) {
+            require_once $archivo_conciencia;
+
+            if (class_exists('Flavor_EC_Conciencia_Features')) {
+                Flavor_EC_Conciencia_Features::get_instance();
+            }
+        }
     }
 
     /**
@@ -1343,7 +1362,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/espacios-comunes/templates/listado.php';
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/listado.php';
         return ob_get_clean();
     }
 
@@ -1369,7 +1388,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/espacios-comunes/templates/detalle.php';
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/detalle.php';
         return ob_get_clean();
     }
 
@@ -1391,7 +1410,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/espacios-comunes/templates/mis-reservas.php';
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/mis-reservas.php';
         return ob_get_clean();
     }
 
@@ -1411,7 +1430,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ]);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/espacios-comunes/templates/calendario.php';
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/calendario.php';
         return ob_get_clean();
     }
 
@@ -1424,7 +1443,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
 
         ob_start();
-        include FLAVOR_CHAT_PATH . 'includes/modules/espacios-comunes/templates/equipamiento.php';
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/espacios-comunes/templates/equipamiento.php';
         return ob_get_clean();
     }
 
@@ -1877,6 +1896,99 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['espacios_comunes']);
             update_option('flavor_espacios_comunes_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
+        $tabla_reservas = $wpdb->prefix . 'flavor_espacios_reservas';
+
+        // Verificar que las tablas existan
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
+            return $estadisticas;
+        }
+
+        // Total de espacios disponibles
+        $total_espacios = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_espacios} WHERE estado = 'disponible'"
+        );
+
+        $estadisticas['espacios_disponibles'] = [
+            'icon' => 'dashicons-building',
+            'valor' => $total_espacios,
+            'label' => __('Espacios', 'flavor-chat-ia'),
+            'color' => 'blue',
+        ];
+
+        // Reservas del usuario actual
+        $usuario_id = get_current_user_id();
+        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+            // Reservas activas (confirmadas o en curso)
+            $reservas_activas = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_reservas}
+                 WHERE usuario_id = %d
+                 AND estado IN ('confirmada', 'en_curso')
+                 AND fecha_fin >= NOW()",
+                $usuario_id
+            ));
+
+            $estadisticas['mis_reservas'] = [
+                'icon' => 'dashicons-calendar-alt',
+                'valor' => $reservas_activas,
+                'label' => __('Reservas activas', 'flavor-chat-ia'),
+                'color' => $reservas_activas > 0 ? 'green' : 'gray',
+            ];
+
+            // Próxima reserva
+            $proxima_reserva = $wpdb->get_row($wpdb->prepare(
+                "SELECT r.fecha_inicio, e.nombre as espacio_nombre
+                 FROM {$tabla_reservas} r
+                 INNER JOIN {$tabla_espacios} e ON r.espacio_id = e.id
+                 WHERE r.usuario_id = %d
+                 AND r.estado IN ('confirmada', 'en_curso')
+                 AND r.fecha_inicio >= NOW()
+                 ORDER BY r.fecha_inicio ASC
+                 LIMIT 1",
+                $usuario_id
+            ));
+
+            if ($proxima_reserva) {
+                $fecha_formateada = date_i18n('d M H:i', strtotime($proxima_reserva->fecha_inicio));
+                $estadisticas['proxima_reserva'] = [
+                    'icon' => 'dashicons-clock',
+                    'valor' => $fecha_formateada,
+                    'label' => $proxima_reserva->espacio_nombre,
+                    'color' => 'purple',
+                ];
+            }
+
+            // Reservas pendientes de confirmación
+            $reservas_pendientes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_reservas}
+                 WHERE usuario_id = %d
+                 AND estado = 'solicitada'
+                 AND fecha_inicio >= NOW()",
+                $usuario_id
+            ));
+
+            if ($reservas_pendientes > 0) {
+                $estadisticas['pendientes'] = [
+                    'icon' => 'dashicons-hourglass',
+                    'valor' => $reservas_pendientes,
+                    'label' => __('Pendientes', 'flavor-chat-ia'),
+                    'color' => 'orange',
+                ];
+            }
+        }
+
+        return $estadisticas;
     }
 
     /**
