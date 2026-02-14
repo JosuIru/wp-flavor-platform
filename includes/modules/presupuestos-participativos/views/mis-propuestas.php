@@ -1,46 +1,24 @@
 <?php
 /**
- * Vista: Mis propuestas
+ * Vista: Mis Propuestas
+ *
+ * Variables disponibles:
+ * - $propuestas: array de propuestas del usuario
+ * - $categorias: array de categorias disponibles
+ * - $atributos: array con configuracion del shortcode
  *
  * @package FlavorChatIA
- * @var array $propuestas  Lista de propuestas del usuario
- * @var array $categorias  Categorías disponibles
- * @var array $atributos   Atributos del shortcode
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
-
-$etiquetas_estado = [
-    'borrador' => __('Borrador', 'flavor-chat-ia'),
-    'pendiente_validacion' => __('Pendiente de validación', 'flavor-chat-ia'),
-    'validado' => __('Validado', 'flavor-chat-ia'),
-    'en_votacion' => __('En votación', 'flavor-chat-ia'),
-    'seleccionado' => __('Seleccionado', 'flavor-chat-ia'),
-    'en_ejecucion' => __('En ejecución', 'flavor-chat-ia'),
-    'ejecutado' => __('Ejecutado', 'flavor-chat-ia'),
-    'rechazado' => __('Rechazado', 'flavor-chat-ia'),
-];
-
-$clases_estado = [
-    'borrador' => 'gris',
-    'pendiente_validacion' => 'amarillo',
-    'validado' => 'verde',
-    'en_votacion' => 'azul',
-    'seleccionado' => 'verde-oscuro',
-    'en_ejecucion' => 'naranja',
-    'ejecutado' => 'verde-exito',
-    'rechazado' => 'rojo',
-];
 ?>
 
-<div class="flavor-pp-mis-propuestas">
-
+<div class="flavor-pp-mis-propuestas-contenedor">
     <div class="flavor-pp-mis-propuestas-header">
-        <h2><?php esc_html_e('Mis propuestas', 'flavor-chat-ia'); ?></h2>
-        <a href="<?php echo esc_url(home_url('/presupuestos-participativos/proponer/')); ?>"
-           class="flavor-pp-btn flavor-pp-btn-primary">
+        <h2><?php esc_html_e('Mis Propuestas', 'flavor-chat-ia'); ?></h2>
+        <a href="<?php echo esc_url(home_url('/proponer-proyecto/')); ?>" class="flavor-pp-boton flavor-pp-boton-primario">
             <span class="dashicons dashicons-plus-alt"></span>
             <?php esc_html_e('Nueva propuesta', 'flavor-chat-ia'); ?>
         </a>
@@ -48,132 +26,85 @@ $clases_estado = [
 
     <?php if (empty($propuestas)): ?>
         <div class="flavor-pp-vacio">
-            <span class="dashicons dashicons-edit-large"></span>
-            <h3><?php esc_html_e('Aún no has presentado ninguna propuesta', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('¿Tienes una idea para mejorar tu barrio? ¡Preséntala ahora!', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(home_url('/presupuestos-participativos/proponer/')); ?>"
-               class="flavor-pp-btn flavor-pp-btn-primary">
-                <?php esc_html_e('Crear mi primera propuesta', 'flavor-chat-ia'); ?>
-            </a>
+            <span class="dashicons dashicons-lightbulb"></span>
+            <p><?php esc_html_e('Aun no has presentado ninguna propuesta.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Comparte tus ideas para mejorar el barrio!', 'flavor-chat-ia'); ?></p>
         </div>
     <?php else: ?>
         <div class="flavor-pp-propuestas-lista">
             <?php foreach ($propuestas as $propuesta):
-                $estado = $propuesta->estado;
-                $puede_editar = in_array($estado, ['borrador', 'pendiente_validacion'], true);
-                $etiqueta_categoria = $categorias[$propuesta->categoria] ?? ucfirst($propuesta->categoria);
+                $categoria_nombre = $categorias[$propuesta->categoria] ?? ucfirst($propuesta->categoria);
+                $estados = [
+                    'pendiente' => ['label' => __('Pendiente de revision', 'flavor-chat-ia'), 'color' => 'orange'],
+                    'validado' => ['label' => __('Validado', 'flavor-chat-ia'), 'color' => 'green'],
+                    'en_votacion' => ['label' => __('En votacion', 'flavor-chat-ia'), 'color' => 'blue'],
+                    'seleccionado' => ['label' => __('Seleccionado', 'flavor-chat-ia'), 'color' => 'green'],
+                    'en_ejecucion' => ['label' => __('En ejecucion', 'flavor-chat-ia'), 'color' => 'purple'],
+                    'ejecutado' => ['label' => __('Ejecutado', 'flavor-chat-ia'), 'color' => 'green'],
+                    'rechazado' => ['label' => __('Rechazado', 'flavor-chat-ia'), 'color' => 'red'],
+                ];
+                $estado_info = $estados[$propuesta->estado] ?? ['label' => ucfirst($propuesta->estado), 'color' => 'gray'];
             ?>
-                <article class="flavor-pp-mi-propuesta" data-id="<?php echo esc_attr($propuesta->id); ?>">
+            <article class="flavor-pp-propuesta-card" data-id="<?php echo esc_attr($propuesta->id); ?>">
+                <div class="flavor-pp-propuesta-estado flavor-pp-estado-<?php echo esc_attr($estado_info['color']); ?>">
+                    <?php echo esc_html($estado_info['label']); ?>
+                </div>
 
-                    <div class="flavor-pp-propuesta-estado-bar estado-<?php echo esc_attr($clases_estado[$estado] ?? 'gris'); ?>">
-                        <span class="flavor-pp-estado-texto">
-                            <?php echo esc_html($etiquetas_estado[$estado] ?? ucfirst($estado)); ?>
+                <div class="flavor-pp-propuesta-contenido">
+                    <span class="flavor-pp-categoria flavor-pp-categoria-<?php echo esc_attr($propuesta->categoria); ?>">
+                        <?php echo esc_html($categoria_nombre); ?>
+                    </span>
+
+                    <h3 class="flavor-pp-propuesta-titulo"><?php echo esc_html($propuesta->titulo); ?></h3>
+
+                    <p class="flavor-pp-propuesta-descripcion">
+                        <?php echo esc_html(wp_trim_words($propuesta->descripcion, 30, '...')); ?>
+                    </p>
+
+                    <div class="flavor-pp-propuesta-meta">
+                        <span class="flavor-pp-meta-item">
+                            <span class="dashicons dashicons-money-alt"></span>
+                            <?php echo esc_html(number_format($propuesta->presupuesto_estimado, 0, ',', '.')); ?> EUR
                         </span>
-                        <?php if ($estado === 'rechazado' && !empty($propuesta->motivo_no_viable)): ?>
-                            <span class="flavor-pp-motivo-rechazo" title="<?php echo esc_attr($propuesta->motivo_no_viable); ?>">
-                                <span class="dashicons dashicons-info"></span>
-                            </span>
-                        <?php endif; ?>
+                        <span class="flavor-pp-meta-item">
+                            <span class="dashicons dashicons-heart"></span>
+                            <?php echo esc_html($propuesta->votos_recibidos ?? 0); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?>
+                        </span>
+                        <span class="flavor-pp-meta-item">
+                            <span class="dashicons dashicons-calendar-alt"></span>
+                            <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($propuesta->fecha_creacion))); ?>
+                        </span>
                     </div>
+                </div>
 
-                    <div class="flavor-pp-propuesta-content">
-                        <div class="flavor-pp-propuesta-header">
-                            <span class="flavor-pp-categoria flavor-pp-cat-<?php echo esc_attr($propuesta->categoria); ?>">
-                                <?php echo esc_html($etiqueta_categoria); ?>
-                            </span>
-                            <span class="flavor-pp-fecha">
-                                <?php echo esc_html(date_i18n('j M Y', strtotime($propuesta->fecha_creacion))); ?>
-                            </span>
-                        </div>
+                <div class="flavor-pp-propuesta-acciones">
+                    <?php if ($propuesta->estado === 'pendiente'): ?>
+                        <button type="button" class="flavor-pp-boton flavor-pp-boton-secundario flavor-pp-btn-editar"
+                                data-id="<?php echo esc_attr($propuesta->id); ?>">
+                            <span class="dashicons dashicons-edit"></span>
+                            <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                        </button>
+                        <button type="button" class="flavor-pp-boton flavor-pp-boton-peligro flavor-pp-btn-eliminar"
+                                data-id="<?php echo esc_attr($propuesta->id); ?>">
+                            <span class="dashicons dashicons-trash"></span>
+                            <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                        </button>
+                    <?php endif; ?>
 
-                        <h3 class="flavor-pp-propuesta-titulo">
-                            <?php echo esc_html($propuesta->titulo); ?>
-                        </h3>
+                    <a href="<?php echo esc_url(add_query_arg('proyecto', $propuesta->id, home_url('/proyectos-participativos/'))); ?>"
+                       class="flavor-pp-boton flavor-pp-boton-texto">
+                        <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
 
-                        <p class="flavor-pp-propuesta-descripcion">
-                            <?php echo esc_html(wp_trim_words($propuesta->descripcion, 30)); ?>
-                        </p>
-
-                        <div class="flavor-pp-propuesta-meta">
-                            <div class="flavor-pp-meta-item">
-                                <span class="dashicons dashicons-money-alt"></span>
-                                <span><?php echo number_format($propuesta->presupuesto_solicitado, 0, ',', '.'); ?> €</span>
-                            </div>
-
-                            <?php if (!empty($propuesta->ubicacion)): ?>
-                            <div class="flavor-pp-meta-item">
-                                <span class="dashicons dashicons-location"></span>
-                                <span><?php echo esc_html($propuesta->ubicacion); ?></span>
-                            </div>
-                            <?php endif; ?>
-
-                            <?php if (in_array($estado, ['en_votacion', 'seleccionado', 'en_ejecucion', 'ejecutado'], true)): ?>
-                            <div class="flavor-pp-meta-item flavor-pp-votos">
-                                <span class="dashicons dashicons-thumbs-up"></span>
-                                <span><?php echo intval($propuesta->votos_recibidos); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?></span>
-                            </div>
-                            <?php endif; ?>
-
-                            <?php if ($propuesta->ranking > 0): ?>
-                            <div class="flavor-pp-meta-item">
-                                <span class="dashicons dashicons-awards"></span>
-                                <span><?php printf(esc_html__('Posición #%d', 'flavor-chat-ia'), intval($propuesta->ranking)); ?></span>
-                            </div>
-                            <?php endif; ?>
-                        </div>
-
-                        <?php if ($propuesta->porcentaje_ejecucion > 0): ?>
-                        <div class="flavor-pp-ejecucion-progreso">
-                            <div class="flavor-pp-progreso-bar">
-                                <div class="flavor-pp-progreso-fill" style="width: <?php echo intval($propuesta->porcentaje_ejecucion); ?>%;"></div>
-                            </div>
-                            <span class="flavor-pp-progreso-texto">
-                                <?php printf(esc_html__('%d%% ejecutado', 'flavor-chat-ia'), intval($propuesta->porcentaje_ejecucion)); ?>
-                            </span>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="flavor-pp-propuesta-acciones">
-                        <a href="<?php echo esc_url(add_query_arg('proyecto', $propuesta->id, home_url('/presupuestos-participativos/'))); ?>"
-                           class="flavor-pp-btn flavor-pp-btn-link">
-                            <span class="dashicons dashicons-visibility"></span>
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
-                        </a>
-
-                        <?php if ($puede_editar): ?>
-                            <button type="button" class="flavor-pp-btn flavor-pp-btn-link flavor-pp-editar-propuesta"
-                                    data-id="<?php echo esc_attr($propuesta->id); ?>">
-                                <span class="dashicons dashicons-edit"></span>
-                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
-                            </button>
-
-                            <button type="button" class="flavor-pp-btn flavor-pp-btn-link flavor-pp-btn-danger flavor-pp-eliminar-propuesta"
-                                    data-id="<?php echo esc_attr($propuesta->id); ?>">
-                                <span class="dashicons dashicons-trash"></span>
-                                <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
-                            </button>
-                        <?php endif; ?>
-                    </div>
-                </article>
+                <?php if ($propuesta->estado === 'rechazado' && !empty($propuesta->motivo_rechazo)): ?>
+                <div class="flavor-pp-propuesta-rechazo">
+                    <strong><?php esc_html_e('Motivo del rechazo:', 'flavor-chat-ia'); ?></strong>
+                    <p><?php echo esc_html($propuesta->motivo_rechazo); ?></p>
+                </div>
+                <?php endif; ?>
+            </article>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-</div>
-
-<!-- Modal de confirmación de eliminación -->
-<div id="flavor-pp-modal-eliminar" class="flavor-pp-modal" style="display: none;">
-    <div class="flavor-pp-modal-overlay"></div>
-    <div class="flavor-pp-modal-content flavor-pp-modal-small">
-        <h3><?php esc_html_e('¿Eliminar propuesta?', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar esta propuesta?', 'flavor-chat-ia'); ?></p>
-        <div class="flavor-pp-modal-acciones">
-            <button type="button" class="flavor-pp-btn flavor-pp-btn-secondary flavor-pp-modal-cancelar">
-                <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
-            </button>
-            <button type="button" class="flavor-pp-btn flavor-pp-btn-danger flavor-pp-modal-confirmar">
-                <?php esc_html_e('Sí, eliminar', 'flavor-chat-ia'); ?>
-            </button>
-        </div>
-    </div>
 </div>

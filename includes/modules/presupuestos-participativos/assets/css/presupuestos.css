@@ -1,65 +1,670 @@
 /**
- * Estilos del módulo Presupuestos Participativos - Frontend
+ * Estilos del modulo Presupuestos Participativos
  *
  * @package FlavorChatIA
  */
 
-/* Variables CSS */
+/* Variables */
 :root {
-    --pp-primary: #2563eb;
-    --pp-primary-hover: #1d4ed8;
-    --pp-success: #16a34a;
-    --pp-success-light: #dcfce7;
-    --pp-warning: #f59e0b;
-    --pp-warning-light: #fef3c7;
-    --pp-danger: #dc2626;
-    --pp-danger-light: #fee2e2;
-    --pp-gray-50: #f9fafb;
-    --pp-gray-100: #f3f4f6;
-    --pp-gray-200: #e5e7eb;
-    --pp-gray-300: #d1d5db;
-    --pp-gray-500: #6b7280;
-    --pp-gray-700: #374151;
-    --pp-gray-900: #111827;
-    --pp-radius: 8px;
-    --pp-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --pp-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --pp-primario: #2563eb;
+    --pp-primario-hover: #1d4ed8;
+    --pp-secundario: #64748b;
+    --pp-exito: #10b981;
+    --pp-peligro: #ef4444;
+    --pp-advertencia: #f59e0b;
+    --pp-info: #3b82f6;
+    --pp-fondo: #f8fafc;
+    --pp-borde: #e2e8f0;
+    --pp-texto: #1e293b;
+    --pp-texto-secundario: #64748b;
+    --pp-radio: 8px;
+    --pp-sombra: 0 1px 3px rgba(0,0,0,0.1);
+    --pp-sombra-hover: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* Reset básico */
-.flavor-pp-listado *,
-.flavor-pp-votacion *,
-.flavor-pp-formulario-propuesta *,
-.flavor-pp-resultados *,
-.flavor-pp-mis-propuestas * {
-    box-sizing: border-box;
-}
-
-/* Contenedores principales */
-.flavor-pp-listado,
-.flavor-pp-votacion,
-.flavor-pp-formulario-propuesta,
-.flavor-pp-resultados,
-.flavor-pp-mis-propuestas {
+/* Contenedor principal */
+.flavor-pp-contenedor {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Notificaciones */
-.flavor-pp-notice {
-    padding: 16px 20px;
-    border-radius: var(--pp-radius);
+/* Filtros */
+.flavor-pp-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--pp-fondo);
+    border-radius: var(--pp-radio);
+    border: 1px solid var(--pp-borde);
+}
+
+.flavor-pp-filtros-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 150px;
+}
+
+.flavor-pp-filtros-grupo label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pp-texto-secundario);
+}
+
+/* Inputs y selects */
+.flavor-pp-input,
+.flavor-pp-select,
+.flavor-pp-textarea {
+    padding: 10px 14px;
+    border: 1px solid var(--pp-borde);
+    border-radius: var(--pp-radio);
+    font-size: 14px;
+    color: var(--pp-texto);
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.flavor-pp-input:focus,
+.flavor-pp-select:focus,
+.flavor-pp-textarea:focus {
+    outline: none;
+    border-color: var(--pp-primario);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.flavor-pp-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Grid de proyectos */
+.flavor-pp-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.flavor-pp-columnas-2 { grid-template-columns: repeat(2, 1fr); }
+.flavor-pp-columnas-3 { grid-template-columns: repeat(3, 1fr); }
+.flavor-pp-columnas-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 1024px) {
+    .flavor-pp-columnas-3,
+    .flavor-pp-columnas-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .flavor-pp-grid { grid-template-columns: 1fr; }
+}
+
+/* Tarjeta de proyecto */
+.flavor-pp-proyecto {
+    background: #fff;
+    border-radius: var(--pp-radio);
+    border: 1px solid var(--pp-borde);
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+}
+
+.flavor-pp-proyecto:hover {
+    box-shadow: var(--pp-sombra-hover);
+    transform: translateY(-2px);
+}
+
+.flavor-pp-proyecto.votado {
+    border-color: var(--pp-primario);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.flavor-pp-proyecto-imagen {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+}
+
+.flavor-pp-proyecto-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-pp-proyecto-contenido {
+    padding: 16px;
+}
+
+.flavor-pp-categoria {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+.flavor-pp-categoria-infraestructura { background: #dbeafe; color: #1e40af; }
+.flavor-pp-categoria-medio_ambiente { background: #dcfce7; color: #166534; }
+.flavor-pp-categoria-cultura { background: #fce7f3; color: #9d174d; }
+.flavor-pp-categoria-deporte { background: #fed7aa; color: #c2410c; }
+.flavor-pp-categoria-social { background: #e9d5ff; color: #7c3aed; }
+.flavor-pp-categoria-educacion { background: #fef3c7; color: #b45309; }
+.flavor-pp-categoria-accesibilidad { background: #cffafe; color: #0891b2; }
+
+.flavor-pp-proyecto-titulo {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.flavor-pp-proyecto-titulo a {
+    color: var(--pp-texto);
+    text-decoration: none;
+}
+
+.flavor-pp-proyecto-titulo a:hover {
+    color: var(--pp-primario);
+}
+
+.flavor-pp-proyecto-descripcion {
+    color: var(--pp-texto-secundario);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 12px;
+}
+
+.flavor-pp-proyecto-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--pp-texto-secundario);
+}
+
+.flavor-pp-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flavor-pp-meta-item .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Estado del proyecto */
+.flavor-pp-proyecto-estado {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    background: var(--pp-fondo);
+    border-top: 1px solid var(--pp-borde);
+}
+
+.flavor-pp-estado-pendiente { background: #fef3c7; color: #b45309; }
+.flavor-pp-estado-validado { background: #dcfce7; color: #166534; }
+.flavor-pp-estado-en_votacion { background: #dbeafe; color: #1e40af; }
+.flavor-pp-estado-seleccionado { background: #d1fae5; color: #065f46; }
+.flavor-pp-estado-en_ejecucion { background: #e9d5ff; color: #7c3aed; }
+.flavor-pp-estado-ejecutado { background: #dcfce7; color: #166534; }
+.flavor-pp-estado-rechazado { background: #fee2e2; color: #b91c1c; }
+
+/* Botones */
+.flavor-pp-boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--pp-radio);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.flavor-pp-boton .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.flavor-pp-boton-primario {
+    background: var(--pp-primario);
+    color: #fff;
+}
+
+.flavor-pp-boton-primario:hover {
+    background: var(--pp-primario-hover);
+    color: #fff;
+}
+
+.flavor-pp-boton-secundario {
+    background: var(--pp-fondo);
+    color: var(--pp-texto);
+    border: 1px solid var(--pp-borde);
+}
+
+.flavor-pp-boton-secundario:hover {
+    background: #e2e8f0;
+}
+
+.flavor-pp-boton-peligro {
+    background: var(--pp-peligro);
+    color: #fff;
+}
+
+.flavor-pp-boton-peligro:hover {
+    background: #dc2626;
+}
+
+.flavor-pp-boton-texto {
+    background: transparent;
+    color: var(--pp-primario);
+    padding: 8px 12px;
+}
+
+.flavor-pp-boton-texto:hover {
+    background: rgba(37, 99, 235, 0.1);
+}
+
+.flavor-pp-boton-grande {
+    padding: 14px 28px;
+    font-size: 16px;
+}
+
+.flavor-pp-boton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Acciones de proyecto */
+.flavor-pp-proyecto-acciones {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--pp-borde);
+}
+
+/* Badge de propuesta propia */
+.flavor-pp-proyecto-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 20px;
+}
+
+/* Informacion de votacion */
+.flavor-pp-info-votacion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: var(--pp-radio);
     margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* Votacion - contador de votos */
+.flavor-pp-votacion-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: var(--pp-fondo);
+    border-radius: var(--pp-radio);
+    margin-bottom: 24px;
+}
+
+.flavor-pp-votos-contador {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
+.flavor-pp-votos-icono .dashicons {
+    font-size: 24px;
+    color: var(--pp-peligro);
+}
+
+.flavor-pp-votos-barra {
+    width: 120px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.flavor-pp-votos-progreso {
+    height: 100%;
+    background: var(--pp-primario);
+    transition: width 0.3s ease;
+}
+
+/* Badge votado */
+.flavor-pp-votado-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 99, 235, 0.9);
+    color: #fff;
+    font-weight: 600;
+}
+
+.flavor-pp-votado-badge .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 4px;
+}
+
+/* Resultados */
+.flavor-pp-estadisticas-resumen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.flavor-pp-stat {
+    text-align: center;
+    padding: 16px 24px;
+    background: var(--pp-fondo);
+    border-radius: var(--pp-radio);
+    min-width: 150px;
+}
+
+.flavor-pp-stat-valor {
+    display: block;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--pp-primario);
+}
+
+.flavor-pp-stat-label {
+    font-size: 13px;
+    color: var(--pp-texto-secundario);
+}
+
+/* Ranking */
+.flavor-pp-ranking-item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid var(--pp-borde);
+    border-radius: var(--pp-radio);
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.flavor-pp-ranking-item.seleccionado {
+    border-color: var(--pp-exito);
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.05), #fff);
+}
+
+.flavor-pp-ranking-posicion {
+    text-align: center;
+}
+
+.flavor-pp-medalla {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.flavor-pp-medalla-1 { background: linear-gradient(135deg, #ffd700, #ffec8b); color: #8b6914; }
+.flavor-pp-medalla-2 { background: linear-gradient(135deg, #c0c0c0, #e8e8e8); color: #5a5a5a; }
+.flavor-pp-medalla-3 { background: linear-gradient(135deg, #cd7f32, #daa06d); color: #5c3a1d; }
+
+.flavor-pp-numero {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--pp-texto-secundario);
+}
+
+.flavor-pp-ranking-titulo {
+    margin: 0 0 4px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.flavor-pp-badge-seleccionado {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--pp-exito);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 20px;
+}
+
+.flavor-pp-ranking-barra {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e2e8f0;
+}
+
+.flavor-pp-barra-progreso {
+    height: 100%;
+    background: var(--pp-primario);
+}
+
+/* Formulario */
+.flavor-pp-formulario-contenedor {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.flavor-pp-formulario-header {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.flavor-pp-formulario-intro {
+    color: var(--pp-texto-secundario);
+    font-size: 16px;
+}
+
+.flavor-pp-formulario {
+    background: #fff;
+    padding: 32px;
+    border-radius: var(--pp-radio);
+    border: 1px solid var(--pp-borde);
+}
+
+.flavor-pp-campo {
+    margin-bottom: 24px;
+}
+
+.flavor-pp-campo-grupo {
+    display: flex;
+    gap: 20px;
+}
+
+.flavor-pp-campo-mitad {
+    flex: 1;
+}
+
+.flavor-pp-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--pp-texto);
+}
+
+.flavor-pp-label .requerido {
+    color: var(--pp-peligro);
+}
+
+.flavor-pp-ayuda {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--pp-texto-secundario);
+}
+
+.flavor-pp-campo .flavor-pp-input,
+.flavor-pp-campo .flavor-pp-select,
+.flavor-pp-campo .flavor-pp-textarea {
+    width: 100%;
+}
+
+/* Upload area */
+.flavor-pp-upload-area {
+    position: relative;
+    border: 2px dashed var(--pp-borde);
+    border-radius: var(--pp-radio);
+    padding: 32px;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.flavor-pp-upload-area:hover,
+.flavor-pp-upload-area.dragover {
+    border-color: var(--pp-primario);
+    background: rgba(37, 99, 235, 0.02);
+}
+
+.flavor-pp-input-file {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.flavor-pp-upload-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--pp-secundario);
+    margin-bottom: 8px;
+}
+
+.flavor-pp-upload-preview {
+    position: relative;
+}
+
+.flavor-pp-upload-preview img {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: var(--pp-radio);
+}
+
+.flavor-pp-btn-quitar-imagen {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: var(--pp-peligro);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Checkbox */
+.flavor-pp-campo-checkbox {
+    margin-top: 24px;
+}
+
+.flavor-pp-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.flavor-pp-checkbox-label input[type="checkbox"] {
+    margin-top: 3px;
+}
+
+/* Formulario acciones */
+.flavor-pp-formulario-acciones {
+    margin-top: 32px;
+    text-align: center;
+}
+
+/* Mensajes */
+.flavor-pp-mensaje {
+    padding: 16px;
+    border-radius: var(--pp-radio);
+    margin-top: 20px;
+}
+
+.flavor-pp-mensaje-oculto {
+    display: none;
+}
+
+.flavor-pp-mensaje-exito {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.flavor-pp-mensaje-error {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+}
+
+/* Notices */
+.flavor-pp-notice {
+    padding: 16px 20px;
+    border-radius: var(--pp-radio);
+    margin-bottom: 20px;
+}
+
 .flavor-pp-notice-warning {
-    background: var(--pp-warning-light);
-    color: #92400e;
+    background: #fef3c7;
+    color: #b45309;
     border: 1px solid #fcd34d;
 }
 
@@ -69,1045 +674,27 @@
     border: 1px solid #93c5fd;
 }
 
-.flavor-pp-notice-success {
-    background: var(--pp-success-light);
-    color: #166534;
-    border: 1px solid #86efac;
-}
-
-.flavor-pp-notice a {
-    color: inherit;
-    font-weight: 600;
-}
-
-/* Filtros */
-.flavor-pp-filtros {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
-    padding: 20px;
-    background: var(--pp-gray-50);
-    border-radius: var(--pp-radius);
-}
-
-.flavor-pp-filtros-grupo {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 150px;
-}
-
-.flavor-pp-filtros-grupo label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--pp-gray-700);
-}
-
-/* Inputs y selects */
-.flavor-pp-input,
-.flavor-pp-select,
-.flavor-pp-textarea {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid var(--pp-gray-300);
-    border-radius: var(--pp-radius);
-    font-size: 14px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.flavor-pp-input:focus,
-.flavor-pp-select:focus,
-.flavor-pp-textarea:focus {
-    outline: none;
-    border-color: var(--pp-primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.flavor-pp-textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-/* Info edición */
-.flavor-pp-info-edicion {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding: 12px 16px;
-    background: var(--pp-gray-100);
-    border-radius: var(--pp-radius);
-}
-
-.flavor-pp-edicion-anio {
-    font-weight: 600;
-    color: var(--pp-gray-900);
-}
-
-.flavor-pp-fase {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.flavor-pp-fase-propuestas {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.flavor-pp-fase-votacion {
-    background: var(--pp-success-light);
-    color: #166534;
-}
-
-.flavor-pp-fase-evaluacion {
-    background: var(--pp-warning-light);
-    color: #92400e;
-}
-
-.flavor-pp-fase-implementacion {
-    background: #f3e8ff;
-    color: #6b21a8;
-}
-
-/* Grid de proyectos */
-.flavor-pp-grid {
-    display: grid;
-    gap: 24px;
-}
-
-.flavor-pp-grid-2 {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.flavor-pp-grid-3 {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-.flavor-pp-grid-4 {
-    grid-template-columns: repeat(4, 1fr);
-}
-
-@media (max-width: 1024px) {
-    .flavor-pp-grid-4 {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .flavor-pp-grid-3,
-    .flavor-pp-grid-4 {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .flavor-pp-grid-2,
-    .flavor-pp-grid-3,
-    .flavor-pp-grid-4 {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Tarjeta de proyecto */
-.flavor-pp-proyecto-card {
-    background: #fff;
-    border-radius: var(--pp-radius);
-    box-shadow: var(--pp-shadow);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    transition: box-shadow 0.2s, transform 0.2s;
-    border: 1px solid var(--pp-gray-200);
-}
-
-.flavor-pp-proyecto-card:hover {
-    box-shadow: var(--pp-shadow-lg);
-    transform: translateY(-2px);
-}
-
-.flavor-pp-proyecto-card.flavor-pp-votado {
-    border-color: var(--pp-success);
-    background: linear-gradient(to bottom, var(--pp-success-light) 0%, #fff 100%);
-}
-
-.flavor-pp-proyecto-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-}
-
-.flavor-pp-categoria {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-}
-
-.flavor-pp-cat-social {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.flavor-pp-cat-urbanismo {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.flavor-pp-cat-medioambiente {
-    background: var(--pp-success-light);
-    color: #166534;
-}
-
-.flavor-pp-cat-cultura {
-    background: #f3e8ff;
-    color: #6b21a8;
-}
-
-.flavor-pp-cat-deportes {
-    background: #fce7f3;
-    color: #9d174d;
-}
-
-.flavor-pp-cat-educacion {
-    background: #cffafe;
-    color: #0e7490;
-}
-
-.flavor-pp-cat-movilidad {
-    background: #fef9c3;
-    color: #713f12;
-}
-
-.flavor-pp-votado-badge {
-    color: var(--pp-success);
-}
-
-.flavor-pp-proyecto-titulo {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 12px;
-    line-height: 1.3;
-}
-
-.flavor-pp-proyecto-titulo a {
-    color: var(--pp-gray-900);
-    text-decoration: none;
-}
-
-.flavor-pp-proyecto-titulo a:hover {
-    color: var(--pp-primary);
-}
-
-.flavor-pp-proyecto-descripcion {
-    font-size: 14px;
-    color: var(--pp-gray-500);
-    line-height: 1.5;
-    margin: 0 0 16px;
-    flex-grow: 1;
-}
-
-.flavor-pp-proyecto-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.flavor-pp-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-meta-item .dashicons {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-}
-
-.flavor-pp-presupuesto {
-    font-weight: 600;
-    color: var(--pp-gray-700);
-}
-
-.flavor-pp-proyecto-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding-top: 16px;
-    border-top: 1px solid var(--pp-gray-200);
-}
-
-.flavor-pp-votos {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--pp-primary);
-}
-
-.flavor-pp-votos-count {
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.flavor-pp-votos-label {
-    font-size: 13px;
-    color: var(--pp-gray-500);
-}
-
-/* Botones */
-.flavor-pp-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 10px 16px;
-    border: none;
-    border-radius: var(--pp-radius);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-}
-
-.flavor-pp-btn .dashicons {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-}
-
-.flavor-pp-btn-primary {
-    background: var(--pp-primary);
-    color: #fff;
-}
-
-.flavor-pp-btn-primary:hover {
-    background: var(--pp-primary-hover);
-    color: #fff;
-}
-
-.flavor-pp-btn-secondary {
-    background: var(--pp-gray-100);
-    color: var(--pp-gray-700);
-    border: 1px solid var(--pp-gray-300);
-}
-
-.flavor-pp-btn-secondary:hover {
-    background: var(--pp-gray-200);
-}
-
-.flavor-pp-btn-votar {
-    background: var(--pp-success);
-    color: #fff;
-}
-
-.flavor-pp-btn-votar:hover {
-    background: #15803d;
-}
-
-.flavor-pp-btn-votar:disabled {
-    background: var(--pp-gray-300);
-    cursor: not-allowed;
-}
-
-.flavor-pp-btn-votado {
-    background: var(--pp-success-light);
-    color: var(--pp-success);
-    border: 1px solid var(--pp-success);
-}
-
-.flavor-pp-btn-votado .texto-quitar {
-    display: none;
-}
-
-.flavor-pp-btn-votado:hover .texto-votado {
-    display: none;
-}
-
-.flavor-pp-btn-votado:hover .texto-quitar {
-    display: inline;
-}
-
-.flavor-pp-btn-votado:hover {
-    background: var(--pp-danger-light);
-    color: var(--pp-danger);
-    border-color: var(--pp-danger);
-}
-
-.flavor-pp-btn-ver {
-    background: transparent;
-    color: var(--pp-primary);
-    padding: 10px 12px;
-}
-
-.flavor-pp-btn-ver:hover {
-    background: rgba(37, 99, 235, 0.1);
-}
-
-.flavor-pp-btn-link {
-    background: transparent;
-    color: var(--pp-gray-500);
-    padding: 8px;
-}
-
-.flavor-pp-btn-link:hover {
-    color: var(--pp-primary);
-}
-
-.flavor-pp-btn-danger {
-    color: var(--pp-danger);
-}
-
-.flavor-pp-btn-danger:hover {
-    color: #b91c1c;
-}
-
-/* Estado vacío */
+/* Vacio */
 .flavor-pp-vacio {
     text-align: center;
     padding: 60px 20px;
-    background: var(--pp-gray-50);
-    border-radius: var(--pp-radius);
-    border: 2px dashed var(--pp-gray-300);
+    color: var(--pp-texto-secundario);
 }
 
 .flavor-pp-vacio .dashicons {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    color: var(--pp-gray-300);
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: var(--pp-borde);
     margin-bottom: 16px;
 }
 
 .flavor-pp-vacio p {
-    color: var(--pp-gray-500);
-    margin: 0 0 20px;
+    margin: 0 0 16px;
+    font-size: 16px;
 }
 
-/* Barra de progreso */
-.flavor-pp-progreso {
-    margin-top: 12px;
-    position: relative;
-}
-
-.flavor-pp-progreso-bar {
-    height: 6px;
-    background: var(--pp-gray-200);
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.flavor-pp-progreso-bar > div,
-.flavor-pp-progreso-fill {
-    height: 100%;
-    background: var(--pp-primary);
-    border-radius: 3px;
-    transition: width 0.3s;
-}
-
-.flavor-pp-progreso-texto {
-    font-size: 12px;
-    color: var(--pp-gray-500);
-    margin-top: 4px;
-}
-
-/* Cargar más */
-.flavor-pp-cargar-mas {
-    text-align: center;
-    margin-top: 32px;
-}
-
-/* ============================================
-   FORMULARIO DE PROPUESTA
-   ============================================ */
-
-.flavor-pp-formulario-propuesta {
-    max-width: 800px;
-}
-
-.flavor-pp-info-proceso {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 16px 20px;
-    background: #dbeafe;
-    border-radius: var(--pp-radius);
-    margin-bottom: 24px;
-}
-
-.flavor-pp-info-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #1e40af;
-    font-size: 14px;
-}
-
-.flavor-pp-form {
-    background: #fff;
-    padding: 32px;
-    border-radius: var(--pp-radius);
-    box-shadow: var(--pp-shadow);
-    border: 1px solid var(--pp-gray-200);
-}
-
-.flavor-pp-form-group {
-    margin-bottom: 24px;
-}
-
-.flavor-pp-form-row {
-    display: flex;
-    gap: 20px;
-}
-
-.flavor-pp-form-half {
-    flex: 1;
-}
-
-@media (max-width: 600px) {
-    .flavor-pp-form-row {
-        flex-direction: column;
-    }
-}
-
-.flavor-pp-label {
-    display: block;
-    font-weight: 500;
-    color: var(--pp-gray-700);
-    margin-bottom: 8px;
-}
-
-.flavor-pp-label .required {
-    color: var(--pp-danger);
-}
-
-.flavor-pp-help {
-    display: block;
-    font-size: 13px;
-    color: var(--pp-gray-500);
-    margin-top: 6px;
-}
-
-.flavor-pp-upload-area {
-    border: 2px dashed var(--pp-gray-300);
-    border-radius: var(--pp-radius);
-    padding: 32px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-}
-
-.flavor-pp-upload-area:hover {
-    border-color: var(--pp-primary);
-    background: rgba(37, 99, 235, 0.02);
-}
-
-.flavor-pp-upload-placeholder .dashicons {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-    color: var(--pp-gray-400);
-    margin-bottom: 12px;
-}
-
-.flavor-pp-upload-placeholder p {
-    margin: 0;
-    color: var(--pp-gray-600);
-}
-
-.flavor-pp-upload-placeholder small {
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-preview-imagenes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 16px;
-}
-
-.flavor-pp-preview-imagenes img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: var(--pp-radius);
-}
-
-.flavor-pp-checkbox-wrapper {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    cursor: pointer;
-}
-
-.flavor-pp-checkbox-wrapper input[type="checkbox"] {
-    margin-top: 2px;
-}
-
-.flavor-pp-checkbox-label {
-    font-size: 14px;
-    color: var(--pp-gray-600);
-}
-
-.flavor-pp-checkbox-label a {
-    color: var(--pp-primary);
-}
-
-.flavor-pp-form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding-top: 24px;
-    border-top: 1px solid var(--pp-gray-200);
-    margin-top: 8px;
-}
-
-.flavor-pp-mensaje-exito {
-    text-align: center;
-    padding: 48px 32px;
-    background: var(--pp-success-light);
-    border-radius: var(--pp-radius);
-    border: 1px solid #86efac;
-}
-
-.flavor-pp-mensaje-exito .dashicons {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    color: var(--pp-success);
-    margin-bottom: 16px;
-}
-
-.flavor-pp-mensaje-exito h3 {
-    color: #166534;
-    margin: 0 0 12px;
-}
-
-.flavor-pp-mensaje-exito p {
-    color: #166534;
-    margin: 0 0 24px;
-}
-
-.flavor-pp-acciones {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-}
-
-/* ============================================
-   INTERFAZ DE VOTACIÓN
-   ============================================ */
-
-.flavor-pp-votacion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 24px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-}
-
-.flavor-pp-info-votacion h2 {
-    margin: 0 0 8px;
-    color: var(--pp-gray-900);
-}
-
-.flavor-pp-info-votacion p {
-    margin: 0;
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-contador-votos {
-    background: #fff;
-    padding: 16px 24px;
-    border-radius: var(--pp-radius);
-    box-shadow: var(--pp-shadow);
-    text-align: center;
-    min-width: 160px;
-}
-
-.flavor-pp-votos-disponibles {
-    margin-bottom: 8px;
-}
-
-.flavor-pp-votos-numero {
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--pp-primary);
-    line-height: 1;
-}
-
-.flavor-pp-votos-disponibles.agotados .flavor-pp-votos-numero {
-    color: var(--pp-gray-400);
-}
-
-.flavor-pp-votos-texto {
-    display: block;
-    font-size: 13px;
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-votos-emitidos {
-    font-size: 13px;
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-filtros-votacion {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-}
-
-.flavor-pp-toggle-vista {
-    display: flex;
-    gap: 4px;
-}
-
-.flavor-pp-toggle-vista button {
-    padding: 8px 12px;
-    background: var(--pp-gray-100);
-    border: 1px solid var(--pp-gray-300);
-    border-radius: var(--pp-radius);
-    cursor: pointer;
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-toggle-vista button.active {
-    background: var(--pp-primary);
-    color: #fff;
-    border-color: var(--pp-primary);
-}
-
-.flavor-pp-grid-votacion {
-    display: grid;
-    gap: 20px;
-}
-
-.flavor-pp-proyecto-votacion {
-    background: #fff;
-    border-radius: var(--pp-radius);
-    box-shadow: var(--pp-shadow);
-    border: 2px solid transparent;
-    overflow: hidden;
-    transition: border-color 0.2s, transform 0.2s;
-}
-
-.flavor-pp-proyecto-votacion:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--pp-shadow-lg);
-}
-
-.flavor-pp-proyecto-votacion.votado {
-    border-color: var(--pp-success);
-}
-
-.flavor-pp-proyecto-content {
-    padding: 20px;
-}
-
-.flavor-pp-proyecto-datos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 12px;
-}
-
-.flavor-pp-dato {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-votos-actuales {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid var(--pp-gray-200);
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-votos-actuales .count {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--pp-primary);
-}
-
-.flavor-pp-proyecto-acciones {
-    display: flex;
-    gap: 8px;
-    padding: 16px 20px;
-    background: var(--pp-gray-50);
-    border-top: 1px solid var(--pp-gray-200);
-}
-
-.flavor-pp-proyecto-acciones .flavor-pp-btn {
-    flex: 1;
-}
-
-/* ============================================
-   RESULTADOS
-   ============================================ */
-
-.flavor-pp-resultados-header {
-    margin-bottom: 32px;
-}
-
-.flavor-pp-resultados-header h2 {
-    margin: 0 0 24px;
-    color: var(--pp-gray-900);
-}
-
-.flavor-pp-estadisticas-generales {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 16px;
-}
-
-.flavor-pp-stat {
-    background: #fff;
-    padding: 20px;
-    border-radius: var(--pp-radius);
-    box-shadow: var(--pp-shadow);
-    text-align: center;
-}
-
-.flavor-pp-stat .valor {
-    display: block;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--pp-primary);
-    line-height: 1;
-    margin-bottom: 8px;
-}
-
-.flavor-pp-stat .label {
-    font-size: 13px;
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-ranking {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.flavor-pp-resultado-item {
-    display: flex;
-    align-items: stretch;
-    background: #fff;
-    border-radius: var(--pp-radius);
-    box-shadow: var(--pp-shadow);
-    overflow: hidden;
-    border: 1px solid var(--pp-gray-200);
-}
-
-.flavor-pp-resultado-item.seleccionable {
-    border-left: 4px solid var(--pp-success);
-}
-
-.flavor-pp-resultado-item.fuera-presupuesto {
-    opacity: 0.7;
-    border-left: 4px solid var(--pp-gray-400);
-}
-
-.flavor-pp-posicion {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    min-width: 80px;
-    background: var(--pp-gray-50);
-}
-
-.flavor-pp-posicion .numero {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--pp-gray-700);
-}
-
-.flavor-pp-posicion .medalla {
-    font-size: 24px;
-    margin-top: 4px;
-}
-
-.flavor-pp-resultado-content {
-    flex: 1;
-    padding: 20px;
-}
-
-.flavor-pp-resultado-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 8px;
-}
-
-.flavor-pp-resultado-content .flavor-pp-titulo {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--pp-gray-900);
-}
-
-.flavor-pp-estado {
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.flavor-pp-estado-validado,
-.flavor-pp-estado-en_votacion {
-    background: var(--pp-gray-100);
-    color: var(--pp-gray-700);
-}
-
-.flavor-pp-estado-seleccionado {
-    background: var(--pp-success-light);
-    color: #166534;
-}
-
-.flavor-pp-estado-en_ejecucion {
-    background: var(--pp-warning-light);
-    color: #92400e;
-}
-
-.flavor-pp-estado-ejecutado {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.flavor-pp-resultado-content .flavor-pp-descripcion {
-    color: var(--pp-gray-500);
-    font-size: 14px;
-    margin: 0 0 12px;
-    line-height: 1.5;
-}
-
-.flavor-pp-resultado-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.flavor-pp-resultado-votos {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    min-width: 140px;
-    background: var(--pp-gray-50);
-}
-
-.flavor-pp-votos-circulo {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 8px;
-}
-
-.flavor-pp-votos-circulo.alto {
-    background: var(--pp-success-light);
-    color: var(--pp-success);
-}
-
-.flavor-pp-votos-circulo.medio {
-    background: #dbeafe;
-    color: var(--pp-primary);
-}
-
-.flavor-pp-votos-circulo.bajo {
-    background: var(--pp-gray-100);
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-votos-circulo .numero {
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.flavor-pp-votos-circulo .label {
-    font-size: 11px;
-}
-
-.flavor-pp-badge-seleccionable,
-.flavor-pp-badge-fuera {
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.flavor-pp-badge-seleccionable {
-    background: var(--pp-success-light);
-    color: #166534;
-}
-
-.flavor-pp-badge-fuera {
-    background: var(--pp-gray-100);
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-resumen-presupuesto {
-    margin-top: 32px;
-    padding: 24px;
-    background: #fff;
-    border-radius: var(--pp-radius);
-    box-shadow: var(--pp-shadow);
-}
-
-.flavor-pp-barra-presupuesto {
-    height: 12px;
-    background: var(--pp-gray-200);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 12px;
-}
-
-.flavor-pp-presupuesto-usado {
-    height: 100%;
-    background: linear-gradient(90deg, var(--pp-success), #22c55e);
-    border-radius: 6px;
-    transition: width 0.5s;
-}
-
-.flavor-pp-presupuesto-texto {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: var(--pp-gray-600);
-}
-
-/* ============================================
-   MIS PROPUESTAS
-   ============================================ */
-
+/* Mis propuestas */
 .flavor-pp-mis-propuestas-header {
     display: flex;
     justify-content: space-between;
@@ -1115,229 +702,143 @@
     margin-bottom: 24px;
 }
 
-.flavor-pp-mis-propuestas-header h2 {
-    margin: 0;
-}
-
-.flavor-pp-propuestas-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.flavor-pp-mi-propuesta {
+.flavor-pp-propuesta-card {
     background: #fff;
-    border-radius: var(--pp-radius);
-    box-shadow: var(--pp-shadow);
-    overflow: hidden;
-    border: 1px solid var(--pp-gray-200);
+    border: 1px solid var(--pp-borde);
+    border-radius: var(--pp-radio);
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
 }
 
-.flavor-pp-propuesta-estado-bar {
-    padding: 8px 16px;
+.flavor-pp-propuesta-card .flavor-pp-propuesta-estado {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 4px 12px;
     font-size: 12px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    font-weight: 600;
+    border-radius: 20px;
 }
 
-.flavor-pp-propuesta-estado-bar.estado-gris {
-    background: var(--pp-gray-100);
-    color: var(--pp-gray-700);
+.flavor-pp-estado-orange { background: #fef3c7; color: #b45309; }
+.flavor-pp-estado-green { background: #dcfce7; color: #166534; }
+.flavor-pp-estado-blue { background: #dbeafe; color: #1e40af; }
+.flavor-pp-estado-purple { background: #e9d5ff; color: #7c3aed; }
+.flavor-pp-estado-red { background: #fee2e2; color: #b91c1c; }
+.flavor-pp-estado-gray { background: #f1f5f9; color: #64748b; }
+
+.flavor-pp-propuesta-rechazo {
+    margin-top: 16px;
+    padding: 12px;
+    background: #fee2e2;
+    border-radius: var(--pp-radio);
+    font-size: 14px;
 }
 
-.flavor-pp-propuesta-estado-bar.estado-amarillo {
-    background: var(--pp-warning-light);
-    color: #92400e;
-}
-
-.flavor-pp-propuesta-estado-bar.estado-verde {
-    background: var(--pp-success-light);
-    color: #166534;
-}
-
-.flavor-pp-propuesta-estado-bar.estado-azul {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.flavor-pp-propuesta-estado-bar.estado-verde-oscuro {
-    background: #bbf7d0;
-    color: #14532d;
-}
-
-.flavor-pp-propuesta-estado-bar.estado-naranja {
-    background: #fed7aa;
-    color: #c2410c;
-}
-
-.flavor-pp-propuesta-estado-bar.estado-verde-exito {
-    background: #86efac;
-    color: #14532d;
-}
-
-.flavor-pp-propuesta-estado-bar.estado-rojo {
-    background: var(--pp-danger-light);
+.flavor-pp-propuesta-rechazo strong {
+    display: block;
+    margin-bottom: 4px;
     color: #b91c1c;
 }
 
-.flavor-pp-propuesta-content {
-    padding: 20px;
-}
-
-.flavor-pp-propuesta-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-}
-
-.flavor-pp-propuesta-titulo {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    color: var(--pp-gray-900);
-}
-
-.flavor-pp-propuesta-descripcion {
-    font-size: 14px;
-    color: var(--pp-gray-500);
-    margin: 0 0 16px;
-    line-height: 1.5;
-}
-
-.flavor-pp-propuesta-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.flavor-pp-ejecucion-progreso {
+/* Presupuesto resumen */
+.flavor-pp-presupuesto-barra-contenedor {
     margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--pp-gray-200);
 }
 
-.flavor-pp-propuesta-acciones {
-    display: flex;
-    gap: 8px;
-    padding: 12px 20px;
-    background: var(--pp-gray-50);
-    border-top: 1px solid var(--pp-gray-200);
+.flavor-pp-presupuesto-barra {
+    height: 24px;
+    background: #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-/* ============================================
-   MODAL
-   ============================================ */
-
-.flavor-pp-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+.flavor-pp-presupuesto-asignado {
     height: 100%;
-    z-index: 100000;
+    background: linear-gradient(90deg, var(--pp-primario), var(--pp-exito));
+}
+
+.flavor-pp-presupuesto-leyenda {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.flavor-pp-leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flavor-pp-leyenda-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.flavor-pp-leyenda-item.asignado .flavor-pp-leyenda-color {
+    background: var(--pp-primario);
+}
+
+.flavor-pp-leyenda-item.disponible .flavor-pp-leyenda-color {
+    background: #e2e8f0;
+}
+
+/* Loading */
+.flavor-pp-cargando {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    padding: 40px;
+    color: var(--pp-texto-secundario);
 }
 
-.flavor-pp-modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-}
-
-.flavor-pp-modal-content {
-    position: relative;
-    background: #fff;
-    border-radius: var(--pp-radius);
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: var(--pp-shadow-lg);
-}
-
-.flavor-pp-modal-small {
-    max-width: 400px;
-    padding: 32px;
-    text-align: center;
-}
-
-.flavor-pp-modal-small h3 {
-    margin: 0 0 12px;
-}
-
-.flavor-pp-modal-small p {
-    margin: 0 0 24px;
-    color: var(--pp-gray-500);
-}
-
-.flavor-pp-modal-cerrar {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--pp-gray-500);
-    padding: 4px;
-}
-
-.flavor-pp-modal-cerrar:hover {
-    color: var(--pp-gray-700);
-}
-
-.flavor-pp-modal-body {
-    padding: 32px;
-}
-
-.flavor-pp-modal-acciones {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-}
-
-/* ============================================
-   ANIMACIONES
-   ============================================ */
-
-@keyframes flavor-pp-fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.flavor-pp-proyecto-card,
-.flavor-pp-proyecto-votacion,
-.flavor-pp-resultado-item,
-.flavor-pp-mi-propuesta {
-    animation: flavor-pp-fadeIn 0.3s ease-out;
-}
-
-/* Loading spinner */
-.flavor-pp-loading {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--pp-gray-300);
-    border-top-color: var(--pp-primary);
+.flavor-pp-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--pp-borde);
+    border-top-color: var(--pp-primario);
     border-radius: 50%;
-    animation: flavor-pp-spin 0.8s linear infinite;
+    animation: pp-spin 0.8s linear infinite;
 }
 
-@keyframes flavor-pp-spin {
-    to {
-        transform: rotate(360deg);
+@keyframes pp-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .flavor-pp-filtros {
+        flex-direction: column;
+    }
+
+    .flavor-pp-campo-grupo {
+        flex-direction: column;
+    }
+
+    .flavor-pp-formulario {
+        padding: 20px;
+    }
+
+    .flavor-pp-ranking-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .flavor-pp-ranking-stats {
+        justify-content: center;
+    }
+
+    .flavor-pp-estadisticas-resumen {
+        justify-content: center;
+    }
+
+    .flavor-pp-mis-propuestas-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
     }
 }

@@ -1,11 +1,13 @@
 <?php
 /**
- * Vista: Formulario de propuesta de proyecto
+ * Vista: Formulario de Propuesta de Proyecto
+ *
+ * Variables disponibles:
+ * - $edicion: objeto con datos de la edicion actual
+ * - $categorias: array de categorias disponibles
+ * - $configuracion: array de configuracion del modulo
  *
  * @package FlavorChatIA
- * @var object $edicion       Edición activa
- * @var array  $categorias    Categorías disponibles
- * @var array  $configuracion Configuración del módulo
  */
 
 if (!defined('ABSPATH')) {
@@ -16,157 +18,124 @@ $presupuesto_minimo = floatval($configuracion['presupuesto_minimo_proyecto'] ?? 
 $presupuesto_maximo = floatval($configuracion['presupuesto_maximo_proyecto'] ?? 50000);
 ?>
 
-<div class="flavor-pp-formulario-propuesta">
-    <div class="flavor-pp-info-proceso">
-        <div class="flavor-pp-info-item">
-            <span class="dashicons dashicons-calendar-alt"></span>
-            <span>
-                <?php printf(
-                    esc_html__('Edición %d - Fase de propuestas', 'flavor-chat-ia'),
-                    intval($edicion->anio)
-                ); ?>
-            </span>
-        </div>
-        <div class="flavor-pp-info-item">
-            <span class="dashicons dashicons-money-alt"></span>
-            <span>
-                <?php printf(
-                    esc_html__('Presupuesto: entre %s€ y %s€', 'flavor-chat-ia'),
-                    number_format($presupuesto_minimo, 0, ',', '.'),
-                    number_format($presupuesto_maximo, 0, ',', '.')
-                ); ?>
-            </span>
-        </div>
+<div class="flavor-pp-formulario-contenedor">
+    <div class="flavor-pp-formulario-header">
+        <h2><?php esc_html_e('Proponer un proyecto', 'flavor-chat-ia'); ?></h2>
+        <p class="flavor-pp-formulario-intro">
+            <?php esc_html_e('Comparte tu idea para mejorar el barrio. Las propuestas seran revisadas y, si cumplen los requisitos, pasaran a votacion.', 'flavor-chat-ia'); ?>
+        </p>
     </div>
 
-    <form id="flavor-pp-form-propuesta" class="flavor-pp-form" method="post">
+    <form id="flavor-pp-form-propuesta" class="flavor-pp-formulario" method="post">
         <?php wp_nonce_field('flavor_presupuestos_nonce', 'nonce'); ?>
+        <input type="hidden" name="action" value="pp_proponer_proyecto">
+        <input type="hidden" name="edicion_id" value="<?php echo esc_attr($edicion->id); ?>">
 
-        <div class="flavor-pp-form-group">
+        <div class="flavor-pp-campo">
             <label for="pp-titulo" class="flavor-pp-label">
-                <?php esc_html_e('Título del proyecto', 'flavor-chat-ia'); ?>
-                <span class="required">*</span>
+                <?php esc_html_e('Titulo del proyecto', 'flavor-chat-ia'); ?>
+                <span class="requerido">*</span>
             </label>
-            <input type="text" id="pp-titulo" name="titulo" class="flavor-pp-input"
-                   required maxlength="200"
-                   placeholder="<?php esc_attr_e('Ej: Instalación de columpios accesibles en el parque', 'flavor-chat-ia'); ?>">
-            <span class="flavor-pp-help">
-                <?php esc_html_e('Máximo 200 caracteres. Sé claro y descriptivo.', 'flavor-chat-ia'); ?>
-            </span>
+            <input type="text" id="pp-titulo" name="titulo" class="flavor-pp-input" required
+                   maxlength="200"
+                   placeholder="<?php esc_attr_e('Ej: Parque infantil accesible en Plaza Mayor', 'flavor-chat-ia'); ?>">
+            <span class="flavor-pp-ayuda"><?php esc_html_e('Maximo 200 caracteres', 'flavor-chat-ia'); ?></span>
         </div>
 
-        <div class="flavor-pp-form-group">
+        <div class="flavor-pp-campo">
+            <label for="pp-categoria" class="flavor-pp-label">
+                <?php esc_html_e('Categoria', 'flavor-chat-ia'); ?>
+                <span class="requerido">*</span>
+            </label>
+            <select id="pp-categoria" name="categoria" class="flavor-pp-select" required>
+                <option value=""><?php esc_html_e('Selecciona una categoria', 'flavor-chat-ia'); ?></option>
+                <?php foreach ($categorias as $slug => $nombre): ?>
+                    <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($nombre); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="flavor-pp-campo">
             <label for="pp-descripcion" class="flavor-pp-label">
-                <?php esc_html_e('Descripción del proyecto', 'flavor-chat-ia'); ?>
-                <span class="required">*</span>
+                <?php esc_html_e('Descripcion detallada', 'flavor-chat-ia'); ?>
+                <span class="requerido">*</span>
             </label>
-            <textarea id="pp-descripcion" name="descripcion" class="flavor-pp-textarea"
-                      required rows="6"
-                      placeholder="<?php esc_attr_e('Describe tu propuesta en detalle: qué problema resuelve, a quién beneficia, cómo se implementaría...', 'flavor-chat-ia'); ?>"></textarea>
-            <span class="flavor-pp-help">
-                <?php esc_html_e('Incluye todos los detalles relevantes para que los técnicos puedan evaluar la viabilidad.', 'flavor-chat-ia'); ?>
-            </span>
+            <textarea id="pp-descripcion" name="descripcion" class="flavor-pp-textarea" required
+                      rows="6" maxlength="2000"
+                      placeholder="<?php esc_attr_e('Describe tu propuesta: que problema resuelve, a quien beneficia, donde se ubicaria...', 'flavor-chat-ia'); ?>"></textarea>
+            <span class="flavor-pp-ayuda"><?php esc_html_e('Minimo 50 caracteres, maximo 2000', 'flavor-chat-ia'); ?></span>
         </div>
 
-        <div class="flavor-pp-form-row">
-            <div class="flavor-pp-form-group flavor-pp-form-half">
-                <label for="pp-categoria" class="flavor-pp-label">
-                    <?php esc_html_e('Categoría', 'flavor-chat-ia'); ?>
-                    <span class="required">*</span>
-                </label>
-                <select id="pp-categoria" name="categoria" class="flavor-pp-select" required>
-                    <option value=""><?php esc_html_e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
-                    <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
-                        <option value="<?php echo esc_attr($clave_categoria); ?>">
-                            <?php echo esc_html($etiqueta_categoria); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="flavor-pp-form-group flavor-pp-form-half">
+        <div class="flavor-pp-campo-grupo">
+            <div class="flavor-pp-campo flavor-pp-campo-mitad">
                 <label for="pp-presupuesto" class="flavor-pp-label">
-                    <?php esc_html_e('Presupuesto estimado (€)', 'flavor-chat-ia'); ?>
-                    <span class="required">*</span>
+                    <?php esc_html_e('Presupuesto estimado (EUR)', 'flavor-chat-ia'); ?>
+                    <span class="requerido">*</span>
                 </label>
-                <input type="number" id="pp-presupuesto" name="presupuesto" class="flavor-pp-input"
-                       required min="<?php echo esc_attr($presupuesto_minimo); ?>"
+                <input type="number" id="pp-presupuesto" name="presupuesto" class="flavor-pp-input" required
+                       min="<?php echo esc_attr($presupuesto_minimo); ?>"
                        max="<?php echo esc_attr($presupuesto_maximo); ?>"
                        step="100"
-                       placeholder="<?php echo esc_attr($presupuesto_minimo); ?>">
-                <span class="flavor-pp-help">
+                       placeholder="<?php echo esc_attr(number_format($presupuesto_minimo, 0, ',', '.')); ?>">
+                <span class="flavor-pp-ayuda">
                     <?php printf(
-                        esc_html__('Entre %s€ y %s€', 'flavor-chat-ia'),
+                        esc_html__('Entre %s y %s EUR', 'flavor-chat-ia'),
                         number_format($presupuesto_minimo, 0, ',', '.'),
                         number_format($presupuesto_maximo, 0, ',', '.')
                     ); ?>
                 </span>
             </div>
-        </div>
 
-        <div class="flavor-pp-form-group">
-            <label for="pp-ubicacion" class="flavor-pp-label">
-                <?php esc_html_e('Ubicación propuesta', 'flavor-chat-ia'); ?>
-            </label>
-            <input type="text" id="pp-ubicacion" name="ubicacion" class="flavor-pp-input"
-                   placeholder="<?php esc_attr_e('Ej: Parque Central, Calle Mayor esquina Plaza Nueva...', 'flavor-chat-ia'); ?>">
-            <span class="flavor-pp-help">
-                <?php esc_html_e('Indica dónde se implementaría el proyecto (opcional pero recomendado).', 'flavor-chat-ia'); ?>
-            </span>
-        </div>
-
-        <div class="flavor-pp-form-group">
-            <label class="flavor-pp-label">
-                <?php esc_html_e('Imágenes de apoyo', 'flavor-chat-ia'); ?>
-            </label>
-            <div class="flavor-pp-upload-area" id="pp-upload-area">
-                <input type="file" id="pp-imagenes" name="imagenes[]" accept="image/*" multiple
-                       style="display: none;">
-                <div class="flavor-pp-upload-placeholder">
-                    <span class="dashicons dashicons-upload"></span>
-                    <p><?php esc_html_e('Arrastra imágenes aquí o haz clic para seleccionar', 'flavor-chat-ia'); ?></p>
-                    <small><?php esc_html_e('Máximo 5 imágenes, 2MB cada una', 'flavor-chat-ia'); ?></small>
-                </div>
-                <div class="flavor-pp-preview-imagenes" id="pp-preview-imagenes"></div>
+            <div class="flavor-pp-campo flavor-pp-campo-mitad">
+                <label for="pp-ubicacion" class="flavor-pp-label">
+                    <?php esc_html_e('Ubicacion sugerida', 'flavor-chat-ia'); ?>
+                </label>
+                <input type="text" id="pp-ubicacion" name="ubicacion" class="flavor-pp-input"
+                       maxlength="200"
+                       placeholder="<?php esc_attr_e('Ej: Calle Mayor, 15', 'flavor-chat-ia'); ?>">
             </div>
         </div>
 
-        <div class="flavor-pp-form-group">
-            <label class="flavor-pp-checkbox-wrapper">
+        <div class="flavor-pp-campo">
+            <label for="pp-imagen" class="flavor-pp-label">
+                <?php esc_html_e('Imagen ilustrativa (opcional)', 'flavor-chat-ia'); ?>
+            </label>
+            <div class="flavor-pp-upload-area" id="pp-upload-area">
+                <input type="file" id="pp-imagen" name="imagen" accept="image/jpeg,image/png,image/webp" class="flavor-pp-input-file">
+                <div class="flavor-pp-upload-placeholder">
+                    <span class="dashicons dashicons-upload"></span>
+                    <p><?php esc_html_e('Arrastra una imagen o haz clic para seleccionar', 'flavor-chat-ia'); ?></p>
+                    <span class="flavor-pp-ayuda"><?php esc_html_e('JPG, PNG o WebP. Maximo 2MB.', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="flavor-pp-upload-preview" style="display: none;">
+                    <img src="" alt="" id="pp-imagen-preview">
+                    <button type="button" class="flavor-pp-btn-quitar-imagen">
+                        <span class="dashicons dashicons-no-alt"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flavor-pp-campo flavor-pp-campo-checkbox">
+            <label class="flavor-pp-checkbox-label">
                 <input type="checkbox" name="acepto_condiciones" required>
-                <span class="flavor-pp-checkbox-label">
-                    <?php printf(
-                        esc_html__('He leído y acepto las %scondiciones del proceso participativo%s', 'flavor-chat-ia'),
-                        '<a href="#" target="_blank">',
+                <span><?php
+                    printf(
+                        esc_html__('He leido y acepto las %scondiciones de participacion%s', 'flavor-chat-ia'),
+                        '<a href="' . esc_url(home_url('/condiciones-presupuestos-participativos/')) . '" target="_blank">',
                         '</a>'
-                    ); ?>
-                </span>
+                    );
+                ?></span>
             </label>
         </div>
 
-        <div class="flavor-pp-form-actions">
-            <button type="button" class="flavor-pp-btn flavor-pp-btn-secondary" id="pp-guardar-borrador">
-                <span class="dashicons dashicons-edit"></span>
-                <?php esc_html_e('Guardar borrador', 'flavor-chat-ia'); ?>
-            </button>
-            <button type="submit" class="flavor-pp-btn flavor-pp-btn-primary" id="pp-enviar-propuesta">
+        <div class="flavor-pp-formulario-acciones">
+            <button type="submit" class="flavor-pp-boton flavor-pp-boton-primario flavor-pp-boton-grande">
                 <span class="dashicons dashicons-yes"></span>
                 <?php esc_html_e('Enviar propuesta', 'flavor-chat-ia'); ?>
             </button>
         </div>
-    </form>
 
-    <div class="flavor-pp-mensaje-exito" id="pp-mensaje-exito" style="display: none;">
-        <span class="dashicons dashicons-yes-alt"></span>
-        <h3><?php esc_html_e('¡Propuesta enviada correctamente!', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('Tu propuesta será revisada por el equipo técnico. Te notificaremos cuando pase a la fase de votación.', 'flavor-chat-ia'); ?></p>
-        <div class="flavor-pp-acciones">
-            <a href="<?php echo esc_url(home_url('/presupuestos-participativos/')); ?>" class="flavor-pp-btn flavor-pp-btn-secondary">
-                <?php esc_html_e('Ver todos los proyectos', 'flavor-chat-ia'); ?>
-            </a>
-            <button type="button" class="flavor-pp-btn flavor-pp-btn-primary" id="pp-nueva-propuesta">
-                <?php esc_html_e('Enviar otra propuesta', 'flavor-chat-ia'); ?>
-            </button>
-        </div>
-    </div>
+        <div class="flavor-pp-mensaje flavor-pp-mensaje-oculto" id="pp-mensaje-resultado"></div>
+    </form>
 </div>
