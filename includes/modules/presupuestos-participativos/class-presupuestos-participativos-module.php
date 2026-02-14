@@ -88,8 +88,866 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
+        add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+        $this->register_ajax_handlers();
         $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registra los shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('presupuestos_listado', [$this, 'shortcode_listado_proyectos']);
+        add_shortcode('presupuestos_proponer', [$this, 'shortcode_formulario_propuesta']);
+        add_shortcode('presupuestos_votar', [$this, 'shortcode_interfaz_votacion']);
+        add_shortcode('presupuestos_resultados', [$this, 'shortcode_resultados']);
+        add_shortcode('presupuestos_mi_proyecto', [$this, 'shortcode_mis_propuestas']);
+    }
+
+    /**
+     * Registra los handlers AJAX del módulo
+     */
+    public function register_ajax_handlers() {
+        // Acciones que requieren autenticación
+        $acciones_autenticadas = [
+            'pp_proponer_proyecto',
+            'pp_votar_proyecto',
+            'pp_quitar_voto',
+            'pp_editar_propuesta',
+            'pp_eliminar_propuesta',
+            'pp_subir_imagen',
+            'pp_comentar_proyecto',
+            'pp_reportar_proyecto',
+        ];
+
+        foreach ($acciones_autenticadas as $accion) {
+            add_action('wp_ajax_' . $accion, [$this, 'ajax_' . str_replace('pp_', '', $accion)]);
+        }
+
+        // Acciones públicas (solo lectura)
+        $acciones_publicas = [
+            'pp_cargar_proyectos',
+            'pp_obtener_proyecto',
+        ];
+
+        foreach ($acciones_publicas as $accion) {
+            add_action('wp_ajax_' . $accion, [$this, 'ajax_' . str_replace('pp_', '', $accion)]);
+            add_action('wp_ajax_nopriv_' . $accion, [$this, 'ajax_' . str_replace('pp_', '', $accion)]);
+        }
+    }
+
+    /**
+     * Encola los assets del frontend
+     */
+    public function enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
+        $ruta_modulo = plugin_dir_url(__FILE__);
+
+        // CSS
+        wp_enqueue_style(
+            'flavor-presupuestos',
+            $ruta_modulo . 'assets/css/presupuestos.css',
+            [],
+            '1.0.0'
+        );
+
+        // JS
+        wp_enqueue_script(
+            'flavor-presupuestos',
+            $ruta_modulo . 'assets/js/presupuestos.js',
+            ['jquery'],
+            '1.0.0',
+            true
+        );
+
+        // Configuración para JS
+        $configuracion = $this->settings;
+        wp_localize_script('flavor-presupuestos', 'flavorPresupuestosConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('flavor_presupuestos_nonce'),
+            'votosMaximos' => intval($configuracion['votos_maximos_por_persona'] ?? 3),
+            'presupuestoMinimo' => floatval($configuracion['presupuesto_minimo_proyecto'] ?? 1000),
+            'presupuestoMaximo' => floatval($configuracion['presupuesto_maximo_proyecto'] ?? 50000),
+            'strings' => [
+                'error' => __('Ha ocurrido un error. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'confirmVoto' => __('¿Confirmas tu voto para este proyecto?', 'flavor-chat-ia'),
+                'votoRegistrado' => __('¡Voto registrado correctamente!', 'flavor-chat-ia'),
+                'limiteVotos' => __('Has alcanzado el límite de votos.', 'flavor-chat-ia'),
+                'yaVotado' => __('Ya has votado este proyecto.', 'flavor-chat-ia'),
+                'propuestaEnviada' => __('¡Propuesta enviada correctamente!', 'flavor-chat-ia'),
+            ],
+        ]);
+    }
+
+    /**
+     * Verifica si se deben cargar los assets
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes = [
+            'presupuestos_listado',
+            'presupuestos_proponer',
+            'presupuestos_votar',
+            'presupuestos_resultados',
+            'presupuestos_mi_proyecto',
+        ];
+
+        foreach ($shortcodes as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // =========================================================================
+    // Shortcodes
+    // =========================================================================
+
+    /**
+     * Shortcode: Listado de proyectos
+     *
+     * @param array $atts Atributos del shortcode.
+     * @return string
+     */
+    public function shortcode_listado_proyectos($atts) {
+        $atributos = shortcode_atts([
+            'categoria' => '',
+            'estado' => '',
+            'columnas' => 3,
+            'limite' => 12,
+            'mostrar_filtros' => 'si',
+            'ordenar' => 'votos',
+        ], $atts);
+
+        $resultado = $this->action_listar_proyectos([
+            'categoria' => $atributos['categoria'],
+            'estado' => $atributos['estado'],
+            'limite' => intval($atributos['limite']),
+        ]);
+
+        $proyectos = $resultado['success'] ? $resultado['proyectos'] : [];
+        $edicion = $resultado['edicion'] ?? '';
+        $fase = $resultado['fase'] ?? 'cerrada';
+        $categorias = $this->settings['categorias'] ?? [];
+        $identificador_usuario = get_current_user_id();
+
+        // Obtener votos del usuario actual
+        $votos_usuario = [];
+        if ($identificador_usuario) {
+            $resultado_votos = $this->api_mis_votos(new WP_REST_Request());
+            if ($resultado_votos instanceof WP_REST_Response) {
+                $datos_votos = $resultado_votos->get_data();
+                if (!empty($datos_votos['votos'])) {
+                    $votos_usuario = array_column($datos_votos['votos'], 'proyecto_id');
+                }
+            }
+        }
+
+        ob_start();
+        include dirname(__FILE__) . '/views/listado-proyectos.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Formulario de propuesta
+     *
+     * @param array $atts Atributos del shortcode.
+     * @return string
+     */
+    public function shortcode_formulario_propuesta($atts) {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-pp-notice flavor-pp-notice-warning">' .
+                   sprintf(
+                       __('Debes <a href="%s">iniciar sesión</a> para proponer un proyecto.', 'flavor-chat-ia'),
+                       wp_login_url(get_permalink())
+                   ) .
+                   '</div>';
+        }
+
+        // Verificar fase
+        global $wpdb;
+        $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+        $edicion = $wpdb->get_row(
+            "SELECT * FROM $tabla_ediciones WHERE fase = 'propuestas' ORDER BY anio DESC LIMIT 1"
+        );
+
+        if (!$edicion) {
+            return '<div class="flavor-pp-notice flavor-pp-notice-info">' .
+                   __('No estamos en fase de recepción de propuestas. Consulta el calendario del proceso participativo.', 'flavor-chat-ia') .
+                   '</div>';
+        }
+
+        $categorias = $this->settings['categorias'] ?? [];
+        $configuracion = $this->settings;
+
+        ob_start();
+        include dirname(__FILE__) . '/views/formulario-propuesta.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Interfaz de votación
+     *
+     * @param array $atts Atributos del shortcode.
+     * @return string
+     */
+    public function shortcode_interfaz_votacion($atts) {
+        $atributos = shortcode_atts([
+            'columnas' => 2,
+            'limite' => 20,
+        ], $atts);
+
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-pp-notice flavor-pp-notice-warning">' .
+                   sprintf(
+                       __('Debes <a href="%s">iniciar sesión</a> para votar.', 'flavor-chat-ia'),
+                       wp_login_url(get_permalink())
+                   ) .
+                   '</div>';
+        }
+
+        // Verificar fase
+        global $wpdb;
+        $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+        $edicion = $wpdb->get_row(
+            "SELECT * FROM $tabla_ediciones WHERE fase = 'votacion' ORDER BY anio DESC LIMIT 1"
+        );
+
+        if (!$edicion) {
+            return '<div class="flavor-pp-notice flavor-pp-notice-info">' .
+                   __('No estamos en fase de votación. Consulta el calendario del proceso participativo.', 'flavor-chat-ia') .
+                   '</div>';
+        }
+
+        // Obtener proyectos disponibles para votar
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+        $proyectos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_proyectos
+             WHERE edicion_id = %d AND estado IN ('validado', 'en_votacion')
+             ORDER BY votos_recibidos DESC, fecha_creacion DESC
+             LIMIT %d",
+            $edicion->id,
+            intval($atributos['limite'])
+        ));
+
+        // Obtener votos del usuario
+        $identificador_usuario = get_current_user_id();
+        $tabla_votos = $wpdb->prefix . 'flavor_pp_votos';
+        $votos_usuario = $wpdb->get_col($wpdb->prepare(
+            "SELECT proyecto_id FROM $tabla_votos WHERE usuario_id = %d AND edicion_id = %d",
+            $identificador_usuario,
+            $edicion->id
+        ));
+
+        $configuracion = $this->settings;
+        $votos_maximos = intval($configuracion['votos_maximos_por_persona'] ?? 3);
+        $votos_restantes = max(0, $votos_maximos - count($votos_usuario));
+        $categorias = $configuracion['categorias'] ?? [];
+
+        ob_start();
+        include dirname(__FILE__) . '/views/interfaz-votacion.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Resultados de votación
+     *
+     * @param array $atts Atributos del shortcode.
+     * @return string
+     */
+    public function shortcode_resultados($atts) {
+        $atributos = shortcode_atts([
+            'edicion' => '',
+            'limite' => 10,
+            'columnas' => 2,
+        ], $atts);
+
+        global $wpdb;
+        $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+        $tabla_votos = $wpdb->prefix . 'flavor_pp_votos';
+
+        // Obtener edición
+        if (!empty($atributos['edicion'])) {
+            $edicion = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM $tabla_ediciones WHERE anio = %d",
+                intval($atributos['edicion'])
+            ));
+        } else {
+            $edicion = $wpdb->get_row(
+                "SELECT * FROM $tabla_ediciones ORDER BY anio DESC LIMIT 1"
+            );
+        }
+
+        if (!$edicion) {
+            return '<div class="flavor-pp-notice flavor-pp-notice-info">' .
+                   __('No hay ediciones de presupuestos participativos disponibles.', 'flavor-chat-ia') .
+                   '</div>';
+        }
+
+        // Obtener proyectos ordenados por votos
+        $proyectos_ranking = $wpdb->get_results($wpdb->prepare(
+            "SELECT p.*, COUNT(v.id) as total_votos
+             FROM $tabla_proyectos p
+             LEFT JOIN $tabla_votos v ON p.id = v.proyecto_id
+             WHERE p.edicion_id = %d AND p.estado IN ('validado', 'en_votacion', 'seleccionado', 'en_ejecucion', 'ejecutado')
+             GROUP BY p.id
+             ORDER BY total_votos DESC
+             LIMIT %d",
+            $edicion->id,
+            intval($atributos['limite'])
+        ));
+
+        // Estadísticas
+        $total_votantes = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(DISTINCT usuario_id) FROM $tabla_votos WHERE edicion_id = %d",
+            $edicion->id
+        ));
+
+        $total_proyectos = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_proyectos WHERE edicion_id = %d",
+            $edicion->id
+        ));
+
+        ob_start();
+        include dirname(__FILE__) . '/views/resultados.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mis propuestas
+     *
+     * @param array $atts Atributos del shortcode.
+     * @return string
+     */
+    public function shortcode_mis_propuestas($atts) {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-pp-notice flavor-pp-notice-warning">' .
+                   sprintf(
+                       __('Debes <a href="%s">iniciar sesión</a> para ver tus propuestas.', 'flavor-chat-ia'),
+                       wp_login_url(get_permalink())
+                   ) .
+                   '</div>';
+        }
+
+        $atributos = shortcode_atts([
+            'limite' => 10,
+        ], $atts);
+
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+        $identificador_usuario = get_current_user_id();
+
+        $propuestas = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_proyectos
+             WHERE proponente_id = %d
+             ORDER BY fecha_creacion DESC
+             LIMIT %d",
+            $identificador_usuario,
+            intval($atributos['limite'])
+        ));
+
+        $categorias = $this->settings['categorias'] ?? [];
+
+        ob_start();
+        include dirname(__FILE__) . '/views/mis-propuestas.php';
+        return ob_get_clean();
+    }
+
+    // =========================================================================
+    // AJAX Handlers
+    // =========================================================================
+
+    /**
+     * Verifica la seguridad de las peticiones AJAX
+     *
+     * @return bool
+     */
+    private function verificar_seguridad_ajax() {
+        if (!check_ajax_referer('flavor_presupuestos_nonce', 'nonce', false)) {
+            wp_send_json_error([
+                'message' => __('Error de seguridad. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia'),
+                'code' => 'invalid_nonce'
+            ], 403);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * AJAX: Proponer proyecto
+     */
+    public function ajax_proponer_proyecto() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error([
+                'message' => __('Debes iniciar sesión.', 'flavor-chat-ia'),
+                'redirect' => wp_login_url()
+            ], 401);
+            return;
+        }
+
+        $resultado = $this->action_proponer_proyecto([
+            'titulo' => sanitize_text_field($_POST['titulo'] ?? ''),
+            'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+            'categoria' => sanitize_text_field($_POST['categoria'] ?? 'social'),
+            'presupuesto' => floatval($_POST['presupuesto'] ?? 0),
+            'ubicacion' => sanitize_text_field($_POST['ubicacion'] ?? ''),
+        ]);
+
+        if ($resultado['success']) {
+            wp_send_json_success($resultado);
+        } else {
+            wp_send_json_error($resultado, 400);
+        }
+    }
+
+    /**
+     * AJAX: Votar proyecto
+     */
+    public function ajax_votar_proyecto() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error([
+                'message' => __('Debes iniciar sesión.', 'flavor-chat-ia'),
+                'redirect' => wp_login_url()
+            ], 401);
+            return;
+        }
+
+        $resultado = $this->action_votar_proyecto_individual([
+            'proyecto_id' => absint($_POST['proyecto_id'] ?? 0),
+            'prioridad' => absint($_POST['prioridad'] ?? 1),
+        ]);
+
+        if ($resultado['success']) {
+            wp_send_json_success($resultado);
+        } else {
+            wp_send_json_error($resultado, 400);
+        }
+    }
+
+    /**
+     * AJAX: Quitar voto
+     */
+    public function ajax_quitar_voto() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error([
+                'message' => __('Debes iniciar sesión.', 'flavor-chat-ia'),
+            ], 401);
+            return;
+        }
+
+        $identificador_proyecto = absint($_POST['proyecto_id'] ?? 0);
+        $identificador_usuario = get_current_user_id();
+
+        global $wpdb;
+        $tabla_votos = $wpdb->prefix . 'flavor_pp_votos';
+        $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+
+        // Verificar fase de votación
+        $edicion = $wpdb->get_row(
+            "SELECT * FROM $tabla_ediciones WHERE fase = 'votacion' ORDER BY anio DESC LIMIT 1"
+        );
+
+        if (!$edicion) {
+            wp_send_json_error([
+                'message' => __('No estamos en fase de votación.', 'flavor-chat-ia'),
+            ], 400);
+            return;
+        }
+
+        $eliminado = $wpdb->delete(
+            $tabla_votos,
+            [
+                'proyecto_id' => $identificador_proyecto,
+                'usuario_id' => $identificador_usuario,
+                'edicion_id' => $edicion->id,
+            ],
+            ['%d', '%d', '%d']
+        );
+
+        if ($eliminado) {
+            $this->actualizar_contadores_votos($edicion->id);
+            wp_send_json_success([
+                'message' => __('Voto eliminado correctamente.', 'flavor-chat-ia'),
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => __('No se encontró el voto.', 'flavor-chat-ia'),
+            ], 404);
+        }
+    }
+
+    /**
+     * AJAX: Editar propuesta
+     */
+    public function ajax_editar_propuesta() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error([
+                'message' => __('Debes iniciar sesión.', 'flavor-chat-ia'),
+            ], 401);
+            return;
+        }
+
+        $identificador_proyecto = absint($_POST['proyecto_id'] ?? 0);
+        $identificador_usuario = get_current_user_id();
+
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+
+        // Verificar propiedad y estado
+        $proyecto = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_proyectos WHERE id = %d AND proponente_id = %d",
+            $identificador_proyecto,
+            $identificador_usuario
+        ));
+
+        if (!$proyecto) {
+            wp_send_json_error([
+                'message' => __('Proyecto no encontrado o no tienes permisos.', 'flavor-chat-ia'),
+            ], 404);
+            return;
+        }
+
+        if (!in_array($proyecto->estado, ['borrador', 'pendiente_validacion'], true)) {
+            wp_send_json_error([
+                'message' => __('Este proyecto ya no puede ser editado.', 'flavor-chat-ia'),
+            ], 400);
+            return;
+        }
+
+        $actualizado = $wpdb->update(
+            $tabla_proyectos,
+            [
+                'titulo' => sanitize_text_field($_POST['titulo'] ?? $proyecto->titulo),
+                'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? $proyecto->descripcion),
+                'categoria' => sanitize_text_field($_POST['categoria'] ?? $proyecto->categoria),
+                'presupuesto_solicitado' => floatval($_POST['presupuesto'] ?? $proyecto->presupuesto_solicitado),
+                'ubicacion' => sanitize_text_field($_POST['ubicacion'] ?? $proyecto->ubicacion),
+            ],
+            ['id' => $identificador_proyecto],
+            ['%s', '%s', '%s', '%f', '%s'],
+            ['%d']
+        );
+
+        if ($actualizado !== false) {
+            wp_send_json_success([
+                'message' => __('Propuesta actualizada correctamente.', 'flavor-chat-ia'),
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => __('Error al actualizar la propuesta.', 'flavor-chat-ia'),
+            ], 500);
+        }
+    }
+
+    /**
+     * AJAX: Eliminar propuesta
+     */
+    public function ajax_eliminar_propuesta() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error([
+                'message' => __('Debes iniciar sesión.', 'flavor-chat-ia'),
+            ], 401);
+            return;
+        }
+
+        $identificador_proyecto = absint($_POST['proyecto_id'] ?? 0);
+        $identificador_usuario = get_current_user_id();
+
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+
+        // Verificar propiedad y estado
+        $proyecto = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_proyectos WHERE id = %d AND proponente_id = %d",
+            $identificador_proyecto,
+            $identificador_usuario
+        ));
+
+        if (!$proyecto) {
+            wp_send_json_error([
+                'message' => __('Proyecto no encontrado o no tienes permisos.', 'flavor-chat-ia'),
+            ], 404);
+            return;
+        }
+
+        if (!in_array($proyecto->estado, ['borrador', 'pendiente_validacion'], true)) {
+            wp_send_json_error([
+                'message' => __('Este proyecto ya no puede ser eliminado.', 'flavor-chat-ia'),
+            ], 400);
+            return;
+        }
+
+        $eliminado = $wpdb->delete(
+            $tabla_proyectos,
+            ['id' => $identificador_proyecto],
+            ['%d']
+        );
+
+        if ($eliminado) {
+            wp_send_json_success([
+                'message' => __('Propuesta eliminada correctamente.', 'flavor-chat-ia'),
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => __('Error al eliminar la propuesta.', 'flavor-chat-ia'),
+            ], 500);
+        }
+    }
+
+    /**
+     * AJAX: Subir imagen
+     */
+    public function ajax_subir_imagen() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error([
+                'message' => __('Debes iniciar sesión.', 'flavor-chat-ia'),
+            ], 401);
+            return;
+        }
+
+        if (empty($_FILES['imagen'])) {
+            wp_send_json_error([
+                'message' => __('No se ha enviado ninguna imagen.', 'flavor-chat-ia'),
+            ], 400);
+            return;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+
+        $attachment_id = media_handle_upload('imagen', 0);
+
+        if (is_wp_error($attachment_id)) {
+            wp_send_json_error([
+                'message' => $attachment_id->get_error_message(),
+            ], 400);
+            return;
+        }
+
+        wp_send_json_success([
+            'attachment_id' => $attachment_id,
+            'url' => wp_get_attachment_url($attachment_id),
+            'thumbnail' => wp_get_attachment_image_url($attachment_id, 'medium'),
+        ]);
+    }
+
+    /**
+     * AJAX: Comentar proyecto
+     */
+    public function ajax_comentar_proyecto() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error([
+                'message' => __('Debes iniciar sesión.', 'flavor-chat-ia'),
+            ], 401);
+            return;
+        }
+
+        // Por implementar: Sistema de comentarios
+        wp_send_json_error([
+            'message' => __('Sistema de comentarios en desarrollo.', 'flavor-chat-ia'),
+        ], 501);
+    }
+
+    /**
+     * AJAX: Reportar proyecto
+     */
+    public function ajax_reportar_proyecto() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error([
+                'message' => __('Debes iniciar sesión.', 'flavor-chat-ia'),
+            ], 401);
+            return;
+        }
+
+        // Por implementar: Sistema de reportes
+        wp_send_json_success([
+            'message' => __('Gracias por tu reporte. Lo revisaremos pronto.', 'flavor-chat-ia'),
+        ]);
+    }
+
+    /**
+     * AJAX: Cargar más proyectos (paginación)
+     */
+    public function ajax_cargar_proyectos() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        $pagina = absint($_POST['pagina'] ?? 1);
+        $limite = absint($_POST['limite'] ?? 12);
+        $categoria = sanitize_text_field($_POST['categoria'] ?? '');
+        $ordenar = sanitize_text_field($_POST['ordenar'] ?? 'votos');
+
+        $offset = ($pagina - 1) * $limite;
+
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+        $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+
+        $edicion = $wpdb->get_row(
+            "SELECT * FROM $tabla_ediciones WHERE fase != 'cerrada' ORDER BY anio DESC LIMIT 1"
+        );
+
+        if (!$edicion) {
+            wp_send_json_success([
+                'proyectos' => [],
+                'hay_mas' => false,
+            ]);
+            return;
+        }
+
+        $condiciones_where = ["edicion_id = %d", "estado IN ('validado', 'en_votacion', 'seleccionado')"];
+        $valores_preparados = [$edicion->id];
+
+        if (!empty($categoria)) {
+            $condiciones_where[] = "categoria = %s";
+            $valores_preparados[] = $categoria;
+        }
+
+        $clausula_where = implode(' AND ', $condiciones_where);
+
+        $orden_sql = match ($ordenar) {
+            'recientes' => 'fecha_creacion DESC',
+            'presupuesto' => 'presupuesto_solicitado DESC',
+            default => 'votos_recibidos DESC',
+        };
+
+        $valores_preparados[] = $limite + 1; // +1 para verificar si hay más
+        $valores_preparados[] = $offset;
+
+        $proyectos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_proyectos WHERE $clausula_where ORDER BY $orden_sql LIMIT %d OFFSET %d",
+            ...$valores_preparados
+        ));
+
+        $hay_mas = count($proyectos) > $limite;
+        if ($hay_mas) {
+            array_pop($proyectos); // Quitar el proyecto extra
+        }
+
+        $proyectos_formateados = array_map(function ($proyecto) {
+            return [
+                'id' => $proyecto->id,
+                'titulo' => $proyecto->titulo,
+                'descripcion' => wp_trim_words($proyecto->descripcion, 30),
+                'categoria' => $proyecto->categoria,
+                'presupuesto' => floatval($proyecto->presupuesto_solicitado),
+                'presupuesto_fmt' => number_format($proyecto->presupuesto_solicitado, 0, ',', '.') . ' €',
+                'votos' => intval($proyecto->votos_recibidos),
+                'estado' => $proyecto->estado,
+                'ubicacion' => $proyecto->ubicacion,
+                'imagen' => $proyecto->imagenes ? explode(',', $proyecto->imagenes)[0] : '',
+            ];
+        }, $proyectos);
+
+        wp_send_json_success([
+            'proyectos' => $proyectos_formateados,
+            'hay_mas' => $hay_mas,
+            'pagina' => $pagina,
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener detalle de proyecto
+     */
+    public function ajax_obtener_proyecto() {
+        $identificador_proyecto = absint($_POST['proyecto_id'] ?? $_GET['proyecto_id'] ?? 0);
+
+        if (!$identificador_proyecto) {
+            wp_send_json_error([
+                'message' => __('ID de proyecto no válido.', 'flavor-chat-ia'),
+            ], 400);
+            return;
+        }
+
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+
+        $proyecto = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_proyectos WHERE id = %d",
+            $identificador_proyecto
+        ));
+
+        if (!$proyecto) {
+            wp_send_json_error([
+                'message' => __('Proyecto no encontrado.', 'flavor-chat-ia'),
+            ], 404);
+            return;
+        }
+
+        $proponente = $proyecto->proponente_id ? get_user_by('ID', $proyecto->proponente_id) : null;
+        $categorias = $this->settings['categorias'] ?? [];
+
+        wp_send_json_success([
+            'proyecto' => [
+                'id' => $proyecto->id,
+                'titulo' => $proyecto->titulo,
+                'descripcion' => $proyecto->descripcion,
+                'categoria' => $proyecto->categoria,
+                'categoria_label' => $categorias[$proyecto->categoria] ?? ucfirst($proyecto->categoria),
+                'ubicacion' => $proyecto->ubicacion,
+                'presupuesto' => floatval($proyecto->presupuesto_solicitado),
+                'presupuesto_fmt' => number_format($proyecto->presupuesto_solicitado, 0, ',', '.') . ' €',
+                'estado' => $proyecto->estado,
+                'votos' => intval($proyecto->votos_recibidos),
+                'ranking' => intval($proyecto->ranking),
+                'porcentaje_ejecucion' => intval($proyecto->porcentaje_ejecucion),
+                'fecha_creacion' => $proyecto->fecha_creacion,
+                'imagenes' => $proyecto->imagenes ? explode(',', $proyecto->imagenes) : [],
+                'proponente' => $proponente ? [
+                    'nombre' => $proponente->display_name,
+                    'avatar' => get_avatar_url($proponente->ID, ['size' => 64]),
+                ] : null,
+            ],
+        ]);
     }
 
     /**
@@ -1191,7 +2049,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
             return [
                 'success' => true,
                 'activa' => false,
-                'mensaje' => __('default', 'flavor-chat-ia'),
+                'mensaje' => __('No hay ninguna edición de presupuestos participativos activa actualmente.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1237,7 +2095,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('fields', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para proponer un proyecto.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1253,7 +2111,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         if (!$edicion) {
             return [
                 'success' => false,
-                'error' => __('text', 'flavor-chat-ia'),
+                'error' => __('No estamos en fase de recepción de propuestas. Consulta el calendario del proceso.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1264,7 +2122,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         if (empty($titulo) || empty($descripcion)) {
             return [
                 'success' => false,
-                'error' => __('presupuestos-participativos/resultados', 'flavor-chat-ia'),
+                'error' => __('El título y la descripción del proyecto son obligatorios.', 'flavor-chat-ia'),
             ];
         }
 

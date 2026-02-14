@@ -371,6 +371,9 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
 
+        // Crear tablas de base de datos si no existen
+        add_action('init', [$this, 'maybe_create_tables']);
+
         // Registrar CPT y taxonomías
         add_action('init', [$this, 'register_post_types']);
         add_action('init', [$this, 'register_taxonomies']);
@@ -416,6 +419,102 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         // Enqueue assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
+    }
+
+    /**
+     * Crear tablas de base de datos
+     */
+    public function maybe_create_tables() {
+        global $wpdb;
+
+        $version_key = 'flavor_ads_db_version';
+        $current_version = '1.1';
+        $installed_version = get_option($version_key, '0');
+
+        if (version_compare($installed_version, $current_version, '>=')) {
+            return;
+        }
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        // Tabla de estadísticas de anuncios
+        $tabla_stats = $wpdb->prefix . 'flavor_ads_stats';
+        $sql_stats = "CREATE TABLE IF NOT EXISTS $tabla_stats (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            ad_id bigint(20) UNSIGNED NOT NULL,
+            fecha date NOT NULL,
+            impresiones int(11) UNSIGNED NOT NULL DEFAULT 0,
+            clics int(11) UNSIGNED NOT NULL DEFAULT 0,
+            gasto decimal(10,4) NOT NULL DEFAULT 0.0000,
+            PRIMARY KEY (id),
+            UNIQUE KEY ad_fecha (ad_id, fecha),
+            KEY ad_id (ad_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Tabla de ingresos para usuarios (reparto comunitario)
+        $tabla_ingresos = $wpdb->prefix . 'flavor_ads_ingresos';
+        $sql_ingresos = "CREATE TABLE IF NOT EXISTS $tabla_ingresos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            cantidad decimal(10,4) NOT NULL DEFAULT 0.0000,
+            concepto varchar(255) DEFAULT NULL,
+            fecha datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            estado varchar(20) NOT NULL DEFAULT 'pendiente',
+            fecha_pago datetime DEFAULT NULL,
+            metodo_pago varchar(50) DEFAULT NULL,
+            referencia varchar(100) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Tabla de transacciones de anunciantes
+        $tabla_transacciones = $wpdb->prefix . 'flavor_ads_transactions';
+        $sql_transacciones = "CREATE TABLE IF NOT EXISTS $tabla_transacciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            anunciante_id bigint(20) UNSIGNED NOT NULL,
+            ad_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo varchar(20) NOT NULL,
+            cantidad decimal(10,2) NOT NULL,
+            descripcion varchar(255) DEFAULT NULL,
+            fecha datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            estado varchar(20) NOT NULL DEFAULT 'completado',
+            metodo_pago varchar(50) DEFAULT NULL,
+            referencia_externa varchar(100) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY anunciante_id (anunciante_id),
+            KEY ad_id (ad_id),
+            KEY tipo (tipo),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Tabla de pagos a la comunidad
+        $tabla_payouts = $wpdb->prefix . 'flavor_ads_payouts';
+        $sql_payouts = "CREATE TABLE IF NOT EXISTS $tabla_payouts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            periodo varchar(20) NOT NULL,
+            cantidad_total decimal(10,2) NOT NULL,
+            usuarios_beneficiados int(11) UNSIGNED NOT NULL DEFAULT 0,
+            fecha_inicio date NOT NULL,
+            fecha_fin date NOT NULL,
+            fecha_procesado datetime DEFAULT NULL,
+            estado varchar(20) NOT NULL DEFAULT 'pendiente',
+            detalles longtext,
+            PRIMARY KEY (id),
+            KEY periodo (periodo),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        dbDelta($sql_stats);
+        dbDelta($sql_ingresos);
+        dbDelta($sql_transacciones);
+        dbDelta($sql_payouts);
+
+        update_option($version_key, $current_version);
     }
 
     /**
@@ -1575,7 +1674,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         $this->enqueue_frontend_assets();
 
-        $template_path = FLAVOR_CHAT_PATH . 'includes/modules/advertising/templates/dashboard.php';
+        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/advertising/templates/dashboard.php';
         if (file_exists($template_path)) {
             ob_start();
             include $template_path;
@@ -1644,7 +1743,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         $this->enqueue_frontend_assets();
 
-        $template_path = FLAVOR_CHAT_PATH . 'includes/modules/advertising/templates/crear.php';
+        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/advertising/templates/crear.php';
         if (file_exists($template_path)) {
             ob_start();
             include $template_path;
@@ -1700,28 +1799,36 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_ingresos($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tus ingresos.', 'flavor-chat-ia') . '</p>';
         }
 
         $this->enqueue_frontend_assets();
 
+        $template_path = __DIR__ . '/templates/mis-ingresos.php';
+        if (file_exists($template_path)) {
+            ob_start();
+            include $template_path;
+            return ob_get_clean();
+        }
+
+        // Fallback al template inline
         $resultado = $this->action_mis_ingresos(['periodo' => 'month']);
         $data = $resultado['data'] ?? [];
 
         ob_start();
         ?>
         <div class="flavor-ads-ingresos">
-            <h2><?php _e('Mis Ingresos por Publicidad', 'flavor-chat-ia'); ?></h2>
-            <p style="color: #6b7280;"><?php _e('Como miembro de la comunidad, recibes una parte de los ingresos publicitarios.', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Mis Ingresos por Publicidad', 'flavor-chat-ia'); ?></h2>
+            <p style="color: #6b7280;"><?php esc_html_e('Como miembro de la comunidad, recibes una parte de los ingresos publicitarios.', 'flavor-chat-ia'); ?></p>
 
             <div class="ingresos-stats">
                 <div class="ingreso-card">
-                    <span class="ingreso-valor"><?php echo number_format($data['total_periodo'] ?? 0, 2); ?>€</span>
-                    <span class="ingreso-label"><?php _e('Este mes', 'flavor-chat-ia'); ?></span>
+                    <span class="ingreso-valor"><?php echo esc_html(number_format($data['total_periodo'] ?? 0, 2)); ?>€</span>
+                    <span class="ingreso-label"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
                 </div>
                 <div class="ingreso-card">
-                    <span class="ingreso-valor"><?php echo number_format($data['pendiente_pago'] ?? 0, 2); ?>€</span>
-                    <span class="ingreso-label"><?php _e('Pendiente de pago', 'flavor-chat-ia'); ?></span>
+                    <span class="ingreso-valor"><?php echo esc_html(number_format($data['pendiente_pago'] ?? 0, 2)); ?>€</span>
+                    <span class="ingreso-label"><?php esc_html_e('Pendiente de pago', 'flavor-chat-ia'); ?></span>
                 </div>
             </div>
         </div>
@@ -2155,6 +2262,135 @@ KNOWLEDGE;
 [flavor_module_listing module="advertising" action="estadisticas"]',
                 'parent' => 'publicidad',
             ],
+        ];
+    }
+
+    /**
+     * Definición de shortcodes disponibles
+     *
+     * @return array
+     */
+    public function get_shortcodes() {
+        return [
+            'flavor_ad' => [
+                'name' => __('Mostrar Anuncio', 'flavor-chat-ia'),
+                'description' => __('Muestra un anuncio específico o aleatorio según el tipo', 'flavor-chat-ia'),
+                'atts' => [
+                    'id' => [
+                        'type' => 'number',
+                        'label' => __('ID del anuncio', 'flavor-chat-ia'),
+                        'description' => __('ID específico del anuncio a mostrar (opcional)', 'flavor-chat-ia'),
+                        'default' => 0,
+                    ],
+                    'tipo' => [
+                        'type' => 'select',
+                        'label' => __('Tipo de anuncio', 'flavor-chat-ia'),
+                        'options' => [
+                            'banner_horizontal' => __('Banner Horizontal', 'flavor-chat-ia'),
+                            'banner_sidebar' => __('Banner Sidebar', 'flavor-chat-ia'),
+                            'banner_card' => __('Tarjeta', 'flavor-chat-ia'),
+                            'banner_nativo' => __('Nativo', 'flavor-chat-ia'),
+                        ],
+                        'default' => 'banner_horizontal',
+                    ],
+                    'ubicacion' => [
+                        'type' => 'text',
+                        'label' => __('Ubicación', 'flavor-chat-ia'),
+                        'description' => __('Slug de la taxonomía de ubicación', 'flavor-chat-ia'),
+                        'default' => '',
+                    ],
+                    'class' => [
+                        'type' => 'text',
+                        'label' => __('Clases CSS adicionales', 'flavor-chat-ia'),
+                        'default' => '',
+                    ],
+                ],
+            ],
+            'flavor_ads_dashboard' => [
+                'name' => __('Dashboard del Anunciante', 'flavor-chat-ia'),
+                'description' => __('Panel de control para gestionar anuncios propios', 'flavor-chat-ia'),
+                'atts' => [],
+            ],
+            'flavor_ads_crear' => [
+                'name' => __('Formulario Crear Anuncio', 'flavor-chat-ia'),
+                'description' => __('Formulario para crear un nuevo anuncio', 'flavor-chat-ia'),
+                'atts' => [],
+            ],
+            'flavor_ads_ingresos' => [
+                'name' => __('Mis Ingresos Publicitarios', 'flavor-chat-ia'),
+                'description' => __('Muestra los ingresos del usuario por reparto publicitario', 'flavor-chat-ia'),
+                'atts' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Configuración del formulario de creación de anuncios
+     *
+     * @return array
+     */
+    public function get_form_config() {
+        return [
+            'titulo' => __('Crear Anuncio', 'flavor-chat-ia'),
+            'descripcion' => __('Completa el formulario para crear un nuevo anuncio publicitario', 'flavor-chat-ia'),
+            'campos' => [
+                'titulo' => [
+                    'type' => 'text',
+                    'label' => __('Título del anuncio', 'flavor-chat-ia'),
+                    'required' => true,
+                    'placeholder' => __('Ej: Promoción de verano', 'flavor-chat-ia'),
+                ],
+                'tipo' => [
+                    'type' => 'select',
+                    'label' => __('Tipo de anuncio', 'flavor-chat-ia'),
+                    'required' => true,
+                    'options' => [
+                        'banner_horizontal' => __('Banner Horizontal (728x90)', 'flavor-chat-ia'),
+                        'banner_sidebar' => __('Banner Sidebar (300x250)', 'flavor-chat-ia'),
+                        'banner_card' => __('Tarjeta con imagen', 'flavor-chat-ia'),
+                        'banner_nativo' => __('Anuncio nativo', 'flavor-chat-ia'),
+                    ],
+                ],
+                'url_destino' => [
+                    'type' => 'url',
+                    'label' => __('URL de destino', 'flavor-chat-ia'),
+                    'required' => true,
+                    'placeholder' => 'https://tu-sitio.com/landing',
+                ],
+                'imagen' => [
+                    'type' => 'url',
+                    'label' => __('URL de la imagen', 'flavor-chat-ia'),
+                    'required' => false,
+                    'placeholder' => 'https://...',
+                    'description' => __('Tamaño recomendado según tipo de anuncio', 'flavor-chat-ia'),
+                ],
+                'texto_cta' => [
+                    'type' => 'text',
+                    'label' => __('Texto del botón', 'flavor-chat-ia'),
+                    'required' => false,
+                    'default' => __('Saber más', 'flavor-chat-ia'),
+                ],
+                'presupuesto' => [
+                    'type' => 'number',
+                    'label' => __('Presupuesto (€)', 'flavor-chat-ia'),
+                    'required' => false,
+                    'min' => 5,
+                    'step' => 0.01,
+                    'default' => 50,
+                ],
+                'fecha_inicio' => [
+                    'type' => 'date',
+                    'label' => __('Fecha de inicio', 'flavor-chat-ia'),
+                    'required' => false,
+                ],
+                'fecha_fin' => [
+                    'type' => 'date',
+                    'label' => __('Fecha de fin', 'flavor-chat-ia'),
+                    'required' => false,
+                ],
+            ],
+            'submit_text' => __('Enviar para revisión', 'flavor-chat-ia'),
+            'action' => 'crear_anuncio',
         ];
     }
 }

@@ -1,0 +1,655 @@
+/**
+ * Estilos del módulo Socios - Frontend
+ *
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+
+.flavor-soc-pagar,
+.flavor-soc-perfil,
+.flavor-soc-unirse,
+.flavor-soc-mis-cuotas {
+    --soc-primary: #6366f1;
+    --soc-primary-hover: #4f46e5;
+    --soc-secondary: #64748b;
+    --soc-success: #10b981;
+    --soc-warning: #f59e0b;
+    --soc-danger: #ef4444;
+    --soc-info: #3b82f6;
+    --soc-text: #1e293b;
+    --soc-text-muted: #64748b;
+    --soc-bg: #ffffff;
+    --soc-bg-alt: #f8fafc;
+    --soc-border: #e2e8f0;
+    --soc-radius: 12px;
+    --soc-radius-sm: 8px;
+    --soc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --soc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --soc-transition: all 0.2s ease;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--soc-text);
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Componentes Base
+   ========================================================================== */
+
+/* Botones */
+.flavor-soc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--soc-radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--soc-transition);
+    text-decoration: none;
+}
+
+.flavor-soc-btn-primary {
+    background: var(--soc-primary);
+    color: #fff;
+}
+
+.flavor-soc-btn-primary:hover {
+    background: var(--soc-primary-hover);
+    color: #fff;
+}
+
+.flavor-soc-btn-secondary {
+    background: var(--soc-bg-alt);
+    color: var(--soc-text);
+    border: 1px solid var(--soc-border);
+}
+
+.flavor-soc-btn-secondary:hover {
+    background: var(--soc-border);
+}
+
+.flavor-soc-btn-success {
+    background: var(--soc-success);
+    color: #fff;
+}
+
+.flavor-soc-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Inputs */
+.flavor-soc-input,
+.flavor-soc-select,
+.flavor-soc-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--soc-border);
+    border-radius: var(--soc-radius-sm);
+    font-size: 14px;
+    transition: var(--soc-transition);
+    background: var(--soc-bg);
+}
+
+.flavor-soc-input:focus,
+.flavor-soc-select:focus,
+.flavor-soc-textarea:focus {
+    outline: none;
+    border-color: var(--soc-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* ==========================================================================
+   Login / No Socio
+   ========================================================================== */
+
+.flavor-soc-login-requerido,
+.flavor-soc-no-socio {
+    text-align: center;
+    padding: 64px 24px;
+    background: var(--soc-bg);
+    border-radius: var(--soc-radius);
+    box-shadow: var(--soc-shadow);
+}
+
+.flavor-soc-login-requerido .dashicons,
+.flavor-soc-no-socio .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: var(--soc-text-muted);
+    margin-bottom: 16px;
+}
+
+.flavor-soc-login-requerido h3,
+.flavor-soc-no-socio h3 {
+    margin: 0 0 12px;
+    font-size: 22px;
+}
+
+.flavor-soc-login-requerido p,
+.flavor-soc-no-socio p {
+    color: var(--soc-text-muted);
+    margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   Info del Socio
+   ========================================================================== */
+
+.flavor-soc-info-socio {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    background: var(--soc-bg);
+    border-radius: var(--soc-radius);
+    box-shadow: var(--soc-shadow);
+    margin-bottom: 24px;
+}
+
+.flavor-soc-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.flavor-soc-info-datos h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+}
+
+.flavor-soc-numero {
+    display: inline-block;
+    background: var(--soc-primary);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.flavor-soc-tipo {
+    display: inline-block;
+    background: var(--soc-bg-alt);
+    color: var(--soc-text-muted);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+/* ==========================================================================
+   Resumen
+   ========================================================================== */
+
+.flavor-soc-resumen {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--soc-primary), var(--soc-primary-hover));
+    border-radius: var(--soc-radius);
+    color: #fff;
+    margin-bottom: 24px;
+}
+
+.flavor-soc-resumen-item {
+    flex: 1;
+    text-align: center;
+}
+
+.flavor-soc-resumen-item .label {
+    display: block;
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 4px;
+}
+
+.flavor-soc-resumen-item .valor {
+    display: block;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.flavor-soc-resumen-total .valor {
+    font-size: 32px;
+}
+
+/* ==========================================================================
+   Lista de Cuotas
+   ========================================================================== */
+
+.flavor-soc-cuotas-lista {
+    background: var(--soc-bg);
+    border-radius: var(--soc-radius);
+    box-shadow: var(--soc-shadow);
+    overflow: hidden;
+}
+
+.flavor-soc-cuotas-lista h3 {
+    margin: 0;
+    padding: 20px 24px;
+    font-size: 18px;
+    border-bottom: 1px solid var(--soc-border);
+}
+
+.flavor-soc-sin-cuotas {
+    text-align: center;
+    padding: 48px 24px;
+}
+
+.flavor-soc-sin-cuotas .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--soc-success);
+    margin-bottom: 12px;
+}
+
+.flavor-soc-sin-cuotas p {
+    color: var(--soc-text-muted);
+    margin: 0;
+}
+
+.flavor-soc-cuotas-grid {
+    padding: 16px;
+}
+
+.flavor-soc-cuota {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--soc-bg-alt);
+    border-radius: var(--soc-radius-sm);
+    margin-bottom: 12px;
+}
+
+.flavor-soc-cuota:last-child {
+    margin-bottom: 0;
+}
+
+.flavor-soc-cuota-periodo {
+    flex: 1;
+}
+
+.flavor-soc-cuota-periodo .periodo {
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.flavor-soc-cuota-periodo .fecha-cargo {
+    font-size: 13px;
+    color: var(--soc-text-muted);
+}
+
+.flavor-soc-cuota-importe {
+    text-align: right;
+}
+
+.flavor-soc-cuota-importe .importe {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--soc-primary);
+}
+
+.flavor-soc-cuota-importe .estado {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.flavor-soc-cuota-importe .estado-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.flavor-soc-cuota-importe .estado-vencida {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.flavor-soc-cuota-acciones {
+    display: flex;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   Modal de Pago
+   ========================================================================== */
+
+.flavor-soc-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    padding: 20px;
+}
+
+.flavor-soc-modal-content {
+    background: var(--soc-bg);
+    border-radius: var(--soc-radius);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.flavor-soc-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--soc-border);
+}
+
+.flavor-soc-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.flavor-soc-modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--soc-text-muted);
+    padding: 0;
+    line-height: 1;
+}
+
+.flavor-soc-modal-close:hover {
+    color: var(--soc-text);
+}
+
+.flavor-soc-modal-body {
+    padding: 24px;
+}
+
+.flavor-soc-modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    border-top: 1px solid var(--soc-border);
+}
+
+/* Resumen de pago */
+.flavor-soc-pago-resumen {
+    background: var(--soc-bg-alt);
+    padding: 16px;
+    border-radius: var(--soc-radius-sm);
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.flavor-soc-pago-periodo {
+    font-weight: 600;
+    margin: 0 0 4px;
+}
+
+.flavor-soc-pago-importe {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--soc-primary);
+    margin: 0;
+}
+
+/* Métodos de pago */
+.flavor-soc-metodos-pago {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.flavor-soc-metodo-opcion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--soc-bg-alt);
+    border: 2px solid var(--soc-border);
+    border-radius: var(--soc-radius-sm);
+    cursor: pointer;
+    transition: var(--soc-transition);
+}
+
+.flavor-soc-metodo-opcion:hover {
+    border-color: var(--soc-primary);
+}
+
+.flavor-soc-metodo-opcion input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+}
+
+.flavor-soc-metodo-opcion input[type="radio"]:checked + .flavor-soc-metodo-info {
+    color: var(--soc-primary);
+}
+
+.flavor-soc-metodo-opcion:has(input:checked) {
+    border-color: var(--soc-primary);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.flavor-soc-metodo-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-soc-metodo-info .nombre {
+    font-weight: 600;
+}
+
+.flavor-soc-metodo-info .descripcion {
+    font-size: 13px;
+    color: var(--soc-text-muted);
+}
+
+/* Panel de pago manual */
+.flavor-soc-panel-pago {
+    padding: 20px;
+    background: var(--soc-bg-alt);
+    border-radius: var(--soc-radius-sm);
+}
+
+.flavor-soc-datos-bancarios h4 {
+    margin: 0 0 16px;
+    font-size: 15px;
+}
+
+.flavor-soc-dato {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--soc-border);
+}
+
+.flavor-soc-dato:last-child {
+    border-bottom: none;
+}
+
+.flavor-soc-dato .label {
+    font-weight: 500;
+    color: var(--soc-text-muted);
+}
+
+.flavor-soc-dato .valor {
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flavor-soc-btn-copiar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--soc-primary);
+    padding: 4px;
+}
+
+.flavor-soc-btn-copiar:hover {
+    color: var(--soc-primary-hover);
+}
+
+.flavor-soc-confirmar-manual {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--soc-border);
+}
+
+.flavor-soc-confirmar-manual p {
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   Mensajes
+   ========================================================================== */
+
+.flavor-soc-mensaje {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: var(--soc-radius-sm);
+    margin-bottom: 24px;
+}
+
+.flavor-soc-mensaje .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.flavor-soc-mensaje p {
+    margin: 0;
+    flex: 1;
+}
+
+.flavor-soc-mensaje-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.flavor-soc-mensaje-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.flavor-soc-mensaje-error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ==========================================================================
+   Toast
+   ========================================================================== */
+
+.flavor-soc-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 14px 20px;
+    border-radius: var(--soc-radius-sm);
+    color: #fff;
+    font-size: 14px;
+    z-index: 100001;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    max-width: 320px;
+    box-shadow: var(--soc-shadow-lg);
+}
+
+.flavor-soc-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.flavor-soc-toast-success { background: var(--soc-success); }
+.flavor-soc-toast-error { background: var(--soc-danger); }
+.flavor-soc-toast-info { background: var(--soc-info); }
+
+/* ==========================================================================
+   Spinner
+   ========================================================================== */
+
+.flavor-soc-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: flavor-soc-spin 0.8s linear infinite;
+}
+
+@keyframes flavor-soc-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .flavor-soc-info-socio {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .flavor-soc-resumen {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .flavor-soc-cuota {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .flavor-soc-cuota-importe {
+        text-align: center;
+    }
+
+    .flavor-soc-cuota-acciones {
+        justify-content: center;
+    }
+
+    .flavor-soc-modal {
+        padding: 10px;
+    }
+
+    .flavor-soc-modal-content {
+        max-height: 95vh;
+    }
+
+    .flavor-soc-dato {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}

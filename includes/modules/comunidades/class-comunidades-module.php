@@ -86,10 +86,452 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
     public function init() {
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+        $this->register_ajax_handlers();
 
         // Registrar en Panel Unificado de Gestion
         $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registra los shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('comunidades_listar', [$this, 'shortcode_listado']);
+        add_shortcode('comunidades_crear', [$this, 'shortcode_crear']);
+        add_shortcode('comunidades_detalle', [$this, 'shortcode_detalle']);
+        add_shortcode('comunidades_actividad', [$this, 'shortcode_feed_actividad']);
+        add_shortcode('comunidades_mis_comunidades', [$this, 'shortcode_mis_comunidades']);
+    }
+
+    /**
+     * Registra los handlers AJAX del módulo
+     */
+    public function register_ajax_handlers() {
+        $acciones_autenticadas = [
+            'comunidades_crear',
+            'comunidades_unirse',
+            'comunidades_salir',
+            'comunidades_publicar',
+            'comunidades_invitar',
+        ];
+
+        foreach ($acciones_autenticadas as $accion) {
+            add_action('wp_ajax_' . $accion, [$this, 'ajax_' . str_replace('comunidades_', '', $accion)]);
+        }
+
+        // Acciones públicas
+        add_action('wp_ajax_comunidades_cargar_mas', [$this, 'ajax_cargar_mas']);
+        add_action('wp_ajax_nopriv_comunidades_cargar_mas', [$this, 'ajax_cargar_mas']);
+        add_action('wp_ajax_comunidades_obtener_comunidad', [$this, 'ajax_obtener_comunidad']);
+        add_action('wp_ajax_nopriv_comunidades_obtener_comunidad', [$this, 'ajax_obtener_comunidad']);
+    }
+
+    /**
+     * Encola los assets del frontend
+     */
+    public function enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
+        $ruta_modulo = plugin_dir_url(__FILE__);
+
+        wp_enqueue_style(
+            'flavor-comunidades',
+            $ruta_modulo . 'assets/css/comunidades.css',
+            [],
+            '1.0.0'
+        );
+
+        wp_enqueue_script(
+            'flavor-comunidades',
+            $ruta_modulo . 'assets/js/comunidades.js',
+            ['jquery'],
+            '1.0.0',
+            true
+        );
+
+        wp_localize_script('flavor-comunidades', 'flavorComunidadesConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('flavor_comunidades_nonce'),
+            'strings' => [
+                'error' => __('Ha ocurrido un error. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'confirmUnirse' => __('¿Deseas unirte a esta comunidad?', 'flavor-chat-ia'),
+                'confirmSalir' => __('¿Estás seguro de que deseas abandonar esta comunidad?', 'flavor-chat-ia'),
+            ],
+        ]);
+    }
+
+    /**
+     * Verifica si se deben cargar los assets
+     */
+    private function should_load_assets() {
+        global $post;
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes = ['comunidades_listar', 'comunidades_crear', 'comunidades_detalle', 'comunidades_actividad', 'comunidades_mis_comunidades'];
+
+        foreach ($shortcodes as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // =========================================================================
+    // Shortcodes
+    // =========================================================================
+
+    /**
+     * Shortcode: Listado de comunidades
+     */
+    public function shortcode_listado($atts) {
+        $atributos = shortcode_atts([
+            'categoria' => '',
+            'tipo' => '',
+            'columnas' => 3,
+            'limite' => 12,
+            'mostrar_filtros' => 'si',
+        ], $atts);
+
+        $resultado = $this->action_listar_comunidades([
+            'categoria' => $atributos['categoria'],
+            'tipo' => $atributos['tipo'],
+            'limite' => intval($atributos['limite']),
+        ]);
+
+        $comunidades = $resultado['success'] ? $resultado['comunidades'] : [];
+        $categorias = $this->settings['categorias_predeterminadas'] ?? [];
+        $identificador_usuario = get_current_user_id();
+
+        ob_start();
+        include dirname(__FILE__) . '/views/listado-comunidades.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Crear comunidad
+     */
+    public function shortcode_crear($atts) {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-com-notice flavor-com-notice-warning">' .
+                   sprintf(
+                       __('Debes <a href="%s">iniciar sesión</a> para crear una comunidad.', 'flavor-chat-ia'),
+                       wp_login_url(get_permalink())
+                   ) .
+                   '</div>';
+        }
+
+        $categorias = $this->settings['categorias_predeterminadas'] ?? [];
+
+        ob_start();
+        include dirname(__FILE__) . '/views/crear-comunidad.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Detalle de comunidad
+     */
+    public function shortcode_detalle($atts) {
+        $atributos = shortcode_atts([
+            'id' => 0,
+        ], $atts);
+
+        $comunidad_id = $atributos['id'] ?: (isset($_GET['comunidad']) ? absint($_GET['comunidad']) : 0);
+
+        if (!$comunidad_id) {
+            return '<div class="flavor-com-notice flavor-com-notice-warning">' .
+                   __('Comunidad no especificada.', 'flavor-chat-ia') .
+                   '</div>';
+        }
+
+        $resultado = $this->action_ver_comunidad(['comunidad_id' => $comunidad_id]);
+
+        if (!$resultado['success']) {
+            return '<div class="flavor-com-notice flavor-com-notice-error">' .
+                   esc_html($resultado['error']) .
+                   '</div>';
+        }
+
+        $comunidad = $resultado['comunidad'];
+        $miembros = $resultado['miembros'];
+        $identificador_usuario = get_current_user_id();
+        $es_miembro = false;
+        $rol_usuario = null;
+
+        foreach ($miembros as $miembro) {
+            if ($miembro['user_id'] === $identificador_usuario) {
+                $es_miembro = true;
+                $rol_usuario = $miembro['rol'];
+                break;
+            }
+        }
+
+        ob_start();
+        include dirname(__FILE__) . '/views/detalle-comunidad.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Feed de actividad
+     */
+    public function shortcode_feed_actividad($atts) {
+        $atributos = shortcode_atts([
+            'comunidad_id' => 0,
+            'limite' => 20,
+        ], $atts);
+
+        $comunidad_id = $atributos['comunidad_id'] ?: (isset($_GET['comunidad']) ? absint($_GET['comunidad']) : 0);
+
+        if (!$comunidad_id) {
+            return '<div class="flavor-com-notice flavor-com-notice-info">' .
+                   __('Selecciona una comunidad para ver su actividad.', 'flavor-chat-ia') .
+                   '</div>';
+        }
+
+        $resultado = $this->action_feed_actividad([
+            'comunidad_id' => $comunidad_id,
+            'limite' => intval($atributos['limite']),
+        ]);
+
+        $actividades = $resultado['success'] ? ($resultado['actividades'] ?? []) : [];
+
+        ob_start();
+        include dirname(__FILE__) . '/views/feed-actividad.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mis comunidades
+     */
+    public function shortcode_mis_comunidades($atts) {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-com-notice flavor-com-notice-warning">' .
+                   sprintf(
+                       __('Debes <a href="%s">iniciar sesión</a> para ver tus comunidades.', 'flavor-chat-ia'),
+                       wp_login_url(get_permalink())
+                   ) .
+                   '</div>';
+        }
+
+        $resultado = $this->action_mis_comunidades([]);
+
+        $comunidades = $resultado['success'] ? $resultado['comunidades'] : [];
+        $categorias = $this->settings['categorias_predeterminadas'] ?? [];
+
+        ob_start();
+        include dirname(__FILE__) . '/views/mis-comunidades.php';
+        return ob_get_clean();
+    }
+
+    // =========================================================================
+    // AJAX Handlers
+    // =========================================================================
+
+    /**
+     * Verifica la seguridad de las peticiones AJAX
+     */
+    private function verificar_seguridad_ajax() {
+        if (!check_ajax_referer('flavor_comunidades_nonce', 'nonce', false)) {
+            wp_send_json_error([
+                'message' => __('Error de seguridad. Recarga la página.', 'flavor-chat-ia'),
+            ], 403);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * AJAX: Crear comunidad
+     */
+    public function ajax_crear() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            return;
+        }
+
+        $resultado = $this->action_crear_comunidad([
+            'nombre' => sanitize_text_field($_POST['nombre'] ?? ''),
+            'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+            'categoria' => sanitize_text_field($_POST['categoria'] ?? 'otros'),
+            'tipo' => sanitize_text_field($_POST['tipo'] ?? 'abierta'),
+        ]);
+
+        if ($resultado['success']) {
+            wp_send_json_success($resultado);
+        } else {
+            wp_send_json_error($resultado, 400);
+        }
+    }
+
+    /**
+     * AJAX: Unirse a comunidad
+     */
+    public function ajax_unirse() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            return;
+        }
+
+        $resultado = $this->action_unirse([
+            'comunidad_id' => absint($_POST['comunidad_id'] ?? 0),
+        ]);
+
+        if ($resultado['success']) {
+            wp_send_json_success($resultado);
+        } else {
+            wp_send_json_error($resultado, 400);
+        }
+    }
+
+    /**
+     * AJAX: Salir de comunidad
+     */
+    public function ajax_salir() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            return;
+        }
+
+        $resultado = $this->action_salir([
+            'comunidad_id' => absint($_POST['comunidad_id'] ?? 0),
+        ]);
+
+        if ($resultado['success']) {
+            wp_send_json_success($resultado);
+        } else {
+            wp_send_json_error($resultado, 400);
+        }
+    }
+
+    /**
+     * AJAX: Publicar en comunidad
+     */
+    public function ajax_publicar() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            return;
+        }
+
+        $comunidad_id = absint($_POST['comunidad_id'] ?? 0);
+        $contenido = sanitize_textarea_field($_POST['contenido'] ?? '');
+
+        if (!$comunidad_id || empty($contenido)) {
+            wp_send_json_error(['message' => __('Datos incompletos.', 'flavor-chat-ia')], 400);
+            return;
+        }
+
+        // Verificar membresía
+        if (!$this->es_miembro_activo($comunidad_id, get_current_user_id())) {
+            wp_send_json_error(['message' => __('No eres miembro de esta comunidad.', 'flavor-chat-ia')], 403);
+            return;
+        }
+
+        global $wpdb;
+        $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+
+        $insertado = $wpdb->insert($tabla_actividad, [
+            'comunidad_id' => $comunidad_id,
+            'usuario_id' => get_current_user_id(),
+            'tipo' => 'publicacion',
+            'contenido' => $contenido,
+        ], ['%d', '%d', '%s', '%s']);
+
+        if ($insertado) {
+            wp_send_json_success(['message' => __('Publicación creada.', 'flavor-chat-ia')]);
+        } else {
+            wp_send_json_error(['message' => __('Error al publicar.', 'flavor-chat-ia')], 500);
+        }
+    }
+
+    /**
+     * AJAX: Invitar a comunidad
+     */
+    public function ajax_invitar() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        // Por implementar
+        wp_send_json_success(['message' => __('Invitación enviada.', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * AJAX: Cargar más comunidades
+     */
+    public function ajax_cargar_mas() {
+        $pagina = absint($_POST['pagina'] ?? 1);
+        $limite = absint($_POST['limite'] ?? 12);
+        $categoria = sanitize_text_field($_POST['categoria'] ?? '');
+
+        $resultado = $this->action_listar_comunidades([
+            'categoria' => $categoria,
+            'limite' => $limite,
+            'offset' => ($pagina - 1) * $limite,
+        ]);
+
+        wp_send_json_success([
+            'comunidades' => $resultado['comunidades'] ?? [],
+            'hay_mas' => count($resultado['comunidades'] ?? []) >= $limite,
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener detalle de comunidad
+     */
+    public function ajax_obtener_comunidad() {
+        $comunidad_id = absint($_POST['comunidad_id'] ?? $_GET['comunidad_id'] ?? 0);
+
+        if (!$comunidad_id) {
+            wp_send_json_error(['message' => __('ID no válido.', 'flavor-chat-ia')], 400);
+            return;
+        }
+
+        $resultado = $this->action_ver_comunidad(['comunidad_id' => $comunidad_id]);
+
+        if ($resultado['success']) {
+            wp_send_json_success($resultado);
+        } else {
+            wp_send_json_error($resultado, 404);
+        }
+    }
+
+    /**
+     * Verifica si un usuario es miembro activo
+     */
+    private function es_miembro_activo($comunidad_id, $usuario_id) {
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        return (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_miembros WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
+            $comunidad_id,
+            $usuario_id
+        ));
     }
 
     // =========================================================================

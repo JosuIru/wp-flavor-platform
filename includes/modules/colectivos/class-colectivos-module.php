@@ -89,8 +89,613 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
     public function init() {
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+        $this->register_ajax_handlers();
         $this->registrar_en_panel_unificado();
+    }
+
+    // =========================================================
+    // Shortcodes
+    // =========================================================
+
+    /**
+     * Registra los shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('colectivos_listar', [$this, 'shortcode_listar']);
+        add_shortcode('colectivos_crear', [$this, 'shortcode_crear']);
+        add_shortcode('colectivos_detalle', [$this, 'shortcode_detalle']);
+        add_shortcode('colectivos_mis_colectivos', [$this, 'shortcode_mis_colectivos']);
+        add_shortcode('colectivos_proyectos', [$this, 'shortcode_proyectos']);
+        add_shortcode('colectivos_asambleas', [$this, 'shortcode_asambleas']);
+    }
+
+    /**
+     * Shortcode: Listado de colectivos
+     */
+    public function shortcode_listar($atributos) {
+        $atributos = shortcode_atts([
+            'tipo'     => '',
+            'sector'   => '',
+            'columnas' => 3,
+            'limite'   => 12,
+        ], $atributos, 'colectivos_listar');
+
+        $resultado = $this->action_listar_colectivos([
+            'tipo'   => $atributos['tipo'],
+            'sector' => $atributos['sector'],
+            'limite' => absint($atributos['limite']),
+        ]);
+
+        $colectivos = $resultado['success'] ? $resultado['colectivos'] : [];
+        $categorias = $this->get_etiquetas_tipo();
+
+        ob_start();
+        include dirname(__FILE__) . '/views/listado-colectivos.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Crear colectivo
+     */
+    public function shortcode_crear($atributos) {
+        $atributos = shortcode_atts([], $atributos, 'colectivos_crear');
+
+        $identificador_usuario = get_current_user_id();
+        $tipos_disponibles = $this->get_etiquetas_tipo();
+        $sectores_disponibles = $this->get_sectores_disponibles();
+
+        ob_start();
+        include dirname(__FILE__) . '/views/crear-colectivo.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Detalle de colectivo
+     */
+    public function shortcode_detalle($atributos) {
+        $atributos = shortcode_atts([
+            'id' => 0,
+        ], $atributos, 'colectivos_detalle');
+
+        $colectivo_id = absint($atributos['id']) ?: absint($_GET['colectivo'] ?? 0);
+
+        if (!$colectivo_id) {
+            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $resultado = $this->action_ver_colectivo(['colectivo_id' => $colectivo_id]);
+
+        if (!$resultado['success']) {
+            return '<p class="flavor-col-error">' . esc_html($resultado['error']) . '</p>';
+        }
+
+        $colectivo = $resultado['colectivo'];
+        $miembros = $resultado['miembros'];
+        $identificador_usuario = get_current_user_id();
+        $es_miembro = $this->es_miembro_activo($colectivo_id, $identificador_usuario);
+        $rol_usuario = $this->obtener_rol_miembro($colectivo_id, $identificador_usuario);
+
+        // Obtener proyectos y asambleas
+        $proyectos_resultado = $this->action_listar_proyectos(['colectivo_id' => $colectivo_id]);
+        $proyectos = $proyectos_resultado['success'] ? $proyectos_resultado['proyectos'] : [];
+
+        $asambleas_resultado = $this->action_ver_asambleas(['colectivo_id' => $colectivo_id]);
+        $asambleas = $asambleas_resultado['success'] ? $asambleas_resultado['asambleas'] : [];
+
+        ob_start();
+        include dirname(__FILE__) . '/views/detalle-colectivo.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mis colectivos
+     */
+    public function shortcode_mis_colectivos($atributos) {
+        $atributos = shortcode_atts([
+            'columnas' => 2,
+        ], $atributos, 'colectivos_mis_colectivos');
+
+        $identificador_usuario = get_current_user_id();
+
+        if (!$identificador_usuario) {
+            return '<p class="flavor-col-login-required">' .
+                sprintf(
+                    esc_html__('Debes %siniciar sesión%s para ver tus colectivos.', 'flavor-chat-ia'),
+                    '<a href="' . esc_url(wp_login_url(get_permalink())) . '">',
+                    '</a>'
+                ) . '</p>';
+        }
+
+        $resultado = $this->action_mis_colectivos([]);
+        $colectivos = $resultado['success'] ? $resultado['colectivos'] : [];
+        $etiquetas_rol = $this->get_default_settings()['roles_miembro'];
+
+        ob_start();
+        include dirname(__FILE__) . '/views/mis-colectivos.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Proyectos de colectivo
+     */
+    public function shortcode_proyectos($atributos) {
+        $atributos = shortcode_atts([
+            'colectivo_id' => 0,
+            'estado'       => '',
+            'limite'       => 10,
+        ], $atributos, 'colectivos_proyectos');
+
+        $colectivo_id = absint($atributos['colectivo_id']) ?: absint($_GET['colectivo'] ?? 0);
+
+        if (!$colectivo_id) {
+            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $resultado = $this->action_listar_proyectos([
+            'colectivo_id' => $colectivo_id,
+            'estado'       => $atributos['estado'],
+        ]);
+
+        $proyectos = $resultado['success'] ? $resultado['proyectos'] : [];
+        $identificador_usuario = get_current_user_id();
+        $es_miembro = $this->es_miembro_activo($colectivo_id, $identificador_usuario);
+
+        ob_start();
+        include dirname(__FILE__) . '/views/proyectos.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Asambleas de colectivo
+     */
+    public function shortcode_asambleas($atributos) {
+        $atributos = shortcode_atts([
+            'colectivo_id' => 0,
+            'estado'       => '',
+            'limite'       => 10,
+        ], $atributos, 'colectivos_asambleas');
+
+        $colectivo_id = absint($atributos['colectivo_id']) ?: absint($_GET['colectivo'] ?? 0);
+
+        if (!$colectivo_id) {
+            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $resultado = $this->action_ver_asambleas([
+            'colectivo_id' => $colectivo_id,
+            'estado'       => $atributos['estado'],
+        ]);
+
+        $asambleas = $resultado['success'] ? $resultado['asambleas'] : [];
+        $identificador_usuario = get_current_user_id();
+        $rol_usuario = $this->obtener_rol_miembro($colectivo_id, $identificador_usuario);
+        $puede_convocar = in_array($rol_usuario, ['presidente', 'secretario'], true);
+
+        ob_start();
+        include dirname(__FILE__) . '/views/asambleas.php';
+        return ob_get_clean();
+    }
+
+    // =========================================================
+    // AJAX Handlers
+    // =========================================================
+
+    /**
+     * Registra los handlers AJAX
+     */
+    public function register_ajax_handlers() {
+        // Handlers con autenticación
+        add_action('wp_ajax_colectivos_crear', [$this, 'ajax_crear']);
+        add_action('wp_ajax_colectivos_unirse', [$this, 'ajax_unirse']);
+        add_action('wp_ajax_colectivos_abandonar', [$this, 'ajax_abandonar']);
+        add_action('wp_ajax_colectivos_crear_proyecto', [$this, 'ajax_crear_proyecto']);
+        add_action('wp_ajax_colectivos_actualizar_proyecto', [$this, 'ajax_actualizar_proyecto']);
+        add_action('wp_ajax_colectivos_convocar_asamblea', [$this, 'ajax_convocar_asamblea']);
+        add_action('wp_ajax_colectivos_confirmar_asistencia', [$this, 'ajax_confirmar_asistencia']);
+        add_action('wp_ajax_colectivos_aprobar_miembro', [$this, 'ajax_aprobar_miembro']);
+
+        // Handlers públicos
+        add_action('wp_ajax_colectivos_obtener', [$this, 'ajax_obtener_colectivo']);
+        add_action('wp_ajax_nopriv_colectivos_obtener', [$this, 'ajax_obtener_colectivo']);
+        add_action('wp_ajax_colectivos_listar', [$this, 'ajax_listar']);
+        add_action('wp_ajax_nopriv_colectivos_listar', [$this, 'ajax_listar']);
+    }
+
+    /**
+     * AJAX: Crear colectivo
+     */
+    public function ajax_crear() {
+        check_ajax_referer('flavor_colectivos_nonce', 'nonce');
+
+        $resultado = $this->action_crear_colectivo([
+            'nombre'         => sanitize_text_field($_POST['nombre'] ?? ''),
+            'descripcion'    => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+            'tipo'           => sanitize_text_field($_POST['tipo'] ?? 'colectivo'),
+            'sector'         => sanitize_text_field($_POST['sector'] ?? ''),
+            'email_contacto' => sanitize_email($_POST['email_contacto'] ?? ''),
+            'telefono'       => sanitize_text_field($_POST['telefono'] ?? ''),
+            'direccion'      => sanitize_textarea_field($_POST['direccion'] ?? ''),
+            'web'            => esc_url_raw($_POST['web'] ?? ''),
+        ]);
+
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Unirse a colectivo
+     */
+    public function ajax_unirse() {
+        check_ajax_referer('flavor_colectivos_nonce', 'nonce');
+
+        $resultado = $this->action_unirse([
+            'colectivo_id' => absint($_POST['colectivo_id'] ?? 0),
+        ]);
+
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Abandonar colectivo
+     */
+    public function ajax_abandonar() {
+        check_ajax_referer('flavor_colectivos_nonce', 'nonce');
+
+        $identificador_usuario = get_current_user_id();
+        $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
+
+        if (!$identificador_usuario || !$colectivo_id) {
+            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_colectivos_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
+
+        // Verificar que no es el presidente (no puede abandonar)
+        $rol_actual = $this->obtener_rol_miembro($colectivo_id, $identificador_usuario);
+        if ($rol_actual === 'presidente') {
+            wp_send_json([
+                'success' => false,
+                'error'   => __('El presidente no puede abandonar el colectivo. Primero transfiere el rol a otro miembro.', 'flavor-chat-ia'),
+            ]);
+        }
+
+        $wpdb->update(
+            $tabla_colectivos_miembros,
+            [
+                'estado'     => 'baja',
+                'fecha_baja' => current_time('mysql'),
+            ],
+            [
+                'colectivo_id' => $colectivo_id,
+                'user_id'      => $identificador_usuario,
+            ],
+            ['%s', '%s'],
+            ['%d', '%d']
+        );
+
+        // Actualizar contador
+        $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $tabla_colectivos SET miembros_count = GREATEST(0, miembros_count - 1) WHERE id = %d",
+            $colectivo_id
+        ));
+
+        wp_send_json([
+            'success' => true,
+            'mensaje' => __('Has abandonado el colectivo.', 'flavor-chat-ia'),
+        ]);
+    }
+
+    /**
+     * AJAX: Crear proyecto
+     */
+    public function ajax_crear_proyecto() {
+        check_ajax_referer('flavor_colectivos_nonce', 'nonce');
+
+        $resultado = $this->action_crear_proyecto([
+            'colectivo_id' => absint($_POST['colectivo_id'] ?? 0),
+            'titulo'       => sanitize_text_field($_POST['titulo'] ?? ''),
+            'descripcion'  => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+            'presupuesto'  => floatval($_POST['presupuesto'] ?? 0),
+            'fecha_inicio' => sanitize_text_field($_POST['fecha_inicio'] ?? ''),
+            'fecha_fin'    => sanitize_text_field($_POST['fecha_fin'] ?? ''),
+        ]);
+
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Actualizar proyecto
+     */
+    public function ajax_actualizar_proyecto() {
+        check_ajax_referer('flavor_colectivos_nonce', 'nonce');
+
+        $proyecto_id = absint($_POST['proyecto_id'] ?? 0);
+        $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
+        $identificador_usuario = get_current_user_id();
+
+        if (!$proyecto_id || !$colectivo_id) {
+            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', 'flavor-chat-ia')]);
+        }
+
+        // Verificar permisos
+        if (!$this->es_miembro_activo($colectivo_id, $identificador_usuario)) {
+            wp_send_json(['success' => false, 'error' => __('No tienes permisos.', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_colectivos_proyectos = $wpdb->prefix . 'flavor_colectivos_proyectos';
+
+        $campos_actualizar = [];
+        $formatos = [];
+
+        if (isset($_POST['estado'])) {
+            $estados_validos = ['planificado', 'en_curso', 'completado', 'cancelado'];
+            $estado_nuevo = sanitize_text_field($_POST['estado']);
+            if (in_array($estado_nuevo, $estados_validos, true)) {
+                $campos_actualizar['estado'] = $estado_nuevo;
+                $formatos[] = '%s';
+            }
+        }
+
+        if (isset($_POST['progreso'])) {
+            $campos_actualizar['progreso'] = min(100, max(0, absint($_POST['progreso'])));
+            $formatos[] = '%d';
+        }
+
+        if (empty($campos_actualizar)) {
+            wp_send_json(['success' => false, 'error' => __('No hay campos para actualizar.', 'flavor-chat-ia')]);
+        }
+
+        $wpdb->update(
+            $tabla_colectivos_proyectos,
+            $campos_actualizar,
+            ['id' => $proyecto_id, 'colectivo_id' => $colectivo_id],
+            $formatos,
+            ['%d', '%d']
+        );
+
+        wp_send_json([
+            'success' => true,
+            'mensaje' => __('Proyecto actualizado.', 'flavor-chat-ia'),
+        ]);
+    }
+
+    /**
+     * AJAX: Convocar asamblea
+     */
+    public function ajax_convocar_asamblea() {
+        check_ajax_referer('flavor_colectivos_nonce', 'nonce');
+
+        $resultado = $this->action_convocar_asamblea([
+            'colectivo_id' => absint($_POST['colectivo_id'] ?? 0),
+            'titulo'       => sanitize_text_field($_POST['titulo'] ?? ''),
+            'descripcion'  => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+            'tipo'         => sanitize_text_field($_POST['tipo'] ?? 'ordinaria'),
+            'fecha'        => sanitize_text_field($_POST['fecha'] ?? ''),
+            'lugar'        => sanitize_text_field($_POST['lugar'] ?? ''),
+            'orden_del_dia'=> sanitize_textarea_field($_POST['orden_del_dia'] ?? ''),
+        ]);
+
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Confirmar asistencia a asamblea
+     */
+    public function ajax_confirmar_asistencia() {
+        check_ajax_referer('flavor_colectivos_nonce', 'nonce');
+
+        $asamblea_id = absint($_POST['asamblea_id'] ?? 0);
+        $identificador_usuario = get_current_user_id();
+
+        if (!$asamblea_id || !$identificador_usuario) {
+            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_colectivos_asambleas = $wpdb->prefix . 'flavor_colectivos_asambleas';
+
+        $asamblea = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_colectivos_asambleas WHERE id = %d",
+            $asamblea_id
+        ));
+
+        if (!$asamblea || $asamblea->estado !== 'convocada') {
+            wp_send_json(['success' => false, 'error' => __('Asamblea no disponible.', 'flavor-chat-ia')]);
+        }
+
+        // Verificar membresía
+        if (!$this->es_miembro_activo($asamblea->colectivo_id, $identificador_usuario)) {
+            wp_send_json(['success' => false, 'error' => __('No eres miembro de este colectivo.', 'flavor-chat-ia')]);
+        }
+
+        $asistentes = json_decode($asamblea->asistentes, true) ?: [];
+
+        if (in_array($identificador_usuario, $asistentes, true)) {
+            wp_send_json(['success' => false, 'error' => __('Ya confirmaste tu asistencia.', 'flavor-chat-ia')]);
+        }
+
+        $asistentes[] = $identificador_usuario;
+
+        $wpdb->update(
+            $tabla_colectivos_asambleas,
+            ['asistentes' => wp_json_encode($asistentes)],
+            ['id' => $asamblea_id],
+            ['%s'],
+            ['%d']
+        );
+
+        wp_send_json([
+            'success'        => true,
+            'mensaje'        => __('Asistencia confirmada.', 'flavor-chat-ia'),
+            'total_asistentes' => count($asistentes),
+        ]);
+    }
+
+    /**
+     * AJAX: Aprobar miembro pendiente
+     */
+    public function ajax_aprobar_miembro() {
+        check_ajax_referer('flavor_colectivos_nonce', 'nonce');
+
+        $membresia_id = absint($_POST['membresia_id'] ?? 0);
+        $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
+        $accion = sanitize_text_field($_POST['accion_aprobar'] ?? 'aprobar');
+        $identificador_usuario = get_current_user_id();
+
+        if (!$membresia_id || !$colectivo_id) {
+            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', 'flavor-chat-ia')]);
+        }
+
+        // Solo presidente o secretario pueden aprobar
+        $rol_actual = $this->obtener_rol_miembro($colectivo_id, $identificador_usuario);
+        if (!in_array($rol_actual, ['presidente', 'secretario'], true)) {
+            wp_send_json(['success' => false, 'error' => __('No tienes permisos para aprobar miembros.', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_colectivos_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
+
+        if ($accion === 'aprobar') {
+            $wpdb->update(
+                $tabla_colectivos_miembros,
+                ['estado' => 'activo'],
+                ['id' => $membresia_id, 'colectivo_id' => $colectivo_id, 'estado' => 'pendiente'],
+                ['%s'],
+                ['%d', '%d', '%s']
+            );
+
+            // Actualizar contador
+            $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
+            $wpdb->query($wpdb->prepare(
+                "UPDATE $tabla_colectivos SET miembros_count = miembros_count + 1 WHERE id = %d",
+                $colectivo_id
+            ));
+
+            wp_send_json(['success' => true, 'mensaje' => __('Miembro aprobado.', 'flavor-chat-ia')]);
+        } else {
+            $wpdb->delete(
+                $tabla_colectivos_miembros,
+                ['id' => $membresia_id, 'colectivo_id' => $colectivo_id, 'estado' => 'pendiente'],
+                ['%d', '%d', '%s']
+            );
+
+            wp_send_json(['success' => true, 'mensaje' => __('Solicitud rechazada.', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Obtener colectivo
+     */
+    public function ajax_obtener_colectivo() {
+        $colectivo_id = absint($_GET['colectivo_id'] ?? $_POST['colectivo_id'] ?? 0);
+
+        $resultado = $this->action_ver_colectivo(['colectivo_id' => $colectivo_id]);
+
+        wp_send_json($resultado);
+    }
+
+    /**
+     * AJAX: Listar colectivos
+     */
+    public function ajax_listar() {
+        $resultado = $this->action_listar_colectivos([
+            'tipo'     => sanitize_text_field($_GET['tipo'] ?? $_POST['tipo'] ?? ''),
+            'sector'   => sanitize_text_field($_GET['sector'] ?? $_POST['sector'] ?? ''),
+            'busqueda' => sanitize_text_field($_GET['busqueda'] ?? $_POST['busqueda'] ?? ''),
+            'limite'   => absint($_GET['limite'] ?? $_POST['limite'] ?? 20),
+        ]);
+
+        wp_send_json($resultado);
+    }
+
+    // =========================================================
+    // Assets Frontend
+    // =========================================================
+
+    /**
+     * Encola assets del frontend
+     */
+    public function enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
+        $directorio_plugin = plugin_dir_url(dirname(dirname(dirname(__FILE__))));
+
+        wp_enqueue_style(
+            'flavor-colectivos',
+            $directorio_plugin . 'modules/colectivos/assets/css/colectivos.css',
+            [],
+            FLAVOR_CHAT_IA_VERSION
+        );
+
+        wp_enqueue_script(
+            'flavor-colectivos',
+            $directorio_plugin . 'modules/colectivos/assets/js/colectivos.js',
+            ['jquery'],
+            FLAVOR_CHAT_IA_VERSION,
+            true
+        );
+
+        wp_localize_script('flavor-colectivos', 'flavorColectivosConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce('flavor_colectivos_nonce'),
+            'strings' => [
+                'confirmUnirse'    => __('¿Deseas unirte a este colectivo?', 'flavor-chat-ia'),
+                'confirmAbandonar' => __('¿Estás seguro de que quieres abandonar este colectivo?', 'flavor-chat-ia'),
+                'confirmAsistencia'=> __('¿Confirmas tu asistencia a esta asamblea?', 'flavor-chat-ia'),
+                'errorConexion'    => __('Error de conexión. Inténtalo de nuevo.', 'flavor-chat-ia'),
+            ],
+        ]);
+    }
+
+    /**
+     * Determina si se deben cargar los assets
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        // Cargar en página de colectivos
+        if (strpos($post->post_name, 'colectivo') !== false) {
+            return true;
+        }
+
+        // Cargar si hay shortcodes del módulo
+        $shortcodes_modulo = ['colectivos_listar', 'colectivos_crear', 'colectivos_detalle', 'colectivos_mis_colectivos', 'colectivos_proyectos', 'colectivos_asambleas'];
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Obtiene los sectores disponibles
+     */
+    private function get_sectores_disponibles() {
+        return [
+            'cultura'         => __('Cultura y Arte', 'flavor-chat-ia'),
+            'medioambiente'   => __('Medio Ambiente', 'flavor-chat-ia'),
+            'educacion'       => __('Educación', 'flavor-chat-ia'),
+            'salud'           => __('Salud', 'flavor-chat-ia'),
+            'derechos'        => __('Derechos Humanos', 'flavor-chat-ia'),
+            'economia_social' => __('Economía Social', 'flavor-chat-ia'),
+            'tecnologia'      => __('Tecnología', 'flavor-chat-ia'),
+            'deportes'        => __('Deportes', 'flavor-chat-ia'),
+            'vecinal'         => __('Vecinal', 'flavor-chat-ia'),
+            'otro'            => __('Otro', 'flavor-chat-ia'),
+        ];
     }
 
     // =========================================================

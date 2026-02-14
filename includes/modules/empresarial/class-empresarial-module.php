@@ -448,12 +448,185 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
     public function init() {
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_ajax_empresarial_contacto', [$this, 'ajax_contacto_form']);
         add_action('wp_ajax_nopriv_empresarial_contacto', [$this, 'ajax_contacto_form']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
         // Registrar en el panel de administración unificado
         $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registrar shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('empresarial_servicios', [$this, 'shortcode_servicios']);
+        add_shortcode('empresarial_equipo', [$this, 'shortcode_equipo']);
+        add_shortcode('empresarial_testimonios', [$this, 'shortcode_testimonios']);
+        add_shortcode('empresarial_contacto', [$this, 'shortcode_contacto']);
+        add_shortcode('empresarial_portfolio', [$this, 'shortcode_portfolio']);
+    }
+
+    /**
+     * Encolar assets frontend
+     */
+    public function enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
+        $plugin_url = plugin_dir_url(dirname(dirname(dirname(__FILE__))));
+        $version = defined('FLAVOR_CHAT_VERSION') ? FLAVOR_CHAT_VERSION : '1.0.0';
+
+        wp_enqueue_style(
+            'flavor-empresarial',
+            $plugin_url . 'includes/modules/empresarial/assets/css/empresarial.css',
+            [],
+            $version
+        );
+
+        wp_enqueue_script(
+            'flavor-empresarial',
+            $plugin_url . 'includes/modules/empresarial/assets/js/empresarial.js',
+            ['jquery'],
+            $version,
+            true
+        );
+
+        wp_localize_script('flavor-empresarial', 'flavorEmpresarialConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce('empresarial_contacto_nonce'),
+            'strings' => [
+                'enviando'    => __('Enviando...', 'flavor-chat-ia'),
+                'enviar'      => __('Enviar mensaje', 'flavor-chat-ia'),
+                'error'       => __('Error al enviar el mensaje', 'flavor-chat-ia'),
+                'camposRequeridos' => __('Por favor, completa todos los campos obligatorios', 'flavor-chat-ia'),
+            ],
+        ]);
+    }
+
+    /**
+     * Verifica si se deben cargar los assets
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        // Cargar en páginas del módulo empresarial
+        if (strpos($post->post_name, 'empresarial') !== false) {
+            return true;
+        }
+
+        // Cargar si hay shortcodes del módulo
+        $shortcodes_empresarial = ['empresarial_servicios', 'empresarial_equipo', 'empresarial_testimonios', 'empresarial_contacto', 'empresarial_portfolio'];
+        foreach ($shortcodes_empresarial as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Shortcode: Servicios
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string
+     */
+    public function shortcode_servicios($atts) {
+        $atts = shortcode_atts([
+            'titulo'      => __('Nuestros Servicios', 'flavor-chat-ia'),
+            'descripcion' => __('Soluciones integrales diseñadas para hacer crecer tu negocio', 'flavor-chat-ia'),
+            'columnas'    => 3,
+            'estilo'      => 'cards',
+        ], $atts, 'empresarial_servicios');
+
+        ob_start();
+        include dirname(__FILE__) . '/templates/servicios.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Equipo
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string
+     */
+    public function shortcode_equipo($atts) {
+        $atts = shortcode_atts([
+            'titulo'      => __('Nuestro Equipo', 'flavor-chat-ia'),
+            'descripcion' => __('Profesionales comprometidos con tu éxito', 'flavor-chat-ia'),
+            'layout'      => 'grid',
+            'columnas'    => 4,
+        ], $atts, 'empresarial_equipo');
+
+        ob_start();
+        include dirname(__FILE__) . '/templates/equipo.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Testimonios
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string
+     */
+    public function shortcode_testimonios($atts) {
+        $atts = shortcode_atts([
+            'titulo' => __('Lo Que Dicen Nuestros Clientes', 'flavor-chat-ia'),
+            'layout' => 'carousel',
+        ], $atts, 'empresarial_testimonios');
+
+        ob_start();
+        include dirname(__FILE__) . '/templates/testimonios.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Formulario de Contacto
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string
+     */
+    public function shortcode_contacto($atts) {
+        $atts = shortcode_atts([
+            'titulo'      => __('Contacta con Nosotros', 'flavor-chat-ia'),
+            'descripcion' => __('Estamos aquí para ayudarte. Envíanos tu consulta y te responderemos pronto.', 'flavor-chat-ia'),
+            'layout'      => 'dos_columnas',
+            'mostrar_info' => true,
+        ], $atts, 'empresarial_contacto');
+
+        ob_start();
+        include dirname(__FILE__) . '/templates/contacto.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Portfolio / Casos de Éxito
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string
+     */
+    public function shortcode_portfolio($atts) {
+        $atts = shortcode_atts([
+            'titulo'      => __('Nuestros Casos de Éxito', 'flavor-chat-ia'),
+            'descripcion' => __('Proyectos que transformaron negocios', 'flavor-chat-ia'),
+            'layout'      => 'masonry',
+            'columnas'    => 3,
+            'limite'      => 6,
+        ], $atts, 'empresarial_portfolio');
+
+        ob_start();
+        include dirname(__FILE__) . '/templates/portfolio.php';
+        return ob_get_clean();
     }
 
     /**
@@ -2219,6 +2392,126 @@ KNOWLEDGE;
 
 [flavor_module_listing module="empresarial" action="casos_exito"]',
                 'parent' => 'empresarial',
+            ],
+        ];
+    }
+
+    /**
+     * Obtener shortcodes del módulo
+     *
+     * @return array
+     */
+    public function get_shortcodes() {
+        return [
+            'empresarial_servicios' => [
+                'label'       => __('Servicios Empresariales', 'flavor-chat-ia'),
+                'description' => __('Muestra los servicios de la empresa en un grid', 'flavor-chat-ia'),
+                'callback'    => [$this, 'shortcode_servicios'],
+                'atts'        => [
+                    'titulo'      => __('Nuestros Servicios', 'flavor-chat-ia'),
+                    'descripcion' => __('Soluciones integrales diseñadas para hacer crecer tu negocio', 'flavor-chat-ia'),
+                    'columnas'    => 3,
+                    'estilo'      => 'cards',
+                ],
+            ],
+            'empresarial_equipo' => [
+                'label'       => __('Equipo', 'flavor-chat-ia'),
+                'description' => __('Muestra los miembros del equipo', 'flavor-chat-ia'),
+                'callback'    => [$this, 'shortcode_equipo'],
+                'atts'        => [
+                    'titulo'      => __('Nuestro Equipo', 'flavor-chat-ia'),
+                    'descripcion' => __('Profesionales comprometidos con tu éxito', 'flavor-chat-ia'),
+                    'layout'      => 'grid',
+                    'columnas'    => 4,
+                ],
+            ],
+            'empresarial_testimonios' => [
+                'label'       => __('Testimonios', 'flavor-chat-ia'),
+                'description' => __('Muestra testimonios de clientes', 'flavor-chat-ia'),
+                'callback'    => [$this, 'shortcode_testimonios'],
+                'atts'        => [
+                    'titulo' => __('Lo Que Dicen Nuestros Clientes', 'flavor-chat-ia'),
+                    'layout' => 'carousel',
+                ],
+            ],
+            'empresarial_contacto' => [
+                'label'       => __('Formulario de Contacto', 'flavor-chat-ia'),
+                'description' => __('Formulario profesional de contacto', 'flavor-chat-ia'),
+                'callback'    => [$this, 'shortcode_contacto'],
+                'atts'        => [
+                    'titulo'       => __('Contacta con Nosotros', 'flavor-chat-ia'),
+                    'descripcion'  => __('Estamos aquí para ayudarte', 'flavor-chat-ia'),
+                    'layout'       => 'dos_columnas',
+                    'mostrar_info' => true,
+                ],
+            ],
+            'empresarial_portfolio' => [
+                'label'       => __('Portfolio / Casos de Éxito', 'flavor-chat-ia'),
+                'description' => __('Muestra proyectos completados', 'flavor-chat-ia'),
+                'callback'    => [$this, 'shortcode_portfolio'],
+                'atts'        => [
+                    'titulo'      => __('Nuestros Casos de Éxito', 'flavor-chat-ia'),
+                    'descripcion' => __('Proyectos que transformaron negocios', 'flavor-chat-ia'),
+                    'layout'      => 'masonry',
+                    'columnas'    => 3,
+                    'limite'      => 6,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Obtener configuración del formulario de contacto
+     *
+     * @return array
+     */
+    public function get_form_config() {
+        return [
+            'contacto' => [
+                'titulo'      => __('Formulario de Contacto Empresarial', 'flavor-chat-ia'),
+                'descripcion' => __('Formulario para que los visitantes puedan contactar con la empresa', 'flavor-chat-ia'),
+                'campos'      => [
+                    'nombre' => [
+                        'type'        => 'text',
+                        'label'       => __('Nombre', 'flavor-chat-ia'),
+                        'required'    => true,
+                        'placeholder' => __('Tu nombre', 'flavor-chat-ia'),
+                    ],
+                    'email' => [
+                        'type'        => 'email',
+                        'label'       => __('Email', 'flavor-chat-ia'),
+                        'required'    => true,
+                        'placeholder' => __('tu@email.com', 'flavor-chat-ia'),
+                    ],
+                    'telefono' => [
+                        'type'        => 'tel',
+                        'label'       => __('Teléfono', 'flavor-chat-ia'),
+                        'required'    => false,
+                        'placeholder' => __('Tu teléfono', 'flavor-chat-ia'),
+                    ],
+                    'empresa' => [
+                        'type'        => 'text',
+                        'label'       => __('Empresa', 'flavor-chat-ia'),
+                        'required'    => false,
+                        'placeholder' => __('Nombre de tu empresa', 'flavor-chat-ia'),
+                    ],
+                    'asunto' => [
+                        'type'        => 'text',
+                        'label'       => __('Asunto', 'flavor-chat-ia'),
+                        'required'    => false,
+                        'placeholder' => __('¿En qué podemos ayudarte?', 'flavor-chat-ia'),
+                    ],
+                    'mensaje' => [
+                        'type'        => 'textarea',
+                        'label'       => __('Mensaje', 'flavor-chat-ia'),
+                        'required'    => true,
+                        'placeholder' => __('Cuéntanos más sobre tu consulta...', 'flavor-chat-ia'),
+                        'rows'        => 5,
+                    ],
+                ],
+                'submit_text' => __('Enviar mensaje', 'flavor-chat-ia'),
+                'success_msg' => __('Mensaje enviado correctamente. Te responderemos pronto.', 'flavor-chat-ia'),
+                'action'      => 'empresarial_contacto',
             ],
         ];
     }

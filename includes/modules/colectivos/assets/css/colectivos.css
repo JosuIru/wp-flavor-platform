@@ -1,0 +1,1446 @@
+/**
+ * Estilos del módulo Colectivos - Frontend
+ *
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+
+.flavor-col-listado,
+.flavor-col-crear,
+.flavor-col-detalle,
+.flavor-col-mis-colectivos,
+.flavor-col-proyectos,
+.flavor-col-asambleas {
+    --col-primary: #6366f1;
+    --col-primary-hover: #4f46e5;
+    --col-secondary: #64748b;
+    --col-success: #10b981;
+    --col-warning: #f59e0b;
+    --col-danger: #ef4444;
+    --col-info: #3b82f6;
+    --col-text: #1e293b;
+    --col-text-muted: #64748b;
+    --col-bg: #ffffff;
+    --col-bg-alt: #f8fafc;
+    --col-border: #e2e8f0;
+    --col-radius: 12px;
+    --col-radius-sm: 8px;
+    --col-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --col-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --col-transition: all 0.2s ease;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--col-text);
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Componentes Base
+   ========================================================================== */
+
+/* Botones */
+.flavor-col-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--col-radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--col-transition);
+    text-decoration: none;
+}
+
+.flavor-col-btn-primary {
+    background: var(--col-primary);
+    color: #fff;
+}
+
+.flavor-col-btn-primary:hover {
+    background: var(--col-primary-hover);
+    color: #fff;
+}
+
+.flavor-col-btn-secondary {
+    background: var(--col-bg-alt);
+    color: var(--col-text);
+    border: 1px solid var(--col-border);
+}
+
+.flavor-col-btn-secondary:hover {
+    background: var(--col-border);
+}
+
+.flavor-col-btn-outline {
+    background: transparent;
+    color: var(--col-primary);
+    border: 1px solid var(--col-primary);
+}
+
+.flavor-col-btn-outline:hover {
+    background: var(--col-primary);
+    color: #fff;
+}
+
+.flavor-col-btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.flavor-col-btn-lg {
+    padding: 14px 28px;
+    font-size: 16px;
+}
+
+.flavor-col-btn-link {
+    background: none;
+    border: none;
+    color: var(--col-text-muted);
+    padding: 8px;
+}
+
+.flavor-col-btn-link:hover {
+    color: var(--col-primary);
+}
+
+.flavor-col-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Inputs */
+.flavor-col-input,
+.flavor-col-select,
+.flavor-col-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--col-border);
+    border-radius: var(--col-radius-sm);
+    font-size: 14px;
+    transition: var(--col-transition);
+    background: var(--col-bg);
+}
+
+.flavor-col-input:focus,
+.flavor-col-select:focus,
+.flavor-col-textarea:focus {
+    outline: none;
+    border-color: var(--col-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.flavor-col-select-sm {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.flavor-col-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Badges */
+.flavor-col-badge,
+.flavor-col-tipo-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.flavor-col-tipo-asociacion { background: #dbeafe; color: #1e40af; }
+.flavor-col-tipo-cooperativa { background: #dcfce7; color: #166534; }
+.flavor-col-tipo-ong { background: #fef3c7; color: #92400e; }
+.flavor-col-tipo-colectivo { background: #ede9fe; color: #5b21b6; }
+.flavor-col-tipo-plataforma { background: #fce7f3; color: #9d174d; }
+
+.flavor-col-badge-planificado { background: #f1f5f9; color: #475569; }
+.flavor-col-badge-en_curso { background: #dbeafe; color: #1e40af; }
+.flavor-col-badge-completado { background: #dcfce7; color: #166534; }
+.flavor-col-badge-cancelado { background: #fee2e2; color: #991b1b; }
+
+/* Estado */
+.flavor-col-estado {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.flavor-col-estado-convocada { background: #dbeafe; color: #1e40af; }
+.flavor-col-estado-en_curso { background: #fef3c7; color: #92400e; }
+.flavor-col-estado-finalizada { background: #dcfce7; color: #166534; }
+.flavor-col-estado-cancelada { background: #fee2e2; color: #991b1b; }
+
+/* Roles */
+.flavor-col-rol {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.flavor-col-rol-presidente { background: #fef3c7; color: #92400e; }
+.flavor-col-rol-secretario { background: #dbeafe; color: #1e40af; }
+.flavor-col-rol-tesorero { background: #dcfce7; color: #166534; }
+.flavor-col-rol-vocal { background: #ede9fe; color: #5b21b6; }
+.flavor-col-rol-miembro { background: #f1f5f9; color: #475569; }
+
+/* Avatar */
+.flavor-col-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.flavor-col-avatar-xs {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ==========================================================================
+   Listado de Colectivos
+   ========================================================================== */
+
+.flavor-col-filtros {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.flavor-col-busqueda {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+}
+
+.flavor-col-busqueda input {
+    padding-right: 40px;
+}
+
+.flavor-col-busqueda .dashicons {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--col-text-muted);
+}
+
+.flavor-col-filtros-selectores {
+    display: flex;
+    gap: 12px;
+}
+
+.flavor-col-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.flavor-col-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.flavor-col-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.flavor-col-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 1024px) {
+    .flavor-col-grid-3,
+    .flavor-col-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .flavor-col-grid-2,
+    .flavor-col-grid-3,
+    .flavor-col-grid-4 { grid-template-columns: 1fr; }
+}
+
+/* Card de Colectivo */
+.flavor-col-card {
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    box-shadow: var(--col-shadow);
+    overflow: hidden;
+    transition: var(--col-transition);
+}
+
+.flavor-col-card:hover {
+    box-shadow: var(--col-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.flavor-col-card-imagen {
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+}
+
+.flavor-col-card-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-col-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--col-primary) 0%, var(--col-primary-hover) 100%);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.flavor-col-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.flavor-col-card-imagen .flavor-col-tipo-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.flavor-col-card-body {
+    padding: 16px;
+}
+
+.flavor-col-card-titulo {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.flavor-col-card-titulo a {
+    color: var(--col-text);
+    text-decoration: none;
+}
+
+.flavor-col-card-titulo a:hover {
+    color: var(--col-primary);
+}
+
+.flavor-col-sector {
+    display: inline-block;
+    color: var(--col-text-muted);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.flavor-col-card-stats {
+    display: flex;
+    gap: 16px;
+}
+
+.flavor-col-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-stat .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-col-card-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--col-border);
+    background: var(--col-bg-alt);
+}
+
+/* ==========================================================================
+   Detalle de Colectivo
+   ========================================================================== */
+
+.flavor-col-cabecera {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+@media (max-width: 768px) {
+    .flavor-col-cabecera {
+        grid-template-columns: 1fr;
+    }
+}
+
+.flavor-col-portada {
+    height: 200px;
+    border-radius: var(--col-radius);
+    background-size: cover;
+    background-position: center;
+}
+
+.flavor-col-portada-default {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--col-primary) 0%, var(--col-primary-hover) 100%);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.flavor-col-portada-default .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+}
+
+.flavor-col-badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.flavor-col-sector-badge {
+    background: var(--col-bg-alt);
+    color: var(--col-text-muted);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.flavor-col-nombre {
+    margin: 0 0 12px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.flavor-col-descripcion {
+    color: var(--col-text-muted);
+    margin-bottom: 20px;
+}
+
+.flavor-col-stats-row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 24px;
+}
+
+.flavor-col-stat-item {
+    text-align: center;
+}
+
+.flavor-col-stat-item .valor {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--col-primary);
+}
+
+.flavor-col-stat-item .label {
+    font-size: 13px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-acciones {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Contacto */
+.flavor-col-contacto {
+    display: flex;
+    gap: 24px;
+    padding: 16px 0;
+    border-top: 1px solid var(--col-border);
+    border-bottom: 1px solid var(--col-border);
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.flavor-col-contacto-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--col-text-muted);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.flavor-col-contacto-item:hover {
+    color: var(--col-primary);
+}
+
+/* Tabs */
+.flavor-col-tabs-container {
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    box-shadow: var(--col-shadow);
+    overflow: hidden;
+}
+
+.flavor-col-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--col-border);
+    overflow-x: auto;
+}
+
+.flavor-col-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--col-text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: var(--col-transition);
+    white-space: nowrap;
+}
+
+.flavor-col-tab:hover {
+    color: var(--col-text);
+}
+
+.flavor-col-tab.active {
+    color: var(--col-primary);
+    border-bottom-color: var(--col-primary);
+}
+
+.flavor-col-tab .count {
+    background: var(--col-bg-alt);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.flavor-col-panel {
+    display: none;
+    padding: 24px;
+}
+
+.flavor-col-panel.active {
+    display: block;
+}
+
+.flavor-col-panel-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+/* Miembros Grid */
+.flavor-col-miembros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.flavor-col-miembro {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--col-bg-alt);
+    border-radius: var(--col-radius-sm);
+}
+
+.flavor-col-miembro-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-col-miembro-info .nombre {
+    font-weight: 500;
+}
+
+.flavor-col-miembro-info .rol {
+    font-size: 12px;
+}
+
+/* Proyectos */
+.flavor-col-proyectos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.flavor-col-proyecto {
+    padding: 20px;
+    background: var(--col-bg-alt);
+    border-radius: var(--col-radius-sm);
+}
+
+.flavor-col-proyecto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.flavor-col-proyecto-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.flavor-col-proyecto-desc {
+    color: var(--col-text-muted);
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.flavor-col-proyecto-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.flavor-col-proyecto-meta .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-proyecto-meta .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Progreso */
+.flavor-col-progreso {
+    margin-top: 16px;
+}
+
+.flavor-col-progreso-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.flavor-col-progreso-barra {
+    height: 8px;
+    background: var(--col-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.flavor-col-progreso-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--col-primary), var(--col-success));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.flavor-col-progreso-valor {
+    font-weight: 600;
+    color: var(--col-primary);
+}
+
+/* Asambleas */
+.flavor-col-asambleas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.flavor-col-asamblea {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--col-bg-alt);
+    border-radius: var(--col-radius-sm);
+}
+
+.flavor-col-asamblea-fecha {
+    text-align: center;
+    min-width: 60px;
+}
+
+.flavor-col-asamblea-fecha .dia {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--col-primary);
+}
+
+.flavor-col-asamblea-fecha .mes {
+    font-size: 12px;
+    color: var(--col-text-muted);
+    text-transform: uppercase;
+}
+
+.flavor-col-asamblea-info {
+    flex: 1;
+}
+
+.flavor-col-asamblea-info h4 {
+    margin: 0 0 8px;
+    font-size: 15px;
+}
+
+.flavor-col-asamblea-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.flavor-col-asamblea-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-asamblea-acciones {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ==========================================================================
+   Crear Colectivo
+   ========================================================================== */
+
+.flavor-col-form-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.flavor-col-form-section {
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--col-shadow);
+}
+
+.flavor-col-form-section h3 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    font-weight: 600;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--col-border);
+}
+
+.flavor-col-campo {
+    margin-bottom: 20px;
+}
+
+.flavor-col-campo label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.flavor-col-campo-doble {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 640px) {
+    .flavor-col-campo-doble {
+        grid-template-columns: 1fr;
+    }
+}
+
+.flavor-col-form-acciones {
+    text-align: center;
+    padding-top: 12px;
+}
+
+/* Mensaje éxito */
+.flavor-col-exito {
+    text-align: center;
+    padding: 48px;
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    box-shadow: var(--col-shadow);
+}
+
+.flavor-col-exito .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: var(--col-success);
+    margin-bottom: 16px;
+}
+
+.flavor-col-exito h3 {
+    margin: 0 0 12px;
+    font-size: 24px;
+}
+
+.flavor-col-exito p {
+    color: var(--col-text-muted);
+    margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   Mis Colectivos
+   ========================================================================== */
+
+.flavor-col-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.flavor-col-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.flavor-col-lista-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.flavor-col-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    box-shadow: var(--col-shadow);
+}
+
+.flavor-col-item-imagen {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--col-radius-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.flavor-col-item-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-col-item-imagen.flavor-col-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--col-primary), var(--col-primary-hover));
+}
+
+.flavor-col-item-imagen .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.flavor-col-item-content {
+    flex: 1;
+}
+
+.flavor-col-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.flavor-col-item-nombre {
+    margin: 0;
+    font-size: 16px;
+}
+
+.flavor-col-item-nombre a {
+    color: var(--col-text);
+    text-decoration: none;
+}
+
+.flavor-col-item-nombre a:hover {
+    color: var(--col-primary);
+}
+
+.flavor-col-item-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.flavor-col-item-meta > span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-estado-pendiente {
+    background: var(--col-warning);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+
+.flavor-col-item-acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.flavor-col-btn-ver {
+    background: var(--col-primary);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: var(--col-radius-sm);
+    text-decoration: none;
+    font-size: 14px;
+    transition: var(--col-transition);
+}
+
+.flavor-col-btn-ver:hover {
+    background: var(--col-primary-hover);
+    color: #fff;
+}
+
+/* ==========================================================================
+   Estados Vacíos
+   ========================================================================== */
+
+.flavor-col-vacio,
+.flavor-col-sin-datos {
+    text-align: center;
+    padding: 48px 24px;
+}
+
+.flavor-col-vacio .dashicons,
+.flavor-col-sin-datos .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--col-border);
+    margin-bottom: 16px;
+}
+
+.flavor-col-vacio h3,
+.flavor-col-sin-datos h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: var(--col-text);
+}
+
+.flavor-col-vacio p,
+.flavor-col-sin-datos p {
+    color: var(--col-text-muted);
+    margin-bottom: 24px;
+}
+
+.flavor-col-vacio-acciones {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   Login Requerido
+   ========================================================================== */
+
+.flavor-col-login-requerido {
+    text-align: center;
+    padding: 64px 24px;
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    box-shadow: var(--col-shadow);
+}
+
+.flavor-col-login-requerido .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: var(--col-text-muted);
+    margin-bottom: 16px;
+}
+
+.flavor-col-login-requerido h3 {
+    margin: 0 0 12px;
+}
+
+.flavor-col-login-requerido p {
+    color: var(--col-text-muted);
+    margin-bottom: 24px;
+}
+
+.flavor-col-login-required {
+    padding: 20px;
+    background: var(--col-bg-alt);
+    border-radius: var(--col-radius-sm);
+    text-align: center;
+}
+
+.flavor-col-login-required a {
+    color: var(--col-primary);
+}
+
+/* ==========================================================================
+   Modales
+   ========================================================================== */
+
+.flavor-col-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    padding: 20px;
+}
+
+.flavor-col-modal-content {
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.flavor-col-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--col-border);
+}
+
+.flavor-col-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.flavor-col-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--col-text-muted);
+    padding: 0;
+    line-height: 1;
+}
+
+.flavor-col-modal-close:hover {
+    color: var(--col-text);
+}
+
+.flavor-col-modal .flavor-col-form {
+    padding: 24px;
+}
+
+.flavor-col-modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 1px solid var(--col-border);
+    margin-top: 20px;
+}
+
+/* ==========================================================================
+   Proyectos Grid (shortcode separado)
+   ========================================================================== */
+
+.flavor-col-proyectos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.flavor-col-proyectos-header h2 {
+    margin: 0;
+}
+
+.flavor-col-filtros-inline {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.flavor-col-proyectos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.flavor-col-proyecto-card {
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    padding: 20px;
+    box-shadow: var(--col-shadow);
+}
+
+.flavor-col-proyecto-estado {
+    margin-bottom: 12px;
+}
+
+.flavor-col-proyecto-titulo {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.flavor-col-proyecto-descripcion {
+    color: var(--col-text-muted);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.flavor-col-proyecto-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.flavor-col-proyecto-detalle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-proyecto-progreso {
+    border-top: 1px solid var(--col-border);
+    padding-top: 16px;
+}
+
+.flavor-col-proyecto-acciones {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--col-border);
+}
+
+/* ==========================================================================
+   Asambleas (shortcode separado)
+   ========================================================================== */
+
+.flavor-col-asambleas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.flavor-col-asambleas-header h2 {
+    margin: 0;
+}
+
+.flavor-col-asambleas-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.flavor-col-asambleas-seccion {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.flavor-col-seccion-titulo {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--col-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flavor-col-asamblea-card {
+    display: flex;
+    gap: 20px;
+    background: var(--col-bg);
+    border-radius: var(--col-radius);
+    padding: 20px;
+    box-shadow: var(--col-shadow);
+}
+
+.flavor-col-asamblea-proxima {
+    border-left: 4px solid var(--col-primary);
+}
+
+.flavor-col-asamblea-pasada {
+    opacity: 0.8;
+}
+
+.flavor-col-asamblea-fecha-grande {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 12px;
+    background: var(--col-bg-alt);
+    border-radius: var(--col-radius-sm);
+}
+
+.flavor-col-asamblea-fecha-grande .dia {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--col-primary);
+    line-height: 1;
+}
+
+.flavor-col-asamblea-fecha-grande .mes {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-asamblea-fecha-grande .anio {
+    font-size: 12px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-asamblea-contenido {
+    flex: 1;
+}
+
+.flavor-col-asamblea-contenido h4 {
+    margin: 0 0 12px;
+    font-size: 16px;
+}
+
+.flavor-col-asamblea-info {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.flavor-col-info-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-orden-dia {
+    margin-top: 16px;
+}
+
+.flavor-col-orden-dia summary {
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--col-primary);
+}
+
+.flavor-col-orden-contenido {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--col-bg-alt);
+    border-radius: var(--col-radius-sm);
+    font-size: 13px;
+}
+
+.flavor-col-asamblea-fecha-compacta {
+    min-width: 100px;
+    font-size: 14px;
+    color: var(--col-text-muted);
+}
+
+.flavor-col-asamblea-meta-compacta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.flavor-col-tipo-sm,
+.flavor-col-asistentes-sm {
+    font-size: 12px;
+    color: var(--col-text-muted);
+}
+
+/* ==========================================================================
+   Toast Notifications
+   ========================================================================== */
+
+.flavor-col-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 14px 20px;
+    border-radius: var(--col-radius-sm);
+    color: #fff;
+    font-size: 14px;
+    z-index: 100001;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    max-width: 320px;
+    box-shadow: var(--col-shadow-lg);
+}
+
+.flavor-col-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.flavor-col-toast-success { background: var(--col-success); }
+.flavor-col-toast-error { background: var(--col-danger); }
+.flavor-col-toast-info { background: var(--col-info); }
+.flavor-col-toast-warning { background: var(--col-warning); }
+
+/* ==========================================================================
+   Spinner
+   ========================================================================== */
+
+.flavor-col-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: flavor-col-spin 0.8s linear infinite;
+}
+
+@keyframes flavor-col-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Spinner oscuro */
+.flavor-col-btn-secondary .flavor-col-spinner,
+.flavor-col-btn-outline .flavor-col-spinner {
+    border-color: rgba(0, 0, 0, 0.2);
+    border-top-color: var(--col-primary);
+}
+
+/* ==========================================================================
+   Errores
+   ========================================================================== */
+
+.flavor-col-error {
+    background: #fef2f2;
+    color: var(--col-danger);
+    padding: 16px;
+    border-radius: var(--col-radius-sm);
+    border-left: 4px solid var(--col-danger);
+}
+
+.flavor-col-input.error,
+.flavor-col-select.error,
+.flavor-col-textarea.error {
+    border-color: var(--col-danger);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .flavor-col-filtros {
+        flex-direction: column;
+    }
+
+    .flavor-col-filtros-selectores {
+        width: 100%;
+    }
+
+    .flavor-col-filtros-selectores select {
+        flex: 1;
+    }
+
+    .flavor-col-cabecera {
+        gap: 20px;
+    }
+
+    .flavor-col-stats-row {
+        gap: 20px;
+    }
+
+    .flavor-col-acciones {
+        flex-direction: column;
+    }
+
+    .flavor-col-acciones .flavor-col-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .flavor-col-tab {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+
+    .flavor-col-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .flavor-col-item-imagen {
+        width: 100%;
+        height: 120px;
+    }
+
+    .flavor-col-item-acciones {
+        width: 100%;
+    }
+
+    .flavor-col-btn-ver {
+        flex: 1;
+        text-align: center;
+    }
+
+    .flavor-col-asamblea-card {
+        flex-direction: column;
+    }
+
+    .flavor-col-asamblea-fecha-grande {
+        flex-direction: row;
+        gap: 8px;
+        min-width: auto;
+    }
+
+    .flavor-col-modal {
+        padding: 10px;
+    }
+
+    .flavor-col-modal-content {
+        max-height: 95vh;
+    }
+
+    .flavor-col-proyectos-header,
+    .flavor-col-asambleas-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .flavor-col-filtros-inline {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}

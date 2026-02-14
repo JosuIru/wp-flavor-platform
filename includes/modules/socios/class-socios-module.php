@@ -84,17 +84,283 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
+        add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
 
         // Cargar sistema de cuotas periodicas
         $ruta_archivo_subscriptions = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-subscriptions.php';
-        if ( file_exists( $ruta_archivo_subscriptions ) ) {
+        if (file_exists($ruta_archivo_subscriptions)) {
             require_once $ruta_archivo_subscriptions;
             Flavor_Socios_Subscriptions::get_instance();
         }
+
+        // Cargar gestor de pagos
+        $ruta_archivo_payments = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-payment-manager.php';
+        if (file_exists($ruta_archivo_payments)) {
+            require_once $ruta_archivo_payments;
+            Flavor_Socios_Payment_Manager::get_instance();
+        }
+    }
+
+    // =========================================================
+    // Shortcodes Frontend
+    // =========================================================
+
+    /**
+     * Registra los shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('socios_pagar_cuota', [$this, 'shortcode_pagar_cuota']);
+        add_shortcode('socios_mi_perfil', [$this, 'shortcode_mi_perfil']);
+        add_shortcode('socios_mis_cuotas', [$this, 'shortcode_mis_cuotas']);
+    }
+
+    /**
+     * Shortcode: Pagar cuota
+     */
+    public function shortcode_pagar_cuota($atributos) {
+        $atributos = shortcode_atts([], $atributos, 'socios_pagar_cuota');
+
+        $identificador_usuario = get_current_user_id();
+        $socio = null;
+        $cuotas_pendientes = [];
+        $total_pendiente = 0;
+        $gateways = [];
+
+        if ($identificador_usuario) {
+            $resultado_perfil = $this->action_mi_perfil_socio([]);
+            if ($resultado_perfil['success']) {
+                $socio = $resultado_perfil['socio'];
+            }
+
+            $resultado_cuotas = $this->action_mis_cuotas(['estado' => 'pendiente']);
+            if ($resultado_cuotas['success']) {
+                $cuotas_pendientes = $resultado_cuotas['cuotas'];
+                $total_pendiente = $resultado_cuotas['resumen']['total_pendiente'];
+            }
+
+            // Obtener gateways de pago
+            $ruta_archivo_payments = FLAVOR_CHAT_IA_PATH . 'includes/modules/socios/class-socios-payment-manager.php';
+            if (file_exists($ruta_archivo_payments)) {
+                require_once $ruta_archivo_payments;
+                $payment_manager = Flavor_Socios_Payment_Manager::get_instance();
+                $gateways = $payment_manager->get_gateways(true);
+            }
+        }
+
+        ob_start();
+        include dirname(__FILE__) . '/views/pagar-cuota.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mi perfil de socio
+     */
+    public function shortcode_mi_perfil($atributos) {
+        $atributos = shortcode_atts([], $atributos, 'socios_mi_perfil');
+
+        $identificador_usuario = get_current_user_id();
+
+        if (!$identificador_usuario) {
+            return '<p class="flavor-soc-login-required">' .
+                sprintf(
+                    esc_html__('Debes %siniciar sesión%s para ver tu perfil de socio.', 'flavor-chat-ia'),
+                    '<a href="' . esc_url(wp_login_url(get_permalink())) . '">',
+                    '</a>'
+                ) . '</p>';
+        }
+
+        $resultado = $this->action_mi_perfil_socio([]);
+
+        if (!$resultado['success']) {
+            return '<p class="flavor-soc-error">' . esc_html($resultado['error']) . '</p>';
+        }
+
+        $socio = $resultado['socio'];
+        $tipos_socio = $this->get_setting('tipos_socio', []);
+        $socio['tipo_label'] = $tipos_socio[$socio['tipo']] ?? ucfirst($socio['tipo']);
+
+        ob_start();
+        ?>
+        <div class="flavor-soc-perfil">
+            <div class="flavor-soc-perfil-card">
+                <div class="flavor-soc-perfil-avatar">
+                    <?php echo get_avatar($identificador_usuario, 100); ?>
+                </div>
+                <div class="flavor-soc-perfil-info">
+                    <h3><?php echo esc_html($socio['nombre']); ?></h3>
+                    <p class="flavor-soc-numero"><?php printf(esc_html__('Socio #%s', 'flavor-chat-ia'), esc_html($socio['numero'])); ?></p>
+                    <p class="flavor-soc-email"><?php echo esc_html($socio['email']); ?></p>
+                </div>
+            </div>
+            <div class="flavor-soc-perfil-datos">
+                <div class="flavor-soc-dato-item">
+                    <span class="label"><?php esc_html_e('Tipo de socio', 'flavor-chat-ia'); ?></span>
+                    <span class="valor"><?php echo esc_html($socio['tipo_label']); ?></span>
+                </div>
+                <div class="flavor-soc-dato-item">
+                    <span class="label"><?php esc_html_e('Fecha de alta', 'flavor-chat-ia'); ?></span>
+                    <span class="valor"><?php echo esc_html($socio['fecha_alta']); ?></span>
+                </div>
+                <div class="flavor-soc-dato-item">
+                    <span class="label"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></span>
+                    <span class="valor estado-<?php echo esc_attr($socio['estado']); ?>"><?php echo esc_html(ucfirst($socio['estado'])); ?></span>
+                </div>
+                <div class="flavor-soc-dato-item">
+                    <span class="label"><?php esc_html_e('Cuota mensual', 'flavor-chat-ia'); ?></span>
+                    <span class="valor"><?php echo esc_html(number_format($socio['cuota_mensual'], 2, ',', '.')); ?> €</span>
+                </div>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mis cuotas
+     */
+    public function shortcode_mis_cuotas($atributos) {
+        $atributos = shortcode_atts([
+            'limite' => 12,
+            'estado' => '',
+        ], $atributos, 'socios_mis_cuotas');
+
+        $identificador_usuario = get_current_user_id();
+
+        if (!$identificador_usuario) {
+            return '<p class="flavor-soc-login-required">' .
+                sprintf(
+                    esc_html__('Debes %siniciar sesión%s para ver tus cuotas.', 'flavor-chat-ia'),
+                    '<a href="' . esc_url(wp_login_url(get_permalink())) . '">',
+                    '</a>'
+                ) . '</p>';
+        }
+
+        $resultado = $this->action_mis_cuotas([
+            'limite' => absint($atributos['limite']),
+            'estado' => $atributos['estado'],
+        ]);
+
+        if (!$resultado['success']) {
+            return '<p class="flavor-soc-error">' . esc_html($resultado['error']) . '</p>';
+        }
+
+        $cuotas = $resultado['cuotas'];
+        $resumen = $resultado['resumen'];
+
+        ob_start();
+        ?>
+        <div class="flavor-soc-mis-cuotas">
+            <div class="flavor-soc-cuotas-resumen">
+                <div class="resumen-item">
+                    <span class="valor"><?php echo esc_html($resumen['cuotas_pendientes']); ?></span>
+                    <span class="label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="resumen-item">
+                    <span class="valor"><?php echo esc_html(number_format($resumen['total_pendiente'], 2, ',', '.')); ?> €</span>
+                    <span class="label"><?php esc_html_e('Total pendiente', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+
+            <?php if (empty($cuotas)): ?>
+                <p class="flavor-soc-sin-cuotas"><?php esc_html_e('No tienes cuotas registradas.', 'flavor-chat-ia'); ?></p>
+            <?php else: ?>
+                <table class="flavor-soc-tabla-cuotas">
+                    <thead>
+                        <tr>
+                            <th><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Fecha cargo', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Fecha pago', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($cuotas as $cuota): ?>
+                            <tr class="estado-<?php echo esc_attr($cuota['estado']); ?>">
+                                <td><?php echo esc_html($cuota['periodo']); ?></td>
+                                <td><?php echo esc_html(number_format($cuota['importe'], 2, ',', '.')); ?> €</td>
+                                <td><?php echo esc_html($cuota['fecha_cargo']); ?></td>
+                                <td><span class="badge badge-<?php echo esc_attr($cuota['estado']); ?>"><?php echo esc_html(ucfirst($cuota['estado'])); ?></span></td>
+                                <td><?php echo $cuota['fecha_pago'] ? esc_html($cuota['fecha_pago']) : '-'; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    // =========================================================
+    // Frontend Assets
+    // =========================================================
+
+    /**
+     * Encola assets del frontend
+     */
+    public function enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
+        $directorio_plugin = plugin_dir_url(dirname(dirname(dirname(__FILE__))));
+
+        wp_enqueue_style(
+            'flavor-socios',
+            $directorio_plugin . 'modules/socios/assets/css/socios.css',
+            [],
+            FLAVOR_CHAT_IA_VERSION
+        );
+
+        wp_enqueue_script(
+            'flavor-socios',
+            $directorio_plugin . 'modules/socios/assets/js/socios.js',
+            ['jquery'],
+            FLAVOR_CHAT_IA_VERSION,
+            true
+        );
+
+        wp_localize_script('flavor-socios', 'flavorSociosConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce('flavor_socios_nonce'),
+            'strings' => [
+                'errorConexion'   => __('Error de conexión. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'pagoConfirmado'  => __('Pago confirmado correctamente.', 'flavor-chat-ia'),
+                'copiado'         => __('Copiado al portapapeles.', 'flavor-chat-ia'),
+            ],
+        ]);
+    }
+
+    /**
+     * Determina si se deben cargar los assets
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        // Cargar en páginas de socios
+        if (strpos($post->post_name, 'socio') !== false) {
+            return true;
+        }
+
+        // Cargar si hay shortcodes del módulo
+        $shortcodes_modulo = ['socios_pagar_cuota', 'socios_mi_perfil', 'socios_mis_cuotas'];
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -692,7 +958,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('titulo', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tu perfil.', 'flavor-chat-ia'),
             ];
         }
 
@@ -707,7 +973,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => __('Tipos de Membresía', 'flavor-chat-ia'),
+                'error' => __('No eres socio de la cooperativa.', 'flavor-chat-ia'),
             ];
         }
 
@@ -737,7 +1003,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('toggle', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tus cuotas.', 'flavor-chat-ia'),
             ];
         }
 
@@ -753,7 +1019,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => __('Lo que dicen nuestros socios', 'flavor-chat-ia'),
+                'error' => __('No eres socio de la cooperativa.', 'flavor-chat-ia'),
             ];
         }
 
@@ -809,7 +1075,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!current_user_can('manage_options')) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('No tienes permisos para ver las estadísticas.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1186,7 +1452,7 @@ KNOWLEDGE;
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para actualizar tus datos.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1201,7 +1467,7 @@ KNOWLEDGE;
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('No eres socio activo de la cooperativa.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1217,7 +1483,7 @@ KNOWLEDGE;
         if (empty($datos_actualizar)) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('No hay datos para actualizar.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1230,7 +1496,7 @@ KNOWLEDGE;
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Error al actualizar los datos.', 'flavor-chat-ia'),
             ];
         }
 
