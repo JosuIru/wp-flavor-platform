@@ -1520,10 +1520,12 @@ class Flavor_Unified_Dashboard {
                                     <?php if (!empty($widget['stats'])): ?>
                                         <div class="fl-widget-stats">
                                         <?php foreach ($widget['stats'] as $stat): ?>
+                                            <?php if (is_array($stat) && isset($stat['value'], $stat['label'])): ?>
                                             <div class="fl-stat-item">
                                                 <span class="fl-stat-value"><?php echo esc_html($stat['value']); ?></span>
                                                 <span class="fl-stat-label"><?php echo esc_html($stat['label']); ?></span>
                                             </div>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                         </div>
                                     <?php endif; ?>
@@ -1920,7 +1922,7 @@ class Flavor_Unified_Dashboard {
 
             case 'huertos-urbanos':
                 $tabla_parcelas = $wpdb->prefix . 'flavor_huertos_parcelas';
-                if ($this->table_exists($tabla_parcelas)) {
+                if ($this->table_exists($tabla_parcelas) && $this->column_exists($tabla_parcelas, 'usuario_id')) {
                     $parcelas = (int) $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM {$tabla_parcelas}
                          WHERE usuario_id = %d AND estado = 'activa'",
@@ -1941,15 +1943,15 @@ class Flavor_Unified_Dashboard {
 
             case 'fichaje-empleados':
                 $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
-                if ($this->table_exists($tabla_fichajes)) {
+                if ($this->table_exists($tabla_fichajes) && $this->column_exists($tabla_fichajes, 'hora_entrada')) {
                     $fichaje_hoy = $wpdb->get_row($wpdb->prepare(
-                        "SELECT entrada, salida FROM {$tabla_fichajes}
-                         WHERE usuario_id = %d AND DATE(fecha) = CURDATE()
-                         ORDER BY entrada DESC LIMIT 1",
+                        "SELECT hora_entrada, hora_salida FROM {$tabla_fichajes}
+                         WHERE user_id = %d AND DATE(fecha) = CURDATE()
+                         ORDER BY hora_entrada DESC LIMIT 1",
                         $user_id
                     ));
                     if ($fichaje_hoy) {
-                        $estado = $fichaje_hoy->salida ? __('Salida', 'flavor-chat-ia') : __('Entrada', 'flavor-chat-ia');
+                        $estado = $fichaje_hoy->hora_salida ? __('Salida', 'flavor-chat-ia') : __('Entrada', 'flavor-chat-ia');
                         $stats[] = ['value' => $estado, 'label' => __('Hoy', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
                     } else {
                         $stats[] = ['value' => '-', 'label' => __('Sin fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
@@ -2000,6 +2002,33 @@ class Flavor_Unified_Dashboard {
 
         $cache[$table_name] = ($result === $table_name);
         return $cache[$table_name];
+    }
+
+    /**
+     * Verifica si una columna existe en una tabla
+     *
+     * @param string $table_name Nombre completo de la tabla
+     * @param string $column_name Nombre de la columna
+     * @return bool
+     */
+    private function column_exists(string $table_name, string $column_name): bool {
+        global $wpdb;
+        static $cache = [];
+
+        $cache_key = $table_name . '.' . $column_name;
+        if (isset($cache[$cache_key])) {
+            return $cache[$cache_key];
+        }
+
+        $wpdb->suppress_errors(true);
+        $result = $wpdb->get_results($wpdb->prepare(
+            "SHOW COLUMNS FROM {$table_name} LIKE %s",
+            $column_name
+        ));
+        $wpdb->suppress_errors(false);
+
+        $cache[$cache_key] = !empty($result);
+        return $cache[$cache_key];
     }
 
     /**
