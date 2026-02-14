@@ -1959,6 +1959,149 @@ class Flavor_Unified_Dashboard {
                 }
                 break;
 
+            case 'carpooling':
+                // Viajes ofrecidos por el usuario
+                $viajes_ofrecidos = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->posts}
+                     WHERE post_author = %d AND post_type = 'flavor_viaje' AND post_status = 'publish'",
+                    $user_id
+                ));
+                $stats[] = ['value' => $viajes_ofrecidos, 'label' => __('Viajes', 'flavor-chat-ia'), 'icon' => 'dashicons-car'];
+                break;
+
+            case 'parkings':
+                $tabla_reservas_parking = $wpdb->prefix . 'flavor_parking_reservas';
+                if ($this->table_exists($tabla_reservas_parking)) {
+                    $reservas_parking = (int) $wpdb->get_var($wpdb->prepare(
+                        "SELECT COUNT(*) FROM {$tabla_reservas_parking}
+                         WHERE usuario_id = %d AND estado = 'activa' AND fecha_inicio >= NOW()",
+                        $user_id
+                    ));
+                    $stats[] = ['value' => $reservas_parking, 'label' => __('Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'];
+                }
+                break;
+
+            case 'cursos':
+                // Inscripciones a cursos
+                $cursos_inscritos = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->postmeta} pm
+                     INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+                     WHERE pm.meta_key = '_flavor_curso_inscritos'
+                       AND pm.meta_value LIKE %s
+                       AND p.post_type = 'flavor_curso'
+                       AND p.post_status = 'publish'",
+                    '%"' . $user_id . '"%'
+                ));
+                $stats[] = ['value' => $cursos_inscritos, 'label' => __('Inscritos', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'];
+                break;
+
+            case 'talleres':
+                // Inscripciones a talleres
+                $talleres_inscritos = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->postmeta} pm
+                     INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+                     WHERE pm.meta_key = '_flavor_taller_inscritos'
+                       AND pm.meta_value LIKE %s
+                       AND p.post_type = 'flavor_taller'
+                       AND p.post_status = 'publish'",
+                    '%"' . $user_id . '"%'
+                ));
+                $stats[] = ['value' => $talleres_inscritos, 'label' => __('Inscritos', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer'];
+                break;
+
+            case 'biblioteca':
+                $tabla_prestamos_biblioteca = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+                if ($this->table_exists($tabla_prestamos_biblioteca)) {
+                    $prestamos_activos = (int) $wpdb->get_var($wpdb->prepare(
+                        "SELECT COUNT(*) FROM {$tabla_prestamos_biblioteca}
+                         WHERE usuario_id = %d AND estado = 'prestado'",
+                        $user_id
+                    ));
+                    $stats[] = ['value' => $prestamos_activos, 'label' => __('Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book'];
+                } else {
+                    // Fallback: contar libros favoritos o reservados via postmeta
+                    $libros_reservados = (int) $wpdb->get_var($wpdb->prepare(
+                        "SELECT COUNT(*) FROM {$wpdb->postmeta} pm
+                         INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+                         WHERE pm.meta_key = '_flavor_libro_reservado_por'
+                           AND pm.meta_value = %d
+                           AND p.post_type = 'flavor_libro'",
+                        $user_id
+                    ));
+                    $stats[] = ['value' => $libros_reservados, 'label' => __('Reservados', 'flavor-chat-ia'), 'icon' => 'dashicons-book'];
+                }
+                break;
+
+            case 'reservas':
+                $tabla_reservas_general = $wpdb->prefix . 'flavor_reservas';
+                if ($this->table_exists($tabla_reservas_general)) {
+                    $mis_reservas = (int) $wpdb->get_var($wpdb->prepare(
+                        "SELECT COUNT(*) FROM {$tabla_reservas_general}
+                         WHERE usuario_id = %d AND estado IN ('confirmada', 'pendiente') AND fecha >= CURDATE()",
+                        $user_id
+                    ));
+                    $stats[] = ['value' => $mis_reservas, 'label' => __('Activas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'];
+                }
+                break;
+
+            case 'ayuda-vecinal':
+                $tabla_ayuda = $wpdb->prefix . 'flavor_ayuda_vecinal';
+                if ($this->table_exists($tabla_ayuda)) {
+                    $ayudas_dadas = (int) $wpdb->get_var($wpdb->prepare(
+                        "SELECT COUNT(*) FROM {$tabla_ayuda}
+                         WHERE ayudante_id = %d AND estado = 'completada'",
+                        $user_id
+                    ));
+                    $stats[] = ['value' => $ayudas_dadas, 'label' => __('Ayudas', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'];
+                }
+                break;
+
+            case 'participacion':
+                // Propuestas creadas por el usuario
+                $propuestas = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->posts}
+                     WHERE post_author = %d AND post_type = 'flavor_propuesta' AND post_status = 'publish'",
+                    $user_id
+                ));
+                $stats[] = ['value' => $propuestas, 'label' => __('Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'];
+                break;
+
+            case 'presupuestos-participativos':
+                // Votos emitidos
+                $tabla_votos = $wpdb->prefix . 'flavor_presupuestos_votos';
+                if ($this->table_exists($tabla_votos)) {
+                    $votos_emitidos = (int) $wpdb->get_var($wpdb->prepare(
+                        "SELECT COUNT(*) FROM {$tabla_votos} WHERE usuario_id = %d",
+                        $user_id
+                    ));
+                    $stats[] = ['value' => $votos_emitidos, 'label' => __('Votos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'];
+                }
+                break;
+
+            case 'socios':
+                // Estado de membresía
+                $es_socio = get_user_meta($user_id, '_flavor_socio_activo', true);
+                $estado_socio = $es_socio ? __('Activo', 'flavor-chat-ia') : __('No socio', 'flavor-chat-ia');
+                $stats[] = ['value' => $estado_socio, 'label' => __('Estado', 'flavor-chat-ia'), 'icon' => 'dashicons-id'];
+                break;
+
+            case 'avisos-municipales':
+                // Avisos no leídos
+                $avisos_no_leidos = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->posts} p
+                     WHERE p.post_type = 'flavor_aviso'
+                       AND p.post_status = 'publish'
+                       AND NOT EXISTS (
+                           SELECT 1 FROM {$wpdb->postmeta} pm
+                           WHERE pm.post_id = p.ID
+                             AND pm.meta_key = '_flavor_aviso_leido_por'
+                             AND pm.meta_value LIKE %s
+                       )",
+                    '%"' . $user_id . '"%'
+                ));
+                $stats[] = ['value' => $avisos_no_leidos, 'label' => __('Sin leer', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'];
+                break;
+
             default:
                 // Intentar obtener del módulo directamente
                 $modulo = $this->get_module_instance($module_id_normalizado);
