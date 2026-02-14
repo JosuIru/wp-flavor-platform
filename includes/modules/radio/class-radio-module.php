@@ -2524,9 +2524,8 @@ KNOWLEDGE;
         if (Flavor_Chat_Helpers::tabla_existe($tabla_programacion)) {
             $en_vivo = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_programacion}
-                 WHERE estado = 'en_vivo'
-                 OR (hora_inicio <= TIME(NOW()) AND hora_fin >= TIME(NOW())
-                     AND dia_semana = DAYOFWEEK(NOW()))"
+                 WHERE estado = 'en_emision'
+                 OR (estado = 'programado' AND fecha_hora_inicio <= NOW() AND fecha_hora_fin >= NOW())"
             );
 
             if ($en_vivo > 0) {
