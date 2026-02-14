@@ -17,7 +17,7 @@ $espacios = $wpdb->get_results(
     "SELECT e.*,
             (SELECT COUNT(*) FROM $tabla_equipamiento eq WHERE eq.espacio_id = e.id) as total_equipamiento
      FROM $tabla_espacios e
-     WHERE e.estado = 'activo'
+     WHERE e.estado = 'disponible'
      ORDER BY e.nombre"
 );
 
@@ -36,7 +36,7 @@ if ($filtro_equipamiento) {
                 (SELECT COUNT(*) FROM $tabla_equipamiento eq WHERE eq.espacio_id = e.id) as total_equipamiento
          FROM $tabla_espacios e
          INNER JOIN $tabla_equipamiento eq ON e.id = eq.espacio_id
-         WHERE e.estado = 'activo' AND eq.nombre LIKE %s
+         WHERE e.estado = 'disponible' AND eq.nombre LIKE %s
          ORDER BY e.nombre",
         '%' . $wpdb->esc_like($filtro_equipamiento) . '%'
     ));
@@ -86,8 +86,17 @@ if ($filtro_equipamiento) {
                 <div class="reserva-card">
                     <div class="reserva-card-header">
                         <div class="reserva-card-imagen" style="width: 120px; height: 90px;">
-                            <?php if ($espacio->imagen_url): ?>
-                                <img src="<?php echo esc_url($espacio->imagen_url); ?>" alt="">
+                            <?php
+                            $imagen_eq = '';
+                            if (!empty($espacio->fotos)) {
+                                $fotos_arr = json_decode($espacio->fotos, true);
+                                if (is_array($fotos_arr) && !empty($fotos_arr)) {
+                                    $imagen_eq = $fotos_arr[0];
+                                }
+                            }
+                            ?>
+                            <?php if ($imagen_eq): ?>
+                                <img src="<?php echo esc_url($imagen_eq); ?>" alt="">
                             <?php else: ?>
                                 <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f3f4f6;">
                                     <span class="dashicons dashicons-building" style="color: #9ca3af; font-size: 32px; width: 32px; height: 32px;"></span>
@@ -107,7 +116,7 @@ if ($filtro_equipamiento) {
                             <div style="margin-top: 0.5rem; display: flex; gap: 1rem; font-size: 0.875rem; color: #6b7280;">
                                 <span>
                                     <span class="dashicons dashicons-groups" style="font-size: 14px; width: 14px; height: 14px;"></span>
-                                    <?php printf(__('Hasta %d personas', 'flavor-chat-ia'), $espacio->capacidad_maxima); ?>
+                                    <?php printf(__('Hasta %d personas', 'flavor-chat-ia'), $espacio->capacidad_personas); ?>
                                 </span>
                                 <span>
                                     <?php echo ucfirst($espacio->tipo); ?>

@@ -13,7 +13,7 @@ $tabla_equipamiento = $wpdb->prefix . 'flavor_espacios_equipamiento';
 $tabla_reservas = $wpdb->prefix . 'flavor_espacios_reservas';
 
 $espacio = $wpdb->get_row($wpdb->prepare(
-    "SELECT * FROM $tabla_espacios WHERE id = %d AND estado = 'activo'",
+    "SELECT * FROM $tabla_espacios WHERE id = %d AND estado = 'disponible'",
     $espacio_id
 ));
 
@@ -30,14 +30,13 @@ $equipamiento = $wpdb->get_results($wpdb->prepare(
     $espacio->id
 ));
 
-// Obtener imágenes adicionales (si las hay en el campo JSON)
+// Obtener imágenes desde el campo fotos (JSON array)
 $imagenes = [];
-if ($espacio->imagen_url) {
-    $imagenes[] = $espacio->imagen_url;
-}
-$imagenes_adicionales = json_decode($espacio->imagenes_adicionales ?? '[]', true);
-if ($imagenes_adicionales) {
-    $imagenes = array_merge($imagenes, $imagenes_adicionales);
+if (!empty($espacio->fotos)) {
+    $fotos_array = json_decode($espacio->fotos, true);
+    if (is_array($fotos_array)) {
+        $imagenes = $fotos_array;
+    }
 }
 
 // Verificar si el usuario tiene reserva activa
@@ -45,23 +44,27 @@ $tiene_reserva = false;
 if ($usuario_id) {
     $tiene_reserva = $wpdb->get_var($wpdb->prepare(
         "SELECT id FROM $tabla_reservas
-         WHERE espacio_id = %d AND usuario_id = %d AND estado IN ('pendiente', 'confirmada')
-         AND fecha >= CURDATE()",
+         WHERE espacio_id = %d AND usuario_id = %d AND estado IN ('solicitada', 'confirmada')
+         AND DATE(fecha_inicio) >= CURDATE()",
         $espacio->id,
         $usuario_id
     ));
 }
 
-// Horarios del espacio
-$horarios = json_decode($espacio->horarios ?? '{}', true);
-$dias_semana = [
-    'lunes' => __('Lunes', 'flavor-chat-ia'),
-    'martes' => __('Martes', 'flavor-chat-ia'),
-    'miercoles' => __('Miércoles', 'flavor-chat-ia'),
-    'jueves' => __('Jueves', 'flavor-chat-ia'),
-    'viernes' => __('Viernes', 'flavor-chat-ia'),
-    'sabado' => __('Sábado', 'flavor-chat-ia'),
-    'domingo' => __('Domingo', 'flavor-chat-ia'),
+// Horarios del espacio - usar campos de la tabla
+$horario_apertura = $espacio->horario_apertura ?? '08:00:00';
+$horario_cierre = $espacio->horario_cierre ?? '22:00:00';
+$dias_disponibles_str = $espacio->dias_disponibles ?? 'L,M,X,J,V,S,D';
+$dias_disponibles_arr = explode(',', $dias_disponibles_str);
+
+$dias_semana_map = [
+    'L' => __('Lunes', 'flavor-chat-ia'),
+    'M' => __('Martes', 'flavor-chat-ia'),
+    'X' => __('Miércoles', 'flavor-chat-ia'),
+    'J' => __('Jueves', 'flavor-chat-ia'),
+    'V' => __('Viernes', 'flavor-chat-ia'),
+    'S' => __('Sábado', 'flavor-chat-ia'),
+    'D' => __('Domingo', 'flavor-chat-ia'),
 ];
 ?>
 
@@ -109,8 +112,8 @@ $dias_semana = [
                         <span class="dashicons dashicons-star-<?php echo $i <= round($espacio->valoracion_media) ? 'filled' : 'empty'; ?>"></span>
                     <?php endfor; ?>
                     <span style="margin-left: 0.5rem; color: #6b7280;">
-                        <?php echo number_format($espacio->valoracion_media, 1); ?>
-                        (<?php echo $espacio->total_valoraciones; ?> <?php _e('valoraciones', 'flavor-chat-ia'); ?>)
+                        <?php echo number_format((float) $espacio->valoracion_media, 1); ?>
+                        (<?php echo (int) $espacio->numero_valoraciones; ?> <?php _e('valoraciones', 'flavor-chat-ia'); ?>)
                     </span>
                 </div>
             <?php endif; ?>
@@ -122,7 +125,7 @@ $dias_semana = [
                 </div>
                 <div class="espacio-detalle-meta-item">
                     <label><?php _e('Capacidad', 'flavor-chat-ia'); ?></label>
-                    <span><?php printf(__('Hasta %d personas', 'flavor-chat-ia'), $espacio->capacidad_maxima); ?></span>
+                    <span><?php printf(__('Hasta %d personas', 'flavor-chat-ia'), $espacio->capacidad_personas); ?></span>
                 </div>
                 <div class="espacio-detalle-meta-item">
                     <label><?php _e('Precio', 'flavor-chat-ia'); ?></label>
@@ -148,11 +151,11 @@ $dias_semana = [
                 </div>
             <?php endif; ?>
 
-            <?php if ($espacio->fianza > 0): ?>
+            <?php if (!empty($espacio->requiere_fianza) && !empty($espacio->importe_fianza) && $espacio->importe_fianza > 0): ?>
                 <div class="fianza-info">
                     <span class="dashicons dashicons-money-alt"></span>
                     <div class="fianza-info-texto">
-                        <strong><?php printf(__('Fianza requerida: %s€', 'flavor-chat-ia'), number_format($espacio->fianza, 2)); ?></strong>
+                        <strong><?php printf(__('Fianza requerida: %s€', 'flavor-chat-ia'), number_format((float) $espacio->importe_fianza, 2)); ?></strong>
                         <span><?php _e('Se devolverá al entregar el espacio en buenas condiciones', 'flavor-chat-ia'); ?></span>
                     </div>
                 </div>
@@ -202,16 +205,17 @@ $dias_semana = [
     <?php endif; ?>
 
     <!-- Horarios -->
-    <?php if (!empty($horarios)): ?>
+    <?php if (!empty($dias_disponibles_arr)): ?>
         <div class="espacio-equipamiento">
             <h3><?php _e('Horarios de disponibilidad', 'flavor-chat-ia'); ?></h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem;">
-                <?php foreach ($dias_semana as $dia_key => $dia_label): ?>
-                    <?php if (isset($horarios[$dia_key]) && $horarios[$dia_key]['activo']): ?>
+                <?php foreach ($dias_disponibles_arr as $dia_codigo): ?>
+                    <?php $dia_codigo = trim($dia_codigo); ?>
+                    <?php if (isset($dias_semana_map[$dia_codigo])): ?>
                         <div style="padding: 0.75rem; background: #f9fafb; border-radius: 8px;">
-                            <strong style="display: block; margin-bottom: 0.25rem;"><?php echo $dia_label; ?></strong>
+                            <strong style="display: block; margin-bottom: 0.25rem;"><?php echo esc_html($dias_semana_map[$dia_codigo]); ?></strong>
                             <span style="color: #6b7280; font-size: 0.875rem;">
-                                <?php echo esc_html($horarios[$dia_key]['apertura']); ?> - <?php echo esc_html($horarios[$dia_key]['cierre']); ?>
+                                <?php echo esc_html(substr($horario_apertura, 0, 5)); ?> - <?php echo esc_html(substr($horario_cierre, 0, 5)); ?>
                             </span>
                         </div>
                     <?php endif; ?>
@@ -261,7 +265,7 @@ $dias_semana = [
         // Verificar si el usuario ha usado el espacio antes
         $ha_usado = $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM {$wpdb->prefix}flavor_espacios_reservas
-             WHERE espacio_id = %d AND usuario_id = %d AND estado = 'completada'",
+             WHERE espacio_id = %d AND usuario_id = %d AND estado = 'finalizada'",
             $espacio->id,
             $usuario_id
         ));

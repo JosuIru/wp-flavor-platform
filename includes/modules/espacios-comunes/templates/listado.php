@@ -7,6 +7,18 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Funcion helper para obtener la primera imagen de fotos JSON
+if (!function_exists('espacios_get_primera_imagen')) {
+    function espacios_get_primera_imagen($fotos_json) {
+        if (empty($fotos_json)) return '';
+        $fotos = json_decode($fotos_json, true);
+        if (is_array($fotos) && !empty($fotos)) {
+            return $fotos[0];
+        }
+        return '';
+    }
+}
+
 global $wpdb;
 $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
 
@@ -16,7 +28,7 @@ $capacidad_min = isset($_GET['capacidad']) ? intval($_GET['capacidad']) : 0;
 $buscar = isset($_GET['buscar']) ? sanitize_text_field($_GET['buscar']) : '';
 
 // Query base
-$where = "WHERE estado = 'activo'";
+$where = "WHERE estado = 'disponible'";
 $params = [];
 
 if ($tipo) {
@@ -25,7 +37,7 @@ if ($tipo) {
 }
 
 if ($capacidad_min > 0) {
-    $where .= " AND capacidad_maxima >= %d";
+    $where .= " AND capacidad_personas >= %d";
     $params[] = $capacidad_min;
 }
 
@@ -46,7 +58,7 @@ if (!empty($params)) {
 }
 
 // Tipos únicos para filtro
-$tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios WHERE estado = 'activo' ORDER BY tipo");
+$tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios WHERE estado = 'disponible' ORDER BY tipo");
 ?>
 
 <div class="espacios-wrapper">
@@ -100,10 +112,9 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
                 $reserva_activa = $wpdb->get_var($wpdb->prepare(
                     "SELECT id FROM {$wpdb->prefix}flavor_espacios_reservas
                      WHERE espacio_id = %d
-                     AND estado = 'confirmada'
-                     AND fecha = CURDATE()
-                     AND hora_inicio <= TIME(%s)
-                     AND hora_fin > TIME(%s)",
+                     AND estado IN ('confirmada', 'en_curso')
+                     AND fecha_inicio <= %s
+                     AND fecha_fin > %s",
                     $espacio->id,
                     $ahora,
                     $ahora
@@ -118,8 +129,9 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
                 ?>
                 <div class="espacio-card">
                     <div class="espacio-card-imagen">
-                        <?php if ($espacio->imagen_url): ?>
-                            <img src="<?php echo esc_url($espacio->imagen_url); ?>" alt="<?php echo esc_attr($espacio->nombre); ?>">
+                        <?php $imagen_espacio = espacios_get_primera_imagen($espacio->fotos ?? ''); ?>
+                        <?php if ($imagen_espacio): ?>
+                            <img src="<?php echo esc_url($imagen_espacio); ?>" alt="<?php echo esc_attr($espacio->nombre); ?>">
                         <?php else: ?>
                             <div class="placeholder">
                                 <span class="dashicons dashicons-building"></span>
@@ -140,7 +152,7 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
                         <div class="espacio-card-meta">
                             <div class="espacio-card-meta-item">
                                 <span class="dashicons dashicons-groups"></span>
-                                <?php printf(__('%d personas', 'flavor-chat-ia'), $espacio->capacidad_maxima); ?>
+                                <?php printf(__('%d personas', 'flavor-chat-ia'), $espacio->capacidad_personas); ?>
                             </div>
                             <?php if ($espacio->precio_hora > 0): ?>
                                 <div class="espacio-card-meta-item espacio-card-precio">

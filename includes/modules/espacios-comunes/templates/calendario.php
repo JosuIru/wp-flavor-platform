@@ -27,7 +27,7 @@ if ($mes < 1) {
 
 // Obtener espacios activos
 $espacios = $wpdb->get_results(
-    "SELECT id, nombre, tipo, capacidad_maxima FROM $tabla_espacios WHERE estado = 'activo' ORDER BY nombre"
+    "SELECT id, nombre, tipo, capacidad_personas FROM $tabla_espacios WHERE estado = 'disponible' ORDER BY nombre"
 );
 
 // Filtro de espacio
@@ -42,15 +42,15 @@ $dias_en_mes = intval($ultimo_dia_mes->format('d'));
 $dia_semana_inicio = intval($primer_dia_mes->format('N')) - 1;
 
 // Obtener reservas del mes
-$where_espacio = $espacio_filtro ? $wpdb->prepare(" AND espacio_id = %d", $espacio_filtro) : "";
+$where_espacio = $espacio_filtro ? $wpdb->prepare(" AND r.espacio_id = %d", $espacio_filtro) : "";
 $reservas_mes = $wpdb->get_results($wpdb->prepare(
     "SELECT r.*, e.nombre as espacio_nombre
      FROM $tabla_reservas r
      INNER JOIN $tabla_espacios e ON r.espacio_id = e.id
-     WHERE YEAR(r.fecha) = %d AND MONTH(r.fecha) = %d
-     AND r.estado IN ('pendiente', 'confirmada', 'activa')
+     WHERE YEAR(r.fecha_inicio) = %d AND MONTH(r.fecha_inicio) = %d
+     AND r.estado IN ('solicitada', 'confirmada', 'en_curso')
      $where_espacio
-     ORDER BY r.fecha, r.hora_inicio",
+     ORDER BY r.fecha_inicio",
     $ano,
     $mes
 ));
@@ -58,7 +58,7 @@ $reservas_mes = $wpdb->get_results($wpdb->prepare(
 // Organizar reservas por día
 $reservas_por_dia = [];
 foreach ($reservas_mes as $reserva) {
-    $dia = intval(date('j', strtotime($reserva->fecha)));
+    $dia = intval(date('j', strtotime($reserva->fecha_inicio)));
     if (!isset($reservas_por_dia[$dia])) {
         $reservas_por_dia[$dia] = [];
     }
@@ -182,10 +182,12 @@ $hoy = date('Y-m-d');
                                     break;
                                 }
                                 $mostradas++;
+                                $hora_inicio_cal = date('H:i', strtotime($reserva->fecha_inicio));
+                                $hora_fin_cal = date('H:i', strtotime($reserva->fecha_fin));
                             ?>
                                 <div class="calendario-reserva <?php echo esc_attr($reserva->estado); ?>"
-                                     title="<?php echo esc_attr($reserva->espacio_nombre . ' - ' . substr($reserva->hora_inicio, 0, 5) . ' a ' . substr($reserva->hora_fin, 0, 5)); ?>">
-                                    <?php echo esc_html(substr($reserva->hora_inicio, 0, 5)); ?>
+                                     title="<?php echo esc_attr($reserva->espacio_nombre . ' - ' . $hora_inicio_cal . ' a ' . $hora_fin_cal); ?>">
+                                    <?php echo esc_html($hora_inicio_cal); ?>
                                     <?php if (!$espacio_filtro): ?>
                                         - <?php echo esc_html(mb_substr($reserva->espacio_nombre, 0, 10)); ?>
                                     <?php endif; ?>
@@ -225,16 +227,16 @@ $hoy = date('Y-m-d');
 
     <!-- Próximas reservas -->
     <?php
-    $proximas = $wpdb->get_results($wpdb->prepare(
+    $proximas = $wpdb->get_results(
         "SELECT r.*, e.nombre as espacio_nombre, e.ubicacion
          FROM $tabla_reservas r
          INNER JOIN $tabla_espacios e ON r.espacio_id = e.id
-         WHERE r.fecha >= CURDATE()
-         AND r.estado IN ('confirmada', 'activa')
+         WHERE DATE(r.fecha_inicio) >= CURDATE()
+         AND r.estado IN ('confirmada', 'en_curso')
          $where_espacio
-         ORDER BY r.fecha, r.hora_inicio
+         ORDER BY r.fecha_inicio
          LIMIT 5"
-    ));
+    );
 
     if ($proximas):
     ?>
@@ -242,20 +244,24 @@ $hoy = date('Y-m-d');
             <h3 style="margin-bottom: 1rem;"><?php _e('Próximas reservas confirmadas', 'flavor-chat-ia'); ?></h3>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                 <?php foreach ($proximas as $reserva): ?>
+                    <?php
+                    $hora_inicio_prox = date('H:i', strtotime($reserva->fecha_inicio));
+                    $hora_fin_prox = date('H:i', strtotime($reserva->fecha_fin));
+                    ?>
                     <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f9fafb; border-radius: 8px;">
                         <div style="text-align: center; padding: 0.5rem 1rem; background: #6366f1; color: #fff; border-radius: 8px; min-width: 60px;">
-                            <div style="font-size: 1.5rem; font-weight: 700; line-height: 1;"><?php echo date('d', strtotime($reserva->fecha)); ?></div>
-                            <div style="font-size: 0.7rem; text-transform: uppercase;"><?php echo date_i18n('M', strtotime($reserva->fecha)); ?></div>
+                            <div style="font-size: 1.5rem; font-weight: 700; line-height: 1;"><?php echo date('d', strtotime($reserva->fecha_inicio)); ?></div>
+                            <div style="font-size: 0.7rem; text-transform: uppercase;"><?php echo date_i18n('M', strtotime($reserva->fecha_inicio)); ?></div>
                         </div>
                         <div style="flex: 1;">
                             <strong><?php echo esc_html($reserva->espacio_nombre); ?></strong>
                             <div style="font-size: 0.875rem; color: #6b7280;">
-                                <?php echo esc_html(substr($reserva->hora_inicio, 0, 5)); ?> - <?php echo esc_html(substr($reserva->hora_fin, 0, 5)); ?>
+                                <?php echo esc_html($hora_inicio_prox); ?> - <?php echo esc_html($hora_fin_prox); ?>
                                 &bull; <?php echo esc_html($reserva->ubicacion); ?>
                             </div>
                         </div>
                         <span class="reserva-card-estado <?php echo esc_attr($reserva->estado); ?>">
-                            <?php echo $reserva->estado === 'activa' ? __('En uso', 'flavor-chat-ia') : __('Confirmada', 'flavor-chat-ia'); ?>
+                            <?php echo $reserva->estado === 'en_curso' ? __('En uso', 'flavor-chat-ia') : __('Confirmada', 'flavor-chat-ia'); ?>
                         </span>
                     </div>
                 <?php endforeach; ?>
