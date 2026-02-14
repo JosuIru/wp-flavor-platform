@@ -820,6 +820,12 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
                     'titulo' => __('Configuración', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_pagina_configuracion'],
                 ],
+                [
+                    'slug' => 'gc-pagos',
+                    'titulo' => __('Pagos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_pagos'],
+                    'icon' => 'dashicons-money-alt',
+                ],
             ],
             'estadisticas' => [$this, 'get_estadisticas_dashboard'],
         ];
@@ -3406,6 +3412,15 @@ KNOWLEDGE;
      */
     public function render_pagina_configuracion() {
         include dirname(__FILE__) . '/views/settings.php';
+    }
+
+    /**
+     * Renderiza página de configuración de pagos
+     *
+     * @since 4.1.0
+     */
+    public function render_pagina_pagos() {
+        include dirname(__FILE__) . '/views/admin-payment-settings.php';
     }
 
     /**
