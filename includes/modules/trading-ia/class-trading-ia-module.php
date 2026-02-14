@@ -3365,6 +3365,61 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
+        $tabla_portfolio = $wpdb->prefix . 'flavor_trading_ia_portfolio';
+        $tabla_alertas = $wpdb->prefix . 'flavor_trading_ia_alertas';
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            return $estadisticas;
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_trades)) {
+            // Trades activos
+            $trades_activos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_trades}
+                 WHERE usuario_id = %d AND estado = 'abierto'",
+                $usuario_id
+            ));
+
+            $estadisticas['trades_activos'] = [
+                'icon' => 'dashicons-chart-area',
+                'valor' => $trades_activos,
+                'label' => __('Trades activos', 'flavor-chat-ia'),
+                'color' => $trades_activos > 0 ? 'green' : 'gray',
+            ];
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_alertas)) {
+            // Alertas pendientes
+            $alertas = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_alertas}
+                 WHERE usuario_id = %d AND estado = 'activa'",
+                $usuario_id
+            ));
+
+            if ($alertas > 0) {
+                $estadisticas['alertas'] = [
+                    'icon' => 'dashicons-bell',
+                    'valor' => $alertas,
+                    'label' => __('Alertas', 'flavor-chat-ia'),
+                    'color' => 'orange',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo para V3
      */
     public function get_pages_definition() {

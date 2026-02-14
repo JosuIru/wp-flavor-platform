@@ -2728,6 +2728,52 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_documentos = $wpdb->prefix . 'flavor_transparencia_documentos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+            return $estadisticas;
+        }
+
+        // Documentos públicos
+        $total_documentos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_documentos} WHERE estado = 'publicado'"
+        );
+
+        $estadisticas['documentos'] = [
+            'icon' => 'dashicons-media-document',
+            'valor' => $total_documentos,
+            'label' => __('Documentos públicos', 'flavor-chat-ia'),
+            'color' => 'blue',
+        ];
+
+        // Documentos recientes (último mes)
+        $docs_recientes = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_documentos}
+             WHERE estado = 'publicado'
+             AND fecha_publicacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
+        );
+
+        if ($docs_recientes > 0) {
+            $estadisticas['docs_recientes'] = [
+                'icon' => 'dashicons-calendar',
+                'valor' => $docs_recientes,
+                'label' => __('Nuevos este mes', 'flavor-chat-ia'),
+                'color' => 'green',
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

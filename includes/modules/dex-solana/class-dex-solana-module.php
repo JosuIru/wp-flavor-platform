@@ -601,6 +601,74 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
         return $estadisticas;
     }
 
+    /**
+     * Obtener estadísticas para el dashboard del cliente
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+        $user_id = get_current_user_id();
+
+        if (!$user_id) {
+            return $estadisticas;
+        }
+
+        $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
+        $tabla_portfolio = $wpdb->prefix . 'flavor_dex_portfolio';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_swaps)) {
+            return $estadisticas;
+        }
+
+        // Mis swaps hoy
+        $hoy = date('Y-m-d');
+        $mis_swaps_hoy = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_swaps WHERE user_id = %d AND DATE(fecha) = %s",
+            $user_id,
+            $hoy
+        ));
+        $estadisticas[] = [
+            'icon'  => 'dashicons-randomize',
+            'valor' => $mis_swaps_hoy,
+            'label' => __('Swaps hoy', 'flavor-chat-ia'),
+            'color' => $mis_swaps_hoy > 0 ? 'blue' : 'gray'
+        ];
+
+        // Tokens en portfolio
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_portfolio)) {
+            $tokens_portfolio = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(DISTINCT token_mint) FROM $tabla_portfolio WHERE user_id = %d AND cantidad > 0",
+                $user_id
+            ));
+            $estadisticas[] = [
+                'icon'  => 'dashicons-portfolio',
+                'valor' => $tokens_portfolio,
+                'label' => __('Tokens en cartera', 'flavor-chat-ia'),
+                'color' => $tokens_portfolio > 0 ? 'green' : 'gray'
+            ];
+        }
+
+        // Valor total del portfolio (si hay datos)
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_portfolio)) {
+            $valor_total = $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad * precio_usd), 0) FROM $tabla_portfolio WHERE user_id = %d",
+                $user_id
+            ));
+            if ($valor_total > 0) {
+                $estadisticas[] = [
+                    'icon'  => 'dashicons-chart-line',
+                    'valor' => '$' . number_format((float)$valor_total, 2),
+                    'label' => __('Valor portfolio', 'flavor-chat-ia'),
+                    'color' => 'green'
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
     // =========================================================================
     // Acceso publico a settings (requerido por clases auxiliares)
     // =========================================================================

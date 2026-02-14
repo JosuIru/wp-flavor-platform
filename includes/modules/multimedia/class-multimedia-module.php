@@ -2801,6 +2801,56 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+        $tabla_albumes = $wpdb->prefix . 'flavor_multimedia_albumes';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+            return $estadisticas;
+        }
+
+        // Total de archivos públicos
+        $total_archivos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_multimedia} WHERE estado = 'publicado'"
+        );
+
+        $estadisticas['archivos'] = [
+            'icon' => 'dashicons-format-gallery',
+            'valor' => $total_archivos,
+            'label' => __('Archivos', 'flavor-chat-ia'),
+            'color' => 'blue',
+        ];
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id) {
+            // Mis archivos
+            $mis_archivos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_multimedia}
+                 WHERE autor_id = %d",
+                $usuario_id
+            ));
+
+            if ($mis_archivos > 0) {
+                $estadisticas['mis_archivos'] = [
+                    'icon' => 'dashicons-images-alt2',
+                    'valor' => $mis_archivos,
+                    'label' => __('Mis archivos', 'flavor-chat-ia'),
+                    'color' => 'green',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

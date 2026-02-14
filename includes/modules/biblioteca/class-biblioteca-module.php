@@ -2377,6 +2377,71 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+            return $estadisticas;
+        }
+
+        // Total de libros disponibles
+        $libros_disponibles = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_libros} WHERE estado = 'disponible'"
+        );
+
+        $estadisticas['libros_disponibles'] = [
+            'icon' => 'dashicons-book',
+            'valor' => $libros_disponibles,
+            'label' => __('Libros disponibles', 'flavor-chat-ia'),
+            'color' => 'blue',
+        ];
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+            // Préstamos activos del usuario
+            $prestamos_activos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_prestamos}
+                 WHERE usuario_id = %d AND estado = 'activo'",
+                $usuario_id
+            ));
+
+            $estadisticas['mis_prestamos'] = [
+                'icon' => 'dashicons-book-alt',
+                'valor' => $prestamos_activos,
+                'label' => __('Mis préstamos', 'flavor-chat-ia'),
+                'color' => $prestamos_activos > 0 ? 'green' : 'gray',
+            ];
+
+            // Préstamos por devolver (próximos a vencer)
+            $por_devolver = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_prestamos}
+                 WHERE usuario_id = %d AND estado = 'activo'
+                 AND fecha_devolucion <= DATE_ADD(NOW(), INTERVAL 3 DAY)",
+                $usuario_id
+            ));
+
+            if ($por_devolver > 0) {
+                $estadisticas['por_devolver'] = [
+                    'icon' => 'dashicons-warning',
+                    'valor' => $por_devolver,
+                    'label' => __('Por devolver', 'flavor-chat-ia'),
+                    'color' => 'orange',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

@@ -2493,6 +2493,56 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+        $tabla_programacion = $wpdb->prefix . 'flavor_radio_programacion';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+            return $estadisticas;
+        }
+
+        // Total de programas
+        $total_programas = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_programas} WHERE estado = 'activo'"
+        );
+
+        $estadisticas['programas'] = [
+            'icon' => 'dashicons-controls-volumeon',
+            'valor' => $total_programas,
+            'label' => __('Programas', 'flavor-chat-ia'),
+            'color' => 'purple',
+        ];
+
+        // Programa en vivo (si existe programación)
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_programacion)) {
+            $en_vivo = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_programacion}
+                 WHERE estado = 'en_vivo'
+                 OR (hora_inicio <= TIME(NOW()) AND hora_fin >= TIME(NOW())
+                     AND dia_semana = DAYOFWEEK(NOW()))"
+            );
+
+            if ($en_vivo > 0) {
+                $estadisticas['en_vivo'] = [
+                    'icon' => 'dashicons-microphone',
+                    'valor' => __('EN VIVO', 'flavor-chat-ia'),
+                    'label' => __('Ahora', 'flavor-chat-ia'),
+                    'color' => 'red',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

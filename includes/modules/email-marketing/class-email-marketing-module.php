@@ -437,6 +437,66 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Obtener estadísticas para el dashboard del cliente
+     *
+     * @return array
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_suscriptores = $wpdb->prefix . 'flavor_em_suscriptores';
+        $tabla_campanias = $wpdb->prefix . 'flavor_em_campanias';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_suscriptores)) {
+            return $estadisticas;
+        }
+
+        // Suscriptores activos
+        $total_suscriptores = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_suscriptores WHERE estado = 'activo'"
+        );
+        $estadisticas[] = [
+            'icon'  => 'dashicons-email-alt',
+            'valor' => $total_suscriptores,
+            'label' => __('Suscriptores', 'flavor-chat-ia'),
+            'color' => $total_suscriptores > 0 ? 'green' : 'gray'
+        ];
+
+        // Campañas enviadas este mes
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_campanias)) {
+            $primer_dia_mes = date('Y-m-01');
+            $campanias_mes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'enviada' AND fecha_envio >= %s",
+                $primer_dia_mes
+            ));
+            $estadisticas[] = [
+                'icon'  => 'dashicons-megaphone',
+                'valor' => $campanias_mes,
+                'label' => __('Campañas este mes', 'flavor-chat-ia'),
+                'color' => $campanias_mes > 0 ? 'blue' : 'gray'
+            ];
+        }
+
+        // Nuevos suscriptores esta semana
+        $hace_una_semana = date('Y-m-d H:i:s', strtotime('-7 days'));
+        $nuevos_semana = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_suscriptores WHERE estado = 'activo' AND fecha_alta >= %s",
+            $hace_una_semana
+        ));
+        if ($nuevos_semana > 0) {
+            $estadisticas[] = [
+                'icon'  => 'dashicons-plus-alt',
+                'valor' => '+' . $nuevos_semana,
+                'label' => __('Nuevos esta semana', 'flavor-chat-ia'),
+                'color' => 'green'
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Registrar widgets
      */
     public function register_widgets() {

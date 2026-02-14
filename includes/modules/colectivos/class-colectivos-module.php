@@ -2484,6 +2484,72 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
+        $tabla_asambleas = $wpdb->prefix . 'flavor_colectivos_asambleas';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_colectivos)) {
+            return $estadisticas;
+        }
+
+        // Total de colectivos activos
+        $total_colectivos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_colectivos} WHERE estado = 'activo'"
+        );
+
+        $estadisticas['colectivos_activos'] = [
+            'icon' => 'dashicons-groups',
+            'valor' => $total_colectivos,
+            'label' => __('Colectivos', 'flavor-chat-ia'),
+            'color' => 'purple',
+        ];
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
+            // Mis colectivos
+            $mis_colectivos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_miembros}
+                 WHERE usuario_id = %d AND estado = 'activo'",
+                $usuario_id
+            ));
+
+            $estadisticas['mis_colectivos'] = [
+                'icon' => 'dashicons-admin-users',
+                'valor' => $mis_colectivos,
+                'label' => __('Mis colectivos', 'flavor-chat-ia'),
+                'color' => $mis_colectivos > 0 ? 'green' : 'gray',
+            ];
+        }
+
+        // Próximas asambleas
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_asambleas)) {
+            $proximas_asambleas = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_asambleas}
+                 WHERE fecha >= NOW() AND estado = 'programada'"
+            );
+
+            if ($proximas_asambleas > 0) {
+                $estadisticas['proximas_asambleas'] = [
+                    'icon' => 'dashicons-calendar-alt',
+                    'valor' => $proximas_asambleas,
+                    'label' => __('Asambleas próximas', 'flavor-chat-ia'),
+                    'color' => 'blue',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

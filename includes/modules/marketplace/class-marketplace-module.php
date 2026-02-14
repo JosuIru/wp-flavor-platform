@@ -958,6 +958,50 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        // Productos publicados
+        $total_productos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts}
+             WHERE post_type = 'marketplace_item' AND post_status = 'publish'"
+        );
+
+        $estadisticas['productos'] = [
+            'icon' => 'dashicons-cart',
+            'valor' => $total_productos,
+            'label' => __('Productos', 'flavor-chat-ia'),
+            'color' => 'green',
+        ];
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id) {
+            // Mis anuncios
+            $mis_anuncios = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->posts}
+                 WHERE post_type = 'marketplace_item'
+                 AND post_status = 'publish'
+                 AND post_author = %d",
+                $usuario_id
+            ));
+
+            $estadisticas['mis_anuncios'] = [
+                'icon' => 'dashicons-megaphone',
+                'valor' => $mis_anuncios,
+                'label' => __('Mis anuncios', 'flavor-chat-ia'),
+                'color' => $mis_anuncios > 0 ? 'blue' : 'gray',
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

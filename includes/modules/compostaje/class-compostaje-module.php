@@ -2473,6 +2473,72 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
+        $tabla_aportaciones = $wpdb->prefix . 'flavor_aportaciones_compost';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
+            return $estadisticas;
+        }
+
+        // Total de puntos de compostaje
+        $total_puntos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_puntos} WHERE estado = 'activo'"
+        );
+
+        $estadisticas['puntos_compostaje'] = [
+            'icon' => 'dashicons-carrot',
+            'valor' => $total_puntos,
+            'label' => __('Puntos activos', 'flavor-chat-ia'),
+            'color' => 'green',
+        ];
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_aportaciones)) {
+            // Mis aportaciones este mes
+            $mis_aportaciones = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_aportaciones}
+                 WHERE usuario_id = %d
+                 AND MONTH(fecha) = MONTH(NOW())
+                 AND YEAR(fecha) = YEAR(NOW())",
+                $usuario_id
+            ));
+
+            $estadisticas['mis_aportaciones'] = [
+                'icon' => 'dashicons-update',
+                'valor' => $mis_aportaciones,
+                'label' => __('Aportes este mes', 'flavor-chat-ia'),
+                'color' => $mis_aportaciones > 0 ? 'green' : 'gray',
+            ];
+
+            // Total kg aportados
+            $kg_totales = (float) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(peso_kg), 0) FROM {$tabla_aportaciones}
+                 WHERE usuario_id = %d",
+                $usuario_id
+            ));
+
+            if ($kg_totales > 0) {
+                $estadisticas['kg_aportados'] = [
+                    'icon' => 'dashicons-chart-line',
+                    'valor' => number_format($kg_totales, 1) . ' kg',
+                    'label' => __('Total aportado', 'flavor-chat-ia'),
+                    'color' => 'blue',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

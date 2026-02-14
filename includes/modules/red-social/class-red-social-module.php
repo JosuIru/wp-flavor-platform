@@ -3225,6 +3225,72 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+        $tabla_seguimientos = $wpdb->prefix . 'flavor_social_seguimientos';
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            return $estadisticas;
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
+            // Mis publicaciones
+            $mis_publicaciones = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_publicaciones}
+                 WHERE autor_id = %d AND estado = 'publicado'",
+                $usuario_id
+            ));
+
+            $estadisticas['mis_publicaciones'] = [
+                'icon' => 'dashicons-format-status',
+                'valor' => $mis_publicaciones,
+                'label' => __('Publicaciones', 'flavor-chat-ia'),
+                'color' => 'blue',
+            ];
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_seguimientos)) {
+            // Seguidores
+            $seguidores = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_seguimientos}
+                 WHERE seguido_id = %d AND estado = 'activo'",
+                $usuario_id
+            ));
+
+            $estadisticas['seguidores'] = [
+                'icon' => 'dashicons-groups',
+                'valor' => $seguidores,
+                'label' => __('Seguidores', 'flavor-chat-ia'),
+                'color' => $seguidores > 0 ? 'green' : 'gray',
+            ];
+
+            // Siguiendo
+            $siguiendo = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_seguimientos}
+                 WHERE seguidor_id = %d AND estado = 'activo'",
+                $usuario_id
+            ));
+
+            $estadisticas['siguiendo'] = [
+                'icon' => 'dashicons-admin-users',
+                'valor' => $siguiendo,
+                'label' => __('Siguiendo', 'flavor-chat-ia'),
+                'color' => 'purple',
+            ];
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

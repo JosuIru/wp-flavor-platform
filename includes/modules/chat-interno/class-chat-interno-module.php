@@ -2972,6 +2972,67 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_mensajes';
+        $tabla_participantes = $wpdb->prefix . 'flavor_chat_participantes';
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            return $estadisticas;
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_participantes)) {
+            // Mis conversaciones activas
+            $mis_chats = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(DISTINCT p.conversacion_id)
+                 FROM {$tabla_participantes} p
+                 INNER JOIN {$tabla_conversaciones} c ON p.conversacion_id = c.id
+                 WHERE p.usuario_id = %d AND c.estado = 'activa'",
+                $usuario_id
+            ));
+
+            $estadisticas['mis_chats'] = [
+                'icon' => 'dashicons-format-chat',
+                'valor' => $mis_chats,
+                'label' => __('Conversaciones', 'flavor-chat-ia'),
+                'color' => $mis_chats > 0 ? 'purple' : 'gray',
+            ];
+
+            // Mensajes sin leer
+            if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
+                $sin_leer = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$tabla_mensajes} m
+                     INNER JOIN {$tabla_participantes} p ON m.conversacion_id = p.conversacion_id
+                     WHERE p.usuario_id = %d
+                     AND m.fecha > COALESCE(p.ultimo_leido, '1970-01-01')
+                     AND m.autor_id != %d",
+                    $usuario_id,
+                    $usuario_id
+                ));
+
+                if ($sin_leer > 0) {
+                    $estadisticas['sin_leer'] = [
+                        'icon' => 'dashicons-email-alt',
+                        'valor' => $sin_leer,
+                        'label' => __('Sin leer', 'flavor-chat-ia'),
+                        'color' => 'orange',
+                    ];
+                }
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

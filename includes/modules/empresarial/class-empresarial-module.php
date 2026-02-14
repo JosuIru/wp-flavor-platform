@@ -2353,6 +2353,55 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_proyectos = $wpdb->prefix . 'flavor_empresarial_proyectos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_proyectos)) {
+            return $estadisticas;
+        }
+
+        // Total de proyectos activos
+        $proyectos_activos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_proyectos} WHERE estado = 'activo'"
+        );
+
+        $estadisticas['proyectos_activos'] = [
+            'icon' => 'dashicons-portfolio',
+            'valor' => $proyectos_activos,
+            'label' => __('Proyectos activos', 'flavor-chat-ia'),
+            'color' => 'blue',
+        ];
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id) {
+            // Mis proyectos
+            $mis_proyectos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_proyectos}
+                 WHERE responsable_id = %d AND estado = 'activo'",
+                $usuario_id
+            ));
+
+            if ($mis_proyectos > 0) {
+                $estadisticas['mis_proyectos'] = [
+                    'icon' => 'dashicons-businessman',
+                    'valor' => $mis_proyectos,
+                    'label' => __('Mis proyectos', 'flavor-chat-ia'),
+                    'color' => 'green',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo para V3
      */
     public function get_pages_definition() {

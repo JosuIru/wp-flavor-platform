@@ -2580,6 +2580,71 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_series = $wpdb->prefix . 'flavor_podcast_series';
+        $tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
+        $tabla_suscripciones = $wpdb->prefix . 'flavor_podcast_suscripciones';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_series)) {
+            return $estadisticas;
+        }
+
+        // Total de series
+        $total_series = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_series} WHERE estado = 'activo'"
+        );
+
+        $estadisticas['series'] = [
+            'icon' => 'dashicons-microphone',
+            'valor' => $total_series,
+            'label' => __('Series', 'flavor-chat-ia'),
+            'color' => 'purple',
+        ];
+
+        // Episodios disponibles
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_episodios)) {
+            $total_episodios = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_episodios} WHERE estado = 'publicado'"
+            );
+
+            $estadisticas['episodios'] = [
+                'icon' => 'dashicons-playlist-audio',
+                'valor' => $total_episodios,
+                'label' => __('Episodios', 'flavor-chat-ia'),
+                'color' => 'blue',
+            ];
+        }
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_suscripciones)) {
+            // Mis suscripciones
+            $mis_suscripciones = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_suscripciones}
+                 WHERE usuario_id = %d AND estado = 'activa'",
+                $usuario_id
+            ));
+
+            if ($mis_suscripciones > 0) {
+                $estadisticas['suscripciones'] = [
+                    'icon' => 'dashicons-rss',
+                    'valor' => $mis_suscripciones,
+                    'label' => __('Suscripciones', 'flavor-chat-ia'),
+                    'color' => 'green',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

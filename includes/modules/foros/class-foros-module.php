@@ -2215,6 +2215,74 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene estadísticas para el dashboard del cliente
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $estadisticas = [];
+
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+            return $estadisticas;
+        }
+
+        // Total de foros activos
+        $total_foros = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_foros} WHERE estado = 'activo'"
+        );
+
+        $estadisticas['foros'] = [
+            'icon' => 'dashicons-format-chat',
+            'valor' => $total_foros,
+            'label' => __('Foros', 'flavor-chat-ia'),
+            'color' => 'purple',
+        ];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_hilos)) {
+            // Hilos activos
+            $hilos_activos = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_hilos}
+                 WHERE estado = 'abierto'
+                 AND fecha_creacion >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+            );
+
+            if ($hilos_activos > 0) {
+                $estadisticas['hilos_recientes'] = [
+                    'icon' => 'dashicons-admin-comments',
+                    'valor' => $hilos_activos,
+                    'label' => __('Hilos esta semana', 'flavor-chat-ia'),
+                    'color' => 'green',
+                ];
+            }
+        }
+
+        $usuario_id = get_current_user_id();
+        if ($usuario_id && Flavor_Chat_Helpers::tabla_existe($tabla_hilos)) {
+            // Mis hilos
+            $mis_hilos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_hilos} WHERE autor_id = %d",
+                $usuario_id
+            ));
+
+            if ($mis_hilos > 0) {
+                $estadisticas['mis_hilos'] = [
+                    'icon' => 'dashicons-edit',
+                    'valor' => $mis_hilos,
+                    'label' => __('Mis hilos', 'flavor-chat-ia'),
+                    'color' => 'blue',
+                ];
+            }
+        }
+
+        return $estadisticas;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas
