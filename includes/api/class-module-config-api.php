@@ -44,6 +44,13 @@ class Flavor_Module_Config_API {
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array($this, 'get_all_configs'),
             'permission_callback' => '__return_true',
+            'args'                => array(
+                'all' => array(
+                    'type'        => 'boolean',
+                    'default'     => false,
+                    'description' => 'Incluir todos los módulos (activos e inactivos)',
+                ),
+            ),
         ));
 
         register_rest_route($this->namespace, '/modules/config/(?P<module_id>[a-z0-9_-]+)', array(
@@ -1392,19 +1399,33 @@ class Flavor_Module_Config_API {
      * @return WP_REST_Response
      */
     public function get_all_configs($request) {
+        $include_all = $request->get_param('all');
         $configs = array();
+        $active_count = 0;
 
         foreach ($this->modules_config as $id => $config) {
-            // Solo incluir módulos activos
-            if ($this->is_module_active($id)) {
+            $is_active = $this->is_module_active($id);
+
+            if ($include_all) {
+                // Incluir todos con indicador de estado
+                $config['activo'] = $is_active;
                 $configs[$id] = $config;
+                if ($is_active) {
+                    $active_count++;
+                }
+            } elseif ($is_active) {
+                // Solo incluir módulos activos
+                $configs[$id] = $config;
+                $active_count++;
             }
         }
 
         return new WP_REST_Response(array(
-            'success' => true,
-            'data'    => $configs,
-            'count'   => count($configs),
+            'success'      => true,
+            'data'         => $configs,
+            'count'        => count($configs),
+            'active_count' => $active_count,
+            'total'        => count($this->modules_config),
         ), 200);
     }
 
@@ -1424,16 +1445,12 @@ class Flavor_Module_Config_API {
             ), 404);
         }
 
-        if (!$this->is_module_active($module_id)) {
-            return new WP_REST_Response(array(
-                'success' => false,
-                'error'   => 'Módulo no activo',
-            ), 403);
-        }
+        $config = $this->modules_config[$module_id];
+        $config['activo'] = $this->is_module_active($module_id);
 
         return new WP_REST_Response(array(
             'success' => true,
-            'data'    => $this->modules_config[$module_id],
+            'data'    => $config,
         ), 200);
     }
 
