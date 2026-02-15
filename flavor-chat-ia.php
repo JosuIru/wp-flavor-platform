@@ -155,6 +155,9 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-integration/class-app-pairing.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-integration/trait-app-data-provider.php';
 
+        // API de Configuración de Módulos para Apps Dinámicas
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-config-api.php';
+
         // Sistema de CPTs para Apps
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-integration/class-app-cpt-manager.php';
 
