@@ -86,6 +86,25 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+
+        // Cargar funcionalidades del Sello de Conciencia (+3 pts)
+        $this->cargar_funcionalidades_conciencia();
+    }
+
+    /**
+     * Carga las funcionalidades del Sello de Conciencia
+     * Sistema de Reputación, Integración Solidaria y Dashboard de Sostenibilidad
+     */
+    private function cargar_funcionalidades_conciencia() {
+        $archivo_conciencia = dirname(__FILE__) . '/class-bt-conciencia-features.php';
+
+        if (file_exists($archivo_conciencia)) {
+            require_once $archivo_conciencia;
+
+            if (class_exists('Flavor_BT_Conciencia_Features')) {
+                Flavor_BT_Conciencia_Features::get_instance();
+            }
+        }
     }
 
     /**

@@ -385,87 +385,22 @@ class Flavor_App_Profile_Admin {
                 </div>
             </div>
 
-            <!-- Paso 2: Compositor de Módulos -->
+            <!-- Paso 2: Vista Unificada de Módulos -->
             <div x-show="pasoActual === 'modulos'" x-transition>
-                <div class="flavor-composer-filters" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 15px;">
-                    <input type="search"
-                           class="regular-text"
-                           placeholder="<?php esc_attr_e('Buscar módulos...', 'flavor-chat-ia'); ?>"
-                           style="min-width: 260px;"
-                           x-model="filtroModuloTexto">
-                    <button type="button" class="button" @click="filtroModuloTexto = ''">
-                        <?php _e('Limpiar búsqueda', 'flavor-chat-ia'); ?>
-                    </button>
-                </div>
-
-                <!-- Tabs de categorías -->
-                <div class="flavor-category-tabs">
-                    <span class="flavor-category-tab"
-                          :class="{ 'activo': categoriaFiltrada === 'todos' }"
-                          @click="filtrarCategoria('todos')">
-                        <?php _e('Todos', 'flavor-chat-ia'); ?>
-                    </span>
-                    <?php foreach ($categorias_modulos as $id_categoria => $datos_categoria): ?>
-                        <span class="flavor-category-tab"
-                              :class="{ 'activo': categoriaFiltrada === '<?php echo esc_js($id_categoria); ?>' }"
-                              @click="filtrarCategoria('<?php echo esc_js($id_categoria); ?>')">
-                            <?php echo esc_html($datos_categoria['nombre']); ?>
-                            <span class="conteo" x-text="contarActivosEnCategoria('<?php echo esc_js($id_categoria); ?>') + '/' + (categorias['<?php echo esc_js($id_categoria); ?>']?.modulos?.length || 0)"></span>
-                        </span>
-                    <?php endforeach; ?>
-                </div>
-
-                <!-- Grid de módulos -->
-                <div class="flavor-modules-grid">
-                    <?php foreach ($categorias_modulos as $id_categoria => $datos_categoria): ?>
-                        <?php foreach ($datos_categoria['modulos'] as $id_modulo): ?>
-                            <?php
-                            $info_modulo = $modulos_registrados[$id_modulo] ?? null;
-                            $nombre_modulo = $info_modulo['name'] ?? ucfirst(str_replace('_', ' ', $id_modulo));
-                            $descripcion_modulo = $info_modulo['description'] ?? '';
-                            ?>
-                            <div class="flavor-module-card"
-                                 x-show="(categoriaFiltrada === 'todos' || categoriaFiltrada === '<?php echo esc_js($id_categoria); ?>') && moduloCoincideFiltro('<?php echo esc_js($id_modulo); ?>')"
-                                 :class="{
-                                     'activo': esModuloActivo('<?php echo esc_js($id_modulo); ?>'),
-                                     'requerido': esModuloRequerido('<?php echo esc_js($id_modulo); ?>')
-                                 }">
-
-                                <div class="flavor-module-icon" style="background: <?php echo esc_attr($datos_categoria['nombre'] === 'Comercio' ? '#dbeafe' : ($datos_categoria['nombre'] === 'Comunidad' ? '#fce7f3' : ($datos_categoria['nombre'] === 'Gobernanza' ? '#e0e7ff' : ($datos_categoria['nombre'] === 'Sostenibilidad' ? '#d1fae5' : ($datos_categoria['nombre'] === 'Contenido' ? '#fef3c7' : '#f3f4f6'))))); ?>">
-                                    <span class="dashicons <?php echo esc_attr($info_modulo['icon'] ?? 'dashicons-admin-plugins'); ?>"
-                                          style="color: var(--flavor-text-secondary);"></span>
-                                </div>
-
-                                <div class="flavor-module-info">
-                                    <h4>
-                                        <?php echo esc_html($nombre_modulo); ?>
-                                        <template x-if="esModuloRequerido('<?php echo esc_js($id_modulo); ?>')">
-                                            <span class="flavor-module-badge requerido"><?php _e('Requerido', 'flavor-chat-ia'); ?></span>
-                                        </template>
-                                    </h4>
-                                    <p><?php echo esc_html($descripcion_modulo); ?></p>
-                                </div>
-
-                                <label class="flavor-toggle" @click.stop>
-                                    <input type="checkbox"
-                                           :checked="esModuloActivo('<?php echo esc_js($id_modulo); ?>') || esModuloRequerido('<?php echo esc_js($id_modulo); ?>')"
-                                           :disabled="esModuloRequerido('<?php echo esc_js($id_modulo); ?>')"
-                                           @change="toggleModulo('<?php echo esc_js($id_modulo); ?>')">
-                                    <span class="flavor-toggle-slider"></span>
-                                </label>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endforeach; ?>
-                </div>
+                <?php
+                // Renderizar la vista unificada de módulos que combina:
+                // - Activación/Desactivación
+                // - Control de visibilidad y permisos
+                // - Gestión de landings
+                if (class_exists('Flavor_Unified_Modules_View')) {
+                    Flavor_Unified_Modules_View::get_instance()->render();
+                }
+                ?>
             </div>
 
             <?php
-            // Renderizar modulos frontend (landings)
-            $modulos_frontend = $this->obtener_modulos_frontend();
-            $this->renderizar_modulos_frontend($modulos_frontend);
-
-            // Renderizar seccion de control de acceso/visibilidad de modulos
-            $this->renderizar_seccion_visibilidad_modulos();
+            // NOTA: Las secciones de modulos frontend, visibilidad y demo pages
+            // ahora están integradas en la vista unificada de módulos arriba
 
             // La seccion de paginas de demostracion se muestra junto a landings
 

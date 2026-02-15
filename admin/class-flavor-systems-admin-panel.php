@@ -64,72 +64,41 @@ class Flavor_Systems_Admin_Panel {
 
     /**
      * Agregar menú de administración
+     *
+     * Se integra en el menu principal de Flavor Platform en lugar de crear uno separado
      */
     public function add_admin_menu() {
-        add_menu_page(
-            __('Flavor Systems', 'flavor-chat-ia'),
-            __('Flavor Systems', 'flavor-chat-ia'),
-            $this->capability,
-            $this->menu_slug,
-            [$this, 'render_admin_page'],
-            'dashicons-admin-generic',
-            3
-        );
-
-        // Submenú: Panel Principal
-        add_submenu_page(
-            $this->menu_slug,
-            __('Panel Principal', 'flavor-chat-ia'),
-            __('Panel Principal', 'flavor-chat-ia'),
-            $this->capability,
-            $this->menu_slug,
-            [$this, 'render_admin_page']
-        );
-
-        // Submenú: Notificaciones
-        add_submenu_page(
-            $this->menu_slug,
-            __('Gestión de Notificaciones', 'flavor-chat-ia'),
-            __('Notificaciones', 'flavor-chat-ia'),
-            $this->capability,
-            'flavor-notifications-manager',
-            [$this, 'render_notifications_page']
-        );
-
-        // Submenú: Páginas V3
-        add_submenu_page(
-            $this->menu_slug,
-            __('Páginas V3', 'flavor-chat-ia'),
-            __('Páginas V3', 'flavor-chat-ia'),
-            $this->capability,
-            'flavor-pages-v3',
-            [$this, 'render_pages_v3']
-        );
-
-        // Submenú: Optimización
-        add_submenu_page(
-            $this->menu_slug,
-            __('Optimización', 'flavor-chat-ia'),
-            __('Optimización', 'flavor-chat-ia'),
-            $this->capability,
-            'flavor-optimization',
-            [$this, 'render_optimization_page']
-        );
+        // NO crear menu separado - se registra desde Admin_Menu_Manager
+        // Este metodo queda vacio intencionalmente
     }
 
     /**
      * Encolar assets
      */
     public function enqueue_assets($hook) {
-        if (strpos($hook, 'flavor-') === false && strpos($hook, $this->menu_slug) === false) {
+        // El hook puede ser: toplevel_page_X, admin_page_X, o parent_page_X
+        // Verificar si estamos en la pagina de Systems Panel
+        $is_systems_page = strpos($hook, 'systems-panel') !== false ||
+                           strpos($hook, $this->menu_slug) !== false ||
+                           (isset($_GET['page']) && $_GET['page'] === 'flavor-systems-panel');
+
+        if (!$is_systems_page) {
             return;
         }
+
+        // jQuery UI Core y Tabs
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-ui-tabs');
+        wp_enqueue_script('jquery-ui-widget');
+
+        // Estilos jQuery UI (WordPress incluye estos)
+        wp_enqueue_style('wp-jquery-ui-dialog');
 
         // CSS
         wp_enqueue_style(
             'flavor-systems-admin',
             plugins_url('css/systems-admin.css', __FILE__),
-            [],
+            ['wp-jquery-ui-dialog'],
             '3.0.0'
         );
 

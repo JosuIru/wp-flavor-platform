@@ -1,0 +1,891 @@
+<?php
+/**
+ * Módulo: Trabajo Digno
+ *
+ * Bolsa de empleo ético, emprendimiento local, formación profesional
+ * y promoción de condiciones laborales justas.
+ *
+ * @package FlavorChatIA
+ * @subpackage Modules\TrabajoDigno
+ * @since 4.2.0
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
+
+    /**
+     * Tipos de oferta laboral
+     */
+    const TIPOS_OFERTA = [
+        'empleo' => [
+            'nombre' => 'Empleo',
+            'icono' => 'dashicons-businessman',
+            'color' => '#3b82f6',
+        ],
+        'cooperativa' => [
+            'nombre' => 'Cooperativa',
+            'icono' => 'dashicons-groups',
+            'color' => '#22c55e',
+        ],
+        'autonomo' => [
+            'nombre' => 'Autónomo/Freelance',
+            'icono' => 'dashicons-portfolio',
+            'color' => '#f59e0b',
+        ],
+        'practicas' => [
+            'nombre' => 'Prácticas',
+            'icono' => 'dashicons-welcome-learn-more',
+            'color' => '#8b5cf6',
+        ],
+        'voluntariado' => [
+            'nombre' => 'Voluntariado',
+            'icono' => 'dashicons-heart',
+            'color' => '#ec4899',
+        ],
+    ];
+
+    /**
+     * Sectores de actividad
+     */
+    const SECTORES = [
+        'agroecologia' => ['nombre' => 'Agroecología', 'icono' => 'dashicons-carrot'],
+        'artesania' => ['nombre' => 'Artesanía', 'icono' => 'dashicons-hammer'],
+        'comercio_justo' => ['nombre' => 'Comercio Justo', 'icono' => 'dashicons-cart'],
+        'construccion_sostenible' => ['nombre' => 'Construcción Sostenible', 'icono' => 'dashicons-building'],
+        'cuidados' => ['nombre' => 'Cuidados', 'icono' => 'dashicons-heart'],
+        'educacion' => ['nombre' => 'Educación', 'icono' => 'dashicons-welcome-learn-more'],
+        'energia_renovable' => ['nombre' => 'Energías Renovables', 'icono' => 'dashicons-lightbulb'],
+        'hosteleria' => ['nombre' => 'Hostelería', 'icono' => 'dashicons-food'],
+        'tecnologia' => ['nombre' => 'Tecnología', 'icono' => 'dashicons-laptop'],
+        'cultura' => ['nombre' => 'Cultura y Arte', 'icono' => 'dashicons-art'],
+        'salud' => ['nombre' => 'Salud', 'icono' => 'dashicons-plus-alt'],
+        'transporte' => ['nombre' => 'Transporte Sostenible', 'icono' => 'dashicons-car'],
+        'reciclaje' => ['nombre' => 'Reciclaje/Economía Circular', 'icono' => 'dashicons-update'],
+        'servicios' => ['nombre' => 'Servicios Locales', 'icono' => 'dashicons-admin-tools'],
+    ];
+
+    /**
+     * Jornadas laborales
+     */
+    const JORNADAS = [
+        'completa' => 'Jornada completa',
+        'parcial' => 'Media jornada',
+        'flexible' => 'Horario flexible',
+        'remoto' => 'Trabajo remoto',
+        'hibrido' => 'Híbrido',
+        'temporal' => 'Temporal/Por proyecto',
+    ];
+
+    /**
+     * Criterios de trabajo digno (OIT + economía solidaria)
+     */
+    const CRITERIOS_DIGNIDAD = [
+        'salario_justo' => [
+            'nombre' => 'Salario Justo',
+            'descripcion' => 'Remuneración suficiente para una vida digna',
+            'icono' => 'dashicons-money-alt',
+        ],
+        'seguridad_social' => [
+            'nombre' => 'Seguridad Social',
+            'descripcion' => 'Cobertura de protección social',
+            'icono' => 'dashicons-shield',
+        ],
+        'conciliacion' => [
+            'nombre' => 'Conciliación',
+            'descripcion' => 'Equilibrio vida laboral y personal',
+            'icono' => 'dashicons-clock',
+        ],
+        'igualdad' => [
+            'nombre' => 'Igualdad',
+            'descripcion' => 'Sin discriminación de ningún tipo',
+            'icono' => 'dashicons-groups',
+        ],
+        'formacion' => [
+            'nombre' => 'Formación Continua',
+            'descripcion' => 'Desarrollo profesional permanente',
+            'icono' => 'dashicons-welcome-learn-more',
+        ],
+        'participacion' => [
+            'nombre' => 'Participación',
+            'descripcion' => 'Voz en las decisiones de la organización',
+            'icono' => 'dashicons-megaphone',
+        ],
+        'sostenibilidad' => [
+            'nombre' => 'Sostenibilidad',
+            'descripcion' => 'Impacto ambiental responsable',
+            'icono' => 'dashicons-admin-site-alt3',
+        ],
+        'impacto_local' => [
+            'nombre' => 'Impacto Local',
+            'descripcion' => 'Contribución a la comunidad',
+            'icono' => 'dashicons-location-alt',
+        ],
+    ];
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->id = 'trabajo_digno';
+        $this->name = __('Trabajo Digno', 'flavor-chat-ia');
+        $this->description = __('Bolsa de empleo ético, emprendimiento local y promoción del trabajo digno.', 'flavor-chat-ia');
+        $this->icon = 'dashicons-businessman';
+        $this->category = 'economia';
+        $this->visibility = 'registered';
+        $this->version = '1.0.0';
+
+        parent::__construct();
+    }
+
+    /**
+     * Obtiene la valoración de conciencia del módulo
+     *
+     * @return array
+     */
+    public function get_consciousness_valuation(): array {
+        return [
+            'puntuacion_total' => 85,
+            'premisas' => [
+                'conciencia_fundamental' => [
+                    'puntuacion' => 18,
+                    'descripcion' => __('Reconoce la dignidad inherente del trabajador y su derecho a condiciones justas y respetuosas.', 'flavor-chat-ia'),
+                ],
+                'abundancia_organizable' => [
+                    'puntuacion' => 17,
+                    'descripcion' => __('Organiza las oportunidades laborales locales como recurso comunitario compartido.', 'flavor-chat-ia'),
+                ],
+                'interdependencia_radical' => [
+                    'puntuacion' => 17,
+                    'descripcion' => __('Conecta empleadores y trabajadores en relaciones de mutuo beneficio y corresponsabilidad.', 'flavor-chat-ia'),
+                ],
+                'madurez_ciclica' => [
+                    'puntuacion' => 16,
+                    'descripcion' => __('Respeta los ritmos de vida, la conciliación familiar y el derecho al descanso.', 'flavor-chat-ia'),
+                ],
+                'valor_intrinseco' => [
+                    'puntuacion' => 17,
+                    'descripcion' => __('Valora el trabajo por su aporte social y no solo por su productividad económica.', 'flavor-chat-ia'),
+                ],
+            ],
+            'fortalezas' => [
+                __('Criterios explícitos de trabajo digno basados en OIT', 'flavor-chat-ia'),
+                __('Promoción de economía cooperativa y solidaria', 'flavor-chat-ia'),
+                __('Conexión empleo-formación-emprendimiento', 'flavor-chat-ia'),
+            ],
+            'areas_mejora' => [
+                __('Incorporar métricas de impacto social del empleo', 'flavor-chat-ia'),
+                __('Desarrollar sistema de verificación de condiciones laborales', 'flavor-chat-ia'),
+            ],
+        ];
+    }
+
+    /**
+     * Configura el módulo
+     */
+    protected function setup_module() {
+        $this->register_cpt_oferta();
+        $this->register_cpt_perfil();
+        $this->register_cpt_formacion();
+        $this->register_cpt_emprendimiento();
+        $this->register_taxonomies();
+        $this->register_ajax_handlers();
+    }
+
+    /**
+     * Registra CPT: Oferta de Trabajo
+     */
+    private function register_cpt_oferta() {
+        register_post_type('td_oferta', [
+            'labels' => [
+                'name' => __('Ofertas de Trabajo', 'flavor-chat-ia'),
+                'singular_name' => __('Oferta', 'flavor-chat-ia'),
+                'add_new' => __('Publicar Oferta', 'flavor-chat-ia'),
+                'add_new_item' => __('Publicar Nueva Oferta', 'flavor-chat-ia'),
+                'edit_item' => __('Editar Oferta', 'flavor-chat-ia'),
+            ],
+            'public' => true,
+            'show_ui' => true,
+            'show_in_menu' => false,
+            'supports' => ['title', 'editor', 'author', 'custom-fields'],
+            'has_archive' => true,
+            'rewrite' => ['slug' => 'trabajo-digno/ofertas'],
+            'menu_icon' => 'dashicons-businessman',
+        ]);
+    }
+
+    /**
+     * Registra CPT: Perfil Profesional
+     */
+    private function register_cpt_perfil() {
+        register_post_type('td_perfil', [
+            'labels' => [
+                'name' => __('Perfiles Profesionales', 'flavor-chat-ia'),
+                'singular_name' => __('Perfil', 'flavor-chat-ia'),
+            ],
+            'public' => false,
+            'show_ui' => true,
+            'show_in_menu' => false,
+            'supports' => ['title', 'editor', 'author'],
+        ]);
+    }
+
+    /**
+     * Registra CPT: Formación
+     */
+    private function register_cpt_formacion() {
+        register_post_type('td_formacion', [
+            'labels' => [
+                'name' => __('Formación', 'flavor-chat-ia'),
+                'singular_name' => __('Curso/Taller', 'flavor-chat-ia'),
+                'add_new' => __('Añadir Formación', 'flavor-chat-ia'),
+            ],
+            'public' => true,
+            'show_ui' => true,
+            'show_in_menu' => false,
+            'supports' => ['title', 'editor', 'thumbnail', 'author'],
+            'has_archive' => true,
+            'rewrite' => ['slug' => 'trabajo-digno/formacion'],
+        ]);
+    }
+
+    /**
+     * Registra CPT: Emprendimiento
+     */
+    private function register_cpt_emprendimiento() {
+        register_post_type('td_emprendimiento', [
+            'labels' => [
+                'name' => __('Emprendimientos', 'flavor-chat-ia'),
+                'singular_name' => __('Emprendimiento', 'flavor-chat-ia'),
+                'add_new' => __('Registrar Emprendimiento', 'flavor-chat-ia'),
+            ],
+            'public' => true,
+            'show_ui' => true,
+            'show_in_menu' => false,
+            'supports' => ['title', 'editor', 'thumbnail', 'author'],
+            'has_archive' => true,
+            'rewrite' => ['slug' => 'trabajo-digno/emprendimientos'],
+        ]);
+    }
+
+    /**
+     * Registra taxonomías
+     */
+    private function register_taxonomies() {
+        register_taxonomy('td_sector', ['td_oferta', 'td_emprendimiento', 'td_formacion'], [
+            'labels' => [
+                'name' => __('Sectores', 'flavor-chat-ia'),
+                'singular_name' => __('Sector', 'flavor-chat-ia'),
+            ],
+            'hierarchical' => true,
+            'show_admin_column' => true,
+            'rewrite' => ['slug' => 'trabajo-digno/sector'],
+        ]);
+
+        register_taxonomy('td_habilidad', ['td_oferta', 'td_perfil'], [
+            'labels' => [
+                'name' => __('Habilidades', 'flavor-chat-ia'),
+                'singular_name' => __('Habilidad', 'flavor-chat-ia'),
+            ],
+            'hierarchical' => false,
+            'show_admin_column' => true,
+        ]);
+    }
+
+    /**
+     * Registra manejadores AJAX
+     */
+    private function register_ajax_handlers() {
+        add_action('wp_ajax_td_publicar_oferta', [$this, 'ajax_publicar_oferta']);
+        add_action('wp_ajax_td_postular', [$this, 'ajax_postular']);
+        add_action('wp_ajax_td_guardar_perfil', [$this, 'ajax_guardar_perfil']);
+        add_action('wp_ajax_td_registrar_emprendimiento', [$this, 'ajax_registrar_emprendimiento']);
+        add_action('wp_ajax_td_inscribir_formacion', [$this, 'ajax_inscribir_formacion']);
+    }
+
+    /**
+     * Registra shortcodes
+     */
+    public function register_shortcodes() {
+        add_shortcode('trabajo_digno_ofertas', [$this, 'shortcode_ofertas']);
+        add_shortcode('trabajo_digno_formacion', [$this, 'shortcode_formacion']);
+        add_shortcode('trabajo_digno_emprendimientos', [$this, 'shortcode_emprendimientos']);
+        add_shortcode('trabajo_digno_mi_perfil', [$this, 'shortcode_mi_perfil']);
+        add_shortcode('trabajo_digno_publicar', [$this, 'shortcode_publicar']);
+    }
+
+    /**
+     * Encola scripts y estilos
+     */
+    public function enqueue_assets() {
+        $base_url = FLAVOR_CHAT_IA_URL . 'includes/modules/trabajo-digno/assets/';
+
+        wp_enqueue_style(
+            'flavor-trabajo-digno',
+            $base_url . 'css/trabajo-digno.css',
+            [],
+            $this->version
+        );
+
+        wp_enqueue_script(
+            'flavor-trabajo-digno',
+            $base_url . 'js/trabajo-digno.js',
+            ['jquery'],
+            $this->version,
+            true
+        );
+
+        wp_localize_script('flavor-trabajo-digno', 'flavorTrabajoDigno', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('trabajo_digno_nonce'),
+            'tipos' => self::TIPOS_OFERTA,
+            'sectores' => self::SECTORES,
+            'criterios' => self::CRITERIOS_DIGNIDAD,
+            'i18n' => [
+                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                'success' => __('Operación completada', 'flavor-chat-ia'),
+                'confirm_postular' => __('¿Confirmas tu postulación?', 'flavor-chat-ia'),
+            ],
+        ]);
+    }
+
+    /**
+     * Shortcode: Ofertas de trabajo
+     */
+    public function shortcode_ofertas($atts) {
+        $this->enqueue_assets();
+        ob_start();
+        include __DIR__ . '/templates/ofertas.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Formación
+     */
+    public function shortcode_formacion($atts) {
+        $this->enqueue_assets();
+        ob_start();
+        include __DIR__ . '/templates/formacion.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Emprendimientos
+     */
+    public function shortcode_emprendimientos($atts) {
+        $this->enqueue_assets();
+        ob_start();
+        include __DIR__ . '/templates/emprendimientos.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mi perfil profesional
+     */
+    public function shortcode_mi_perfil($atts) {
+        $this->enqueue_assets();
+        ob_start();
+        include __DIR__ . '/templates/mi-perfil.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Publicar oferta
+     */
+    public function shortcode_publicar($atts) {
+        $this->enqueue_assets();
+        ob_start();
+        include __DIR__ . '/templates/publicar.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * AJAX: Publicar oferta
+     */
+    public function ajax_publicar_oferta() {
+        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+        }
+
+        $titulo = sanitize_text_field($_POST['titulo'] ?? '');
+        $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
+        $tipo = sanitize_text_field($_POST['tipo'] ?? '');
+        $sector = sanitize_text_field($_POST['sector'] ?? '');
+        $jornada = sanitize_text_field($_POST['jornada'] ?? '');
+        $ubicacion = sanitize_text_field($_POST['ubicacion'] ?? '');
+        $salario = sanitize_text_field($_POST['salario'] ?? '');
+        $criterios = array_map('sanitize_text_field', $_POST['criterios'] ?? []);
+
+        if (empty($titulo) || empty($descripcion)) {
+            wp_send_json_error(['message' => __('Título y descripción son requeridos', 'flavor-chat-ia')]);
+        }
+
+        $oferta_id = wp_insert_post([
+            'post_type' => 'td_oferta',
+            'post_status' => 'pending',
+            'post_title' => $titulo,
+            'post_content' => $descripcion,
+            'post_author' => get_current_user_id(),
+        ]);
+
+        if (is_wp_error($oferta_id)) {
+            wp_send_json_error(['message' => $oferta_id->get_error_message()]);
+        }
+
+        update_post_meta($oferta_id, '_td_tipo', $tipo);
+        update_post_meta($oferta_id, '_td_jornada', $jornada);
+        update_post_meta($oferta_id, '_td_ubicacion', $ubicacion);
+        update_post_meta($oferta_id, '_td_salario', $salario);
+        update_post_meta($oferta_id, '_td_criterios_dignidad', $criterios);
+        update_post_meta($oferta_id, '_td_postulaciones', []);
+
+        if ($sector) {
+            wp_set_object_terms($oferta_id, $sector, 'td_sector');
+        }
+
+        wp_send_json_success([
+            'message' => __('Oferta publicada. Será revisada antes de su publicación.', 'flavor-chat-ia'),
+            'oferta_id' => $oferta_id,
+        ]);
+    }
+
+    /**
+     * AJAX: Postular a oferta
+     */
+    public function ajax_postular() {
+        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+        }
+
+        $oferta_id = intval($_POST['oferta_id'] ?? 0);
+        $mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
+        $user_id = get_current_user_id();
+
+        $postulaciones = get_post_meta($oferta_id, '_td_postulaciones', true) ?: [];
+
+        foreach ($postulaciones as $p) {
+            if ($p['user_id'] === $user_id) {
+                wp_send_json_error(['message' => __('Ya has postulado a esta oferta', 'flavor-chat-ia')]);
+            }
+        }
+
+        $postulaciones[] = [
+            'user_id' => $user_id,
+            'mensaje' => $mensaje,
+            'fecha' => current_time('mysql'),
+            'estado' => 'pendiente',
+        ];
+
+        update_post_meta($oferta_id, '_td_postulaciones', $postulaciones);
+
+        // Notificar al autor de la oferta
+        $oferta = get_post($oferta_id);
+        $autor_email = get_the_author_meta('email', $oferta->post_author);
+        $candidato = wp_get_current_user();
+
+        wp_mail(
+            $autor_email,
+            sprintf(__('Nueva postulación: %s', 'flavor-chat-ia'), $oferta->post_title),
+            sprintf(
+                __("%s ha postulado a tu oferta '%s'.\n\nMensaje: %s\n\nAccede al panel para revisar la postulación.", 'flavor-chat-ia'),
+                $candidato->display_name,
+                $oferta->post_title,
+                $mensaje ?: __('Sin mensaje', 'flavor-chat-ia')
+            )
+        );
+
+        wp_send_json_success([
+            'message' => __('Postulación enviada correctamente', 'flavor-chat-ia'),
+        ]);
+    }
+
+    /**
+     * AJAX: Guardar perfil profesional
+     */
+    public function ajax_guardar_perfil() {
+        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+        }
+
+        $user_id = get_current_user_id();
+        $titulo = sanitize_text_field($_POST['titulo'] ?? '');
+        $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
+        $experiencia = sanitize_textarea_field($_POST['experiencia'] ?? '');
+        $formacion = sanitize_textarea_field($_POST['formacion'] ?? '');
+        $habilidades = array_map('sanitize_text_field', $_POST['habilidades'] ?? []);
+        $sectores = array_map('sanitize_text_field', $_POST['sectores'] ?? []);
+        $disponibilidad = sanitize_text_field($_POST['disponibilidad'] ?? '');
+
+        // Buscar perfil existente o crear nuevo
+        $perfil_existente = get_posts([
+            'post_type' => 'td_perfil',
+            'author' => $user_id,
+            'posts_per_page' => 1,
+        ]);
+
+        $perfil_data = [
+            'post_type' => 'td_perfil',
+            'post_status' => 'publish',
+            'post_title' => $titulo ?: get_user_meta($user_id, 'display_name', true),
+            'post_content' => $descripcion,
+            'post_author' => $user_id,
+        ];
+
+        if (!empty($perfil_existente)) {
+            $perfil_data['ID'] = $perfil_existente[0]->ID;
+            $perfil_id = wp_update_post($perfil_data);
+        } else {
+            $perfil_id = wp_insert_post($perfil_data);
+        }
+
+        if (is_wp_error($perfil_id)) {
+            wp_send_json_error(['message' => $perfil_id->get_error_message()]);
+        }
+
+        update_post_meta($perfil_id, '_td_experiencia', $experiencia);
+        update_post_meta($perfil_id, '_td_formacion', $formacion);
+        update_post_meta($perfil_id, '_td_disponibilidad', $disponibilidad);
+
+        if (!empty($habilidades)) {
+            wp_set_object_terms($perfil_id, $habilidades, 'td_habilidad');
+        }
+        if (!empty($sectores)) {
+            wp_set_object_terms($perfil_id, $sectores, 'td_sector');
+        }
+
+        wp_send_json_success([
+            'message' => __('Perfil actualizado correctamente', 'flavor-chat-ia'),
+            'perfil_id' => $perfil_id,
+        ]);
+    }
+
+    /**
+     * AJAX: Registrar emprendimiento
+     */
+    public function ajax_registrar_emprendimiento() {
+        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+        }
+
+        $nombre = sanitize_text_field($_POST['nombre'] ?? '');
+        $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
+        $sector = sanitize_text_field($_POST['sector'] ?? '');
+        $tipo_organizacion = sanitize_text_field($_POST['tipo_organizacion'] ?? '');
+        $web = esc_url_raw($_POST['web'] ?? '');
+        $contacto = sanitize_email($_POST['contacto'] ?? '');
+
+        if (empty($nombre) || empty($descripcion)) {
+            wp_send_json_error(['message' => __('Nombre y descripción son requeridos', 'flavor-chat-ia')]);
+        }
+
+        $emprendimiento_id = wp_insert_post([
+            'post_type' => 'td_emprendimiento',
+            'post_status' => 'pending',
+            'post_title' => $nombre,
+            'post_content' => $descripcion,
+            'post_author' => get_current_user_id(),
+        ]);
+
+        if (is_wp_error($emprendimiento_id)) {
+            wp_send_json_error(['message' => $emprendimiento_id->get_error_message()]);
+        }
+
+        update_post_meta($emprendimiento_id, '_td_tipo_organizacion', $tipo_organizacion);
+        update_post_meta($emprendimiento_id, '_td_web', $web);
+        update_post_meta($emprendimiento_id, '_td_contacto', $contacto);
+
+        if ($sector) {
+            wp_set_object_terms($emprendimiento_id, $sector, 'td_sector');
+        }
+
+        wp_send_json_success([
+            'message' => __('Emprendimiento registrado. Será revisado antes de su publicación.', 'flavor-chat-ia'),
+            'emprendimiento_id' => $emprendimiento_id,
+        ]);
+    }
+
+    /**
+     * AJAX: Inscribir a formación
+     */
+    public function ajax_inscribir_formacion() {
+        check_ajax_referer('trabajo_digno_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+        }
+
+        $formacion_id = intval($_POST['formacion_id'] ?? 0);
+        $user_id = get_current_user_id();
+
+        $inscritos = get_post_meta($formacion_id, '_td_inscritos', true) ?: [];
+        $plazas_max = intval(get_post_meta($formacion_id, '_td_plazas', true));
+
+        if (in_array($user_id, $inscritos)) {
+            wp_send_json_error(['message' => __('Ya estás inscrito/a', 'flavor-chat-ia')]);
+        }
+
+        if ($plazas_max > 0 && count($inscritos) >= $plazas_max) {
+            wp_send_json_error(['message' => __('No quedan plazas disponibles', 'flavor-chat-ia')]);
+        }
+
+        $inscritos[] = $user_id;
+        update_post_meta($formacion_id, '_td_inscritos', $inscritos);
+
+        wp_send_json_success([
+            'message' => __('Inscripción completada', 'flavor-chat-ia'),
+            'inscritos' => count($inscritos),
+        ]);
+    }
+
+    /**
+     * Obtiene estadísticas del módulo
+     *
+     * @return array
+     */
+    public function get_estadisticas(): array {
+        $ofertas = wp_count_posts('td_oferta');
+        $formaciones = wp_count_posts('td_formacion');
+        $emprendimientos = wp_count_posts('td_emprendimiento');
+
+        $user_id = get_current_user_id();
+
+        // Mis postulaciones
+        global $wpdb;
+        $mis_postulaciones = 0;
+        if ($user_id) {
+            $ofertas_con_postulaciones = get_posts([
+                'post_type' => 'td_oferta',
+                'post_status' => 'publish',
+                'posts_per_page' => -1,
+                'meta_query' => [
+                    ['key' => '_td_postulaciones', 'compare' => 'EXISTS']
+                ],
+            ]);
+
+            foreach ($ofertas_con_postulaciones as $oferta) {
+                $postulaciones = get_post_meta($oferta->ID, '_td_postulaciones', true) ?: [];
+                foreach ($postulaciones as $p) {
+                    if ($p['user_id'] == $user_id) {
+                        $mis_postulaciones++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return [
+            'ofertas_activas' => $ofertas->publish ?? 0,
+            'formaciones_disponibles' => $formaciones->publish ?? 0,
+            'emprendimientos_locales' => $emprendimientos->publish ?? 0,
+            'mis_postulaciones' => $mis_postulaciones,
+        ];
+    }
+
+    /**
+     * Calcula el índice de dignidad de una oferta
+     *
+     * @param int $oferta_id
+     * @return int Porcentaje 0-100
+     */
+    public function calcular_indice_dignidad($oferta_id): int {
+        $criterios_oferta = get_post_meta($oferta_id, '_td_criterios_dignidad', true) ?: [];
+        $total_criterios = count(self::CRITERIOS_DIGNIDAD);
+
+        if ($total_criterios === 0) return 0;
+
+        return intval((count($criterios_oferta) / $total_criterios) * 100);
+    }
+
+    /**
+     * Obtiene páginas del frontend
+     *
+     * @return array
+     */
+    public function get_frontend_pages(): array {
+        return [
+            'ofertas' => [
+                'titulo' => __('Bolsa de Empleo', 'flavor-chat-ia'),
+                'slug' => 'trabajo-digno',
+                'shortcode' => '[trabajo_digno_ofertas]',
+                'icono' => 'dashicons-businessman',
+            ],
+            'formacion' => [
+                'titulo' => __('Formación', 'flavor-chat-ia'),
+                'slug' => 'trabajo-digno/formacion',
+                'shortcode' => '[trabajo_digno_formacion]',
+                'icono' => 'dashicons-welcome-learn-more',
+            ],
+            'emprendimientos' => [
+                'titulo' => __('Emprendimientos Locales', 'flavor-chat-ia'),
+                'slug' => 'trabajo-digno/emprendimientos',
+                'shortcode' => '[trabajo_digno_emprendimientos]',
+                'icono' => 'dashicons-store',
+            ],
+            'mi_perfil' => [
+                'titulo' => __('Mi Perfil Profesional', 'flavor-chat-ia'),
+                'slug' => 'mi-portal/trabajo-digno',
+                'shortcode' => '[trabajo_digno_mi_perfil]',
+                'icono' => 'dashicons-id-alt',
+            ],
+            'publicar' => [
+                'titulo' => __('Publicar Oferta', 'flavor-chat-ia'),
+                'slug' => 'trabajo-digno/publicar',
+                'shortcode' => '[trabajo_digno_publicar]',
+                'icono' => 'dashicons-plus-alt',
+            ],
+        ];
+    }
+
+    /**
+     * Obtiene acciones del módulo
+     *
+     * @return array
+     */
+    public function get_actions(): array {
+        return [
+            'buscar_empleo' => [
+                'name' => __('Buscar Empleo', 'flavor-chat-ia'),
+                'description' => __('Busca ofertas de trabajo digno', 'flavor-chat-ia'),
+                'callback' => [$this, 'action_buscar_empleo'],
+            ],
+            'ver_formacion' => [
+                'name' => __('Ver Formación', 'flavor-chat-ia'),
+                'description' => __('Consulta cursos y talleres disponibles', 'flavor-chat-ia'),
+                'callback' => [$this, 'action_ver_formacion'],
+            ],
+        ];
+    }
+
+    /**
+     * Acción: Buscar empleo
+     */
+    public function action_buscar_empleo($params) {
+        $sector = $params['sector'] ?? '';
+        $tipo = $params['tipo'] ?? '';
+
+        $args = [
+            'post_type' => 'td_oferta',
+            'post_status' => 'publish',
+            'posts_per_page' => 5,
+        ];
+
+        if ($sector) {
+            $args['tax_query'] = [
+                ['taxonomy' => 'td_sector', 'field' => 'slug', 'terms' => $sector]
+            ];
+        }
+
+        if ($tipo) {
+            $args['meta_query'] = [
+                ['key' => '_td_tipo', 'value' => $tipo]
+            ];
+        }
+
+        $ofertas = new WP_Query($args);
+
+        $lista = [];
+        foreach ($ofertas->posts as $oferta) {
+            $tipo_data = self::TIPOS_OFERTA[get_post_meta($oferta->ID, '_td_tipo', true)] ?? ['nombre' => ''];
+            $lista[] = [
+                'titulo' => $oferta->post_title,
+                'tipo' => $tipo_data['nombre'],
+                'url' => get_permalink($oferta->ID),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => sprintf(__('Encontré %d oferta(s) de trabajo', 'flavor-chat-ia'), count($lista)),
+            'ofertas' => $lista,
+            'url_completa' => home_url('/trabajo-digno/'),
+        ];
+    }
+
+    /**
+     * Acción: Ver formación
+     */
+    public function action_ver_formacion($params) {
+        $formaciones = new WP_Query([
+            'post_type' => 'td_formacion',
+            'post_status' => 'publish',
+            'posts_per_page' => 5,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ]);
+
+        $lista = [];
+        foreach ($formaciones->posts as $formacion) {
+            $lista[] = [
+                'titulo' => $formacion->post_title,
+                'url' => get_permalink($formacion->ID),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => sprintf(__('Hay %d formación(es) disponible(s)', 'flavor-chat-ia'), count($lista)),
+            'formaciones' => $lista,
+        ];
+    }
+
+    /**
+     * Obtiene base de conocimiento
+     *
+     * @return string
+     */
+    public function get_knowledge_base(): string {
+        $stats = $this->get_estadisticas();
+
+        return sprintf(
+            __("Módulo de Trabajo Digno:\n" .
+            "- %d ofertas de empleo activas\n" .
+            "- %d formaciones disponibles\n" .
+            "- %d emprendimientos locales\n\n" .
+            "Funcionalidades:\n" .
+            "- Bolsa de empleo con criterios éticos (OIT)\n" .
+            "- Índice de dignidad para cada oferta\n" .
+            "- Formación profesional y capacitación\n" .
+            "- Directorio de emprendimientos locales\n" .
+            "- Perfiles profesionales y postulaciones", 'flavor-chat-ia'),
+            $stats['ofertas_activas'],
+            $stats['formaciones_disponibles'],
+            $stats['emprendimientos_locales']
+        );
+    }
+
+    /**
+     * Obtiene FAQs
+     *
+     * @return array
+     */
+    public function get_faqs(): array {
+        return [
+            [
+                'pregunta' => __('¿Qué es el índice de dignidad?', 'flavor-chat-ia'),
+                'respuesta' => __('Es un indicador que muestra cuántos criterios de trabajo digno cumple una oferta (salario justo, conciliación, igualdad, etc.).', 'flavor-chat-ia'),
+            ],
+            [
+                'pregunta' => __('¿Cómo publico una oferta de empleo?', 'flavor-chat-ia'),
+                'respuesta' => __('Ve a Trabajo Digno > Publicar Oferta. Completa el formulario incluyendo los criterios de dignidad que ofreces.', 'flavor-chat-ia'),
+            ],
+            [
+                'pregunta' => __('¿Cómo postulo a una oferta?', 'flavor-chat-ia'),
+                'respuesta' => __('Desde la ficha de la oferta, haz clic en "Postular". Puedes adjuntar un mensaje de presentación.', 'flavor-chat-ia'),
+            ],
+            [
+                'pregunta' => __('¿Puedo registrar mi emprendimiento?', 'flavor-chat-ia'),
+                'respuesta' => __('Sí, en la sección de Emprendimientos puedes registrar tu proyecto o empresa local.', 'flavor-chat-ia'),
+            ],
+        ];
+    }
+}

@@ -359,6 +359,42 @@ class Flavor_Chat_Module_Loader {
                 'file' => $modules_path . 'email-marketing/class-email-marketing-module.php',
                 'class' => 'Flavor_Chat_Email_Marketing_Module',
             ],
+            'sello_conciencia' => [
+                'file' => $modules_path . 'sello-conciencia/class-sello-conciencia-module.php',
+                'class' => 'Flavor_Chat_Sello_Conciencia_Module',
+            ],
+            'circulos_cuidados' => [
+                'file' => $modules_path . 'circulos-cuidados/class-circulos-cuidados-module.php',
+                'class' => 'Flavor_Chat_Circulos_Cuidados_Module',
+            ],
+            'economia_don' => [
+                'file' => $modules_path . 'economia-don/class-economia-don-module.php',
+                'class' => 'Flavor_Chat_Economia_Don_Module',
+            ],
+            'justicia_restaurativa' => [
+                'file' => $modules_path . 'justicia-restaurativa/class-justicia-restaurativa-module.php',
+                'class' => 'Flavor_Chat_Justicia_Restaurativa_Module',
+            ],
+            'huella_ecologica' => [
+                'file' => $modules_path . 'huella-ecologica/class-huella-ecologica-module.php',
+                'class' => 'Flavor_Chat_Huella_Ecologica_Module',
+            ],
+            'economia_suficiencia' => [
+                'file' => $modules_path . 'economia-suficiencia/class-economia-suficiencia-module.php',
+                'class' => 'Flavor_Chat_Economia_Suficiencia_Module',
+            ],
+            'saberes_ancestrales' => [
+                'file' => $modules_path . 'saberes-ancestrales/class-saberes-ancestrales-module.php',
+                'class' => 'Flavor_Chat_Saberes_Ancestrales_Module',
+            ],
+            'biodiversidad_local' => [
+                'file' => $modules_path . 'biodiversidad-local/class-biodiversidad-local-module.php',
+                'class' => 'Flavor_Chat_Biodiversidad_Local_Module',
+            ],
+            'trabajo_digno' => [
+                'file' => $modules_path . 'trabajo-digno/class-trabajo-digno-module.php',
+                'class' => 'Flavor_Chat_Trabajo_Digno_Module',
+            ],
         ];
 
         foreach ($builtin_modules as $id => $module) {

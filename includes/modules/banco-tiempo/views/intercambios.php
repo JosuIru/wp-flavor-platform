@@ -57,12 +57,12 @@ if ($filtro_estado) {
 }
 
 if ($filtro_fecha_desde) {
-    $where[] = "DATE(t.fecha_creacion) >= %s";
+    $where[] = "DATE(t.fecha_solicitud) >= %s";
     $preparar[] = $filtro_fecha_desde;
 }
 
 if ($filtro_fecha_hasta) {
-    $where[] = "DATE(t.fecha_creacion) <= %s";
+    $where[] = "DATE(t.fecha_solicitud) <= %s";
     $preparar[] = $filtro_fecha_hasta;
 }
 
@@ -89,7 +89,7 @@ if (count($preparar_paginado) > 2) {
          FROM $tabla_transacciones t
          LEFT JOIN $tabla_servicios s ON t.servicio_id = s.id
          WHERE $where_sql
-         ORDER BY t.fecha_creacion DESC
+         ORDER BY t.fecha_solicitud DESC
          LIMIT %d OFFSET %d",
         ...$preparar_paginado
     ));
@@ -99,7 +99,7 @@ if (count($preparar_paginado) > 2) {
          FROM $tabla_transacciones t
          LEFT JOIN $tabla_servicios s ON t.servicio_id = s.id
          WHERE $where_sql
-         ORDER BY t.fecha_creacion DESC
+         ORDER BY t.fecha_solicitud DESC
          LIMIT %d OFFSET %d",
         $items_por_pagina,
         $offset
@@ -161,7 +161,7 @@ $stats = [
     <div class="tablenav top">
         <div class="alignleft actions">
             <form method="get" style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
+                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? ''); ?>">
 
                 <select name="estado">
                     <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
@@ -180,7 +180,7 @@ $stats = [
                 <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
 
                 <?php if ($filtro_estado || $filtro_fecha_desde || $filtro_fecha_hasta): ?>
-                    <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
                 <?php endif; ?>
 
                 <button type="button" class="button" id="btn-exportar-csv">

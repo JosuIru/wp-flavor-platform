@@ -145,6 +145,11 @@ class Flavor_Page_Creator_V3 {
      * @return int|WP_Error ID de la página creada o error
      */
     private function create_or_update_page($module_id, $page_data) {
+        // Verificar si la creación de páginas está deshabilitada
+        if (get_option('flavor_pages_creation_disabled')) {
+            return 0;
+        }
+
         // Validar datos requeridos
         if (empty($page_data['title']) || empty($page_data['slug'])) {
             error_log("[Page Creator V3] Error: página sin título o slug en módulo {$module_id}");

@@ -1350,6 +1350,10 @@ class Flavor_Page_Creator {
      * @return array
      */
     public static function refresh_module_pages($module_id) {
+        // DESACTIVADO: Evitar recreación automática de páginas
+        // Las páginas se deben crear manualmente desde el admin
+        return ['created' => [], 'updated' => [], 'skipped' => []];
+
         $module_id = self::normalize_module_id($module_id);
         self::ensure_wp_post_revisions_constant();
         $pages_data = self::get_pages_for_modules([$module_id]);
@@ -1431,6 +1435,9 @@ class Flavor_Page_Creator {
      * @return array
      */
     public static function create_pages_for_modules($module_ids) {
+        // DESACTIVADO: Evitar creación automática de páginas
+        return ['created' => [], 'errors' => []];
+
         self::ensure_wp_post_revisions_constant();
         $pages_data = self::get_pages_for_modules($module_ids);
         return self::create_pages_from_list($pages_data);

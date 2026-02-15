@@ -66,42 +66,99 @@
 }
 
 /* ==========================================================================
-   Tabs
+   Tabs - Reset jQuery UI y estilos personalizados
    ========================================================================== */
 
 .flavor-admin-tabs {
     background: white;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: none !important;
 }
 
-.flavor-admin-tabs .ui-tabs-nav {
+/* Reset jQuery UI borders */
+.flavor-admin-tabs.ui-tabs {
+    padding: 0;
+    border: none;
+}
+
+.flavor-admin-tabs .ui-tabs-nav,
+.flavor-admin-tabs > ul {
     background: #f9f9f9;
-    border-bottom: 2px solid #0073aa;
+    border: none !important;
+    border-bottom: 2px solid #0073aa !important;
     border-radius: 8px 8px 0 0;
     padding: 10px 20px 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.flavor-admin-tabs .ui-tabs-nav li {
+.flavor-admin-tabs .ui-tabs-nav li,
+.flavor-admin-tabs > ul > li {
     margin: 0 5px -2px 0;
+    border: none !important;
+    background: transparent !important;
+    float: none;
+    display: inline-block;
 }
 
-.flavor-admin-tabs .ui-tabs-nav li a {
+.flavor-admin-tabs .ui-tabs-nav li a,
+.flavor-admin-tabs > ul > li > a {
     padding: 12px 20px;
     font-weight: 600;
     color: #666;
     text-decoration: none;
     border-radius: 8px 8px 0 0;
+    display: block;
+    background: transparent;
+    border: none !important;
+    outline: none;
 }
 
-.flavor-admin-tabs .ui-tabs-nav li.ui-tabs-active a {
-    background: white;
+.flavor-admin-tabs .ui-tabs-nav li a:hover,
+.flavor-admin-tabs > ul > li > a:hover {
+    background: rgba(0, 115, 170, 0.1);
     color: #0073aa;
-    border-bottom: 3px solid #0073aa;
 }
 
-.flavor-admin-tabs .ui-tabs-panel {
+.flavor-admin-tabs .ui-tabs-nav li.ui-tabs-active,
+.flavor-admin-tabs .ui-tabs-nav li.ui-state-active,
+.flavor-admin-tabs > ul > li.ui-tabs-active {
+    background: white !important;
+    border: none !important;
+    margin-bottom: -2px;
+}
+
+.flavor-admin-tabs .ui-tabs-nav li.ui-tabs-active a,
+.flavor-admin-tabs .ui-tabs-nav li.ui-state-active a,
+.flavor-admin-tabs > ul > li.ui-tabs-active > a {
+    background: white !important;
+    color: #0073aa;
+    border-bottom: 3px solid #0073aa !important;
+}
+
+.flavor-admin-tabs .ui-tabs-panel,
+.flavor-admin-tabs > div:not(.ui-tabs-nav) {
     padding: 30px;
+    border: none !important;
+    background: white;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Ocultar paneles inactivos cuando jQuery UI no funciona */
+.flavor-admin-tabs > div[id^="tab-"] {
+    display: none;
+}
+
+.flavor-admin-tabs > div[id^="tab-"].ui-tabs-panel {
+    display: block;
+}
+
+/* Fallback: mostrar primer tab si jQuery UI no carga */
+.flavor-admin-tabs:not(.ui-tabs) > div[id^="tab-"]:first-of-type {
+    display: block;
 }
 
 /* ==========================================================================

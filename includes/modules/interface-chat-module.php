@@ -183,6 +183,15 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
     }
 
     /**
+     * Obtiene toda la configuración del módulo
+     *
+     * @return array
+     */
+    public function get_settings() {
+        return $this->settings;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function get_id() {

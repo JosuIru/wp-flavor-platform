@@ -162,7 +162,7 @@ $categorias = [
     <div class="tablenav top">
         <div class="alignleft actions">
             <form method="get" style="display: inline-flex; gap: 8px; align-items: center;">
-                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
+                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? ''); ?>">
 
                 <select name="categoria" id="filter-categoria">
                     <option value=""><?php echo esc_html__('Todas las categorías', 'flavor-chat-ia'); ?></option>
@@ -183,14 +183,14 @@ $categorias = [
                 <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
 
                 <?php if ($filtro_categoria || $filtro_estado || $filtro_busqueda): ?>
-                    <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
                 <?php endif; ?>
             </form>
         </div>
 
         <div class="alignright actions">
             <form method="get" style="display: inline-flex; gap: 8px;">
-                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
+                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? ''); ?>">
                 <input type="search" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>"
                        placeholder="<?php echo esc_attr__('Buscar servicios...', 'flavor-chat-ia'); ?>">
                 <button type="submit" class="button"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></button>

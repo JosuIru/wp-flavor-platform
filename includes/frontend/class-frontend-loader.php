@@ -87,6 +87,12 @@ class Flavor_Frontend_Loader {
         // Cargar shortcode de landing pages
         require_once $base_path . 'class-landing-shortcode.php';
 
+        // Cargar sistema de CRUD dinámico
+        require_once $base_path . 'class-dynamic-crud.php';
+
+        // Cargar sistema de páginas dinámicas
+        require_once $base_path . 'class-dynamic-pages.php';
+
         // Cargar todos los controladores
         foreach ($this->module_map as $slug => $class) {
             $file = $controllers_path . 'class-' . $slug . '-controller.php';
@@ -100,6 +106,15 @@ class Flavor_Frontend_Loader {
      * Inicializa los controladores activos
      */
     private function init_controllers() {
+        // Inicializar sistemas dinámicos primero
+        if (class_exists('Flavor_Dynamic_CRUD')) {
+            Flavor_Dynamic_CRUD::get_instance();
+        }
+
+        if (class_exists('Flavor_Dynamic_Pages')) {
+            Flavor_Dynamic_Pages::get_instance();
+        }
+
         // Obtener módulos activos desde la configuración
         $settings = get_option('flavor_chat_ia_settings', []);
         $modulos_activos = $settings['active_modules'] ?? [];

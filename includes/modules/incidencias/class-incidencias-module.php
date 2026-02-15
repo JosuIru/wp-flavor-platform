@@ -256,6 +256,9 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
 
+        // Cargar funcionalidades del Sello de Conciencia (+13 pts)
+        $this->cargar_funcionalidades_conciencia();
+
         // AJAX handlers públicos
         add_action('wp_ajax_incidencias_reportar', [$this, 'ajax_reportar_incidencia']);
         add_action('wp_ajax_nopriv_incidencias_reportar', [$this, 'ajax_reportar_incidencia']);
@@ -288,6 +291,20 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         add_action('flavor_incidencias_estadisticas_diarias', [$this, 'calcular_estadisticas_diarias']);
         if (!wp_next_scheduled('flavor_incidencias_estadisticas_diarias')) {
             wp_schedule_event(time(), 'daily', 'flavor_incidencias_estadisticas_diarias');
+        }
+    }
+
+    /**
+     * Cargar funcionalidades de Sello de Conciencia para Incidencias
+     * +13 puntos: Monitoreo ambiental, alertas comunitarias, voluntariado, gamificación
+     */
+    private function cargar_funcionalidades_conciencia() {
+        $archivo_conciencia = dirname(__FILE__) . '/class-incidencias-conciencia-features.php';
+        if (file_exists($archivo_conciencia)) {
+            require_once $archivo_conciencia;
+            if (class_exists('Flavor_Incidencias_Conciencia_Features')) {
+                Flavor_Incidencias_Conciencia_Features::get_instance();
+            }
         }
     }
 

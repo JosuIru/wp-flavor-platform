@@ -65,6 +65,23 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+
+        // Cargar funcionalidades del Sello de Conciencia (+12 pts)
+        $this->cargar_funcionalidades_conciencia();
+    }
+
+    /**
+     * Cargar funcionalidades de Sello de Conciencia para Eventos
+     * +12 puntos: Eventos inclusivos, huella de carbono, voluntariado, colaboraciones
+     */
+    private function cargar_funcionalidades_conciencia() {
+        $archivo_conciencia = dirname(__FILE__) . '/class-eventos-conciencia-features.php';
+        if (file_exists($archivo_conciencia)) {
+            require_once $archivo_conciencia;
+            if (class_exists('Flavor_Eventos_Conciencia_Features')) {
+                Flavor_Eventos_Conciencia_Features::get_instance();
+            }
+        }
     }
 
     /**

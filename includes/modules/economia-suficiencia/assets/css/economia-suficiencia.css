@@ -1,0 +1,840 @@
+/**
+ * Economía de Suficiencia - Estilos
+ *
+ * @package FlavorChatIA
+ */
+
+/* ============================================
+   Variables
+   ============================================ */
+:root {
+    --es-primary: #27ae60;
+    --es-secondary: #2ecc71;
+    --es-accent: #16a085;
+    --es-warm: #f39c12;
+    --es-calm: #3498db;
+
+    --es-bg: #f5faf7;
+    --es-bg-card: #ffffff;
+    --es-border: #d4e8d4;
+    --es-text: #2c3e2c;
+    --es-text-light: #6b7c6b;
+    --es-radius: 16px;
+    --es-shadow: 0 4px 12px rgba(39, 174, 96, 0.08);
+    --es-shadow-hover: 0 8px 24px rgba(39, 174, 96, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --es-bg: #1a261a;
+        --es-bg-card: #223322;
+        --es-border: #3a4f3a;
+        --es-text: #d4e8d4;
+        --es-text-light: #8fa88f;
+    }
+}
+
+/* ============================================
+   Layout Base
+   ============================================ */
+.es-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.es-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.es-header h2 {
+    font-size: 2rem;
+    color: var(--es-primary);
+    margin: 0 0 0.75rem;
+}
+
+.es-header p {
+    color: var(--es-text-light);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   Cards
+   ============================================ */
+.es-card {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    padding: 1.5rem;
+    box-shadow: var(--es-shadow);
+    transition: all 0.3s ease;
+}
+
+.es-card:hover {
+    box-shadow: var(--es-shadow-hover);
+    transform: translateY(-2px);
+}
+
+.es-card--destacado {
+    background: linear-gradient(135deg, var(--es-primary), var(--es-secondary));
+    color: white;
+}
+
+/* ============================================
+   Sección Intro / Principios
+   ============================================ */
+.es-principios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.es-principio {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    padding: 2rem;
+    text-align: center;
+    border-left: 4px solid var(--es-primary);
+    box-shadow: var(--es-shadow);
+}
+
+.es-principio__icono {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.es-principio__titulo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+    color: var(--es-text);
+}
+
+.es-principio__descripcion {
+    color: var(--es-text-light);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ============================================
+   Evaluación de Necesidades
+   ============================================ */
+.es-evaluacion {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    padding: 2rem;
+    box-shadow: var(--es-shadow);
+}
+
+.es-necesidad-item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--es-border);
+}
+
+.es-necesidad-item:last-child {
+    border-bottom: none;
+}
+
+.es-necesidad__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.es-necesidad__icono {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.es-necesidad__info h4 {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+}
+
+.es-necesidad__info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--es-text-light);
+}
+
+.es-necesidad__escala {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.es-escala-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid var(--es-border);
+    background: var(--es-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.es-escala-btn:hover {
+    border-color: var(--es-primary);
+}
+
+.es-escala-btn.seleccionado {
+    background: var(--es-primary);
+    border-color: var(--es-primary);
+    color: white;
+}
+
+.es-escala-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--es-text-light);
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   Compromisos
+   ============================================ */
+.es-compromisos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.es-compromiso-card {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    padding: 1.5rem;
+    box-shadow: var(--es-shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.es-compromiso-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--es-shadow-hover);
+}
+
+.es-compromiso-card.seleccionado {
+    border-color: var(--es-primary);
+    background: color-mix(in srgb, var(--es-primary) 5%, var(--es-bg-card));
+}
+
+.es-compromiso-card__icono {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--es-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--es-primary);
+    font-size: 1.5rem;
+}
+
+.es-compromiso-card__nombre {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+}
+
+.es-compromiso-card__descripcion {
+    font-size: 0.9rem;
+    color: var(--es-text-light);
+    margin: 0;
+}
+
+/* Mis compromisos activos */
+.es-mis-compromisos {
+    margin-top: 2rem;
+}
+
+.es-compromiso-activo {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--es-shadow);
+}
+
+.es-compromiso-activo__progreso {
+    flex: 1;
+}
+
+.es-compromiso-activo__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.es-compromiso-activo__nombre {
+    font-weight: 600;
+}
+
+.es-compromiso-activo__dias {
+    font-size: 0.9rem;
+    color: var(--es-text-light);
+}
+
+.es-progreso-bar {
+    height: 8px;
+    background: var(--es-bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.es-progreso-bar__fill {
+    height: 100%;
+    background: var(--es-primary);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.es-compromiso-activo__accion {
+    flex-shrink: 0;
+}
+
+/* ============================================
+   Biblioteca de Objetos
+   ============================================ */
+.es-biblioteca-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.es-biblioteca-filtros {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.es-filtro-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 2rem;
+    background: var(--es-bg);
+    color: var(--es-text-light);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.es-filtro-btn:hover,
+.es-filtro-btn.activo {
+    background: var(--es-primary);
+    color: white;
+}
+
+.es-biblioteca-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.es-recurso-card {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    overflow: hidden;
+    box-shadow: var(--es-shadow);
+    transition: all 0.3s ease;
+}
+
+.es-recurso-card:hover {
+    box-shadow: var(--es-shadow-hover);
+    transform: translateY(-3px);
+}
+
+.es-recurso-card__imagen {
+    height: 140px;
+    background: var(--es-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--es-text-light);
+}
+
+.es-recurso-card__imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.es-recurso-card__body {
+    padding: 1.25rem;
+}
+
+.es-recurso-card__nombre {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem;
+}
+
+.es-recurso-card__descripcion {
+    font-size: 0.9rem;
+    color: var(--es-text-light);
+    margin: 0 0 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.es-recurso-card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--es-border);
+}
+
+.es-recurso-card__propietario {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.es-recurso-card__propietario img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.es-estado-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.es-estado-badge--disponible {
+    background: color-mix(in srgb, var(--es-primary) 15%, #fff);
+    color: var(--es-primary);
+}
+
+.es-estado-badge--prestado {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* ============================================
+   Mi Camino
+   ============================================ */
+.es-nivel-card {
+    background: linear-gradient(135deg, var(--es-primary), var(--es-secondary));
+    border-radius: var(--es-radius);
+    padding: 2rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.es-nivel-card__icono {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+}
+
+.es-nivel-card__nombre {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.es-nivel-card__descripcion {
+    opacity: 0.9;
+    margin: 0 0 1.5rem;
+}
+
+.es-nivel-card__puntos {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.es-nivel-card__puntos-item {
+    text-align: center;
+}
+
+.es-nivel-card__puntos-valor {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.es-nivel-card__puntos-label {
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+.es-progreso-nivel {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.3);
+}
+
+.es-progreso-nivel__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.es-progreso-nivel__bar {
+    height: 12px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.es-progreso-nivel__fill {
+    height: 100%;
+    background: white;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+}
+
+/* Stats grid */
+.es-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.es-stat-card {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    padding: 1.25rem;
+    text-align: center;
+    box-shadow: var(--es-shadow);
+}
+
+.es-stat-card__icono {
+    font-size: 1.5rem;
+    color: var(--es-primary);
+    margin-bottom: 0.5rem;
+}
+
+.es-stat-card__valor {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--es-text);
+}
+
+.es-stat-card__label {
+    font-size: 0.85rem;
+    color: var(--es-text-light);
+}
+
+/* Radar de necesidades */
+.es-necesidades-radar {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    padding: 1.5rem;
+    box-shadow: var(--es-shadow);
+}
+
+.es-necesidades-radar h3 {
+    margin: 0 0 1.5rem;
+    text-align: center;
+}
+
+.es-radar-visual {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.es-radar-item {
+    text-align: center;
+}
+
+.es-radar-item__barra {
+    height: 80px;
+    background: var(--es-bg);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.es-radar-item__fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--es-primary);
+    border-radius: 4px;
+    transition: height 0.5s ease;
+}
+
+.es-radar-item__label {
+    font-size: 0.8rem;
+    color: var(--es-text-light);
+}
+
+/* ============================================
+   Formularios
+   ============================================ */
+.es-form-grupo {
+    margin-bottom: 1.25rem;
+}
+
+.es-form-grupo label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.es-form-grupo input,
+.es-form-grupo select,
+.es-form-grupo textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--es-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--es-bg-card);
+    color: var(--es-text);
+    transition: border-color 0.2s ease;
+}
+
+.es-form-grupo input:focus,
+.es-form-grupo select:focus,
+.es-form-grupo textarea:focus {
+    outline: none;
+    border-color: var(--es-primary);
+}
+
+/* ============================================
+   Botones
+   ============================================ */
+.es-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.es-btn--primary {
+    background: var(--es-primary);
+    color: white;
+}
+
+.es-btn--primary:hover {
+    background: #219a52;
+    transform: translateY(-1px);
+}
+
+.es-btn--secondary {
+    background: var(--es-bg);
+    color: var(--es-primary);
+    border: 2px solid var(--es-primary);
+}
+
+.es-btn--secondary:hover {
+    background: var(--es-primary);
+    color: white;
+}
+
+.es-btn--small {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.es-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   Modal
+   ============================================ */
+.es-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.es-modal.activo {
+    display: flex;
+}
+
+.es-modal__contenido {
+    background: var(--es-bg-card);
+    border-radius: var(--es-radius);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.es-modal__header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--es-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.es-modal__header h3 {
+    margin: 0;
+}
+
+.es-modal__cerrar {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--es-text-light);
+}
+
+.es-modal__body {
+    padding: 1.5rem;
+}
+
+.es-modal__footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--es-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+/* ============================================
+   Empty State
+   ============================================ */
+.es-empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--es-text-light);
+}
+
+.es-empty-state .dashicons {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* ============================================
+   Cita inspiradora
+   ============================================ */
+.es-cita {
+    background: var(--es-bg);
+    border-radius: var(--es-radius);
+    padding: 2rem;
+    text-align: center;
+    margin: 2rem 0;
+    font-style: italic;
+    position: relative;
+}
+
+.es-cita::before {
+    content: '"';
+    position: absolute;
+    top: 0.5rem;
+    left: 1.5rem;
+    font-size: 4rem;
+    color: var(--es-primary);
+    opacity: 0.2;
+    font-family: Georgia, serif;
+}
+
+.es-cita__texto {
+    font-size: 1.25rem;
+    color: var(--es-text);
+    margin: 0 0 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.es-cita__autor {
+    color: var(--es-text-light);
+    font-style: normal;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+    .es-container {
+        padding: 1rem;
+    }
+
+    .es-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .es-principios-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .es-biblioteca-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .es-radar-visual {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+
+    .es-necesidad__escala {
+        flex-wrap: wrap;
+    }
+
+    .es-escala-btn {
+        flex: 1 1 auto;
+        min-width: calc(20% - 0.5rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .es-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .es-compromisos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .es-biblioteca-grid {
+        grid-template-columns: 1fr;
+    }
+}

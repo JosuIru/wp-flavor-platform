@@ -1,0 +1,706 @@
+/**
+ * Economía del Don - Estilos
+ *
+ * @package FlavorChatIA
+ */
+
+:root {
+    --ed-primary: #e74c3c;
+    --ed-secondary: #9b59b6;
+    --ed-success: #27ae60;
+    --ed-warning: #f39c12;
+    --ed-text: #2c3e50;
+    --ed-text-light: #7f8c8d;
+    --ed-border: #ecf0f1;
+    --ed-bg: #f8f9fa;
+    --ed-radius: 12px;
+    --ed-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LISTADO DE DONES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ed-listado {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.ed-listado__header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.ed-listado__header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ed-text);
+    margin: 0 0 0.5rem;
+}
+
+.ed-listado__header p {
+    font-size: 1.125rem;
+    color: var(--ed-text-light);
+    margin: 0;
+}
+
+/* Filtros */
+.ed-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.ed-filtro-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--ed-border);
+    border-radius: 20px;
+    background: #fff;
+    color: var(--ed-text);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ed-filtro-btn:hover,
+.ed-filtro-btn.is-active {
+    background: var(--ed-primary);
+    color: #fff;
+    border-color: var(--ed-primary);
+}
+
+.ed-filtro-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Grid de dones */
+.ed-listado__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TARJETA DE DON
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ed-don-card {
+    --don-color: #3498db;
+    background: #fff;
+    border-radius: var(--ed-radius);
+    box-shadow: var(--ed-shadow);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ed-don-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.ed-don-card__imagen {
+    position: relative;
+    height: 160px;
+    background: linear-gradient(135deg, var(--don-color), color-mix(in srgb, var(--don-color) 70%, #000));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ed-don-card__imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ed-don-card__imagen .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.ed-don-card__categoria {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--don-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.ed-don-card__estado {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.ed-don-card__estado--disponible {
+    background: var(--ed-success);
+    color: #fff;
+}
+
+.ed-don-card__estado--reservado {
+    background: var(--ed-warning);
+    color: #fff;
+}
+
+.ed-don-card__estado--entregado {
+    background: var(--ed-secondary);
+    color: #fff;
+}
+
+.ed-don-card__body {
+    padding: 1.25rem;
+}
+
+.ed-don-card__titulo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--ed-text);
+}
+
+.ed-don-card__titulo a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.ed-don-card__titulo a:hover {
+    color: var(--ed-primary);
+}
+
+.ed-don-card__excerpt {
+    font-size: 0.875rem;
+    color: var(--ed-text-light);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ed-don-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--ed-text-light);
+    margin-bottom: 1rem;
+}
+
+.ed-don-card__meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.ed-don-card__meta .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.ed-don-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ed-border);
+}
+
+.ed-don-card__donante {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--ed-text-light);
+}
+
+.ed-don-card__donante-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--ed-border);
+}
+
+.ed-btn-solicitar {
+    background: var(--ed-primary);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.ed-btn-solicitar:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
+}
+
+.ed-btn-solicitar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORMULARIO OFRECER DON
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ed-ofrecer-form {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: var(--ed-radius);
+    padding: 2rem;
+    box-shadow: var(--ed-shadow);
+}
+
+.ed-ofrecer-form__header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.ed-ofrecer-form__header h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem;
+    color: var(--ed-text);
+}
+
+.ed-ofrecer-form__header p {
+    color: var(--ed-text-light);
+    margin: 0;
+}
+
+.ed-form-grupo {
+    margin-bottom: 1.25rem;
+}
+
+.ed-form-grupo label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ed-text);
+    margin-bottom: 0.5rem;
+}
+
+.ed-form-grupo input,
+.ed-form-grupo textarea,
+.ed-form-grupo select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--ed-border);
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    transition: border-color 0.2s ease;
+}
+
+.ed-form-grupo input:focus,
+.ed-form-grupo textarea:focus,
+.ed-form-grupo select:focus {
+    outline: none;
+    border-color: var(--ed-primary);
+}
+
+.ed-categorias-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.ed-categoria-opcion {
+    position: relative;
+}
+
+.ed-categoria-opcion input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ed-categoria-opcion label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid var(--ed-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.ed-categoria-opcion input:checked + label {
+    border-color: var(--ed-primary);
+    background: color-mix(in srgb, var(--ed-primary) 10%, #fff);
+}
+
+.ed-categoria-opcion label .dashicons {
+    font-size: 24px;
+    margin-bottom: 0.5rem;
+    color: var(--ed-text-light);
+}
+
+.ed-categoria-opcion input:checked + label .dashicons {
+    color: var(--ed-primary);
+}
+
+.ed-categoria-opcion label span {
+    font-size: 0.75rem;
+    color: var(--ed-text);
+}
+
+.ed-checkbox-grupo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ed-checkbox-grupo input {
+    width: auto;
+}
+
+.ed-ofrecer-form__submit {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.ed-btn-publicar {
+    background: var(--ed-primary);
+    color: #fff;
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.ed-btn-publicar:hover {
+    filter: brightness(1.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MURO DE GRATITUD
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ed-muro-gratitud {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.ed-muro-gratitud__header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.ed-muro-gratitud__header h2 {
+    font-size: 2rem;
+    color: var(--ed-text);
+    margin: 0 0 0.5rem;
+}
+
+.ed-muro-gratitud__header p {
+    color: var(--ed-text-light);
+    font-size: 1.125rem;
+}
+
+.ed-gratitud-card {
+    background: #fff;
+    border-radius: var(--ed-radius);
+    padding: 1.5rem;
+    box-shadow: var(--ed-shadow);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.ed-gratitud-card::before {
+    content: '\201C';
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    font-size: 4rem;
+    color: var(--ed-primary);
+    opacity: 0.2;
+    font-family: serif;
+    line-height: 1;
+}
+
+.ed-gratitud-card__mensaje {
+    font-size: 1.0625rem;
+    color: var(--ed-text);
+    line-height: 1.6;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.ed-gratitud-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ed-border);
+}
+
+.ed-gratitud-card__autor {
+    font-size: 0.875rem;
+    color: var(--ed-text-light);
+}
+
+.ed-gratitud-card__don {
+    font-size: 0.8125rem;
+    color: var(--ed-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MIS DONES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ed-mis-dones {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.ed-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.ed-stat-box {
+    background: #fff;
+    border-radius: var(--ed-radius);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--ed-shadow);
+    border-top: 4px solid var(--ed-primary);
+}
+
+.ed-stat-box--recibidos {
+    border-top-color: var(--ed-secondary);
+}
+
+.ed-stat-box--activos {
+    border-top-color: var(--ed-success);
+}
+
+.ed-stat-box__valor {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--ed-text);
+}
+
+.ed-stat-box__label {
+    font-size: 0.875rem;
+    color: var(--ed-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODALS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ed-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.ed-modal.is-active {
+    display: flex;
+}
+
+.ed-modal__contenido {
+    background: #fff;
+    border-radius: var(--ed-radius);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.ed-modal__header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--ed-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ed-modal__titulo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.ed-modal__cerrar {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--ed-text-light);
+}
+
+.ed-modal__body {
+    padding: 1.5rem;
+}
+
+.ed-modal__footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--ed-border);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ed-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--ed-bg);
+    border-radius: var(--ed-radius);
+}
+
+.ed-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--ed-primary);
+    margin-bottom: 1rem;
+}
+
+.ed-empty-state p {
+    font-size: 1.125rem;
+    color: var(--ed-text-light);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ed-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--ed-text);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    z-index: 99999;
+    animation: ed-slideIn 0.3s ease;
+}
+
+.ed-toast--success {
+    background: var(--ed-success);
+}
+
+.ed-toast--error {
+    background: var(--ed-primary);
+}
+
+@keyframes ed-slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    .ed-categorias-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ed-stats-row {
+        grid-template-columns: 1fr;
+    }
+
+    .ed-listado__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ed-filtros {
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 0.5rem;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ed-text: #ecf0f1;
+        --ed-text-light: #95a5a6;
+        --ed-border: #34495e;
+        --ed-bg: #1a1a2e;
+    }
+
+    .ed-don-card,
+    .ed-ofrecer-form,
+    .ed-gratitud-card,
+    .ed-stat-box,
+    .ed-modal__contenido {
+        background: #16213e;
+    }
+
+    .ed-filtro-btn {
+        background: #16213e;
+        border-color: var(--ed-border);
+    }
+}

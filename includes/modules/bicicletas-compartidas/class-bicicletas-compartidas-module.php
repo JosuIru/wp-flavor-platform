@@ -1555,6 +1555,78 @@ KNOWLEDGE;
     }
 
     /**
+     * Configuración de formularios del módulo
+     *
+     * @param string $action_name Nombre de la acción
+     * @return array Configuración del formulario
+     */
+    public function get_form_config($action_name) {
+        $configs = [
+            'reservar_bicicleta' => [
+                'title' => __('Reservar Bicicleta', 'flavor-chat-ia'),
+                'description' => __('Selecciona una bicicleta para reservar', 'flavor-chat-ia'),
+                'fields' => [
+                    'bicicleta_id' => [
+                        'type' => 'select',
+                        'label' => __('Bicicleta', 'flavor-chat-ia'),
+                        'required' => true,
+                        'options' => $this->get_bicicletas_disponibles_options(),
+                    ],
+                ],
+                'submit_text' => __('Reservar', 'flavor-chat-ia'),
+                'success_message' => __('Bicicleta reservada correctamente', 'flavor-chat-ia'),
+            ],
+            'reportar_problema' => [
+                'title' => __('Reportar Problema', 'flavor-chat-ia'),
+                'description' => __('Reporta un problema con una bicicleta', 'flavor-chat-ia'),
+                'fields' => [
+                    'bicicleta_id' => [
+                        'type' => 'number',
+                        'label' => __('ID de Bicicleta', 'flavor-chat-ia'),
+                        'required' => true,
+                    ],
+                    'descripcion' => [
+                        'type' => 'textarea',
+                        'label' => __('Descripción del problema', 'flavor-chat-ia'),
+                        'required' => true,
+                        'rows' => 4,
+                    ],
+                ],
+                'submit_text' => __('Enviar Reporte', 'flavor-chat-ia'),
+                'success_message' => __('Reporte enviado correctamente', 'flavor-chat-ia'),
+            ],
+        ];
+
+        return $configs[$action_name] ?? [];
+    }
+
+    /**
+     * Obtiene opciones de bicicletas disponibles para select
+     *
+     * @return array
+     */
+    private function get_bicicletas_disponibles_options() {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_bicicletas';
+        $options = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            $bicicletas = $wpdb->get_results(
+                "SELECT id, codigo, tipo, marca FROM $tabla WHERE estado = 'disponible' ORDER BY codigo ASC LIMIT 50"
+            );
+            foreach ($bicicletas as $bici) {
+                $options[$bici->id] = sprintf('%s - %s %s', $bici->codigo, ucfirst($bici->tipo), $bici->marca);
+            }
+        }
+
+        if (empty($options)) {
+            $options[''] = __('No hay bicicletas disponibles', 'flavor-chat-ia');
+        }
+
+        return $options;
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas

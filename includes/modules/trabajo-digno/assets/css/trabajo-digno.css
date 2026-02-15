@@ -1,0 +1,741 @@
+/**
+ * Trabajo Digno - Estilos
+ *
+ * @package FlavorChatIA
+ */
+
+:root {
+    --td-primary: #3b82f6;
+    --td-primary-light: #dbeafe;
+    --td-secondary: #22c55e;
+    --td-accent: #f59e0b;
+    --td-text: #1f2937;
+    --td-text-light: #6b7280;
+    --td-border: #e5e7eb;
+    --td-bg: #f9fafb;
+    --td-card-bg: #ffffff;
+    --td-radius: 12px;
+    --td-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --td-transition: all 0.3s ease;
+}
+
+/* Container */
+.td-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Header */
+.td-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.td-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--td-text);
+    margin-bottom: 0.5rem;
+}
+
+.td-header p {
+    color: var(--td-text-light);
+    font-size: 1.1rem;
+}
+
+/* Stats Bar */
+.td-stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.5rem;
+    background: var(--td-card-bg);
+    border-radius: var(--td-radius);
+    box-shadow: var(--td-shadow);
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.td-stat-item {
+    text-align: center;
+    min-width: 100px;
+}
+
+.td-stat-item__valor {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--td-primary);
+}
+
+.td-stat-item__label {
+    font-size: 0.85rem;
+    color: var(--td-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Filters */
+.td-filtros {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+
+.td-filtros select,
+.td-filtros input {
+    padding: 0.6rem 1rem;
+    border: 2px solid var(--td-border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    min-width: 180px;
+}
+
+.td-filtros select:focus,
+.td-filtros input:focus {
+    outline: none;
+    border-color: var(--td-primary);
+}
+
+/* Tipo Tabs */
+.td-tipos-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.td-tipo-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: var(--td-card-bg);
+    border: 2px solid var(--td-border);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: var(--td-transition);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.td-tipo-tab:hover {
+    border-color: var(--td-primary);
+}
+
+.td-tipo-tab.activo {
+    background: var(--td-primary);
+    border-color: var(--td-primary);
+    color: white;
+}
+
+/* Ofertas Grid */
+.td-ofertas-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.td-oferta-card {
+    background: var(--td-card-bg);
+    border-radius: var(--td-radius);
+    box-shadow: var(--td-shadow);
+    padding: 1.5rem;
+    border-left: 4px solid var(--td-primary);
+    transition: var(--td-transition);
+}
+
+.td-oferta-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.td-oferta-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.td-oferta-card__tipo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+}
+
+.td-oferta-card__dignidad {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.td-dignidad-bar {
+    width: 60px;
+    height: 6px;
+    background: var(--td-border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.td-dignidad-bar__fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #22c55e 100%);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.td-oferta-card__titulo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--td-text);
+    margin: 0 0 0.5rem;
+}
+
+.td-oferta-card__empresa {
+    color: var(--td-text-light);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.td-oferta-card__meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: var(--td-text-light);
+    margin-bottom: 1rem;
+}
+
+.td-oferta-card__meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.td-oferta-card__criterios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.td-criterio-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 4px 10px;
+    background: var(--td-bg);
+    border-radius: 15px;
+    font-size: 0.75rem;
+    color: var(--td-text-light);
+}
+
+.td-criterio-badge .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.td-oferta-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--td-border);
+}
+
+/* Formación */
+.td-formacion-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.td-formacion-card {
+    background: var(--td-card-bg);
+    border-radius: var(--td-radius);
+    box-shadow: var(--td-shadow);
+    overflow: hidden;
+}
+
+.td-formacion-card__imagen {
+    height: 150px;
+    background: var(--td-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.td-formacion-card__imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.td-formacion-card__imagen .dashicons {
+    font-size: 48px;
+    color: var(--td-primary);
+    opacity: 0.5;
+}
+
+.td-formacion-card__body {
+    padding: 1.25rem;
+}
+
+.td-formacion-card__sector {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--td-primary);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.td-formacion-card__titulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--td-text);
+    margin-bottom: 0.5rem;
+}
+
+.td-formacion-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--td-text-light);
+    margin-bottom: 1rem;
+}
+
+.td-formacion-card__footer {
+    padding: 1rem 1.25rem;
+    background: var(--td-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Emprendimientos */
+.td-emprendimientos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.td-emprendimiento-card {
+    background: var(--td-card-bg);
+    border-radius: var(--td-radius);
+    box-shadow: var(--td-shadow);
+    padding: 1.5rem;
+}
+
+.td-emprendimiento-card__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.td-emprendimiento-card__logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: var(--td-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.td-emprendimiento-card__logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.td-emprendimiento-card__logo .dashicons {
+    font-size: 28px;
+    color: var(--td-primary);
+}
+
+.td-emprendimiento-card__nombre {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--td-text);
+    margin-bottom: 0.25rem;
+}
+
+.td-emprendimiento-card__tipo {
+    font-size: 0.85rem;
+    color: var(--td-secondary);
+    font-weight: 500;
+}
+
+.td-emprendimiento-card__descripcion {
+    color: var(--td-text-light);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* Perfil */
+.td-perfil-section {
+    background: var(--td-card-bg);
+    border-radius: var(--td-radius);
+    box-shadow: var(--td-shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.td-perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.td-perfil-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--td-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.td-perfil-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.td-perfil-avatar .dashicons {
+    font-size: 36px;
+    color: var(--td-primary);
+}
+
+.td-perfil-info h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--td-text);
+    margin-bottom: 0.25rem;
+}
+
+.td-perfil-info p {
+    color: var(--td-text-light);
+}
+
+/* Postulaciones */
+.td-postulaciones-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.td-postulacion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--td-bg);
+    border-radius: 8px;
+}
+
+.td-postulacion-item__info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--td-text);
+    margin-bottom: 0.25rem;
+}
+
+.td-postulacion-item__estado {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.td-postulacion-item__estado--pendiente {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.td-postulacion-item__estado--aceptada {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.td-postulacion-item__estado--rechazada {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Forms */
+.td-form {
+    background: var(--td-card-bg);
+    padding: 2rem;
+    border-radius: var(--td-radius);
+    box-shadow: var(--td-shadow);
+}
+
+.td-form-grupo {
+    margin-bottom: 1.5rem;
+}
+
+.td-form-grupo label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--td-text);
+}
+
+.td-form-grupo input,
+.td-form-grupo select,
+.td-form-grupo textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--td-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--td-transition);
+}
+
+.td-form-grupo input:focus,
+.td-form-grupo select:focus,
+.td-form-grupo textarea:focus {
+    outline: none;
+    border-color: var(--td-primary);
+}
+
+.td-form-grupo textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.td-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Criterios Checkboxes */
+.td-criterios-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.td-criterio-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--td-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--td-transition);
+}
+
+.td-criterio-checkbox:hover {
+    background: var(--td-primary-light);
+}
+
+.td-criterio-checkbox input {
+    width: auto;
+    margin-top: 2px;
+}
+
+.td-criterio-checkbox__info {
+    flex: 1;
+}
+
+.td-criterio-checkbox__nombre {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--td-text);
+}
+
+.td-criterio-checkbox__desc {
+    font-size: 0.8rem;
+    color: var(--td-text-light);
+}
+
+/* Buttons */
+.td-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--td-transition);
+    border: none;
+    text-decoration: none;
+}
+
+.td-btn--primary {
+    background: var(--td-primary);
+    color: white;
+}
+
+.td-btn--primary:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+.td-btn--secondary {
+    background: var(--td-bg);
+    color: var(--td-text);
+    border: 2px solid var(--td-border);
+}
+
+.td-btn--secondary:hover {
+    border-color: var(--td-primary);
+    color: var(--td-primary);
+}
+
+.td-btn--small {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* Empty State */
+.td-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--td-card-bg);
+    border-radius: var(--td-radius);
+    box-shadow: var(--td-shadow);
+}
+
+.td-empty-state .dashicons {
+    font-size: 48px;
+    color: var(--td-primary);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.td-empty-state p {
+    color: var(--td-text-light);
+    margin-bottom: 1.5rem;
+}
+
+/* Tabs */
+.td-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--td-border);
+}
+
+.td-tab {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--td-text-light);
+    position: relative;
+    transition: var(--td-transition);
+}
+
+.td-tab:hover {
+    color: var(--td-primary);
+}
+
+.td-tab.activo {
+    color: var(--td-primary);
+}
+
+.td-tab.activo::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--td-primary);
+}
+
+/* Notification */
+.td-notificacion {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    z-index: 10000;
+}
+
+.td-notificacion.mostrar {
+    transform: translateX(0);
+}
+
+.td-notificacion--success {
+    background: var(--td-secondary);
+}
+
+.td-notificacion--error {
+    background: #ef4444;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .td-container {
+        padding: 1rem;
+    }
+
+    .td-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .td-stats-bar {
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .td-stat-item__valor {
+        font-size: 1.5rem;
+    }
+
+    .td-oferta-card__header {
+        flex-direction: column;
+    }
+
+    .td-formacion-grid,
+    .td-emprendimientos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .td-form {
+        padding: 1.25rem;
+    }
+
+    .td-criterios-checkboxes {
+        grid-template-columns: 1fr;
+    }
+
+    .td-perfil-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}

@@ -139,6 +139,8 @@ class Flavor_Dashboard {
     /**
      * Registra assets del dashboard
      *
+     * Sistema de Diseño Unificado v4.1.0
+     *
      * @param string $sufijo_hook Sufijo del hook
      * @return void
      */
@@ -148,23 +150,106 @@ class Flavor_Dashboard {
             return;
         }
 
-        $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
+        $version = FLAVOR_CHAT_IA_VERSION;
+        $plugin_url = FLAVOR_CHAT_IA_URL;
 
-        // Design tokens (variables CSS base)
+        // =====================================================================
+        // CSS - Sistema de Diseño Unificado (v4.1.0)
+        // =====================================================================
+
+        // 1. Design Tokens (variables CSS base)
         wp_enqueue_style(
-            'flavor-design-tokens',
-            FLAVOR_CHAT_IA_URL . "admin/css/design-tokens{$sufijo_asset}.css",
+            'fl-design-tokens',
+            $plugin_url . 'assets/css/design-tokens.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            $version
         );
 
-        // CSS del dashboard
+        // 2. Compatibilidad con variables antiguas
         wp_enqueue_style(
-            'flavor-dashboard',
-            FLAVOR_CHAT_IA_URL . "admin/css/dashboard{$sufijo_asset}.css",
-            ['flavor-design-tokens'],
-            FLAVOR_CHAT_IA_VERSION
+            'fl-design-tokens-compat',
+            $plugin_url . 'assets/css/design-tokens-compat.css',
+            ['fl-design-tokens'],
+            $version
         );
+
+        // 3. CSS Base del dashboard
+        wp_enqueue_style(
+            'fud-dashboard-base',
+            $plugin_url . 'assets/css/dashboard-base.css',
+            ['fl-design-tokens-compat'],
+            $version
+        );
+
+        // 4. Widgets y niveles
+        wp_enqueue_style(
+            'fl-dashboard-widgets',
+            $plugin_url . 'assets/css/dashboard-widgets.css',
+            ['fud-dashboard-base'],
+            $version
+        );
+
+        // 5. Grupos y categorías
+        wp_enqueue_style(
+            'fl-dashboard-groups',
+            $plugin_url . 'assets/css/dashboard-groups.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 6. Estados visuales
+        wp_enqueue_style(
+            'fl-dashboard-states',
+            $plugin_url . 'assets/css/dashboard-states.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 7. Accesibilidad
+        wp_enqueue_style(
+            'fl-dashboard-a11y',
+            $plugin_url . 'assets/css/dashboard-a11y.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 8. Responsive
+        wp_enqueue_style(
+            'fl-dashboard-responsive',
+            $plugin_url . 'assets/css/dashboard-responsive.css',
+            ['fl-dashboard-groups'],
+            $version
+        );
+
+        // 9. Breadcrumbs
+        wp_enqueue_style(
+            'fl-breadcrumbs',
+            $plugin_url . 'assets/css/breadcrumbs.css',
+            ['fl-design-tokens'],
+            $version
+        );
+
+        // 10. CSS Componentes
+        wp_enqueue_style(
+            'fud-dashboard-components',
+            $plugin_url . 'assets/css/dashboard-components.css',
+            ['fl-dashboard-responsive'],
+            $version
+        );
+
+        // 11. Dashboard específico (legacy, si existe)
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/dashboard.css')) {
+            wp_enqueue_style(
+                'flavor-dashboard-legacy',
+                $plugin_url . 'admin/css/dashboard.css',
+                ['fud-dashboard-components'],
+                $version
+            );
+        }
+
+        // =====================================================================
+        // JavaScript
+        // =====================================================================
 
         // Chart.js para graficos
         wp_enqueue_script(
@@ -175,15 +260,35 @@ class Flavor_Dashboard {
             true
         );
 
-        // jQuery UI Sortable para widgets reordenables
+        // SortableJS
+        wp_enqueue_script(
+            'sortablejs',
+            'https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js',
+            [],
+            '1.15.2',
+            true
+        );
+
+        // Dashboard Sortable (nuevo sistema)
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/js/dashboard-sortable.js')) {
+            wp_enqueue_script(
+                'fl-dashboard-sortable',
+                $plugin_url . 'assets/js/dashboard-sortable.js',
+                ['sortablejs'],
+                $version,
+                true
+            );
+        }
+
+        // jQuery UI Sortable como fallback
         wp_enqueue_script('jquery-ui-sortable');
 
         // JavaScript del dashboard
         wp_enqueue_script(
             'flavor-dashboard-charts',
-            FLAVOR_CHAT_IA_URL . 'admin/js/dashboard-charts.js',
+            $plugin_url . 'admin/js/dashboard-charts.js',
             ['jquery', 'chartjs', 'jquery-ui-sortable'],
-            FLAVOR_CHAT_IA_VERSION,
+            $version,
             true
         );
 
@@ -194,6 +299,12 @@ class Flavor_Dashboard {
             'nonce'                => wp_create_nonce('wp_rest'),
             'ajaxNonce'            => wp_create_nonce('flavor_dashboard_nonce'),
             'intervaloActualizacion' => self::INTERVALO_ACTUALIZACION * 1000,
+            'features'             => [
+                'sortable'      => true,
+                'groups'        => true,
+                'levels'        => true,
+                'accessibility' => true,
+            ],
             'textos'               => [
                 'cargando'         => __('Cargando...', 'flavor-chat-ia'),
                 'error'            => __('Error al cargar datos', 'flavor-chat-ia'),
@@ -204,6 +315,9 @@ class Flavor_Dashboard {
                 'usuariosNuevos'   => __('Usuarios nuevos', 'flavor-chat-ia'),
                 'actividadModulo'  => __('Actividad por modulo', 'flavor-chat-ia'),
                 'distribucionRoles' => __('Distribucion de roles', 'flavor-chat-ia'),
+                'dragStart'        => __('Arrastrando widget', 'flavor-chat-ia'),
+                'dragEnd'          => __('Widget soltado', 'flavor-chat-ia'),
+                'layoutSaved'      => __('Disposición guardada', 'flavor-chat-ia'),
             ],
         ]);
     }
@@ -1263,7 +1377,15 @@ class Flavor_Dashboard {
             return $modulos_compartidos;
         }
 
+        // Verificar que las columnas necesarias existan
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $columnas = $wpdb->get_col("DESCRIBE {$tabla_contenido}", 0);
+        if (!in_array('tipo', $columnas, true) || !in_array('estado', $columnas, true)) {
+            return $modulos_compartidos;
+        }
+
         // Obtener estadisticas por tipo de contenido
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $resultados = $wpdb->get_results(
             "SELECT tipo, COUNT(*) as total,
                     SUM(CASE WHEN estado = 'activo' THEN 1 ELSE 0 END) as activos,
@@ -1567,7 +1689,7 @@ class Flavor_Dashboard {
                 $fecha_fin . ' 23:59:59'
             ));
 
-            $datos['etiquetas'][] = gmdate_i18n('M', $fecha_mes);
+            $datos['etiquetas'][] = date_i18n('M', $fecha_mes);
             $datos['actual'][] = (int) $conteo;
         }
 
@@ -1600,7 +1722,7 @@ class Flavor_Dashboard {
                 $fecha_fin . ' 23:59:59'
             ));
 
-            $datos['etiquetas'][] = gmdate_i18n('d M', strtotime($fecha_inicio));
+            $datos['etiquetas'][] = date_i18n('d M', strtotime($fecha_inicio));
             $datos['valores'][] = (int) $conteo;
         }
 

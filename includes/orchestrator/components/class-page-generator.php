@@ -41,6 +41,14 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
      * @return array Resultado de la operacion
      */
     public function instalar($plantilla_id, $definicion, $opciones = []) {
+        // Verificar si la creación de páginas está deshabilitada
+        if (get_option('flavor_pages_creation_disabled')) {
+            return $this->respuesta_exito(
+                __('Creación de páginas deshabilitada.', 'flavor-chat-ia'),
+                ['paginas_creadas' => []]
+            );
+        }
+
         $this->limpiar_mensajes();
 
         $paginas_definidas = $definicion['paginas'] ?? [];

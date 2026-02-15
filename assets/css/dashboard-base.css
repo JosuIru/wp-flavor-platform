@@ -1,0 +1,183 @@
+/**
+ * Dashboard Base CSS - Variables y Reset
+ * 
+ * @package FlavorChatIA
+ * @since 4.0.0
+ */
+
+:root {
+    /* Colores primarios */
+    --fud-primary: #4f46e5;
+    --fud-primary-hover: #4338ca;
+    --fud-primary-light: #eef2ff;
+
+    /* Colores de estado */
+    --fud-success: #10b981;
+    --fud-success-bg: #ecfdf5;
+    --fud-warning: #f59e0b;
+    --fud-warning-bg: #fffbeb;
+    --fud-danger: #ef4444;
+    --fud-danger-bg: #fef2f2;
+    --fud-info: #3b82f6;
+    --fud-info-bg: #eff6ff;
+
+    /* Colores neutros */
+    --fud-gray-50: #f8fafc;
+    --fud-gray-100: #f1f5f9;
+    --fud-gray-200: #e2e8f0;
+    --fud-gray-300: #cbd5e1;
+    --fud-gray-400: #94a3b8;
+    --fud-gray-500: #64748b;
+    --fud-gray-600: #475569;
+    --fud-gray-700: #334155;
+    --fud-gray-800: #1e293b;
+    --fud-gray-900: #0f172a;
+
+    /* Colores de fondo */
+    --fud-bg: #f8fafc;
+    --fud-bg-card: #ffffff;
+    --fud-bg-hover: #f1f5f9;
+
+    /* Colores de texto */
+    --fud-text: #1e293b;
+    --fud-text-secondary: #64748b;
+    --fud-text-muted: #94a3b8;
+
+    /* Bordes */
+    --fud-border: #e2e8f0;
+    --fud-border-strong: #cbd5e1;
+
+    /* Sombras */
+    --fud-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --fud-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --fud-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --fud-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --fud-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Espaciado */
+    --fud-space-xs: 0.25rem;
+    --fud-space-sm: 0.5rem;
+    --fud-space-md: 1rem;
+    --fud-space-lg: 1.5rem;
+    --fud-space-xl: 2rem;
+    --fud-space-2xl: 3rem;
+
+    /* Radios */
+    --fud-radius-sm: 4px;
+    --fud-radius: 8px;
+    --fud-radius-md: 12px;
+    --fud-radius-lg: 16px;
+    --fud-radius-xl: 24px;
+    --fud-radius-full: 9999px;
+
+    /* Transiciones */
+    --fud-transition-fast: 150ms ease;
+    --fud-transition: 200ms ease;
+    --fud-transition-slow: 300ms ease;
+
+    /* Z-index */
+    --fud-z-dropdown: 1000;
+    --fud-z-modal: 10000;
+    --fud-z-tooltip: 10100;
+}
+
+/* Dark Mode */
+[data-theme="dark"],
+.admin-color-flavor.dark-mode {
+    --fud-primary: #818cf8;
+    --fud-primary-hover: #a5b4fc;
+    --fud-primary-light: rgba(129, 140, 248, 0.1);
+
+    --fud-bg: #0f172a;
+    --fud-bg-card: #1e293b;
+    --fud-bg-hover: #334155;
+
+    --fud-text: #f1f5f9;
+    --fud-text-secondary: #94a3b8;
+    --fud-text-muted: #64748b;
+
+    --fud-border: #334155;
+    --fud-border-strong: #475569;
+
+    --fud-gray-50: #0f172a;
+    --fud-gray-100: #1e293b;
+    --fud-gray-200: #334155;
+    --fud-gray-800: #e2e8f0;
+    --fud-gray-900: #f8fafc;
+}
+
+/* Reset base */
+.fud-wrapper *,
+.fud-wrapper *::before,
+.fud-wrapper *::after {
+    box-sizing: border-box;
+}
+
+.fud-wrapper {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--fud-text);
+    background: var(--fud-bg);
+}
+
+/* Utilidades */
+.fud-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.fud-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Animaciones */
+@keyframes fud-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fud-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes fud-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fud-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fud-animate-spin {
+    animation: fud-spin 1s linear infinite;
+}
+
+.fud-animate-pulse {
+    animation: fud-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.fud-animate-fade-in {
+    animation: fud-fade-in 0.2s ease-out;
+}
+
+.fud-animate-slide-up {
+    animation: fud-slide-up 0.3s ease-out;
+}

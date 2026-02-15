@@ -1,0 +1,424 @@
+/**
+ * Saberes Ancestrales - Estilos
+ *
+ * @package FlavorChatIA
+ */
+
+:root {
+    --sa-primary: #8B4513;
+    --sa-secondary: #D2691E;
+    --sa-accent: #CD853F;
+    --sa-earth: #5D4037;
+    --sa-gold: #DAA520;
+
+    --sa-bg: #FDF5E6;
+    --sa-bg-card: #FFFAF0;
+    --sa-border: #DEB887;
+    --sa-text: #3E2723;
+    --sa-text-light: #6D4C41;
+    --sa-radius: 12px;
+    --sa-shadow: 0 3px 12px rgba(139, 69, 19, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --sa-bg: #2C1810;
+        --sa-bg-card: #3E2723;
+        --sa-border: #5D4037;
+        --sa-text: #EFEBE9;
+        --sa-text-light: #BCAAA4;
+    }
+}
+
+.sa-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.sa-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.sa-header h2 {
+    font-size: 2rem;
+    color: var(--sa-primary);
+    margin: 0 0 0.75rem;
+}
+
+.sa-header p {
+    color: var(--sa-text-light);
+    font-size: 1.1rem;
+}
+
+/* Cita ancestral */
+.sa-cita {
+    background: linear-gradient(135deg, var(--sa-primary), var(--sa-earth));
+    border-radius: var(--sa-radius);
+    padding: 2rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.sa-cita::before,
+.sa-cita::after {
+    content: '❧';
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0.3;
+}
+
+.sa-cita::before { top: 1rem; left: 1.5rem; }
+.sa-cita::after { bottom: 1rem; right: 1.5rem; }
+
+.sa-cita__texto {
+    font-size: 1.25rem;
+    font-style: italic;
+    margin: 0 0 0.75rem;
+}
+
+.sa-cita__autor {
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+/* Grid de saberes */
+.sa-saberes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.sa-saber-card {
+    background: var(--sa-bg-card);
+    border-radius: var(--sa-radius);
+    overflow: hidden;
+    box-shadow: var(--sa-shadow);
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--sa-primary);
+}
+
+.sa-saber-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.15);
+}
+
+.sa-saber-card__imagen {
+    height: 160px;
+    background: linear-gradient(135deg, var(--sa-primary), var(--sa-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+}
+
+.sa-saber-card__imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sa-saber-card__body {
+    padding: 1.25rem;
+}
+
+.sa-saber-card__categoria {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--sa-bg);
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    color: var(--sa-primary);
+    margin-bottom: 0.5rem;
+}
+
+.sa-saber-card__titulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--sa-text);
+}
+
+.sa-saber-card__extracto {
+    font-size: 0.9rem;
+    color: var(--sa-text-light);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.sa-saber-card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sa-border);
+    font-size: 0.85rem;
+    color: var(--sa-text-light);
+}
+
+.sa-saber-card__agradecimientos {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.sa-saber-card__agradecimientos:hover {
+    color: var(--sa-gold);
+}
+
+/* Portadores */
+.sa-portadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.sa-portador-card {
+    background: var(--sa-bg-card);
+    border-radius: var(--sa-radius);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--sa-shadow);
+}
+
+.sa-portador-card__avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--sa-accent);
+    margin-bottom: 1rem;
+}
+
+.sa-portador-card__nombre {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+}
+
+.sa-portador-card__origen {
+    font-size: 0.9rem;
+    color: var(--sa-text-light);
+    margin-bottom: 0.75rem;
+}
+
+.sa-portador-card__saberes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.sa-portador-card__saber-tag {
+    padding: 0.25rem 0.5rem;
+    background: var(--sa-bg);
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* Talleres */
+.sa-talleres-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.sa-taller-card {
+    background: var(--sa-bg-card);
+    border-radius: var(--sa-radius);
+    overflow: hidden;
+    box-shadow: var(--sa-shadow);
+}
+
+.sa-taller-card__header {
+    background: linear-gradient(135deg, var(--sa-primary), var(--sa-secondary));
+    padding: 1.25rem;
+    color: white;
+}
+
+.sa-taller-card__fecha {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.sa-taller-card__titulo {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.sa-taller-card__body {
+    padding: 1.25rem;
+}
+
+.sa-taller-card__descripcion {
+    font-size: 0.95rem;
+    color: var(--sa-text-light);
+    margin-bottom: 1rem;
+}
+
+.sa-taller-card__meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--sa-text-light);
+}
+
+.sa-taller-card__footer {
+    padding: 1rem 1.25rem;
+    background: var(--sa-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sa-plazas {
+    font-size: 0.9rem;
+}
+
+.sa-plazas--pocas {
+    color: #e74c3c;
+    font-weight: 500;
+}
+
+/* Categorías */
+.sa-categorias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.sa-categoria-btn {
+    background: var(--sa-bg-card);
+    border: 2px solid var(--sa-border);
+    border-radius: var(--sa-radius);
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sa-categoria-btn:hover,
+.sa-categoria-btn.activo {
+    border-color: var(--sa-primary);
+    background: color-mix(in srgb, var(--sa-primary) 10%, var(--sa-bg-card));
+}
+
+.sa-categoria-btn__icono {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.sa-categoria-btn__nombre {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Formularios */
+.sa-form {
+    background: var(--sa-bg-card);
+    border-radius: var(--sa-radius);
+    padding: 2rem;
+    box-shadow: var(--sa-shadow);
+}
+
+.sa-form-grupo {
+    margin-bottom: 1.25rem;
+}
+
+.sa-form-grupo label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--sa-text);
+}
+
+.sa-form-grupo input,
+.sa-form-grupo select,
+.sa-form-grupo textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--sa-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--sa-bg);
+    color: var(--sa-text);
+}
+
+.sa-form-grupo input:focus,
+.sa-form-grupo select:focus,
+.sa-form-grupo textarea:focus {
+    outline: none;
+    border-color: var(--sa-primary);
+}
+
+/* Botones */
+.sa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sa-btn--primary {
+    background: var(--sa-primary);
+    color: white;
+}
+
+.sa-btn--primary:hover {
+    background: var(--sa-earth);
+}
+
+.sa-btn--secondary {
+    background: var(--sa-bg);
+    color: var(--sa-primary);
+    border: 2px solid var(--sa-primary);
+}
+
+.sa-btn--small {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* Empty state */
+.sa-empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--sa-text-light);
+}
+
+.sa-empty-state .dashicons {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sa-container { padding: 1rem; }
+    .sa-saberes-grid { grid-template-columns: 1fr; }
+    .sa-categorias-grid { grid-template-columns: repeat(3, 1fr); }
+}

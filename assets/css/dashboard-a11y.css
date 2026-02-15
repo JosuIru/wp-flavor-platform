@@ -1,0 +1,467 @@
+/**
+ * Dashboard Accessibility - Estilos de Accesibilidad WCAG 2.1 AA
+ *
+ * Este archivo implementa:
+ * - Focus visible mejorado
+ * - Skip links para navegacion rapida
+ * - Clases screen-reader-only
+ * - Soporte para reduced-motion
+ * - Alto contraste
+ * - Indicadores de estado accesibles
+ *
+ * @package FlavorChatIA
+ * @since 4.1.0
+ * @see https://www.w3.org/WAI/WCAG21/quickref/
+ */
+
+/* =========================================================================
+ * SKIP LINKS - Navegacion rapida por teclado
+ * ========================================================================= */
+
+.fl-skip-links {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.fl-skip-link {
+    position: fixed;
+    top: -100%;
+    left: var(--fl-space-4);
+    z-index: var(--fl-z-toast);
+    padding: var(--fl-space-3) var(--fl-space-4);
+    font-size: var(--fl-font-size-sm);
+    font-weight: var(--fl-font-weight-semibold);
+    color: var(--fl-white);
+    background: var(--fl-gray-900);
+    border-radius: var(--fl-radius-md);
+    text-decoration: none;
+    box-shadow: var(--fl-shadow-lg);
+    transition: top var(--fl-transition-fast);
+}
+
+.fl-skip-link:focus {
+    top: var(--fl-space-4);
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+}
+
+/* =========================================================================
+ * SCREEN READER ONLY - Contenido solo para lectores de pantalla
+ * ========================================================================= */
+
+.fl-sr-only,
+.fl-visually-hidden,
+.screen-reader-text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Variante que permite mostrar al focus */
+.fl-sr-only-focusable:focus,
+.fl-sr-only-focusable:active {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+}
+
+/* =========================================================================
+ * FOCUS VISIBLE - Indicadores de foco mejorados
+ * ========================================================================= */
+
+/* Eliminar outline por defecto del navegador */
+*:focus {
+    outline: none;
+}
+
+/* Focus visible para todos los elementos interactivos */
+*:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+}
+
+/* Focus visible especifico para widgets */
+.fl-widget:focus-visible,
+.fud-widget:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+    box-shadow: var(--fl-shadow-widget-hover), 0 0 0 4px var(--fl-primary-100);
+}
+
+/* Focus en acciones de widget */
+.fl-widget__action:focus-visible,
+.fud-widget__action:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+    background: var(--fl-bg-muted);
+}
+
+/* Focus en botones */
+.fl-btn:focus-visible,
+button:focus-visible,
+[type="button"]:focus-visible,
+[type="submit"]:focus-visible,
+[type="reset"]:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--fl-primary-100);
+}
+
+/* Focus en links */
+a:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--fl-radius-sm);
+}
+
+/* Focus en inputs */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: none;
+    border-color: var(--fl-primary-500);
+    box-shadow: var(--fl-input-focus-ring);
+}
+
+/* Focus en elementos de lista */
+.fl-item-list__link:focus-visible,
+.fud-widget-item > a:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: -2px;
+    background: var(--fl-bg-muted);
+}
+
+/* Focus en filtros de categoria */
+.fl-category-filter:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+}
+
+/* Focus en header de grupo */
+.fl-widget-group__header:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--fl-radius-md);
+}
+
+/* =========================================================================
+ * DRAG & DROP ACCESIBLE
+ * ========================================================================= */
+
+/* Indicador de elemento arrastrable */
+.fl-widget--draggable[aria-grabbed="true"] {
+    box-shadow: var(--fl-shadow-widget-drag);
+    opacity: 0.9;
+}
+
+/* Zona de drop activa */
+.fl-widget--drop-target {
+    border: 2px dashed var(--fl-primary-500);
+    background: var(--fl-primary-50);
+}
+
+/* Instrucciones de arrastre para screen readers */
+.fl-drag-instructions {
+    padding: var(--fl-space-2) var(--fl-space-3);
+    font-size: var(--fl-font-size-sm);
+    color: var(--fl-text-secondary);
+    background: var(--fl-bg-muted);
+    border-radius: var(--fl-radius-md);
+}
+
+/* =========================================================================
+ * REDUCED MOTION - Respeto a preferencias de movimiento
+ * ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Desactivar animaciones de carga */
+    .fl-skeleton,
+    .fl-loading-spinner,
+    .fud-loading-spinner {
+        animation: none !important;
+    }
+
+    /* Mantener indicadores visuales estaticos */
+    .fl-widget--dragging {
+        transform: none;
+    }
+}
+
+/* =========================================================================
+ * HIGH CONTRAST MODE - Modo de alto contraste
+ * ========================================================================= */
+
+@media (prefers-contrast: high) {
+    /* Bordes mas visibles */
+    .fl-widget,
+    .fud-widget {
+        border-width: 2px;
+        border-color: var(--fl-text-primary);
+    }
+
+    /* Focus mas prominente */
+    *:focus-visible {
+        outline-width: 3px;
+        outline-color: var(--fl-text-primary);
+    }
+
+    /* Links subrayados */
+    a {
+        text-decoration: underline;
+    }
+
+    /* Botones con borde */
+    .fl-btn,
+    button {
+        border: 2px solid currentColor;
+    }
+
+    /* Badges con borde */
+    .fl-item-badge,
+    .fud-item-badge {
+        border: 1px solid currentColor;
+    }
+}
+
+/* =========================================================================
+ * FORCED COLORS (Windows High Contrast)
+ * ========================================================================= */
+
+@media (forced-colors: active) {
+    .fl-widget,
+    .fud-widget {
+        border: 2px solid CanvasText;
+    }
+
+    .fl-widget__action,
+    .fud-widget__action {
+        border: 1px solid ButtonText;
+    }
+
+    .fl-category-filter--active {
+        background: Highlight;
+        color: HighlightText;
+    }
+
+    *:focus-visible {
+        outline: 3px solid Highlight;
+    }
+}
+
+/* =========================================================================
+ * ESTADOS DE INTERACCION ACCESIBLES
+ * ========================================================================= */
+
+/* Estado hover mejorado */
+.fl-widget__action:hover,
+.fud-widget__action:hover {
+    background: var(--fl-bg-muted);
+}
+
+/* Estado activo/presionado */
+.fl-widget__action:active,
+.fud-widget__action:active {
+    transform: scale(0.95);
+}
+
+/* Estado deshabilitado */
+.fl-widget__action:disabled,
+.fud-widget__action:disabled,
+.fl-widget__action[aria-disabled="true"],
+.fud-widget__action[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* =========================================================================
+ * INDICADORES DE ESTADO ACCESIBLES
+ * ========================================================================= */
+
+/* Live region para anuncios */
+.fl-live-region {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Indicadores de estado de carga */
+.fl-widget[aria-busy="true"] {
+    position: relative;
+}
+
+.fl-widget[aria-busy="true"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+}
+
+/* Indicador de error */
+.fl-widget[aria-invalid="true"] {
+    border-color: var(--fl-danger-500);
+}
+
+/* =========================================================================
+ * COLORES ACCESIBLES - Contraste minimo 4.5:1
+ * ========================================================================= */
+
+/* Asegurar contraste en estados */
+.fl-stat--success .fl-stat-label { color: var(--fl-success-700); }
+.fl-stat--warning .fl-stat-label { color: var(--fl-warning-700); }
+.fl-stat--danger .fl-stat-label { color: var(--fl-danger-700); }
+.fl-stat--info .fl-stat-label { color: var(--fl-info-700); }
+
+/* Badge con contraste suficiente */
+.fl-badge--warning {
+    color: var(--fl-gray-900); /* Texto oscuro sobre fondo amarillo */
+}
+
+/* =========================================================================
+ * ICONOS ACCESIBLES
+ * ========================================================================= */
+
+/* Iconos decorativos ocultos de screen readers */
+.fl-widget__icon[aria-hidden="true"] .dashicons,
+.fl-stat-icon[aria-hidden="true"] .dashicons {
+    speak: none;
+}
+
+/* Iconos con significado necesitan aria-label en el padre */
+.fl-icon-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================================================
+ * NAVEGACION POR TECLADO
+ * ========================================================================= */
+
+/* Orden de tabulacion visual */
+.fl-widget-group__header {
+    position: relative;
+}
+
+/* Indicador de que elemento tiene foco actual */
+.fl-has-focus-within {
+    box-shadow: 0 0 0 2px var(--fl-primary-200);
+}
+
+/* Trap de foco para modales (si aplica) */
+.fl-focus-trap:focus {
+    outline: none;
+}
+
+/* =========================================================================
+ * TOOLTIPS ACCESIBLES
+ * ========================================================================= */
+
+.fl-tooltip {
+    position: relative;
+}
+
+.fl-tooltip[aria-describedby]::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: var(--fl-space-1) var(--fl-space-2);
+    font-size: var(--fl-font-size-xs);
+    color: var(--fl-white);
+    background: var(--fl-gray-900);
+    border-radius: var(--fl-radius-md);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--fl-transition-fast), visibility var(--fl-transition-fast);
+    z-index: var(--fl-z-tooltip);
+}
+
+.fl-tooltip:hover::after,
+.fl-tooltip:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* =========================================================================
+ * RESPONSIVE ACCESIBILIDAD
+ * ========================================================================= */
+
+/* Touch targets minimos (44x44px) en mobile */
+@media (max-width: 768px) {
+    .fl-widget__action,
+    .fud-widget__action {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .fl-category-filter {
+        min-height: 44px;
+        padding: var(--fl-space-2) var(--fl-space-4);
+    }
+
+    .fl-item-list__link,
+    .fud-widget-item > a {
+        min-height: 44px;
+    }
+}
+
+/* =========================================================================
+ * PRINT STYLES ACCESIBLES
+ * ========================================================================= */
+
+@media print {
+    /* Mostrar URLs de links */
+    a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+
+    /* Ocultar elementos interactivos */
+    .fl-widget__action,
+    .fl-skip-links,
+    .fl-category-filters {
+        display: none !important;
+    }
+
+    /* Expandir grupos colapsados */
+    .fl-widget-group--collapsed .fl-widget-group__content {
+        display: grid !important;
+    }
+}

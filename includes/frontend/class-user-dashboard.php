@@ -44,13 +44,14 @@ class Flavor_User_Dashboard {
      */
     public function __construct() {
         add_shortcode('flavor_mi_cuenta', [$this, 'render_dashboard']);
+        add_shortcode('flavor_user_dashboard', [$this, 'render_dashboard']); // Alias
         add_action('wp', [$this, 'detectar_shortcode_en_pagina']);
         add_action('wp_enqueue_scripts', [$this, 'encolar_assets_condicional']);
         add_action('wp_ajax_flavor_dashboard_cambiar_tab', [$this, 'ajax_cambiar_tab']);
     }
 
     /**
-     * Detecta si el shortcode [flavor_mi_cuenta] esta presente en la pagina actual
+     * Detecta si el shortcode [flavor_mi_cuenta] o [flavor_user_dashboard] esta presente en la pagina actual
      */
     public function detectar_shortcode_en_pagina() {
         global $post;
@@ -59,7 +60,8 @@ class Flavor_User_Dashboard {
             return;
         }
 
-        if (has_shortcode($post->post_content, 'flavor_mi_cuenta')) {
+        if (has_shortcode($post->post_content, 'flavor_mi_cuenta') ||
+            has_shortcode($post->post_content, 'flavor_user_dashboard')) {
             $this->shortcode_presente_en_pagina = true;
         }
     }

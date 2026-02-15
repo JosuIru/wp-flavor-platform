@@ -112,6 +112,8 @@ class Flavor_Client_Dashboard {
 
     /**
      * Encola CSS y JS solo cuando el shortcode esta presente
+     *
+     * Sistema de Diseno Unificado v4.1.0
      */
     public function encolar_assets_condicional() {
         if (!$this->shortcode_presente_en_pagina) {
@@ -119,13 +121,91 @@ class Flavor_Client_Dashboard {
         }
 
         $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
+        $version = FLAVOR_CHAT_IA_VERSION;
+        $plugin_url = FLAVOR_CHAT_IA_URL;
 
-        // Estilos
+        // =====================================================================
+        // CSS - Sistema de Diseno Unificado (v4.1.0)
+        // =====================================================================
+
+        // 1. Design Tokens (variables CSS base)
+        wp_enqueue_style(
+            'fl-design-tokens',
+            $plugin_url . 'assets/css/design-tokens.css',
+            [],
+            $version
+        );
+
+        // 2. Compatibilidad con variables antiguas
+        wp_enqueue_style(
+            'fl-design-tokens-compat',
+            $plugin_url . 'assets/css/design-tokens-compat.css',
+            ['fl-design-tokens'],
+            $version
+        );
+
+        // 3. CSS Base del dashboard
+        wp_enqueue_style(
+            'fl-dashboard-base',
+            $plugin_url . 'assets/css/dashboard-base.css',
+            ['fl-design-tokens-compat'],
+            $version
+        );
+
+        // 4. Widgets y niveles
+        wp_enqueue_style(
+            'fl-dashboard-widgets',
+            $plugin_url . 'assets/css/dashboard-widgets.css',
+            ['fl-dashboard-base'],
+            $version
+        );
+
+        // 5. Grupos y categorias
+        wp_enqueue_style(
+            'fl-dashboard-groups',
+            $plugin_url . 'assets/css/dashboard-groups.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 6. Estados visuales
+        wp_enqueue_style(
+            'fl-dashboard-states',
+            $plugin_url . 'assets/css/dashboard-states.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 7. Accesibilidad
+        wp_enqueue_style(
+            'fl-dashboard-a11y',
+            $plugin_url . 'assets/css/dashboard-a11y.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 8. Responsive
+        wp_enqueue_style(
+            'fl-dashboard-responsive',
+            $plugin_url . 'assets/css/dashboard-responsive.css',
+            ['fl-dashboard-groups'],
+            $version
+        );
+
+        // 9. Breadcrumbs
+        wp_enqueue_style(
+            'fl-breadcrumbs',
+            $plugin_url . 'assets/css/breadcrumbs.css',
+            ['fl-design-tokens'],
+            $version
+        );
+
+        // 10. Client Dashboard (estilos especificos)
         wp_enqueue_style(
             'flavor-client-dashboard',
-            FLAVOR_CHAT_IA_URL . "assets/css/client-dashboard{$sufijo_asset}.css",
-            ['flavor-base'],
-            FLAVOR_CHAT_IA_VERSION
+            $plugin_url . "assets/css/client-dashboard{$sufijo_asset}.css",
+            ['fl-dashboard-responsive', 'fl-breadcrumbs'],
+            $version
         );
 
         // Scripts
@@ -314,8 +394,137 @@ class Flavor_Client_Dashboard {
      * @param Flavor_Client_Dashboard $dashboard Instancia del dashboard
      */
     public function inicializar_widgets_modulos($dashboard) {
-        // Los modulos usan el hook flavor_client_dashboard_init
-        // para registrar sus widgets
+        // Obtener el Module Loader
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return;
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $modulos_cargados = $loader->get_loaded_modules();
+
+        // Iconos por modulo
+        $iconos_modulos = [
+            'eventos'                   => 'calendar',
+            'reservas'                  => 'calendar',
+            'espacios-comunes'          => 'home',
+            'grupos-consumo'            => 'shopping-bag',
+            'huertos-urbanos'           => 'sun',
+            'biblioteca'                => 'book',
+            'marketplace'               => 'tag',
+            'incidencias'               => 'alert-triangle',
+            'banco-tiempo'              => 'clock',
+            'bicicletas-compartidas'    => 'navigation',
+            'parkings'                  => 'map-pin',
+            'carpooling'                => 'truck',
+            'reciclaje'                 => 'refresh-cw',
+            'compostaje'                => 'leaf',
+            'cursos'                    => 'book-open',
+            'talleres'                  => 'tool',
+            'comunidades'               => 'globe',
+            'podcast'                   => 'mic',
+            'radio'                     => 'radio',
+            'red-social'                => 'users',
+            'participacion'             => 'message-circle',
+            'transparencia'             => 'eye',
+            'tramites'                  => 'file-text',
+            'avisos-municipales'        => 'bell',
+            'trading-ia'                => 'trending-up',
+            'advertising'               => 'bar-chart-2',
+            'clientes'                  => 'users',
+            'empresarial'               => 'briefcase',
+            'dex-solana'                => 'zap',
+            'facturas'                  => 'file-text',
+            'multimedia'                => 'image',
+            'woocommerce'               => 'shopping-cart',
+        ];
+
+        $orden_base = 100;
+
+        foreach ($modulos_cargados as $modulo_id => $instancia_modulo) {
+            // Normalizar ID del modulo
+            $modulo_id_normalizado = str_replace('_', '-', $modulo_id);
+
+            // Obtener nombre del modulo usando metodos publicos
+            $nombre_modulo = '';
+            if (method_exists($instancia_modulo, 'get_module_name')) {
+                $nombre_modulo = $instancia_modulo->get_module_name();
+            } elseif (method_exists($instancia_modulo, 'get_name')) {
+                $nombre_modulo = $instancia_modulo->get_name();
+            } else {
+                // Fallback: usar el ID del modulo formateado
+                $nombre_modulo = ucfirst(str_replace(['-', '_'], ' ', $modulo_id));
+            }
+
+            // Obtener icono
+            $icono = $iconos_modulos[$modulo_id_normalizado] ?? 'box';
+
+            // Verificar si el modulo tiene estadisticas para dashboard
+            if (method_exists($instancia_modulo, 'get_estadisticas_dashboard')) {
+                $estadisticas = $instancia_modulo->get_estadisticas_dashboard();
+
+                if (!empty($estadisticas) && is_array($estadisticas)) {
+                    // Registrar widget con estadisticas del modulo
+                    $dashboard->registrar_widget('modulo-' . $modulo_id_normalizado, [
+                        'title'    => $nombre_modulo,
+                        'icon'     => $icono,
+                        'callback' => function($id_usuario) use ($instancia_modulo, $modulo_id_normalizado, $estadisticas) {
+                            $this->render_widget_modulo_generico($id_usuario, $modulo_id_normalizado, $estadisticas);
+                        },
+                        'size'     => 'medium',
+                        'orden'    => $orden_base,
+                        'modulo'   => $modulo_id_normalizado,
+                    ]);
+
+                    $orden_base += 10;
+                }
+            }
+
+            // Registrar atajo rapido al modulo
+            $dashboard->registrar_atajo('modulo-' . $modulo_id_normalizado, [
+                'label'  => $nombre_modulo,
+                'icon'   => $icono,
+                'url'    => home_url('/mi-portal/' . $modulo_id_normalizado . '/'),
+                'color'  => 'secondary',
+                'orden'  => $orden_base,
+            ]);
+        }
+    }
+
+    /**
+     * Renderiza un widget generico de modulo
+     *
+     * @param int    $id_usuario          ID del usuario
+     * @param string $modulo_id           ID del modulo
+     * @param array  $estadisticas        Estadisticas del modulo
+     */
+    private function render_widget_modulo_generico($id_usuario, $modulo_id, $estadisticas) {
+        $url_modulo = home_url('/mi-portal/' . $modulo_id . '/');
+        ?>
+        <div class="fcd-widget-modulo" data-modulo="<?php echo esc_attr($modulo_id); ?>">
+            <div class="fcd-modulo-stats">
+                <?php foreach (array_slice($estadisticas, 0, 4) as $clave => $valor): ?>
+                    <?php
+                    $etiqueta = is_string($clave) ? ucfirst(str_replace('_', ' ', $clave)) : '';
+                    $valor_mostrar = is_array($valor) ? ($valor['valor'] ?? $valor['value'] ?? 0) : $valor;
+                    $icono = is_array($valor) ? ($valor['icon'] ?? 'activity') : 'activity';
+                    ?>
+                    <div class="fcd-modulo-stat">
+                        <span class="fcd-stat-icon" data-feather="<?php echo esc_attr($icono); ?>"></span>
+                        <span class="fcd-stat-value"><?php echo esc_html($valor_mostrar); ?></span>
+                        <?php if ($etiqueta): ?>
+                            <span class="fcd-stat-label"><?php echo esc_html($etiqueta); ?></span>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <div class="fcd-modulo-actions">
+                <a href="<?php echo esc_url($url_modulo); ?>" class="fcd-btn fcd-btn-sm fcd-btn-outline">
+                    <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                    <span data-feather="arrow-right"></span>
+                </a>
+            </div>
+        </div>
+        <?php
     }
 
     /**
@@ -449,21 +658,59 @@ class Flavor_Client_Dashboard {
         $notificaciones      = $this->obtener_notificaciones_usuario($usuario_actual->ID, 5);
         $preferencias        = $this->obtener_preferencias_usuario($usuario_actual->ID);
 
+        // Obtener widgets agrupados por categoría
+        $widgets_agrupados = [];
+        $categorias_disponibles = [];
+        $total_widgets = 0;
+        $usar_registry = false;
+
+        // Intentar usar Widget Registry si existe y tiene widgets
+        if (class_exists('Flavor_Widget_Registry')) {
+            $widget_registry = Flavor_Widget_Registry::get_instance();
+            $widgets_registry = $widget_registry->get_all();
+
+            if (!empty($widgets_registry)) {
+                $widgets_agrupados = $widget_registry->get_grouped_by_category();
+                $categorias_disponibles = $widget_registry->get_categories_with_count();
+                $usar_registry = true;
+
+                // Contar total de widgets
+                foreach ($widgets_agrupados as $grupo) {
+                    $total_widgets += $grupo['count'] ?? 0;
+                }
+            }
+        }
+
+        // Fallback: Agrupar los widgets locales si no hay widgets del registry
+        if (!$usar_registry && !empty($widgets)) {
+            $widgets_agrupados = $this->agrupar_widgets_por_categoria($widgets);
+            $categorias_disponibles = $this->obtener_categorias_de_widgets($widgets);
+            $total_widgets = count($widgets);
+        }
+
+        // Debug: log si no hay widgets (solo en WP_DEBUG)
+        if (empty($widgets_agrupados) && defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[Flavor Dashboard] No hay widgets agrupados. Registry: ' . ($usar_registry ? 'sí' : 'no') . ', Widgets locales: ' . count($widgets));
+        }
+
         ob_start();
 
         $datos_template = [
-            'usuario'            => $usuario_actual,
-            'avatar_url'         => $avatar_url,
-            'nombre_usuario'     => $nombre_usuario,
-            'saludo'             => $saludo,
-            'estadisticas'       => $estadisticas,
-            'atajos'             => $atajos,
-            'widgets'            => $widgets,
-            'actividad_reciente' => $actividad_reciente,
-            'notificaciones'     => $notificaciones,
-            'preferencias'       => $preferencias,
-            'atributos'          => $atributos,
-            'dashboard_instance' => $this,
+            'usuario'               => $usuario_actual,
+            'avatar_url'            => $avatar_url,
+            'nombre_usuario'        => $nombre_usuario,
+            'saludo'                => $saludo,
+            'estadisticas'          => $estadisticas,
+            'atajos'                => $atajos,
+            'widgets'               => $widgets,
+            'widgets_agrupados'     => $widgets_agrupados,
+            'categorias'            => $categorias_disponibles,
+            'total_widgets'         => $total_widgets,
+            'actividad_reciente'    => $actividad_reciente,
+            'notificaciones'        => $notificaciones,
+            'preferencias'          => $preferencias,
+            'atributos'             => $atributos,
+            'dashboard_instance'    => $this,
         ];
 
         $ruta_template = FLAVOR_CHAT_IA_PATH . 'templates/frontend/dashboard/client-dashboard.php';
@@ -2248,6 +2495,235 @@ class Flavor_Client_Dashboard {
         $datos = $this->obtener_estadisticas_avanzadas($id_usuario);
 
         wp_send_json_success($datos);
+    }
+
+    /**
+     * Agrupa widgets locales por categoria
+     *
+     * Usado como fallback cuando no hay widgets del Widget Registry.
+     *
+     * @param array $widgets Widgets locales
+     * @return array Widgets agrupados
+     * @since 4.1.0
+     */
+    private function agrupar_widgets_por_categoria($widgets) {
+        $agrupados = [];
+        $categorias_info = $this->obtener_definicion_categorias();
+
+        foreach ($widgets as $widget_id => $widget_config) {
+            // Determinar categoria del widget
+            $categoria = $widget_config['modulo'] ?? 'general';
+            $categoria_mapeada = $this->mapear_modulo_a_categoria($categoria);
+
+            if (!isset($agrupados[$categoria_mapeada])) {
+                $agrupados[$categoria_mapeada] = [
+                    'info'      => $categorias_info[$categoria_mapeada] ?? [
+                        'label' => ucfirst($categoria_mapeada),
+                        'icon'  => 'dashicons-admin-generic',
+                        'color' => '#6b7280',
+                        'order' => 50,
+                    ],
+                    'widgets'   => [],
+                    'collapsed' => false,
+                    'count'     => 0,
+                ];
+            }
+
+            // Añadir widget al grupo
+            $agrupados[$categoria_mapeada]['widgets'][$widget_id] = $widget_config;
+            $agrupados[$categoria_mapeada]['count']++;
+        }
+
+        // Ordenar grupos por orden
+        uasort($agrupados, function ($grupo_a, $grupo_b) {
+            return ($grupo_a['info']['order'] ?? 50) - ($grupo_b['info']['order'] ?? 50);
+        });
+
+        return $agrupados;
+    }
+
+    /**
+     * Obtiene las categorias de los widgets
+     *
+     * @param array $widgets Widgets
+     * @return array Categorias con conteo
+     * @since 4.1.0
+     */
+    private function obtener_categorias_de_widgets($widgets) {
+        $categorias_info = $this->obtener_definicion_categorias();
+        $categorias_con_conteo = [];
+
+        foreach ($widgets as $widget_id => $widget_config) {
+            $categoria = $widget_config['modulo'] ?? 'general';
+            $categoria_mapeada = $this->mapear_modulo_a_categoria($categoria);
+
+            if (!isset($categorias_con_conteo[$categoria_mapeada])) {
+                $info_base = $categorias_info[$categoria_mapeada] ?? [
+                    'label' => ucfirst($categoria_mapeada),
+                    'icon'  => 'dashicons-admin-generic',
+                    'color' => '#6b7280',
+                    'order' => 50,
+                ];
+                $categorias_con_conteo[$categoria_mapeada] = array_merge($info_base, ['count' => 0]);
+            }
+            $categorias_con_conteo[$categoria_mapeada]['count']++;
+        }
+
+        // Ordenar por orden
+        uasort($categorias_con_conteo, function ($categoria_a, $categoria_b) {
+            return ($categoria_a['order'] ?? 50) - ($categoria_b['order'] ?? 50);
+        });
+
+        return $categorias_con_conteo;
+    }
+
+    /**
+     * Mapea un modulo a su categoria correspondiente
+     *
+     * @param string $modulo ID del modulo
+     * @return string ID de categoria
+     * @since 4.1.0
+     */
+    private function mapear_modulo_a_categoria($modulo) {
+        $mapeo = [
+            // Operaciones
+            'reservas'              => 'operaciones',
+            'espacios-comunes'      => 'operaciones',
+            'incidencias'           => 'operaciones',
+            'fichaje'               => 'operaciones',
+
+            // Recursos
+            'biblioteca'            => 'recursos',
+            'bicicletas-compartidas' => 'recursos',
+            'parkings'              => 'recursos',
+            'huertos-urbanos'       => 'recursos',
+
+            // Economia
+            'grupos-consumo'        => 'economia',
+            'marketplace'           => 'economia',
+            'banco-tiempo'          => 'economia',
+            'facturas'              => 'economia',
+            'trading-ia'            => 'economia',
+
+            // Comunicacion
+            'foros'                 => 'comunicacion',
+            'avisos-municipales'    => 'comunicacion',
+            'podcast'               => 'comunicacion',
+            'radio'                 => 'comunicacion',
+
+            // Actividades
+            'eventos'               => 'actividades',
+            'cursos'                => 'actividades',
+            'talleres'              => 'actividades',
+
+            // Sostenibilidad
+            'reciclaje'             => 'sostenibilidad',
+            'compostaje'            => 'sostenibilidad',
+            'carpooling'            => 'sostenibilidad',
+
+            // Comunidad
+            'red-social'            => 'comunidad',
+            'participacion'         => 'comunidad',
+            'comunidades'           => 'comunidad',
+
+            // Servicios
+            'tramites'              => 'servicios',
+            'transparencia'         => 'servicios',
+
+            // Red
+            'network'               => 'red',
+            'shared'                => 'red',
+            'map'                   => 'red',
+
+            // General / Sistema
+            'general'               => 'gestion',
+            'activity'              => 'gestion',
+            'quick-actions'         => 'gestion',
+            'stats-panel'           => 'gestion',
+        ];
+
+        return $mapeo[$modulo] ?? 'gestion';
+    }
+
+    /**
+     * Obtiene la definicion de categorias
+     *
+     * @return array
+     * @since 4.1.0
+     */
+    private function obtener_definicion_categorias() {
+        return [
+            'operaciones' => [
+                'label'       => __('Operaciones', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-admin-tools',
+                'color'       => '#f97316',
+                'order'       => 10,
+                'description' => __('Reservas, fichaje e incidencias', 'flavor-chat-ia'),
+            ],
+            'recursos' => [
+                'label'       => __('Recursos', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-archive',
+                'color'       => '#14b8a6',
+                'order'       => 20,
+                'description' => __('Espacios, equipamiento y biblioteca', 'flavor-chat-ia'),
+            ],
+            'economia' => [
+                'label'       => __('Economia', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-chart-line',
+                'color'       => '#10b981',
+                'order'       => 30,
+                'description' => __('Finanzas y transacciones', 'flavor-chat-ia'),
+            ],
+            'comunicacion' => [
+                'label'       => __('Comunicacion', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-megaphone',
+                'color'       => '#8b5cf6',
+                'order'       => 40,
+                'description' => __('Mensajeria y avisos', 'flavor-chat-ia'),
+            ],
+            'actividades' => [
+                'label'       => __('Actividades', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-calendar-alt',
+                'color'       => '#a855f7',
+                'order'       => 50,
+                'description' => __('Eventos y formacion', 'flavor-chat-ia'),
+            ],
+            'sostenibilidad' => [
+                'label'       => __('Sostenibilidad', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-palmtree',
+                'color'       => '#84cc16',
+                'order'       => 60,
+                'description' => __('Medio ambiente', 'flavor-chat-ia'),
+            ],
+            'comunidad' => [
+                'label'       => __('Comunidad', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-groups',
+                'color'       => '#f59e0b',
+                'order'       => 70,
+                'description' => __('Participacion y vida social', 'flavor-chat-ia'),
+            ],
+            'servicios' => [
+                'label'       => __('Servicios', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-admin-site',
+                'color'       => '#0ea5e9',
+                'order'       => 80,
+                'description' => __('Tramites y soporte', 'flavor-chat-ia'),
+            ],
+            'red' => [
+                'label'       => __('Red de Nodos', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-networking',
+                'color'       => '#06b6d4',
+                'order'       => 90,
+                'description' => __('Red federada', 'flavor-chat-ia'),
+            ],
+            'gestion' => [
+                'label'       => __('Gestion', 'flavor-chat-ia'),
+                'icon'        => 'dashicons-clipboard',
+                'color'       => '#3b82f6',
+                'order'       => 5,
+                'description' => __('Panel general', 'flavor-chat-ia'),
+            ],
+        ];
     }
 }
 

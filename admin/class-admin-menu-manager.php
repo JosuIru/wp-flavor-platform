@@ -46,6 +46,10 @@ class Flavor_Admin_Menu_Manager {
         add_action('admin_menu', [$this, 'limpiar_menus_duplicados'], 999);
         // CSS para separadores del menú en todas las páginas admin
         add_action('admin_head', [$this, 'encolar_css_separadores'], 5);
+        // Estilos base para dashboards de módulos
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_module_dashboard_styles']);
+        // Boton volver al dashboard en dashboards de modulos
+        add_action('admin_footer', [$this, 'render_back_to_dashboard_button']);
     }
 
     /**
@@ -74,6 +78,17 @@ class Flavor_Admin_Menu_Manager {
             'flavor-dashboard',
             [$this, 'callback_dashboard'],
             0
+        );
+
+        // Dashboard Unificado (pos 1) - Vista centralizada de todos los módulos
+        add_submenu_page(
+            self::MENU_SLUG,
+            __('Dashboard Unificado', 'flavor-chat-ia'),
+            __('Unificado', 'flavor-chat-ia'),
+            'read',
+            'flavor-unified-dashboard',
+            [$this, 'callback_unified_dashboard'],
+            1
         );
 
         // Eliminar el submenú duplicado que WP crea
@@ -284,6 +299,16 @@ class Flavor_Admin_Menu_Manager {
             54
         );
 
+        add_submenu_page(
+            self::MENU_SLUG,
+            __('Panel de Sistemas', 'flavor-chat-ia'),
+            __('Sistemas V3', 'flavor-chat-ia'),
+            'manage_options',
+            'flavor-systems-panel',
+            [$this, 'callback_systems_panel'],
+            55
+        );
+
         // ══════════════════════════════════════════════════════════════
         // SECCIÓN: AYUDA (60-69)
         // ══════════════════════════════════════════════════════════════
@@ -368,6 +393,7 @@ class Flavor_Admin_Menu_Manager {
         // Slugs que ya están en el menú centralizado
         $slugs_centralizados = [
             'flavor-dashboard',
+            'flavor-unified-dashboard',
             'flavor-app-composer',
             'flavor-design-settings',
             'flavor-create-pages',
@@ -425,6 +451,7 @@ class Flavor_Admin_Menu_Manager {
 
         $orden_deseado = [
             'flavor-dashboard' => 0,
+            'flavor-unified-dashboard' => 1,
             'flavor-separator-10' => 10,
             'flavor-app-composer' => 11,
             'flavor-design-settings' => 12,
@@ -541,6 +568,378 @@ class Flavor_Admin_Menu_Manager {
         }
     }
 
+    public function callback_unified_dashboard() {
+        // Cargar estilos del dashboard (el hook admin_enqueue_scripts ya paso)
+        $this->enqueue_unified_dashboard_assets();
+
+        // Cargar el Dashboard Unificado
+        if (!class_exists('Flavor_Unified_Dashboard')) {
+            $dashboard_path = FLAVOR_CHAT_IA_PATH . 'includes/dashboard/';
+            if (file_exists($dashboard_path . 'class-unified-dashboard.php')) {
+                require_once $dashboard_path . 'interface-dashboard-widget.php';
+                require_once $dashboard_path . 'class-widget-registry.php';
+                require_once $dashboard_path . 'class-widget-renderer.php';
+                require_once $dashboard_path . 'class-unified-dashboard.php';
+            }
+        }
+
+        if (class_exists('Flavor_Unified_Dashboard')) {
+            Flavor_Unified_Dashboard::get_instance()->render();
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Unificado', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Error al cargar el Dashboard Unificado.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Encola los assets del Dashboard Unificado
+     *
+     * Sistema de Diseño Unificado v4.1.0
+     */
+    private function enqueue_unified_dashboard_assets() {
+        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '4.1.0';
+        $plugin_url = FLAVOR_CHAT_IA_URL;
+
+        // =====================================================================
+        // CSS - Sistema de Diseño Unificado (v4.1.0)
+        // =====================================================================
+
+        // 1. Design Tokens (variables CSS base)
+        wp_enqueue_style(
+            'fl-design-tokens',
+            $plugin_url . 'assets/css/design-tokens.css',
+            [],
+            $version
+        );
+
+        // 2. Compatibilidad con variables antiguas
+        wp_enqueue_style(
+            'fl-design-tokens-compat',
+            $plugin_url . 'assets/css/design-tokens-compat.css',
+            ['fl-design-tokens'],
+            $version
+        );
+
+        // 3. CSS Base del dashboard
+        wp_enqueue_style(
+            'fud-dashboard-base',
+            $plugin_url . 'assets/css/dashboard-base.css',
+            ['fl-design-tokens-compat'],
+            $version
+        );
+
+        // 4. Widgets y niveles
+        wp_enqueue_style(
+            'fl-dashboard-widgets',
+            $plugin_url . 'assets/css/dashboard-widgets.css',
+            ['fud-dashboard-base'],
+            $version
+        );
+
+        // 5. Grupos y categorías
+        wp_enqueue_style(
+            'fl-dashboard-groups',
+            $plugin_url . 'assets/css/dashboard-groups.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 6. Estados visuales
+        wp_enqueue_style(
+            'fl-dashboard-states',
+            $plugin_url . 'assets/css/dashboard-states.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 7. Accesibilidad
+        wp_enqueue_style(
+            'fl-dashboard-a11y',
+            $plugin_url . 'assets/css/dashboard-a11y.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 8. Responsive
+        wp_enqueue_style(
+            'fl-dashboard-responsive',
+            $plugin_url . 'assets/css/dashboard-responsive.css',
+            ['fl-dashboard-groups'],
+            $version
+        );
+
+        // 9. Breadcrumbs
+        wp_enqueue_style(
+            'fl-breadcrumbs',
+            $plugin_url . 'assets/css/breadcrumbs.css',
+            ['fl-design-tokens'],
+            $version
+        );
+
+        // 10. CSS Componentes (legacy)
+        wp_enqueue_style(
+            'fud-dashboard-components',
+            $plugin_url . 'assets/css/dashboard-components.css',
+            ['fl-dashboard-responsive'],
+            $version
+        );
+
+        // 11. CSS Unificado (admin)
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/unified-dashboard.css')) {
+            wp_enqueue_style(
+                'fud-unified-dashboard',
+                $plugin_url . 'admin/css/unified-dashboard.css',
+                ['fud-dashboard-components'],
+                $version
+            );
+        }
+
+        // =====================================================================
+        // JavaScript - Sistema de Drag & Drop (v4.1.0)
+        // =====================================================================
+
+        // SortableJS desde CDN
+        wp_enqueue_script(
+            'sortablejs',
+            'https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js',
+            [],
+            '1.15.2',
+            true
+        );
+
+        // Dashboard Sortable (nuevo sistema)
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/js/dashboard-sortable.js')) {
+            wp_enqueue_script(
+                'fl-dashboard-sortable',
+                $plugin_url . 'assets/js/dashboard-sortable.js',
+                ['sortablejs'],
+                $version,
+                true
+            );
+        }
+
+        // jQuery UI Sortable como fallback
+        wp_enqueue_script('jquery-ui-sortable');
+        wp_enqueue_script('jquery-ui-draggable');
+
+        // JS del dashboard (legacy)
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/js/unified-dashboard.js')) {
+            wp_enqueue_script(
+                'fud-unified-dashboard',
+                $plugin_url . 'admin/js/unified-dashboard.js',
+                ['jquery', 'jquery-ui-sortable', 'fl-dashboard-sortable'],
+                $version,
+                true
+            );
+        }
+
+        // =====================================================================
+        // Localización de scripts
+        // =====================================================================
+        $dashboard_config = [
+            'ajaxUrl'         => admin_url('admin-ajax.php'),
+            'restUrl'         => rest_url('flavor/v1/dashboard/'),
+            'nonce'           => wp_create_nonce('fud_nonce'),
+            'refreshInterval' => 120000, // 2 minutos
+            'features'        => [
+                'sortable'      => true,
+                'groups'        => true,
+                'levels'        => true,
+                'accessibility' => true,
+            ],
+            'i18n'            => [
+                'loading'      => __('Cargando...', 'flavor-chat-ia'),
+                'error'        => __('Error al cargar', 'flavor-chat-ia'),
+                'saved'        => __('Cambios guardados', 'flavor-chat-ia'),
+                'refreshing'   => __('Actualizando...', 'flavor-chat-ia'),
+                'layoutSaved'  => __('Disposición guardada', 'flavor-chat-ia'),
+                'dragStart'    => __('Arrastrando widget', 'flavor-chat-ia'),
+                'dragEnd'      => __('Widget soltado', 'flavor-chat-ia'),
+            ],
+        ];
+
+        wp_localize_script('fl-dashboard-sortable', 'flDashboard', $dashboard_config);
+        wp_localize_script('fud-unified-dashboard', 'fudConfig', $dashboard_config);
+    }
+
+    /**
+     * Carga estilos base para dashboards de modulos
+     *
+     * Sistema de Diseño Unificado v4.1.0
+     *
+     * @param string $hook Hook de la pagina actual
+     */
+    public function enqueue_module_dashboard_styles($hook) {
+        // Solo cargar en paginas que terminan en -dashboard
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+
+        if (empty($current_page) || strpos($current_page, '-dashboard') === false) {
+            return;
+        }
+
+        // No cargar en el Dashboard Unificado (tiene sus propios estilos completos)
+        if ($current_page === 'flavor-unified-dashboard') {
+            return;
+        }
+
+        $version = defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '4.1.0';
+        $plugin_url = FLAVOR_CHAT_IA_URL;
+
+        // =====================================================================
+        // CSS - Sistema de Diseño Unificado (v4.1.0)
+        // =====================================================================
+
+        // 1. Design Tokens (variables CSS base)
+        wp_enqueue_style(
+            'fl-design-tokens',
+            $plugin_url . 'assets/css/design-tokens.css',
+            [],
+            $version
+        );
+
+        // 2. Compatibilidad con variables antiguas
+        wp_enqueue_style(
+            'fl-design-tokens-compat',
+            $plugin_url . 'assets/css/design-tokens-compat.css',
+            ['fl-design-tokens'],
+            $version
+        );
+
+        // 3. CSS Base compartido para dashboards de modulos
+        wp_enqueue_style(
+            'flavor-module-dashboard-base',
+            $plugin_url . 'assets/css/dashboard-base.css',
+            ['fl-design-tokens-compat'],
+            $version
+        );
+
+        // 4. Widgets
+        wp_enqueue_style(
+            'fl-dashboard-widgets',
+            $plugin_url . 'assets/css/dashboard-widgets.css',
+            ['flavor-module-dashboard-base'],
+            $version
+        );
+
+        // 5. Estados
+        wp_enqueue_style(
+            'fl-dashboard-states',
+            $plugin_url . 'assets/css/dashboard-states.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 6. Accesibilidad
+        wp_enqueue_style(
+            'fl-dashboard-a11y',
+            $plugin_url . 'assets/css/dashboard-a11y.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 7. Responsive
+        wp_enqueue_style(
+            'fl-dashboard-responsive',
+            $plugin_url . 'assets/css/dashboard-responsive.css',
+            ['fl-dashboard-widgets'],
+            $version
+        );
+
+        // 8. Breadcrumbs
+        wp_enqueue_style(
+            'fl-breadcrumbs',
+            $plugin_url . 'assets/css/breadcrumbs.css',
+            ['fl-design-tokens'],
+            $version
+        );
+
+        // 9. Componentes
+        wp_enqueue_style(
+            'flavor-module-dashboard-components',
+            $plugin_url . 'assets/css/dashboard-components.css',
+            ['fl-dashboard-responsive'],
+            $version
+        );
+
+        // 10. Estilos adicionales para dashboards de modulos
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/module-dashboard.css')) {
+            wp_enqueue_style(
+                'flavor-module-dashboard',
+                $plugin_url . 'admin/css/module-dashboard.css',
+                ['flavor-module-dashboard-components'],
+                $version
+            );
+        }
+    }
+
+    /**
+     * Renderiza boton para volver al Dashboard Unificado
+     */
+    public function render_back_to_dashboard_button() {
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+
+        // Solo mostrar en dashboards de modulos
+        if (empty($current_page) || strpos($current_page, '-dashboard') === false) {
+            return;
+        }
+
+        // No mostrar en el Dashboard Unificado ni en el principal
+        if ($current_page === 'flavor-unified-dashboard' || $current_page === 'flavor-dashboard') {
+            return;
+        }
+
+        $dashboard_url = admin_url('admin.php?page=flavor-unified-dashboard');
+        ?>
+        <div class="flavor-back-to-dashboard">
+            <a href="<?php echo esc_url($dashboard_url); ?>" class="flavor-back-btn">
+                <span class="dashicons dashicons-arrow-left-alt"></span>
+                <?php esc_html_e('Volver al Dashboard', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+        <style>
+            .flavor-back-to-dashboard {
+                position: fixed;
+                bottom: 20px;
+                left: 180px;
+                z-index: 9999;
+            }
+            body.folded .flavor-back-to-dashboard {
+                left: 56px;
+            }
+            @media (max-width: 782px) {
+                .flavor-back-to-dashboard {
+                    left: 20px;
+                }
+            }
+            .flavor-back-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 20px;
+                background: #4f46e5;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+                transition: all 0.2s;
+            }
+            .flavor-back-btn:hover {
+                background: #4338ca;
+                color: #fff;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(79, 70, 229, 0.5);
+            }
+            .flavor-back-btn .dashicons {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+            }
+        </style>
+        <?php
+    }
+
     public function callback_app_composer() {
         if (class_exists('Flavor_App_Profile_Admin')) {
             Flavor_App_Profile_Admin::get_instance()->renderizar_pagina_perfil();
@@ -645,6 +1044,24 @@ class Flavor_Admin_Menu_Manager {
     public function callback_api_docs() {
         if (class_exists('Flavor_API_Documentation')) {
             Flavor_API_Documentation::get_instance()->render_page();
+        }
+    }
+
+    public function callback_systems_panel() {
+        if (class_exists('Flavor_Systems_Admin_Panel')) {
+            Flavor_Systems_Admin_Panel::get_instance()->render_admin_page();
+        } else {
+            // Intentar cargar la clase
+            $panel_path = FLAVOR_CHAT_IA_PATH . 'admin/class-flavor-systems-admin-panel.php';
+            if (file_exists($panel_path)) {
+                require_once $panel_path;
+                if (class_exists('Flavor_Systems_Admin_Panel')) {
+                    Flavor_Systems_Admin_Panel::get_instance()->render_admin_page();
+                    return;
+                }
+            }
+            echo '<div class="wrap"><h1>' . esc_html__('Panel de Sistemas', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Error al cargar el Panel de Sistemas.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 

@@ -1,0 +1,564 @@
+/**
+ * Dashboard Responsive - Breakpoints y Estilos Mobile
+ *
+ * Define breakpoints unificados y estilos responsive para:
+ * - Grid de widgets
+ * - Header y navegacion
+ * - Filtros de categoria
+ * - Grupos colapsables
+ * - Touch targets
+ *
+ * Breakpoints:
+ * - sm: 640px
+ * - md: 768px
+ * - lg: 1024px
+ * - xl: 1280px
+ * - 2xl: 1536px
+ *
+ * @package FlavorChatIA
+ * @since 4.1.0
+ */
+
+/* =========================================================================
+ * VARIABLES RESPONSIVE
+ * ========================================================================= */
+
+:root {
+    /* Grid columns por breakpoint */
+    --fl-grid-cols-xs: 1;
+    --fl-grid-cols-sm: 1;
+    --fl-grid-cols-md: 2;
+    --fl-grid-cols-lg: 3;
+    --fl-grid-cols-xl: 3;
+    --fl-grid-cols-2xl: 4;
+
+    /* Gap por breakpoint */
+    --fl-grid-gap-mobile: var(--fl-space-4);
+    --fl-grid-gap-desktop: var(--fl-space-6);
+
+    /* Sidebar width */
+    --fl-sidebar-width: 280px;
+    --fl-sidebar-width-collapsed: 64px;
+}
+
+/* =========================================================================
+ * CONTAINER RESPONSIVE
+ * ========================================================================= */
+
+.fl-dashboard-container {
+    width: 100%;
+    max-width: 1536px;
+    margin: 0 auto;
+    padding: var(--fl-space-4);
+}
+
+@media (min-width: 768px) {
+    .fl-dashboard-container {
+        padding: var(--fl-space-6);
+    }
+}
+
+@media (min-width: 1280px) {
+    .fl-dashboard-container {
+        padding: var(--fl-space-8);
+    }
+}
+
+/* =========================================================================
+ * GRID RESPONSIVE
+ * ========================================================================= */
+
+.fl-widgets-grid,
+.fud-widgets-grid {
+    display: grid;
+    gap: var(--fl-grid-gap-mobile);
+    grid-template-columns: repeat(var(--fl-grid-cols-xs), 1fr);
+}
+
+/* Small (640px+) */
+@media (min-width: 640px) {
+    .fl-widgets-grid,
+    .fud-widgets-grid {
+        grid-template-columns: repeat(var(--fl-grid-cols-sm), 1fr);
+    }
+}
+
+/* Medium (768px+) */
+@media (min-width: 768px) {
+    .fl-widgets-grid,
+    .fud-widgets-grid {
+        gap: var(--fl-grid-gap-desktop);
+        grid-template-columns: repeat(var(--fl-grid-cols-md), 1fr);
+    }
+}
+
+/* Large (1024px+) */
+@media (min-width: 1024px) {
+    .fl-widgets-grid,
+    .fud-widgets-grid {
+        grid-template-columns: repeat(var(--fl-grid-cols-lg), 1fr);
+    }
+
+    /* Widget featured ocupa 2 columnas */
+    .fl-widget--featured {
+        grid-column: span 2;
+    }
+}
+
+/* Extra Large (1280px+) */
+@media (min-width: 1280px) {
+    .fl-widgets-grid,
+    .fud-widgets-grid {
+        grid-template-columns: repeat(var(--fl-grid-cols-xl), 1fr);
+    }
+}
+
+/* 2XL (1536px+) */
+@media (min-width: 1536px) {
+    .fl-widgets-grid,
+    .fud-widgets-grid {
+        grid-template-columns: repeat(var(--fl-grid-cols-2xl), 1fr);
+    }
+}
+
+/* =========================================================================
+ * WIDGET RESPONSIVE
+ * ========================================================================= */
+
+/* Mobile: Widgets siempre ocupan ancho completo */
+@media (max-width: 639px) {
+    .fl-widget,
+    .fud-widget {
+        grid-column: span 1 !important;
+    }
+
+    /* Reducir padding en mobile */
+    .fl-widget__body,
+    .fud-widget__body {
+        padding: var(--fl-space-3);
+    }
+
+    .fl-widget__header,
+    .fud-widget__header {
+        padding: var(--fl-space-2) var(--fl-space-3);
+    }
+
+    /* Ocultar drag handle en mobile (usamos long-press) */
+    .fl-widget__drag-handle,
+    .fud-widget__drag-handle {
+        display: none;
+    }
+
+    /* Touch targets minimos */
+    .fl-widget__action,
+    .fud-widget__action {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Tablet: Ajustes intermedios */
+@media (min-width: 640px) and (max-width: 1023px) {
+    .fl-widget--featured {
+        grid-column: span 2;
+    }
+
+    .fl-widget--compact {
+        grid-column: span 1;
+    }
+}
+
+/* =========================================================================
+ * STATS RESPONSIVE
+ * ========================================================================= */
+
+.fl-widget-stats,
+.fud-widget-stats {
+    flex-wrap: wrap;
+}
+
+@media (max-width: 639px) {
+    .fl-stat-item,
+    .fud-stat-item {
+        flex: 1 1 45%;
+        min-width: 0;
+    }
+
+    .fl-stat-value,
+    .fud-stat-value {
+        font-size: var(--fl-font-size-xl);
+    }
+
+    .fl-stat-label,
+    .fud-stat-label {
+        font-size: var(--fl-font-size-2xs);
+    }
+}
+
+/* Stat cards en columna en mobile */
+@media (max-width: 479px) {
+    .fl-stat-item,
+    .fud-stat-item {
+        flex: 1 1 100%;
+    }
+}
+
+/* =========================================================================
+ * HEADER RESPONSIVE
+ * ========================================================================= */
+
+.fl-dashboard-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fl-space-4);
+    margin-bottom: var(--fl-space-6);
+}
+
+@media (min-width: 768px) {
+    .fl-dashboard-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.fl-dashboard-header__title {
+    font-size: var(--fl-font-size-xl);
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .fl-dashboard-header__title {
+        font-size: var(--fl-font-size-2xl);
+    }
+}
+
+.fl-dashboard-header__actions {
+    display: flex;
+    gap: var(--fl-space-2);
+    flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+    .fl-dashboard-header__actions {
+        justify-content: stretch;
+    }
+
+    .fl-dashboard-header__actions > * {
+        flex: 1;
+    }
+}
+
+/* =========================================================================
+ * FILTROS DE CATEGORIA RESPONSIVE
+ * ========================================================================= */
+
+.fl-category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--fl-space-2);
+}
+
+@media (max-width: 767px) {
+    /* En mobile, convertir a scroll horizontal */
+    .fl-category-filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-bottom: var(--fl-space-2);
+        margin-bottom: calc(-1 * var(--fl-space-2));
+    }
+
+    .fl-category-filters::-webkit-scrollbar {
+        display: none;
+    }
+
+    .fl-category-filter {
+        flex-shrink: 0;
+        min-height: 40px;
+    }
+}
+
+/* Dropdown de categorias para mobile */
+@media (max-width: 479px) {
+    .fl-category-filters {
+        display: none;
+    }
+
+    .fl-category-dropdown {
+        display: block;
+    }
+}
+
+/* =========================================================================
+ * GRUPOS RESPONSIVE
+ * ========================================================================= */
+
+.fl-widget-group__header {
+    padding: var(--fl-space-3) 0;
+}
+
+@media (max-width: 639px) {
+    .fl-widget-group__header {
+        padding: var(--fl-space-2) 0;
+    }
+
+    .fl-widget-group__title {
+        font-size: var(--fl-font-size-base);
+    }
+
+    .fl-widget-group__actions {
+        opacity: 1; /* Siempre visible en mobile */
+    }
+}
+
+.fl-widget-group__content {
+    gap: var(--fl-grid-gap-mobile);
+}
+
+@media (min-width: 768px) {
+    .fl-widget-group__content {
+        gap: var(--fl-grid-gap-desktop);
+    }
+}
+
+/* =========================================================================
+ * SIDEBAR RESPONSIVE (si aplica)
+ * ========================================================================= */
+
+.fl-dashboard-layout {
+    display: flex;
+    gap: var(--fl-space-6);
+}
+
+.fl-dashboard-sidebar {
+    width: var(--fl-sidebar-width);
+    flex-shrink: 0;
+}
+
+.fl-dashboard-main {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 1023px) {
+    .fl-dashboard-layout {
+        flex-direction: column;
+    }
+
+    .fl-dashboard-sidebar {
+        width: 100%;
+    }
+}
+
+/* Sidebar colapsable en tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .fl-dashboard-sidebar--collapsed {
+        width: var(--fl-sidebar-width-collapsed);
+    }
+
+    .fl-dashboard-sidebar--collapsed .fl-category-sidebar__label,
+    .fl-dashboard-sidebar--collapsed .fl-category-sidebar__badge {
+        display: none;
+    }
+}
+
+/* =========================================================================
+ * MODAL/OVERLAY RESPONSIVE
+ * ========================================================================= */
+
+.fl-modal {
+    position: fixed;
+    inset: 0;
+    z-index: var(--fl-z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--fl-space-4);
+}
+
+.fl-modal__content {
+    width: 100%;
+    max-width: 600px;
+    max-height: calc(100vh - var(--fl-space-8));
+    overflow: auto;
+    background: var(--fl-bg-card);
+    border-radius: var(--fl-radius-lg);
+    box-shadow: var(--fl-shadow-xl);
+}
+
+@media (max-width: 639px) {
+    .fl-modal {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .fl-modal__content {
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: var(--fl-radius-lg) var(--fl-radius-lg) 0 0;
+    }
+}
+
+/* =========================================================================
+ * LISTAS RESPONSIVE
+ * ========================================================================= */
+
+@media (max-width: 639px) {
+    .fl-item-list__link,
+    .fud-widget-item > a {
+        padding: var(--fl-space-3);
+        min-height: 60px;
+    }
+
+    .fl-item-list__title,
+    .fud-item-title {
+        font-size: var(--fl-font-size-sm);
+    }
+
+    .fl-item-list__meta,
+    .fud-item-meta {
+        font-size: var(--fl-font-size-xs);
+    }
+}
+
+/* =========================================================================
+ * EMPTY/ERROR STATES RESPONSIVE
+ * ========================================================================= */
+
+@media (max-width: 639px) {
+    .fl-empty-state,
+    .fl-error-state {
+        padding: var(--fl-space-6);
+    }
+
+    .fl-empty-state__icon,
+    .fl-error-state__icon {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .fl-empty-state__message,
+    .fl-error-state__message {
+        max-width: 100%;
+    }
+}
+
+/* =========================================================================
+ * QUICK ACTIONS RESPONSIVE
+ * ========================================================================= */
+
+.fl-quick-actions,
+.fud-quick-actions {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+}
+
+@media (max-width: 479px) {
+    .fl-quick-actions,
+    .fud-quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .fl-quick-action,
+    .fud-quick-action {
+        padding: var(--fl-space-4);
+    }
+}
+
+/* =========================================================================
+ * TOASTS/NOTIFICATIONS RESPONSIVE
+ * ========================================================================= */
+
+.fl-sortable-toast,
+.fl-success-toast {
+    position: fixed;
+    bottom: var(--fl-space-4);
+    right: var(--fl-space-4);
+    left: var(--fl-space-4);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+    .fl-sortable-toast,
+    .fl-success-toast {
+        left: auto;
+        right: var(--fl-space-6);
+        bottom: var(--fl-space-6);
+    }
+}
+
+/* =========================================================================
+ * PRINT STYLES
+ * ========================================================================= */
+
+@media print {
+    /* Reset grid a una columna */
+    .fl-widgets-grid,
+    .fud-widgets-grid {
+        display: block;
+    }
+
+    .fl-widget,
+    .fud-widget {
+        page-break-inside: avoid;
+        margin-bottom: 1rem;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    /* Ocultar elementos interactivos */
+    .fl-widget__drag-handle,
+    .fl-widget__actions,
+    .fl-category-filters,
+    .fl-dashboard-header__actions {
+        display: none !important;
+    }
+
+    /* Expandir grupos colapsados */
+    .fl-widget-group--collapsed .fl-widget-group__content {
+        display: block !important;
+    }
+}
+
+/* =========================================================================
+ * LANDSCAPE MOBILE
+ * ========================================================================= */
+
+@media (max-width: 896px) and (orientation: landscape) {
+    .fl-widgets-grid,
+    .fud-widgets-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Reducir altura de widgets en landscape */
+    .fl-widget__body,
+    .fud-widget__body {
+        max-height: 200px;
+        overflow: auto;
+    }
+}
+
+/* =========================================================================
+ * SAFE AREA (Notch, etc.)
+ * ========================================================================= */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+    .fl-dashboard-container {
+        padding-left: max(var(--fl-space-4), env(safe-area-inset-left));
+        padding-right: max(var(--fl-space-4), env(safe-area-inset-right));
+        padding-bottom: max(var(--fl-space-4), env(safe-area-inset-bottom));
+    }
+}
+
+/* =========================================================================
+ * REDUCED MOTION
+ * ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .fl-category-filters {
+        scroll-behavior: auto;
+    }
+}

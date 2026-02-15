@@ -1,0 +1,672 @@
+/**
+ * Dashboard States - Estados Visuales de Widgets
+ *
+ * Define los estilos para estados de:
+ * - Loading (carga) con skeleton
+ * - Error con boton de reintentar
+ * - Empty (vacio) con CTA contextual
+ * - Refresh (actualizando)
+ * - Success (exito temporal)
+ *
+ * @package FlavorChatIA
+ * @since 4.1.0
+ */
+
+/* =========================================================================
+ * LOADING STATE - Skeleton
+ * ========================================================================= */
+
+.fl-skeleton {
+    position: relative;
+    overflow: hidden;
+    background: var(--fl-gray-200);
+    border-radius: var(--fl-radius-md);
+}
+
+.fl-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    animation: fl-shimmer 1.5s infinite;
+}
+
+@keyframes fl-shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Lineas de skeleton */
+.fl-skeleton__line {
+    height: 1rem;
+    background: var(--fl-gray-200);
+    border-radius: var(--fl-radius-sm);
+    margin-bottom: var(--fl-space-2);
+}
+
+.fl-skeleton__line:last-child {
+    margin-bottom: 0;
+}
+
+.fl-skeleton__line--short {
+    width: 40%;
+}
+
+.fl-skeleton__line--medium {
+    width: 70%;
+}
+
+.fl-skeleton__line--full {
+    width: 100%;
+}
+
+/* Circulo de skeleton (para avatares/iconos) */
+.fl-skeleton__circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--fl-gray-200);
+    border-radius: var(--fl-radius-full);
+}
+
+.fl-skeleton__circle--sm {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.fl-skeleton__circle--lg {
+    width: 3.5rem;
+    height: 3.5rem;
+}
+
+/* Rectangulo de skeleton (para imagenes/cards) */
+.fl-skeleton__rect {
+    width: 100%;
+    height: 6rem;
+    background: var(--fl-gray-200);
+    border-radius: var(--fl-radius-md);
+}
+
+/* Widget skeleton completo */
+.fl-widget--skeleton,
+.fud-widget--skeleton {
+    min-height: 200px;
+}
+
+.fl-widget--skeleton .fl-widget__header,
+.fud-widget--skeleton .fud-widget__header {
+    display: flex;
+    align-items: center;
+    gap: var(--fl-space-3);
+    padding: var(--fl-space-3) var(--fl-space-4);
+}
+
+.fl-widget--skeleton .fl-widget__body,
+.fud-widget--skeleton .fud-widget__body {
+    padding: var(--fl-space-4);
+}
+
+/* =========================================================================
+ * LOADING SPINNER
+ * ========================================================================= */
+
+.fl-loading-state,
+.fud-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--fl-space-8);
+    text-align: center;
+}
+
+.fl-loading-spinner,
+.fud-loading-spinner {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--fl-gray-200);
+    border-top-color: var(--fl-primary-500);
+    border-radius: var(--fl-radius-full);
+    animation: fl-spin 0.8s linear infinite;
+}
+
+.fl-loading-spinner--sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 2px;
+}
+
+.fl-loading-spinner--lg {
+    width: 3rem;
+    height: 3rem;
+    border-width: 4px;
+}
+
+@keyframes fl-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.fl-loading-text,
+.fud-loading-text {
+    margin-top: var(--fl-space-3);
+    font-size: var(--fl-font-size-sm);
+    color: var(--fl-text-secondary);
+}
+
+/* Loading overlay sobre contenido */
+.fl-loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+}
+
+[data-theme="dark"] .fl-loading-overlay,
+.fl-dark .fl-loading-overlay {
+    background: rgba(15, 23, 42, 0.8);
+}
+
+/* =========================================================================
+ * ERROR STATE
+ * ========================================================================= */
+
+.fl-error-state,
+.fud-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--fl-space-8);
+    text-align: center;
+}
+
+.fl-error-state__icon,
+.fud-error-state__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: var(--fl-space-4);
+    background: var(--fl-danger-100);
+    color: var(--fl-danger-600);
+    border-radius: var(--fl-radius-full);
+}
+
+.fl-error-state__icon .dashicons,
+.fud-error-state__icon .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.fl-error-state__title {
+    margin: 0 0 var(--fl-space-2);
+    font-size: var(--fl-font-size-base);
+    font-weight: var(--fl-font-weight-semibold);
+    color: var(--fl-text-primary);
+}
+
+.fl-error-state__message,
+.fud-error-state__message {
+    margin: 0 0 var(--fl-space-4);
+    font-size: var(--fl-font-size-sm);
+    color: var(--fl-text-secondary);
+    max-width: 300px;
+}
+
+.fl-error-state__retry,
+.fud-error-state__retry {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fl-space-2);
+    padding: var(--fl-space-2) var(--fl-space-4);
+    font-size: var(--fl-font-size-sm);
+    font-weight: var(--fl-font-weight-medium);
+    color: var(--fl-primary-700);
+    background: var(--fl-primary-50);
+    border: 1px solid var(--fl-primary-200);
+    border-radius: var(--fl-radius-md);
+    cursor: pointer;
+    transition: all var(--fl-transition-fast);
+}
+
+.fl-error-state__retry:hover,
+.fud-error-state__retry:hover {
+    background: var(--fl-primary-100);
+    border-color: var(--fl-primary-300);
+}
+
+.fl-error-state__retry:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+}
+
+.fl-error-state__retry .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Error inline (para campos de formulario) */
+.fl-error-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--fl-space-2);
+    padding: var(--fl-space-2) var(--fl-space-3);
+    font-size: var(--fl-font-size-sm);
+    color: var(--fl-danger-700);
+    background: var(--fl-danger-50);
+    border: 1px solid var(--fl-danger-200);
+    border-radius: var(--fl-radius-md);
+}
+
+.fl-error-inline .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* =========================================================================
+ * EMPTY STATE
+ * ========================================================================= */
+
+.fl-empty-state,
+.fud-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--fl-space-8);
+    text-align: center;
+}
+
+.fl-empty-state__icon,
+.fud-empty-state__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: var(--fl-space-4);
+    background: var(--fl-gray-100);
+    color: var(--fl-gray-400);
+    border-radius: var(--fl-radius-full);
+}
+
+.fl-empty-state__icon .dashicons,
+.fud-empty-state__icon .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+}
+
+/* Ilustracion SVG para empty state */
+.fl-empty-state__illustration {
+    max-width: 200px;
+    margin-bottom: var(--fl-space-4);
+    opacity: 0.6;
+}
+
+.fl-empty-state__title {
+    margin: 0 0 var(--fl-space-2);
+    font-size: var(--fl-font-size-base);
+    font-weight: var(--fl-font-weight-semibold);
+    color: var(--fl-text-primary);
+}
+
+.fl-empty-state__message,
+.fud-empty-state__message {
+    margin: 0 0 var(--fl-space-4);
+    font-size: var(--fl-font-size-sm);
+    color: var(--fl-text-secondary);
+    max-width: 300px;
+}
+
+.fl-empty-state__action,
+.fud-empty-state__action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fl-space-2);
+    padding: var(--fl-space-2) var(--fl-space-4);
+    font-size: var(--fl-font-size-sm);
+    font-weight: var(--fl-font-weight-medium);
+    color: var(--fl-white);
+    background: var(--fl-primary-600);
+    border: none;
+    border-radius: var(--fl-radius-md);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background var(--fl-transition-fast);
+}
+
+.fl-empty-state__action:hover,
+.fud-empty-state__action:hover {
+    background: var(--fl-primary-700);
+    color: var(--fl-white);
+}
+
+.fl-empty-state__action:focus-visible {
+    outline: 2px solid var(--fl-primary-500);
+    outline-offset: 2px;
+}
+
+/* Empty state secundario (sin icono grande) */
+.fl-empty-state--compact {
+    padding: var(--fl-space-4);
+}
+
+.fl-empty-state--compact .fl-empty-state__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: var(--fl-space-2);
+}
+
+.fl-empty-state--compact .fl-empty-state__icon .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* =========================================================================
+ * REFRESH STATE - Actualizando
+ * ========================================================================= */
+
+.fl-refresh-state {
+    position: relative;
+}
+
+.fl-refresh-state::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 1;
+}
+
+.fl-refresh-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: var(--fl-space-2);
+    padding: var(--fl-space-2) var(--fl-space-3);
+    background: var(--fl-bg-card);
+    border-radius: var(--fl-radius-md);
+    box-shadow: var(--fl-shadow-md);
+}
+
+/* Widget actualizando */
+.fl-widget--refreshing,
+.fud-widget--refreshing {
+    pointer-events: none;
+}
+
+.fl-widget--refreshing .fl-widget__body,
+.fud-widget--refreshing .fud-widget__body {
+    opacity: 0.5;
+    transition: opacity var(--fl-transition);
+}
+
+.fl-widget--refreshing .fl-widget__action--refresh .dashicons,
+.fud-widget--refreshing .fud-widget__action--refresh .dashicons {
+    animation: fl-spin 1s linear infinite;
+}
+
+/* =========================================================================
+ * SUCCESS STATE - Temporal
+ * ========================================================================= */
+
+.fl-success-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--fl-space-8);
+    text-align: center;
+}
+
+.fl-success-state__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: var(--fl-space-4);
+    background: var(--fl-success-100);
+    color: var(--fl-success-600);
+    border-radius: var(--fl-radius-full);
+    animation: fl-success-pop 0.3s ease-out;
+}
+
+@keyframes fl-success-pop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.fl-success-state__icon .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.fl-success-state__message {
+    font-size: var(--fl-font-size-sm);
+    font-weight: var(--fl-font-weight-medium);
+    color: var(--fl-success-700);
+}
+
+/* Toast de exito */
+.fl-success-toast {
+    position: fixed;
+    bottom: var(--fl-space-6);
+    right: var(--fl-space-6);
+    z-index: var(--fl-z-toast);
+    display: flex;
+    align-items: center;
+    gap: var(--fl-space-3);
+    padding: var(--fl-space-3) var(--fl-space-4);
+    background: var(--fl-success-600);
+    color: var(--fl-white);
+    border-radius: var(--fl-radius-md);
+    box-shadow: var(--fl-shadow-lg);
+    animation: fl-toast-in 0.3s ease-out;
+}
+
+@keyframes fl-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fl-success-toast--out {
+    animation: fl-toast-out 0.3s ease-in forwards;
+}
+
+@keyframes fl-toast-out {
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* =========================================================================
+ * WARNING STATE
+ * ========================================================================= */
+
+.fl-warning-state {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--fl-space-3);
+    padding: var(--fl-space-4);
+    background: var(--fl-warning-50);
+    border: 1px solid var(--fl-warning-200);
+    border-radius: var(--fl-radius-md);
+}
+
+.fl-warning-state__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: var(--fl-warning-100);
+    color: var(--fl-warning-600);
+    border-radius: var(--fl-radius-full);
+    flex-shrink: 0;
+}
+
+.fl-warning-state__icon .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.fl-warning-state__content {
+    flex: 1;
+}
+
+.fl-warning-state__title {
+    margin: 0 0 var(--fl-space-1);
+    font-size: var(--fl-font-size-sm);
+    font-weight: var(--fl-font-weight-semibold);
+    color: var(--fl-warning-800);
+}
+
+.fl-warning-state__message {
+    margin: 0;
+    font-size: var(--fl-font-size-sm);
+    color: var(--fl-warning-700);
+}
+
+/* =========================================================================
+ * INFO STATE
+ * ========================================================================= */
+
+.fl-info-state {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--fl-space-3);
+    padding: var(--fl-space-4);
+    background: var(--fl-info-50);
+    border: 1px solid var(--fl-info-200);
+    border-radius: var(--fl-radius-md);
+}
+
+.fl-info-state__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: var(--fl-info-100);
+    color: var(--fl-info-600);
+    border-radius: var(--fl-radius-full);
+    flex-shrink: 0;
+}
+
+.fl-info-state__icon .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.fl-info-state__content {
+    flex: 1;
+}
+
+.fl-info-state__message {
+    margin: 0;
+    font-size: var(--fl-font-size-sm);
+    color: var(--fl-info-700);
+}
+
+/* =========================================================================
+ * PROGRESS STATE
+ * ========================================================================= */
+
+.fl-progress {
+    width: 100%;
+    height: 0.5rem;
+    background: var(--fl-gray-200);
+    border-radius: var(--fl-radius-full);
+    overflow: hidden;
+}
+
+.fl-progress__bar {
+    height: 100%;
+    background: var(--fl-primary-500);
+    border-radius: var(--fl-radius-full);
+    transition: width 0.3s ease-out;
+}
+
+.fl-progress--indeterminate .fl-progress__bar {
+    width: 30%;
+    animation: fl-progress-indeterminate 1.5s infinite ease-in-out;
+}
+
+@keyframes fl-progress-indeterminate {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(400%);
+    }
+}
+
+/* =========================================================================
+ * DARK MODE ADJUSTMENTS
+ * ========================================================================= */
+
+[data-theme="dark"] .fl-skeleton,
+.fl-dark .fl-skeleton {
+    background: var(--fl-gray-700);
+}
+
+[data-theme="dark"] .fl-skeleton::after,
+.fl-dark .fl-skeleton::after {
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+}
+
+[data-theme="dark"] .fl-loading-spinner,
+.fl-dark .fl-loading-spinner {
+    border-color: var(--fl-gray-600);
+    border-top-color: var(--fl-primary-400);
+}

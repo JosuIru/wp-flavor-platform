@@ -1,0 +1,592 @@
+/**
+ * Justicia Restaurativa - Estilos
+ *
+ * @package FlavorChatIA
+ */
+
+:root {
+    --jr-primary: #9b59b6;
+    --jr-secondary: #3498db;
+    --jr-success: #27ae60;
+    --jr-warning: #f39c12;
+    --jr-danger: #e74c3c;
+    --jr-text: #2c3e50;
+    --jr-text-light: #7f8c8d;
+    --jr-border: #ecf0f1;
+    --jr-bg: #f8f9fa;
+    --jr-radius: 12px;
+    --jr-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INFO PRINCIPAL
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.jr-info {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.jr-info__header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.jr-info__header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--jr-text);
+    margin: 0 0 1rem;
+}
+
+.jr-info__header p {
+    font-size: 1.125rem;
+    color: var(--jr-text-light);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.jr-principios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.jr-principio {
+    background: #fff;
+    border-radius: var(--jr-radius);
+    padding: 1.5rem;
+    box-shadow: var(--jr-shadow);
+    text-align: center;
+}
+
+.jr-principio__icono {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--jr-primary), color-mix(in srgb, var(--jr-primary) 70%, #000));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: #fff;
+    font-size: 24px;
+}
+
+.jr-principio__titulo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--jr-text);
+    margin: 0 0 0.5rem;
+}
+
+.jr-principio__descripcion {
+    font-size: 0.9375rem;
+    color: var(--jr-text-light);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TIPOS DE PROCESO
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.jr-tipos {
+    margin-bottom: 3rem;
+}
+
+.jr-tipos__titulo {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.jr-tipos__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.jr-tipo-card {
+    --tipo-color: #9b59b6;
+    background: #fff;
+    border-radius: var(--jr-radius);
+    padding: 1.5rem;
+    box-shadow: var(--jr-shadow);
+    border-top: 4px solid var(--tipo-color);
+    transition: transform 0.2s ease;
+}
+
+.jr-tipo-card:hover {
+    transform: translateY(-4px);
+}
+
+.jr-tipo-card__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.jr-tipo-card__icono {
+    width: 48px;
+    height: 48px;
+    background: var(--tipo-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+}
+
+.jr-tipo-card__nombre {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--jr-text);
+    margin: 0;
+}
+
+.jr-tipo-card__descripcion {
+    font-size: 0.9375rem;
+    color: var(--jr-text-light);
+    line-height: 1.5;
+    margin: 0 0 1rem;
+}
+
+.jr-tipo-card__duracion {
+    font-size: 0.8125rem;
+    color: var(--tipo-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORMULARIO SOLICITAR
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.jr-solicitar {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.jr-solicitar__form {
+    background: #fff;
+    border-radius: var(--jr-radius);
+    padding: 2rem;
+    box-shadow: var(--jr-shadow);
+}
+
+.jr-solicitar__header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--jr-border);
+}
+
+.jr-solicitar__header h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem;
+    color: var(--jr-text);
+}
+
+.jr-solicitar__header p {
+    color: var(--jr-text-light);
+    margin: 0;
+}
+
+.jr-form-grupo {
+    margin-bottom: 1.5rem;
+}
+
+.jr-form-grupo label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--jr-text);
+    margin-bottom: 0.5rem;
+}
+
+.jr-form-grupo input,
+.jr-form-grupo textarea,
+.jr-form-grupo select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--jr-border);
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    transition: border-color 0.2s ease;
+}
+
+.jr-form-grupo input:focus,
+.jr-form-grupo textarea:focus,
+.jr-form-grupo select:focus {
+    outline: none;
+    border-color: var(--jr-primary);
+}
+
+.jr-form-grupo .description {
+    font-size: 0.8125rem;
+    color: var(--jr-text-light);
+    margin-top: 0.5rem;
+}
+
+.jr-aviso-confidencial {
+    background: color-mix(in srgb, var(--jr-primary) 10%, #fff);
+    border: 1px solid var(--jr-primary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.jr-aviso-confidencial .dashicons {
+    color: var(--jr-primary);
+    flex-shrink: 0;
+}
+
+.jr-aviso-confidencial p {
+    font-size: 0.875rem;
+    color: var(--jr-text);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.jr-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.jr-btn--primary {
+    background: var(--jr-primary);
+    color: #fff;
+    border: none;
+}
+
+.jr-btn--primary:hover {
+    filter: brightness(1.1);
+}
+
+.jr-btn--secondary {
+    background: transparent;
+    color: var(--jr-text);
+    border: 1px solid var(--jr-border);
+}
+
+.jr-solicitar__submit {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MIS PROCESOS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.jr-mis-procesos {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.jr-proceso-card {
+    background: #fff;
+    border-radius: var(--jr-radius);
+    padding: 1.5rem;
+    box-shadow: var(--jr-shadow);
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--jr-primary);
+}
+
+.jr-proceso-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.jr-proceso-card__tipo {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--jr-primary);
+    letter-spacing: 0.05em;
+}
+
+.jr-proceso-card__titulo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--jr-text);
+    margin: 0.25rem 0 0;
+}
+
+.jr-estado-badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.jr-estado-badge--solicitado {
+    background: var(--jr-warning);
+    color: #fff;
+}
+
+.jr-estado-badge--aceptado,
+.jr-estado-badge--en_curso {
+    background: var(--jr-secondary);
+    color: #fff;
+}
+
+.jr-estado-badge--acuerdo,
+.jr-estado-badge--cumplido {
+    background: var(--jr-success);
+    color: #fff;
+}
+
+.jr-estado-badge--cancelado,
+.jr-estado-badge--no_acuerdo {
+    background: #95a5a6;
+    color: #fff;
+}
+
+.jr-proceso-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--jr-text-light);
+}
+
+.jr-proceso-card__meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.jr-proceso-card__actions {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--jr-border);
+    display: flex;
+    gap: 1rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MEDIADORES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.jr-mediadores {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.jr-mediadores__header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.jr-mediadores__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.jr-mediador-card {
+    background: #fff;
+    border-radius: var(--jr-radius);
+    padding: 1.5rem;
+    box-shadow: var(--jr-shadow);
+    text-align: center;
+}
+
+.jr-mediador-card__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    background: var(--jr-border);
+}
+
+.jr-mediador-card__nombre {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--jr-text);
+    margin: 0 0 0.5rem;
+}
+
+.jr-mediador-card__bio {
+    font-size: 0.875rem;
+    color: var(--jr-text-light);
+    line-height: 1.5;
+}
+
+.jr-mediador-card__stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--jr-border);
+}
+
+.jr-mediador-card__stat {
+    text-align: center;
+}
+
+.jr-mediador-card__stat-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--jr-primary);
+}
+
+.jr-mediador-card__stat-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    color: var(--jr-text-light);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CTA SER MEDIADOR
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.jr-cta-mediador {
+    background: linear-gradient(135deg, var(--jr-primary), color-mix(in srgb, var(--jr-primary) 70%, #000));
+    border-radius: var(--jr-radius);
+    padding: 2rem;
+    text-align: center;
+    color: #fff;
+    margin-top: 3rem;
+}
+
+.jr-cta-mediador h3 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem;
+}
+
+.jr-cta-mediador p {
+    opacity: 0.9;
+    margin: 0 0 1.5rem;
+}
+
+.jr-cta-mediador .jr-btn {
+    background: #fff;
+    color: var(--jr-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.jr-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--jr-bg);
+    border-radius: var(--jr-radius);
+}
+
+.jr-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--jr-primary);
+    margin-bottom: 1rem;
+}
+
+.jr-empty-state p {
+    font-size: 1.125rem;
+    color: var(--jr-text-light);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.jr-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--jr-text);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    z-index: 99999;
+    animation: jr-slideIn 0.3s ease;
+}
+
+.jr-toast--success {
+    background: var(--jr-success);
+}
+
+.jr-toast--error {
+    background: var(--jr-danger);
+}
+
+@keyframes jr-slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    .jr-principios {
+        grid-template-columns: 1fr;
+    }
+
+    .jr-tipos__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .jr-proceso-card__header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .jr-proceso-card__meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --jr-text: #ecf0f1;
+        --jr-text-light: #95a5a6;
+        --jr-border: #34495e;
+        --jr-bg: #1a1a2e;
+    }
+
+    .jr-principio,
+    .jr-tipo-card,
+    .jr-solicitar__form,
+    .jr-proceso-card,
+    .jr-mediador-card {
+        background: #16213e;
+    }
+}
