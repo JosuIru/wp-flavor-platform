@@ -640,6 +640,745 @@ class Flavor_Module_Config_API {
                     'fecha'     => 'fecha',
                 ),
             ),
+
+            // === MÓDULOS ADICIONALES ===
+
+            'woocommerce' => array(
+                'id'       => 'woocommerce',
+                'titulo'   => 'Tienda',
+                'icono'    => 'local_offer',
+                'endpoint' => '/flavor/v1/woocommerce/products',
+                'layout'   => 'grid',
+                'campos'   => array(
+                    'titulo'  => 'name',
+                    'imagen'  => 'image',
+                    'badge'   => 'price',
+                    'estado'  => 'stock_status',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'       => 'add_cart',
+                        'label'    => 'Añadir al carrito',
+                        'icono'    => 'add_shopping_cart',
+                        'tipo'     => 'api_call',
+                        'endpoint' => '/flavor/v1/woocommerce/cart/add',
+                    ),
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'categoria',
+                        'label'    => 'Categoría',
+                        'tipo'     => 'select',
+                        'opciones' => array(),
+                    ),
+                ),
+            ),
+
+            'facturas' => array(
+                'id'       => 'facturas',
+                'titulo'   => 'Facturas',
+                'icono'    => 'receipt',
+                'endpoint' => '/flavor/v1/facturas',
+                'layout'   => 'list',
+                'requiere_auth' => true,
+                'campos'   => array(
+                    'titulo'    => 'numero_factura',
+                    'subtitulo' => 'cliente_nombre',
+                    'fecha'     => 'fecha',
+                    'badge'     => 'total',
+                    'estado'    => 'estado',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'descargar',
+                        'label' => 'Descargar PDF',
+                        'icono' => 'download',
+                        'tipo'  => 'api_call',
+                        'endpoint' => '/flavor/v1/facturas/{id}/pdf',
+                    ),
+                ),
+                'fab' => array(
+                    'icono'  => 'add',
+                    'label'  => 'Nueva factura',
+                    'accion' => 'create',
+                ),
+            ),
+
+            'fichaje' => array(
+                'id'       => 'fichaje',
+                'titulo'   => 'Fichaje',
+                'icono'    => 'work',
+                'endpoint' => '/flavor/v1/fichaje',
+                'layout'   => 'dashboard',
+                'requiere_auth' => true,
+                'campos'   => array(
+                    'titulo' => 'fecha',
+                    'badge'  => 'horas_trabajadas',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'fichar_entrada',
+                        'label' => 'Fichar entrada',
+                        'icono' => 'login',
+                        'tipo'  => 'api_call',
+                        'endpoint' => '/flavor/v1/fichaje/entrada',
+                    ),
+                    array(
+                        'id'    => 'fichar_salida',
+                        'label' => 'Fichar salida',
+                        'icono' => 'logout',
+                        'tipo'  => 'api_call',
+                        'endpoint' => '/flavor/v1/fichaje/salida',
+                    ),
+                ),
+            ),
+
+            'socios' => array(
+                'id'       => 'socios',
+                'titulo'   => 'Gestión de Socios',
+                'icono'    => 'people',
+                'endpoint' => '/flavor/v1/socios',
+                'layout'   => 'list',
+                'campos'   => array(
+                    'titulo'    => 'nombre_completo',
+                    'subtitulo' => 'numero_socio',
+                    'imagen'    => 'avatar',
+                    'estado'    => 'estado',
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'estado',
+                        'label'    => 'Estado',
+                        'tipo'     => 'select',
+                        'opciones' => array(
+                            array('value' => '',       'label' => 'Todos'),
+                            array('value' => 'activo', 'label' => 'Activos'),
+                            array('value' => 'baja',   'label' => 'Baja'),
+                            array('value' => 'moroso', 'label' => 'Morosos'),
+                        ),
+                    ),
+                ),
+                'fab' => array(
+                    'icono'  => 'person_add',
+                    'label'  => 'Nuevo socio',
+                    'accion' => 'create',
+                ),
+            ),
+
+            'publicidad' => array(
+                'id'       => 'publicidad',
+                'titulo'   => 'Publicidad Ética',
+                'icono'    => 'campaign',
+                'endpoint' => '/flavor/v1/publicidad',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'titulo',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'imagen',
+                    'badge'       => 'anunciante',
+                ),
+            ),
+
+            'red-social' => array(
+                'id'       => 'red-social',
+                'titulo'   => 'Red Social',
+                'icono'    => 'public',
+                'endpoint' => '/flavor/v1/red-social/posts',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'autor_nombre',
+                    'descripcion' => 'contenido',
+                    'imagen'      => 'imagen',
+                    'fecha'       => 'fecha',
+                    'badge'       => 'likes',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'like',
+                        'label' => 'Me gusta',
+                        'icono' => 'favorite',
+                        'tipo'  => 'api_call',
+                        'endpoint' => '/flavor/v1/red-social/posts/{id}/like',
+                    ),
+                    array(
+                        'id'    => 'comentar',
+                        'label' => 'Comentar',
+                        'icono' => 'comment',
+                        'tipo'  => 'navigate',
+                        'route' => '/red-social/posts/{id}/comentarios',
+                    ),
+                ),
+                'fab' => array(
+                    'icono'  => 'edit',
+                    'label'  => 'Nueva publicación',
+                    'accion' => 'create',
+                ),
+            ),
+
+            'chat-grupos' => array(
+                'id'       => 'chat-grupos',
+                'titulo'   => 'Chat de Grupos',
+                'icono'    => 'chat',
+                'endpoint' => '/flavor/v1/chat/grupos',
+                'layout'   => 'list',
+                'campos'   => array(
+                    'titulo'    => 'nombre',
+                    'subtitulo' => 'ultimo_mensaje',
+                    'imagen'    => 'avatar',
+                    'badge'     => 'no_leidos',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'entrar',
+                        'label' => 'Entrar al chat',
+                        'icono' => 'chat_bubble',
+                        'tipo'  => 'navigate',
+                        'route' => '/chat/grupos/{id}',
+                    ),
+                ),
+            ),
+
+            'chat-interno' => array(
+                'id'       => 'chat-interno',
+                'titulo'   => 'Mensajes',
+                'icono'    => 'chat_bubble',
+                'endpoint' => '/flavor/v1/chat/conversaciones',
+                'layout'   => 'list',
+                'campos'   => array(
+                    'titulo'    => 'contacto_nombre',
+                    'subtitulo' => 'ultimo_mensaje',
+                    'imagen'    => 'contacto_avatar',
+                    'badge'     => 'no_leidos',
+                ),
+            ),
+
+            'comunidades' => array(
+                'id'       => 'comunidades',
+                'titulo'   => 'Comunidades',
+                'icono'    => 'groups',
+                'endpoint' => '/flavor/v1/comunidades',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'nombre',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'logo',
+                    'badge'       => 'miembros',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'unirse',
+                        'label' => 'Unirse',
+                        'icono' => 'group_add',
+                        'tipo'  => 'api_call',
+                        'endpoint' => '/flavor/v1/comunidades/{id}/unirse',
+                    ),
+                ),
+            ),
+
+            'colectivos' => array(
+                'id'       => 'colectivos',
+                'titulo'   => 'Colectivos',
+                'icono'    => 'handshake',
+                'endpoint' => '/flavor/v1/colectivos',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'nombre',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'logo',
+                    'badge'       => 'tipo',
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'tipo',
+                        'label'    => 'Tipo',
+                        'tipo'     => 'select',
+                        'opciones' => array(
+                            array('value' => '',            'label' => 'Todos'),
+                            array('value' => 'asociacion',  'label' => 'Asociación'),
+                            array('value' => 'cooperativa', 'label' => 'Cooperativa'),
+                            array('value' => 'fundacion',   'label' => 'Fundación'),
+                        ),
+                    ),
+                ),
+            ),
+
+            'tramites' => array(
+                'id'       => 'tramites',
+                'titulo'   => 'Trámites',
+                'icono'    => 'assignment',
+                'endpoint' => '/flavor/v1/tramites',
+                'layout'   => 'list',
+                'campos'   => array(
+                    'titulo'    => 'titulo',
+                    'subtitulo' => 'tipo',
+                    'fecha'     => 'fecha_solicitud',
+                    'estado'    => 'estado',
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'estado',
+                        'label'    => 'Estado',
+                        'tipo'     => 'select',
+                        'opciones' => array(
+                            array('value' => '',           'label' => 'Todos'),
+                            array('value' => 'pendiente', 'label' => 'Pendiente'),
+                            array('value' => 'en_proceso','label' => 'En proceso'),
+                            array('value' => 'completado','label' => 'Completado'),
+                            array('value' => 'rechazado', 'label' => 'Rechazado'),
+                        ),
+                    ),
+                ),
+                'fab' => array(
+                    'icono'  => 'add',
+                    'label'  => 'Nuevo trámite',
+                    'accion' => 'create',
+                ),
+            ),
+
+            'reciclaje' => array(
+                'id'       => 'reciclaje',
+                'titulo'   => 'Reciclaje',
+                'icono'    => 'recycling',
+                'endpoint' => '/flavor/v1/reciclaje',
+                'layout'   => 'dashboard',
+                'campos'   => array(
+                    'titulo' => 'tipo',
+                    'badge'  => 'puntos',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'registrar',
+                        'label' => 'Registrar reciclaje',
+                        'icono' => 'qr_code_scanner',
+                        'tipo'  => 'navigate',
+                        'route' => '/reciclaje/registrar',
+                    ),
+                ),
+            ),
+
+            'cursos' => array(
+                'id'       => 'cursos',
+                'titulo'   => 'Cursos',
+                'icono'    => 'menu_book',
+                'endpoint' => '/flavor/v1/cursos',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'titulo',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'imagen',
+                    'badge'       => 'duracion',
+                    'estado'      => 'estado',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'inscribirse',
+                        'label' => 'Inscribirse',
+                        'icono' => 'school',
+                        'tipo'  => 'api_call',
+                        'endpoint' => '/flavor/v1/cursos/{id}/inscribirse',
+                    ),
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'categoria',
+                        'label'    => 'Categoría',
+                        'tipo'     => 'select',
+                        'opciones' => array(
+                            array('value' => '',           'label' => 'Todas'),
+                            array('value' => 'idiomas',    'label' => 'Idiomas'),
+                            array('value' => 'informatica','label' => 'Informática'),
+                            array('value' => 'arte',       'label' => 'Arte'),
+                            array('value' => 'oficios',    'label' => 'Oficios'),
+                        ),
+                    ),
+                ),
+            ),
+
+            'multimedia' => array(
+                'id'       => 'multimedia',
+                'titulo'   => 'Multimedia',
+                'icono'    => 'perm_media',
+                'endpoint' => '/flavor/v1/multimedia',
+                'layout'   => 'grid',
+                'campos'   => array(
+                    'titulo'  => 'titulo',
+                    'imagen'  => 'thumbnail',
+                    'badge'   => 'tipo',
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'tipo',
+                        'label'    => 'Tipo',
+                        'tipo'     => 'select',
+                        'opciones' => array(
+                            array('value' => '',       'label' => 'Todos'),
+                            array('value' => 'imagen', 'label' => 'Imágenes'),
+                            array('value' => 'video',  'label' => 'Videos'),
+                            array('value' => 'audio',  'label' => 'Audio'),
+                        ),
+                    ),
+                ),
+            ),
+
+            'talleres' => array(
+                'id'       => 'talleres',
+                'titulo'   => 'Talleres',
+                'icono'    => 'build',
+                'endpoint' => '/flavor/v1/talleres',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'titulo',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'imagen',
+                    'fecha'       => 'fecha',
+                    'badge'       => 'plazas_disponibles',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'inscribirse',
+                        'label' => 'Inscribirse',
+                        'icono' => 'how_to_reg',
+                        'tipo'  => 'api_call',
+                        'endpoint' => '/flavor/v1/talleres/{id}/inscribirse',
+                    ),
+                ),
+            ),
+
+            'parkings' => array(
+                'id'       => 'parkings',
+                'titulo'   => 'Parkings',
+                'icono'    => 'local_parking',
+                'endpoint' => '/flavor/v1/parkings',
+                'layout'   => 'grid',
+                'campos'   => array(
+                    'titulo'  => 'nombre',
+                    'imagen'  => 'imagen',
+                    'estado'  => 'disponible',
+                    'badge'   => 'plazas_libres',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'reservar',
+                        'label' => 'Reservar plaza',
+                        'icono' => 'event_available',
+                        'tipo'  => 'navigate',
+                        'route' => '/parkings/{id}/reservar',
+                    ),
+                ),
+            ),
+
+            'empresarial' => array(
+                'id'       => 'empresarial',
+                'titulo'   => 'Empresarial',
+                'icono'    => 'business',
+                'endpoint' => '/flavor/v1/empresarial',
+                'layout'   => 'dashboard',
+                'campos'   => array(
+                    'titulo' => 'nombre',
+                    'badge'  => 'tipo',
+                ),
+            ),
+
+            'clientes' => array(
+                'id'       => 'clientes',
+                'titulo'   => 'Clientes',
+                'icono'    => 'person',
+                'endpoint' => '/flavor/v1/clientes',
+                'layout'   => 'list',
+                'campos'   => array(
+                    'titulo'    => 'nombre',
+                    'subtitulo' => 'email',
+                    'imagen'    => 'avatar',
+                    'badge'     => 'total_compras',
+                ),
+                'fab' => array(
+                    'icono'  => 'person_add',
+                    'label'  => 'Nuevo cliente',
+                    'accion' => 'create',
+                ),
+                'form_fields' => array(
+                    array('name' => 'nombre',   'label' => 'Nombre',   'type' => 'text',  'required' => true),
+                    array('name' => 'email',    'label' => 'Email',    'type' => 'email', 'required' => true),
+                    array('name' => 'telefono', 'label' => 'Teléfono', 'type' => 'phone'),
+                    array('name' => 'direccion','label' => 'Dirección','type' => 'text'),
+                    array('name' => 'notas',    'label' => 'Notas',    'type' => 'textarea'),
+                ),
+            ),
+
+            'bares' => array(
+                'id'       => 'bares',
+                'titulo'   => 'Bares y Hostelería',
+                'icono'    => 'restaurant',
+                'endpoint' => '/flavor/v1/bares',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'nombre',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'imagen',
+                    'badge'       => 'tipo',
+                    'estado'      => 'abierto',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'llamar',
+                        'label' => 'Llamar',
+                        'icono' => 'phone',
+                        'tipo'  => 'call',
+                    ),
+                    array(
+                        'id'    => 'ubicacion',
+                        'label' => 'Ver ubicación',
+                        'icono' => 'map',
+                        'tipo'  => 'map',
+                    ),
+                ),
+            ),
+
+            'trading-ia' => array(
+                'id'       => 'trading-ia',
+                'titulo'   => 'Trading IA',
+                'icono'    => 'trending_up',
+                'endpoint' => '/flavor/v1/trading-ia',
+                'layout'   => 'dashboard',
+                'campos'   => array(
+                    'titulo' => 'par',
+                    'badge'  => 'precio',
+                ),
+            ),
+
+            'dex-solana' => array(
+                'id'       => 'dex-solana',
+                'titulo'   => 'DEX Solana',
+                'icono'    => 'currency_exchange',
+                'endpoint' => '/flavor/v1/dex-solana',
+                'layout'   => 'dashboard',
+                'campos'   => array(
+                    'titulo' => 'token',
+                    'badge'  => 'precio',
+                ),
+            ),
+
+            'themacle' => array(
+                'id'       => 'themacle',
+                'titulo'   => 'Themacle',
+                'icono'    => 'palette',
+                'endpoint' => '/flavor/v1/themacle',
+                'layout'   => 'grid',
+                'campos'   => array(
+                    'titulo'  => 'nombre',
+                    'imagen'  => 'preview',
+                    'badge'   => 'categoria',
+                ),
+            ),
+
+            'reservas' => array(
+                'id'       => 'reservas',
+                'titulo'   => 'Mis Reservas',
+                'icono'    => 'calendar_today',
+                'endpoint' => '/flavor/v1/reservas',
+                'layout'   => 'list',
+                'campos'   => array(
+                    'titulo'    => 'espacio_nombre',
+                    'subtitulo' => 'fecha_hora',
+                    'estado'    => 'estado',
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'estado',
+                        'label'    => 'Estado',
+                        'tipo'     => 'select',
+                        'opciones' => array(
+                            array('value' => '',          'label' => 'Todas'),
+                            array('value' => 'pendiente','label' => 'Pendientes'),
+                            array('value' => 'confirmada','label' => 'Confirmadas'),
+                            array('value' => 'cancelada','label' => 'Canceladas'),
+                        ),
+                    ),
+                ),
+            ),
+
+            'email-marketing' => array(
+                'id'       => 'email-marketing',
+                'titulo'   => 'Email Marketing',
+                'icono'    => 'email',
+                'endpoint' => '/flavor/v1/email-marketing/campaigns',
+                'layout'   => 'list',
+                'campos'   => array(
+                    'titulo'    => 'asunto',
+                    'subtitulo' => 'estado',
+                    'fecha'     => 'fecha_envio',
+                    'badge'     => 'destinatarios',
+                ),
+            ),
+
+            'sello-conciencia' => array(
+                'id'       => 'sello-conciencia',
+                'titulo'   => 'Sello Conciencia',
+                'icono'    => 'verified',
+                'endpoint' => '/flavor/v1/sello-conciencia',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'nombre',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'logo',
+                    'badge'       => 'nivel',
+                ),
+            ),
+
+            'circulos-cuidados' => array(
+                'id'       => 'circulos-cuidados',
+                'titulo'   => 'Círculos de Cuidados',
+                'icono'    => 'favorite',
+                'endpoint' => '/flavor/v1/circulos-cuidados',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'nombre',
+                    'descripcion' => 'descripcion',
+                    'badge'       => 'miembros',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'unirse',
+                        'label' => 'Unirse al círculo',
+                        'icono' => 'group_add',
+                        'tipo'  => 'api_call',
+                        'endpoint' => '/flavor/v1/circulos-cuidados/{id}/unirse',
+                    ),
+                ),
+            ),
+
+            'economia-don' => array(
+                'id'       => 'economia-don',
+                'titulo'   => 'Economía del Don',
+                'icono'    => 'card_giftcard',
+                'endpoint' => '/flavor/v1/economia-don',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'titulo',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'imagen',
+                    'badge'       => 'tipo',
+                ),
+                'fab' => array(
+                    'icono'  => 'add',
+                    'label'  => 'Ofrecer regalo',
+                    'accion' => 'create',
+                ),
+            ),
+
+            'justicia-restaurativa' => array(
+                'id'       => 'justicia-restaurativa',
+                'titulo'   => 'Justicia Restaurativa',
+                'icono'    => 'balance',
+                'endpoint' => '/flavor/v1/justicia-restaurativa',
+                'layout'   => 'list',
+                'campos'   => array(
+                    'titulo'    => 'titulo',
+                    'subtitulo' => 'tipo',
+                    'estado'    => 'estado',
+                ),
+            ),
+
+            'huella-ecologica' => array(
+                'id'       => 'huella-ecologica',
+                'titulo'   => 'Huella Ecológica',
+                'icono'    => 'eco',
+                'endpoint' => '/flavor/v1/huella-ecologica',
+                'layout'   => 'dashboard',
+                'campos'   => array(
+                    'titulo' => 'categoria',
+                    'badge'  => 'valor',
+                ),
+                'acciones' => array(
+                    array(
+                        'id'    => 'calcular',
+                        'label' => 'Calcular mi huella',
+                        'icono' => 'calculate',
+                        'tipo'  => 'navigate',
+                        'route' => '/huella-ecologica/calculadora',
+                    ),
+                ),
+            ),
+
+            'economia-suficiencia' => array(
+                'id'       => 'economia-suficiencia',
+                'titulo'   => 'Economía de Suficiencia',
+                'icono'    => 'spa',
+                'endpoint' => '/flavor/v1/economia-suficiencia',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'titulo',
+                    'descripcion' => 'descripcion',
+                    'badge'       => 'categoria',
+                ),
+            ),
+
+            'saberes-ancestrales' => array(
+                'id'       => 'saberes-ancestrales',
+                'titulo'   => 'Saberes Ancestrales',
+                'icono'    => 'history_edu',
+                'endpoint' => '/flavor/v1/saberes-ancestrales',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'titulo',
+                    'descripcion' => 'descripcion',
+                    'imagen'      => 'imagen',
+                    'badge'       => 'categoria',
+                ),
+            ),
+
+            'biodiversidad-local' => array(
+                'id'       => 'biodiversidad-local',
+                'titulo'   => 'Biodiversidad Local',
+                'icono'    => 'park',
+                'endpoint' => '/flavor/v1/biodiversidad-local',
+                'layout'   => 'grid',
+                'campos'   => array(
+                    'titulo'  => 'nombre',
+                    'imagen'  => 'imagen',
+                    'badge'   => 'tipo',
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'tipo',
+                        'label'    => 'Tipo',
+                        'tipo'     => 'select',
+                        'opciones' => array(
+                            array('value' => '',        'label' => 'Todos'),
+                            array('value' => 'flora',   'label' => 'Flora'),
+                            array('value' => 'fauna',   'label' => 'Fauna'),
+                            array('value' => 'hongos',  'label' => 'Hongos'),
+                        ),
+                    ),
+                ),
+            ),
+
+            'trabajo-digno' => array(
+                'id'       => 'trabajo-digno',
+                'titulo'   => 'Trabajo Digno',
+                'icono'    => 'work_outline',
+                'endpoint' => '/flavor/v1/trabajo-digno',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'titulo',
+                    'descripcion' => 'descripcion',
+                    'badge'       => 'tipo',
+                    'estado'      => 'estado',
+                ),
+                'filtros' => array(
+                    array(
+                        'id'       => 'tipo',
+                        'label'    => 'Tipo',
+                        'tipo'     => 'select',
+                        'opciones' => array(
+                            array('value' => '',          'label' => 'Todos'),
+                            array('value' => 'oferta',    'label' => 'Ofertas'),
+                            array('value' => 'formacion', 'label' => 'Formación'),
+                            array('value' => 'recurso',   'label' => 'Recursos'),
+                        ),
+                    ),
+                ),
+            ),
         );
 
         // Permitir a otros plugins añadir/modificar configuraciones
