@@ -40,7 +40,7 @@ class Flavor_Reciclaje_API {
         global $wpdb;
 
         $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
-        $tabla_puntos_reciclaje = $wpdb->prefix . 'flavor_puntos_reciclaje';
+        $tabla_puntos_reciclaje = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
         // Estadísticas personales del usuario
         $stats_usuario = $wpdb->get_row($wpdb->prepare(
