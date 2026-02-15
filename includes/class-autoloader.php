@@ -229,14 +229,16 @@ class Flavor_Autoloader {
                     break;
 
                 default:
-                    // Verificar si es una API de módulo (ej: Flavor_Incidencias_API)
+                    // Verificar si es una API de módulo (ej: Flavor_Incidencias_API, Flavor_Espacios_Comunes_API)
                     $ultimo_segmento = end($partes);
                     if (strtolower($ultimo_segmento) === 'api' && count($partes) >= 2) {
+                        // Tomar todas las partes excepto 'API' para formar el nombre del módulo
                         // Flavor_Incidencias_API → modules/incidencias/class-incidencias-api.php
-                        $nombre_modulo = strtolower($partes[0]);
-                        $nombre_modulo_con_guiones = str_replace('_', '-', $nombre_modulo);
-                        $carpeta_especial = 'modules/' . $nombre_modulo_con_guiones . '/';
-                        $nombre_archivo = 'class-' . $nombre_modulo_con_guiones . '-api.php';
+                        // Flavor_Espacios_Comunes_API → modules/espacios-comunes/class-espacios-comunes-api.php
+                        $partes_modulo = array_slice($partes, 0, -1); // Quitar 'API'
+                        $nombre_modulo = strtolower(implode('-', $partes_modulo));
+                        $carpeta_especial = 'modules/' . $nombre_modulo . '/';
+                        $nombre_archivo = 'class-' . $nombre_modulo . '-api.php';
                     } else {
                         // Sin carpeta especial
                         $nombre_archivo = 'class-' . self::convert_to_filename($partes);
