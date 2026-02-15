@@ -141,7 +141,7 @@ class Flavor_Eventos_API {
         $total = $wpdb->get_var($wpdb->prepare($count_query, $params));
 
         // Obtener eventos
-        $query = "SELECT * FROM $table_name $where ORDER BY fecha DESC LIMIT %d OFFSET %d";
+        $query = "SELECT * FROM $table_name $where ORDER BY fecha_inicio DESC LIMIT %d OFFSET %d";
         $params[] = $per_page;
         $params[] = $offset;
 
