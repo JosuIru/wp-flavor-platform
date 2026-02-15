@@ -2506,8 +2506,8 @@ KNOWLEDGE;
             $mis_aportaciones = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_aportaciones}
                  WHERE usuario_id = %d
-                 AND MONTH(fecha) = MONTH(NOW())
-                 AND YEAR(fecha) = YEAR(NOW())",
+                 AND MONTH(fecha_aportacion) = MONTH(NOW())
+                 AND YEAR(fecha_aportacion) = YEAR(NOW())",
                 $usuario_id
             ));
 
@@ -2520,7 +2520,7 @@ KNOWLEDGE;
 
             // Total kg aportados
             $kg_totales = (float) $wpdb->get_var($wpdb->prepare(
-                "SELECT COALESCE(SUM(peso_kg), 0) FROM {$tabla_aportaciones}
+                "SELECT COALESCE(SUM(cantidad_kg), 0) FROM {$tabla_aportaciones}
                  WHERE usuario_id = %d",
                 $usuario_id
             ));
