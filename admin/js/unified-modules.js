@@ -23,6 +23,14 @@
             savingModules: [],
             hasVisibleModules: true,
 
+            // Estado del modal de documentación
+            docsModalOpen: false,
+            docsModuleId: '',
+            docsModuleName: '',
+            docsLoading: false,
+            docsData: null,
+            docsError: null,
+
             // Inicialización
             init() {
                 this.updateVisibleCount();
@@ -222,6 +230,43 @@
                         btn.disabled = false;
                         btn.innerHTML = '<span class="dashicons dashicons-plus-alt"></span> Crear Landing';
                     }
+                }
+            },
+
+            // Abrir modal de documentación
+            async openDocs(moduleId, moduleName) {
+                this.docsModalOpen = true;
+                this.docsModuleId = moduleId;
+                this.docsModuleName = moduleName;
+                this.docsLoading = true;
+                this.docsData = null;
+                this.docsError = null;
+
+                try {
+                    const response = await fetch(`${fumData.restUrl}modules/docs/${moduleId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-WP-Nonce': fumData.restNonce,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            this.docsError = fumData.i18n.docsNotFound;
+                        } else {
+                            this.docsError = fumData.i18n.docsError;
+                        }
+                        return;
+                    }
+
+                    const data = await response.json();
+                    this.docsData = data;
+                } catch (error) {
+                    console.error('Error loading docs:', error);
+                    this.docsError = fumData.i18n.docsError;
+                } finally {
+                    this.docsLoading = false;
                 }
             },
 

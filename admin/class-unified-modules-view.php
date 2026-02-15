@@ -70,7 +70,9 @@ class Flavor_Unified_Modules_View {
 
         wp_localize_script('flavor-unified-modules', 'fumData', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
+            'restUrl' => rest_url('flavor/v1/'),
             'nonce' => wp_create_nonce('fum_nonce'),
+            'restNonce' => wp_create_nonce('wp_rest'),
             'i18n' => [
                 'saving' => __('Guardando...', 'flavor-chat-ia'),
                 'saved' => __('Guardado', 'flavor-chat-ia'),
@@ -79,6 +81,8 @@ class Flavor_Unified_Modules_View {
                 'confirmDeactivate' => __('¿Desactivar este módulo?', 'flavor-chat-ia'),
                 'creatingLanding' => __('Creando landing...', 'flavor-chat-ia'),
                 'landingCreated' => __('Landing creada', 'flavor-chat-ia'),
+                'docsError' => __('Error al cargar la documentación', 'flavor-chat-ia'),
+                'docsNotFound' => __('Documentación no disponible para este módulo', 'flavor-chat-ia'),
             ],
         ]);
     }
@@ -311,6 +315,14 @@ class Flavor_Unified_Modules_View {
                                     </a>
                                 <?php endif; ?>
                             <?php endif; ?>
+
+                            <!-- Botón de documentación -->
+                            <button type="button"
+                                    class="fum-btn fum-btn--secondary fum-btn--small"
+                                    title="<?php esc_attr_e('Ver documentación', 'flavor-chat-ia'); ?>"
+                                    @click="openDocs('<?php echo esc_js($modulo_id); ?>', '<?php echo esc_js($nombre_modulo); ?>')">
+                                <span class="dashicons dashicons-info-outline"></span>
+                            </button>
                         </div>
                     </div>
                     <?php endforeach; ?>
@@ -322,6 +334,113 @@ class Flavor_Unified_Modules_View {
                 <span class="dashicons dashicons-admin-plugins fum-empty-state__icon"></span>
                 <h3 class="fum-empty-state__title"><?php esc_html_e('No se encontraron módulos', 'flavor-chat-ia'); ?></h3>
                 <p class="fum-empty-state__text"><?php esc_html_e('Prueba a cambiar los filtros de búsqueda.', 'flavor-chat-ia'); ?></p>
+            </div>
+
+            <!-- Modal de Documentación -->
+            <div class="fum-docs-modal" x-show="docsModalOpen" x-cloak @keydown.escape.window="docsModalOpen = false">
+                <div class="fum-docs-modal__backdrop" @click="docsModalOpen = false"></div>
+                <div class="fum-docs-modal__content" @click.stop>
+                    <div class="fum-docs-modal__header">
+                        <h3 class="fum-docs-modal__title" x-text="docsModuleName"></h3>
+                        <button type="button" class="fum-docs-modal__close" @click="docsModalOpen = false">
+                            <span class="dashicons dashicons-no-alt"></span>
+                        </button>
+                    </div>
+                    <div class="fum-docs-modal__body">
+                        <!-- Estado de carga -->
+                        <div class="fum-docs-loading" x-show="docsLoading">
+                            <span class="dashicons dashicons-update fum-docs-loading__spinner"></span>
+                            <span><?php esc_html_e('Cargando documentación...', 'flavor-chat-ia'); ?></span>
+                        </div>
+
+                        <!-- Contenido de documentación -->
+                        <div class="fum-docs-content" x-show="!docsLoading && docsData">
+                            <!-- Descripción -->
+                            <div class="fum-docs-section">
+                                <h4 class="fum-docs-section__title">
+                                    <span class="dashicons dashicons-info"></span>
+                                    <?php esc_html_e('Descripción', 'flavor-chat-ia'); ?>
+                                </h4>
+                                <p class="fum-docs-section__text" x-text="docsData?.descripcion"></p>
+                            </div>
+
+                            <!-- Características -->
+                            <div class="fum-docs-section" x-show="docsData?.caracteristicas?.length > 0">
+                                <h4 class="fum-docs-section__title">
+                                    <span class="dashicons dashicons-star-filled"></span>
+                                    <?php esc_html_e('Características', 'flavor-chat-ia'); ?>
+                                </h4>
+                                <ul class="fum-docs-list">
+                                    <template x-for="item in docsData?.caracteristicas || []" :key="item">
+                                        <li x-text="item"></li>
+                                    </template>
+                                </ul>
+                            </div>
+
+                            <!-- Casos de uso -->
+                            <div class="fum-docs-section" x-show="docsData?.casos_uso?.length > 0">
+                                <h4 class="fum-docs-section__title">
+                                    <span class="dashicons dashicons-lightbulb"></span>
+                                    <?php esc_html_e('Casos de uso', 'flavor-chat-ia'); ?>
+                                </h4>
+                                <ul class="fum-docs-list fum-docs-list--cases">
+                                    <template x-for="item in docsData?.casos_uso || []" :key="item">
+                                        <li x-text="item"></li>
+                                    </template>
+                                </ul>
+                            </div>
+
+                            <!-- Módulos relacionados -->
+                            <div class="fum-docs-section" x-show="docsData?.modulos_relacionados?.length > 0">
+                                <h4 class="fum-docs-section__title">
+                                    <span class="dashicons dashicons-networking"></span>
+                                    <?php esc_html_e('Módulos relacionados', 'flavor-chat-ia'); ?>
+                                </h4>
+                                <div class="fum-docs-tags">
+                                    <template x-for="modulo in docsData?.modulos_relacionados || []" :key="modulo">
+                                        <span class="fum-docs-tag" x-text="modulo"></span>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Requisitos -->
+                            <div class="fum-docs-section" x-show="docsData?.requisitos?.length > 0">
+                                <h4 class="fum-docs-section__title">
+                                    <span class="dashicons dashicons-yes-alt"></span>
+                                    <?php esc_html_e('Requisitos', 'flavor-chat-ia'); ?>
+                                </h4>
+                                <ul class="fum-docs-list fum-docs-list--requirements">
+                                    <template x-for="req in docsData?.requisitos || []" :key="req">
+                                        <li x-text="req"></li>
+                                    </template>
+                                </ul>
+                            </div>
+
+                            <!-- Tablas de base de datos -->
+                            <div class="fum-docs-section" x-show="docsData?.tablas?.length > 0">
+                                <h4 class="fum-docs-section__title">
+                                    <span class="dashicons dashicons-database"></span>
+                                    <?php esc_html_e('Base de datos', 'flavor-chat-ia'); ?>
+                                </h4>
+                                <p class="fum-docs-section__subtitle" x-show="docsData?.tabla_principal">
+                                    <?php esc_html_e('Tabla principal:', 'flavor-chat-ia'); ?>
+                                    <code x-text="docsData?.tabla_principal"></code>
+                                </p>
+                                <div class="fum-docs-tables" x-show="docsData?.tablas?.length > 1">
+                                    <template x-for="tabla in docsData?.tablas || []" :key="tabla">
+                                        <code class="fum-docs-table-name" x-text="tabla"></code>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error state -->
+                        <div class="fum-docs-error" x-show="!docsLoading && docsError">
+                            <span class="dashicons dashicons-warning"></span>
+                            <span x-text="docsError"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <?php

@@ -694,3 +694,280 @@
         flex: 1 1 100%;
     }
 }
+
+/* ==========================================================================
+   Documentation Modal
+   ========================================================================== */
+
+.fum-docs-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fum-docs-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.fum-docs-modal__content {
+    position: relative;
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    background: white;
+    border-radius: var(--fum-radius);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fum-modal-in 0.25s ease-out;
+}
+
+@keyframes fum-modal-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.fum-docs-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--fum-gray-100);
+    background: var(--fum-gray-50);
+}
+
+.fum-docs-modal__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--fum-gray-800);
+}
+
+.fum-docs-modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--fum-gray-500);
+    transition: all var(--fum-transition);
+}
+
+.fum-docs-modal__close:hover {
+    background: var(--fum-gray-100);
+    color: var(--fum-gray-700);
+}
+
+.fum-docs-modal__close .dashicons {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+}
+
+.fum-docs-modal__body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Loading state */
+.fum-docs-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px;
+    color: var(--fum-gray-500);
+}
+
+.fum-docs-loading__spinner {
+    font-size: 32px;
+    color: var(--fum-primary);
+    animation: fum-spin 1s linear infinite;
+}
+
+/* Error state */
+.fum-docs-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 40px;
+    color: var(--fum-danger);
+}
+
+.fum-docs-error .dashicons {
+    font-size: 24px;
+}
+
+/* Documentation content */
+.fum-docs-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.fum-docs-section {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--fum-gray-100);
+}
+
+.fum-docs-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.fum-docs-section__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fum-gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fum-docs-section__title .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--fum-primary);
+}
+
+.fum-docs-section__text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fum-gray-600);
+}
+
+.fum-docs-section__subtitle {
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: var(--fum-gray-500);
+}
+
+.fum-docs-section__subtitle code {
+    background: var(--fum-gray-100);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--fum-primary);
+}
+
+/* Lists */
+.fum-docs-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fum-docs-list li {
+    position: relative;
+    padding-left: 24px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--fum-gray-600);
+}
+
+.fum-docs-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    background: var(--fum-primary);
+    border-radius: 50%;
+}
+
+.fum-docs-list--cases li::before {
+    background: var(--fum-warning);
+}
+
+.fum-docs-list--requirements li::before {
+    background: var(--fum-success);
+}
+
+/* Tags */
+.fum-docs-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.fum-docs-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: var(--fum-primary);
+    background: linear-gradient(135deg, var(--fum-primary), var(--fum-primary-light));
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 999px;
+}
+
+/* Tables */
+.fum-docs-tables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.fum-docs-table-name {
+    display: inline-flex;
+    padding: 4px 10px;
+    background: var(--fum-gray-100);
+    font-family: monospace;
+    font-size: 11px;
+    border-radius: 4px;
+    color: var(--fum-gray-600);
+}
+
+/* Responsive modal */
+@media (max-width: 600px) {
+    .fum-docs-modal__content {
+        width: 95%;
+        max-height: 90vh;
+        border-radius: var(--fum-radius-sm);
+    }
+
+    .fum-docs-modal__header {
+        padding: 16px;
+    }
+
+    .fum-docs-modal__body {
+        padding: 16px;
+    }
+}
+
+/* Hidden state for x-cloak */
+[x-cloak] {
+    display: none !important;
+}
