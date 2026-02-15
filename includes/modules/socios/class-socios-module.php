@@ -471,6 +471,11 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
                     'titulo' => __('Configuración', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_config'],
                 ],
+                [
+                    'slug' => 'socios-pagos',
+                    'titulo' => __('Pagos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_pagos'],
+                ],
             ],
             'estadisticas' => [$this, 'get_estadisticas_dashboard'],
         ];
@@ -824,6 +829,145 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         submit_button(__('Guardar configuración', 'flavor-chat-ia'));
         echo '</form>';
         echo '</div>';
+    }
+
+    /**
+     * Renderiza la configuración de pagos
+     */
+    public function render_admin_pagos() {
+        $this->handle_admin_save_pagos();
+
+        // Obtener configuraciones actuales
+        $config_socios = get_option('flavor_socios_settings', []);
+        $config_stripe = get_option('flavor_socios_stripe_settings', []);
+
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Configuración de Pagos', 'flavor-chat-ia'));
+
+        echo '<div class="flavor-admin-tabs">';
+        echo '<nav class="nav-tab-wrapper">';
+        echo '<a href="#tab-manual" class="nav-tab nav-tab-active">' . esc_html__('Pago Manual', 'flavor-chat-ia') . '</a>';
+        echo '<a href="#tab-stripe" class="nav-tab">' . esc_html__('Stripe', 'flavor-chat-ia') . '</a>';
+        echo '</nav>';
+
+        echo '<form method="post">';
+        wp_nonce_field('socios_pagos_config', 'socios_pagos_nonce');
+
+        // Tab: Pago Manual
+        echo '<div id="tab-manual" class="flavor-tab-content active">';
+        echo '<h2>' . esc_html__('Datos para transferencia bancaria', 'flavor-chat-ia') . '</h2>';
+        echo '<table class="form-table"><tbody>';
+
+        echo '<tr><th><label for="banco">' . esc_html__('Banco', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="banco" name="banco" class="regular-text" value="' . esc_attr($config_socios['banco'] ?? '') . '"></td></tr>';
+
+        echo '<tr><th><label for="iban_cooperativa">' . esc_html__('IBAN', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="iban_cooperativa" name="iban_cooperativa" class="regular-text" placeholder="ES00 0000 0000 0000 0000 0000" value="' . esc_attr($config_socios['iban_cooperativa'] ?? '') . '"></td></tr>';
+
+        echo '<tr><th><label for="titular_cuenta">' . esc_html__('Titular de la cuenta', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="titular_cuenta" name="titular_cuenta" class="regular-text" value="' . esc_attr($config_socios['titular_cuenta'] ?? '') . '"></td></tr>';
+
+        echo '<tr><th><label for="telefono_bizum">' . esc_html__('Teléfono Bizum', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="tel" id="telefono_bizum" name="telefono_bizum" class="regular-text" placeholder="+34 600 000 000" value="' . esc_attr($config_socios['telefono_bizum'] ?? '') . '"></td></tr>';
+
+        echo '</tbody></table>';
+        echo '</div>';
+
+        // Tab: Stripe
+        echo '<div id="tab-stripe" class="flavor-tab-content" style="display:none;">';
+        echo '<h2>' . esc_html__('Configuración de Stripe', 'flavor-chat-ia') . '</h2>';
+        echo '<p class="description">' . sprintf(
+            esc_html__('Obtén tus claves API en %s', 'flavor-chat-ia'),
+            '<a href="https://dashboard.stripe.com/apikeys" target="_blank">dashboard.stripe.com</a>'
+        ) . '</p>';
+
+        echo '<table class="form-table"><tbody>';
+
+        echo '<tr><th><label for="stripe_test_mode">' . esc_html__('Modo de prueba', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><label><input type="checkbox" id="stripe_test_mode" name="stripe_test_mode" value="1" ' . checked(!empty($config_stripe['test_mode']), true, false) . '> ';
+        echo esc_html__('Activar modo de prueba (sandbox)', 'flavor-chat-ia') . '</label></td></tr>';
+
+        echo '<tr><th colspan="2"><h3>' . esc_html__('Claves de Producción', 'flavor-chat-ia') . '</h3></th></tr>';
+
+        echo '<tr><th><label for="stripe_live_publishable">' . esc_html__('Clave pública (Live)', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="stripe_live_publishable" name="stripe_live_publishable" class="large-text" placeholder="pk_live_..." value="' . esc_attr($config_stripe['live_publishable_key'] ?? '') . '"></td></tr>';
+
+        echo '<tr><th><label for="stripe_live_secret">' . esc_html__('Clave secreta (Live)', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="password" id="stripe_live_secret" name="stripe_live_secret" class="large-text" placeholder="sk_live_..." value="' . esc_attr($config_stripe['live_secret_key'] ?? '') . '"></td></tr>';
+
+        echo '<tr><th colspan="2"><h3>' . esc_html__('Claves de Prueba', 'flavor-chat-ia') . '</h3></th></tr>';
+
+        echo '<tr><th><label for="stripe_test_publishable">' . esc_html__('Clave pública (Test)', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="stripe_test_publishable" name="stripe_test_publishable" class="large-text" placeholder="pk_test_..." value="' . esc_attr($config_stripe['test_publishable_key'] ?? '') . '"></td></tr>';
+
+        echo '<tr><th><label for="stripe_test_secret">' . esc_html__('Clave secreta (Test)', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="password" id="stripe_test_secret" name="stripe_test_secret" class="large-text" placeholder="sk_test_..." value="' . esc_attr($config_stripe['test_secret_key'] ?? '') . '"></td></tr>';
+
+        echo '<tr><th colspan="2"><h3>' . esc_html__('Webhook', 'flavor-chat-ia') . '</h3></th></tr>';
+
+        $webhook_url = rest_url('flavor/v1/socios/webhook/stripe');
+        echo '<tr><th>' . esc_html__('URL del Webhook', 'flavor-chat-ia') . '</th>';
+        echo '<td><code>' . esc_html($webhook_url) . '</code>';
+        echo '<p class="description">' . esc_html__('Configura esta URL en tu dashboard de Stripe para recibir notificaciones de pago.', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th><label for="stripe_webhook_secret">' . esc_html__('Webhook Secret', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="password" id="stripe_webhook_secret" name="stripe_webhook_secret" class="large-text" placeholder="whsec_..." value="' . esc_attr($config_stripe['webhook_secret'] ?? '') . '">';
+        echo '<p class="description">' . esc_html__('Se encuentra en Stripe Dashboard > Webhooks > Tu endpoint > Signing secret', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '</tbody></table>';
+        echo '</div>';
+
+        submit_button(__('Guardar configuración de pagos', 'flavor-chat-ia'));
+        echo '</form>';
+        echo '</div>';
+
+        // Script para tabs
+        echo '<script>
+        jQuery(document).ready(function($) {
+            $(".flavor-admin-tabs .nav-tab").on("click", function(e) {
+                e.preventDefault();
+                var target = $(this).attr("href");
+                $(".nav-tab").removeClass("nav-tab-active");
+                $(this).addClass("nav-tab-active");
+                $(".flavor-tab-content").hide();
+                $(target).show();
+            });
+        });
+        </script>';
+    }
+
+    /**
+     * Guarda la configuración de pagos
+     */
+    private function handle_admin_save_pagos() {
+        if (!isset($_POST['socios_pagos_nonce']) || !wp_verify_nonce($_POST['socios_pagos_nonce'], 'socios_pagos_config')) {
+            return;
+        }
+
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        // Guardar config de pago manual
+        $config_socios = get_option('flavor_socios_settings', []);
+        $config_socios['banco'] = sanitize_text_field($_POST['banco'] ?? '');
+        $config_socios['iban_cooperativa'] = sanitize_text_field($_POST['iban_cooperativa'] ?? '');
+        $config_socios['titular_cuenta'] = sanitize_text_field($_POST['titular_cuenta'] ?? '');
+        $config_socios['telefono_bizum'] = sanitize_text_field($_POST['telefono_bizum'] ?? '');
+        update_option('flavor_socios_settings', $config_socios);
+
+        // Guardar config de Stripe
+        $config_stripe = [
+            'test_mode'            => !empty($_POST['stripe_test_mode']),
+            'live_publishable_key' => sanitize_text_field($_POST['stripe_live_publishable'] ?? ''),
+            'live_secret_key'      => sanitize_text_field($_POST['stripe_live_secret'] ?? ''),
+            'test_publishable_key' => sanitize_text_field($_POST['stripe_test_publishable'] ?? ''),
+            'test_secret_key'      => sanitize_text_field($_POST['stripe_test_secret'] ?? ''),
+            'webhook_secret'       => sanitize_text_field($_POST['stripe_webhook_secret'] ?? ''),
+        ];
+        update_option('flavor_socios_stripe_settings', $config_stripe);
+
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración de pagos guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
     }
 
     /**
