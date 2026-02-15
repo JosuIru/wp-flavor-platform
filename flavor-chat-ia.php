@@ -486,6 +486,11 @@ final class Flavor_Chat_IA {
         // Verificar e instalar tablas de módulos si no existen
         $this->maybe_install_module_tables();
 
+        // Verificar actualizaciones de BD (índices, migraciones)
+        if (class_exists('Flavor_Database_Installer')) {
+            Flavor_Database_Installer::maybe_upgrade();
+        }
+
         // Inicializar Registro de Actividad (antes que los modulos para que puedan usarlo)
         if (class_exists('Flavor_Activity_Log')) {
             Flavor_Activity_Log::get_instance();

@@ -68,7 +68,8 @@ class Flavor_Database_Installer {
             fecha_inscripcion datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY evento_id (evento_id),
-            KEY usuario_id (usuario_id)
+            KEY usuario_id (usuario_id),
+            KEY evento_estado (evento_id, estado)
         ) $charset_collate;";
 
         // Espacios comunes
@@ -81,7 +82,8 @@ class Flavor_Database_Installer {
             imagen varchar(500),
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Reservas
@@ -96,7 +98,9 @@ class Flavor_Database_Installer {
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY espacio_id (espacio_id),
-            KEY usuario_id (usuario_id)
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY espacio_fechas (espacio_id, fecha_inicio, fecha_fin)
         ) $charset_collate;";
 
         // Cursos
@@ -109,7 +113,8 @@ class Flavor_Database_Installer {
             imagen varchar(500),
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Inscripciones a cursos
@@ -138,7 +143,9 @@ class Flavor_Database_Installer {
             lugar varchar(255),
             estado varchar(50) DEFAULT 'publicado',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY fecha (fecha),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Avisos municipales
@@ -150,7 +157,9 @@ class Flavor_Database_Installer {
             fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
             fecha_expiracion datetime,
             estado varchar(50) DEFAULT 'publicado',
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY fecha_expiracion (fecha_expiracion)
         ) $charset_collate;";
 
         // Chat grupos
@@ -162,7 +171,9 @@ class Flavor_Database_Installer {
             tipo varchar(50) DEFAULT 'publico',
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY tipo (tipo)
         ) $charset_collate;";
 
         // Miembros de grupos de chat
@@ -187,7 +198,9 @@ class Flavor_Database_Installer {
             estado varchar(50) DEFAULT 'abierto',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY autor_id (autor_id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Mensajes
@@ -201,7 +214,8 @@ class Flavor_Database_Installer {
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY destinatario_id (destinatario_id),
-            KEY remitente_id (remitente_id)
+            KEY remitente_id (remitente_id),
+            KEY leido (leido)
         ) $charset_collate;";
 
         // Notificaciones
@@ -215,7 +229,9 @@ class Flavor_Database_Installer {
             url varchar(500),
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
-            KEY usuario_id (usuario_id)
+            KEY usuario_id (usuario_id),
+            KEY leida (leida),
+            KEY tipo (tipo)
         ) $charset_collate;";
 
         // Huertos parcelas
@@ -240,7 +256,10 @@ class Flavor_Database_Installer {
             fecha_inicio date NOT NULL,
             fecha_fin date,
             estado varchar(50) DEFAULT 'activo',
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY parcela_id (parcela_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Reciclaje puntos
@@ -265,7 +284,10 @@ class Flavor_Database_Installer {
             categoria varchar(100),
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY categoria (categoria),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Tienda productos
@@ -279,7 +301,9 @@ class Flavor_Database_Installer {
             categoria varchar(100),
             estado varchar(50) DEFAULT 'disponible',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY categoria (categoria),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Tienda pedidos
@@ -291,7 +315,9 @@ class Flavor_Database_Installer {
             estado varchar(50) DEFAULT 'pendiente',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
-            KEY usuario_id (usuario_id)
+            KEY usuario_id (usuario_id),
+            UNIQUE KEY numero_pedido (numero_pedido),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Banco del tiempo
@@ -303,7 +329,9 @@ class Flavor_Database_Installer {
             tipo varchar(50) DEFAULT 'ingreso',
             fecha datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
-            KEY usuario_id (usuario_id)
+            KEY usuario_id (usuario_id),
+            KEY tipo (tipo),
+            KEY fecha (fecha)
         ) $charset_collate;";
 
         // Colectivos
@@ -315,7 +343,9 @@ class Flavor_Database_Installer {
             imagen varchar(500),
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY tipo (tipo)
         ) $charset_collate;";
 
         // Colectivos miembros
@@ -339,7 +369,9 @@ class Flavor_Database_Installer {
             fecha_alta date NOT NULL,
             fecha_renovacion date,
             PRIMARY KEY (id),
-            KEY usuario_id (usuario_id)
+            KEY usuario_id (usuario_id),
+            UNIQUE KEY numero_socio (numero_socio),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Incidencias
@@ -354,7 +386,10 @@ class Flavor_Database_Installer {
             estado varchar(50) DEFAULT 'pendiente',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
-            UNIQUE KEY numero_incidencia (numero_incidencia)
+            UNIQUE KEY numero_incidencia (numero_incidencia),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY categoria (categoria)
         ) $charset_collate;";
 
         // Trámites
@@ -366,7 +401,10 @@ class Flavor_Database_Installer {
             datos text,
             estado varchar(50) DEFAULT 'pendiente',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY tipo (tipo),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Participación procesos
@@ -378,7 +416,9 @@ class Flavor_Database_Installer {
             fecha_fin date,
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY fecha_fin (fecha_fin)
         ) $charset_collate;";
 
         // Presupuestos propuestas
@@ -391,7 +431,9 @@ class Flavor_Database_Installer {
             votos int(11) DEFAULT 0,
             estado varchar(50) DEFAULT 'pendiente',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Fichajes
@@ -405,7 +447,8 @@ class Flavor_Database_Installer {
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY usuario_id (usuario_id),
-            KEY fecha (fecha)
+            KEY fecha (fecha),
+            KEY usuario_fecha (usuario_id, fecha)
         ) $charset_collate;";
 
         // Biblioteca préstamos
@@ -416,7 +459,9 @@ class Flavor_Database_Installer {
             fecha_prestamo date NOT NULL,
             fecha_devolucion date,
             estado varchar(50) DEFAULT 'activo',
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Bares y restaurantes
@@ -429,7 +474,9 @@ class Flavor_Database_Installer {
             horario varchar(255),
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY tipo (tipo),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Podcast episodios
@@ -441,7 +488,9 @@ class Flavor_Database_Installer {
             url_audio varchar(500),
             estado varchar(50) DEFAULT 'publicado',
             fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY fecha_publicacion (fecha_publicacion)
         ) $charset_collate;";
 
         // Carpooling viajes
@@ -455,7 +504,10 @@ class Flavor_Database_Installer {
             precio decimal(10,2) DEFAULT 0,
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY conductor_id (conductor_id),
+            KEY estado (estado),
+            KEY fecha_salida (fecha_salida)
         ) $charset_collate;";
 
         // Grupos de consumo
@@ -466,7 +518,8 @@ class Flavor_Database_Installer {
             proximo_reparto date,
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Grupos consumo miembros
@@ -486,7 +539,10 @@ class Flavor_Database_Installer {
             cantidad_kg decimal(10,2) NOT NULL,
             tipo varchar(100),
             fecha datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY tipo (tipo),
+            KEY fecha (fecha)
         ) $charset_collate;";
 
         // Ayuda vecinal
@@ -499,7 +555,10 @@ class Flavor_Database_Installer {
             urgente tinyint(1) DEFAULT 0,
             estado varchar(50) DEFAULT 'activa',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY tipo (tipo)
         ) $charset_collate;";
 
         // Recursos compartidos
@@ -511,7 +570,10 @@ class Flavor_Database_Installer {
             tipo varchar(100),
             estado varchar(50) DEFAULT 'disponible',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY tipo (tipo),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Facturas
@@ -524,7 +586,10 @@ class Flavor_Database_Installer {
             estado varchar(50) DEFAULT 'pendiente',
             fecha date NOT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            UNIQUE KEY numero_factura (numero_factura),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Bicicletas
@@ -547,7 +612,10 @@ class Flavor_Database_Installer {
             fecha_inicio datetime NOT NULL,
             fecha_fin datetime,
             estado varchar(50) DEFAULT 'activo',
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY bicicleta_id (bicicleta_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Parkings
@@ -559,7 +627,8 @@ class Flavor_Database_Installer {
             plazas_libres int(11) DEFAULT 0,
             estado varchar(50) DEFAULT 'activo',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
+            PRIMARY KEY (id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         return $tables;
@@ -774,5 +843,195 @@ class Flavor_Database_Installer {
         }
 
         delete_option('flavor_db_version');
+    }
+
+    /**
+     * Añade índices faltantes a instalaciones existentes
+     *
+     * Este método se puede ejecutar en actualizaciones para mejorar
+     * el rendimiento de bases de datos existentes sin recrear tablas.
+     *
+     * @return array Resultado de las operaciones
+     */
+    public static function add_missing_indexes() {
+        global $wpdb;
+        $prefix = $wpdb->prefix . 'flavor_';
+        $resultados = ['añadidos' => [], 'existentes' => [], 'errores' => []];
+
+        // Definición de índices a verificar/crear
+        $indices = [
+            // Eventos e inscripciones
+            ['tabla' => 'eventos', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'eventos', 'nombre' => 'fecha_inicio', 'columnas' => 'fecha_inicio'],
+            ['tabla' => 'eventos_inscripciones', 'nombre' => 'evento_estado', 'columnas' => 'evento_id, estado'],
+
+            // Espacios y reservas
+            ['tabla' => 'espacios', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'reservas', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'reservas', 'nombre' => 'espacio_fechas', 'columnas' => 'espacio_id, fecha_inicio, fecha_fin'],
+
+            // Cursos y talleres
+            ['tabla' => 'cursos', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'talleres', 'nombre' => 'fecha', 'columnas' => 'fecha'],
+            ['tabla' => 'talleres', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Avisos
+            ['tabla' => 'avisos', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'avisos', 'nombre' => 'fecha_expiracion', 'columnas' => 'fecha_expiracion'],
+
+            // Chat y foros
+            ['tabla' => 'chat_grupos', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'chat_grupos', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+            ['tabla' => 'foros_temas', 'nombre' => 'autor_id', 'columnas' => 'autor_id'],
+            ['tabla' => 'foros_temas', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Mensajes y notificaciones
+            ['tabla' => 'mensajes', 'nombre' => 'leido', 'columnas' => 'leido'],
+            ['tabla' => 'notificaciones', 'nombre' => 'leida', 'columnas' => 'leida'],
+            ['tabla' => 'notificaciones', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+
+            // Huertos
+            ['tabla' => 'huertos_asignaciones', 'nombre' => 'parcela_id', 'columnas' => 'parcela_id'],
+            ['tabla' => 'huertos_asignaciones', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'huertos_asignaciones', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Marketplace
+            ['tabla' => 'marketplace', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'marketplace', 'nombre' => 'categoria', 'columnas' => 'categoria'],
+            ['tabla' => 'marketplace', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Tienda
+            ['tabla' => 'tienda_productos', 'nombre' => 'categoria', 'columnas' => 'categoria'],
+            ['tabla' => 'tienda_productos', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'tienda_pedidos', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Banco del tiempo
+            ['tabla' => 'banco_tiempo_saldo', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+            ['tabla' => 'banco_tiempo_saldo', 'nombre' => 'fecha', 'columnas' => 'fecha'],
+
+            // Colectivos y socios
+            ['tabla' => 'colectivos', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'colectivos', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+            ['tabla' => 'socios', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Incidencias
+            ['tabla' => 'incidencias', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'incidencias', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'incidencias', 'nombre' => 'categoria', 'columnas' => 'categoria'],
+
+            // Trámites
+            ['tabla' => 'tramites', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'tramites', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+            ['tabla' => 'tramites', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Participación
+            ['tabla' => 'participacion_procesos', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'participacion_procesos', 'nombre' => 'fecha_fin', 'columnas' => 'fecha_fin'],
+            ['tabla' => 'presupuestos_propuestas', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'presupuestos_propuestas', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Fichajes
+            ['tabla' => 'fichajes', 'nombre' => 'usuario_fecha', 'columnas' => 'usuario_id, fecha'],
+
+            // Biblioteca
+            ['tabla' => 'biblioteca_prestamos', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'biblioteca_prestamos', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Bares
+            ['tabla' => 'bares', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+            ['tabla' => 'bares', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Podcast
+            ['tabla' => 'podcast_episodios', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'podcast_episodios', 'nombre' => 'fecha_publicacion', 'columnas' => 'fecha_publicacion'],
+
+            // Carpooling
+            ['tabla' => 'carpooling_viajes', 'nombre' => 'conductor_id', 'columnas' => 'conductor_id'],
+            ['tabla' => 'carpooling_viajes', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'carpooling_viajes', 'nombre' => 'fecha_salida', 'columnas' => 'fecha_salida'],
+
+            // Grupos de consumo
+            ['tabla' => 'grupos_consumo', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Compostaje
+            ['tabla' => 'compostaje_aportes', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'compostaje_aportes', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+            ['tabla' => 'compostaje_aportes', 'nombre' => 'fecha', 'columnas' => 'fecha'],
+
+            // Ayuda vecinal
+            ['tabla' => 'ayuda_vecinal', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'ayuda_vecinal', 'nombre' => 'estado', 'columnas' => 'estado'],
+            ['tabla' => 'ayuda_vecinal', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+
+            // Recursos compartidos
+            ['tabla' => 'recursos_compartidos', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'recursos_compartidos', 'nombre' => 'tipo', 'columnas' => 'tipo'],
+            ['tabla' => 'recursos_compartidos', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Facturas
+            ['tabla' => 'facturas', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'facturas', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Bicicletas
+            ['tabla' => 'bicicletas_alquileres', 'nombre' => 'bicicleta_id', 'columnas' => 'bicicleta_id'],
+            ['tabla' => 'bicicletas_alquileres', 'nombre' => 'usuario_id', 'columnas' => 'usuario_id'],
+            ['tabla' => 'bicicletas_alquileres', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // Parkings
+            ['tabla' => 'parkings', 'nombre' => 'estado', 'columnas' => 'estado'],
+        ];
+
+        foreach ($indices as $indice) {
+            $tabla_completa = $prefix . $indice['tabla'];
+
+            // Verificar si la tabla existe
+            $tabla_existe = $wpdb->get_var(
+                $wpdb->prepare("SHOW TABLES LIKE %s", $tabla_completa)
+            );
+
+            if (!$tabla_existe) {
+                continue;
+            }
+
+            // Verificar si el índice ya existe
+            $indice_existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(1) FROM INFORMATION_SCHEMA.STATISTICS
+                 WHERE table_schema = DATABASE()
+                 AND table_name = %s
+                 AND index_name = %s",
+                $tabla_completa,
+                $indice['nombre']
+            ));
+
+            if ($indice_existe) {
+                $resultados['existentes'][] = "{$indice['tabla']}.{$indice['nombre']}";
+                continue;
+            }
+
+            // Crear el índice
+            $sql = "ALTER TABLE `{$tabla_completa}` ADD INDEX `{$indice['nombre']}` ({$indice['columnas']})";
+            $resultado = $wpdb->query($sql);
+
+            if ($resultado !== false) {
+                $resultados['añadidos'][] = "{$indice['tabla']}.{$indice['nombre']}";
+            } else {
+                $resultados['errores'][] = "{$indice['tabla']}.{$indice['nombre']}: " . $wpdb->last_error;
+            }
+        }
+
+        return $resultados;
+    }
+
+    /**
+     * Verifica la versión de la BD y ejecuta migraciones necesarias
+     */
+    public static function maybe_upgrade() {
+        $version_actual = get_option('flavor_db_version', '1.0.0');
+        $version_nueva = '1.1.0'; // Versión con índices optimizados
+
+        if (version_compare($version_actual, $version_nueva, '<')) {
+            self::add_missing_indexes();
+            update_option('flavor_db_version', $version_nueva);
+        }
     }
 }
