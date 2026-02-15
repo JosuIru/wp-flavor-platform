@@ -851,6 +851,30 @@ final class Flavor_Chat_IA {
         if (class_exists('Flavor_Grupos_Consumo_API')) {
             Flavor_Grupos_Consumo_API::get_instance();
         }
+        if (class_exists('Flavor_Incidencias_API')) {
+            Flavor_Incidencias_API::get_instance();
+        }
+        if (class_exists('Flavor_Cursos_API')) {
+            Flavor_Cursos_API::get_instance();
+        }
+        if (class_exists('Flavor_Biblioteca_API')) {
+            Flavor_Biblioteca_API::get_instance();
+        }
+        if (class_exists('Flavor_Talleres_API')) {
+            Flavor_Talleres_API::get_instance();
+        }
+        if (class_exists('Flavor_Espacios_Comunes_API')) {
+            Flavor_Espacios_Comunes_API::get_instance();
+        }
+        if (class_exists('Flavor_Tramites_API')) {
+            Flavor_Tramites_API::get_instance();
+        }
+        if (class_exists('Flavor_Socios_API')) {
+            Flavor_Socios_API::get_instance();
+        }
+        if (class_exists('Flavor_Facturas_API')) {
+            Flavor_Facturas_API::get_instance();
+        }
 
         // NOTA: Flavor_Module_Shortcodes se inicializa en load_modules()
 

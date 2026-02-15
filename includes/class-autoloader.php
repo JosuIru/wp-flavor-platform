@@ -229,8 +229,18 @@ class Flavor_Autoloader {
                     break;
 
                 default:
-                    // Sin carpeta especial
-                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    // Verificar si es una API de módulo (ej: Flavor_Incidencias_API)
+                    $ultimo_segmento = end($partes);
+                    if (strtolower($ultimo_segmento) === 'api' && count($partes) >= 2) {
+                        // Flavor_Incidencias_API → modules/incidencias/class-incidencias-api.php
+                        $nombre_modulo = strtolower($partes[0]);
+                        $nombre_modulo_con_guiones = str_replace('_', '-', $nombre_modulo);
+                        $carpeta_especial = 'modules/' . $nombre_modulo_con_guiones . '/';
+                        $nombre_archivo = 'class-' . $nombre_modulo_con_guiones . '-api.php';
+                    } else {
+                        // Sin carpeta especial
+                        $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    }
                     break;
             }
         } else {
