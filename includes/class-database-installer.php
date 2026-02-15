@@ -631,6 +631,156 @@ class Flavor_Database_Installer {
             KEY estado (estado)
         ) $charset_collate;";
 
+        // Radio - Programas
+        $tables[] = "CREATE TABLE {$prefix}radio_programas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            locutor_id bigint(20) UNSIGNED NOT NULL,
+            co_locutores JSON DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            genero_musical varchar(100) DEFAULT NULL,
+            frecuencia varchar(50) DEFAULT 'semanal',
+            dias_semana JSON DEFAULT NULL,
+            hora_inicio time DEFAULT NULL,
+            duracion_minutos int(11) DEFAULT 60,
+            estado varchar(50) DEFAULT 'pendiente',
+            oyentes_promedio int(11) DEFAULT 0,
+            total_episodios int(11) DEFAULT 0,
+            redes_sociales JSON DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY locutor_id (locutor_id),
+            KEY estado (estado),
+            KEY slug (slug)
+        ) $charset_collate;";
+
+        // Radio - Programación/Emisiones
+        $tables[] = "CREATE TABLE {$prefix}radio_programacion (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            programa_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo varchar(50) DEFAULT 'programa',
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            fecha_hora_inicio datetime NOT NULL,
+            fecha_hora_fin datetime NOT NULL,
+            archivo_url varchar(500) DEFAULT NULL,
+            en_vivo tinyint(1) DEFAULT 0,
+            oyentes_pico int(11) DEFAULT 0,
+            oyentes_total int(11) DEFAULT 0,
+            chat_activo tinyint(1) DEFAULT 1,
+            estado varchar(50) DEFAULT 'programado',
+            notas_locutor text DEFAULT NULL,
+            metadata JSON DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY programa_id (programa_id),
+            KEY fecha_hora_inicio (fecha_hora_inicio),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Radio - Dedicatorias
+        $tables[] = "CREATE TABLE {$prefix}radio_dedicatorias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            de_nombre varchar(100) NOT NULL,
+            para_nombre varchar(100) NOT NULL,
+            mensaje text NOT NULL,
+            cancion_titulo varchar(255) DEFAULT NULL,
+            cancion_artista varchar(255) DEFAULT NULL,
+            cancion_url varchar(500) DEFAULT NULL,
+            estado varchar(50) DEFAULT 'pendiente',
+            emision_id bigint(20) UNSIGNED DEFAULT NULL,
+            motivo_rechazo varchar(255) DEFAULT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_emision datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY emision_id (emision_id)
+        ) $charset_collate;";
+
+        // Radio - Chat
+        $tables[] = "CREATE TABLE {$prefix}radio_chat (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            emision_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            mensaje text NOT NULL,
+            tipo varchar(50) DEFAULT 'mensaje',
+            destacado tinyint(1) DEFAULT 0,
+            eliminado tinyint(1) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY emision_id (emision_id),
+            KEY usuario_id (usuario_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Radio - Oyentes
+        $tables[] = "CREATE TABLE {$prefix}radio_oyentes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            session_id varchar(64) NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            ip_address varchar(45) DEFAULT NULL,
+            emision_id bigint(20) UNSIGNED DEFAULT NULL,
+            dispositivo varchar(50) DEFAULT NULL,
+            inicio datetime DEFAULT CURRENT_TIMESTAMP,
+            ultima_actividad datetime DEFAULT CURRENT_TIMESTAMP,
+            duracion_segundos int(11) DEFAULT 0,
+            activo tinyint(1) DEFAULT 1,
+            PRIMARY KEY (id),
+            UNIQUE KEY session_id (session_id),
+            KEY usuario_id (usuario_id),
+            KEY emision_id (emision_id),
+            KEY activo (activo)
+        ) $charset_collate;";
+
+        // Radio - Propuestas de programas
+        $tables[] = "CREATE TABLE {$prefix}radio_propuestas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            nombre_programa varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            frecuencia_deseada varchar(50) DEFAULT NULL,
+            horario_preferido varchar(100) DEFAULT NULL,
+            experiencia text DEFAULT NULL,
+            demo_url varchar(500) DEFAULT NULL,
+            estado varchar(50) DEFAULT 'pendiente',
+            notas_admin text DEFAULT NULL,
+            programa_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_respuesta datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Radio - Podcasts
+        $tables[] = "CREATE TABLE {$prefix}radio_podcasts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            programa_id bigint(20) UNSIGNED NOT NULL,
+            emision_id bigint(20) UNSIGNED DEFAULT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            archivo_url varchar(500) NOT NULL,
+            duracion_segundos int(11) DEFAULT 0,
+            tamano_bytes bigint(20) DEFAULT 0,
+            imagen_url varchar(500) DEFAULT NULL,
+            reproducciones int(11) DEFAULT 0,
+            descargas int(11) DEFAULT 0,
+            publicado tinyint(1) DEFAULT 1,
+            fecha_emision datetime DEFAULT NULL,
+            fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY programa_id (programa_id),
+            KEY emision_id (emision_id),
+            KEY publicado (publicado)
+        ) $charset_collate;";
+
         return $tables;
     }
 
@@ -1027,11 +1177,32 @@ class Flavor_Database_Installer {
      */
     public static function maybe_upgrade() {
         $version_actual = get_option('flavor_db_version', '1.0.0');
-        $version_nueva = '1.1.0'; // Versión con índices optimizados
+        $version_nueva = '1.2.0'; // Versión con tablas de radio
 
         if (version_compare($version_actual, $version_nueva, '<')) {
+            // Crear tablas faltantes
+            self::create_missing_tables();
+            // Añadir índices faltantes
             self::add_missing_indexes();
             update_option('flavor_db_version', $version_nueva);
+        }
+    }
+
+    /**
+     * Crea tablas que faltan sin afectar las existentes
+     */
+    public static function create_missing_tables() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $prefix = $wpdb->prefix . 'flavor_';
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+        $tables = self::get_tables_sql($prefix, $charset_collate);
+
+        foreach ($tables as $sql) {
+            // dbDelta solo crea si no existe
+            dbDelta($sql);
         }
     }
 }
