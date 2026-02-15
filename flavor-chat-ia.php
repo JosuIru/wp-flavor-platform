@@ -264,6 +264,9 @@ final class Flavor_Chat_IA {
         // Puente de Notificaciones de Módulos (conecta módulos con el notification manager)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-notifications.php';
 
+        // Widget de Notificaciones para Frontend (shortcodes y dropdown)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-notifications-widget.php';
+
         // Busqueda Global Cross-Module
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-global-search.php';
 
