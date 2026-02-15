@@ -3375,44 +3375,39 @@ KNOWLEDGE;
 
         $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
         $tabla_portfolio = $wpdb->prefix . 'flavor_trading_ia_portfolio';
-        $tabla_reglas = $wpdb->prefix . 'flavor_trading_ia_reglas';
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
             return $estadisticas;
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_trades)) {
-            // Total de trades del usuario
-            $total_trades = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$tabla_trades}
+        // Verificar si la tabla portfolio existe y tiene la estructura esperada
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_portfolio)) {
+            // Suprimir errores SQL en caso de columnas faltantes
+            $wpdb->suppress_errors(true);
+            $portfolio = $wpdb->get_row($wpdb->prepare(
+                "SELECT balance_usd, contador_trades FROM {$tabla_portfolio}
                  WHERE usuario_id = %d",
                 $usuario_id
             ));
+            $wpdb->suppress_errors(false);
 
-            $estadisticas['trades'] = [
-                'icon' => 'dashicons-chart-area',
-                'valor' => $total_trades,
-                'label' => __('Trades', 'flavor-chat-ia'),
-                'color' => $total_trades > 0 ? 'green' : 'gray',
-            ];
-        }
-
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_reglas)) {
-            // Reglas activas
-            $reglas_activas = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$tabla_reglas}
-                 WHERE usuario_id = %d AND activa = 1",
-                $usuario_id
-            ));
-
-            if ($reglas_activas > 0) {
-                $estadisticas['reglas'] = [
-                    'icon' => 'dashicons-admin-settings',
-                    'valor' => $reglas_activas,
-                    'label' => __('Reglas activas', 'flavor-chat-ia'),
-                    'color' => 'blue',
+            if ($portfolio && !$wpdb->last_error) {
+                $estadisticas['balance'] = [
+                    'icon' => 'dashicons-chart-area',
+                    'valor' => number_format((float) $portfolio->balance_usd, 2),
+                    'label' => __('Balance USD', 'flavor-chat-ia'),
+                    'color' => 'green',
                 ];
+
+                if ((int) $portfolio->contador_trades > 0) {
+                    $estadisticas['trades'] = [
+                        'icon' => 'dashicons-chart-line',
+                        'valor' => (int) $portfolio->contador_trades,
+                        'label' => __('Trades', 'flavor-chat-ia'),
+                        'color' => 'blue',
+                    ];
+                }
             }
         }
 
