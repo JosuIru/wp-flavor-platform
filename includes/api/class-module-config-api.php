@@ -1461,15 +1461,17 @@ class Flavor_Module_Config_API {
      * @return bool
      */
     private function is_module_active($module_id) {
-        // Verificar contra opciones del plugin
-        $active_modules = get_option('flavor_active_modules', array());
+        // Obtener configuración del plugin
+        $settings = get_option('flavor_chat_ia_settings', array());
+        $active_modules = $settings['active_modules'] ?? array();
 
         // Si no hay lista de módulos activos, todos están activos por defecto
         if (empty($active_modules)) {
             return true;
         }
 
-        return in_array($module_id, $active_modules);
+        // Verificar si el módulo está en la lista de activos
+        return in_array($module_id, $active_modules) || isset($active_modules[$module_id]);
     }
 }
 
