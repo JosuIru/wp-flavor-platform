@@ -130,25 +130,21 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
                     'enum'              => ['bar', 'restaurante', 'cafeteria', 'pub', 'terraza', 'cocteleria'],
                 ],
                 'valoracion_minima' => [
-                    'type'              => 'number',
-                    'sanitize_callback' => 'floatval',
+                    'type' => 'number',
                 ],
                 'busqueda' => [
                     'type'              => 'string',
                     'sanitize_callback' => 'sanitize_text_field',
                 ],
                 'latitud' => [
-                    'type'              => 'number',
-                    'sanitize_callback' => 'floatval',
+                    'type' => 'number',
                 ],
                 'longitud' => [
-                    'type'              => 'number',
-                    'sanitize_callback' => 'floatval',
+                    'type' => 'number',
                 ],
                 'radio_km' => [
-                    'type'              => 'number',
-                    'sanitize_callback' => 'floatval',
-                    'default'           => 10,
+                    'type'    => 'number',
+                    'default' => 10,
                 ],
                 'limite' => [
                     'type'              => 'integer',

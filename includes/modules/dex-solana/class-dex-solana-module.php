@@ -2246,13 +2246,13 @@ KNOWLEDGE;
                     'type'              => 'number',
                     'required'          => true,
                     'description'       => __('Cantidad del token de entrada', 'flavor-chat-ia'),
-                    'sanitize_callback' => 'floatval',
+                    
                 ),
                 'slippage' => array(
                     'type'              => 'number',
                     'default'           => 0.5,
                     'description'       => __('Slippage maximo en porcentaje (por defecto 0.5%)', 'flavor-chat-ia'),
-                    'sanitize_callback' => 'floatval',
+                    
                 ),
             ),
         ));
@@ -2307,12 +2307,12 @@ KNOWLEDGE;
                     'type'              => 'number',
                     'required'          => true,
                     'description'       => __('Cantidad del token de entrada', 'flavor-chat-ia'),
-                    'sanitize_callback' => 'floatval',
+                    
                 ),
                 'slippage' => array(
                     'type'              => 'number',
                     'default'           => 0.5,
-                    'sanitize_callback' => 'floatval',
+                    
                 ),
             ),
         ));

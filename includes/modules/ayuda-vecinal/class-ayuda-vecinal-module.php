@@ -967,11 +967,11 @@ KNOWLEDGE;
                 ],
                 'ubicacion_lat' => [
                     'type' => 'number',
-                    'sanitize_callback' => 'floatval',
+                    
                 ],
                 'ubicacion_lng' => [
                     'type' => 'number',
-                    'sanitize_callback' => 'floatval',
+                    
                 ],
                 'fecha_necesaria' => [
                     'type' => 'string',

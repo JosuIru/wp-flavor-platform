@@ -184,7 +184,7 @@ class Flavor_Grupos_Consumo_API {
                 ],
                 'cantidad' => [
                     'default' => 1,
-                    'sanitize_callback' => 'floatval',
+                    
                 ],
             ],
         ]);
@@ -332,14 +332,14 @@ class Flavor_Grupos_Consumo_API {
                     'validate_callback' => function($param) {
                         return is_numeric($param) && $param >= -90 && $param <= 90;
                     },
-                    'sanitize_callback' => 'floatval',
+                    
                 ],
                 'lng' => [
                     'required' => true,
                     'validate_callback' => function($param) {
                         return is_numeric($param) && $param >= -180 && $param <= 180;
                     },
-                    'sanitize_callback' => 'floatval',
+                    
                 ],
                 'limite' => [
                     'default' => 20,
