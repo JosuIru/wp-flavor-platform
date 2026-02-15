@@ -1897,11 +1897,11 @@ class Flavor_Unified_Dashboard {
                 break;
 
             case 'reciclaje':
-                $tabla_registros = $wpdb->prefix . 'flavor_reciclaje_registros';
-                if ($this->table_exists($tabla_registros)) {
+                $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
+                if ($this->table_exists($tabla_depositos)) {
                     $total_kg = (float) $wpdb->get_var($wpdb->prepare(
-                        "SELECT COALESCE(SUM(cantidad_kg), 0) FROM {$tabla_registros}
-                         WHERE usuario_id = %d AND MONTH(fecha) = MONTH(NOW())",
+                        "SELECT COALESCE(SUM(cantidad_kg), 0) FROM {$tabla_depositos}
+                         WHERE usuario_id = %d AND MONTH(fecha_deposito) = MONTH(NOW())",
                         $user_id
                     ));
                     $stats[] = ['value' => number_format($total_kg, 1) . ' kg', 'label' => __('Este mes', 'flavor-chat-ia'), 'icon' => 'dashicons-trash'];
@@ -1909,11 +1909,11 @@ class Flavor_Unified_Dashboard {
                 break;
 
             case 'compostaje':
-                $tabla_aportes = $wpdb->prefix . 'flavor_compostaje_aportes';
+                $tabla_aportes = $wpdb->prefix . 'flavor_aportaciones_compost';
                 if ($this->table_exists($tabla_aportes)) {
                     $aportes_mes = (int) $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM {$tabla_aportes}
-                         WHERE usuario_id = %d AND MONTH(fecha) = MONTH(NOW())",
+                         WHERE usuario_id = %d AND MONTH(fecha_aportacion) = MONTH(NOW())",
                         $user_id
                     ));
                     $stats[] = ['value' => $aportes_mes, 'label' => __('Aportes/mes', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'];

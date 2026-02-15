@@ -986,7 +986,7 @@ class Flavor_Portal_Shortcodes {
                 ));
 
                 $registros = $wpdb->get_var($wpdb->prepare(
-                    "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_reciclaje_registros WHERE usuario_id = %d",
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_reciclaje_depositos WHERE usuario_id = %d",
                     $user_id
                 ));
 

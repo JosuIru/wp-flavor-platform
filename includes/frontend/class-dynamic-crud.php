@@ -351,20 +351,20 @@ class Flavor_Dynamic_CRUD {
             ],
 
             'reciclaje' => [
-                'tabla' => 'flavor_reciclaje_registros',
-                'titulo_singular' => __('Registro de reciclaje', 'flavor-chat-ia'),
-                'titulo_plural' => __('Mis registros de reciclaje', 'flavor-chat-ia'),
+                'tabla' => 'flavor_reciclaje_depositos',
+                'titulo_singular' => __('Depósito de reciclaje', 'flavor-chat-ia'),
+                'titulo_plural' => __('Mis depósitos de reciclaje', 'flavor-chat-ia'),
                 'icono' => 'dashicons-update',
                 'color' => '#22c55e',
                 'campos' => [
-                    'tipo_residuo' => ['tipo' => 'select', 'label' => __('Tipo de residuo', 'flavor-chat-ia'), 'options' => ['papel' => 'Papel/Cartón', 'plastico' => 'Plástico', 'vidrio' => 'Vidrio', 'organico' => 'Orgánico', 'electronico' => 'Electrónico', 'aceite' => 'Aceite', 'ropa' => 'Ropa', 'otros' => 'Otros'], 'required' => true],
+                    'tipo_material' => ['tipo' => 'select', 'label' => __('Tipo de material', 'flavor-chat-ia'), 'options' => ['papel' => 'Papel/Cartón', 'plastico' => 'Plástico', 'vidrio' => 'Vidrio', 'organico' => 'Orgánico', 'electronico' => 'Electrónico', 'aceite' => 'Aceite', 'textil' => 'Textil', 'otros' => 'Otros'], 'required' => true],
                     'cantidad_kg' => ['tipo' => 'number', 'label' => __('Cantidad (kg)', 'flavor-chat-ia'), 'step' => '0.1'],
-                    'punto_recogida' => ['tipo' => 'text', 'label' => __('Punto de reciclaje', 'flavor-chat-ia')],
-                    'fecha' => ['tipo' => 'date', 'label' => __('Fecha', 'flavor-chat-ia')],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', 'flavor-chat-ia')],
+                    'punto_reciclaje_id' => ['tipo' => 'number', 'label' => __('Punto de reciclaje', 'flavor-chat-ia')],
+                    'fecha_deposito' => ['tipo' => 'date', 'label' => __('Fecha', 'flavor-chat-ia')],
+                    'foto_url' => ['tipo' => 'text', 'label' => __('Foto', 'flavor-chat-ia')],
                 ],
-                'campos_listado' => ['tipo_residuo', 'cantidad_kg', 'fecha'],
-                'filtros' => ['tipo_residuo'],
+                'campos_listado' => ['tipo_material', 'cantidad_kg', 'fecha_deposito'],
+                'filtros' => ['tipo_material'],
             ],
 
             'tramites' => [

@@ -39,48 +39,51 @@ class Flavor_Reciclaje_API {
         $usuario_id = get_current_user_id();
         global $wpdb;
 
-        $tabla_registros = $wpdb->prefix . 'flavor_reciclaje_registros';
-        $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
+        $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
+        $tabla_puntos_reciclaje = $wpdb->prefix . 'flavor_puntos_reciclaje';
 
         // Estadísticas personales del usuario
         $stats_usuario = $wpdb->get_row($wpdb->prepare(
             "SELECT
-                IFNULL(SUM(kg_reciclados), 0) as kg_reciclados,
-                IFNULL(SUM(co2_ahorrado), 0) as co2_ahorrado,
+                IFNULL(SUM(cantidad_kg), 0) as kg_reciclados,
+                IFNULL(SUM(cantidad_kg * 0.5), 0) as co2_ahorrado,
                 IFNULL(SUM(puntos_ganados), 0) as puntos_totales
-            FROM $tabla_registros
+            FROM $tabla_depositos
             WHERE usuario_id = %d",
             $usuario_id
         ), ARRAY_A);
 
         // Ranking del usuario
         $ranking = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(DISTINCT usuario_id) + 1
-            FROM $tabla_registros
-            WHERE usuario_id != %d
-            AND (SELECT SUM(puntos_ganados) FROM $tabla_registros WHERE usuario_id = r.usuario_id) >
-                (SELECT SUM(puntos_ganados) FROM $tabla_registros WHERE usuario_id = %d)
-            ",
-            $usuario_id,
+            "SELECT COUNT(*) + 1 FROM (
+                SELECT usuario_id, SUM(puntos_ganados) as total_puntos
+                FROM $tabla_depositos
+                GROUP BY usuario_id
+                HAVING total_puntos > (
+                    SELECT IFNULL(SUM(puntos_ganados), 0)
+                    FROM $tabla_depositos
+                    WHERE usuario_id = %d
+                )
+            ) as ranking",
             $usuario_id
         ));
 
         // Estadísticas globales de la comunidad
         $stats_comunidad = $wpdb->get_row(
             "SELECT
-                IFNULL(SUM(kg_reciclados), 0) as kg_reciclados,
-                IFNULL(SUM(co2_ahorrado), 0) as co2_ahorrado,
+                IFNULL(SUM(cantidad_kg), 0) as kg_reciclados,
+                IFNULL(SUM(cantidad_kg * 0.5), 0) as co2_ahorrado,
                 COUNT(DISTINCT usuario_id) as participantes
-            FROM $tabla_registros",
+            FROM $tabla_depositos",
             ARRAY_A
         );
 
         // Meta mensual de la comunidad (ejemplo: 1000 kg)
         $meta_mensual = 1000;
         $kg_mes_actual = $wpdb->get_var(
-            "SELECT IFNULL(SUM(kg_reciclados), 0)
-            FROM $tabla_registros
-            WHERE MONTH(fecha) = MONTH(NOW()) AND YEAR(fecha) = YEAR(NOW())"
+            "SELECT IFNULL(SUM(cantidad_kg), 0)
+            FROM $tabla_depositos
+            WHERE MONTH(fecha_deposito) = MONTH(NOW()) AND YEAR(fecha_deposito) = YEAR(NOW())"
         );
 
         // Calendario de recogidas (próximas 5 fechas)
@@ -88,7 +91,7 @@ class Flavor_Reciclaje_API {
 
         // Puntos de reciclaje cercanos
         $puntos = $wpdb->get_results(
-            "SELECT * FROM $tabla_puntos WHERE activo = 1 ORDER BY nombre LIMIT 10",
+            "SELECT * FROM $tabla_puntos_reciclaje WHERE estado = 'activo' ORDER BY nombre LIMIT 10",
             ARRAY_A
         );
 
