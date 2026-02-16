@@ -46,6 +46,116 @@
 
         // Pedidos
         $(document).on('click', '.gc-btn-ver-detalle', verDetallePedido);
+
+        // Botón añadir producto al pedido (shortcode simple)
+        $(document).on('click', '.gc-anadir-pedido', anadirProductoPedido);
+    }
+
+    /**
+     * Añadir producto al pedido (desde shortcode simple)
+     */
+    function anadirProductoPedido(e) {
+        e.preventDefault();
+
+        const $btn = $(this);
+        const productoId = $btn.data('producto-id');
+
+        if (!productoId) {
+            mostrarNotificacion('Error: No se encontró el producto', 'error');
+            return;
+        }
+
+        // Mostrar modal para seleccionar cantidad
+        const modalHtml = `
+            <div class="gc-modal-overlay" id="modal-anadir-producto">
+                <div class="gc-modal-content">
+                    <button type="button" class="gc-modal-close">&times;</button>
+                    <h3>Añadir al pedido</h3>
+                    <form class="gc-form-anadir" data-producto-id="${productoId}">
+                        <div class="gc-form-group">
+                            <label for="gc-cantidad">Cantidad</label>
+                            <div class="gc-cantidad-control-modal">
+                                <button type="button" class="gc-btn-modal-menos">−</button>
+                                <input type="number" id="gc-cantidad" name="cantidad" value="1" min="1" max="99" required>
+                                <button type="button" class="gc-btn-modal-mas">+</button>
+                            </div>
+                        </div>
+                        <div class="gc-form-actions">
+                            <button type="submit" class="gc-btn gc-btn-primary">Confirmar</button>
+                            <button type="button" class="gc-btn gc-btn-secondary gc-modal-cancelar">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+
+        $('body').append(modalHtml);
+
+        // Eventos del modal
+        $('#modal-anadir-producto').on('click', '.gc-modal-close, .gc-modal-cancelar', function() {
+            $('#modal-anadir-producto').remove();
+        });
+
+        $('#modal-anadir-producto').on('click', function(e) {
+            if (e.target === this) {
+                $(this).remove();
+            }
+        });
+
+        // Botones +/-
+        $('#modal-anadir-producto').on('click', '.gc-btn-modal-menos', function() {
+            const $input = $('#gc-cantidad');
+            const val = parseInt($input.val()) || 1;
+            $input.val(Math.max(1, val - 1));
+        });
+
+        $('#modal-anadir-producto').on('click', '.gc-btn-modal-mas', function() {
+            const $input = $('#gc-cantidad');
+            const val = parseInt($input.val()) || 1;
+            $input.val(Math.min(99, val + 1));
+        });
+
+        // Enviar formulario
+        $('#modal-anadir-producto').on('submit', '.gc-form-anadir', function(e) {
+            e.preventDefault();
+
+            const $form = $(this);
+            const prodId = $form.data('producto-id');
+            const cantidad = $form.find('input[name="cantidad"]').val();
+            const $submitBtn = $form.find('button[type="submit"]');
+
+            const textoOriginal = $submitBtn.text();
+            $submitBtn.prop('disabled', true).text('Añadiendo...');
+
+            $.ajax({
+                url: config.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'gc_agregar_lista',
+                    nonce: config.nonce,
+                    producto_id: prodId,
+                    cantidad: cantidad
+                },
+                success: function(response) {
+                    if (response.success) {
+                        mostrarNotificacion(response.data.message || '¡Producto añadido al pedido!', 'success');
+                        $('#modal-anadir-producto').remove();
+
+                        // Actualizar visual del botón
+                        $(`.gc-anadir-pedido[data-producto-id="${prodId}"]`)
+                            .addClass('gc-en-pedido')
+                            .text('✓ En pedido');
+                    } else {
+                        mostrarNotificacion(response.data.message || 'Error al añadir el producto', 'error');
+                        $submitBtn.prop('disabled', false).text(textoOriginal);
+                    }
+                },
+                error: function() {
+                    mostrarNotificacion('Error de conexión. Intenta de nuevo.', 'error');
+                    $submitBtn.prop('disabled', false).text(textoOriginal);
+                }
+            });
+        });
     }
 
     /**

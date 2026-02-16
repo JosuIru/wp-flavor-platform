@@ -2187,6 +2187,105 @@ KNOWLEDGE;
                 </div>
             <?php endforeach; ?>
         </div>
+        <script>
+        (function() {
+            document.querySelectorAll('.gc-anadir-pedido').forEach(function(btn) {
+                if (btn.dataset.gcBound) return;
+                btn.dataset.gcBound = 'true';
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var productoId = this.dataset.productoId;
+                    var btnEl = this;
+
+                    // Crear modal
+                    var modal = document.createElement('div');
+                    modal.className = 'gc-modal-overlay';
+                    modal.id = 'modal-anadir-producto';
+                    modal.innerHTML = '<div class="gc-modal-content">' +
+                        '<button type="button" class="gc-modal-close">&times;</button>' +
+                        '<h3>Añadir al pedido</h3>' +
+                        '<form class="gc-form-anadir">' +
+                        '<div class="gc-form-group">' +
+                        '<label>Cantidad</label>' +
+                        '<div class="gc-cantidad-control-modal">' +
+                        '<button type="button" class="gc-btn-modal-menos">−</button>' +
+                        '<input type="number" name="cantidad" value="1" min="1" max="99">' +
+                        '<button type="button" class="gc-btn-modal-mas">+</button>' +
+                        '</div></div>' +
+                        '<div class="gc-form-actions">' +
+                        '<button type="submit" class="gc-btn gc-btn-primary">Confirmar</button>' +
+                        '<button type="button" class="gc-btn gc-btn-secondary gc-modal-cancelar">Cancelar</button>' +
+                        '</div></form></div>';
+                    document.body.appendChild(modal);
+
+                    var input = modal.querySelector('input[name="cantidad"]');
+                    modal.querySelector('.gc-btn-modal-menos').onclick = function() {
+                        input.value = Math.max(1, parseInt(input.value) - 1);
+                    };
+                    modal.querySelector('.gc-btn-modal-mas').onclick = function() {
+                        input.value = Math.min(99, parseInt(input.value) + 1);
+                    };
+                    modal.querySelector('.gc-modal-close').onclick = function() { modal.remove(); };
+                    modal.querySelector('.gc-modal-cancelar').onclick = function() { modal.remove(); };
+                    modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+
+                    modal.querySelector('form').onsubmit = function(e) {
+                        e.preventDefault();
+                        var cantidad = input.value;
+                        var submitBtn = this.querySelector('button[type="submit"]');
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Añadiendo...';
+
+                        var formData = new FormData();
+                        formData.append('action', 'gc_agregar_lista');
+                        formData.append('nonce', '<?php echo wp_create_nonce("gc_frontend_nonce"); ?>');
+                        formData.append('producto_id', productoId);
+                        formData.append('cantidad', cantidad);
+
+                        fetch('<?php echo admin_url("admin-ajax.php"); ?>', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            if (data.success) {
+                                btnEl.classList.add('gc-en-pedido');
+                                btnEl.textContent = '✓ En pedido';
+                                modal.remove();
+                            } else {
+                                alert(data.data?.message || 'Error al añadir');
+                                submitBtn.disabled = false;
+                                submitBtn.textContent = 'Confirmar';
+                            }
+                        })
+                        .catch(function() {
+                            alert('Error de conexión');
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Confirmar';
+                        });
+                    };
+                });
+            });
+        })();
+        </script>
+        <style>
+        .gc-modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:99999}
+        .gc-modal-content{background:#fff;padding:30px;border-radius:16px;max-width:400px;width:90%;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+        .gc-modal-close{position:absolute;top:15px;right:15px;width:32px;height:32px;background:#f0f0f0;border:none;border-radius:50%;font-size:20px;cursor:pointer}
+        .gc-modal-content h3{margin:0 0 25px;color:#2c5530;font-size:20px}
+        .gc-form-group{margin-bottom:25px}
+        .gc-form-group label{display:block;margin-bottom:10px;font-weight:600}
+        .gc-cantidad-control-modal{display:flex;align-items:center;gap:10px}
+        .gc-cantidad-control-modal input{width:80px;padding:12px;text-align:center;border:2px solid #ddd;border-radius:8px;font-size:18px;font-weight:600}
+        .gc-btn-modal-menos,.gc-btn-modal-mas{width:44px;height:44px;border:2px solid #4a7c59;background:#fff;color:#4a7c59;border-radius:8px;font-size:24px;cursor:pointer}
+        .gc-btn-modal-menos:hover,.gc-btn-modal-mas:hover{background:#4a7c59;color:#fff}
+        .gc-form-actions{display:flex;gap:12px}
+        .gc-btn{flex:1;padding:14px 20px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+        .gc-btn-primary{background:#4a7c59;color:#fff}
+        .gc-btn-secondary{background:#f0f0f0;color:#666}
+        .gc-anadir-pedido{display:inline-block;padding:10px 20px;background:#4a7c59;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer}
+        .gc-anadir-pedido.gc-en-pedido{background:#2196f3}
+        </style>
         <?php
         return ob_get_clean();
     }
