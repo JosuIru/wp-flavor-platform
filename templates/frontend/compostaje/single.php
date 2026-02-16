@@ -24,9 +24,9 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
     <div class="bg-gray-50 py-3 px-4">
         <div class="container mx-auto max-w-6xl">
             <nav class="flex items-center gap-2 text-sm text-gray-600">
-                <a href="#" class="hover:text-green-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-green-600"><?php echo esc_html__('Inicio', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
-                <a href="#" class="hover:text-green-600"><?php echo esc_html__('Compostaje', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo esc_url(home_url('/compostaje/')); ?>" class="hover:text-green-600"><?php echo esc_html__('Compostaje', 'flavor-chat-ia'); ?></a>
                 <span>/</span>
                 <span class="text-gray-900 font-medium"><?php echo esc_html($nombre_compostera); ?></span>
             </nav>
@@ -152,7 +152,7 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
                         </div>
                         <span class="text-sm text-gray-500 ml-2"><?php echo esc_html__('y 23 participantes mas', 'flavor-chat-ia'); ?></span>
                     </div>
-                    <a href="#" class="text-green-600 font-medium text-sm hover:text-green-700"><?php echo esc_html__('Ver todos los participantes', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(add_query_arg('ver', 'participantes')); ?>" class="text-green-600 font-medium text-sm hover:text-green-700"><?php echo esc_html__('Ver todos los participantes', 'flavor-chat-ia'); ?></a>
                 </div>
             </div>
 
@@ -203,21 +203,21 @@ $composteras_cercanas = $compostera['cercanas'] ?? [];
                 <div class="bg-white rounded-2xl p-6 shadow-md">
                     <h3 class="font-bold text-gray-900 mb-4"><?php echo esc_html__('Composteras cercanas', 'flavor-chat-ia'); ?></h3>
                     <div class="space-y-3">
-                        <a href="#" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
+                        <a href="<?php echo esc_url(home_url('/compostaje/parque-norte/')); ?>" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
                             <div class="flex items-center justify-between mb-1">
                                 <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Compostera Parque Norte', 'flavor-chat-ia'); ?></p>
                                 <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700"><?php echo esc_html__('Activa', 'flavor-chat-ia'); ?></span>
                             </div>
                             <p class="text-xs text-gray-500"><?php echo esc_html__('450m - 45% capacidad', 'flavor-chat-ia'); ?></p>
                         </a>
-                        <a href="#" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
+                        <a href="<?php echo esc_url(home_url('/compostaje/plaza-mayor/')); ?>" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
                             <div class="flex items-center justify-between mb-1">
                                 <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Compostera Plaza Mayor', 'flavor-chat-ia'); ?></p>
                                 <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700"><?php echo esc_html__('Llena', 'flavor-chat-ia'); ?></span>
                             </div>
                             <p class="text-xs text-gray-500"><?php echo esc_html__('800m - 95% capacidad', 'flavor-chat-ia'); ?></p>
                         </a>
-                        <a href="#" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
+                        <a href="<?php echo esc_url(home_url('/compostaje/jardin-sur/')); ?>" class="block p-3 rounded-xl hover:bg-green-50 transition-colors">
                             <div class="flex items-center justify-between mb-1">
                                 <p class="font-medium text-gray-900 text-sm"><?php echo esc_html__('Compostera Jardin Sur', 'flavor-chat-ia'); ?></p>
                                 <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700"><?php echo esc_html__('Activa', 'flavor-chat-ia'); ?></span>

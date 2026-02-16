@@ -151,14 +151,17 @@ $empresas_ejemplo = !empty($items) ? $items : [
     <?php endif; ?>
 
     <!-- Paginación -->
-    <?php if ($total > 0) : ?>
+    <?php if ($total > 0) :
+        $pagina_actual = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
+        $total_paginas = max(1, ceil($total / 12));
+    ?>
     <nav class="flex justify-center mt-8" aria-label="<?php echo esc_attr__('Paginación', 'flavor-chat-ia'); ?>">
         <ul class="inline-flex items-center gap-1">
-            <li><a href="#" class="px-3 py-2 text-gray-500 hover:text-slate-600 rounded-lg hover:bg-slate-50"><?php echo esc_html__('&laquo;', 'flavor-chat-ia'); ?></a></li>
-            <li><a href="#" class="px-3 py-2 bg-slate-600 text-white rounded-lg font-medium">1</a></li>
-            <li><a href="#" class="px-3 py-2 text-gray-700 hover:text-slate-600 rounded-lg hover:bg-slate-50">2</a></li>
-            <li><a href="#" class="px-3 py-2 text-gray-700 hover:text-slate-600 rounded-lg hover:bg-slate-50">3</a></li>
-            <li><a href="#" class="px-3 py-2 text-gray-500 hover:text-slate-600 rounded-lg hover:bg-slate-50"><?php echo esc_html__('&raquo;', 'flavor-chat-ia'); ?></a></li>
+            <li><a href="<?php echo esc_url(add_query_arg('pagina', max(1, $pagina_actual - 1))); ?>" class="px-3 py-2 text-gray-500 hover:text-slate-600 rounded-lg hover:bg-slate-50"><?php echo esc_html__('&laquo;', 'flavor-chat-ia'); ?></a></li>
+            <?php for ($pag = 1; $pag <= min(3, $total_paginas); $pag++) : ?>
+            <li><a href="<?php echo esc_url(add_query_arg('pagina', $pag)); ?>" class="px-3 py-2 <?php echo $pag === $pagina_actual ? 'bg-slate-600 text-white' : 'text-gray-700 hover:text-slate-600 hover:bg-slate-50'; ?> rounded-lg font-medium"><?php echo $pag; ?></a></li>
+            <?php endfor; ?>
+            <li><a href="<?php echo esc_url(add_query_arg('pagina', min($total_paginas, $pagina_actual + 1))); ?>" class="px-3 py-2 text-gray-500 hover:text-slate-600 rounded-lg hover:bg-slate-50"><?php echo esc_html__('&raquo;', 'flavor-chat-ia'); ?></a></li>
         </ul>
     </nav>
     <?php endif; ?>
