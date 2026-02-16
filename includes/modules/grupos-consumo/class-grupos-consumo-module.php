@@ -68,7 +68,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $pedido_id = absint($_POST['pedido_id'] ?? 0);
         $nuevo_estado = sanitize_text_field($_POST['estado'] ?? '');
 
-        $estados_validos = ['pendiente', 'confirmado', 'completado', 'cancelado'];
+        $estados_validos = ['pendiente', 'confirmado', 'completado', 'cancelado', 'sin_stock'];
 
         if (!$pedido_id || !in_array($nuevo_estado, $estados_validos)) {
             wp_send_json_error(__('Datos inválidos', 'flavor-chat-ia'));

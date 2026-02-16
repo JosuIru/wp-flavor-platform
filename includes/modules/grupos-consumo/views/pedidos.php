@@ -65,6 +65,7 @@ $colores_estado = [
     'confirmado' => '#2271b1',
     'completado' => '#00a32a',
     'cancelado' => '#d63638',
+    'sin_stock' => '#8b5cf6',
 ];
 
 ?>
@@ -264,6 +265,7 @@ $colores_estado = [
                 <option value="confirmado" <?php selected($filtro_estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-chat-ia'); ?></option>
                 <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
                 <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
+                <option value="sin_stock" <?php selected($filtro_estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', 'flavor-chat-ia'); ?></option>
             </select>
             <select name="ciclo">
                 <option value="0"><?php esc_html_e('Todos los ciclos', 'flavor-chat-ia'); ?></option>
@@ -361,6 +363,7 @@ $colores_estado = [
                                     <option value="pendiente" <?php selected($pedido->estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
                                     <option value="confirmado" <?php selected($pedido->estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-chat-ia'); ?></option>
                                     <option value="completado" <?php selected($pedido->estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
+                                    <option value="sin_stock" <?php selected($pedido->estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', 'flavor-chat-ia'); ?></option>
                                     <option value="cancelado" <?php selected($pedido->estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
                                 </select>
                             </td>
@@ -430,6 +433,7 @@ $colores_estado = [
                                 <option value="pendiente" <?php selected($pedido->estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
                                 <option value="confirmado" <?php selected($pedido->estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-chat-ia'); ?></option>
                                 <option value="completado" <?php selected($pedido->estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
+                                <option value="sin_stock" <?php selected($pedido->estado, 'sin_stock'); ?>><?php esc_html_e('Sin stock', 'flavor-chat-ia'); ?></option>
                                 <option value="cancelado" <?php selected($pedido->estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
                             </select>
                         </td>
@@ -464,6 +468,7 @@ jQuery(document).ready(function($) {
         'pendiente': '#dba617',
         'confirmado': '#2271b1',
         'completado': '#00a32a',
+        'sin_stock': '#8b5cf6',
         'cancelado': '#d63638'
     };
 
