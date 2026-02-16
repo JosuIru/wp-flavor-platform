@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
 
 class WooCommerceScreen extends ConsumerStatefulWidget {
@@ -43,9 +42,11 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
     final api = ref.read(apiClientProvider);
 
     try {
-      final response = await api.getWooProductos(
-        categoria: _categoriaSeleccionada.isNotEmpty ? _categoriaSeleccionada : null,
-      );
+      final queryParams = <String, dynamic>{};
+      if (_categoriaSeleccionada.isNotEmpty) {
+        queryParams['categoria'] = _categoriaSeleccionada;
+      }
+      final response = await api.get('/woocommerce/productos', queryParameters: queryParams);
 
       if (response.success && response.data != null) {
         setState(() {
@@ -67,7 +68,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
     final api = ref.read(apiClientProvider);
 
     try {
-      final response = await api.getWooCarrito();
+      final response = await api.get('/woocommerce/carrito');
       if (response.success && response.data != null) {
         setState(() {
           _carrito = (response.data!['items'] as List<dynamic>? ?? [])
@@ -85,7 +86,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
     final api = ref.read(apiClientProvider);
 
     try {
-      final response = await api.getWooPedidos();
+      final response = await api.get('/woocommerce/pedidos');
       if (response.success && response.data != null) {
         setState(() {
           _misPedidos = (response.data!['pedidos'] as List<dynamic>? ?? [])
@@ -104,7 +105,10 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
 
     if (productoId.isEmpty) return;
 
-    final response = await api.addToWooCarrito(productoId: productoId, cantidad: 1);
+    final response = await api.post('/woocommerce/carrito/add', data: {
+      'producto_id': productoId,
+      'cantidad': 1,
+    });
 
     if (response.success) {
       _loadCarrito();
@@ -124,7 +128,9 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
 
   Future<void> _removeFromCart(String itemKey) async {
     final api = ref.read(apiClientProvider);
-    final response = await api.removeFromWooCarrito(itemKey: itemKey);
+    final response = await api.post('/woocommerce/carrito/remove', data: {
+      'item_key': itemKey,
+    });
 
     if (response.success) {
       _loadCarrito();
