@@ -1,7 +1,7 @@
 # Reporte Consolidado de Release (Go/No-Go)
 Fecha: 16 de febrero de 2026
 Proyecto: `flavor-chat-ia`
-Última actualización: 16 de febrero de 2026 (fixes Flutter aplicados)
+Última actualización: 16 de febrero de 2026 (pantallas P1 completadas)
 
 ## Decisión
 **GO** para release Web/API.
@@ -11,7 +11,8 @@ Proyecto: `flavor-chat-ia`
 - Web/API: funcionalidad base operativa con **14/14 casos E2E PASS** (tras fixes).
 - Flutter (admin/cliente): ✅ **Compila y tests pasan** (34 pass, 2 skipped).
 - Calidad runtime web: ✅ Notices corregidos, migraciones DB validadas, logging centralizado.
-- Pendiente móvil: brecha de interfaces (32 módulos sin UI cliente).
+- Módulos P1: ✅ **10 pantallas añadidas** (biodiversidad, cuidados, economías, etc.)
+- Pendiente móvil: brecha de interfaces (22 módulos sin UI cliente).
 
 ## Evidencias base
 - `reports/e2e_web_api_2026-02-16.md`
@@ -40,7 +41,7 @@ Proyecto: `flavor-chat-ia`
 ### ⚠️ Pendientes (funcionalidad)
 2. **Brecha de interfaces móviles frente a módulos backend**.
    - Evidencia: `reports/matriz_revision_completa_2026-02-16.csv`.
-   - Impacto: 32 módulos sin UI cliente, funcionalidades no accesibles.
+   - Impacto: 22 módulos sin UI cliente (reducido de 32 tras añadir 10 pantallas P1).
 
 ### ✅ Resueltos (PHP/Web)
 3. **~~Notices runtime en frontend web~~** (`_load_textdomain_just_in_time`).
@@ -72,7 +73,7 @@ Proyecto: `flavor-chat-ia`
 1. ~~Dejar `flutter test` en verde.~~ ✅ DONE
 2. ~~Corregir notices de carga temprana de textdomain en web.~~ ✅ DONE
 3. ~~Validar/ejecutar migraciones faltantes de DB.~~ ✅ DONE
-4. Cerrar brecha P1 de interfaces móviles críticas.
+4. ~~Cerrar brecha P1 de interfaces móviles críticas.~~ ✅ PARCIAL (10/32 completadas)
 5. Repetir E2E completo y exigir 100% PASS en suite definida de salida.
 
 ## Fixes aplicados (detalle técnico)
@@ -97,6 +98,20 @@ Proyecto: `flavor-chat-ia`
 - **Archivo**: `includes/api/class-mobile-api.php`
 - **Cambios**: Nuevo método `validate_ticket_dependencies()`
 - **Comportamiento**: Bloquea reserva si ticket hijo no incluye padre
+
+### Pantallas de módulos P1 (Commits 8d0b6e9, bfa7ac1, ca73590)
+- **10 nuevas pantallas Flutter cliente**:
+  - `biodiversidad_local` - Catálogo de especies y mapa de avistamientos
+  - `circulos_cuidados` - Círculos de cuidado con pestañas
+  - `economia_don` - Economía del don con ofertas/necesidades
+  - `economia_suficiencia` - Dashboard de suficiencia
+  - `huella_ecologica` - Calculadora de huella de carbono
+  - `justicia_restaurativa` - Procesos de mediación
+  - `saberes_ancestrales` - Conocimientos ancestrales con talleres
+  - `sello_conciencia` - Certificación de sostenibilidad
+  - `trabajo_digno` - Ofertas de empleo con badges
+  - `woocommerce` - E-commerce completo (catálogo, carrito, pedidos)
+- **Registro**: Todas registradas en `ModuleScreenRegistry`
 
 ## Recomendación final
 ✅ **Web/API listo para release** - Todos los blockers resueltos.
