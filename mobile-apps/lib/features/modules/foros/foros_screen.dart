@@ -137,7 +137,9 @@ class _ForosScreenState extends ConsumerState<ForosScreen> {
         },
         child: Padding(
           padding: const EdgeInsets.all(16),
-          children: [
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -245,6 +247,7 @@ class _ForosScreenState extends ConsumerState<ForosScreen> {
               ],
             ),
           ],
+          ),
         ),
       ),
     );
@@ -331,7 +334,7 @@ class _ForoDetalleScreenState extends ConsumerState<ForoDetalleScreen> {
       final clienteApi = ref.read(apiClientProvider);
       final respuesta = await clienteApi.post(
         '/foros/${widget.foroId}/respuestas',
-        {'contenido': _controladorRespuesta.text.trim()},
+        data: {'contenido': _controladorRespuesta.text.trim()},
       );
       if (!mounted) return;
       if (respuesta.success) {

@@ -372,9 +372,6 @@ class _DashboardMapWidgetState extends ConsumerState<DashboardMapWidget>
             options: MarkerClusterLayerOptions(
               maxClusterRadius: 80,
               size: const Size(40, 40),
-              fitBoundsOptions: const FitBoundsOptions(
-                padding: EdgeInsets.all(50),
-              ),
               markers: markers,
               builder: (context, clusterMarkers) {
                 return Container(

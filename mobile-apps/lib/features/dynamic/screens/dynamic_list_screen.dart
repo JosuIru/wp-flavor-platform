@@ -65,7 +65,7 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
         queryParams['busqueda'] = _busqueda;
       }
 
-      final response = await api.get(config.endpoint, queryParams: queryParams);
+      final response = await api.get(config.endpoint, queryParameters: queryParams);
 
       if (response.success && response.data != null) {
         setState(() {
@@ -204,7 +204,7 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
         if (action.endpoint != null) {
           final api = ref.read(apiClientProvider);
           final endpoint = action.endpoint!.replaceAll('{id}', item['id'].toString());
-          await api.post(endpoint, {});
+          await api.post(endpoint, data: {});
           _loadData();
         }
         break;

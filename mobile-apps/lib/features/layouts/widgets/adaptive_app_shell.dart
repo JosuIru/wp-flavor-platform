@@ -261,14 +261,14 @@ class _AppSearchDelegate extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     return Center(
-      child: Text(i18n.commonResultsFor(query)),
+      child: Text('Resultados para: $query'),
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     return const Center(
-      child: Text(i18n.escribeParaBuscar633b34),
+      child: Text('Escribe para buscar...'),
     );
   }
 }

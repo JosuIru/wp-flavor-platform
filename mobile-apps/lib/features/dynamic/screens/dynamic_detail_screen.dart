@@ -393,7 +393,7 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
       final endpoint = action.endpoint!.replaceAll('{id}', widget.itemId);
 
       try {
-        final response = await api.post(endpoint, {});
+        final response = await api.post(endpoint, data: {});
         if (response.success) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(

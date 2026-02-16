@@ -32,7 +32,7 @@ class FlavorBottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final navItems = items ?? LayoutService.config.navigationItems;
+    final navItems = items ?? const <NavigationItem>[];
 
     // Limitar a 5 items máximo para bottom nav
     final displayItems = navItems.take(5).toList();
@@ -93,7 +93,7 @@ class FlavorBottomNavigationWithBadges extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final navItems = items ?? LayoutService.config.navigationItems;
+    final navItems = items ?? const <NavigationItem>[];
     final displayItems = navItems.take(5).toList();
 
     if (displayItems.isEmpty) {
@@ -252,7 +252,7 @@ class FlavorFloatingBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final navItems = items ?? LayoutService.config.navigationItems;
+    final navItems = items ?? const <NavigationItem>[];
     final displayItems = navItems.take(5).toList();
 
     return Padding(

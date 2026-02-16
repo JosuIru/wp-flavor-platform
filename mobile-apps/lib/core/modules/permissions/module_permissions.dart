@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../module_definition.dart';
 
 /// Sistema de permisos para módulos
@@ -131,8 +132,6 @@ class ModulePermissions {
 }
 
 /// Provider de Riverpod para permisos
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 final modulePermissionsProvider = Provider<ModulePermissions>((ref) {
   return ModulePermissions();
 });

@@ -117,7 +117,9 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20),
-        children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Row(
             children: [
               Container(
@@ -178,6 +180,7 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
             ],
           ),
         ],
+        ),
       ),
     );
   }

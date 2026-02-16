@@ -158,7 +158,9 @@ class _EmailMarketingScreenState extends ConsumerState<EmailMarketingScreen> {
         },
         child: Padding(
           padding: const EdgeInsets.all(16),
-          children: [
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Row(
               children: [
                 CircleAvatar(
@@ -216,6 +218,7 @@ class _EmailMarketingScreenState extends ConsumerState<EmailMarketingScreen> {
               ),
             ],
           ],
+          ),
         ),
       ),
     );
@@ -311,14 +314,17 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
                         Card(
                           child: Padding(
                             padding: const EdgeInsets.all(16),
-                            children: [
-                              const Text('Estadisticas', style: TextStyle(fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 16),
-                              _construirFilaEstadistica('Total enviados', _datosCampana!['enviados']?.toString() ?? '0'),
-                              _construirFilaEstadistica('Abiertos', _datosCampana!['abiertos']?.toString() ?? '0'),
-                              _construirFilaEstadistica('Clics', _datosCampana!['clics']?.toString() ?? '0'),
-                              _construirFilaEstadistica('Rebotes', _datosCampana!['rebotes']?.toString() ?? '0'),
-                            ],
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Estadisticas', style: TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 16),
+                                _construirFilaEstadistica('Total enviados', _datosCampana!['enviados']?.toString() ?? '0'),
+                                _construirFilaEstadistica('Abiertos', _datosCampana!['abiertos']?.toString() ?? '0'),
+                                _construirFilaEstadistica('Clics', _datosCampana!['clics']?.toString() ?? '0'),
+                                _construirFilaEstadistica('Rebotes', _datosCampana!['rebotes']?.toString() ?? '0'),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),

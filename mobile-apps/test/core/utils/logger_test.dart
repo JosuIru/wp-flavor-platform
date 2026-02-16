@@ -25,21 +25,25 @@ void main() {
 
     test('should handle API logging', () {
       expect(
-        () => Logger.api('GET', '/api/test', statusCode: 200),
+        () => Logger.api('/api/test', method: 'GET', statusCode: 200),
         returnsNormally,
       );
     });
 
     test('should handle navigation logging', () {
       expect(
-        () => Logger.nav('/home', '/profile'),
+        () => Logger.nav('/profile'),
+        returnsNormally,
+      );
+      expect(
+        () => Logger.nav('/home', params: {'id': '123'}),
         returnsNormally,
       );
     });
 
     test('should handle state logging', () {
       expect(
-        () => Logger.state('UserState', {'id': 1, 'name': 'Test'}),
+        () => Logger.state('UserState', 'update', data: {'id': 1, 'name': 'Test'}),
         returnsNormally,
       );
     });
@@ -50,12 +54,12 @@ void main() {
       });
 
       test('should end timer without errors', () {
-        Logger.startTimer('test_op');
-        expect(() => Logger.endTimer('test_op'), returnsNormally);
+        final stopwatch = Logger.startTimer('test_op');
+        expect(() => Logger.endTimer(stopwatch, 'test_op'), returnsNormally);
       });
 
-      test('should handle ending non-existent timer', () {
-        expect(() => Logger.endTimer('non_existent'), returnsNormally);
+      test('should handle ending null timer', () {
+        expect(() => Logger.endTimer(null, 'non_existent'), returnsNormally);
       });
     });
   });

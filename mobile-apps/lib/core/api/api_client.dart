@@ -3184,27 +3184,6 @@ class ApiClient {
     }
   }
 
-  /// Obtiene datos de gráficos para dashboards
-  /// [type] - Tipo de gráfico: 'activity', 'trends', 'distribution'
-  /// [days] - Número de días a consultar (default: 7)
-  Future<ApiResponse<Map<String, dynamic>>> getDashboardCharts({
-    required String type,
-    int days = 7,
-  }) async {
-    try {
-      final response = await _dio.get(
-        '/chat-ia-mobile/v1/dashboard/charts',
-        queryParameters: {
-          'type': type,
-          'days': days,
-        },
-      );
-      return ApiResponse.success(response.data);
-    } on DioException catch (e) {
-      return ApiResponse.error(_handleError(e));
-    }
-  }
-
   // ==========================================
   // METODOS GENERICOS
   // ==========================================

@@ -597,11 +597,11 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
 
       ApiResponse response;
       if (widget.mode == FormMode.create) {
-        response = await api.post(widget.config.endpoint, data);
+        response = await api.post(widget.config.endpoint, data: data);
       } else {
         final endpoint = widget.config.updateEndpoint ??
                         '${widget.config.endpoint}/${widget.itemId}';
-        response = await api.put(endpoint, data);
+        response = await api.put(endpoint, data: data);
       }
 
       if (response.success) {
