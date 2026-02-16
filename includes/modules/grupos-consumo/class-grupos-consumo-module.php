@@ -44,6 +44,93 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
         // Registrar widget de dashboard
         add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+
+        // Registrar handlers AJAX para gestión de pedidos
+        add_action('wp_ajax_gc_cambiar_estado_pedido', [$this, 'ajax_cambiar_estado_pedido']);
+        add_action('wp_ajax_gc_marcar_pedidos_completados', [$this, 'ajax_marcar_pedidos_completados']);
+    }
+
+    /**
+     * AJAX: Cambiar estado de un pedido individual
+     */
+    public function ajax_cambiar_estado_pedido() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_pedidos_nonce')) {
+            wp_send_json_error(__('Nonce inválido', 'flavor-chat-ia'));
+        }
+
+        if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+        $pedido_id = absint($_POST['pedido_id'] ?? 0);
+        $nuevo_estado = sanitize_text_field($_POST['estado'] ?? '');
+
+        $estados_validos = ['pendiente', 'confirmado', 'completado', 'cancelado'];
+
+        if (!$pedido_id || !in_array($nuevo_estado, $estados_validos)) {
+            wp_send_json_error(__('Datos inválidos', 'flavor-chat-ia'));
+        }
+
+        $resultado = $wpdb->update(
+            $tabla_pedidos,
+            ['estado' => $nuevo_estado],
+            ['id' => $pedido_id],
+            ['%s'],
+            ['%d']
+        );
+
+        if ($resultado !== false) {
+            wp_send_json_success(['estado' => $nuevo_estado]);
+        } else {
+            wp_send_json_error(__('Error al actualizar', 'flavor-chat-ia'));
+        }
+    }
+
+    /**
+     * AJAX: Marcar todos los pedidos de un usuario como completados
+     */
+    public function ajax_marcar_pedidos_completados() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_pedidos_nonce')) {
+            wp_send_json_error(__('Nonce inválido', 'flavor-chat-ia'));
+        }
+
+        if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
+            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+        $usuario_id = absint($_POST['usuario_id'] ?? 0);
+        $ciclo_id = absint($_POST['ciclo_id'] ?? 0);
+
+        if (!$usuario_id) {
+            wp_send_json_error(__('Usuario no especificado', 'flavor-chat-ia'));
+        }
+
+        $where = ['usuario_id = %d'];
+        $params = [$usuario_id];
+
+        if ($ciclo_id) {
+            $where[] = 'ciclo_id = %d';
+            $params[] = $ciclo_id;
+        }
+
+        $where_sql = implode(' AND ', $where);
+
+        $resultado = $wpdb->query($wpdb->prepare(
+            "UPDATE {$tabla_pedidos} SET estado = 'completado' WHERE {$where_sql}",
+            ...$params
+        ));
+
+        if ($resultado !== false) {
+            wp_send_json_success(['updated' => $resultado]);
+        } else {
+            wp_send_json_error(__('Error al actualizar', 'flavor-chat-ia'));
+        }
     }
 
     /**
