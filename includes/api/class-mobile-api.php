@@ -2310,6 +2310,13 @@ class Chat_IA_Mobile_API {
         }
 
         $ticket_types = get_option('calendario_experiencias_ticket_types', []);
+
+        // Validar dependencias de tickets
+        $dependency_check = $this->validate_ticket_dependencies($tickets, $ticket_types);
+        if (is_wp_error($dependency_check)) {
+            return $dependency_check;
+        }
+
         $items = [];
         $total = 0;
 
@@ -2376,6 +2383,13 @@ class Chat_IA_Mobile_API {
 
         // Obtener tipos de tickets
         $ticket_types = get_option('calendario_experiencias_ticket_types', []);
+
+        // Validar dependencias de tickets antes de añadir al carrito
+        $dependency_check = $this->validate_ticket_dependencies($tickets, $ticket_types);
+        if (is_wp_error($dependency_check)) {
+            return $dependency_check;
+        }
+
         $productos_addon = get_option('reservas_addon_productos', []);
         $added_count = 0;
         $errors = [];
@@ -2481,6 +2495,76 @@ class Chat_IA_Mobile_API {
         update_option('reservas_addon_productos', $productos_addon);
 
         return $product->get_id();
+    }
+
+    /**
+     * Valida que las dependencias de tickets estén satisfechas
+     *
+     * @param array $requested_tickets Array de tickets solicitados [{slug, quantity}, ...]
+     * @param array $ticket_types Definiciones de tipos de tickets
+     * @return true|WP_Error True si todas las dependencias están satisfechas, WP_Error si no
+     */
+    private function validate_ticket_dependencies($requested_tickets, $ticket_types) {
+        // Obtener slugs de todos los tickets solicitados
+        $requested_slugs = array_map(function($t) {
+            return sanitize_text_field($t['slug'] ?? '');
+        }, $requested_tickets);
+        $requested_slugs = array_filter($requested_slugs);
+
+        // Verificar dependencias de cada ticket
+        foreach ($requested_tickets as $t) {
+            $slug = sanitize_text_field($t['slug'] ?? '');
+            if (empty($slug) || !isset($ticket_types[$slug])) {
+                continue;
+            }
+
+            $ticket_info = $ticket_types[$slug];
+
+            // Obtener dependencias (puede ser requires, requiere, o depends_on)
+            $requires = $ticket_info['requires'] ?? $ticket_info['requiere'] ?? $ticket_info['depends_on'] ?? '';
+
+            if (empty($requires)) {
+                continue;
+            }
+
+            // Normalizar a array
+            $depends_on = [];
+            if (is_array($requires)) {
+                $depends_on = $requires;
+            } else {
+                $depends_on = array_map('trim', explode(',', $requires));
+                $depends_on = array_filter($depends_on);
+            }
+
+            if (empty($depends_on)) {
+                continue;
+            }
+
+            // Verificar que al menos uno de los padres esté incluido
+            $has_parent = false;
+            foreach ($depends_on as $parent_slug) {
+                if (in_array($parent_slug, $requested_slugs)) {
+                    $has_parent = true;
+                    break;
+                }
+            }
+
+            if (!$has_parent) {
+                $ticket_name = $ticket_info['name'] ?? $ticket_info['nombre'] ?? $slug;
+                $parent_names = implode(', ', $depends_on);
+                return new WP_Error(
+                    'dependency_not_satisfied',
+                    sprintf(
+                        'El ticket "%s" requiere que incluyas también: %s',
+                        $ticket_name,
+                        $parent_names
+                    ),
+                    ['status' => 400, 'ticket' => $slug, 'requires' => $depends_on]
+                );
+            }
+        }
+
+        return true; // Todas las dependencias satisfechas
     }
 
     /**

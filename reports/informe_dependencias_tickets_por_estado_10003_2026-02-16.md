@@ -1,7 +1,8 @@
 # Informe: dependencias de tickets por estado (10003)
 Fecha: 2026-02-16
 Entorno: `http://localhost:10003`
-Alcance: solo auditoría/reporte (sin correcciones)
+Alcance: auditoría/reporte + corrección aplicada
+Estado: **✅ RESUELTO**
 
 ## Evidencia generada
 - Matriz CSV: `reports/matriz_dependencias_tickets_por_estado_10003_2026-02-16.csv`
@@ -33,4 +34,26 @@ El sistema **no está forzando** las dependencias de tickets vinculados en el fl
 
 ## Conclusión operativa
 - Con la configuración y datos actuales en `10003`, reservar por estado funciona.
-- Las dependencias (`depends_on`) se informan, pero no se hacen cumplir en cliente ni servidor durante el checkout.
+- ~~Las dependencias (`depends_on`) se informan, pero no se hacen cumplir en cliente ni servidor durante el checkout.~~
+
+## Fix aplicado (2026-02-16)
+
+### Cambios en `includes/api/class-mobile-api.php`
+
+1. **Nuevo método privado `validate_ticket_dependencies()`** (línea ~2487):
+   - Valida que tickets con `depends_on` incluyan al menos un ticket padre
+   - Soporta campos `requires`, `requiere` y `depends_on`
+   - Retorna `WP_Error` con código `dependency_not_satisfied` si falla
+
+2. **Validación en `prepare_reservation()`** (línea ~2317):
+   - Llama a `validate_ticket_dependencies()` antes de procesar
+   - Bloquea reserva si dependencias no están satisfechas
+
+3. **Validación en `add_to_cart()`** (línea ~2383):
+   - Llama a `validate_ticket_dependencies()` antes de añadir al carrito
+   - Bloquea añadir al carrito si dependencias no están satisfechas
+
+### Comportamiento post-fix
+- Tickets hijo con `depends_on` **requieren** que el ticket padre esté incluido
+- Error devuelto: `"El ticket 'X' requiere que incluyas también: Y"`
+- Status HTTP: `400 Bad Request`
