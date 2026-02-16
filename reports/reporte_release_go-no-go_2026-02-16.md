@@ -40,7 +40,7 @@ Proyecto: `flavor-chat-ia`
 ### ✅ Resueltos (funcionalidad)
 2. **~~Brecha de interfaces móviles frente a módulos backend~~**.
    - **FIX APLICADO**: Registradas 52/52 pantallas de módulos en ModuleScreenRegistry.
-   - Commit: `(pending)`
+   - Commits: `8d0b6e9`, `bfa7ac1`, `be5c21b`
 
 ### ✅ Resueltos (PHP/Web)
 3. **~~Notices runtime en frontend web~~** (`_load_textdomain_just_in_time`).
@@ -111,6 +111,16 @@ Proyecto: `flavor-chat-ia`
   - `trabajo_digno` - Ofertas de empleo con badges
   - `woocommerce` - E-commerce completo (catálogo, carrito, pedidos)
 - **Registro**: Todas registradas en `ModuleScreenRegistry`
+
+### Registro completo de módulos (Commit be5c21b)
+- **22 módulos adicionales registrados**:
+  - fichaje_empleados, participacion, presupuestos_participativos
+  - advertising, carpooling, compostaje, empresarial
+  - multimedia, podcast, radio, red_social, transparencia
+  - colectivos, foros, clientes, comunidades
+  - trading_ia, dex_solana, themacle, email_marketing
+  - bares, reservas
+- **Total**: 52/52 módulos con pantalla cliente registrada
 
 ## Recomendación final
 ✅ **Web/API listo para release** - Todos los blockers resueltos.
