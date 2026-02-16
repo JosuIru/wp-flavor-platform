@@ -330,6 +330,9 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
     /**
      * Obtiene la URL de la página dinámica del módulo
      *
+     * En contexto admin, devuelve la URL de la página de administración.
+     * En contexto frontend, devuelve la URL del portal del usuario.
+     *
      * @return string URL del módulo o vacío si no aplica
      */
     protected function get_module_url(): string {
@@ -337,8 +340,104 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             return '';
         }
 
-        // La URL de la página dinámica es /mi-portal/{module_id}/
+        // En contexto admin, usar URL de administración
+        if (is_admin() && !wp_doing_ajax()) {
+            return $this->get_admin_url();
+        }
+
+        // En contexto frontend, usar URL del portal
         return home_url('/mi-portal/' . $this->widget_id . '/');
+    }
+
+    /**
+     * Obtiene la URL de la página de administración del módulo
+     *
+     * Los widgets pueden sobrescribir este método para usar una URL personalizada.
+     * Por defecto intenta usar 'flavor-{widget_id}' como slug de página.
+     *
+     * @return string URL de admin del módulo
+     * @since 4.2.0
+     */
+    protected function get_admin_url(): string {
+        $admin_page_slug = $this->get_admin_page_slug();
+
+        if (empty($admin_page_slug)) {
+            // Fallback a la URL de frontend si no hay página de admin
+            return home_url('/mi-portal/' . $this->widget_id . '/');
+        }
+
+        return admin_url('admin.php?page=' . $admin_page_slug);
+    }
+
+    /**
+     * Obtiene el slug de la página de administración del módulo
+     *
+     * Los widgets pueden sobrescribir este método para devolver
+     * un slug personalizado si no sigue el patrón 'flavor-{widget_id}'.
+     *
+     * @return string Slug de la página de admin (ej: 'flavor-parkings-reservas')
+     * @since 4.2.0
+     */
+    protected function get_admin_page_slug(): string {
+        // Mapeo de widget_id a slug de página de admin
+        $mapeo_paginas_admin = $this->get_admin_pages_mapping();
+
+        if (isset($mapeo_paginas_admin[$this->widget_id])) {
+            return $mapeo_paginas_admin[$this->widget_id];
+        }
+
+        // Slug por defecto: flavor-{widget_id}
+        return 'flavor-' . $this->widget_id;
+    }
+
+    /**
+     * Obtiene el mapeo de widget_id a slug de página de admin
+     *
+     * Este mapeo permite que los widgets apunten a sus páginas de admin
+     * correctas cuando el slug no sigue el patrón por defecto.
+     *
+     * @return array Mapeo ['widget_id' => 'admin-page-slug']
+     * @since 4.2.0
+     */
+    protected function get_admin_pages_mapping(): array {
+        $mapeo = [
+            // Módulos con páginas de admin específicas
+            'carpooling'        => 'flavor-carpooling-viajes',
+            'parkings'          => 'flavor-parkings-reservas',
+            'bicicletas'        => 'flavor-bicicletas-prestamos',
+            'compostaje'        => 'flavor-compostaje-composteras',
+            'reciclaje'         => 'flavor-reciclaje-puntos',
+            'incidencias'       => 'flavor-incidencias-tickets',
+            'eventos'           => 'flavor-eventos',
+            'cursos'            => 'flavor-chat-cursos',
+            'talleres'          => 'flavor-chat-talleres',
+            'biblioteca'        => 'flavor-chat-biblioteca',
+            'multimedia'        => 'flavor-multimedia',
+            'radio'             => 'flavor-radio',
+            'podcast'           => 'flavor-chat-podcast',
+            'foros'             => 'flavor-foros-dashboard',
+            'red-social'        => 'flavor-red-social-dashboard',
+            'email-marketing'   => 'flavor-email-marketing',
+            'newsletter'        => 'flavor-newsletter',
+            'advertising'       => 'flavor-advertising-dashboard',
+            'empresarial'       => 'flavor-empresarial-empresas',
+            'grupos-consumo'    => 'flavor-grupos-consumo',
+            'socios'            => 'flavor-socios',
+            'tramites'          => 'flavor-tramites-solicitudes',
+            'ayuda-vecinal'     => 'flavor-ayuda-vecinal',
+            'sello-conciencia'  => 'flavor-sello-conciencia',
+            'network'           => 'flavor-network',
+            'banco-tiempo'      => 'flavor-bt-settings',
+            'economia-circular' => 'flavor-ec-settings',
+        ];
+
+        /**
+         * Filtro para modificar el mapeo de páginas de admin
+         *
+         * @param array $mapeo Mapeo actual
+         * @since 4.2.0
+         */
+        return apply_filters('flavor_dashboard_admin_pages_mapping', $mapeo);
     }
 
     /**

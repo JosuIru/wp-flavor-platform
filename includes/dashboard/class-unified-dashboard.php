@@ -709,14 +709,26 @@ class Flavor_Unified_Dashboard {
 
         // Transformar al formato de stats del widget
         $stats = [];
+        $es_contexto_admin = is_admin() && !wp_doing_ajax();
+
         if (is_array($estadisticas)) {
             foreach ($estadisticas as $stat) {
+                // Usar 'url' o 'enlace' (compatibilidad con módulos legacy)
+                $url_original = $stat['url'] ?? $stat['enlace'] ?? '';
+
+                // En contexto frontend, no usar URLs de admin hardcodeadas
+                // ya que no serían accesibles para el usuario
+                $url_stat = '';
+                if ($es_contexto_admin && !empty($url_original)) {
+                    $url_stat = $url_original;
+                }
+
                 $stats[] = [
                     'icon'  => $stat['icon'] ?? 'dashicons-chart-bar',
                     'valor' => $stat['valor'] ?? 0,
                     'label' => $stat['label'] ?? '',
                     'color' => $stat['color'] ?? 'primary',
-                    'url'   => $stat['url'] ?? '',
+                    'url'   => $url_stat,
                 ];
             }
         }
