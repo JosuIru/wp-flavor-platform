@@ -103,16 +103,28 @@ class Flavor_GC_Consumidor_Manager {
             ]);
         }
 
-        // Añadir capacidades al administrador
+        // Añadir capacidades al administrador (verificar si faltan)
         $admin_role = get_role('administrator');
         if ($admin_role) {
-            $admin_role->add_cap('gc_gestionar_pedidos');
-            $admin_role->add_cap('gc_gestionar_consumidores');
-            $admin_role->add_cap('gc_ver_consolidado');
-            $admin_role->add_cap('gc_gestionar_ciclos');
-            $admin_role->add_cap('gc_gestionar_productos_propios');
-            $admin_role->add_cap('gc_gestionar_suscripciones');
-            $admin_role->add_cap('gc_exportar_datos');
+            $capabilities_gc = [
+                'gc_ver_estadisticas',
+                'gc_gestionar_pedidos',
+                'gc_gestionar_consumidores',
+                'gc_gestionar_miembros',
+                'gc_aprobar_solicitudes',
+                'gc_ver_consolidado',
+                'gc_gestionar_ciclos',
+                'gc_gestionar_productos_propios',
+                'gc_gestionar_suscripciones',
+                'gc_configurar_grupo',
+                'gc_exportar_datos',
+            ];
+
+            foreach ($capabilities_gc as $cap) {
+                if (!$admin_role->has_cap($cap)) {
+                    $admin_role->add_cap($cap);
+                }
+            }
         }
     }
 
