@@ -1,0 +1,204 @@
+/**
+ * Visual Builder Pro - Toast Notifications CSS
+ */
+
+/* ============================================
+   CONTENEDOR DE TOASTS
+   ============================================ */
+
+.vbp-toast-container {
+    position: fixed;
+    bottom: 52px; /* Encima de la statusbar */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+    z-index: 10001;
+    pointer-events: none;
+    max-width: 400px;
+    width: 100%;
+    padding: 0 16px;
+}
+
+/* ============================================
+   TOAST INDIVIDUAL
+   ============================================ */
+
+.vbp-toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--vbp-toast-bg, #1e293b);
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    animation: vbp-toast-enter 0.3s ease;
+}
+
+.vbp-toast.leaving {
+    animation: vbp-toast-leave 0.3s ease forwards;
+}
+
+@keyframes vbp-toast-enter {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes vbp-toast-leave {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+}
+
+/* ============================================
+   TIPOS DE TOAST
+   ============================================ */
+
+.vbp-toast--success {
+    background: #059669;
+}
+
+.vbp-toast--error {
+    background: #dc2626;
+}
+
+.vbp-toast--warning {
+    background: #d97706;
+}
+
+.vbp-toast--info {
+    background: #2563eb;
+}
+
+/* ============================================
+   ELEMENTOS DEL TOAST
+   ============================================ */
+
+.vbp-toast-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+.vbp-toast-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.vbp-toast-message {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.vbp-toast-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.vbp-toast-action {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.vbp-toast-action:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.vbp-toast-dismiss {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-toast-dismiss:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   PROGRESS BAR (para toasts con duración)
+   ============================================ */
+
+.vbp-toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+
+.vbp-toast-progress-bar {
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    animation: vbp-toast-progress var(--duration, 3s) linear forwards;
+}
+
+@keyframes vbp-toast-progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 480px) {
+    .vbp-toast-container {
+        left: 16px;
+        right: 16px;
+        transform: none;
+        max-width: none;
+        padding: 0;
+    }
+}
+
+/* ============================================
+   MODO OSCURO (sin cambios, ya es oscuro)
+   ============================================ */

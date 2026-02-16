@@ -1,0 +1,254 @@
+/**
+ * Visual Builder Pro - Status Bar CSS
+ * Breadcrumbs, Zoom control, Save status
+ */
+
+/* ============================================
+   BARRA DE ESTADO INFERIOR
+   ============================================ */
+
+.vbp-statusbar {
+    position: fixed;
+    bottom: 0;
+    left: 260px;
+    right: 300px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: var(--vbp-bg-secondary, #f8fafc);
+    border-top: 1px solid var(--vbp-border-color, #e2e8f0);
+    font-size: 12px;
+    z-index: 90;
+}
+
+/* ============================================
+   BREADCRUMBS
+   ============================================ */
+
+.vbp-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.vbp-breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--vbp-text-secondary, #64748b);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.vbp-breadcrumb-item:hover {
+    background: var(--vbp-bg-tertiary, #f1f5f9);
+    color: var(--vbp-text-primary, #1e293b);
+}
+
+.vbp-breadcrumb-item.active {
+    color: var(--vbp-text-primary, #1e293b);
+    font-weight: 500;
+}
+
+.vbp-breadcrumb-icon {
+    font-size: 12px;
+}
+
+.vbp-breadcrumb-separator {
+    color: var(--vbp-text-muted, #94a3b8);
+    font-size: 10px;
+}
+
+/* ============================================
+   CONTROL DE ZOOM
+   ============================================ */
+
+.vbp-zoom-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vbp-zoom-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: var(--vbp-text-secondary, #64748b);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-zoom-btn:hover {
+    background: var(--vbp-bg-tertiary, #f1f5f9);
+    color: var(--vbp-text-primary, #1e293b);
+}
+
+.vbp-zoom-btn:active {
+    background: var(--vbp-bg-hover, #e2e8f0);
+}
+
+.vbp-zoom-value {
+    min-width: 48px;
+    padding: 4px 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vbp-text-primary, #1e293b);
+    background: var(--vbp-bg-tertiary, #f1f5f9);
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-zoom-value:hover {
+    background: var(--vbp-bg-hover, #e2e8f0);
+}
+
+/* Dropdown de presets de zoom */
+.vbp-zoom-dropdown {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 4px;
+    min-width: 80px;
+    background: var(--vbp-bg-secondary, #fff);
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 4px;
+    z-index: 100;
+}
+
+.vbp-zoom-preset {
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #64748b);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-zoom-preset:hover {
+    background: var(--vbp-bg-tertiary, #f1f5f9);
+    color: var(--vbp-text-primary, #1e293b);
+}
+
+.vbp-zoom-preset.active {
+    color: var(--vbp-accent-color, #3b82f6);
+    font-weight: 500;
+}
+
+/* ============================================
+   ESTADO DE GUARDADO
+   ============================================ */
+
+.vbp-save-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    transition: all 0.2s ease;
+}
+
+.vbp-save-status--saved {
+    color: var(--vbp-success, #10b981);
+}
+
+.vbp-save-status--saving {
+    color: var(--vbp-warning, #f59e0b);
+}
+
+.vbp-save-status--saving .vbp-save-status-icon {
+    animation: vbp-spin 1s linear infinite;
+}
+
+.vbp-save-status--unsaved {
+    color: var(--vbp-warning, #f59e0b);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.vbp-save-status--error {
+    color: var(--vbp-error, #ef4444);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.vbp-save-status-icon {
+    font-size: 12px;
+}
+
+.vbp-save-status-text {
+    white-space: nowrap;
+}
+
+@keyframes vbp-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1200px) {
+    .vbp-statusbar {
+        left: 0;
+        right: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .vbp-breadcrumbs {
+        display: none;
+    }
+
+    .vbp-statusbar {
+        justify-content: center;
+    }
+}
+
+/* ============================================
+   MODO OSCURO
+   ============================================ */
+
+.vbp-dark .vbp-statusbar {
+    background: var(--vbp-bg-dark, #1e293b);
+    border-color: var(--vbp-border-dark, #334155);
+}
+
+.vbp-dark .vbp-breadcrumb-item:hover {
+    background: var(--vbp-bg-hover-dark, #334155);
+}
+
+.vbp-dark .vbp-zoom-value {
+    background: var(--vbp-bg-subtle-dark, #0f172a);
+    border-color: var(--vbp-border-dark, #334155);
+    color: var(--vbp-text-dark, #f1f5f9);
+}
+
+.vbp-dark .vbp-zoom-dropdown {
+    background: var(--vbp-bg-dark, #1e293b);
+    border-color: var(--vbp-border-dark, #334155);
+}

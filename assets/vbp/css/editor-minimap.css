@@ -1,0 +1,169 @@
+/**
+ * Visual Builder Pro - Mini Mapa CSS
+ */
+
+/* Contenedor del mini mapa */
+.vbp-minimap {
+    position: fixed;
+    right: 320px; /* Después del inspector */
+    top: 100px;
+    width: 120px;
+    background: var(--vbp-bg-secondary, #f8fafc);
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 100;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.vbp-minimap.hidden {
+    opacity: 0;
+    transform: translateX(20px);
+    pointer-events: none;
+}
+
+/* Header del mini mapa */
+.vbp-minimap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: var(--vbp-bg-tertiary, #f1f5f9);
+    border-bottom: 1px solid var(--vbp-border-color, #e2e8f0);
+}
+
+.vbp-minimap-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--vbp-text-secondary, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vbp-minimap-toggle {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--vbp-text-muted, #94a3b8);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.vbp-minimap-toggle:hover {
+    background: var(--vbp-bg-hover, #e2e8f0);
+    color: var(--vbp-text-primary, #1e293b);
+}
+
+/* Contenido del mini mapa */
+.vbp-minimap-content {
+    position: relative;
+    min-height: 100px;
+    max-height: 300px;
+    cursor: pointer;
+    background: white;
+}
+
+/* Elementos del mini mapa */
+.vbp-minimap-element {
+    position: absolute;
+    left: 10%;
+    width: 80%;
+    border-radius: 2px;
+    transition: opacity 0.15s ease;
+    cursor: pointer;
+}
+
+.vbp-minimap-element:hover {
+    opacity: 0.8 !important;
+    box-shadow: 0 0 0 1px var(--vbp-accent-color, #3b82f6);
+}
+
+.vbp-minimap-element.selected {
+    box-shadow: 0 0 0 2px var(--vbp-accent-color, #3b82f6);
+}
+
+/* Viewport indicator */
+.vbp-minimap-viewport {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid rgba(59, 130, 246, 0.5);
+    border-radius: 2px;
+    pointer-events: none;
+    transition: top 0.1s ease;
+}
+
+/* Dragging state */
+.vbp-minimap-content.dragging {
+    cursor: grabbing;
+}
+
+.vbp-minimap-content.dragging .vbp-minimap-viewport {
+    border-color: var(--vbp-accent-color, #3b82f6);
+    background: rgba(59, 130, 246, 0.2);
+}
+
+/* Botón flotante cuando está oculto */
+.vbp-minimap-show-btn {
+    position: fixed;
+    right: 320px;
+    top: 100px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vbp-bg-secondary, #fff);
+    border: 1px solid var(--vbp-border-color, #e2e8f0);
+    border-radius: 6px;
+    color: var(--vbp-text-muted, #64748b);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.15s ease;
+    z-index: 99;
+}
+
+.vbp-minimap-show-btn:hover {
+    background: var(--vbp-bg-hover, #f1f5f9);
+    color: var(--vbp-text-primary, #1e293b);
+}
+
+/* Modo oscuro */
+.vbp-dark .vbp-minimap {
+    background: var(--vbp-bg-dark, #1e293b);
+    border-color: var(--vbp-border-dark, #334155);
+}
+
+.vbp-dark .vbp-minimap-header {
+    background: var(--vbp-bg-subtle-dark, #0f172a);
+    border-color: var(--vbp-border-dark, #334155);
+}
+
+.vbp-dark .vbp-minimap-content {
+    background: var(--vbp-bg-dark, #1e293b);
+}
+
+/* Responsive - ocultar en pantallas pequeñas */
+@media (max-width: 1200px) {
+    .vbp-minimap {
+        right: 20px;
+    }
+
+    .vbp-minimap-show-btn {
+        right: 20px;
+    }
+}
+
+@media (max-width: 900px) {
+    .vbp-minimap,
+    .vbp-minimap-show-btn {
+        display: none;
+    }
+}

@@ -1,0 +1,470 @@
+/**
+ * Visual Builder Pro - Animations CSS
+ *
+ * Sistema de animaciones configurables para elementos del VBP.
+ *
+ * @package Flavor_Chat_IA
+ * @since 2.0.0
+ */
+
+/* ============================================
+   Base Animation Classes
+   ============================================ */
+.vbp-animated {
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.vbp-animated.vbp-animated--visible {
+    opacity: 1;
+}
+
+/* ============================================
+   Entrance Animations
+   ============================================ */
+
+/* Fade */
+.vbp-anim-fade-in {
+    animation: vbpFadeIn var(--vbp-anim-duration, 0.6s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.vbp-anim-fade-in-up {
+    animation: vbpFadeInUp var(--vbp-anim-duration, 0.6s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.vbp-anim-fade-in-down {
+    animation: vbpFadeInDown var(--vbp-anim-duration, 0.6s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpFadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.vbp-anim-fade-in-left {
+    animation: vbpFadeInLeft var(--vbp-anim-duration, 0.6s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpFadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.vbp-anim-fade-in-right {
+    animation: vbpFadeInRight var(--vbp-anim-duration, 0.6s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpFadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Zoom */
+.vbp-anim-zoom-in {
+    animation: vbpZoomIn var(--vbp-anim-duration, 0.5s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.vbp-anim-zoom-out {
+    animation: vbpZoomOut var(--vbp-anim-duration, 0.5s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpZoomOut {
+    from {
+        opacity: 0;
+        transform: scale(1.2);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Bounce */
+.vbp-anim-bounce-in {
+    animation: vbpBounceIn var(--vbp-anim-duration, 0.75s) var(--vbp-anim-easing, cubic-bezier(0.68, -0.55, 0.265, 1.55)) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpBounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.vbp-anim-bounce-in-up {
+    animation: vbpBounceInUp var(--vbp-anim-duration, 0.75s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpBounceInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Rotate */
+.vbp-anim-rotate-in {
+    animation: vbpRotateIn var(--vbp-anim-duration, 0.6s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+}
+
+@keyframes vbpRotateIn {
+    from {
+        opacity: 0;
+        transform: rotate(-180deg) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: rotate(0) scale(1);
+    }
+}
+
+/* Flip */
+.vbp-anim-flip-in-x {
+    animation: vbpFlipInX var(--vbp-anim-duration, 0.6s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+    backface-visibility: visible;
+}
+
+@keyframes vbpFlipInX {
+    from {
+        opacity: 0;
+        transform: perspective(400px) rotateX(90deg);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(400px) rotateX(0);
+    }
+}
+
+.vbp-anim-flip-in-y {
+    animation: vbpFlipInY var(--vbp-anim-duration, 0.6s) var(--vbp-anim-easing, ease-out) forwards;
+    animation-delay: var(--vbp-anim-delay, 0s);
+    backface-visibility: visible;
+}
+
+@keyframes vbpFlipInY {
+    from {
+        opacity: 0;
+        transform: perspective(400px) rotateY(90deg);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(400px) rotateY(0);
+    }
+}
+
+/* ============================================
+   Hover Animations
+   ============================================ */
+
+/* Grow */
+.vbp-hover-grow {
+    transition: transform 0.3s ease;
+}
+
+.vbp-hover-grow:hover {
+    transform: scale(1.05);
+}
+
+/* Shrink */
+.vbp-hover-shrink {
+    transition: transform 0.3s ease;
+}
+
+.vbp-hover-shrink:hover {
+    transform: scale(0.95);
+}
+
+/* Float */
+.vbp-hover-float {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vbp-hover-float:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Pulse */
+.vbp-hover-pulse {
+    transition: transform 0.3s ease;
+}
+
+.vbp-hover-pulse:hover {
+    animation: vbpPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes vbpPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Wobble */
+.vbp-hover-wobble {
+    transition: transform 0.1s ease;
+}
+
+.vbp-hover-wobble:hover {
+    animation: vbpWobble 0.8s ease-in-out;
+}
+
+@keyframes vbpWobble {
+    0%, 100% { transform: rotate(0); }
+    15% { transform: rotate(-5deg); }
+    30% { transform: rotate(5deg); }
+    45% { transform: rotate(-3deg); }
+    60% { transform: rotate(3deg); }
+    75% { transform: rotate(-1deg); }
+}
+
+/* Swing */
+.vbp-hover-swing {
+    transform-origin: top center;
+}
+
+.vbp-hover-swing:hover {
+    animation: vbpSwing 0.8s ease-in-out;
+}
+
+@keyframes vbpSwing {
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-10deg); }
+    60% { transform: rotate(5deg); }
+    80% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Glow */
+.vbp-hover-glow {
+    transition: box-shadow 0.3s ease;
+}
+
+.vbp-hover-glow:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+/* ============================================
+   Loop Animations
+   ============================================ */
+
+/* Spin */
+.vbp-loop-spin {
+    animation: vbpSpin var(--vbp-anim-duration, 2s) linear infinite;
+}
+
+@keyframes vbpSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Ping */
+.vbp-loop-ping {
+    animation: vbpPing var(--vbp-anim-duration, 1s) ease-in-out infinite;
+}
+
+@keyframes vbpPing {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+}
+
+/* Bounce */
+.vbp-loop-bounce {
+    animation: vbpLoopBounce var(--vbp-anim-duration, 1s) ease-in-out infinite;
+}
+
+@keyframes vbpLoopBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* Shake */
+.vbp-loop-shake {
+    animation: vbpShake var(--vbp-anim-duration, 0.8s) ease-in-out infinite;
+}
+
+@keyframes vbpShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+/* Heart Beat */
+.vbp-loop-heartbeat {
+    animation: vbpHeartbeat var(--vbp-anim-duration, 1.5s) ease-in-out infinite;
+}
+
+@keyframes vbpHeartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.15); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.15); }
+    70% { transform: scale(1); }
+}
+
+/* Blink */
+.vbp-loop-blink {
+    animation: vbpBlink var(--vbp-anim-duration, 1s) ease-in-out infinite;
+}
+
+@keyframes vbpBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+}
+
+/* ============================================
+   Scroll Reveal Animations
+   ============================================ */
+[data-vbp-reveal] {
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-vbp-reveal="fade-up"] {
+    transform: translateY(40px);
+}
+
+[data-vbp-reveal="fade-down"] {
+    transform: translateY(-40px);
+}
+
+[data-vbp-reveal="fade-left"] {
+    transform: translateX(-40px);
+}
+
+[data-vbp-reveal="fade-right"] {
+    transform: translateX(40px);
+}
+
+[data-vbp-reveal="zoom-in"] {
+    transform: scale(0.8);
+}
+
+[data-vbp-reveal="zoom-out"] {
+    transform: scale(1.2);
+}
+
+[data-vbp-reveal].vbp-revealed {
+    opacity: 1;
+    transform: none;
+}
+
+/* ============================================
+   Parallax
+   ============================================ */
+.vbp-parallax {
+    will-change: transform;
+    transition: transform 0.1s ease-out;
+}
+
+/* ============================================
+   Reduced Motion Preference
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .vbp-animated,
+    [data-vbp-reveal],
+    .vbp-parallax {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .vbp-hover-grow:hover,
+    .vbp-hover-shrink:hover,
+    .vbp-hover-float:hover,
+    .vbp-hover-pulse:hover,
+    .vbp-hover-wobble:hover,
+    .vbp-hover-swing:hover {
+        transform: none !important;
+        animation: none !important;
+    }
+
+    .vbp-loop-spin,
+    .vbp-loop-ping,
+    .vbp-loop-bounce,
+    .vbp-loop-shake,
+    .vbp-loop-heartbeat,
+    .vbp-loop-blink {
+        animation: none !important;
+    }
+}

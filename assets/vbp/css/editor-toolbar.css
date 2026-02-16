@@ -1,0 +1,206 @@
+/**
+ * Visual Builder Pro - Toolbar CSS
+ */
+
+/* ============================================
+   Floating Text Toolbar
+   ============================================ */
+.vbp-floating-toolbar {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 6px;
+    background: var(--vbp-bg-secondary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    z-index: 9999;
+    transform: translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.vbp-floating-toolbar.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-toolbar-group {
+    display: flex;
+    gap: 2px;
+}
+
+.vbp-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--vbp-border-color);
+    margin: 0 4px;
+}
+
+.vbp-toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--vbp-text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-toolbar-btn:hover {
+    background: var(--vbp-bg-tertiary);
+    color: var(--vbp-text-primary);
+}
+
+.vbp-toolbar-btn.active {
+    background: var(--vbp-accent-color);
+    color: white;
+}
+
+.vbp-toolbar-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.vbp-toolbar-select {
+    padding: 4px 8px;
+    background: var(--vbp-bg-tertiary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 4px;
+    color: var(--vbp-text-primary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.vbp-toolbar-select:hover {
+    background: var(--vbp-bg-primary);
+}
+
+/* ============================================
+   Top Toolbar Enhancements
+   ============================================ */
+.vbp-history-buttons {
+    display: flex;
+    gap: 4px;
+    padding: 0 8px;
+    border-left: 1px solid var(--vbp-border-color);
+    border-right: 1px solid var(--vbp-border-color);
+}
+
+.vbp-document-title {
+    display: flex;
+    align-items: center;
+}
+
+/* Keyboard shortcut hints */
+.vbp-btn[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background: var(--vbp-bg-primary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* Link input in floating toolbar */
+.vbp-link-input-wrapper {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--vbp-bg-tertiary);
+    border-radius: 4px;
+}
+
+.vbp-link-input {
+    width: 200px;
+    padding: 4px 8px;
+    background: var(--vbp-bg-primary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 4px;
+    color: var(--vbp-text-primary);
+    font-size: 12px;
+}
+
+.vbp-link-input:focus {
+    outline: none;
+    border-color: var(--vbp-accent-color);
+}
+
+/* Color picker in toolbar */
+.vbp-toolbar-color {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 2px solid var(--vbp-border-color);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.vbp-toolbar-color::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.vbp-toolbar-color::-webkit-color-swatch {
+    border: none;
+    border-radius: 2px;
+}
+
+/* Heading level dropdown */
+.vbp-heading-dropdown {
+    position: relative;
+}
+
+.vbp-heading-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    padding: 4px;
+    background: var(--vbp-bg-secondary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 100;
+}
+
+.vbp-heading-option {
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--vbp-text-primary);
+    text-align: left;
+    cursor: pointer;
+}
+
+.vbp-heading-option:hover {
+    background: var(--vbp-bg-tertiary);
+}
+
+.vbp-heading-option span {
+    display: inline-block;
+    min-width: 30px;
+    font-weight: 600;
+}
+
+/* List type buttons */
+.vbp-list-buttons {
+    display: flex;
+    gap: 2px;
+}
