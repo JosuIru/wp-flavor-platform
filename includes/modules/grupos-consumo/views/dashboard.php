@@ -78,6 +78,31 @@ $actividad_ciclos = $wpdb->get_results(
      LIMIT 6"
 );
 
+// Datos de ejemplo si no hay datos reales
+$usar_datos_ejemplo = empty($productos_top) && empty($actividad_ciclos);
+
+if ($usar_datos_ejemplo) {
+    // Productos de ejemplo
+    $productos_top = [
+        (object) ['producto_id' => 0, 'total_cantidad' => 145, 'total_ventas' => 435.00, 'nombre' => 'Tomates Eco'],
+        (object) ['producto_id' => 0, 'total_cantidad' => 120, 'total_ventas' => 240.00, 'nombre' => 'Lechugas Frescas'],
+        (object) ['producto_id' => 0, 'total_cantidad' => 98, 'total_ventas' => 294.00, 'nombre' => 'Zanahorias Bio'],
+        (object) ['producto_id' => 0, 'total_cantidad' => 85, 'total_ventas' => 510.00, 'nombre' => 'Aceite Oliva Virgen'],
+        (object) ['producto_id' => 0, 'total_cantidad' => 72, 'total_ventas' => 180.00, 'nombre' => 'Huevos Camperos'],
+        (object) ['producto_id' => 0, 'total_cantidad' => 65, 'total_ventas' => 195.00, 'nombre' => 'Miel Artesanal'],
+    ];
+
+    // Ciclos de ejemplo
+    $actividad_ciclos = [
+        (object) ['ciclo' => 'Febrero 2026', 'total_pedidos' => 48, 'total_ventas' => 1250.00],
+        (object) ['ciclo' => 'Enero 2026', 'total_pedidos' => 52, 'total_ventas' => 1480.00],
+        (object) ['ciclo' => 'Diciembre 2025', 'total_pedidos' => 65, 'total_ventas' => 1890.00],
+        (object) ['ciclo' => 'Noviembre 2025', 'total_pedidos' => 43, 'total_ventas' => 1120.00],
+        (object) ['ciclo' => 'Octubre 2025', 'total_pedidos' => 38, 'total_ventas' => 980.00],
+        (object) ['ciclo' => 'Septiembre 2025', 'total_pedidos' => 45, 'total_ventas' => 1150.00],
+    ];
+}
+
 ?>
 
 <div class="wrap">
@@ -162,6 +187,42 @@ $actividad_ciclos = $wpdb->get_results(
                 <?php echo esc_html__('Productores Activos', 'flavor-chat-ia'); ?>
             </div>
         </div>
+    </div>
+
+    <!-- Accesos Rápidos -->
+    <div class="gc-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('admin.php?page=gc-pedidos'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-clipboard" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Pedidos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=gc-consumidores'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-users" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Consumidores', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('edit.php?post_type=gc_ciclo'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-calendar-alt" style="font-size: 24px; color: #dba617;"></span>
+            <span><?php echo esc_html__('Ciclos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('edit.php?post_type=gc_producto'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-carrot" style="font-size: 24px; color: #d63638;"></span>
+            <span><?php echo esc_html__('Productos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('edit.php?post_type=gc_productor'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-store" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Productores', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=gc-consolidado'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-list-view" style="font-size: 24px; color: #00a0d2;"></span>
+            <span><?php echo esc_html__('Consolidado', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=gc-solicitudes'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-businessperson" style="font-size: 24px; color: #135e96;"></span>
+            <span><?php echo esc_html__('Solicitudes', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=gc-configuracion'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
+        </a>
     </div>
 
     <!-- Estado del Ciclo Actual -->
@@ -302,8 +363,14 @@ jQuery(document).ready(function($) {
             labels: [
                 <?php
                 foreach ($productos_top as $prod) {
-                    $producto_post = get_post($prod->producto_id);
-                    echo "'" . esc_js($producto_post ? $producto_post->post_title : 'Producto #' . $prod->producto_id) . "',";
+                    if (isset($prod->nombre)) {
+                        // Usar nombre de datos de ejemplo
+                        echo "'" . esc_js($prod->nombre) . "',";
+                    } else {
+                        // Obtener nombre del producto real
+                        $producto_post = get_post($prod->producto_id);
+                        echo "'" . esc_js($producto_post ? $producto_post->post_title : 'Producto #' . $prod->producto_id) . "',";
+                    }
                 }
                 ?>
             ],
