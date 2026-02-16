@@ -136,13 +136,8 @@ class Flavor_Circulos_Cuidados_Widget extends Flavor_Dashboard_Widget_Base {
             'empty_state' => __('No hay necesidades pendientes en tus círculos', 'flavor-chat-ia'),
             'footer' => [
                 [
-                    'label' => __('Ver círculos', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/circulos-cuidados/'),
-                    'icon' => 'dashicons-arrow-right-alt2',
-                ],
-                [
-                    'label' => __('Ver necesidades', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/circulos-cuidados/necesidades/'),
+                    'label' => $this->is_admin_context() ? __('Ver panel', 'flavor-chat-ia') : __('Ver círculos', 'flavor-chat-ia'),
+                    'url' => $this->get_context_url('/mi-portal/circulos-cuidados/', 'flavor-circulos-cuidados'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],

@@ -83,7 +83,7 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
                     _n('%d práctica este mes', '%d prácticas este mes', $stats['practicas_mes'], 'flavor-chat-ia'),
                     $stats['practicas_mes']
                 ),
-                'url' => home_url('/mi-portal/economia-suficiencia/compromisos/'),
+                'url' => ->get_context_url('/mi-portal/economia-suficiencia/compromisos/', 'flavor-economia-suficiencia'),
             ];
         }
 
@@ -94,7 +94,7 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
                     _n('%d objeto compartido', '%d objetos compartidos', $stats['recursos_compartidos'], 'flavor-chat-ia'),
                     $stats['recursos_compartidos']
                 ),
-                'url' => home_url('/mi-portal/economia-suficiencia/biblioteca/'),
+                'url' => ->get_context_url('/mi-portal/economia-suficiencia/biblioteca/', 'flavor-economia-suficiencia'),
             ];
         }
 
@@ -105,7 +105,7 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Mi camino', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/economia-suficiencia/mi-camino/'),
+                    'url' => ->get_context_url('/mi-portal/economia-suficiencia/mi-camino/', 'flavor-economia-suficiencia'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],

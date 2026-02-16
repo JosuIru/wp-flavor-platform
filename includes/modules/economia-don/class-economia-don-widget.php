@@ -107,12 +107,12 @@ class Flavor_Economia_Don_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver todos', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/economia-don/'),
+                    'url' => ->get_context_url('/mi-portal/economia-don/', 'flavor-economia-don'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
                 [
                     'label' => __('Ofrecer don', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/economia-don/ofrecer/'),
+                    'url' => ->get_context_url('/mi-portal/economia-don/ofrecer/', 'flavor-economia-don'),
                     'icon' => 'dashicons-heart',
                 ],
             ],

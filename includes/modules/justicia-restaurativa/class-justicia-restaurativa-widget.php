@@ -92,7 +92,7 @@ class Flavor_Justicia_Restaurativa_Widget extends Flavor_Dashboard_Widget_Base {
                     _n('%d invitación pendiente', '%d invitaciones pendientes', $procesos_pendientes, 'flavor-chat-ia'),
                     $procesos_pendientes
                 ),
-                'url' => home_url('/mi-portal/justicia-restaurativa/mis-procesos/'),
+                'url' => ->get_context_url('/mi-portal/justicia-restaurativa/mis-procesos/', 'flavor-justicia-restaurativa'),
                 'badge' => __('Pendiente', 'flavor-chat-ia'),
                 'badge_color' => 'orange',
             ];
@@ -114,7 +114,7 @@ class Flavor_Justicia_Restaurativa_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Más info', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/justicia-restaurativa/'),
+                    'url' => ->get_context_url('/mi-portal/justicia-restaurativa/', 'flavor-justicia-restaurativa'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],

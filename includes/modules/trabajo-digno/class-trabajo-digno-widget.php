@@ -59,7 +59,7 @@ class Flavor_Trabajo_Digno_Widget extends Flavor_Dashboard_Widget_Base {
                     _n('%d postulación activa', '%d postulaciones activas', $stats['mis_postulaciones'], 'flavor-chat-ia'),
                     $stats['mis_postulaciones']
                 ),
-                'url' => home_url('/mi-portal/trabajo-digno/'),
+                'url' => ->get_context_url('/mi-portal/trabajo-digno/', 'flavor-trabajo-digno'),
             ];
         }
 
