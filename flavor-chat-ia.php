@@ -543,6 +543,21 @@ final class Flavor_Chat_IA {
 
         // Auto-asignar roles de módulo al activar módulos
         add_action('update_option_flavor_chat_ia_settings', [$this, 'handle_modules_role_assignment'], 10, 2);
+
+        // Crear páginas legales si no existen (para instalaciones existentes)
+        add_action('admin_init', [$this, 'maybe_install_legal_pages']);
+    }
+
+    /**
+     * Instala páginas legales si no existen (una sola vez)
+     */
+    public function maybe_install_legal_pages() {
+        if (get_option('flavor_legal_pages_installed') !== '1') {
+            if (class_exists('Flavor_Database_Installer')) {
+                Flavor_Database_Installer::install_legal_pages();
+                update_option('flavor_legal_pages_installed', '1');
+            }
+        }
     }
 
     /**
@@ -1169,6 +1184,8 @@ final class Flavor_Chat_IA {
         // Instalar tablas de todos los módulos (sistema centralizado)
         if (class_exists('Flavor_Database_Installer')) {
             Flavor_Database_Installer::install_tables();
+            // Crear páginas legales (cookies, términos) si no existen
+            Flavor_Database_Installer::install_legal_pages();
         }
 
         // Reconstruir caché de metadatos de módulos para optimizar rendimiento

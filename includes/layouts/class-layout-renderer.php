@@ -1175,13 +1175,21 @@ class Flavor_Layout_Renderer {
     private function render_legal_links() {
         $settings = get_option('flavor_layout_settings', []);
         $privacy_page = get_privacy_policy_url();
+
+        // Buscar páginas legales por slug o crear URLs condicionales
+        $terminos_page = get_page_by_path('terminos-de-uso') ?: get_page_by_path('terminos');
+        $cookies_page = get_page_by_path('politica-de-cookies') ?: get_page_by_path('cookies');
         ?>
         <nav class="flavor-legal-links">
             <?php if ($privacy_page): ?>
             <a href="<?php echo esc_url($privacy_page); ?>"><?php esc_html_e('Política de privacidad', 'flavor-chat-ia'); ?></a>
             <?php endif; ?>
-            <a href="<?php echo esc_url(home_url('/terminos')); ?>"><?php esc_html_e('Términos de uso', 'flavor-chat-ia'); ?></a>
-            <a href="<?php echo esc_url(home_url('/cookies')); ?>"><?php esc_html_e('Política de cookies', 'flavor-chat-ia'); ?></a>
+            <?php if ($terminos_page): ?>
+            <a href="<?php echo esc_url(get_permalink($terminos_page)); ?>"><?php esc_html_e('Términos de uso', 'flavor-chat-ia'); ?></a>
+            <?php endif; ?>
+            <?php if ($cookies_page): ?>
+            <a href="<?php echo esc_url(get_permalink($cookies_page)); ?>"><?php esc_html_e('Política de cookies', 'flavor-chat-ia'); ?></a>
+            <?php endif; ?>
         </nav>
         <?php
     }

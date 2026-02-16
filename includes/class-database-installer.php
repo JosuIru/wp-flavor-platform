@@ -1205,4 +1205,93 @@ class Flavor_Database_Installer {
             dbDelta($sql);
         }
     }
+
+    /**
+     * Crea páginas legales requeridas si no existen
+     */
+    public static function install_legal_pages() {
+        $legal_pages = [
+            'politica-de-cookies' => [
+                'title'   => __('Política de Cookies', 'flavor-chat-ia'),
+                'content' => self::get_cookies_policy_content(),
+            ],
+            'terminos-de-uso' => [
+                'title'   => __('Términos de Uso', 'flavor-chat-ia'),
+                'content' => self::get_terms_content(),
+            ],
+        ];
+
+        foreach ($legal_pages as $slug => $page_data) {
+            // Verificar si la página existe
+            $existing = get_page_by_path($slug);
+            if (!$existing) {
+                wp_insert_post([
+                    'post_title'   => $page_data['title'],
+                    'post_name'    => $slug,
+                    'post_content' => $page_data['content'],
+                    'post_status'  => 'publish',
+                    'post_type'    => 'page',
+                    'post_author'  => 1,
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Contenido predeterminado de política de cookies
+     */
+    private static function get_cookies_policy_content() {
+        return '<!-- wp:heading -->
+<h2>' . __('¿Qué son las cookies?', 'flavor-chat-ia') . '</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>' . __('Las cookies son pequeños archivos de texto que los sitios web almacenan en su dispositivo cuando los visita. Se utilizan ampliamente para hacer que los sitios web funcionen de manera más eficiente y proporcionar información a los propietarios del sitio.', 'flavor-chat-ia') . '</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>' . __('Cookies que utilizamos', 'flavor-chat-ia') . '</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>' . __('Utilizamos cookies técnicas necesarias para el funcionamiento del sitio, cookies de análisis para entender cómo se usa el sitio, y cookies de preferencias para recordar su configuración.', 'flavor-chat-ia') . '</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>' . __('Gestión de cookies', 'flavor-chat-ia') . '</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>' . __('Puede configurar su navegador para rechazar cookies o alertarle cuando se envían cookies. Sin embargo, algunas partes del sitio pueden no funcionar correctamente sin cookies.', 'flavor-chat-ia') . '</p>
+<!-- /wp:paragraph -->';
+    }
+
+    /**
+     * Contenido predeterminado de términos de uso
+     */
+    private static function get_terms_content() {
+        return '<!-- wp:heading -->
+<h2>' . __('Aceptación de los términos', 'flavor-chat-ia') . '</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>' . __('Al acceder y utilizar este sitio web, usted acepta cumplir con estos términos de uso. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro sitio.', 'flavor-chat-ia') . '</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>' . __('Uso del sitio', 'flavor-chat-ia') . '</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>' . __('Este sitio está destinado a usuarios mayores de edad. El contenido es solo para fines informativos y no constituye asesoramiento profesional.', 'flavor-chat-ia') . '</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>' . __('Propiedad intelectual', 'flavor-chat-ia') . '</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>' . __('Todo el contenido de este sitio, incluyendo textos, gráficos, logos e imágenes, es propiedad del sitio o sus licenciantes y está protegido por las leyes de propiedad intelectual.', 'flavor-chat-ia') . '</p>
+<!-- /wp:paragraph -->';
+    }
 }
