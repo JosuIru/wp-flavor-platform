@@ -104,9 +104,6 @@ $colores_estado = [
     margin-bottom: 15px;
     overflow: hidden;
 }
-.gc-usuario-card.collapsed .gc-usuario-body {
-    display: none;
-}
 .gc-usuario-header {
     display: flex;
     justify-content: space-between;
@@ -130,7 +127,7 @@ $colores_estado = [
     background: rgba(255,255,255,0.15);
     border-radius: 50%;
     margin-left: 15px;
-    transition: transform 0.3s ease, background 0.2s ease;
+    transition: background 0.2s ease;
 }
 .gc-usuario-toggle:hover {
     background: rgba(255,255,255,0.25);
@@ -139,13 +136,20 @@ $colores_estado = [
     font-size: 18px;
     width: 18px;
     height: 18px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .gc-usuario-card.collapsed .gc-usuario-toggle .dashicons {
     transform: rotate(-90deg);
 }
 .gc-usuario-body {
-    transition: all 0.3s ease;
+    max-height: 2000px;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    opacity: 1;
+}
+.gc-usuario-card.collapsed .gc-usuario-body {
+    max-height: 0;
+    opacity: 0;
 }
 .gc-usuario-info {
     display: flex;
