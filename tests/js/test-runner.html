@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBP Store Tests</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .instructions {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .instructions code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        #test-results {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            min-height: 400px;
+            overflow-x: auto;
+        }
+        .status {
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            background: #0073aa;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #005177;
+        }
+    </style>
+</head>
+<body>
+    <h1>Visual Builder Pro - Tests</h1>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Los tests se ejecutan automáticamente al cargar la página.</p>
+        <p>Abre la <strong>Consola del navegador</strong> (<code>F12</code> o <code>Cmd+Option+I</code>) para ver los resultados detallados.</p>
+        <button onclick="window.VBPTestRunner && window.VBPTestRunner.run()">
+            Ejecutar Tests de Nuevo
+        </button>
+    </div>
+
+    <div id="status" class="status loading">
+        Cargando dependencias...
+    </div>
+
+    <div id="test-results">
+        <p>Los resultados aparecerán en la consola del navegador.</p>
+        <p>Presiona F12 para abrir las herramientas de desarrollo.</p>
+    </div>
+
+    <!-- Mock de VBP_Config -->
+    <script>
+        window.VBP_Config = {
+            restUrl: '/wp-json/flavor-vbp/v1/',
+            nonce: 'test-nonce',
+            postId: 0,
+            isNewPost: true
+        };
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- VBP Scripts -->
+    <script src="../../assets/vbp/js/vbp-performance.js"></script>
+    <script src="../../assets/vbp/js/vbp-store.js"></script>
+
+    <!-- Tests -->
+    <script src="vbp-store.test.js"></script>
+
+    <script>
+        // Actualizar estado cuando los tests terminen
+        document.addEventListener('DOMContentLoaded', function() {
+            var statusEl = document.getElementById('status');
+
+            // Esperar a que Alpine y los tests se ejecuten
+            setTimeout(function() {
+                if (window.VBPTestRunner) {
+                    var passed = window.VBPTestRunner.passed;
+                    var failed = window.VBPTestRunner.failed;
+
+                    if (failed === 0) {
+                        statusEl.className = 'status success';
+                        statusEl.textContent = 'Todos los tests pasaron: ' + passed + ' tests exitosos';
+                    } else {
+                        statusEl.className = 'status error';
+                        statusEl.textContent = 'Tests fallidos: ' + failed + ' de ' + (passed + failed);
+                    }
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
