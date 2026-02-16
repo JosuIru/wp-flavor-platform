@@ -7,6 +7,43 @@
 
 if (!defined('ABSPATH')) exit;
 
+// Registrar handler AJAX para cambiar estado de un pedido individual
+add_action('wp_ajax_gc_cambiar_estado_pedido', function() {
+    if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_pedidos_nonce')) {
+        wp_send_json_error(__('Nonce inválido', 'flavor-chat-ia'));
+    }
+
+    if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
+        wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+    }
+
+    global $wpdb;
+    $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+    $pedido_id = absint($_POST['pedido_id'] ?? 0);
+    $nuevo_estado = sanitize_text_field($_POST['estado'] ?? '');
+
+    $estados_validos = ['pendiente', 'confirmado', 'completado', 'cancelado'];
+
+    if (!$pedido_id || !in_array($nuevo_estado, $estados_validos)) {
+        wp_send_json_error(__('Datos inválidos', 'flavor-chat-ia'));
+    }
+
+    $resultado = $wpdb->update(
+        $tabla_pedidos,
+        ['estado' => $nuevo_estado],
+        ['id' => $pedido_id],
+        ['%s'],
+        ['%d']
+    );
+
+    if ($resultado !== false) {
+        wp_send_json_success(['estado' => $nuevo_estado]);
+    } else {
+        wp_send_json_error(__('Error al actualizar', 'flavor-chat-ia'));
+    }
+});
+
 // Registrar handler AJAX para marcar pedidos como completados
 add_action('wp_ajax_gc_marcar_pedidos_completados', function() {
     // Verificar nonce
@@ -252,9 +289,32 @@ $colores_estado = [
     color: #646970;
     margin-top: 5px;
 }
+.gc-estado-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    font-size: 12px;
+    min-width: 100px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.gc-estado-select:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+.gc-estado-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.4);
+}
+.gc-estado-select:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
 @media print {
     .gc-pedidos-header, .tablenav, .gc-acciones-usuario, .gc-resumen-preparacion { display: none !important; }
     .gc-usuario-card { break-inside: avoid; page-break-inside: avoid; }
+    .gc-estado-select { -webkit-appearance: none; background: transparent !important; color: #000 !important; border: 1px solid #000 !important; }
 }
 </style>
 
@@ -376,9 +436,12 @@ $colores_estado = [
                             <td><?php echo number_format($pedido->precio_unitario, 2); ?> €</td>
                             <td><strong><?php echo number_format($subtotal, 2); ?> €</strong></td>
                             <td>
-                                <span class="gc-badge" style="background: <?php echo esc_attr($color_estado); ?>">
-                                    <?php echo esc_html(ucfirst($pedido->estado)); ?>
-                                </span>
+                                <select class="gc-estado-select" data-pedido-id="<?php echo $pedido->id; ?>" data-estado-original="<?php echo esc_attr($pedido->estado); ?>">
+                                    <option value="pendiente" <?php selected($pedido->estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
+                                    <option value="confirmado" <?php selected($pedido->estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-chat-ia'); ?></option>
+                                    <option value="completado" <?php selected($pedido->estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
+                                    <option value="cancelado" <?php selected($pedido->estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
+                                </select>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -442,9 +505,12 @@ $colores_estado = [
                         <td><?php echo number_format($pedido->precio_unitario, 2); ?> €</td>
                         <td><strong><?php echo number_format($total, 2); ?> €</strong></td>
                         <td>
-                            <span class="gc-badge" style="background: <?php echo esc_attr($color_estado); ?>">
-                                <?php echo esc_html(ucfirst($pedido->estado)); ?>
-                            </span>
+                            <select class="gc-estado-select" data-pedido-id="<?php echo $pedido->id; ?>" data-estado-original="<?php echo esc_attr($pedido->estado); ?>">
+                                <option value="pendiente" <?php selected($pedido->estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
+                                <option value="confirmado" <?php selected($pedido->estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-chat-ia'); ?></option>
+                                <option value="completado" <?php selected($pedido->estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
+                                <option value="cancelado" <?php selected($pedido->estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
+                            </select>
                         </td>
                         <td><?php echo date_i18n('d/m/Y', strtotime($pedido->fecha_pedido)); ?></td>
                     </tr>
@@ -472,13 +538,87 @@ function imprimirUsuario(usuarioId) {
 }
 
 jQuery(document).ready(function($) {
-    // Marcar como preparado
+
+    var coloresEstado = {
+        'pendiente': '#dba617',
+        'confirmado': '#2271b1',
+        'completado': '#00a32a',
+        'cancelado': '#d63638'
+    };
+
+    // Aplicar colores iniciales a los selectores
+    function aplicarColorSelect($select) {
+        var estado = $select.val();
+        var color = coloresEstado[estado] || '#646970';
+        $select.css({
+            'background-color': color,
+            'color': '#fff',
+            'border-color': color,
+            'font-weight': '600',
+            'padding': '4px 8px',
+            'border-radius': '4px',
+            'cursor': 'pointer'
+        });
+    }
+
+    // Inicializar colores
+    $('.gc-estado-select').each(function() {
+        aplicarColorSelect($(this));
+    });
+
+    // Cambiar estado individual
+    $('.gc-estado-select').on('change', function() {
+        var $select = $(this);
+        var pedidoId = $select.data('pedido-id');
+        var nuevoEstado = $select.val();
+        var estadoOriginal = $select.data('estado-original');
+
+        $select.prop('disabled', true);
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'gc_cambiar_estado_pedido',
+                pedido_id: pedidoId,
+                estado: nuevoEstado,
+                nonce: '<?php echo wp_create_nonce('gc_pedidos_nonce'); ?>'
+            },
+            success: function(response) {
+                if (response.success) {
+                    $select.data('estado-original', nuevoEstado);
+                    aplicarColorSelect($select);
+                    // Feedback visual
+                    $select.css('box-shadow', '0 0 0 2px rgba(0,163,42,0.5)');
+                    setTimeout(function() {
+                        $select.css('box-shadow', '');
+                    }, 1000);
+                } else {
+                    alert(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-chat-ia')); ?>');
+                    $select.val(estadoOriginal);
+                    aplicarColorSelect($select);
+                }
+            },
+            error: function() {
+                alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                $select.val(estadoOriginal);
+                aplicarColorSelect($select);
+            },
+            complete: function() {
+                $select.prop('disabled', false);
+            }
+        });
+    });
+
+    // Marcar como preparado (todos los pedidos de un usuario)
     $('.gc-btn-marcar-completado').on('click', function() {
         var usuarioId = $(this).data('usuario');
         var $btn = $(this);
         var $card = $btn.closest('.gc-usuario-card');
 
         if (confirm('<?php echo esc_js(__('¿Marcar todos los pedidos de este usuario como completados?', 'flavor-chat-ia')); ?>')) {
+            $btn.prop('disabled', true);
+
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',
@@ -490,12 +630,21 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     if (response.success) {
-                        $card.find('.gc-badge').css('background', '#00a32a').text('Completado');
+                        // Actualizar todos los selectores de este usuario
+                        $card.find('.gc-estado-select').each(function() {
+                            $(this).val('completado').data('estado-original', 'completado');
+                            aplicarColorSelect($(this));
+                        });
                         $card.find('.gc-usuario-header').css('background', 'linear-gradient(135deg, #00a32a 0%, #008a20 100%)');
-                        $btn.prop('disabled', true).html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Preparado', 'flavor-chat-ia')); ?>');
+                        $btn.html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Preparado', 'flavor-chat-ia')); ?>');
                     } else {
                         alert(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-chat-ia')); ?>');
+                        $btn.prop('disabled', false);
                     }
+                },
+                error: function() {
+                    alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                    $btn.prop('disabled', false);
                 }
             });
         }
