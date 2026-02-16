@@ -25,6 +25,16 @@ import '../../features/modules/bicicletas_compartidas/bicicletas_compartidas_scr
 import '../../features/modules/parkings/parkings_screen.dart';
 import '../../features/modules/avisos_municipales/avisos_municipales_screen.dart';
 import '../../features/modules/ayuda_vecinal/ayuda_vecinal_screen.dart';
+import '../../features/modules/biodiversidad_local/biodiversidad_local_screen.dart';
+import '../../features/modules/circulos_cuidados/circulos_cuidados_screen.dart';
+import '../../features/modules/economia_don/economia_don_screen.dart';
+import '../../features/modules/economia_suficiencia/economia_suficiencia_screen.dart';
+import '../../features/modules/huella_ecologica/huella_ecologica_screen.dart';
+import '../../features/modules/justicia_restaurativa/justicia_restaurativa_screen.dart';
+import '../../features/modules/saberes_ancestrales/saberes_ancestrales_screen.dart';
+import '../../features/modules/sello_conciencia/sello_conciencia_screen.dart';
+import '../../features/modules/trabajo_digno/trabajo_digno_screen.dart';
+import '../../features/modules/woocommerce/woocommerce_screen.dart';
 import '../../features/modules/module_placeholder_screen.dart';
 
 /// Registro centralizado de pantallas de módulos
@@ -58,6 +68,16 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder('parkings', (_) => const ParkingsScreen());
     loader.registerScreenBuilder('avisos-municipales', (_) => const AvisosMunicipalesScreen());
     loader.registerScreenBuilder('ayuda-vecinal', (_) => const AyudaVecinalScreen());
+    loader.registerScreenBuilder('biodiversidad-local', (_) => const BiodiversidadLocalScreen());
+    loader.registerScreenBuilder('circulos-cuidados', (_) => const CirculosCuidadosScreen());
+    loader.registerScreenBuilder('economia-don', (_) => const EconomiaDonScreen());
+    loader.registerScreenBuilder('economia-suficiencia', (_) => const EconomiaSuficienciaScreen());
+    loader.registerScreenBuilder('huella-ecologica', (_) => const HuellaEcologicaScreen());
+    loader.registerScreenBuilder('justicia-restaurativa', (_) => const JusticiaRestaurativaScreen());
+    loader.registerScreenBuilder('saberes-ancestrales', (_) => const SaberesAncestralesScreen());
+    loader.registerScreenBuilder('sello-conciencia', (_) => const SelloConcienciaScreen());
+    loader.registerScreenBuilder('trabajo-digno', (_) => const TrabajoDignoScreen());
+    loader.registerScreenBuilder('woocommerce', (_) => const WooCommerceScreen());
 
     // Variantes con guion bajo (compatibilidad)
     loader.registerScreenBuilder('grupos_consumo', (_) => const GruposConsumoScreen());
@@ -69,6 +89,15 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder('bicicletas_compartidas', (_) => const BicicletasCompartidasScreen());
     loader.registerScreenBuilder('avisos_municipales', (_) => const AvisosMunicipalesScreen());
     loader.registerScreenBuilder('ayuda_vecinal', (_) => const AyudaVecinalScreen());
+    loader.registerScreenBuilder('biodiversidad_local', (_) => const BiodiversidadLocalScreen());
+    loader.registerScreenBuilder('circulos_cuidados', (_) => const CirculosCuidadosScreen());
+    loader.registerScreenBuilder('economia_don', (_) => const EconomiaDonScreen());
+    loader.registerScreenBuilder('economia_suficiencia', (_) => const EconomiaSuficienciaScreen());
+    loader.registerScreenBuilder('huella_ecologica', (_) => const HuellaEcologicaScreen());
+    loader.registerScreenBuilder('justicia_restaurativa', (_) => const JusticiaRestaurativaScreen());
+    loader.registerScreenBuilder('saberes_ancestrales', (_) => const SaberesAncestralesScreen());
+    loader.registerScreenBuilder('sello_conciencia', (_) => const SelloConcienciaScreen());
+    loader.registerScreenBuilder('trabajo_digno', (_) => const TrabajoDignoScreen());
 
     debugPrint('✅ Registradas ${loader.loadedCount} pantallas de módulos');
   }
@@ -140,6 +169,12 @@ class ModuleScreenRegistry {
       'biblioteca',
       'podcast',
       'radio',
+      'circulos-cuidados',
+      'economia-don',
+      'justicia-restaurativa',
+      'saberes-ancestrales',
+      'sello-conciencia',
+      'trabajo-digno',
     ].contains(moduleId);
   }
 
@@ -166,6 +201,9 @@ class ModuleScreenRegistry {
       'empresarial',
       'woocommerce',
       'email-marketing',
+      'biodiversidad-local',
+      'economia-suficiencia',
+      'huella-ecologica',
     ].contains(moduleId);
   }
 
