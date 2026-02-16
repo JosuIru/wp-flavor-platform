@@ -7,12 +7,57 @@
 
 if (!defined('ABSPATH')) exit;
 
+// Registrar handler AJAX para marcar pedidos como completados
+add_action('wp_ajax_gc_marcar_pedidos_completados', function() {
+    // Verificar nonce
+    if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_pedidos_nonce')) {
+        wp_send_json_error(__('Nonce inválido', 'flavor-chat-ia'));
+    }
+
+    // Verificar permisos
+    if (!current_user_can('gc_gestionar_pedidos') && !current_user_can('manage_options')) {
+        wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+    }
+
+    global $wpdb;
+    $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+    $usuario_id = absint($_POST['usuario_id'] ?? 0);
+    $ciclo_id = absint($_POST['ciclo_id'] ?? 0);
+
+    if (!$usuario_id) {
+        wp_send_json_error(__('Usuario no especificado', 'flavor-chat-ia'));
+    }
+
+    $where = ['usuario_id = %d'];
+    $params = [$usuario_id];
+
+    if ($ciclo_id) {
+        $where[] = 'ciclo_id = %d';
+        $params[] = $ciclo_id;
+    }
+
+    $where_sql = implode(' AND ', $where);
+
+    $resultado = $wpdb->query($wpdb->prepare(
+        "UPDATE {$tabla_pedidos} SET estado = 'completado' WHERE {$where_sql}",
+        ...$params
+    ));
+
+    if ($resultado !== false) {
+        wp_send_json_success(['updated' => $resultado]);
+    } else {
+        wp_send_json_error(__('Error al actualizar', 'flavor-chat-ia'));
+    }
+});
+
 global $wpdb;
 $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
 
 // Filtros
 $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
 $filtro_ciclo = isset($_GET['ciclo']) ? absint($_GET['ciclo']) : 0;
+$vista = isset($_GET['vista']) ? sanitize_text_field($_GET['vista']) : 'usuario';
 
 $where = ['1=1'];
 $preparar = [];
@@ -29,76 +74,431 @@ if ($filtro_ciclo) {
 
 $where_sql = implode(' AND ', $where);
 
+// Obtener pedidos
 if (!empty($preparar)) {
     $pedidos = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM $tabla_pedidos WHERE $where_sql ORDER BY fecha_pedido DESC LIMIT 100",
+        "SELECT * FROM $tabla_pedidos WHERE $where_sql ORDER BY usuario_id, fecha_pedido DESC",
         ...$preparar
     ));
 } else {
-    $pedidos = $wpdb->get_results("SELECT * FROM $tabla_pedidos WHERE $where_sql ORDER BY fecha_pedido DESC LIMIT 100");
+    $pedidos = $wpdb->get_results("SELECT * FROM $tabla_pedidos WHERE $where_sql ORDER BY usuario_id, fecha_pedido DESC");
 }
 
 // Ciclos disponibles
 $ciclos = get_posts(['post_type' => 'gc_ciclo', 'posts_per_page' => -1, 'orderby' => 'date', 'order' => 'DESC']);
 
+// Agrupar pedidos por usuario
+$pedidos_por_usuario = [];
+$totales_usuario = [];
+
+foreach ($pedidos as $pedido) {
+    $uid = $pedido->usuario_id;
+    if (!isset($pedidos_por_usuario[$uid])) {
+        $pedidos_por_usuario[$uid] = [];
+        $totales_usuario[$uid] = 0;
+    }
+    $pedidos_por_usuario[$uid][] = $pedido;
+    $totales_usuario[$uid] += $pedido->cantidad * $pedido->precio_unitario;
+}
+
+// Colores para badges de estado
+$colores_estado = [
+    'pendiente' => '#dba617',
+    'confirmado' => '#2271b1',
+    'completado' => '#00a32a',
+    'cancelado' => '#d63638',
+];
+
 ?>
 
+<style>
+.gc-pedidos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.gc-vista-toggle {
+    display: inline-flex;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.gc-vista-toggle a {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #50575e;
+    background: #fff;
+    border-right: 1px solid #c3c4c7;
+}
+.gc-vista-toggle a:last-child {
+    border-right: none;
+}
+.gc-vista-toggle a.active {
+    background: #2271b1;
+    color: #fff;
+}
+.gc-usuario-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.gc-usuario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #2271b1 0%, #135e96 100%);
+    color: #fff;
+}
+.gc-usuario-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.gc-usuario-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gc-usuario-nombre {
+    font-size: 16px;
+    font-weight: 600;
+}
+.gc-usuario-email {
+    font-size: 12px;
+    opacity: 0.8;
+}
+.gc-usuario-total {
+    text-align: right;
+}
+.gc-usuario-total-cantidad {
+    font-size: 20px;
+    font-weight: 700;
+}
+.gc-usuario-total-label {
+    font-size: 11px;
+    opacity: 0.8;
+    text-transform: uppercase;
+}
+.gc-usuario-productos {
+    padding: 0;
+}
+.gc-usuario-productos table {
+    margin: 0;
+    border: none;
+}
+.gc-usuario-productos th {
+    background: #f0f0f1;
+}
+.gc-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+}
+.gc-acciones-usuario {
+    padding: 12px 20px;
+    background: #f6f7f7;
+    border-top: 1px solid #c3c4c7;
+    display: flex;
+    gap: 10px;
+}
+.gc-btn-imprimir {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.gc-resumen-preparacion {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.gc-resumen-preparacion h3 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.gc-resumen-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+.gc-resumen-stat {
+    text-align: center;
+    padding: 15px;
+    background: #f6f7f7;
+    border-radius: 6px;
+}
+.gc-resumen-stat-valor {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2271b1;
+}
+.gc-resumen-stat-label {
+    font-size: 12px;
+    color: #646970;
+    margin-top: 5px;
+}
+@media print {
+    .gc-pedidos-header, .tablenav, .gc-acciones-usuario, .gc-resumen-preparacion { display: none !important; }
+    .gc-usuario-card { break-inside: avoid; page-break-inside: avoid; }
+}
+</style>
+
 <div class="wrap">
-    <h1><span class="dashicons dashicons-clipboard"></span> <?php echo esc_html__('Gestión de Pedidos', 'flavor-chat-ia'); ?></h1>
+    <div class="gc-pedidos-header">
+        <h1><span class="dashicons dashicons-clipboard"></span> <?php esc_html_e('Gestión de Pedidos', 'flavor-chat-ia'); ?></h1>
+
+        <div class="gc-vista-toggle">
+            <a href="<?php echo esc_url(add_query_arg('vista', 'usuario')); ?>" class="<?php echo $vista === 'usuario' ? 'active' : ''; ?>">
+                <span class="dashicons dashicons-groups"></span> <?php esc_html_e('Por Usuario', 'flavor-chat-ia'); ?>
+            </a>
+            <a href="<?php echo esc_url(add_query_arg('vista', 'lista')); ?>" class="<?php echo $vista === 'lista' ? 'active' : ''; ?>">
+                <span class="dashicons dashicons-list-view"></span> <?php esc_html_e('Lista', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+    </div>
     <hr class="wp-header-end">
 
     <div class="tablenav top">
-        <form method="get" style="display: inline-flex; gap: 8px;">
+        <form method="get" style="display: inline-flex; gap: 8px; align-items: center;">
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
+            <input type="hidden" name="vista" value="<?php echo esc_attr($vista); ?>">
             <select name="estado">
-                <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('confirmado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'confirmado'); ?>><?php echo esc_html__('Confirmado', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('completado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelado'); ?>><?php echo esc_html__('Cancelado', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
+                <option value="confirmado" <?php selected($filtro_estado, 'confirmado'); ?>><?php esc_html_e('Confirmado', 'flavor-chat-ia'); ?></option>
+                <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
+                <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
             </select>
             <select name="ciclo">
-                <option value="0"><?php echo esc_html__('Todos los ciclos', 'flavor-chat-ia'); ?></option>
+                <option value="0"><?php esc_html_e('Todos los ciclos', 'flavor-chat-ia'); ?></option>
                 <?php foreach ($ciclos as $ciclo): ?>
                     <option value="<?php echo $ciclo->ID; ?>" <?php selected($filtro_ciclo, $ciclo->ID); ?>>
                         <?php echo esc_html($ciclo->post_title); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
-            <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+
+            <?php if ($vista === 'usuario' && !empty($pedidos)): ?>
+                <button type="button" class="button" onclick="window.print();">
+                    <span class="dashicons dashicons-printer" style="margin-top: 3px;"></span> <?php esc_html_e('Imprimir Todo', 'flavor-chat-ia'); ?>
+                </button>
+            <?php endif; ?>
         </form>
     </div>
 
-    <table class="wp-list-table widefat fixed striped">
-        <thead>
-            <tr>
-                <th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Producto', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($pedidos as $pedido):
-                $producto = get_post($pedido->producto_id);
-                $usuario = get_userdata($pedido->usuario_id);
-                $total = $pedido->cantidad * $pedido->precio_unitario;
-            ?>
-            <tr>
-                <td>#<?php echo $pedido->id; ?></td>
-                <td><?php echo $producto ? esc_html($producto->post_title) : 'N/A'; ?></td>
-                <td><?php echo $usuario ? esc_html($usuario->display_name) : 'N/A'; ?></td>
-                <td><?php echo number_format($pedido->cantidad, 2); ?></td>
-                <td><?php echo number_format($pedido->precio_unitario, 2); ?> €</td>
-                <td><strong><?php echo number_format($total, 2); ?> €</strong></td>
-                <td><?php echo ucfirst($pedido->estado); ?></td>
-                <td><?php echo date_i18n('d/m/Y', strtotime($pedido->fecha_pedido)); ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <?php if ($vista === 'usuario'): ?>
+
+        <!-- Resumen para preparación -->
+        <?php if (!empty($pedidos)): ?>
+        <div class="gc-resumen-preparacion">
+            <h3><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Resumen de Preparación', 'flavor-chat-ia'); ?></h3>
+            <div class="gc-resumen-stats">
+                <div class="gc-resumen-stat">
+                    <div class="gc-resumen-stat-valor"><?php echo count($pedidos_por_usuario); ?></div>
+                    <div class="gc-resumen-stat-label"><?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="gc-resumen-stat">
+                    <div class="gc-resumen-stat-valor"><?php echo count($pedidos); ?></div>
+                    <div class="gc-resumen-stat-label"><?php esc_html_e('Líneas de pedido', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="gc-resumen-stat">
+                    <div class="gc-resumen-stat-valor"><?php echo number_format(array_sum($totales_usuario), 2); ?> €</div>
+                    <div class="gc-resumen-stat-label"><?php esc_html_e('Total general', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Vista agrupada por usuario -->
+        <?php foreach ($pedidos_por_usuario as $usuario_id => $pedidos_usuario):
+            $usuario = get_userdata($usuario_id);
+            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario desconocido', 'flavor-chat-ia');
+            $email_usuario = $usuario ? $usuario->user_email : '';
+            $total_usuario = $totales_usuario[$usuario_id];
+        ?>
+        <div class="gc-usuario-card">
+            <div class="gc-usuario-header">
+                <div class="gc-usuario-info">
+                    <div class="gc-usuario-avatar">
+                        <span class="dashicons dashicons-admin-users"></span>
+                    </div>
+                    <div>
+                        <div class="gc-usuario-nombre"><?php echo esc_html($nombre_usuario); ?></div>
+                        <?php if ($email_usuario): ?>
+                            <div class="gc-usuario-email"><?php echo esc_html($email_usuario); ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="gc-usuario-total">
+                    <div class="gc-usuario-total-cantidad"><?php echo number_format($total_usuario, 2); ?> €</div>
+                    <div class="gc-usuario-total-label"><?php echo sprintf(_n('%d producto', '%d productos', count($pedidos_usuario), 'flavor-chat-ia'), count($pedidos_usuario)); ?></div>
+                </div>
+            </div>
+
+            <div class="gc-usuario-productos">
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;"><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e('Precio/u', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e('Subtotal', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($pedidos_usuario as $pedido):
+                            $producto = get_post($pedido->producto_id);
+                            $subtotal = $pedido->cantidad * $pedido->precio_unitario;
+                            $color_estado = $colores_estado[$pedido->estado] ?? '#646970';
+                        ?>
+                        <tr>
+                            <td>
+                                <strong><?php echo $producto ? esc_html($producto->post_title) : 'Producto #' . $pedido->producto_id; ?></strong>
+                            </td>
+                            <td><?php echo number_format($pedido->cantidad, 2); ?></td>
+                            <td><?php echo number_format($pedido->precio_unitario, 2); ?> €</td>
+                            <td><strong><?php echo number_format($subtotal, 2); ?> €</strong></td>
+                            <td>
+                                <span class="gc-badge" style="background: <?php echo esc_attr($color_estado); ?>">
+                                    <?php echo esc_html(ucfirst($pedido->estado)); ?>
+                                </span>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="gc-acciones-usuario">
+                <button type="button" class="button gc-btn-imprimir" onclick="imprimirUsuario(<?php echo $usuario_id; ?>)">
+                    <span class="dashicons dashicons-printer"></span> <?php esc_html_e('Imprimir', 'flavor-chat-ia'); ?>
+                </button>
+                <button type="button" class="button gc-btn-marcar-completado" data-usuario="<?php echo $usuario_id; ?>">
+                    <span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('Marcar como preparado', 'flavor-chat-ia'); ?>
+                </button>
+            </div>
+        </div>
+        <?php endforeach; ?>
+
+        <?php if (empty($pedidos)): ?>
+            <div class="gc-usuario-card" style="padding: 40px; text-align: center;">
+                <span class="dashicons dashicons-clipboard" style="font-size: 48px; color: #c3c4c7;"></span>
+                <p style="color: #646970; margin-top: 15px;"><?php esc_html_e('No hay pedidos con los filtros seleccionados', 'flavor-chat-ia'); ?></p>
+            </div>
+        <?php endif; ?>
+
+    <?php else: ?>
+
+        <!-- Vista de lista tradicional -->
+        <table class="wp-list-table widefat fixed striped">
+            <thead>
+                <tr>
+                    <th><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Total', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($pedidos)): ?>
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 20px;">
+                            <?php esc_html_e('No hay pedidos con los filtros seleccionados', 'flavor-chat-ia'); ?>
+                        </td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($pedidos as $pedido):
+                        $producto = get_post($pedido->producto_id);
+                        $usuario = get_userdata($pedido->usuario_id);
+                        $total = $pedido->cantidad * $pedido->precio_unitario;
+                        $color_estado = $colores_estado[$pedido->estado] ?? '#646970';
+                    ?>
+                    <tr>
+                        <td>#<?php echo $pedido->id; ?></td>
+                        <td><?php echo $producto ? esc_html($producto->post_title) : 'N/A'; ?></td>
+                        <td><?php echo $usuario ? esc_html($usuario->display_name) : 'N/A'; ?></td>
+                        <td><?php echo number_format($pedido->cantidad, 2); ?></td>
+                        <td><?php echo number_format($pedido->precio_unitario, 2); ?> €</td>
+                        <td><strong><?php echo number_format($total, 2); ?> €</strong></td>
+                        <td>
+                            <span class="gc-badge" style="background: <?php echo esc_attr($color_estado); ?>">
+                                <?php echo esc_html(ucfirst($pedido->estado)); ?>
+                            </span>
+                        </td>
+                        <td><?php echo date_i18n('d/m/Y', strtotime($pedido->fecha_pedido)); ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+
+    <?php endif; ?>
 </div>
+
+<script>
+function imprimirUsuario(usuarioId) {
+    // Ocultar temporalmente las otras tarjetas
+    document.querySelectorAll('.gc-usuario-card').forEach(card => {
+        if (!card.querySelector('[data-usuario="' + usuarioId + '"]')) {
+            card.style.display = 'none';
+        }
+    });
+    window.print();
+    // Restaurar
+    document.querySelectorAll('.gc-usuario-card').forEach(card => {
+        card.style.display = '';
+    });
+}
+
+jQuery(document).ready(function($) {
+    // Marcar como preparado
+    $('.gc-btn-marcar-completado').on('click', function() {
+        var usuarioId = $(this).data('usuario');
+        var $btn = $(this);
+        var $card = $btn.closest('.gc-usuario-card');
+
+        if (confirm('<?php echo esc_js(__('¿Marcar todos los pedidos de este usuario como completados?', 'flavor-chat-ia')); ?>')) {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'gc_marcar_pedidos_completados',
+                    usuario_id: usuarioId,
+                    ciclo_id: <?php echo $filtro_ciclo ?: 0; ?>,
+                    nonce: '<?php echo wp_create_nonce('gc_pedidos_nonce'); ?>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $card.find('.gc-badge').css('background', '#00a32a').text('Completado');
+                        $card.find('.gc-usuario-header').css('background', 'linear-gradient(135deg, #00a32a 0%, #008a20 100%)');
+                        $btn.prop('disabled', true).html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Preparado', 'flavor-chat-ia')); ?>');
+                    } else {
+                        alert(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-chat-ia')); ?>');
+                    }
+                }
+            });
+        }
+    });
+});
+</script>
