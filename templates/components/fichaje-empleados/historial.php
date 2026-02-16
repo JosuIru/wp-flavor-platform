@@ -11,7 +11,7 @@
 if (!defined('ABSPATH')) exit;
 
 $titulo_historial = $titulo_historial ?? 'Historial de Fichajes';
-$url_solicitar_correccion = $url_solicitar_correccion ?? '/fichaje/solicitar-correccion/';
+$url_solicitar_correccion = $url_solicitar_correccion ?? home_url('/mi-portal/fichaje/solicitar-correccion/');
 
 $registros_fichaje = $registros_fichaje ?? [
     [

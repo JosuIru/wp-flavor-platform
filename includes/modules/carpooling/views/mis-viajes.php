@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     <div id="carpooling-mis-viajes" class="carpooling-mis-viajes">
         <div class="carpooling-mis-viajes__header">
             <h2 class="carpooling-mis-viajes__titulo"><?php esc_html_e('Mis viajes como conductor', 'flavor-chat-ia'); ?></h2>
-            <a href="<?php echo esc_url(home_url('/publicar-viaje/')); ?>" class="carpooling-btn carpooling-btn--primary carpooling-btn--sm">
+            <a href="<?php echo esc_url(home_url('/mi-portal/carpooling/publicar-viaje/')); ?>" class="carpooling-btn carpooling-btn--primary carpooling-btn--sm">
                 + <?php esc_html_e('Publicar viaje', 'flavor-chat-ia'); ?>
             </a>
         </div>

@@ -39,7 +39,7 @@ $columnas = absint($atributos['columnas'] ?? 3);
             <h3><?php esc_html_e('No hay colectivos disponibles', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Sé el primero en crear un colectivo o asociación.', 'flavor-chat-ia'); ?></p>
             <?php if (is_user_logged_in()): ?>
-                <a href="<?php echo esc_url(home_url('/colectivos/crear/')); ?>" class="flavor-col-btn flavor-col-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/crear/')); ?>" class="flavor-col-btn flavor-col-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Crear colectivo', 'flavor-chat-ia'); ?>
                 </a>

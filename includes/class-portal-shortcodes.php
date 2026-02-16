@@ -177,7 +177,7 @@ class Flavor_Portal_Shortcodes {
             <div class="flavor-portal__section">
                 <div class="flavor-section-header">
                     <h2 class="flavor-section-title"><?php _e('Resumen de Actividad', 'flavor-chat-ia'); ?></h2>
-                    <a href="<?php echo home_url('/servicios/'); ?>" class="flavor-link-all">
+                    <a href="<?php echo home_url('/mi-portal/servicios/'); ?>" class="flavor-link-all">
                         <?php _e('Ver todos los servicios', 'flavor-chat-ia'); ?> →
                     </a>
                 </div>
@@ -456,37 +456,37 @@ class Flavor_Portal_Shortcodes {
                 'icon' => '📅',
                 'title' => __('Crear Evento', 'flavor-chat-ia'),
                 'description' => __('Organiza un evento para la comunidad', 'flavor-chat-ia'),
-                'url' => home_url('/eventos/crear/'),
+                'url' => home_url('/mi-portal/eventos/crear/'),
             ],
             'talleres' => [
                 'icon' => '🎓',
                 'title' => __('Proponer Taller', 'flavor-chat-ia'),
                 'description' => __('Comparte tus conocimientos', 'flavor-chat-ia'),
-                'url' => home_url('/talleres/crear/'),
+                'url' => home_url('/mi-portal/talleres/crear/'),
             ],
             'ayuda_vecinal' => [
                 'icon' => '🤝',
                 'title' => __('Solicitar Ayuda', 'flavor-chat-ia'),
                 'description' => __('Pide ayuda a tus vecinos', 'flavor-chat-ia'),
-                'url' => home_url('/ayuda-vecinal/solicitar/'),
+                'url' => home_url('/mi-portal/ayuda-vecinal/solicitar/'),
             ],
             'banco_tiempo' => [
                 'icon' => '⏰',
                 'title' => __('Ofrecer Servicio', 'flavor-chat-ia'),
                 'description' => __('Ofrece tu tiempo a la comunidad', 'flavor-chat-ia'),
-                'url' => home_url('/banco-tiempo/ofrecer/'),
+                'url' => home_url('/mi-portal/banco-tiempo/ofrecer/'),
             ],
             'grupos_consumo' => [
                 'icon' => '🥬',
                 'title' => __('Ver Catálogo', 'flavor-chat-ia'),
                 'description' => __('Explora productos locales', 'flavor-chat-ia'),
-                'url' => home_url('/grupos-consumo/productos/'),
+                'url' => home_url('/mi-portal/grupos-consumo/productos/'),
             ],
             'incidencias' => [
                 'icon' => '🔧',
                 'title' => __('Reportar Incidencia', 'flavor-chat-ia'),
                 'description' => __('Comunica un problema', 'flavor-chat-ia'),
-                'url' => home_url('/incidencias/crear/'),
+                'url' => home_url('/mi-portal/incidencias/crear/'),
             ],
         ];
 
