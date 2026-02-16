@@ -421,7 +421,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             'newsletter'        => 'flavor-newsletter',
             'advertising'       => 'flavor-advertising-dashboard',
             'empresarial'       => 'flavor-empresarial-empresas',
-            'grupos-consumo'    => 'flavor-grupos-consumo',
+            'grupos-consumo'    => 'grupos-consumo',
             'socios'            => 'flavor-socios',
             'tramites'          => 'flavor-tramites-solicitudes',
             'ayuda-vecinal'     => 'flavor-ayuda-vecinal',
