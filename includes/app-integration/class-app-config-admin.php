@@ -48,6 +48,19 @@ class Flavor_App_Config_Admin {
         add_action('wp_ajax_revoke_app_token', [$this, 'ajax_revoke_token']);
         add_action('wp_ajax_flavor_get_menu_items', [$this, 'ajax_get_menu_items']);
         add_action('wp_ajax_flavor_toggle_module_activation', [$this, 'ajax_toggle_module_activation']);
+
+        // AJAX handlers para nuevas herramientas
+        add_action('wp_ajax_flavor_export_app_config', [$this, 'ajax_export_config']);
+        add_action('wp_ajax_flavor_import_app_config', [$this, 'ajax_import_config']);
+        add_action('wp_ajax_flavor_clear_app_cache', [$this, 'ajax_clear_cache']);
+        add_action('wp_ajax_flavor_regenerate_secrets', [$this, 'ajax_regenerate_secrets']);
+        add_action('wp_ajax_flavor_create_app_tables', [$this, 'ajax_create_tables']);
+        add_action('wp_ajax_flavor_reset_app_config', [$this, 'ajax_reset_config']);
+        add_action('wp_ajax_flavor_send_test_push', [$this, 'ajax_send_test_push']);
+        add_action('wp_ajax_flavor_get_api_logs', [$this, 'ajax_get_api_logs']);
+
+        // Guardar configuración de push
+        add_action('admin_init', [$this, 'handle_push_settings_save']);
     }
 
     /**
@@ -186,6 +199,25 @@ class Flavor_App_Config_Admin {
             null
         );
 
+        // Alpine.js para componentes interactivos
+        wp_enqueue_script(
+            'alpine-js',
+            'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',
+            [],
+            '3.x',
+            true
+        );
+        wp_script_add_data('alpine-js', 'defer', true);
+
+        // Chart.js para gráficos de estadísticas
+        wp_enqueue_script(
+            'chart-js',
+            'https://cdn.jsdelivr.net/npm/chart.js@4.x.x/dist/chart.umd.min.js',
+            [],
+            '4.x',
+            true
+        );
+
         // Usar siempre assets no minificados en este panel para mantener la funcionalidad actualizada.
         $sufijo_asset = '';
 
@@ -247,6 +279,9 @@ class Flavor_App_Config_Admin {
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
+            <?php settings_errors('flavor_push'); ?>
+            <?php settings_errors('flavor_apps_config'); ?>
+
             <?php $this->render_connection_qr(); ?>
 
             <h2 class="nav-tab-wrapper">
@@ -274,6 +309,30 @@ class Flavor_App_Config_Admin {
                    class="nav-tab <?php echo $active_tab === 'directory' ? 'nav-tab-active' : ''; ?>">
                     <?php _e('Directorio', 'flavor-chat-ia'); ?>
                 </a>
+                <a href="?page=<?php echo $this->page_slug; ?>&tab=stats"
+                   class="nav-tab <?php echo $active_tab === 'stats' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Estadísticas', 'flavor-chat-ia'); ?>
+                </a>
+                <a href="?page=<?php echo $this->page_slug; ?>&tab=push"
+                   class="nav-tab <?php echo $active_tab === 'push' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Push', 'flavor-chat-ia'); ?>
+                </a>
+                <a href="?page=<?php echo $this->page_slug; ?>&tab=diagnostics"
+                   class="nav-tab <?php echo $active_tab === 'diagnostics' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Diagnóstico', 'flavor-chat-ia'); ?>
+                </a>
+                <a href="?page=<?php echo $this->page_slug; ?>&tab=tools"
+                   class="nav-tab <?php echo $active_tab === 'tools' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Herramientas', 'flavor-chat-ia'); ?>
+                </a>
+                <a href="?page=<?php echo $this->page_slug; ?>&tab=deeplinks"
+                   class="nav-tab <?php echo $active_tab === 'deeplinks' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Deep Links', 'flavor-chat-ia'); ?>
+                </a>
+                <a href="?page=<?php echo $this->page_slug; ?>&tab=languages"
+                   class="nav-tab <?php echo $active_tab === 'languages' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Idiomas', 'flavor-chat-ia'); ?>
+                </a>
             </h2>
 
             <div class="flavor-app-config-layout">
@@ -296,6 +355,18 @@ class Flavor_App_Config_Admin {
                             $this->render_security_tab();
                         } elseif ($active_tab === 'directory') {
                             $this->render_directory_tab();
+                        } elseif ($active_tab === 'stats') {
+                            $this->render_stats_tab();
+                        } elseif ($active_tab === 'push') {
+                            $this->render_push_tab();
+                        } elseif ($active_tab === 'diagnostics') {
+                            $this->render_diagnostics_tab();
+                        } elseif ($active_tab === 'tools') {
+                            $this->render_tools_tab();
+                        } elseif ($active_tab === 'deeplinks') {
+                            $this->render_deeplinks_tab();
+                        } elseif ($active_tab === 'languages') {
+                            $this->render_languages_tab();
                         }
                         ?>
                     </form>
@@ -644,8 +715,283 @@ class Flavor_App_Config_Admin {
      * Renderiza la pestaña de Branding
      */
     private function render_branding_tab() {
-        $this->render_settings_sections(['branding_section']);
-        submit_button();
+        $config = get_option('flavor_apps_config', []);
+        $theme_mode = isset($config['theme_mode']) ? $config['theme_mode'] : 'light';
+        $dark_primary = isset($config['dark_primary_color']) ? $config['dark_primary_color'] : '#1976D2';
+        $dark_secondary = isset($config['dark_secondary_color']) ? $config['dark_secondary_color'] : '#424242';
+        $dark_background = isset($config['dark_background_color']) ? $config['dark_background_color'] : '#121212';
+        ?>
+        <div class="flavor-branding-tab" x-data="flavorBrandingEditor()">
+            <!-- Presets de Color -->
+            <div class="branding-section">
+                <h3><?php _e('Presets de Colores', 'flavor-chat-ia'); ?></h3>
+                <p class="description"><?php _e('Selecciona un preset para aplicar rápidamente una paleta de colores.', 'flavor-chat-ia'); ?></p>
+
+                <div class="color-presets-grid">
+                    <button type="button" class="preset-card" @click="applyPreset('nature')" :class="{ 'active': currentPreset === 'nature' }">
+                        <div class="preset-colors">
+                            <span style="background: #4CAF50;"></span>
+                            <span style="background: #8BC34A;"></span>
+                            <span style="background: #CDDC39;"></span>
+                        </div>
+                        <span class="preset-name"><?php _e('Naturaleza', 'flavor-chat-ia'); ?></span>
+                    </button>
+                    <button type="button" class="preset-card" @click="applyPreset('ocean')" :class="{ 'active': currentPreset === 'ocean' }">
+                        <div class="preset-colors">
+                            <span style="background: #2196F3;"></span>
+                            <span style="background: #03A9F4;"></span>
+                            <span style="background: #00BCD4;"></span>
+                        </div>
+                        <span class="preset-name"><?php _e('Océano', 'flavor-chat-ia'); ?></span>
+                    </button>
+                    <button type="button" class="preset-card" @click="applyPreset('sunset')" :class="{ 'active': currentPreset === 'sunset' }">
+                        <div class="preset-colors">
+                            <span style="background: #FF5722;"></span>
+                            <span style="background: #FF9800;"></span>
+                            <span style="background: #FFC107;"></span>
+                        </div>
+                        <span class="preset-name"><?php _e('Atardecer', 'flavor-chat-ia'); ?></span>
+                    </button>
+                    <button type="button" class="preset-card" @click="applyPreset('purple')" :class="{ 'active': currentPreset === 'purple' }">
+                        <div class="preset-colors">
+                            <span style="background: #9C27B0;"></span>
+                            <span style="background: #E91E63;"></span>
+                            <span style="background: #F48FB1;"></span>
+                        </div>
+                        <span class="preset-name"><?php _e('Púrpura', 'flavor-chat-ia'); ?></span>
+                    </button>
+                    <button type="button" class="preset-card" @click="applyPreset('corporate')" :class="{ 'active': currentPreset === 'corporate' }">
+                        <div class="preset-colors">
+                            <span style="background: #1976D2;"></span>
+                            <span style="background: #455A64;"></span>
+                            <span style="background: #78909C;"></span>
+                        </div>
+                        <span class="preset-name"><?php _e('Corporativo', 'flavor-chat-ia'); ?></span>
+                    </button>
+                    <button type="button" class="preset-card" @click="applyPreset('elegant')" :class="{ 'active': currentPreset === 'elegant' }">
+                        <div class="preset-colors">
+                            <span style="background: #212121;"></span>
+                            <span style="background: #D4AF37;"></span>
+                            <span style="background: #FFFFFF;"></span>
+                        </div>
+                        <span class="preset-name"><?php _e('Elegante', 'flavor-chat-ia'); ?></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Colores Personalizados -->
+            <div class="branding-section">
+                <h3><?php _e('Colores Personalizados', 'flavor-chat-ia'); ?></h3>
+                <?php $this->render_settings_sections(['branding_section']); ?>
+            </div>
+
+            <!-- Modo Oscuro -->
+            <div class="branding-section">
+                <h3><?php _e('Modo de Tema', 'flavor-chat-ia'); ?></h3>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php _e('Modo del tema', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <select name="flavor_apps_config[theme_mode]" id="theme_mode" x-model="themeMode" @change="updatePreview()">
+                                <option value="light" <?php selected($theme_mode, 'light'); ?>><?php _e('Claro', 'flavor-chat-ia'); ?></option>
+                                <option value="dark" <?php selected($theme_mode, 'dark'); ?>><?php _e('Oscuro', 'flavor-chat-ia'); ?></option>
+                                <option value="system" <?php selected($theme_mode, 'system'); ?>><?php _e('Sistema (automático)', 'flavor-chat-ia'); ?></option>
+                            </select>
+                            <p class="description"><?php _e('Sistema usa la preferencia del dispositivo del usuario.', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="dark-mode-colors" x-show="themeMode === 'dark' || themeMode === 'system'">
+                    <h4><?php _e('Colores del Tema Oscuro', 'flavor-chat-ia'); ?></h4>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Color Primario (oscuro)', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <input type="text" name="flavor_apps_config[dark_primary_color]"
+                                       value="<?php echo esc_attr($dark_primary); ?>"
+                                       class="flavor-color-picker" data-default-color="#1976D2">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Color Secundario (oscuro)', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <input type="text" name="flavor_apps_config[dark_secondary_color]"
+                                       value="<?php echo esc_attr($dark_secondary); ?>"
+                                       class="flavor-color-picker" data-default-color="#424242">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Fondo (oscuro)', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <input type="text" name="flavor_apps_config[dark_background_color]"
+                                       value="<?php echo esc_attr($dark_background); ?>"
+                                       class="flavor-color-picker" data-default-color="#121212">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Exportar/Importar Tema -->
+            <div class="branding-section">
+                <h3><?php _e('Exportar/Importar Tema', 'flavor-chat-ia'); ?></h3>
+                <p class="description"><?php _e('Guarda tu configuración de colores para usarla en otros sitios.', 'flavor-chat-ia'); ?></p>
+
+                <div class="theme-actions">
+                    <button type="button" class="button" @click="exportTheme()">
+                        <span class="dashicons dashicons-download"></span>
+                        <?php _e('Exportar Tema', 'flavor-chat-ia'); ?>
+                    </button>
+
+                    <input type="file" x-ref="themeFileInput" accept=".json" @change="importTheme($event)" style="display: none;">
+                    <button type="button" class="button" @click="$refs.themeFileInput.click()">
+                        <span class="dashicons dashicons-upload"></span>
+                        <?php _e('Importar Tema', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </div>
+
+            <?php submit_button(); ?>
+        </div>
+
+        <style>
+            .flavor-branding-tab { padding: 20px 0; }
+            .branding-section { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+            .branding-section h3 { margin-top: 0; }
+            .color-presets-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 15px; }
+            .preset-card { background: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 15px; cursor: pointer; text-align: center; transition: all 0.2s; }
+            .preset-card:hover { border-color: #2271b1; transform: translateY(-2px); }
+            .preset-card.active { border-color: #2271b1; background: #f0f6fc; }
+            .preset-colors { display: flex; gap: 4px; justify-content: center; margin-bottom: 8px; }
+            .preset-colors span { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+            .preset-name { font-size: 12px; color: #1d2327; }
+            .dark-mode-colors { background: #2c3338; padding: 20px; border-radius: 8px; margin-top: 15px; }
+            .dark-mode-colors h4 { color: #fff; margin-top: 0; }
+            .dark-mode-colors .form-table th { color: #c3c4c7; }
+            .theme-actions { display: flex; gap: 10px; }
+            .theme-actions .button { display: inline-flex; align-items: center; gap: 5px; }
+            @media (max-width: 1200px) { .color-presets-grid { grid-template-columns: repeat(3, 1fr); } }
+            @media (max-width: 782px) { .color-presets-grid { grid-template-columns: repeat(2, 1fr); } }
+        </style>
+
+        <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('flavorBrandingEditor', () => ({
+                currentPreset: '',
+                themeMode: '<?php echo esc_js($theme_mode); ?>',
+
+                presets: {
+                    nature: { primary: '#4CAF50', secondary: '#8BC34A', accent: '#CDDC39' },
+                    ocean: { primary: '#2196F3', secondary: '#03A9F4', accent: '#00BCD4' },
+                    sunset: { primary: '#FF5722', secondary: '#FF9800', accent: '#FFC107' },
+                    purple: { primary: '#9C27B0', secondary: '#E91E63', accent: '#F48FB1' },
+                    corporate: { primary: '#1976D2', secondary: '#455A64', accent: '#78909C' },
+                    elegant: { primary: '#212121', secondary: '#D4AF37', accent: '#FFFFFF' }
+                },
+
+                applyPreset(presetName) {
+                    this.currentPreset = presetName;
+                    const preset = this.presets[presetName];
+                    if (!preset) return;
+
+                    // Actualizar color pickers
+                    this.setColorPicker('primary_color', preset.primary);
+                    this.setColorPicker('secondary_color', preset.secondary);
+                    this.setColorPicker('accent_color', preset.accent);
+
+                    // Actualizar preview del mockup
+                    this.updatePreview();
+                },
+
+                setColorPicker(fieldName, color) {
+                    const input = document.querySelector(`input[name="flavor_apps_config[${fieldName}]"]`);
+                    if (input) {
+                        jQuery(input).wpColorPicker('color', color);
+                    }
+                },
+
+                updatePreview() {
+                    const primaryInput = document.querySelector('input[name="flavor_apps_config[primary_color]"]');
+                    if (primaryInput) {
+                        const color = primaryInput.value || '#4CAF50';
+                        const appBar = document.getElementById('mockup-app-bar');
+                        if (appBar) {
+                            appBar.style.backgroundColor = color;
+                        }
+                    }
+                },
+
+                exportTheme() {
+                    const theme = {
+                        version: '1.0',
+                        exported_at: new Date().toISOString(),
+                        colors: {}
+                    };
+
+                    const colorFields = ['primary_color', 'secondary_color', 'accent_color', 'dark_primary_color', 'dark_secondary_color', 'dark_background_color'];
+                    colorFields.forEach(field => {
+                        const input = document.querySelector(`input[name="flavor_apps_config[${field}]"]`);
+                        if (input) {
+                            theme.colors[field] = input.value;
+                        }
+                    });
+
+                    const themeModeSelect = document.getElementById('theme_mode');
+                    if (themeModeSelect) {
+                        theme.theme_mode = themeModeSelect.value;
+                    }
+
+                    const blob = new Blob([JSON.stringify(theme, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'flavor-theme-' + new Date().toISOString().split('T')[0] + '.json';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                },
+
+                importTheme(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const theme = JSON.parse(e.target.result);
+                            if (theme.colors) {
+                                Object.entries(theme.colors).forEach(([field, color]) => {
+                                    this.setColorPicker(field, color);
+                                });
+                            }
+                            if (theme.theme_mode) {
+                                this.themeMode = theme.theme_mode;
+                                const select = document.getElementById('theme_mode');
+                                if (select) select.value = theme.theme_mode;
+                            }
+                            this.updatePreview();
+                            alert('<?php _e('Tema importado correctamente', 'flavor-chat-ia'); ?>');
+                        } catch (err) {
+                            alert('<?php _e('Error al importar el tema', 'flavor-chat-ia'); ?>');
+                        }
+                    };
+                    reader.readAsText(file);
+                    event.target.value = '';
+                },
+
+                init() {
+                    // Sincronizar preview con cambios de color
+                    setTimeout(() => {
+                        document.querySelectorAll('.flavor-color-picker, .wp-color-picker').forEach(input => {
+                            jQuery(input).on('change', () => this.updatePreview());
+                        });
+                        this.updatePreview();
+                    }, 500);
+                }
+            }));
+        });
+        </script>
+        <?php
     }
 
     /**
@@ -2111,11 +2457,226 @@ class Flavor_App_Config_Admin {
                         <?php else: ?>
                             <span class="description"><?php _e('Este módulo no está instalado en el plugin.', 'flavor-chat-ia'); ?></span>
                         <?php endif; ?>
+                        <button type="button"
+                                class="button flavor-module-docs-btn"
+                                data-module-id="<?php echo esc_attr($module_id); ?>"
+                                data-module-name="<?php echo esc_attr($module_data['name']); ?>"
+                                title="<?php esc_attr_e('Ver documentación', 'flavor-chat-ia'); ?>">
+                            <span class="dashicons dashicons-info-outline"></span>
+                        </button>
                     </div>
                 </div>
             </div>
             <?php endforeach; ?>
         </div>
+
+        <!-- Modal de Documentación -->
+        <div id="flavor-module-docs-modal" class="flavor-docs-modal" style="display: none;">
+            <div class="flavor-docs-modal-backdrop"></div>
+            <div class="flavor-docs-modal-content">
+                <div class="flavor-docs-modal-header">
+                    <h3 id="flavor-docs-modal-title"><?php _e('Documentación del Módulo', 'flavor-chat-ia'); ?></h3>
+                    <button type="button" class="flavor-docs-modal-close" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                        <span class="dashicons dashicons-no-alt"></span>
+                    </button>
+                </div>
+                <div class="flavor-docs-modal-body">
+                    <div id="flavor-docs-loading" class="flavor-docs-loading">
+                        <span class="dashicons dashicons-update flavor-docs-spinner"></span>
+                        <span><?php _e('Cargando documentación...', 'flavor-chat-ia'); ?></span>
+                    </div>
+                    <div id="flavor-docs-content" class="flavor-docs-content" style="display: none;">
+                        <!-- Descripción -->
+                        <div class="flavor-docs-section">
+                            <h4><span class="dashicons dashicons-info"></span> <?php _e('Descripción', 'flavor-chat-ia'); ?></h4>
+                            <p id="flavor-docs-description"></p>
+                        </div>
+                        <!-- Características -->
+                        <div class="flavor-docs-section" id="flavor-docs-features-section" style="display: none;">
+                            <h4><span class="dashicons dashicons-yes"></span> <?php _e('Características', 'flavor-chat-ia'); ?></h4>
+                            <ul id="flavor-docs-features"></ul>
+                        </div>
+                        <!-- Casos de uso -->
+                        <div class="flavor-docs-section" id="flavor-docs-usecases-section" style="display: none;">
+                            <h4><span class="dashicons dashicons-lightbulb"></span> <?php _e('Casos de Uso', 'flavor-chat-ia'); ?></h4>
+                            <ul id="flavor-docs-usecases"></ul>
+                        </div>
+                        <!-- Módulos relacionados -->
+                        <div class="flavor-docs-section" id="flavor-docs-related-section" style="display: none;">
+                            <h4><span class="dashicons dashicons-admin-plugins"></span> <?php _e('Módulos Relacionados', 'flavor-chat-ia'); ?></h4>
+                            <div id="flavor-docs-related"></div>
+                        </div>
+                        <!-- Requisitos -->
+                        <div class="flavor-docs-section" id="flavor-docs-requirements-section" style="display: none;">
+                            <h4><span class="dashicons dashicons-warning"></span> <?php _e('Requisitos', 'flavor-chat-ia'); ?></h4>
+                            <ul id="flavor-docs-requirements"></ul>
+                        </div>
+                        <!-- Tablas de BD -->
+                        <div class="flavor-docs-section" id="flavor-docs-tables-section" style="display: none;">
+                            <h4><span class="dashicons dashicons-database"></span> <?php _e('Tablas de Base de Datos', 'flavor-chat-ia'); ?></h4>
+                            <ul id="flavor-docs-tables"></ul>
+                        </div>
+                    </div>
+                    <div id="flavor-docs-error" class="flavor-docs-error" style="display: none;">
+                        <span class="dashicons dashicons-warning"></span>
+                        <span id="flavor-docs-error-message"><?php _e('No se pudo cargar la documentación', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .flavor-module-docs-btn { padding: 0 8px !important; min-width: auto !important; }
+            .flavor-module-docs-btn .dashicons { margin: 0; }
+            .flavor-module-actions { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+
+            .flavor-docs-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; }
+            .flavor-docs-modal-backdrop { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); }
+            .flavor-docs-modal-content { position: relative; background: #fff; border-radius: 8px; width: 90%; max-width: 700px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+            .flavor-docs-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #ddd; background: #f5f5f5; }
+            .flavor-docs-modal-header h3 { margin: 0; font-size: 18px; }
+            .flavor-docs-modal-close { background: none; border: none; cursor: pointer; padding: 5px; }
+            .flavor-docs-modal-close .dashicons { font-size: 24px; width: 24px; height: 24px; }
+            .flavor-docs-modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+
+            .flavor-docs-loading { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 40px; color: #666; }
+            .flavor-docs-spinner { animation: spin 1s linear infinite; }
+            @keyframes spin { 100% { transform: rotate(360deg); } }
+
+            .flavor-docs-section { margin-bottom: 20px; }
+            .flavor-docs-section h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px 0; color: #1d2327; font-size: 14px; }
+            .flavor-docs-section h4 .dashicons { color: #2271b1; }
+            .flavor-docs-section p { margin: 0; color: #50575e; line-height: 1.6; }
+            .flavor-docs-section ul { margin: 0; padding-left: 20px; }
+            .flavor-docs-section li { margin-bottom: 5px; color: #50575e; }
+
+            .flavor-docs-error { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 40px; color: #d63638; }
+
+            #flavor-docs-related { display: flex; flex-wrap: wrap; gap: 8px; }
+            #flavor-docs-related .related-module { background: #f0f6fc; padding: 5px 12px; border-radius: 15px; font-size: 12px; color: #2271b1; }
+            #flavor-docs-tables code { background: #f0f0f1; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+        </style>
+
+        <script>
+        jQuery(document).ready(function($) {
+            var $modal = $('#flavor-module-docs-modal');
+            var $loading = $('#flavor-docs-loading');
+            var $content = $('#flavor-docs-content');
+            var $error = $('#flavor-docs-error');
+
+            // Abrir modal
+            $('.flavor-module-docs-btn').on('click', function(e) {
+                e.preventDefault();
+                var moduleId = $(this).data('module-id');
+                var moduleName = $(this).data('module-name');
+
+                $('#flavor-docs-modal-title').text(moduleName + ' - <?php _e('Documentación', 'flavor-chat-ia'); ?>');
+                $modal.show();
+                $loading.show();
+                $content.hide();
+                $error.hide();
+
+                // Cargar documentación via REST API
+                $.ajax({
+                    url: '<?php echo rest_url('flavor/v1/modules/docs/'); ?>' + moduleId,
+                    method: 'GET',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-WP-Nonce', '<?php echo wp_create_nonce('wp_rest'); ?>');
+                    },
+                    success: function(response) {
+                        $loading.hide();
+
+                        // Verificar si la API devolvió success: false
+                        if (response.success === false) {
+                            $('#flavor-docs-error-message').text(response.error || '<?php _e('Documentación no disponible para este módulo', 'flavor-chat-ia'); ?>');
+                            $error.show();
+                            return;
+                        }
+
+                        // La API devuelve {success: true, data: {...}}
+                        var data = response.data || response;
+
+                        if (data && (data.descripcion || data.description)) {
+                            // Descripción
+                            $('#flavor-docs-description').text(data.descripcion || data.description || '');
+
+                            // Características
+                            var features = data.caracteristicas || data.features || [];
+                            if (features.length > 0) {
+                                var $featuresList = $('#flavor-docs-features').empty();
+                                features.forEach(function(f) { $featuresList.append('<li>' + f + '</li>'); });
+                                $('#flavor-docs-features-section').show();
+                            } else {
+                                $('#flavor-docs-features-section').hide();
+                            }
+
+                            // Casos de uso
+                            var usecases = data.casos_uso || data.use_cases || [];
+                            if (usecases.length > 0) {
+                                var $usecasesList = $('#flavor-docs-usecases').empty();
+                                usecases.forEach(function(u) { $usecasesList.append('<li>' + u + '</li>'); });
+                                $('#flavor-docs-usecases-section').show();
+                            } else {
+                                $('#flavor-docs-usecases-section').hide();
+                            }
+
+                            // Módulos relacionados
+                            var related = data.modulos_relacionados || data.related_modules || [];
+                            if (related.length > 0) {
+                                var $related = $('#flavor-docs-related').empty();
+                                related.forEach(function(r) { $related.append('<span class="related-module">' + r + '</span>'); });
+                                $('#flavor-docs-related-section').show();
+                            } else {
+                                $('#flavor-docs-related-section').hide();
+                            }
+
+                            // Requisitos
+                            var requirements = data.requisitos || data.requirements || [];
+                            if (requirements.length > 0) {
+                                var $reqList = $('#flavor-docs-requirements').empty();
+                                requirements.forEach(function(r) { $reqList.append('<li>' + r + '</li>'); });
+                                $('#flavor-docs-requirements-section').show();
+                            } else {
+                                $('#flavor-docs-requirements-section').hide();
+                            }
+
+                            // Tablas
+                            var tables = data.tablas || data.tables || [];
+                            if (tables.length > 0) {
+                                var $tablesList = $('#flavor-docs-tables').empty();
+                                tables.forEach(function(t) { $tablesList.append('<li><code>' + t + '</code></li>'); });
+                                $('#flavor-docs-tables-section').show();
+                            } else {
+                                $('#flavor-docs-tables-section').hide();
+                            }
+
+                            $content.show();
+                        } else {
+                            $('#flavor-docs-error-message').text('<?php _e('Documentación no disponible para este módulo', 'flavor-chat-ia'); ?>');
+                            $error.show();
+                        }
+                    },
+                    error: function() {
+                        $loading.hide();
+                        $('#flavor-docs-error-message').text('<?php _e('Error al cargar la documentación', 'flavor-chat-ia'); ?>');
+                        $error.show();
+                    }
+                });
+            });
+
+            // Cerrar modal
+            $('.flavor-docs-modal-close, .flavor-docs-modal-backdrop').on('click', function() {
+                $modal.hide();
+            });
+
+            // Cerrar con ESC
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $modal.is(':visible')) {
+                    $modal.hide();
+                }
+            });
+        });
+        </script>
 
         <?php submit_button(); ?>
         <?php
@@ -2593,6 +3154,65 @@ class Flavor_App_Config_Admin {
             Flavor_Network_Node::save_local_node($node_data);
         }
 
+        // Tema oscuro
+        if (isset($input['theme_mode'])) {
+            $theme_mode = sanitize_key($input['theme_mode']);
+            if (!in_array($theme_mode, ['light', 'dark', 'system'], true)) {
+                $theme_mode = 'light';
+            }
+            $sanitized['theme_mode'] = $theme_mode;
+        }
+
+        if (isset($input['dark_primary_color'])) {
+            $sanitized['dark_primary_color'] = sanitize_hex_color($input['dark_primary_color']);
+        }
+
+        if (isset($input['dark_secondary_color'])) {
+            $sanitized['dark_secondary_color'] = sanitize_hex_color($input['dark_secondary_color']);
+        }
+
+        if (isset($input['dark_background_color'])) {
+            $sanitized['dark_background_color'] = sanitize_hex_color($input['dark_background_color']);
+        }
+
+        // Deep Links
+        if (isset($input['deep_link_domain'])) {
+            $sanitized['deep_link_domain'] = sanitize_text_field($input['deep_link_domain']);
+        }
+
+        if (isset($input['app_scheme'])) {
+            $scheme = sanitize_key($input['app_scheme']);
+            $sanitized['app_scheme'] = $scheme ?: 'flavorapp';
+        }
+
+        // Idiomas
+        if (isset($input['default_language'])) {
+            $lang = sanitize_key($input['default_language']);
+            $valid_langs = ['es', 'en', 'ca', 'eu', 'gl', 'fr', 'de', 'it', 'pt', 'nl'];
+            $sanitized['default_language'] = in_array($lang, $valid_langs, true) ? $lang : 'es';
+        }
+
+        if (isset($input['language_auto_detect'])) {
+            $sanitized['language_auto_detect'] = !empty($input['language_auto_detect']);
+        }
+
+        if (isset($input['supported_languages']) && is_array($input['supported_languages'])) {
+            $valid_langs = ['es', 'en', 'ca', 'eu', 'gl', 'fr', 'de', 'it', 'pt', 'nl'];
+            $sanitized['supported_languages'] = array_values(array_intersect($input['supported_languages'], $valid_langs));
+        }
+
+        if (isset($input['date_format'])) {
+            $format = sanitize_text_field($input['date_format']);
+            $valid_formats = ['auto', 'dd/MM/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd'];
+            $sanitized['date_format'] = in_array($format, $valid_formats, true) ? $format : 'auto';
+        }
+
+        if (isset($input['time_format'])) {
+            $format = sanitize_text_field($input['time_format']);
+            $valid_formats = ['auto', 'HH:mm', 'hh:mm a'];
+            $sanitized['time_format'] = in_array($format, $valid_formats, true) ? $format : 'auto';
+        }
+
         // Invalidar caché de API cuando se guardan los ajustes
         delete_transient('flavor_api_system_info');
         delete_transient('flavor_api_available_modules');
@@ -2736,5 +3356,1568 @@ class Flavor_App_Config_Admin {
         set_transient($cache_key, $coords, DAY_IN_SECONDS);
 
         return $coords;
+    }
+
+    /**
+     * Maneja el guardado de configuración push
+     */
+    public function handle_push_settings_save() {
+        if (!isset($_POST['save_push_settings']) || !isset($_POST['push_nonce'])) {
+            return;
+        }
+
+        if (!wp_verify_nonce($_POST['push_nonce'], 'flavor_save_push_settings')) {
+            return;
+        }
+
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $settings = [
+            'enabled' => isset($_POST['push_enabled']),
+            'fcm_server_key' => sanitize_text_field($_POST['fcm_server_key'] ?? ''),
+            'fcm_sender_id' => sanitize_text_field($_POST['fcm_sender_id'] ?? ''),
+            'topics' => array_map('sanitize_text_field', $_POST['push_topics'] ?? []),
+            'topics_active' => array_map(function($v) { return (bool) $v; }, $_POST['push_topics_active'] ?? []),
+        ];
+
+        update_option('flavor_app_push_settings', $settings);
+
+        add_settings_error('flavor_push', 'push_saved', __('Configuración de Push guardada', 'flavor-chat-ia'), 'success');
+    }
+
+    /**
+     * AJAX: Exportar configuración de la app
+     */
+    public function ajax_export_config() {
+        if (!wp_verify_nonce($_GET['nonce'] ?? '', 'flavor_dev_tools')) {
+            wp_die('Nonce inválido');
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die('Sin permisos');
+        }
+
+        $config_data = [
+            'version' => FLAVOR_CHAT_IA_VERSION ?? '2.0.0',
+            'exported_at' => current_time('mysql'),
+            'site_url' => get_site_url(),
+            'flavor_apps_config' => get_option('flavor_apps_config', []),
+            'flavor_app_active_modules' => get_option('flavor_app_active_modules', []),
+            'flavor_app_navigation' => get_option('flavor_app_navigation', []),
+            'flavor_app_push_settings' => get_option('flavor_app_push_settings', []),
+            'flavor_directory_peer_urls' => get_option('flavor_directory_peer_urls', ''),
+        ];
+
+        $filename = 'flavor-app-config-' . date('Y-m-d-His') . '.json';
+
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: no-cache');
+
+        echo wp_json_encode($config_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
+     * AJAX: Importar configuración de la app
+     */
+    public function ajax_import_config() {
+        check_ajax_referer('flavor_dev_tools', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $config_json = stripslashes($_POST['config'] ?? '');
+        $config_data = json_decode($config_json, true);
+
+        if (!is_array($config_data)) {
+            wp_send_json_error(['message' => __('JSON inválido', 'flavor-chat-ia')]);
+        }
+
+        // Importar cada opción
+        if (isset($config_data['flavor_apps_config'])) {
+            update_option('flavor_apps_config', $config_data['flavor_apps_config']);
+        }
+        if (isset($config_data['flavor_app_active_modules'])) {
+            update_option('flavor_app_active_modules', $config_data['flavor_app_active_modules']);
+        }
+        if (isset($config_data['flavor_app_navigation'])) {
+            update_option('flavor_app_navigation', $config_data['flavor_app_navigation']);
+        }
+        if (isset($config_data['flavor_app_push_settings'])) {
+            update_option('flavor_app_push_settings', $config_data['flavor_app_push_settings']);
+        }
+        if (isset($config_data['flavor_directory_peer_urls'])) {
+            update_option('flavor_directory_peer_urls', $config_data['flavor_directory_peer_urls']);
+        }
+
+        wp_send_json_success(['message' => __('Configuración importada correctamente', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * AJAX: Limpiar caché de la app
+     */
+    public function ajax_clear_cache() {
+        check_ajax_referer('flavor_dev_tools', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+
+        // Eliminar transients relacionados con la app
+        $wpdb->query(
+            "DELETE FROM {$wpdb->options}
+             WHERE option_name LIKE '_transient_flavor_app_%'
+             OR option_name LIKE '_transient_timeout_flavor_app_%'
+             OR option_name LIKE '_transient_flavor_business_%'
+             OR option_name LIKE '_transient_timeout_flavor_business_%'"
+        );
+
+        // Limpiar object cache si está disponible
+        if (function_exists('wp_cache_flush')) {
+            wp_cache_flush();
+        }
+
+        wp_send_json_success(['message' => __('Caché limpiado correctamente', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * AJAX: Regenerar secretos de la app
+     */
+    public function ajax_regenerate_secrets() {
+        check_ajax_referer('flavor_dev_tools', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        // Generar nuevos secretos
+        $new_jwt_secret = wp_generate_password(64, true, true);
+        $new_api_key = wp_generate_password(32, false, false);
+
+        update_option('flavor_app_jwt_secret', $new_jwt_secret);
+        update_option('flavor_app_api_key', $new_api_key);
+
+        // Invalidar todos los tokens existentes
+        delete_option('flavor_apps_tokens');
+
+        wp_send_json_success([
+            'message' => __('Secretos regenerados. Todos los tokens han sido invalidados.', 'flavor-chat-ia'),
+        ]);
+    }
+
+    /**
+     * AJAX: Crear/actualizar tablas de la app
+     */
+    public function ajax_create_tables() {
+        check_ajax_referer('flavor_dev_tools', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $tables_created = [];
+
+        // Tabla de push tokens
+        $table_push = $wpdb->prefix . 'flavor_push_tokens';
+        $sql_push = "CREATE TABLE $table_push (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id bigint(20) UNSIGNED DEFAULT NULL,
+            token varchar(500) NOT NULL,
+            platform varchar(20) DEFAULT 'unknown',
+            device_id varchar(100) DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            last_used datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY token (token(191)),
+            KEY user_id (user_id),
+            KEY platform (platform)
+        ) $charset_collate;";
+        $tables_created[] = 'push_tokens';
+
+        // Tabla de eventos analytics
+        $table_events = $wpdb->prefix . 'flavor_app_events';
+        $sql_events = "CREATE TABLE $table_events (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            event_type varchar(50) NOT NULL,
+            event_data longtext,
+            user_id bigint(20) UNSIGNED DEFAULT NULL,
+            device_id varchar(100) DEFAULT NULL,
+            platform varchar(20) DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY event_type (event_type),
+            KEY user_id (user_id),
+            KEY created_at (created_at)
+        ) $charset_collate;";
+        $tables_created[] = 'app_events';
+
+        // Tabla de stats diarias
+        $table_stats = $wpdb->prefix . 'flavor_app_daily_stats';
+        $sql_stats = "CREATE TABLE $table_stats (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            stat_date date NOT NULL,
+            connections int(11) DEFAULT 0,
+            unique_devices int(11) DEFAULT 0,
+            module_accesses int(11) DEFAULT 0,
+            PRIMARY KEY (id),
+            UNIQUE KEY stat_date (stat_date)
+        ) $charset_collate;";
+        $tables_created[] = 'daily_stats';
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta($sql_push);
+        dbDelta($sql_events);
+        dbDelta($sql_stats);
+
+        wp_send_json_success([
+            'message' => sprintf(__('Tablas creadas/actualizadas: %s', 'flavor-chat-ia'), implode(', ', $tables_created)),
+        ]);
+    }
+
+    /**
+     * AJAX: Restablecer configuración de la app
+     */
+    public function ajax_reset_config() {
+        check_ajax_referer('flavor_dev_tools', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        // Eliminar todas las opciones de la app
+        delete_option('flavor_apps_config');
+        delete_option('flavor_app_active_modules');
+        delete_option('flavor_app_navigation');
+        delete_option('flavor_app_push_settings');
+        delete_option('flavor_apps_tokens');
+        delete_option('flavor_app_jwt_secret');
+        delete_option('flavor_app_api_key');
+        delete_option('flavor_app_last_sync');
+
+        // Limpiar transients
+        global $wpdb;
+        $wpdb->query(
+            "DELETE FROM {$wpdb->options}
+             WHERE option_name LIKE '_transient_flavor_app_%'
+             OR option_name LIKE '_transient_timeout_flavor_app_%'"
+        );
+
+        wp_send_json_success(['message' => __('Configuración restablecida a valores por defecto', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * AJAX: Enviar notificación push de prueba
+     */
+    public function ajax_send_test_push() {
+        check_ajax_referer('flavor_push_test', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $title = sanitize_text_field($_POST['title'] ?? '');
+        $body = sanitize_textarea_field($_POST['body'] ?? '');
+        $topic = sanitize_text_field($_POST['topic'] ?? '');
+
+        if (empty($title) || empty($body) || empty($topic)) {
+            wp_send_json_error(['message' => __('Todos los campos son requeridos', 'flavor-chat-ia')]);
+        }
+
+        $push_settings = get_option('flavor_app_push_settings', []);
+        $server_key = $push_settings['fcm_server_key'] ?? '';
+
+        if (empty($server_key)) {
+            wp_send_json_error(['message' => __('FCM Server Key no configurado', 'flavor-chat-ia')]);
+        }
+
+        // Enviar a FCM
+        $message = [
+            'to' => '/topics/' . $topic,
+            'notification' => [
+                'title' => $title,
+                'body' => $body,
+            ],
+            'data' => [
+                'type' => 'test',
+                'timestamp' => time(),
+            ],
+        ];
+
+        $response = wp_remote_post('https://fcm.googleapis.com/fcm/send', [
+            'headers' => [
+                'Authorization' => 'key=' . $server_key,
+                'Content-Type' => 'application/json',
+            ],
+            'body' => wp_json_encode($message),
+            'timeout' => 30,
+        ]);
+
+        if (is_wp_error($response)) {
+            wp_send_json_error(['message' => $response->get_error_message()]);
+        }
+
+        $response_body = json_decode(wp_remote_retrieve_body($response), true);
+
+        if (isset($response_body['message_id'])) {
+            wp_send_json_success(['message' => __('Notificación enviada correctamente', 'flavor-chat-ia')]);
+        } else {
+            wp_send_json_error([
+                'message' => $response_body['error'] ?? __('Error desconocido al enviar', 'flavor-chat-ia'),
+            ]);
+        }
+    }
+
+    /**
+     * AJAX: Obtener logs de API
+     */
+    public function ajax_get_api_logs() {
+        if (!wp_verify_nonce($_GET['nonce'] ?? '', 'flavor_api_logs')) {
+            wp_send_json_error('Nonce inválido');
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Sin permisos');
+        }
+
+        // Intentar leer el log de debug de WordPress
+        $log_file = WP_CONTENT_DIR . '/debug.log';
+        $logs = '';
+
+        if (file_exists($log_file) && is_readable($log_file)) {
+            // Leer últimas 100 líneas relacionadas con flavor
+            $lines = file($log_file);
+            $flavor_lines = array_filter($lines, function($line) {
+                return stripos($line, 'flavor') !== false || stripos($line, 'app-') !== false;
+            });
+            $logs = implode('', array_slice($flavor_lines, -100));
+        }
+
+        if (empty($logs)) {
+            $logs = __('No se encontraron logs relevantes. Asegúrate de que WP_DEBUG_LOG esté habilitado.', 'flavor-chat-ia');
+        }
+
+        wp_send_json_success($logs);
+    }
+
+    /**
+     * Renderiza la pestaña de Estadísticas
+     */
+    private function render_stats_tab() {
+        ?>
+        <div class="flavor-stats-tab" x-data="flavorAppStats()">
+            <div class="stats-header">
+                <h2><?php _e('Estadísticas de Uso', 'flavor-chat-ia'); ?></h2>
+                <div class="stats-period-selector">
+                    <select x-model="period" @change="loadStats()">
+                        <option value="7"><?php _e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
+                        <option value="30"><?php _e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
+                        <option value="90"><?php _e('Últimos 90 días', 'flavor-chat-ia'); ?></option>
+                    </select>
+                    <button type="button" class="button" @click="loadStats()" :disabled="loading">
+                        <span x-show="!loading"><?php _e('Actualizar', 'flavor-chat-ia'); ?></span>
+                        <span x-show="loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tarjetas de Resumen -->
+            <div class="stats-summary-cards">
+                <div class="stat-card">
+                    <div class="stat-icon dashicons dashicons-smartphone"></div>
+                    <div class="stat-content">
+                        <span class="stat-value" x-text="summary.total_connections || 0"></span>
+                        <span class="stat-label"><?php _e('Conexiones Totales', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon dashicons dashicons-admin-users"></div>
+                    <div class="stat-content">
+                        <span class="stat-value" x-text="summary.unique_devices || 0"></span>
+                        <span class="stat-label"><?php _e('Dispositivos Únicos', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon dashicons dashicons-grid-view"></div>
+                    <div class="stat-content">
+                        <span class="stat-value" x-text="summary.module_accesses || 0"></span>
+                        <span class="stat-label"><?php _e('Accesos a Módulos', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon dashicons dashicons-chart-line"></div>
+                    <div class="stat-content">
+                        <span class="stat-value" x-text="summary.active_tokens || 0"></span>
+                        <span class="stat-label"><?php _e('Tokens Activos', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Timeline -->
+            <div class="stats-chart-container">
+                <h3><?php _e('Actividad Diaria', 'flavor-chat-ia'); ?></h3>
+                <canvas id="statsTimelineChart" height="300"></canvas>
+            </div>
+
+            <!-- Módulos más usados -->
+            <div class="stats-modules-grid">
+                <div class="stats-module-ranking">
+                    <h3><?php _e('Módulos Más Usados', 'flavor-chat-ia'); ?></h3>
+                    <ul class="module-list">
+                        <template x-for="module in topModules" :key="module.module_id">
+                            <li class="module-item">
+                                <span class="module-name" x-text="module.module_id"></span>
+                                <span class="module-count" x-text="module.access_count + ' accesos'"></span>
+                                <div class="module-bar">
+                                    <div class="module-bar-fill" :style="'width:' + (module.percentage || 0) + '%'"></div>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+
+                <div class="stats-devices">
+                    <h3><?php _e('Dispositivos', 'flavor-chat-ia'); ?></h3>
+                    <canvas id="statsDevicesChart" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Actividad de Tokens -->
+            <div class="stats-tokens">
+                <h3><?php _e('Tokens Push Registrados', 'flavor-chat-ia'); ?></h3>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th><?php _e('Token (parcial)', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Plataforma', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Última actividad', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="token in recentTokens" :key="token.id">
+                            <tr>
+                                <td><code x-text="token.token_partial"></code></td>
+                                <td x-text="token.platform"></td>
+                                <td x-text="token.user_name || 'Anónimo'"></td>
+                                <td x-text="token.last_active"></td>
+                            </tr>
+                        </template>
+                        <tr x-show="recentTokens.length === 0">
+                            <td colspan="4"><?php _e('No hay tokens registrados', 'flavor-chat-ia'); ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <style>
+            .flavor-stats-tab { padding: 20px 0; }
+            .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+            .stats-period-selector { display: flex; gap: 10px; }
+            .stats-summary-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+            .stat-card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; display: flex; align-items: center; gap: 15px; }
+            .stat-icon { font-size: 40px; color: #2271b1; }
+            .stat-value { display: block; font-size: 28px; font-weight: bold; color: #1d2327; }
+            .stat-label { color: #646970; font-size: 13px; }
+            .stats-chart-container { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 30px; }
+            .stats-modules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+            .stats-module-ranking, .stats-devices { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
+            .module-list { list-style: none; margin: 0; padding: 0; }
+            .module-item { padding: 10px 0; border-bottom: 1px solid #eee; }
+            .module-item:last-child { border-bottom: none; }
+            .module-name { font-weight: 500; }
+            .module-count { float: right; color: #646970; font-size: 12px; }
+            .module-bar { height: 4px; background: #e0e0e0; border-radius: 2px; margin-top: 5px; }
+            .module-bar-fill { height: 100%; background: #2271b1; border-radius: 2px; }
+            .stats-tokens { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
+            @media (max-width: 1200px) { .stats-summary-cards { grid-template-columns: repeat(2, 1fr); } }
+            @media (max-width: 782px) { .stats-summary-cards { grid-template-columns: 1fr; } .stats-modules-grid { grid-template-columns: 1fr; } }
+        </style>
+
+        <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('flavorAppStats', () => ({
+                period: '30',
+                loading: false,
+                summary: {},
+                topModules: [],
+                recentTokens: [],
+                timelineChart: null,
+                devicesChart: null,
+
+                init() {
+                    this.loadStats();
+                },
+
+                async loadStats() {
+                    this.loading = true;
+                    try {
+                        const response = await fetch(
+                            `<?php echo rest_url('flavor-app-analytics/v1/stats'); ?>?period=${this.period}`,
+                            { headers: { 'X-WP-Nonce': '<?php echo wp_create_nonce('wp_rest'); ?>' } }
+                        );
+                        const data = await response.json();
+
+                        this.summary = data.summary || {};
+                        this.topModules = (data.modules || []).slice(0, 10).map((m, i, arr) => ({
+                            ...m,
+                            percentage: arr[0] ? (m.access_count / arr[0].access_count * 100) : 0
+                        }));
+                        this.recentTokens = data.tokens || [];
+
+                        this.renderTimelineChart(data.timeline || []);
+                        this.renderDevicesChart(data.devices || []);
+                    } catch (error) {
+                        console.error('Error loading stats:', error);
+                    }
+                    this.loading = false;
+                },
+
+                renderTimelineChart(timeline) {
+                    const ctx = document.getElementById('statsTimelineChart');
+                    if (!ctx) return;
+
+                    if (this.timelineChart) this.timelineChart.destroy();
+
+                    this.timelineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: timeline.map(d => d.date),
+                            datasets: [{
+                                label: '<?php _e('Conexiones', 'flavor-chat-ia'); ?>',
+                                data: timeline.map(d => d.connections),
+                                borderColor: '#2271b1',
+                                tension: 0.3,
+                                fill: false
+                            }, {
+                                label: '<?php _e('Módulos', 'flavor-chat-ia'); ?>',
+                                data: timeline.map(d => d.module_accesses),
+                                borderColor: '#00a32a',
+                                tension: 0.3,
+                                fill: false
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                },
+
+                renderDevicesChart(devices) {
+                    const ctx = document.getElementById('statsDevicesChart');
+                    if (!ctx) return;
+
+                    if (this.devicesChart) this.devicesChart.destroy();
+
+                    this.devicesChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: devices.map(d => d.platform),
+                            datasets: [{
+                                data: devices.map(d => d.count),
+                                backgroundColor: ['#2271b1', '#00a32a', '#dba617', '#d63638']
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            }));
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de Push Notifications
+     */
+    private function render_push_tab() {
+        $push_settings = get_option('flavor_app_push_settings', [
+            'fcm_server_key' => '',
+            'fcm_sender_id' => '',
+            'enabled' => false,
+            'topics' => []
+        ]);
+        ?>
+        <div class="flavor-push-tab">
+            <h2><?php _e('Configuración de Notificaciones Push', 'flavor-chat-ia'); ?></h2>
+
+            <form method="post" action="" id="push-settings-form">
+                <?php wp_nonce_field('flavor_save_push_settings', 'push_nonce'); ?>
+
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php _e('Habilitar Push', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="push_enabled" value="1" <?php checked($push_settings['enabled']); ?>>
+                                <?php _e('Activar notificaciones push', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('FCM Server Key', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="password" name="fcm_server_key" class="regular-text"
+                                   value="<?php echo esc_attr($push_settings['fcm_server_key']); ?>"
+                                   placeholder="AAAA...">
+                            <p class="description"><?php _e('Clave del servidor de Firebase Cloud Messaging', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('FCM Sender ID', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="text" name="fcm_sender_id" class="regular-text"
+                                   value="<?php echo esc_attr($push_settings['fcm_sender_id']); ?>"
+                                   placeholder="123456789012">
+                            <p class="description"><?php _e('ID del remitente de Firebase', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+
+                <h3><?php _e('Topics por Módulo', 'flavor-chat-ia'); ?></h3>
+                <p class="description"><?php _e('Configura topics de FCM para cada módulo. Los usuarios suscritos recibirán notificaciones.', 'flavor-chat-ia'); ?></p>
+
+                <table class="wp-list-table widefat fixed striped" style="max-width: 800px;">
+                    <thead>
+                        <tr>
+                            <th><?php _e('Módulo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Topic FCM', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Activo', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $modules = ['noticias', 'eventos', 'marketplace', 'grupos_consumo', 'banco_tiempo', 'alertas'];
+                        foreach ($modules as $module) :
+                            $topic = $push_settings['topics'][$module] ?? $module;
+                            $active = isset($push_settings['topics_active'][$module]) ? $push_settings['topics_active'][$module] : true;
+                        ?>
+                        <tr>
+                            <td><strong><?php echo ucfirst(str_replace('_', ' ', $module)); ?></strong></td>
+                            <td>
+                                <input type="text" name="push_topics[<?php echo $module; ?>]"
+                                       value="<?php echo esc_attr($topic); ?>" class="regular-text">
+                            </td>
+                            <td>
+                                <input type="checkbox" name="push_topics_active[<?php echo $module; ?>]"
+                                       value="1" <?php checked($active); ?>>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <p class="submit">
+                    <button type="submit" name="save_push_settings" class="button button-primary">
+                        <?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                    </button>
+                </p>
+            </form>
+
+            <hr>
+
+            <h3><?php _e('Enviar Notificación de Prueba', 'flavor-chat-ia'); ?></h3>
+            <div class="push-test-form" x-data="pushTestForm()">
+                <table class="form-table">
+                    <tr>
+                        <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
+                        <td><input type="text" x-model="title" class="regular-text" placeholder="<?php _e('Título de la notificación', 'flavor-chat-ia'); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Mensaje', 'flavor-chat-ia'); ?></th>
+                        <td><textarea x-model="body" rows="3" class="large-text" placeholder="<?php _e('Cuerpo del mensaje', 'flavor-chat-ia'); ?>"></textarea></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Topic', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <select x-model="topic">
+                                <option value=""><?php _e('Seleccionar topic...', 'flavor-chat-ia'); ?></option>
+                                <?php foreach ($modules as $module) : ?>
+                                <option value="<?php echo esc_attr($module); ?>"><?php echo ucfirst(str_replace('_', ' ', $module)); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <p>
+                    <button type="button" class="button button-secondary" @click="sendTest()" :disabled="sending">
+                        <span x-show="!sending"><?php _e('Enviar Notificación de Prueba', 'flavor-chat-ia'); ?></span>
+                        <span x-show="sending"><?php _e('Enviando...', 'flavor-chat-ia'); ?></span>
+                    </button>
+                </p>
+                <div x-show="result" :class="'notice notice-' + (success ? 'success' : 'error')" style="padding: 10px;">
+                    <span x-text="result"></span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('pushTestForm', () => ({
+                title: '',
+                body: '',
+                topic: '',
+                sending: false,
+                result: '',
+                success: false,
+
+                async sendTest() {
+                    if (!this.title || !this.body || !this.topic) {
+                        this.result = '<?php _e('Completa todos los campos', 'flavor-chat-ia'); ?>';
+                        this.success = false;
+                        return;
+                    }
+
+                    this.sending = true;
+                    this.result = '';
+
+                    try {
+                        const response = await fetch(ajaxurl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({
+                                action: 'flavor_send_test_push',
+                                nonce: '<?php echo wp_create_nonce('flavor_push_test'); ?>',
+                                title: this.title,
+                                body: this.body,
+                                topic: this.topic
+                            })
+                        });
+                        const data = await response.json();
+                        this.success = data.success;
+                        this.result = data.data?.message || (data.success ? '<?php _e('Enviado correctamente', 'flavor-chat-ia'); ?>' : '<?php _e('Error al enviar', 'flavor-chat-ia'); ?>');
+                    } catch (e) {
+                        this.success = false;
+                        this.result = '<?php _e('Error de conexión', 'flavor-chat-ia'); ?>';
+                    }
+
+                    this.sending = false;
+                }
+            }));
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de Diagnóstico
+     */
+    private function render_diagnostics_tab() {
+        ?>
+        <div class="flavor-diagnostics-tab" x-data="flavorDiagnostics()">
+            <h2><?php _e('Diagnóstico de API', 'flavor-chat-ia'); ?></h2>
+
+            <!-- Info del Sistema -->
+            <div class="diag-section">
+                <h3><?php _e('Información del Sistema', 'flavor-chat-ia'); ?></h3>
+                <table class="widefat" style="max-width: 600px;">
+                    <tr><td><strong>WordPress</strong></td><td><?php echo get_bloginfo('version'); ?></td></tr>
+                    <tr><td><strong>PHP</strong></td><td><?php echo phpversion(); ?></td></tr>
+                    <tr><td><strong>REST API</strong></td><td><?php echo rest_url(); ?></td></tr>
+                    <tr><td><strong>Plugin Version</strong></td><td><?php echo FLAVOR_CHAT_IA_VERSION ?? '2.0.0'; ?></td></tr>
+                    <tr><td><strong>Timezone</strong></td><td><?php echo wp_timezone_string(); ?></td></tr>
+                </table>
+            </div>
+
+            <!-- Tester de Endpoints -->
+            <div class="diag-section">
+                <h3><?php _e('Probar Endpoints', 'flavor-chat-ia'); ?></h3>
+                <div class="endpoint-tester">
+                    <div class="endpoint-input">
+                        <select x-model="method" style="width: 100px;">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                        </select>
+                        <input type="text" x-model="endpoint" class="regular-text"
+                               placeholder="/flavor-app/v1/config" style="flex: 1;">
+                        <button type="button" class="button button-primary" @click="testEndpoint()" :disabled="testing">
+                            <span x-show="!testing"><?php _e('Probar', 'flavor-chat-ia'); ?></span>
+                            <span x-show="testing"><?php _e('Probando...', 'flavor-chat-ia'); ?></span>
+                        </button>
+                    </div>
+
+                    <div class="endpoint-presets">
+                        <strong><?php _e('Endpoints comunes:', 'flavor-chat-ia'); ?></strong>
+                        <button type="button" class="button button-small" @click="setEndpoint('/flavor-app/v1/config')">Config</button>
+                        <button type="button" class="button button-small" @click="setEndpoint('/flavor-app/v1/screens')">Screens</button>
+                        <button type="button" class="button button-small" @click="setEndpoint('/flavor-app/v1/modules')">Modules</button>
+                        <button type="button" class="button button-small" @click="setEndpoint('/flavor-app/v1/manifest.json')">Manifest</button>
+                    </div>
+
+                    <div class="endpoint-result" x-show="response">
+                        <div class="result-header">
+                            <span :class="'status-badge status-' + (statusCode >= 200 && statusCode < 300 ? 'ok' : 'error')">
+                                <span x-text="statusCode"></span>
+                            </span>
+                            <span x-text="responseTime + 'ms'"></span>
+                        </div>
+                        <pre x-text="response" style="max-height: 400px; overflow: auto; background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 4px;"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verificación de Endpoints -->
+            <div class="diag-section">
+                <h3><?php _e('Estado de Endpoints', 'flavor-chat-ia'); ?></h3>
+                <button type="button" class="button" @click="checkAllEndpoints()" :disabled="checkingAll">
+                    <span x-show="!checkingAll"><?php _e('Verificar Todos', 'flavor-chat-ia'); ?></span>
+                    <span x-show="checkingAll"><?php _e('Verificando...', 'flavor-chat-ia'); ?></span>
+                </button>
+
+                <table class="wp-list-table widefat fixed striped" style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th><?php _e('Endpoint', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 100px;"><?php _e('Tiempo', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="ep in endpoints" :key="ep.path">
+                            <tr>
+                                <td><code x-text="ep.path"></code></td>
+                                <td>
+                                    <span x-show="ep.status === null" class="status-badge status-pending">-</span>
+                                    <span x-show="ep.status === 'ok'" class="status-badge status-ok">OK</span>
+                                    <span x-show="ep.status === 'error'" class="status-badge status-error">Error</span>
+                                </td>
+                                <td x-text="ep.time ? ep.time + 'ms' : '-'"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Logs -->
+            <div class="diag-section">
+                <h3><?php _e('Logs Recientes', 'flavor-chat-ia'); ?></h3>
+                <div class="logs-container">
+                    <button type="button" class="button" @click="loadLogs()"><?php _e('Cargar Logs', 'flavor-chat-ia'); ?></button>
+                    <button type="button" class="button" @click="clearLogs()"><?php _e('Limpiar', 'flavor-chat-ia'); ?></button>
+                    <pre x-text="logs" style="max-height: 300px; overflow: auto; background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 4px; margin-top: 10px;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .diag-section { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+            .endpoint-tester .endpoint-input { display: flex; gap: 10px; margin-bottom: 10px; }
+            .endpoint-presets { margin-bottom: 15px; }
+            .endpoint-presets .button { margin: 2px; }
+            .status-badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-size: 12px; font-weight: bold; }
+            .status-ok { background: #d4edda; color: #155724; }
+            .status-error { background: #f8d7da; color: #721c24; }
+            .status-pending { background: #e9ecef; color: #6c757d; }
+            .result-header { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+        </style>
+
+        <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('flavorDiagnostics', () => ({
+                method: 'GET',
+                endpoint: '/flavor-app/v1/config',
+                testing: false,
+                response: '',
+                statusCode: 0,
+                responseTime: 0,
+                checkingAll: false,
+                logs: '',
+                endpoints: [
+                    { path: '/flavor-app/v1/config', status: null, time: null },
+                    { path: '/flavor-app/v1/screens', status: null, time: null },
+                    { path: '/flavor-app/v1/modules', status: null, time: null },
+                    { path: '/flavor-app/v1/navigation', status: null, time: null },
+                    { path: '/flavor-app/v1/manifest.json', status: null, time: null },
+                ],
+
+                setEndpoint(path) {
+                    this.endpoint = path;
+                },
+
+                async testEndpoint() {
+                    this.testing = true;
+                    this.response = '';
+                    const start = performance.now();
+
+                    try {
+                        const response = await fetch('<?php echo rest_url(); ?>' + this.endpoint.replace(/^\//, ''), {
+                            method: this.method,
+                            headers: { 'X-WP-Nonce': '<?php echo wp_create_nonce('wp_rest'); ?>' }
+                        });
+
+                        this.responseTime = Math.round(performance.now() - start);
+                        this.statusCode = response.status;
+
+                        const data = await response.json();
+                        this.response = JSON.stringify(data, null, 2);
+                    } catch (e) {
+                        this.responseTime = Math.round(performance.now() - start);
+                        this.statusCode = 0;
+                        this.response = 'Error: ' + e.message;
+                    }
+
+                    this.testing = false;
+                },
+
+                async checkAllEndpoints() {
+                    this.checkingAll = true;
+
+                    for (let ep of this.endpoints) {
+                        const start = performance.now();
+                        try {
+                            const response = await fetch('<?php echo rest_url(); ?>' + ep.path.replace(/^\//, ''), {
+                                headers: { 'X-WP-Nonce': '<?php echo wp_create_nonce('wp_rest'); ?>' }
+                            });
+                            ep.time = Math.round(performance.now() - start);
+                            ep.status = response.ok ? 'ok' : 'error';
+                        } catch (e) {
+                            ep.time = Math.round(performance.now() - start);
+                            ep.status = 'error';
+                        }
+                    }
+
+                    this.checkingAll = false;
+                },
+
+                async loadLogs() {
+                    try {
+                        const response = await fetch(ajaxurl + '?action=flavor_get_api_logs&nonce=<?php echo wp_create_nonce('flavor_api_logs'); ?>');
+                        const data = await response.json();
+                        this.logs = data.success ? data.data : 'Error cargando logs';
+                    } catch (e) {
+                        this.logs = 'Error: ' + e.message;
+                    }
+                },
+
+                clearLogs() {
+                    this.logs = '';
+                }
+            }));
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de Herramientas
+     */
+    private function render_tools_tab() {
+        ?>
+        <div class="flavor-tools-tab" x-data="flavorDevTools()">
+            <h2><?php _e('Herramientas de Desarrollo', 'flavor-chat-ia'); ?></h2>
+
+            <div class="tools-grid">
+                <!-- Exportar Configuración -->
+                <div class="tool-card">
+                    <h3><span class="dashicons dashicons-download"></span> <?php _e('Exportar Configuración', 'flavor-chat-ia'); ?></h3>
+                    <p><?php _e('Descarga toda la configuración de la app en formato JSON.', 'flavor-chat-ia'); ?></p>
+                    <button type="button" class="button button-primary" @click="exportConfig()">
+                        <?php _e('Exportar JSON', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+
+                <!-- Importar Configuración -->
+                <div class="tool-card">
+                    <h3><span class="dashicons dashicons-upload"></span> <?php _e('Importar Configuración', 'flavor-chat-ia'); ?></h3>
+                    <p><?php _e('Restaura la configuración desde un archivo JSON.', 'flavor-chat-ia'); ?></p>
+                    <input type="file" accept=".json" @change="handleImportFile($event)" id="import-file" style="display: none;">
+                    <button type="button" class="button" @click="$refs.importFile.click()">
+                        <?php _e('Seleccionar Archivo', 'flavor-chat-ia'); ?>
+                    </button>
+                    <input type="file" x-ref="importFile" accept=".json" @change="handleImportFile($event)" style="display: none;">
+                    <span x-text="importFileName" style="margin-left: 10px;"></span>
+                    <button type="button" class="button button-primary" x-show="importData" @click="importConfig()" :disabled="importing">
+                        <span x-show="!importing"><?php _e('Importar', 'flavor-chat-ia'); ?></span>
+                        <span x-show="importing"><?php _e('Importando...', 'flavor-chat-ia'); ?></span>
+                    </button>
+                </div>
+
+                <!-- Limpiar Caché -->
+                <div class="tool-card">
+                    <h3><span class="dashicons dashicons-trash"></span> <?php _e('Limpiar Caché', 'flavor-chat-ia'); ?></h3>
+                    <p><?php _e('Elimina transients y caché relacionados con la app.', 'flavor-chat-ia'); ?></p>
+                    <button type="button" class="button button-secondary" @click="clearCache()" :disabled="clearingCache">
+                        <span x-show="!clearingCache"><?php _e('Limpiar Caché', 'flavor-chat-ia'); ?></span>
+                        <span x-show="clearingCache"><?php _e('Limpiando...', 'flavor-chat-ia'); ?></span>
+                    </button>
+                </div>
+
+                <!-- Regenerar Secretos -->
+                <div class="tool-card">
+                    <h3><span class="dashicons dashicons-admin-network"></span> <?php _e('Regenerar Secretos', 'flavor-chat-ia'); ?></h3>
+                    <p><?php _e('Genera nuevos JWT secrets y API keys. ¡Esto invalidará tokens existentes!', 'flavor-chat-ia'); ?></p>
+                    <button type="button" class="button button-secondary" @click="regenerateSecrets()" :disabled="regenerating"
+                            style="background: #d63638; border-color: #d63638; color: #fff;">
+                        <span x-show="!regenerating"><?php _e('Regenerar Secretos', 'flavor-chat-ia'); ?></span>
+                        <span x-show="regenerating"><?php _e('Regenerando...', 'flavor-chat-ia'); ?></span>
+                    </button>
+                </div>
+
+                <!-- Crear Tablas -->
+                <div class="tool-card">
+                    <h3><span class="dashicons dashicons-database"></span> <?php _e('Crear/Actualizar Tablas', 'flavor-chat-ia'); ?></h3>
+                    <p><?php _e('Crea o actualiza las tablas de la base de datos del plugin.', 'flavor-chat-ia'); ?></p>
+                    <button type="button" class="button" @click="createTables()" :disabled="creatingTables">
+                        <span x-show="!creatingTables"><?php _e('Ejecutar', 'flavor-chat-ia'); ?></span>
+                        <span x-show="creatingTables"><?php _e('Ejecutando...', 'flavor-chat-ia'); ?></span>
+                    </button>
+                </div>
+
+                <!-- Reset Config -->
+                <div class="tool-card">
+                    <h3><span class="dashicons dashicons-backup"></span> <?php _e('Restablecer Configuración', 'flavor-chat-ia'); ?></h3>
+                    <p><?php _e('Restablece toda la configuración a los valores por defecto.', 'flavor-chat-ia'); ?></p>
+                    <button type="button" class="button" @click="resetConfig()" :disabled="resetting"
+                            style="background: #d63638; border-color: #d63638; color: #fff;">
+                        <span x-show="!resetting"><?php _e('Restablecer Todo', 'flavor-chat-ia'); ?></span>
+                        <span x-show="resetting"><?php _e('Restableciendo...', 'flavor-chat-ia'); ?></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resultado de operaciones -->
+            <div class="tool-result" x-show="result" :class="'notice notice-' + (success ? 'success' : 'error')">
+                <p x-text="result"></p>
+            </div>
+
+            <!-- Quick Info -->
+            <div class="quick-info" style="margin-top: 30px;">
+                <h3><?php _e('Información Rápida', 'flavor-chat-ia'); ?></h3>
+                <table class="widefat" style="max-width: 600px;">
+                    <tr>
+                        <td><strong><?php _e('Módulos Activos', 'flavor-chat-ia'); ?></strong></td>
+                        <td><?php
+                            $active_modules = get_option('flavor_app_active_modules', []);
+                            echo count($active_modules);
+                        ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong><?php _e('Tokens Push Registrados', 'flavor-chat-ia'); ?></strong></td>
+                        <td><?php
+                            global $wpdb;
+                            $count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}flavor_push_tokens");
+                            echo $count ?: 0;
+                        ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong><?php _e('Última Sincronización', 'flavor-chat-ia'); ?></strong></td>
+                        <td><?php
+                            $last_sync = get_option('flavor_app_last_sync');
+                            echo $last_sync ? human_time_diff(strtotime($last_sync)) . ' ago' : '-';
+                        ?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <style>
+            .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+            .tool-card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
+            .tool-card h3 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
+            .tool-card h3 .dashicons { color: #2271b1; }
+            .tool-card p { color: #646970; margin-bottom: 15px; }
+            .tool-result { padding: 12px; margin-top: 20px; }
+            @media (max-width: 1200px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+            @media (max-width: 782px) { .tools-grid { grid-template-columns: 1fr; } }
+        </style>
+
+        <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('flavorDevTools', () => ({
+                result: '',
+                success: false,
+                importing: false,
+                importData: null,
+                importFileName: '',
+                clearingCache: false,
+                regenerating: false,
+                creatingTables: false,
+                resetting: false,
+
+                showResult(message, isSuccess) {
+                    this.result = message;
+                    this.success = isSuccess;
+                    setTimeout(() => this.result = '', 5000);
+                },
+
+                async ajaxAction(action, data = {}) {
+                    const response = await fetch(ajaxurl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({
+                            action: action,
+                            nonce: '<?php echo wp_create_nonce('flavor_dev_tools'); ?>',
+                            ...data
+                        })
+                    });
+                    return response.json();
+                },
+
+                exportConfig() {
+                    window.location.href = ajaxurl + '?action=flavor_export_app_config&nonce=<?php echo wp_create_nonce('flavor_dev_tools'); ?>';
+                },
+
+                handleImportFile(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    this.importFileName = file.name;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            this.importData = JSON.parse(e.target.result);
+                        } catch (err) {
+                            this.showResult('<?php _e('Archivo JSON inválido', 'flavor-chat-ia'); ?>', false);
+                            this.importData = null;
+                        }
+                    };
+                    reader.readAsText(file);
+                },
+
+                async importConfig() {
+                    if (!this.importData) return;
+                    if (!confirm('<?php _e('¿Estás seguro? Esto sobrescribirá la configuración actual.', 'flavor-chat-ia'); ?>')) return;
+
+                    this.importing = true;
+                    const result = await this.ajaxAction('flavor_import_app_config', { config: JSON.stringify(this.importData) });
+                    this.showResult(result.data?.message || (result.success ? '<?php _e('Importado correctamente', 'flavor-chat-ia'); ?>' : '<?php _e('Error al importar', 'flavor-chat-ia'); ?>'), result.success);
+                    this.importing = false;
+                    this.importData = null;
+                    this.importFileName = '';
+                },
+
+                async clearCache() {
+                    this.clearingCache = true;
+                    const result = await this.ajaxAction('flavor_clear_app_cache');
+                    this.showResult(result.data?.message || '<?php _e('Caché limpiado', 'flavor-chat-ia'); ?>', result.success);
+                    this.clearingCache = false;
+                },
+
+                async regenerateSecrets() {
+                    if (!confirm('<?php _e('¿Estás seguro? Esto invalidará todos los tokens de sesión activos.', 'flavor-chat-ia'); ?>')) return;
+
+                    this.regenerating = true;
+                    const result = await this.ajaxAction('flavor_regenerate_secrets');
+                    this.showResult(result.data?.message || '<?php _e('Secretos regenerados', 'flavor-chat-ia'); ?>', result.success);
+                    this.regenerating = false;
+                },
+
+                async createTables() {
+                    this.creatingTables = true;
+                    const result = await this.ajaxAction('flavor_create_app_tables');
+                    this.showResult(result.data?.message || '<?php _e('Tablas actualizadas', 'flavor-chat-ia'); ?>', result.success);
+                    this.creatingTables = false;
+                },
+
+                async resetConfig() {
+                    if (!confirm('<?php _e('¿Estás seguro? Esto eliminará TODA la configuración de la app.', 'flavor-chat-ia'); ?>')) return;
+                    if (!confirm('<?php _e('Esta acción NO se puede deshacer. ¿Continuar?', 'flavor-chat-ia'); ?>')) return;
+
+                    this.resetting = true;
+                    const result = await this.ajaxAction('flavor_reset_app_config');
+                    this.showResult(result.data?.message || '<?php _e('Configuración restablecida', 'flavor-chat-ia'); ?>', result.success);
+                    this.resetting = false;
+
+                    if (result.success) {
+                        setTimeout(() => location.reload(), 1500);
+                    }
+                }
+            }));
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de Deep Links
+     */
+    private function render_deeplinks_tab() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'flavor_company_configs';
+        $companies = [];
+
+        // Verificar si la tabla existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name) {
+            $companies = $wpdb->get_results("SELECT * FROM $table_name ORDER BY nombre ASC", ARRAY_A);
+        }
+
+        $config = get_option('flavor_apps_config', []);
+        $deep_link_domain = isset($config['deep_link_domain']) ? $config['deep_link_domain'] : '';
+        $app_scheme = isset($config['app_scheme']) ? $config['app_scheme'] : 'flavorapp';
+        ?>
+        <div class="flavor-deeplinks-tab" x-data="flavorDeepLinks()">
+            <h2><?php _e('Configuración de Deep Links', 'flavor-chat-ia'); ?></h2>
+            <p class="description"><?php _e('Los deep links permiten abrir contenido específico de la app desde enlaces web.', 'flavor-chat-ia'); ?></p>
+
+            <!-- Configuración General -->
+            <div class="deeplinks-section">
+                <h3><?php _e('Configuración General', 'flavor-chat-ia'); ?></h3>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php _e('Dominio de Deep Links', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="text" name="flavor_apps_config[deep_link_domain]"
+                                   value="<?php echo esc_attr($deep_link_domain); ?>"
+                                   class="regular-text" placeholder="link.tuapp.com">
+                            <p class="description"><?php _e('Dominio personalizado para deep links (opcional). Por defecto se usa tu dominio actual.', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Esquema de la App', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="text" name="flavor_apps_config[app_scheme]"
+                                   value="<?php echo esc_attr($app_scheme); ?>"
+                                   class="regular-text" placeholder="flavorapp">
+                            <p class="description"><?php _e('Esquema URI para abrir la app (ej: flavorapp://). Debe coincidir con la configuración en Flutter.', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Patrones de Deep Links -->
+            <div class="deeplinks-section">
+                <h3><?php _e('Patrones de Enlaces', 'flavor-chat-ia'); ?></h3>
+                <p class="description"><?php _e('Estos son los patrones soportados automáticamente por la app:', 'flavor-chat-ia'); ?></p>
+
+                <table class="widefat" style="max-width: 800px;">
+                    <thead>
+                        <tr>
+                            <th><?php _e('Patrón', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Pantalla', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Ejemplo', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>/module/{id}</code></td>
+                            <td><?php _e('Módulo específico', 'flavor-chat-ia'); ?></td>
+                            <td><code><?php echo esc_html($app_scheme); ?>://module/noticias</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/post/{id}</code></td>
+                            <td><?php _e('Detalle de post', 'flavor-chat-ia'); ?></td>
+                            <td><code><?php echo esc_html($app_scheme); ?>://post/123</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/event/{id}</code></td>
+                            <td><?php _e('Detalle de evento', 'flavor-chat-ia'); ?></td>
+                            <td><code><?php echo esc_html($app_scheme); ?>://event/456</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/product/{id}</code></td>
+                            <td><?php _e('Producto WooCommerce', 'flavor-chat-ia'); ?></td>
+                            <td><code><?php echo esc_html($app_scheme); ?>://product/789</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/chat</code></td>
+                            <td><?php _e('Pantalla de chat', 'flavor-chat-ia'); ?></td>
+                            <td><code><?php echo esc_html($app_scheme); ?>://chat</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/profile</code></td>
+                            <td><?php _e('Perfil de usuario', 'flavor-chat-ia'); ?></td>
+                            <td><code><?php echo esc_html($app_scheme); ?>://profile</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Multi-empresa (para apps white-label) -->
+            <div class="deeplinks-section">
+                <h3><?php _e('Configuraciones de Empresa', 'flavor-chat-ia'); ?></h3>
+                <p class="description"><?php _e('Configura diferentes empresas para apps white-label. Cada empresa puede tener su propia configuración.', 'flavor-chat-ia'); ?></p>
+
+                <div class="company-list">
+                    <?php if (empty($companies)) : ?>
+                        <p><?php _e('No hay empresas configuradas. Crea la tabla desde Herramientas > Crear Tablas.', 'flavor-chat-ia'); ?></p>
+                    <?php else : ?>
+                        <table class="wp-list-table widefat fixed striped">
+                            <thead>
+                                <tr>
+                                    <th><?php _e('Slug', 'flavor-chat-ia'); ?></th>
+                                    <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
+                                    <th><?php _e('API Base', 'flavor-chat-ia'); ?></th>
+                                    <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                                    <th><?php _e('Deep Link', 'flavor-chat-ia'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($companies as $company) : ?>
+                                <tr>
+                                    <td><code><?php echo esc_html($company['slug']); ?></code></td>
+                                    <td><?php echo esc_html($company['nombre']); ?></td>
+                                    <td><small><?php echo esc_html($company['api_base']); ?></small></td>
+                                    <td>
+                                        <?php if ($company['activo']) : ?>
+                                            <span class="dashicons dashicons-yes-alt" style="color: green;"></span>
+                                        <?php else : ?>
+                                            <span class="dashicons dashicons-dismiss" style="color: red;"></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <code><?php echo esc_html($app_scheme); ?>://config/<?php echo esc_html($company['slug']); ?></code>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                </div>
+
+                <p style="margin-top: 15px;">
+                    <a href="<?php echo admin_url('admin.php?page=flavor-deep-links'); ?>" class="button">
+                        <?php _e('Gestionar Empresas', 'flavor-chat-ia'); ?>
+                    </a>
+                </p>
+            </div>
+
+            <!-- Generador de Deep Links -->
+            <div class="deeplinks-section">
+                <h3><?php _e('Generador de Deep Links', 'flavor-chat-ia'); ?></h3>
+
+                <div class="deeplink-generator">
+                    <table class="form-table">
+                        <tr>
+                            <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <select x-model="linkType">
+                                    <option value="module"><?php _e('Módulo', 'flavor-chat-ia'); ?></option>
+                                    <option value="post"><?php _e('Post', 'flavor-chat-ia'); ?></option>
+                                    <option value="event"><?php _e('Evento', 'flavor-chat-ia'); ?></option>
+                                    <option value="product"><?php _e('Producto', 'flavor-chat-ia'); ?></option>
+                                    <option value="custom"><?php _e('Personalizado', 'flavor-chat-ia'); ?></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('ID/Path', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <input type="text" x-model="linkId" class="regular-text" placeholder="123 o noticias">
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="generated-link" x-show="generatedLink">
+                        <strong><?php _e('Deep Link generado:', 'flavor-chat-ia'); ?></strong>
+                        <code x-text="generatedLink"></code>
+                        <button type="button" class="button button-small" @click="copyLink()">
+                            <?php _e('Copiar', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <?php submit_button(); ?>
+        </div>
+
+        <style>
+            .deeplinks-section { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+            .deeplinks-section h3 { margin-top: 0; }
+            .generated-link { background: #f0f6fc; padding: 15px; border-radius: 4px; margin-top: 15px; display: flex; align-items: center; gap: 10px; }
+            .generated-link code { background: #e5e5e5; padding: 5px 10px; border-radius: 3px; flex: 1; }
+        </style>
+
+        <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('flavorDeepLinks', () => ({
+                linkType: 'module',
+                linkId: '',
+                scheme: '<?php echo esc_js($app_scheme); ?>',
+
+                get generatedLink() {
+                    if (!this.linkId) return '';
+                    return `${this.scheme}://${this.linkType}/${this.linkId}`;
+                },
+
+                copyLink() {
+                    navigator.clipboard.writeText(this.generatedLink);
+                    alert('<?php _e('Enlace copiado', 'flavor-chat-ia'); ?>');
+                }
+            }));
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de Idiomas
+     */
+    private function render_languages_tab() {
+        $config = get_option('flavor_apps_config', []);
+        $default_language = isset($config['default_language']) ? $config['default_language'] : 'es';
+        $supported_languages = isset($config['supported_languages']) ? $config['supported_languages'] : ['es'];
+        $auto_detect = isset($config['language_auto_detect']) ? (bool) $config['language_auto_detect'] : true;
+
+        $available_languages = [
+            'es' => 'Español',
+            'en' => 'English',
+            'ca' => 'Català',
+            'eu' => 'Euskara',
+            'gl' => 'Galego',
+            'fr' => 'Français',
+            'de' => 'Deutsch',
+            'it' => 'Italiano',
+            'pt' => 'Português',
+            'nl' => 'Nederlands',
+        ];
+        ?>
+        <div class="flavor-languages-tab">
+            <h2><?php _e('Configuración de Idiomas', 'flavor-chat-ia'); ?></h2>
+            <p class="description"><?php _e('Configura los idiomas disponibles en la app móvil.', 'flavor-chat-ia'); ?></p>
+
+            <div class="languages-section">
+                <h3><?php _e('Idioma Principal', 'flavor-chat-ia'); ?></h3>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php _e('Idioma por defecto', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <select name="flavor_apps_config[default_language]">
+                                <?php foreach ($available_languages as $code => $name) : ?>
+                                    <option value="<?php echo esc_attr($code); ?>" <?php selected($default_language, $code); ?>>
+                                        <?php echo esc_html($name); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <p class="description"><?php _e('Idioma que se usará si no se detecta otro.', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Detección automática', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="flavor_apps_config[language_auto_detect]" value="1" <?php checked($auto_detect); ?>>
+                                <?php _e('Detectar idioma del dispositivo automáticamente', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="languages-section">
+                <h3><?php _e('Idiomas Soportados', 'flavor-chat-ia'); ?></h3>
+                <p class="description"><?php _e('Selecciona los idiomas disponibles en la app. Los usuarios podrán cambiar entre estos idiomas.', 'flavor-chat-ia'); ?></p>
+
+                <div class="languages-grid">
+                    <?php foreach ($available_languages as $code => $name) : ?>
+                        <label class="language-checkbox">
+                            <input type="checkbox"
+                                   name="flavor_apps_config[supported_languages][]"
+                                   value="<?php echo esc_attr($code); ?>"
+                                   <?php checked(in_array($code, (array) $supported_languages)); ?>>
+                            <span class="language-flag"><?php echo $this->get_language_flag($code); ?></span>
+                            <span class="language-name"><?php echo esc_html($name); ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="languages-section">
+                <h3><?php _e('Traducciones de la App', 'flavor-chat-ia'); ?></h3>
+                <p class="description"><?php _e('El contenido del sitio se traduce automáticamente si tienes WPML o Polylang. Las cadenas de la app Flutter usan archivos ARB.', 'flavor-chat-ia'); ?></p>
+
+                <div class="translation-status">
+                    <table class="widefat" style="max-width: 600px;">
+                        <tr>
+                            <td><strong>WPML</strong></td>
+                            <td>
+                                <?php if (class_exists('SitePress')) : ?>
+                                    <span class="dashicons dashicons-yes-alt" style="color: green;"></span>
+                                    <?php _e('Instalado y activo', 'flavor-chat-ia'); ?>
+                                <?php else : ?>
+                                    <span class="dashicons dashicons-minus" style="color: gray;"></span>
+                                    <?php _e('No instalado', 'flavor-chat-ia'); ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Polylang</strong></td>
+                            <td>
+                                <?php if (function_exists('pll_languages_list')) : ?>
+                                    <span class="dashicons dashicons-yes-alt" style="color: green;"></span>
+                                    <?php _e('Instalado y activo', 'flavor-chat-ia'); ?>
+                                <?php else : ?>
+                                    <span class="dashicons dashicons-minus" style="color: gray;"></span>
+                                    <?php _e('No instalado', 'flavor-chat-ia'); ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong><?php _e('Archivos ARB (Flutter)', 'flavor-chat-ia'); ?></strong></td>
+                            <td>
+                                <code>mobile-apps/lib/l10n/</code>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="languages-section">
+                <h3><?php _e('Formato de Fechas y Números', 'flavor-chat-ia'); ?></h3>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php _e('Formato de fecha', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <select name="flavor_apps_config[date_format]">
+                                <option value="auto" <?php selected($config['date_format'] ?? 'auto', 'auto'); ?>><?php _e('Automático (según idioma)', 'flavor-chat-ia'); ?></option>
+                                <option value="dd/MM/yyyy" <?php selected($config['date_format'] ?? '', 'dd/MM/yyyy'); ?>>DD/MM/YYYY (31/12/2025)</option>
+                                <option value="MM/dd/yyyy" <?php selected($config['date_format'] ?? '', 'MM/dd/yyyy'); ?>>MM/DD/YYYY (12/31/2025)</option>
+                                <option value="yyyy-MM-dd" <?php selected($config['date_format'] ?? '', 'yyyy-MM-dd'); ?>>YYYY-MM-DD (2025-12-31)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Formato de hora', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <select name="flavor_apps_config[time_format]">
+                                <option value="auto" <?php selected($config['time_format'] ?? 'auto', 'auto'); ?>><?php _e('Automático (según idioma)', 'flavor-chat-ia'); ?></option>
+                                <option value="HH:mm" <?php selected($config['time_format'] ?? '', 'HH:mm'); ?>>24h (14:30)</option>
+                                <option value="hh:mm a" <?php selected($config['time_format'] ?? '', 'hh:mm a'); ?>>12h (2:30 PM)</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <?php submit_button(); ?>
+        </div>
+
+        <style>
+            .languages-section { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+            .languages-section h3 { margin-top: 0; }
+            .languages-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px; }
+            .language-checkbox { display: flex; align-items: center; gap: 8px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; }
+            .language-checkbox:hover { background: #f0f6fc; border-color: #2271b1; }
+            .language-checkbox input:checked + .language-flag + .language-name { font-weight: bold; }
+            .language-flag { font-size: 20px; }
+            .translation-status { margin-top: 15px; }
+            @media (max-width: 1200px) { .languages-grid { grid-template-columns: repeat(3, 1fr); } }
+            @media (max-width: 782px) { .languages-grid { grid-template-columns: repeat(2, 1fr); } }
+        </style>
+        <?php
+    }
+
+    /**
+     * Obtiene el emoji de bandera para un código de idioma
+     */
+    private function get_language_flag($code) {
+        $flags = [
+            'es' => '🇪🇸',
+            'en' => '🇬🇧',
+            'ca' => '🏴󠁥󠁳󠁣󠁴󠁿',
+            'eu' => '🏴',
+            'gl' => '🏴',
+            'fr' => '🇫🇷',
+            'de' => '🇩🇪',
+            'it' => '🇮🇹',
+            'pt' => '🇵🇹',
+            'nl' => '🇳🇱',
+        ];
+        return $flags[$code] ?? '🏳️';
     }
 }

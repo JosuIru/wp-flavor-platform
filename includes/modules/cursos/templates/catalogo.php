@@ -7,14 +7,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$resultado = $this->action_catalogo_cursos([
-    'categoria' => $atts['categoria'],
-    'nivel' => $atts['nivel'],
-    'modalidad' => $atts['modalidad'],
+$resultado = $module->action_catalogo_cursos([
+    'categoria' => $atts['categoria'] ?? '',
+    'nivel' => $atts['nivel'] ?? '',
+    'modalidad' => $atts['modalidad'] ?? '',
 ]);
 
 $cursos = $resultado['success'] ? $resultado['cursos'] : [];
-$settings = $this->get_settings();
+$settings = $module->get_settings();
 $categorias = $settings['categorias'] ?? [];
 ?>
 

@@ -244,8 +244,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'banco-tiempo' => array(
-                'id'       => 'banco-tiempo',
+            'banco_tiempo' => array(
+                'id'       => 'banco_tiempo',
                 'titulo'   => 'Banco de Tiempo',
                 'icono'    => 'schedule',
                 'endpoint' => '/flavor/v1/banco-tiempo/servicios',
@@ -273,8 +273,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'grupos-consumo' => array(
-                'id'       => 'grupos-consumo',
+            'grupos_consumo' => array(
+                'id'       => 'grupos_consumo',
                 'titulo'   => 'Grupos de Consumo',
                 'icono'    => 'shopping_basket',
                 'endpoint' => '/flavor/v1/grupos-consumo/productos',
@@ -515,8 +515,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'ayuda-vecinal' => array(
-                'id'       => 'ayuda-vecinal',
+            'ayuda_vecinal' => array(
+                'id'       => 'ayuda_vecinal',
                 'titulo'   => 'Ayuda Vecinal',
                 'icono'    => 'volunteer_activism',
                 'endpoint' => '/flavor/v1/ayuda-vecinal',
@@ -549,8 +549,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'recursos-compartidos' => array(
-                'id'       => 'recursos-compartidos',
+            'recursos_compartidos' => array(
+                'id'       => 'recursos_compartidos',
                 'titulo'   => 'Recursos Compartidos',
                 'icono'    => 'handyman',
                 'endpoint' => '/flavor/v1/recursos-compartidos',
@@ -807,8 +807,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'red-social' => array(
-                'id'       => 'red-social',
+            'red_social' => array(
+                'id'       => 'red_social',
                 'titulo'   => 'Red Social',
                 'icono'    => 'public',
                 'endpoint' => '/flavor/v1/red-social/posts',
@@ -843,8 +843,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'chat-grupos' => array(
-                'id'       => 'chat-grupos',
+            'chat_grupos' => array(
+                'id'       => 'chat_grupos',
                 'titulo'   => 'Chat de Grupos',
                 'icono'    => 'chat',
                 'endpoint' => '/flavor/v1/chat/grupos',
@@ -866,8 +866,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'chat-interno' => array(
-                'id'       => 'chat-interno',
+            'chat_interno' => array(
+                'id'       => 'chat_interno',
                 'titulo'   => 'Mensajes',
                 'icono'    => 'chat_bubble',
                 'endpoint' => '/flavor/v1/chat/conversaciones',
@@ -1162,8 +1162,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'trading-ia' => array(
-                'id'       => 'trading-ia',
+            'trading_ia' => array(
+                'id'       => 'trading_ia',
                 'titulo'   => 'Trading IA',
                 'icono'    => 'trending_up',
                 'endpoint' => '/flavor/v1/trading-ia',
@@ -1174,8 +1174,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'dex-solana' => array(
-                'id'       => 'dex-solana',
+            'dex_solana' => array(
+                'id'       => 'dex_solana',
                 'titulo'   => 'DEX Solana',
                 'icono'    => 'currency_exchange',
                 'endpoint' => '/flavor/v1/dex-solana',
@@ -1225,8 +1225,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'email-marketing' => array(
-                'id'       => 'email-marketing',
+            'email_marketing' => array(
+                'id'       => 'email_marketing',
                 'titulo'   => 'Email Marketing',
                 'icono'    => 'email',
                 'endpoint' => '/flavor/v1/email-marketing/campaigns',
@@ -1239,8 +1239,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'sello-conciencia' => array(
-                'id'       => 'sello-conciencia',
+            'sello_conciencia' => array(
+                'id'       => 'sello_conciencia',
                 'titulo'   => 'Sello Conciencia',
                 'icono'    => 'verified',
                 'endpoint' => '/flavor/v1/sello-conciencia',
@@ -1253,8 +1253,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'circulos-cuidados' => array(
-                'id'       => 'circulos-cuidados',
+            'circulos_cuidados' => array(
+                'id'       => 'circulos_cuidados',
                 'titulo'   => 'Círculos de Cuidados',
                 'icono'    => 'favorite',
                 'endpoint' => '/flavor/v1/circulos-cuidados',
@@ -1275,8 +1275,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'economia-don' => array(
-                'id'       => 'economia-don',
+            'economia_don' => array(
+                'id'       => 'economia_don',
                 'titulo'   => 'Economía del Don',
                 'icono'    => 'card_giftcard',
                 'endpoint' => '/flavor/v1/economia-don',
@@ -1294,8 +1294,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'justicia-restaurativa' => array(
-                'id'       => 'justicia-restaurativa',
+            'justicia_restaurativa' => array(
+                'id'       => 'justicia_restaurativa',
                 'titulo'   => 'Justicia Restaurativa',
                 'icono'    => 'balance',
                 'endpoint' => '/flavor/v1/justicia-restaurativa',
@@ -1307,8 +1307,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'huella-ecologica' => array(
-                'id'       => 'huella-ecologica',
+            'huella_ecologica' => array(
+                'id'       => 'huella_ecologica',
                 'titulo'   => 'Huella Ecológica',
                 'icono'    => 'eco',
                 'endpoint' => '/flavor/v1/huella-ecologica',
@@ -1328,8 +1328,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'economia-suficiencia' => array(
-                'id'       => 'economia-suficiencia',
+            'economia_suficiencia' => array(
+                'id'       => 'economia_suficiencia',
                 'titulo'   => 'Economía de Suficiencia',
                 'icono'    => 'spa',
                 'endpoint' => '/flavor/v1/economia-suficiencia',
@@ -1341,8 +1341,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'saberes-ancestrales' => array(
-                'id'       => 'saberes-ancestrales',
+            'saberes_ancestrales' => array(
+                'id'       => 'saberes_ancestrales',
                 'titulo'   => 'Saberes Ancestrales',
                 'icono'    => 'history_edu',
                 'endpoint' => '/flavor/v1/saberes-ancestrales',
@@ -1355,8 +1355,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'biodiversidad-local' => array(
-                'id'       => 'biodiversidad-local',
+            'biodiversidad_local' => array(
+                'id'       => 'biodiversidad_local',
                 'titulo'   => 'Biodiversidad Local',
                 'icono'    => 'park',
                 'endpoint' => '/flavor/v1/biodiversidad-local',
@@ -1381,8 +1381,8 @@ class Flavor_Module_Config_API {
                 ),
             ),
 
-            'trabajo-digno' => array(
-                'id'       => 'trabajo-digno',
+            'trabajo_digno' => array(
+                'id'       => 'trabajo_digno',
                 'titulo'   => 'Trabajo Digno',
                 'icono'    => 'work_outline',
                 'endpoint' => '/flavor/v1/trabajo-digno',
@@ -1569,8 +1569,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_eventos', 'wp_flavor_eventos_inscripciones', 'wp_flavor_eventos_categorias'),
             ),
 
-            'espacios' => array(
-                'id'          => 'espacios',
+            'espacios_comunes' => array(
+                'id'          => 'espacios_comunes',
                 'titulo'      => 'Espacios Comunes',
                 'version'     => '1.0.0',
                 'descripcion' => 'Gestión integral de espacios compartidos de la comunidad. Permite administrar salas, pistas deportivas, jardines y otros recursos comunes con sistema de reservas, horarios y normas de uso.',
@@ -1617,7 +1617,7 @@ class Flavor_Module_Config_API {
                     'Citas para servicios',
                     'Turnos de uso de recursos',
                 ),
-                'modulos_relacionados' => array('espacios', 'bicicletas', 'parkings', 'recursos-compartidos'),
+                'modulos_relacionados' => array('espacios', 'bicicletas', 'parkings', 'recursos_compartidos'),
                 'requisitos' => array('espacios'),
                 'tabla_principal' => 'wp_flavor_reservas',
                 'tablas' => array('wp_flavor_reservas', 'wp_flavor_reservas_recurrentes'),
@@ -1651,8 +1651,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_incidencias', 'wp_flavor_incidencias_comentarios', 'wp_flavor_incidencias_fotos'),
             ),
 
-            'banco-tiempo' => array(
-                'id'          => 'banco-tiempo',
+            'banco_tiempo' => array(
+                'id'          => 'banco_tiempo',
                 'titulo'      => 'Banco de Tiempo',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de intercambio de servicios basado en tiempo. Los miembros ofrecen y solicitan servicios valorados en horas, fomentando la economía colaborativa y el apoyo mutuo sin dinero de por medio.',
@@ -1673,14 +1673,14 @@ class Flavor_Module_Config_API {
                     'Transporte y compras',
                     'Asesoramiento profesional',
                 ),
-                'modulos_relacionados' => array('ayuda-vecinal', 'economia-don', 'circulos-cuidados'),
+                'modulos_relacionados' => array('ayuda_vecinal', 'economia_don', 'circulos_cuidados'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_banco_tiempo_servicios',
                 'tablas' => array('wp_flavor_banco_tiempo_servicios', 'wp_flavor_banco_tiempo_intercambios', 'wp_flavor_banco_tiempo_saldo', 'wp_flavor_banco_tiempo_valoraciones'),
             ),
 
-            'grupos-consumo' => array(
-                'id'          => 'grupos-consumo',
+            'grupos_consumo' => array(
+                'id'          => 'grupos_consumo',
                 'titulo'      => 'Grupos de Consumo',
                 'version'     => '1.0.0',
                 'descripcion' => 'Plataforma para organizar compras colectivas directamente a productores locales. Gestiona pedidos, ciclos de compra, distribución y pagos, promoviendo el consumo responsable y de proximidad.',
@@ -1700,7 +1700,7 @@ class Flavor_Module_Config_API {
                     'Cestas de temporada',
                     'Compras mayoristas compartidas',
                 ),
-                'modulos_relacionados' => array('woocommerce', 'marketplace', 'economia-don'),
+                'modulos_relacionados' => array('woocommerce', 'marketplace', 'economia_don'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_grupos_consumo',
                 'tablas' => array('wp_flavor_grupos_consumo', 'wp_flavor_grupos_consumo_productos', 'wp_flavor_grupos_consumo_pedidos', 'wp_flavor_grupos_consumo_ciclos'),
@@ -1727,7 +1727,7 @@ class Flavor_Module_Config_API {
                     'Búsqueda de artículos',
                     'Intercambios',
                 ),
-                'modulos_relacionados' => array('economia-don', 'grupos-consumo', 'chat-interno'),
+                'modulos_relacionados' => array('economia_don', 'grupos_consumo', 'chat_interno'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_marketplace',
                 'tablas' => array('wp_flavor_marketplace', 'wp_flavor_marketplace_categorias', 'wp_flavor_marketplace_favoritos'),
@@ -1754,14 +1754,14 @@ class Flavor_Module_Config_API {
                     'Club de lectura',
                     'Biblioteca infantil',
                 ),
-                'modulos_relacionados' => array('recursos-compartidos', 'eventos'),
+                'modulos_relacionados' => array('recursos_compartidos', 'eventos'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_biblioteca',
                 'tablas' => array('wp_flavor_biblioteca', 'wp_flavor_biblioteca_prestamos', 'wp_flavor_biblioteca_reservas'),
             ),
 
-            'huertos' => array(
-                'id'          => 'huertos',
+            'huertos_urbanos' => array(
+                'id'          => 'huertos_urbanos',
                 'titulo'      => 'Huertos Urbanos',
                 'version'     => '1.0.0',
                 'descripcion' => 'Gestión de parcelas de huerto comunitario. Administra la asignación de parcelas, turnos de riego, herramientas compartidas y actividades formativas sobre agricultura urbana.',
@@ -1781,7 +1781,7 @@ class Flavor_Module_Config_API {
                     'Préstamo de herramientas',
                     'Talleres de cultivo',
                 ),
-                'modulos_relacionados' => array('compostaje', 'biodiversidad-local', 'grupos-consumo', 'recursos-compartidos'),
+                'modulos_relacionados' => array('compostaje', 'biodiversidad_local', 'grupos_consumo', 'recursos_compartidos'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_huertos',
                 'tablas' => array('wp_flavor_huertos', 'wp_flavor_huertos_parcelas', 'wp_flavor_huertos_asignaciones'),
@@ -1807,7 +1807,7 @@ class Flavor_Module_Config_API {
                     'Producción de abono natural',
                     'Reducción de huella ecológica',
                 ),
-                'modulos_relacionados' => array('huertos', 'reciclaje', 'huella-ecologica'),
+                'modulos_relacionados' => array('huertos', 'reciclaje', 'huella_ecologica'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_compostaje',
                 'tablas' => array('wp_flavor_compostaje', 'wp_flavor_compostaje_aportes', 'wp_flavor_compostaje_turnos'),
@@ -1833,7 +1833,7 @@ class Flavor_Module_Config_API {
                     'Educación ambiental',
                     'Competiciones entre comunidades',
                 ),
-                'modulos_relacionados' => array('compostaje', 'huella-ecologica', 'sello-conciencia'),
+                'modulos_relacionados' => array('compostaje', 'huella_ecologica', 'sello_conciencia'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_reciclaje',
                 'tablas' => array('wp_flavor_reciclaje', 'wp_flavor_reciclaje_registros', 'wp_flavor_reciclaje_puntos'),
@@ -1860,14 +1860,14 @@ class Flavor_Module_Config_API {
                     'Desplazamientos escolares',
                     'Viajes a eventos',
                 ),
-                'modulos_relacionados' => array('bicicletas', 'huella-ecologica', 'chat-interno'),
+                'modulos_relacionados' => array('bicicletas', 'huella_ecologica', 'chat_interno'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_carpooling',
                 'tablas' => array('wp_flavor_carpooling', 'wp_flavor_carpooling_reservas', 'wp_flavor_carpooling_valoraciones'),
             ),
 
-            'bicicletas' => array(
-                'id'          => 'bicicletas',
+            'bicicletas_compartidas' => array(
+                'id'          => 'bicicletas_compartidas',
                 'titulo'      => 'Bicicletas Compartidas',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de préstamo de bicicletas comunitarias. Gestiona la flota, estaciones, reservas y mantenimiento promoviendo la movilidad sostenible en el barrio.',
@@ -1887,7 +1887,7 @@ class Flavor_Module_Config_API {
                     'Paseos recreativos',
                     'Reducción de uso de coche',
                 ),
-                'modulos_relacionados' => array('carpooling', 'huella-ecologica', 'reservas'),
+                'modulos_relacionados' => array('carpooling', 'huella_ecologica', 'reservas'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_bicicletas',
                 'tablas' => array('wp_flavor_bicicletas', 'wp_flavor_bicicletas_estaciones', 'wp_flavor_bicicletas_alquileres'),
@@ -1920,8 +1920,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_parkings', 'wp_flavor_parkings_plazas', 'wp_flavor_parkings_reservas'),
             ),
 
-            'ayuda-vecinal' => array(
-                'id'          => 'ayuda-vecinal',
+            'ayuda_vecinal' => array(
+                'id'          => 'ayuda_vecinal',
                 'titulo'      => 'Red de Ayuda Vecinal',
                 'version'     => '1.0.0',
                 'descripcion' => 'Plataforma de ayuda mutua entre vecinos. Permite ofrecer o solicitar ayuda para tareas cotidianas, creando una red de apoyo solidario en la comunidad.',
@@ -1942,14 +1942,14 @@ class Flavor_Module_Config_API {
                     'Cuidado de mascotas',
                     'Recogida de paquetes',
                 ),
-                'modulos_relacionados' => array('banco-tiempo', 'circulos-cuidados', 'chat-interno'),
+                'modulos_relacionados' => array('banco_tiempo', 'circulos_cuidados', 'chat_interno'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_ayuda_vecinal',
                 'tablas' => array('wp_flavor_ayuda_vecinal', 'wp_flavor_ayuda_vecinal_respuestas'),
             ),
 
-            'recursos-compartidos' => array(
-                'id'          => 'recursos-compartidos',
+            'recursos_compartidos' => array(
+                'id'          => 'recursos_compartidos',
                 'titulo'      => 'Recursos Compartidos',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de préstamo de herramientas, equipos y otros recursos entre vecinos. Optimiza el uso de objetos que no se utilizan a diario compartiendo con la comunidad.',
@@ -1969,7 +1969,7 @@ class Flavor_Module_Config_API {
                     'Artículos de bebé',
                     'Electrodomésticos ocasionales',
                 ),
-                'modulos_relacionados' => array('biblioteca', 'banco-tiempo', 'economia-don'),
+                'modulos_relacionados' => array('biblioteca', 'banco_tiempo', 'economia_don'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_recursos_compartidos',
                 'tablas' => array('wp_flavor_recursos_compartidos', 'wp_flavor_recursos_compartidos_prestamos'),
@@ -1996,14 +1996,14 @@ class Flavor_Module_Config_API {
                     'Propuestas de mejora',
                     'Información compartida',
                 ),
-                'modulos_relacionados' => array('red-social', 'participacion', 'chat-grupos'),
+                'modulos_relacionados' => array('red_social', 'participacion', 'chat_grupos'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_foros',
                 'tablas' => array('wp_flavor_foros', 'wp_flavor_foros_temas', 'wp_flavor_foros_respuestas'),
             ),
 
-            'chat-grupos' => array(
-                'id'          => 'chat-grupos',
+            'chat_grupos' => array(
+                'id'          => 'chat_grupos',
                 'titulo'      => 'Chat de Grupos',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de chat en tiempo real para grupos temáticos. Permite crear canales de conversación por intereses, comisiones de trabajo o cualquier agrupación.',
@@ -2023,14 +2023,14 @@ class Flavor_Module_Config_API {
                     'Coordinación de actividades',
                     'Comunicación de urgencia',
                 ),
-                'modulos_relacionados' => array('chat-interno', 'comunidades', 'foros'),
+                'modulos_relacionados' => array('chat_interno', 'comunidades', 'foros'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_chat_grupos',
                 'tablas' => array('wp_flavor_chat_grupos', 'wp_flavor_chat_grupos_miembros', 'wp_flavor_mensajes'),
             ),
 
-            'chat-interno' => array(
-                'id'          => 'chat-interno',
+            'chat_interno' => array(
+                'id'          => 'chat_interno',
                 'titulo'      => 'Mensajería Privada',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de mensajes privados entre usuarios. Comunicación directa y confidencial para coordinar ayuda, intercambios o cualquier tema personal.',
@@ -2050,7 +2050,7 @@ class Flavor_Module_Config_API {
                     'Negociación de precios',
                     'Mensajes de seguimiento',
                 ),
-                'modulos_relacionados' => array('chat-grupos', 'marketplace', 'ayuda-vecinal'),
+                'modulos_relacionados' => array('chat_grupos', 'marketplace', 'ayuda_vecinal'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_conversaciones',
                 'tablas' => array('wp_flavor_conversaciones', 'wp_flavor_mensajes_privados'),
@@ -2164,8 +2164,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_participacion_procesos', 'wp_flavor_participacion_propuestas', 'wp_flavor_participacion_votos'),
             ),
 
-            'presupuestos' => array(
-                'id'          => 'presupuestos',
+            'presupuestos_participativos' => array(
+                'id'          => 'presupuestos_participativos',
                 'titulo'      => 'Presupuestos Participativos',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema para decidir colectivamente el destino de fondos comunitarios. Los miembros proponen proyectos, debaten y votan cómo invertir el presupuesto común.',
@@ -2218,8 +2218,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_transparencia', 'wp_flavor_transparencia_documentos'),
             ),
 
-            'avisos' => array(
-                'id'          => 'avisos',
+            'avisos_municipales' => array(
+                'id'          => 'avisos_municipales',
                 'titulo'      => 'Avisos y Comunicados',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de comunicación oficial de la comunidad. Publica avisos importantes, alertas y comunicados con diferentes niveles de prioridad y canales de difusión.',
@@ -2374,7 +2374,7 @@ class Flavor_Module_Config_API {
                     'Radio asociativa',
                     'Eventos en directo',
                 ),
-                'modulos_relacionados' => array('podcast', 'multimedia', 'chat-grupos'),
+                'modulos_relacionados' => array('podcast', 'multimedia', 'chat_grupos'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_radio_programas',
                 'tablas' => array('wp_flavor_radio_programas', 'wp_flavor_radio_programacion', 'wp_flavor_radio_dedicatorias', 'wp_flavor_radio_oyentes'),
@@ -2401,14 +2401,14 @@ class Flavor_Module_Config_API {
                     'Memorias gráficas',
                     'Archivo histórico',
                 ),
-                'modulos_relacionados' => array('eventos', 'podcast', 'red-social'),
+                'modulos_relacionados' => array('eventos', 'podcast', 'red_social'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_multimedia',
                 'tablas' => array('wp_flavor_multimedia', 'wp_flavor_multimedia_albumes'),
             ),
 
-            'red-social' => array(
-                'id'          => 'red-social',
+            'red_social' => array(
+                'id'          => 'red_social',
                 'titulo'      => 'Red Social Comunitaria',
                 'version'     => '1.0.0',
                 'descripcion' => 'Red social privada para la comunidad. Un espacio tipo Facebook donde los miembros comparten publicaciones, fotos, comentarios y reacciones.',
@@ -2428,7 +2428,7 @@ class Flavor_Module_Config_API {
                     'Crear comunidad',
                     'Networking vecinal',
                 ),
-                'modulos_relacionados' => array('foros', 'chat-grupos', 'multimedia'),
+                'modulos_relacionados' => array('foros', 'chat_grupos', 'multimedia'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_red_social_posts',
                 'tablas' => array('wp_flavor_red_social_posts', 'wp_flavor_red_social_comentarios', 'wp_flavor_red_social_likes', 'wp_flavor_red_social_seguidores'),
@@ -2455,7 +2455,7 @@ class Flavor_Module_Config_API {
                     'Merchandising',
                     'Servicios de pago',
                 ),
-                'modulos_relacionados' => array('grupos-consumo', 'socios', 'facturas'),
+                'modulos_relacionados' => array('grupos_consumo', 'socios', 'facturas'),
                 'requisitos' => array('WooCommerce plugin'),
                 'tabla_principal' => 'wc_orders',
                 'tablas' => array(),
@@ -2488,8 +2488,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_facturas', 'wp_flavor_facturas_lineas'),
             ),
 
-            'fichaje' => array(
-                'id'          => 'fichaje',
+            'fichaje_empleados' => array(
+                'id'          => 'fichaje_empleados',
                 'titulo'      => 'Control de Fichaje',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de control horario para empleados o voluntarios. Registro de entradas y salidas, cálculo de horas y generación de informes de asistencia.',
@@ -2536,7 +2536,7 @@ class Flavor_Module_Config_API {
                     'Fidelización',
                     'Análisis de clientes',
                 ),
-                'modulos_relacionados' => array('facturas', 'woocommerce', 'email-marketing'),
+                'modulos_relacionados' => array('facturas', 'woocommerce', 'email_marketing'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_clientes',
                 'tablas' => array('wp_flavor_clientes', 'wp_flavor_clientes_notas'),
@@ -2595,8 +2595,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_bares', 'wp_flavor_bares_valoraciones'),
             ),
 
-            'publicidad' => array(
-                'id'          => 'publicidad',
+            'advertising' => array(
+                'id'          => 'advertising',
                 'titulo'      => 'Publicidad Ética',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de anuncios éticos para financiar la plataforma. Publicidad respetuosa, de comercios locales y proyectos afines a los valores de la comunidad.',
@@ -2621,8 +2621,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_publicidad', 'wp_flavor_publicidad_impresiones'),
             ),
 
-            'email-marketing' => array(
-                'id'          => 'email-marketing',
+            'email_marketing' => array(
+                'id'          => 'email_marketing',
                 'titulo'      => 'Email Marketing',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de envío de newsletters y campañas de email. Segmentación de audiencias, plantillas profesionales y estadísticas de apertura y clics.',
@@ -2648,8 +2648,8 @@ class Flavor_Module_Config_API {
                 'tablas' => array('wp_flavor_email_campaigns', 'wp_flavor_email_suscriptores', 'wp_flavor_email_estadisticas'),
             ),
 
-            'circulos-cuidados' => array(
-                'id'          => 'circulos-cuidados',
+            'circulos_cuidados' => array(
+                'id'          => 'circulos_cuidados',
                 'titulo'      => 'Círculos de Cuidados',
                 'version'     => '1.0.0',
                 'descripcion' => 'Organización de redes de cuidados mutuos. Grupos de apoyo para situaciones de dependencia, enfermedad, maternidad u otras necesidades de cuidado.',
@@ -2669,14 +2669,14 @@ class Flavor_Module_Config_API {
                     'Crianza compartida',
                     'Cuidado de dependientes',
                 ),
-                'modulos_relacionados' => array('ayuda-vecinal', 'banco-tiempo', 'chat-grupos'),
+                'modulos_relacionados' => array('ayuda_vecinal', 'banco_tiempo', 'chat_grupos'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_circulos_cuidados',
                 'tablas' => array('wp_flavor_circulos_cuidados', 'wp_flavor_circulos_cuidados_miembros', 'wp_flavor_circulos_cuidados_turnos'),
             ),
 
-            'economia-don' => array(
-                'id'          => 'economia-don',
+            'economia_don' => array(
+                'id'          => 'economia_don',
                 'titulo'      => 'Economía del Don',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de regalo y donación sin expectativa de retorno. Promueve la generosidad y el compartir recursos más allá del intercambio comercial.',
@@ -2696,14 +2696,14 @@ class Flavor_Module_Config_API {
                     'Muebles sin uso',
                     'Electrodomésticos',
                 ),
-                'modulos_relacionados' => array('marketplace', 'recursos-compartidos', 'ayuda-vecinal'),
+                'modulos_relacionados' => array('marketplace', 'recursos_compartidos', 'ayuda_vecinal'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_economia_don',
                 'tablas' => array('wp_flavor_economia_don'),
             ),
 
-            'justicia-restaurativa' => array(
-                'id'          => 'justicia-restaurativa',
+            'justicia_restaurativa' => array(
+                'id'          => 'justicia_restaurativa',
                 'titulo'      => 'Justicia Restaurativa',
                 'version'     => '1.0.0',
                 'descripcion' => 'Herramientas para la resolución de conflictos mediante el diálogo y la reparación. Procesos de mediación, círculos restaurativos y acuerdos de convivencia.',
@@ -2723,14 +2723,14 @@ class Flavor_Module_Config_API {
                     'Reparación de daños',
                     'Reconciliación comunitaria',
                 ),
-                'modulos_relacionados' => array('incidencias', 'participacion', 'circulos-cuidados'),
+                'modulos_relacionados' => array('incidencias', 'participacion', 'circulos_cuidados'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_justicia_restaurativa',
                 'tablas' => array('wp_flavor_justicia_restaurativa', 'wp_flavor_justicia_restaurativa_procesos'),
             ),
 
-            'huella-ecologica' => array(
-                'id'          => 'huella-ecologica',
+            'huella_ecologica' => array(
+                'id'          => 'huella_ecologica',
                 'titulo'      => 'Calculadora de Huella Ecológica',
                 'version'     => '1.0.0',
                 'descripcion' => 'Herramienta para medir y reducir el impacto ambiental individual y colectivo. Calcula la huella de carbono, propone mejoras y gamifica la sostenibilidad.',
@@ -2750,14 +2750,14 @@ class Flavor_Module_Config_API {
                     'Gamificación verde',
                     'Objetivos comunitarios',
                 ),
-                'modulos_relacionados' => array('reciclaje', 'compostaje', 'carpooling', 'sello-conciencia'),
+                'modulos_relacionados' => array('reciclaje', 'compostaje', 'carpooling', 'sello_conciencia'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_huella_ecologica',
                 'tablas' => array('wp_flavor_huella_ecologica', 'wp_flavor_huella_ecologica_registros'),
             ),
 
-            'economia-suficiencia' => array(
-                'id'          => 'economia-suficiencia',
+            'economia_suficiencia' => array(
+                'id'          => 'economia_suficiencia',
                 'titulo'      => 'Economía de Suficiencia',
                 'version'     => '1.0.0',
                 'descripcion' => 'Recursos y prácticas para un estilo de vida sostenible basado en lo suficiente. Guías de consumo consciente, reparación, reutilización y autosuficiencia.',
@@ -2777,14 +2777,14 @@ class Flavor_Module_Config_API {
                     'Vida más simple',
                     'Ahorro consciente',
                 ),
-                'modulos_relacionados' => array('huella-ecologica', 'recursos-compartidos', 'saberes-ancestrales'),
+                'modulos_relacionados' => array('huella_ecologica', 'recursos_compartidos', 'saberes_ancestrales'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_economia_suficiencia',
                 'tablas' => array('wp_flavor_economia_suficiencia'),
             ),
 
-            'saberes-ancestrales' => array(
-                'id'          => 'saberes-ancestrales',
+            'saberes_ancestrales' => array(
+                'id'          => 'saberes_ancestrales',
                 'titulo'      => 'Saberes Ancestrales',
                 'version'     => '1.0.0',
                 'descripcion' => 'Repositorio de conocimientos tradicionales y oficios antiguos. Preserva y transmite saberes que corren riesgo de perderse: artesanía, remedios naturales, técnicas agrícolas...',
@@ -2804,14 +2804,14 @@ class Flavor_Module_Config_API {
                     'Medicina natural',
                     'Técnicas artesanales',
                 ),
-                'modulos_relacionados' => array('talleres', 'biodiversidad-local', 'economia-suficiencia'),
+                'modulos_relacionados' => array('talleres', 'biodiversidad_local', 'economia_suficiencia'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_saberes_ancestrales',
                 'tablas' => array('wp_flavor_saberes_ancestrales'),
             ),
 
-            'biodiversidad-local' => array(
-                'id'          => 'biodiversidad-local',
+            'biodiversidad_local' => array(
+                'id'          => 'biodiversidad_local',
                 'titulo'      => 'Biodiversidad Local',
                 'version'     => '1.0.0',
                 'descripcion' => 'Catálogo colaborativo de flora, fauna y ecosistemas del territorio. Ciencia ciudadana para conocer, proteger y disfrutar la naturaleza cercana.',
@@ -2831,14 +2831,14 @@ class Flavor_Module_Config_API {
                     'Protección de especies',
                     'Turismo de naturaleza',
                 ),
-                'modulos_relacionados' => array('huertos', 'huella-ecologica', 'saberes-ancestrales'),
+                'modulos_relacionados' => array('huertos', 'huella_ecologica', 'saberes_ancestrales'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_biodiversidad',
                 'tablas' => array('wp_flavor_biodiversidad', 'wp_flavor_biodiversidad_avistamientos'),
             ),
 
-            'trabajo-digno' => array(
-                'id'          => 'trabajo-digno',
+            'trabajo_digno' => array(
+                'id'          => 'trabajo_digno',
                 'titulo'      => 'Bolsa de Trabajo Digno',
                 'version'     => '1.0.0',
                 'descripcion' => 'Plataforma de empleo con criterios éticos. Ofertas de trabajo que garantizan condiciones dignas, formación profesional y recursos para el emprendimiento social.',
@@ -2858,14 +2858,14 @@ class Flavor_Module_Config_API {
                     'Emprendimiento social',
                     'Formación laboral',
                 ),
-                'modulos_relacionados' => array('cursos', 'colectivos', 'economia-suficiencia'),
+                'modulos_relacionados' => array('cursos', 'colectivos', 'economia_suficiencia'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_trabajo_digno',
                 'tablas' => array('wp_flavor_trabajo_digno', 'wp_flavor_trabajo_digno_ofertas'),
             ),
 
-            'sello-conciencia' => array(
-                'id'          => 'sello-conciencia',
+            'sello_conciencia' => array(
+                'id'          => 'sello_conciencia',
                 'titulo'      => 'Sello Conciencia',
                 'version'     => '1.0.0',
                 'descripcion' => 'Sistema de certificación ética para comercios y servicios. Acredita el cumplimiento de criterios sociales, ambientales y de comercio justo.',
@@ -2885,14 +2885,14 @@ class Flavor_Module_Config_API {
                     'Visibilizar buenas prácticas',
                     'Red de comercio justo',
                 ),
-                'modulos_relacionados' => array('bares', 'colectivos', 'huella-ecologica'),
+                'modulos_relacionados' => array('bares', 'colectivos', 'huella_ecologica'),
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_sello_conciencia',
                 'tablas' => array('wp_flavor_sello_conciencia', 'wp_flavor_sello_conciencia_certificados'),
             ),
 
-            'trading-ia' => array(
-                'id'          => 'trading-ia',
+            'trading_ia' => array(
+                'id'          => 'trading_ia',
                 'titulo'      => 'Trading con IA',
                 'version'     => '1.0.0',
                 'descripcion' => 'Herramientas de trading asistido por inteligencia artificial. Análisis de mercados, señales automatizadas y gestión de portfolios con IA.',
@@ -2912,14 +2912,14 @@ class Flavor_Module_Config_API {
                     'Gestión de inversiones',
                     'Educación financiera',
                 ),
-                'modulos_relacionados' => array('dex-solana'),
+                'modulos_relacionados' => array('dex_solana'),
                 'requisitos' => array(),
                 'tabla_principal' => null,
                 'tablas' => array(),
             ),
 
-            'dex-solana' => array(
-                'id'          => 'dex-solana',
+            'dex_solana' => array(
+                'id'          => 'dex_solana',
                 'titulo'      => 'DEX en Solana',
                 'version'     => '1.0.0',
                 'descripcion' => 'Intercambio descentralizado en la blockchain de Solana. Swap de tokens, pools de liquidez y operaciones DeFi con bajas comisiones.',
@@ -2939,7 +2939,7 @@ class Flavor_Module_Config_API {
                     'Provisión de liquidez',
                     'Arbitraje',
                 ),
-                'modulos_relacionados' => array('trading-ia'),
+                'modulos_relacionados' => array('trading_ia'),
                 'requisitos' => array(),
                 'tabla_principal' => null,
                 'tablas' => array(),

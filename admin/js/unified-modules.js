@@ -261,7 +261,8 @@
                     }
 
                     const data = await response.json();
-                    this.docsData = data;
+                    // La API devuelve {success: true, data: {...}}
+                    this.docsData = data.data || data;
                 } catch (error) {
                     console.error('Error loading docs:', error);
                     this.docsError = fumData.i18n.docsError;
