@@ -101,8 +101,11 @@ $colores_estado = [
     background: #fff;
     border: 1px solid #c3c4c7;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     overflow: hidden;
+}
+.gc-usuario-card.collapsed .gc-usuario-body {
+    display: none;
 }
 .gc-usuario-header {
     display: flex;
@@ -111,6 +114,38 @@ $colores_estado = [
     padding: 15px 20px;
     background: linear-gradient(135deg, #2271b1 0%, #135e96 100%);
     color: #fff;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+}
+.gc-usuario-header:hover {
+    background: linear-gradient(135deg, #1e6091 0%, #104a7a 100%);
+}
+.gc-usuario-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    margin-left: 15px;
+    transition: transform 0.3s ease, background 0.2s ease;
+}
+.gc-usuario-toggle:hover {
+    background: rgba(255,255,255,0.25);
+}
+.gc-usuario-toggle .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+}
+.gc-usuario-card.collapsed .gc-usuario-toggle .dashicons {
+    transform: rotate(-90deg);
+}
+.gc-usuario-body {
+    transition: all 0.3s ease;
 }
 .gc-usuario-info {
     display: flex;
@@ -281,6 +316,14 @@ $colores_estado = [
                 <button type="button" class="button" onclick="window.print();">
                     <span class="dashicons dashicons-printer" style="margin-top: 3px;"></span> <?php esc_html_e('Imprimir Todo', 'flavor-chat-ia'); ?>
                 </button>
+                <span style="margin-left: 10px; border-left: 1px solid #c3c4c7; padding-left: 10px;">
+                    <button type="button" class="button gc-expandir-todos" title="<?php esc_attr_e('Expandir todos', 'flavor-chat-ia'); ?>">
+                        <span class="dashicons dashicons-arrow-down-alt2" style="margin-top: 3px;"></span>
+                    </button>
+                    <button type="button" class="button gc-colapsar-todos" title="<?php esc_attr_e('Colapsar todos', 'flavor-chat-ia'); ?>">
+                        <span class="dashicons dashicons-arrow-up-alt2" style="margin-top: 3px;"></span>
+                    </button>
+                </span>
             <?php endif; ?>
         </form>
     </div>
@@ -332,8 +375,12 @@ $colores_estado = [
                     <div class="gc-usuario-total-cantidad"><?php echo number_format($total_usuario, 2); ?> €</div>
                     <div class="gc-usuario-total-label"><?php echo sprintf(_n('%d producto', '%d productos', count($pedidos_usuario), 'flavor-chat-ia'), count($pedidos_usuario)); ?></div>
                 </div>
+                <div class="gc-usuario-toggle">
+                    <span class="dashicons dashicons-arrow-down-alt2"></span>
+                </div>
             </div>
 
+            <div class="gc-usuario-body">
             <div class="gc-usuario-productos">
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
@@ -381,6 +428,7 @@ $colores_estado = [
                     <span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('Marcar como preparado', 'flavor-chat-ia'); ?>
                 </button>
             </div>
+            </div><!-- /.gc-usuario-body -->
         </div>
         <?php endforeach; ?>
 
@@ -463,6 +511,25 @@ function imprimirUsuario(usuarioId) {
 }
 
 jQuery(document).ready(function($) {
+
+    // Toggle de tarjetas de usuario (expandir/colapsar)
+    $('.gc-usuario-header').on('click', function(e) {
+        // No colapsar si se hace clic en el select de estado
+        if ($(e.target).is('select, option')) return;
+
+        var $card = $(this).closest('.gc-usuario-card');
+        $card.toggleClass('collapsed');
+    });
+
+    // Expandir todos
+    $('.gc-expandir-todos').on('click', function() {
+        $('.gc-usuario-card').removeClass('collapsed');
+    });
+
+    // Colapsar todos
+    $('.gc-colapsar-todos').on('click', function() {
+        $('.gc-usuario-card').addClass('collapsed');
+    });
 
     var coloresEstado = {
         'pendiente': '#dba617',
