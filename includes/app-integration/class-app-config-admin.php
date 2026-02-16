@@ -2761,6 +2761,69 @@ class Flavor_App_Config_Admin {
                     $modal.hide();
                 }
             });
+
+            // Activar/Desactivar módulo via AJAX
+            $('.flavor-module-activate-btn').on('click', function(e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var moduleId = $btn.data('module-id');
+                var isActive = $btn.data('active') === 1 || $btn.data('active') === '1';
+                var newState = !isActive;
+
+                $btn.prop('disabled', true).text('<?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>');
+
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'flavor_toggle_module_activation',
+                        module_id: moduleId,
+                        activate: newState ? 1 : 0,
+                        nonce: '<?php echo wp_create_nonce('flavor_apps_config'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $btn.data('active', newState ? '1' : '0');
+                            $btn.text(newState ? '<?php echo esc_js(__('Desactivar módulo', 'flavor-chat-ia')); ?>' : '<?php echo esc_js(__('Activar módulo', 'flavor-chat-ia')); ?>');
+
+                            // Actualizar estado visual del API
+                            var $card = $btn.closest('.flavor-module-card');
+                            var $status = $card.find('.flavor-module-api-status');
+                            if (newState) {
+                                $status.removeClass('unavailable').addClass('available');
+                                $status.html('<span class="dashicons dashicons-yes-alt"></span> <?php echo esc_js(__('API disponible', 'flavor-chat-ia')); ?>');
+                            } else {
+                                $status.html('<span class="dashicons dashicons-warning"></span> <?php echo esc_js(__('Disponible (no activo)', 'flavor-chat-ia')); ?>');
+                            }
+
+                            // Sincronizar el toggle switch
+                            var $toggle = $card.find('.flavor-module-toggle');
+                            $toggle.prop('checked', newState);
+                        } else {
+                            alert(response.data?.message || '<?php echo esc_js(__('Error al cambiar estado del módulo', 'flavor-chat-ia')); ?>');
+                        }
+                    },
+                    error: function() {
+                        alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false);
+                    }
+                });
+            });
+
+            // Sincronizar toggle switch con el botón
+            $('.flavor-module-toggle').on('change', function() {
+                var $toggle = $(this);
+                var $card = $toggle.closest('.flavor-module-card');
+                var $btn = $card.find('.flavor-module-activate-btn');
+
+                if ($btn.length) {
+                    $btn.trigger('click');
+                    // Revertir el toggle hasta que el AJAX confirme
+                    $toggle.prop('checked', !$toggle.prop('checked'));
+                }
+            });
         });
         </script>
 
