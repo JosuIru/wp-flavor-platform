@@ -35,6 +35,28 @@ import '../../features/modules/saberes_ancestrales/saberes_ancestrales_screen.da
 import '../../features/modules/sello_conciencia/sello_conciencia_screen.dart';
 import '../../features/modules/trabajo_digno/trabajo_digno_screen.dart';
 import '../../features/modules/woocommerce/woocommerce_screen.dart';
+import '../../features/modules/fichaje_empleados/fichaje_empleados_screen.dart';
+import '../../features/modules/participacion/participacion_screen.dart';
+import '../../features/modules/presupuestos_participativos/presupuestos_participativos_screen.dart';
+import '../../features/modules/advertising/advertising_screen.dart';
+import '../../features/modules/carpooling/carpooling_screen.dart';
+import '../../features/modules/compostaje/compostaje_screen.dart';
+import '../../features/modules/empresarial/empresarial_screen.dart';
+import '../../features/modules/multimedia/multimedia_screen.dart';
+import '../../features/modules/podcast/podcast_screen.dart';
+import '../../features/modules/radio/radio_screen.dart';
+import '../../features/modules/red_social/red_social_screen.dart';
+import '../../features/modules/transparencia/transparencia_screen.dart';
+import '../../features/modules/colectivos/colectivos_screen.dart';
+import '../../features/modules/foros/foros_screen.dart';
+import '../../features/modules/clientes/clientes_screen.dart';
+import '../../features/modules/comunidades/comunidades_screen.dart';
+import '../../features/modules/trading_ia/trading_ia_screen.dart';
+import '../../features/modules/dex_solana/dex_solana_screen.dart';
+import '../../features/modules/themacle/themacle_screen.dart';
+import '../../features/modules/email_marketing/email_marketing_screen.dart';
+import '../../features/modules/bares/bares_screen.dart';
+import '../../features/modules/reservas/reservas_screen.dart';
 import '../../features/modules/module_placeholder_screen.dart';
 
 /// Registro centralizado de pantallas de módulos
@@ -78,6 +100,28 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder('sello-conciencia', (_) => const SelloConcienciaScreen());
     loader.registerScreenBuilder('trabajo-digno', (_) => const TrabajoDignoScreen());
     loader.registerScreenBuilder('woocommerce', (_) => const WooCommerceScreen());
+    loader.registerScreenBuilder('fichaje-empleados', (_) => const FichajeEmpleadosScreen());
+    loader.registerScreenBuilder('participacion', (_) => const ParticipacionScreen());
+    loader.registerScreenBuilder('presupuestos-participativos', (_) => const PresupuestosParticipativosScreen());
+    loader.registerScreenBuilder('advertising', (_) => const AdvertisingScreen());
+    loader.registerScreenBuilder('carpooling', (_) => const CarpoolingScreen());
+    loader.registerScreenBuilder('compostaje', (_) => const CompostajeScreen());
+    loader.registerScreenBuilder('empresarial', (_) => const EmpresarialScreen());
+    loader.registerScreenBuilder('multimedia', (_) => const MultimediaScreen());
+    loader.registerScreenBuilder('podcast', (_) => const PodcastScreen());
+    loader.registerScreenBuilder('radio', (_) => const RadioScreen());
+    loader.registerScreenBuilder('red-social', (_) => const RedSocialScreen());
+    loader.registerScreenBuilder('transparencia', (_) => const TransparenciaScreen());
+    loader.registerScreenBuilder('colectivos', (_) => const ColectivosScreen());
+    loader.registerScreenBuilder('foros', (_) => const ForosScreen());
+    loader.registerScreenBuilder('clientes', (_) => const ClientesScreen());
+    loader.registerScreenBuilder('comunidades', (_) => const ComunidadesScreen());
+    loader.registerScreenBuilder('trading-ia', (_) => const TradingIaScreen());
+    loader.registerScreenBuilder('dex-solana', (_) => const DexSolanaScreen());
+    loader.registerScreenBuilder('themacle', (_) => const ThemacleScreen());
+    loader.registerScreenBuilder('email-marketing', (_) => const EmailMarketingScreen());
+    loader.registerScreenBuilder('bares', (_) => const BaresScreen());
+    loader.registerScreenBuilder('reservas', (_) => const ReservasScreen());
 
     // Variantes con guion bajo (compatibilidad)
     loader.registerScreenBuilder('grupos_consumo', (_) => const GruposConsumoScreen());
@@ -98,6 +142,12 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder('saberes_ancestrales', (_) => const SaberesAncestralesScreen());
     loader.registerScreenBuilder('sello_conciencia', (_) => const SelloConcienciaScreen());
     loader.registerScreenBuilder('trabajo_digno', (_) => const TrabajoDignoScreen());
+    loader.registerScreenBuilder('fichaje_empleados', (_) => const FichajeEmpleadosScreen());
+    loader.registerScreenBuilder('presupuestos_participativos', (_) => const PresupuestosParticipativosScreen());
+    loader.registerScreenBuilder('red_social', (_) => const RedSocialScreen());
+    loader.registerScreenBuilder('trading_ia', (_) => const TradingIaScreen());
+    loader.registerScreenBuilder('dex_solana', (_) => const DexSolanaScreen());
+    loader.registerScreenBuilder('email_marketing', (_) => const EmailMarketingScreen());
 
     debugPrint('✅ Registradas ${loader.loadedCount} pantallas de módulos');
   }
