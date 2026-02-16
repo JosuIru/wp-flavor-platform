@@ -104,7 +104,7 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
                     _n('Participas en %d proyecto', 'Participas en %d proyectos', $stats['proyectos'], 'flavor-chat-ia'),
                     $stats['proyectos']
                 ),
-                'url' => home_url('/mi-portal/huella-ecologica/proyectos/'),
+                'url' => $this->get_context_url('/mi-portal/huella-ecologica/proyectos/', 'flavor-huella-ecologica'),
             ];
         }
 
@@ -124,14 +124,9 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
             'empty_state' => __('Calcula tu huella ecológica', 'flavor-chat-ia'),
             'footer' => [
                 [
-                    'label' => __('Calculadora', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/huella-ecologica/calculadora/'),
+                    'label' => $this->is_admin_context() ? __('Ver panel', 'flavor-chat-ia') : __('Calculadora', 'flavor-chat-ia'),
+                    'url' => $this->get_context_url('/mi-portal/huella-ecologica/calculadora/', 'flavor-huella-ecologica'),
                     'icon' => 'dashicons-chart-bar',
-                ],
-                [
-                    'label' => __('Comunidad', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/huella-ecologica/comunidad/'),
-                    'icon' => 'dashicons-groups',
                 ],
             ],
             'extra' => [

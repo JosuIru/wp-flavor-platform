@@ -185,6 +185,9 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         // Construir estadísticas
         $stats = [];
 
+        // Detectar contexto admin/frontend
+        $es_admin = is_admin() && !wp_doing_ajax();
+
         // Stat 1: Ciclo activo o estado
         if ($ciclo_activo) {
             $stats[] = [
@@ -192,7 +195,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $ciclo_activo['titulo'],
                 'label' => __('Ciclo activo', 'flavor-chat-ia'),
                 'color' => 'success',
-                'url' => home_url('/mi-portal/grupos-consumo/catalogo/'),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-grupos-consumo') : home_url('/mi-portal/grupos-consumo/catalogo/'),
             ];
 
             // Stat 2: Tiempo restante
@@ -218,7 +221,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => number_format($gasto_mes, 2, ',', '.') . ' €',
             'label' => __('Este mes', 'flavor-chat-ia'),
             'color' => 'primary',
-            'url' => home_url('/mi-portal/grupos-consumo/mis-pedidos/'),
+            'url' => $es_admin ? admin_url('admin.php?page=flavor-gc-pedidos') : home_url('/mi-portal/grupos-consumo/mis-pedidos/'),
         ];
 
         // Stat 4: Items en cesta
@@ -227,7 +230,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $items_cesta,
             'label' => __('En cesta', 'flavor-chat-ia'),
             'color' => $items_cesta > 0 ? 'warning' : 'gray',
-            'url' => home_url('/mi-portal/grupos-consumo/mi-cesta/'),
+            'url' => $es_admin ? admin_url('admin.php?page=flavor-gc-pedidos') : home_url('/mi-portal/grupos-consumo/mi-cesta/'),
         ];
 
         // Items: últimos productos añadidos a cesta
@@ -239,8 +242,8 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'empty_state' => __('No tienes productos en tu cesta', 'flavor-chat-ia'),
             'footer' => [
                 [
-                    'label' => __('Ver catálogo', 'flavor-chat-ia'),
-                    'url' => home_url('/mi-portal/grupos-consumo/catalogo/'),
+                    'label' => $es_admin ? __('Ver panel', 'flavor-chat-ia') : __('Ver catálogo', 'flavor-chat-ia'),
+                    'url' => $es_admin ? admin_url('admin.php?page=flavor-grupos-consumo') : home_url('/mi-portal/grupos-consumo/catalogo/'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -406,13 +409,16 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $limite
         ));
 
+        $es_admin_items = is_admin() && !wp_doing_ajax();
+        $url_cesta = $es_admin_items ? admin_url('admin.php?page=flavor-gc-pedidos') : home_url('/mi-portal/grupos-consumo/mi-cesta/');
+
         $items = [];
         foreach ($items_db as $item) {
             $items[] = [
                 'icon' => 'dashicons-carrot',
                 'title' => $item->nombre_producto ?: __('Producto', 'flavor-chat-ia'),
                 'meta' => sprintf(__('Cantidad: %d', 'flavor-chat-ia'), $item->cantidad),
-                'url' => home_url('/mi-portal/grupos-consumo/mi-cesta/'),
+                'url' => $url_cesta,
             ];
         }
 

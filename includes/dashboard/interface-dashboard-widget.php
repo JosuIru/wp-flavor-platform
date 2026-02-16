@@ -441,6 +441,40 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
     }
 
     /**
+     * Genera una URL sensible al contexto (admin vs frontend)
+     *
+     * Método helper para que los widgets generen URLs que apunten
+     * a la ubicación correcta según el contexto actual.
+     *
+     * @param string $ruta_frontend Ruta del frontend (ej: '/mi-portal/modulo/accion/')
+     * @param string $pagina_admin  Slug de página admin (ej: 'flavor-modulo-accion')
+     * @return string URL completa según el contexto
+     * @since 4.2.0
+     */
+    protected function get_context_url(string $ruta_frontend, string $pagina_admin = ''): string {
+        // Detectar contexto
+        if (is_admin() && !wp_doing_ajax()) {
+            // En admin: usar URL de admin si se proporciona, sino fallback a frontend
+            if (!empty($pagina_admin)) {
+                return admin_url('admin.php?page=' . $pagina_admin);
+            }
+        }
+
+        // En frontend o sin página admin: usar URL de frontend
+        return home_url($ruta_frontend);
+    }
+
+    /**
+     * Verifica si estamos en contexto de administración
+     *
+     * @return bool True si estamos en admin (excluyendo AJAX)
+     * @since 4.2.0
+     */
+    protected function is_admin_context(): bool {
+        return is_admin() && !wp_doing_ajax();
+    }
+
+    /**
      * Obtiene datos del widget (implementacion base)
      *
      * Los widgets concretos deben sobrescribir este metodo
