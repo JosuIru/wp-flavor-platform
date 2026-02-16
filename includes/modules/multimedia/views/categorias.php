@@ -187,12 +187,22 @@ function cerrarModalNuevaCategoria() {
 }
 
 function editarCategoria(id) {
-    alert('Editar categoría #' + id);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-multimedia&tab=categorias&editar='); ?>' + id;
 }
 
 function eliminarCategoria(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta categoría? Esta acción no se puede deshacer.')) {
-        alert('Eliminar categoría #' + id);
+    if (confirm('<?php echo esc_js(__('¿Eliminar esta categoría? Esta acción no se puede deshacer.', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_multimedia_eliminar_categoria',
+            categoria_id: id,
+            nonce: '<?php echo wp_create_nonce('multimedia_categoria_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 

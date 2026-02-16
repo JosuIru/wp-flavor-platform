@@ -234,16 +234,35 @@ function seleccionarTodos(checkbox) {
 }
 
 function toggleNotificaciones(suscripcionId, nuevoEstado) {
-    if (confirm('¿Cambiar el estado de las notificaciones para este suscriptor?')) {
-        // Implementar cambio de notificaciones
-        alert('Cambiar notificaciones para suscripción #' + suscripcionId + ' a ' + (nuevoEstado ? 'activas' : 'inactivas'));
+    if (confirm('<?php echo esc_js(__('¿Cambiar el estado de las notificaciones?', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_podcast_toggle_notificaciones',
+            suscripcion_id: suscripcionId,
+            estado: nuevoEstado ? 1 : 0,
+            nonce: '<?php echo wp_create_nonce('podcast_suscriptores_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al cambiar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 
 function eliminarSuscripcion(suscripcionId) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta suscripción? El usuario deberá suscribirse nuevamente si desea continuar recibiendo actualizaciones.')) {
-        // Implementar eliminación
-        alert('Eliminar suscripción #' + suscripcionId);
+    if (confirm('<?php echo esc_js(__('¿Eliminar esta suscripción?', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_podcast_eliminar_suscripcion',
+            suscripcion_id: suscripcionId,
+            nonce: '<?php echo wp_create_nonce('podcast_suscriptores_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 
@@ -251,13 +270,25 @@ function enviarNotificacion() {
     const seleccionados = document.querySelectorAll('.checkbox-suscriptor:checked');
 
     if (seleccionados.length === 0) {
-        alert('Por favor selecciona al menos un suscriptor');
+        alert('<?php echo esc_js(__('Selecciona al menos un suscriptor', 'flavor-chat-ia')); ?>');
         return;
     }
 
-    const mensaje = prompt('Escribe el mensaje de notificación:', 'Nuevo episodio disponible');
+    const mensaje = prompt('<?php echo esc_js(__('Mensaje de notificación:', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Nuevo episodio disponible', 'flavor-chat-ia')); ?>');
     if (mensaje) {
-        alert('Enviar notificación a ' + seleccionados.length + ' suscriptores: ' + mensaje);
+        const ids = Array.from(seleccionados).map(cb => cb.value);
+        jQuery.post(ajaxurl, {
+            action: 'flavor_podcast_enviar_notificacion',
+            suscriptor_ids: ids,
+            mensaje: mensaje,
+            nonce: '<?php echo wp_create_nonce('podcast_suscriptores_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                alert('<?php echo esc_js(__('Notificaciones enviadas', 'flavor-chat-ia')); ?>');
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al enviar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 

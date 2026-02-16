@@ -2383,13 +2383,49 @@ KNOWLEDGE;
                 echo '<td><span class="' . esc_attr($clase_prioridad) . '">' . esc_html(ucfirst($aviso['prioridad'] ?? 'media')) . '</span></td>';
                 echo '<td>' . esc_html($aviso['categoria'] ?? '-') . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($aviso['created_at']))) . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small am-ver-aviso" data-id="' . esc_attr($aviso['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="' . esc_url(admin_url('admin.php?page=avisos-municipales-nuevo&editar=' . $aviso['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         } else {
             echo '<p>' . __('No hay avisos activos en este momento.', 'flavor-chat-ia') . '</p>';
         }
+
+        // Modal ver aviso
+        echo '<div id="modal-ver-aviso" style="display:none;">
+            <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
+                <div class="modal-content" style="position:relative;max-width:700px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
+                    <h2>' . __('Detalle del Aviso', 'flavor-chat-ia') . '</h2>
+                    <div id="contenido-aviso"></div>
+                    <p><button type="button" class="button" id="cerrar-modal-aviso">' . __('Cerrar', 'flavor-chat-ia') . '</button></p>
+                </div>
+            </div>
+        </div>';
+
+        echo '<script>
+        jQuery(document).ready(function($) {
+            $(".am-ver-aviso").on("click", function(e) {
+                e.preventDefault();
+                var $row = $(this).closest("tr");
+                var titulo = $row.find("td:eq(0)").text();
+                var prioridad = $row.find("td:eq(1)").text();
+                var categoria = $row.find("td:eq(2)").text();
+                var fecha = $row.find("td:eq(3)").text();
+
+                var html = "<table class=\"form-table\">";
+                html += "<tr><th>Título:</th><td><strong>" + titulo + "</strong></td></tr>";
+                html += "<tr><th>Prioridad:</th><td>" + prioridad + "</td></tr>";
+                html += "<tr><th>Categoría:</th><td>" + categoria + "</td></tr>";
+                html += "<tr><th>Fecha:</th><td>" + fecha + "</td></tr>";
+                html += "</table>";
+                $("#contenido-aviso").html(html);
+                $("#modal-ver-aviso").fadeIn();
+            });
+            $("#cerrar-modal-aviso, .modal-overlay").on("click", function(e) {
+                if (e.target === this) $("#modal-ver-aviso").fadeOut();
+            });
+        });
+        </script>';
 
         echo '</div>';
     }
@@ -2458,7 +2494,7 @@ KNOWLEDGE;
                 echo '<td>' . esc_html($aviso['categoria'] ?? '-') . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($aviso['created_at']))) . '</td>';
                 echo '<td>' . ($aviso['fecha_expiracion'] ? esc_html(date_i18n('d/m/Y', strtotime($aviso['fecha_expiracion']))) : '-') . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="#" class="button button-small">' . __('Republicar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small am-ver-aviso" data-id="' . esc_attr($aviso['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="' . esc_url(admin_url('admin.php?page=avisos-municipales-nuevo&republicar=' . $aviso['id'])) . '" class="button button-small">' . __('Republicar', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';

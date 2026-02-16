@@ -474,6 +474,81 @@
             });
     });
 
+    // Editar suscriptor
+    $(document).on('click', '.em-editar-suscriptor', function(e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        window.location.href = emAdmin.adminUrl + 'admin.php?page=flavor-em-suscriptores&action=edit&id=' + id;
+    });
+
+    // Eliminar suscriptor
+    $(document).on('click', '.em-eliminar-suscriptor', function(e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        const $row = $(this).closest('tr');
+
+        if (!confirm('¿Estás seguro de eliminar este suscriptor?')) {
+            return;
+        }
+
+        apiCall('em/admin/suscriptores/' + id, 'DELETE')
+            .done(function(response) {
+                if (response.success) {
+                    showNotice('Suscriptor eliminado correctamente', 'success');
+                    $row.fadeOut(function() {
+                        $(this).remove();
+                    });
+                } else {
+                    showNotice(response.data || 'Error al eliminar', 'error');
+                }
+            });
+    });
+
+    // Duplicar campaña
+    $(document).on('click', '.em-duplicar', function(e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+
+        if (!confirm('¿Duplicar esta campaña?')) {
+            return;
+        }
+
+        apiCall('em/admin/campanias/' + id + '/duplicar', 'POST')
+            .done(function(response) {
+                if (response.success) {
+                    showNotice('Campaña duplicada correctamente', 'success');
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showNotice(response.data || 'Error al duplicar', 'error');
+                }
+            });
+    });
+
+    // Eliminar campaña
+    $(document).on('click', '.em-eliminar', function(e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        const $row = $(this).closest('tr');
+
+        if (!confirm('¿Estás seguro de eliminar esta campaña?')) {
+            return;
+        }
+
+        apiCall('em/admin/campanias/' + id, 'DELETE')
+            .done(function(response) {
+                if (response.success) {
+                    showNotice('Campaña eliminada correctamente', 'success');
+                    $row.fadeOut(function() {
+                        $(this).remove();
+                    });
+                } else {
+                    showNotice(response.data || 'Error al eliminar', 'error');
+                }
+            });
+    });
+
     // =========================================================================
     // CONFIGURACIÓN
     // =========================================================================

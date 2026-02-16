@@ -80,7 +80,7 @@ $emision_actual = $wpdb->get_row("
                     <strong><?php echo number_format($emision_actual->oyentes_actual ?? 0); ?></strong> <?php echo esc_html__('oyentes conectados', 'flavor-chat-ia'); ?>
                 </p>
             </div>
-            <a href="#" class="button button-primary button-large">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-radio&tab=emision&id=' . $emision_actual->id)); ?>" class="button button-primary button-large">
                 <span class="dashicons dashicons-admin-settings"></span> <?php echo esc_html__('Gestionar Emisión', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -290,7 +290,7 @@ jQuery(document).ready(function($) {
 });
 
 function verEmision(emisionId) {
-    alert('Ver detalles de emisión #' + emisionId);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-radio&tab=emisiones&ver='); ?>' + emisionId;
 }
 </script>
 

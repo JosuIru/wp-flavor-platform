@@ -203,20 +203,354 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
   }
 
   void _crearCirculo() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Crear circulo - proximamente')),
+    final nombreController = TextEditingController();
+    final descripcionController = TextEditingController();
+    String tipoSeleccionado = 'general';
+
+    final tipos = [
+      {'id': 'general', 'nombre': 'General'},
+      {'id': 'infancia', 'nombre': 'Cuidado de infancia'},
+      {'id': 'mayores', 'nombre': 'Apoyo a mayores'},
+      {'id': 'salud', 'nombre': 'Acompanamiento salud'},
+      {'id': 'emocional', 'nombre': 'Apoyo emocional'},
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.favorite, color: Colors.pink.shade400),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Crear Circulo de Cuidados',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: nombreController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre del circulo',
+                    prefixIcon: Icon(Icons.group),
+                    border: OutlineInputBorder(),
+                    hintText: 'Ej: Circulo de apoyo vecinal',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: tipoSeleccionado,
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo de circulo',
+                    prefixIcon: Icon(Icons.category),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: tipos.map((tipo) {
+                    return DropdownMenuItem<String>(
+                      value: tipo['id'],
+                      child: Text(tipo['nombre']!),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setModalState(() => tipoSeleccionado = value);
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripcion',
+                    prefixIcon: Icon(Icons.description),
+                    border: OutlineInputBorder(),
+                    hintText: 'Describe el proposito del circulo...',
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () async {
+                      if (nombreController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('El nombre es obligatorio')),
+                        );
+                        return;
+                      }
+                      Navigator.pop(context);
+                      await _enviarNuevoCirculo(
+                        nombre: nombreController.text,
+                        tipo: tipoSeleccionado,
+                        descripcion: descripcionController.text,
+                      );
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text('Crear circulo'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  void _unirseCirculo(Map<String, dynamic> circulo) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Solicitud enviada a ${circulo['nombre']}')),
+  Future<void> _enviarNuevoCirculo({
+    required String nombre,
+    required String tipo,
+    required String descripcion,
+  }) async {
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.post('/circulos-cuidados/crear', data: {
+        'nombre': nombre,
+        'tipo': tipo,
+        'descripcion': descripcion,
+      });
+
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Circulo creado correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadData();
+        }
+      } else {
+        throw Exception(response.error ?? 'Error al crear');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  void _unirseCirculo(Map<String, dynamic> circulo) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Unirse al circulo'),
+        content: Text('¿Deseas enviar una solicitud para unirte a "${circulo['nombre']}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Enviar solicitud'),
+          ),
+        ],
+      ),
     );
+
+    if (confirmar != true) return;
+
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.post('/circulos-cuidados/unirse', data: {
+        'circulo_id': circulo['id'],
+      });
+
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Solicitud enviada a ${circulo['nombre']}'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadData();
+        }
+      } else {
+        throw Exception(response.error ?? 'Error al unirse');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 
   void _verCirculo(Map<String, dynamic> circulo) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Detalle de ${circulo['nombre']} - proximamente')),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.pink.shade100,
+                    child: Icon(Icons.favorite, size: 28, color: Colors.pink.shade600),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          circulo['nombre'] ?? '',
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        if ((circulo['tipo'] ?? '').isNotEmpty)
+                          Text(
+                            circulo['tipo'],
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              if ((circulo['descripcion'] ?? '').isNotEmpty) ...[
+                Text(circulo['descripcion']),
+                const SizedBox(height: 20),
+              ],
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildStatColumn(
+                        icon: Icons.group,
+                        value: '${circulo['total_miembros'] ?? 0}',
+                        label: 'Miembros',
+                      ),
+                      _buildStatColumn(
+                        icon: Icons.event,
+                        value: '${circulo['total_reuniones'] ?? 0}',
+                        label: 'Reuniones',
+                      ),
+                      _buildStatColumn(
+                        icon: Icons.volunteer_activism,
+                        value: '${circulo['ayudas_prestadas'] ?? 0}',
+                        label: 'Ayudas',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              if ((circulo['proxima_reunion'] ?? '').isNotEmpty) ...[
+                const Text(
+                  'Proxima reunion',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Card(
+                  child: ListTile(
+                    leading: Icon(Icons.event, color: Colors.pink.shade400),
+                    title: Text(circulo['proxima_reunion']),
+                    subtitle: Text(circulo['lugar_reunion'] ?? 'Lugar por definir'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // Chat del circulo
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Abriendo chat del circulo...')),
+                        );
+                      },
+                      icon: const Icon(Icons.chat),
+                      label: const Text('Chat'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // Proponer ayuda
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Abriendo formulario de ayuda...')),
+                        );
+                      },
+                      icon: const Icon(Icons.volunteer_activism),
+                      label: const Text('Ofrecer ayuda'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatColumn({
+    required IconData icon,
+    required String value,
+    required String label,
+  }) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.pink.shade400),
+        const SizedBox(height: 4),
+        Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+      ],
     );
   }
 }

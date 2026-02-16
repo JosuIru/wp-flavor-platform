@@ -1355,19 +1355,55 @@ class Flavor_App_Config_Admin {
         $saved_drawer_items = isset($config['drawer_items']) && is_array($config['drawer_items'])
             ? $config['drawer_items']
             : [];
-        $drawer_map = [];
+
+        // Combinar items del menú con los guardados
+        $combined_drawer_items = [];
+        $existing_urls = [];
+
+        // Primero, añadir items guardados que tengan enabled
         foreach ($saved_drawer_items as $drawer_item) {
-            $url = $drawer_item['url'] ?? '';
-            if (!$url) continue;
-            $drawer_map[$url] = [
-                'enabled' => !empty($drawer_item['enabled']),
-                'title' => $drawer_item['title'] ?? '',
-                'icon' => $drawer_item['icon'] ?? 'public',
-                'content_type' => $drawer_item['content_type'] ?? 'page',
-                'content_ref' => $drawer_item['content_ref'] ?? '',
-                'order' => isset($drawer_item['order']) ? intval($drawer_item['order']) : 0,
-            ];
+            if (!empty($drawer_item['enabled'])) {
+                $url = $drawer_item['url'] ?? 'drawer_' . count($combined_drawer_items);
+                $combined_drawer_items[] = $drawer_item;
+                $existing_urls[$url] = true;
+            }
         }
+
+        // Luego, añadir items del menú de WordPress que no estén ya
+        if (!empty($menu_items_payload)) {
+            foreach ($menu_items_payload as $menu_item) {
+                $url = $menu_item['url'] ?? '';
+                if ($url && !isset($existing_urls[$url])) {
+                    // Buscar configuración guardada para este item
+                    $saved = null;
+                    foreach ($saved_drawer_items as $si) {
+                        if (($si['url'] ?? '') === $url) {
+                            $saved = $si;
+                            break;
+                        }
+                    }
+                    if ($saved) {
+                        $combined_drawer_items[] = $saved;
+                    } else {
+                        $combined_drawer_items[] = [
+                            'enabled' => true,
+                            'title' => $menu_item['title'] ?? $url,
+                            'url' => $url,
+                            'icon' => 'public',
+                            'content_type' => 'page',
+                            'content_ref' => '',
+                            'order' => count($combined_drawer_items),
+                        ];
+                    }
+                    $existing_urls[$url] = true;
+                }
+            }
+        }
+
+        // Ordenar por order
+        usort($combined_drawer_items, function($a, $b) {
+            return ($a['order'] ?? 0) - ($b['order'] ?? 0);
+        });
 
         // Obtener páginas y CPTs para los selectores
         $all_pages = get_pages(['post_status' => 'publish', 'sort_column' => 'post_title']);
@@ -1375,28 +1411,66 @@ class Flavor_App_Config_Admin {
         $active_modules = get_option('flavor_chat_ia_settings', [])['active_modules'] ?? [];
         ?>
 
-        <?php if (!empty($menu_items_payload)): ?>
+        <!-- Botones para añadir secciones al drawer -->
+        <p>
+            <button type="button" class="button" id="flavor-add-drawer-item">
+                <span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span>
+                <?php _e('Añadir sección manual', 'flavor-chat-ia'); ?>
+            </button>
+            <?php if (!empty($menu_items_payload)): ?>
+                <select id="flavor-drawer-section-select" style="min-width: 220px;">
+                    <option value=""><?php _e('Añadir desde menú web…', 'flavor-chat-ia'); ?></option>
+                    <?php foreach ($menu_items_payload as $menu_item):
+                        $url = $menu_item['url'] ?? '';
+                        $title = $menu_item['title'] ?? $url;
+                        if (!$url) continue;
+                    ?>
+                        <option value="<?php echo esc_url($url); ?>" data-title="<?php echo esc_attr($title); ?>">
+                            <?php echo esc_html($title); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" class="button" id="flavor-add-drawer-from-menu">
+                    <?php _e('Añadir del menú', 'flavor-chat-ia'); ?>
+                </button>
+                <button type="button" class="button" id="flavor-add-all-drawer-items">
+                    <?php _e('Añadir todas', 'flavor-chat-ia'); ?>
+                </button>
+            <?php endif; ?>
+        </p>
+
+        <?php if (!empty($combined_drawer_items)): ?>
             <div class="flavor-info-sections-editor">
                 <ul class="flavor-info-sections-list" id="flavor-drawer-sections-sortable">
-                    <?php foreach ($menu_items_payload as $index => $menu_item): ?>
+                    <?php foreach ($combined_drawer_items as $index => $drawer_item): ?>
                         <?php
-                        $url = $menu_item['url'] ?? '';
-                        if (!$url) continue;
-                        $title = $menu_item['title'] ?? $url;
-                        $is_enabled = array_key_exists($url, $drawer_map) ? !empty($drawer_map[$url]['enabled']) : true;
-                        $drawer_icon = $drawer_map[$url]['icon'] ?? 'public';
-                        $drawer_content_type = $drawer_map[$url]['content_type'] ?? 'page';
-                        $drawer_content_ref = $drawer_map[$url]['content_ref'] ?? '';
-                        $drawer_order = array_key_exists($url, $drawer_map)
-                            ? $drawer_map[$url]['order']
-                            : ($menu_item['order'] ?? $index);
+                        $url = $drawer_item['url'] ?? 'drawer_' . $index;
+                        $title = $drawer_item['title'] ?? $url;
+                        $is_enabled = !empty($drawer_item['enabled']);
+                        $drawer_icon = $drawer_item['icon'] ?? 'public';
+                        $drawer_content_type = $drawer_item['content_type'] ?? 'page';
+                        $drawer_content_ref = $drawer_item['content_ref'] ?? '';
+                        $drawer_order = $drawer_item['order'] ?? $index;
+
+                        // Obtener content_ref del campo correcto según el tipo
+                        if (empty($drawer_content_ref)) {
+                            if ($drawer_content_type === 'page') {
+                                $drawer_content_ref = $drawer_item['content_ref_page'] ?? '';
+                            } elseif ($drawer_content_type === 'cpt') {
+                                $drawer_content_ref = $drawer_item['content_ref_cpt'] ?? '';
+                            } elseif ($drawer_content_type === 'module') {
+                                $drawer_content_ref = $drawer_item['content_ref_module'] ?? '';
+                            }
+                        }
 
                         // Intentar inferir content_ref de la URL si no está guardado
-                        if (empty($drawer_content_ref) && $drawer_content_type === 'page') {
+                        if (empty($drawer_content_ref) && $drawer_content_type === 'page' && $url) {
                             $path = trim(wp_parse_url($url, PHP_URL_PATH), '/');
-                            $page = get_page_by_path($path);
-                            if ($page) {
-                                $drawer_content_ref = $page->post_name;
+                            if ($path) {
+                                $page = get_page_by_path($path);
+                                if ($page) {
+                                    $drawer_content_ref = $page->post_name;
+                                }
                             }
                         }
                         ?>
@@ -1482,22 +1556,34 @@ class Flavor_App_Config_Admin {
                                 <?php endforeach; ?>
                             </select>
 
-                            <input type="hidden" name="flavor_apps_config[drawer_items][<?php echo $index; ?>][title]" value="<?php echo esc_attr($title); ?>">
-                            <input type="hidden" name="flavor_apps_config[drawer_items][<?php echo $index; ?>][url]" value="<?php echo esc_url($url); ?>">
+                            <button type="button" class="button-link-delete flavor-drawer-remove" title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-trash"></span>
+                            </button>
+
+                            <input type="hidden" name="flavor_apps_config[drawer_items][<?php echo $index; ?>][title]" value="<?php echo esc_attr($title); ?>" class="flavor-drawer-title-value">
+                            <input type="hidden" name="flavor_apps_config[drawer_items][<?php echo $index; ?>][url]" value="<?php echo esc_attr($url); ?>" class="flavor-drawer-url-value">
                             <input type="hidden" name="flavor_apps_config[drawer_items][<?php echo $index; ?>][icon]" value="<?php echo esc_attr($drawer_icon); ?>" class="flavor-drawer-icon-value">
                             <input type="hidden" name="flavor_apps_config[drawer_items][<?php echo $index; ?>][order]" value="<?php echo esc_attr($drawer_order); ?>" class="flavor-drawer-order">
                         </li>
                     <?php endforeach; ?>
                 </ul>
             </div>
-
-            <p class="description" style="margin-top: 10px;">
-                <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
-                <?php _e('Todo el contenido del menú hamburguesa se renderiza de forma <strong>nativa</strong> en la app.', 'flavor-chat-ia'); ?>
-            </p>
         <?php else: ?>
-            <p class="description"><?php _e('No se encontraron secciones en el menú seleccionado.', 'flavor-chat-ia'); ?></p>
+            <div class="flavor-info-sections-editor">
+                <ul class="flavor-info-sections-list" id="flavor-drawer-sections-sortable">
+                    <!-- Items se añadirán dinámicamente via JavaScript -->
+                </ul>
+                <p class="description" style="margin-top: 10px;">
+                    <span class="dashicons dashicons-info"></span>
+                    <?php _e('No hay secciones en el menú hamburguesa. Usa los botones de arriba para añadir secciones.', 'flavor-chat-ia'); ?>
+                </p>
+            </div>
         <?php endif; ?>
+
+        <p class="description" style="margin-top: 10px;">
+            <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
+            <?php _e('Todo el contenido del menú hamburguesa se renderiza de forma <strong>nativa</strong> en la app.', 'flavor-chat-ia'); ?>
+        </p>
 
         <hr>
 

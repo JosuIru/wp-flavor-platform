@@ -305,14 +305,22 @@ function cerrarModalNuevoEpisodio() {
 }
 
 function editarEpisodio(episodioId) {
-    // Implementar edición de episodio
-    alert('Editar episodio #' + episodioId);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-chat-podcast-episodios&editar='); ?>' + episodioId;
 }
 
 function eliminarEpisodio(episodioId) {
-    if (confirm('¿Estás seguro de que deseas eliminar este episodio? Esta acción no se puede deshacer.')) {
-        // Implementar eliminación
-        alert('Eliminar episodio #' + episodioId);
+    if (confirm('<?php echo esc_js(__('¿Eliminar este episodio? Esta acción no se puede deshacer.', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_podcast_eliminar_episodio',
+            episodio_id: episodioId,
+            nonce: '<?php echo wp_create_nonce('podcast_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 

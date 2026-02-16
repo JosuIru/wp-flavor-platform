@@ -131,25 +131,97 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
 
 </div>
 
+<div id="modal-emision" class="flavor-modal" style="display:none;">
+    <div class="flavor-modal-overlay" onclick="cerrarModal()"></div>
+    <div class="flavor-modal-content">
+        <button class="flavor-modal-close" onclick="cerrarModal()">&times;</button>
+        <div id="modal-emision-contenido"></div>
+    </div>
+</div>
+
 <script>
 function abrirModalNuevaEmision() {
-    alert('Programar nueva emisión');
+    var html = '<h3><?php echo esc_js(__('Nueva Emisión', 'flavor-chat-ia')); ?></h3>' +
+        '<form id="form-nueva-emision">' +
+        '<div class="form-row"><label><?php echo esc_js(__('Programa', 'flavor-chat-ia')); ?></label>' +
+        '<select name="programa_id" required>' +
+        '<?php
+        global $wpdb;
+        $programas = $wpdb->get_results("SELECT id, nombre FROM {$wpdb->prefix}flavor_radio_programas WHERE estado = 'activo'");
+        foreach ($programas as $p) {
+            echo '<option value="' . esc_attr($p->id) . '">' . esc_js($p->nombre) . '</option>';
+        }
+        ?>' +
+        '</select></div>' +
+        '<div class="form-row"><label><?php echo esc_js(__('Fecha y hora', 'flavor-chat-ia')); ?></label>' +
+        '<input type="datetime-local" name="fecha_emision" required></div>' +
+        '<div class="form-row"><label><?php echo esc_js(__('Duración (min)', 'flavor-chat-ia')); ?></label>' +
+        '<input type="number" name="duracion_minutos" value="60" min="15"></div>' +
+        '<div class="flavor-modal-actions">' +
+        '<button type="button" class="button" onclick="cerrarModal()"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button> ' +
+        '<button type="submit" class="button button-primary"><?php echo esc_js(__('Programar', 'flavor-chat-ia')); ?></button>' +
+        '</div></form>';
+    document.getElementById('modal-emision-contenido').innerHTML = html;
+    document.getElementById('modal-emision').style.display = 'block';
 }
 
 function iniciarEmision(id) {
-    if (confirm('¿Iniciar emisión en vivo?')) {
-        alert('Iniciar emisión #' + id);
+    if (confirm('<?php echo esc_js(__('¿Iniciar emisión en vivo?', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_radio_iniciar_emision',
+            emision_id: id,
+            nonce: '<?php echo wp_create_nonce('radio_emision_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al iniciar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 
 function finalizarEmision(id) {
-    if (confirm('¿Finalizar la emisión en vivo?')) {
-        alert('Finalizar emisión #' + id);
+    if (confirm('<?php echo esc_js(__('¿Finalizar la emisión?', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_radio_finalizar_emision',
+            emision_id: id,
+            nonce: '<?php echo wp_create_nonce('radio_emision_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al finalizar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 
 function verEmision(id) {
-    alert('Ver detalles de emisión #' + id);
+    document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Cargando...', 'flavor-chat-ia')); ?></p>';
+    document.getElementById('modal-emision').style.display = 'block';
+
+    jQuery.get(ajaxurl, {
+        action: 'flavor_radio_ver_emision',
+        emision_id: id,
+        nonce: '<?php echo wp_create_nonce('radio_emision_nonce'); ?>'
+    }, function(response) {
+        if (response.success) {
+            var e = response.data;
+            var html = '<h3>' + e.programa_nombre + '</h3>' +
+                '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-chat-ia')); ?></strong> ' + e.fecha + '</p>' +
+                '<p><strong><?php echo esc_js(__('Duración:', 'flavor-chat-ia')); ?></strong> ' + e.duracion + ' min</p>' +
+                '<p><strong><?php echo esc_js(__('Estado:', 'flavor-chat-ia')); ?></strong> ' + e.estado + '</p>' +
+                '<p><strong><?php echo esc_js(__('Oyentes pico:', 'flavor-chat-ia')); ?></strong> ' + e.oyentes_pico + '</p>';
+            document.getElementById('modal-emision-contenido').innerHTML = html;
+        } else {
+            document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', 'flavor-chat-ia')); ?></p>';
+        }
+    });
+}
+
+function cerrarModal() {
+    document.getElementById('modal-emision').style.display = 'none';
 }
 </script>
 

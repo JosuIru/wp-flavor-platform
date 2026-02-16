@@ -564,9 +564,102 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
   }
 
   Future<void> _onSelectImage() async {
-    // TODO: Implementar selección de imagen con image_picker
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Selección de imagen no implementada')),
+    final source = await showModalBottomSheet<String>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 8),
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ListTile(
+            leading: const Icon(Icons.camera_alt),
+            title: const Text('Tomar foto'),
+            onTap: () => Navigator.pop(context, 'camera'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.photo_library),
+            title: const Text('Elegir de galeria'),
+            onTap: () => Navigator.pop(context, 'gallery'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.link),
+            title: const Text('Introducir URL'),
+            onTap: () => Navigator.pop(context, 'url'),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+
+    if (source == null) return;
+
+    if (source == 'url') {
+      _showUrlDialog();
+    } else {
+      // Para camera y gallery, mostrar mensaje de que requiere image_picker
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Usa la opcion de URL para agregar una imagen'),
+          ),
+        );
+      }
+    }
+  }
+
+  void _showUrlDialog() {
+    final urlController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('URL de imagen'),
+        content: TextField(
+          controller: urlController,
+          decoration: const InputDecoration(
+            labelText: 'URL',
+            hintText: 'https://ejemplo.com/imagen.jpg',
+            border: OutlineInputBorder(),
+          ),
+          keyboardType: TextInputType.url,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (urlController.text.isNotEmpty) {
+                setState(() {
+                  // Buscar el campo de imagen y actualizarlo
+                  final imageField = _fields?.firstWhere(
+                    (f) => f.type == 'image',
+                    orElse: () => FormFieldConfig(name: '', label: '', type: ''),
+                  );
+                  if (imageField != null && imageField.name.isNotEmpty) {
+                    _formData[imageField.name] = urlController.text;
+                    _controllers[imageField.name]?.text = urlController.text;
+                  }
+                });
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
     );
   }
 

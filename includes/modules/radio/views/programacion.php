@@ -77,13 +77,75 @@ $programacion = $wpdb->get_results("
 
 </div>
 
+<!-- Modal Nuevo Slot -->
+<div id="modal-slot" class="flavor-modal" style="display:none;">
+    <div class="flavor-modal-overlay" onclick="cerrarModalSlot()"></div>
+    <div class="flavor-modal-content" style="min-width:400px;">
+        <button class="flavor-modal-close" onclick="cerrarModalSlot()">&times;</button>
+        <h3><?php echo esc_html__('Nuevo Slot de Programación', 'flavor-chat-ia'); ?></h3>
+        <form id="form-slot" method="post">
+            <?php wp_nonce_field('nuevo_slot', 'slot_nonce'); ?>
+            <input type="hidden" name="accion" value="crear_slot">
+            <div style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Programa', 'flavor-chat-ia'); ?></label>
+                <select name="programa_id" required style="width:100%;padding:8px;">
+                    <?php
+                    global $wpdb;
+                    $programas = $wpdb->get_results("SELECT id, nombre FROM {$wpdb->prefix}flavor_radio_programas WHERE estado = 'activo'");
+                    foreach ($programas as $p) {
+                        echo '<option value="' . esc_attr($p->id) . '">' . esc_html($p->nombre) . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Día', 'flavor-chat-ia'); ?></label>
+                <select name="dia_semana" required style="width:100%;padding:8px;">
+                    <option value="1"><?php echo esc_html__('Lunes', 'flavor-chat-ia'); ?></option>
+                    <option value="2"><?php echo esc_html__('Martes', 'flavor-chat-ia'); ?></option>
+                    <option value="3"><?php echo esc_html__('Miércoles', 'flavor-chat-ia'); ?></option>
+                    <option value="4"><?php echo esc_html__('Jueves', 'flavor-chat-ia'); ?></option>
+                    <option value="5"><?php echo esc_html__('Viernes', 'flavor-chat-ia'); ?></option>
+                    <option value="6"><?php echo esc_html__('Sábado', 'flavor-chat-ia'); ?></option>
+                    <option value="0"><?php echo esc_html__('Domingo', 'flavor-chat-ia'); ?></option>
+                </select>
+            </div>
+            <div style="display:flex;gap:15px;margin-bottom:15px;">
+                <div style="flex:1;">
+                    <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Hora inicio', 'flavor-chat-ia'); ?></label>
+                    <input type="time" name="hora_inicio" required style="width:100%;padding:8px;">
+                </div>
+                <div style="flex:1;">
+                    <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Hora fin', 'flavor-chat-ia'); ?></label>
+                    <input type="time" name="hora_fin" required style="width:100%;padding:8px;">
+                </div>
+            </div>
+            <div style="text-align:right;">
+                <button type="button" class="button" onclick="cerrarModalSlot()"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar', 'flavor-chat-ia'); ?></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.flavor-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100000; }
+.flavor-modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); }
+.flavor-modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 25px; border-radius: 8px; }
+.flavor-modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; }
+</style>
+
 <script>
 function abrirModalAgregarSlot() {
-    alert('Agregar nuevo slot de programación');
+    document.getElementById('modal-slot').style.display = 'block';
+}
+
+function cerrarModalSlot() {
+    document.getElementById('modal-slot').style.display = 'none';
 }
 
 function editarSlot(id) {
-    alert('Editar slot #' + id);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-radio&tab=programacion&editar='); ?>' + id;
 }
 </script>
 

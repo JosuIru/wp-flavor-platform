@@ -336,13 +336,59 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($parcela['tamano_m2'] ?? '-') . '</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($parcela['estado'])) . '</span></td>';
                 echo '<td>' . esc_html($parcela['user_id'] ? get_userdata($parcela['user_id'])->display_name ?? '-' : '-') . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small hu-editar-parcela" data-id="' . esc_attr($parcela['id']) . '" data-codigo="' . esc_attr($parcela['codigo']) . '" data-estado="' . esc_attr($parcela['estado']) . '" data-tamano="' . esc_attr($parcela['tamano_m2'] ?? '') . '">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         } else {
             echo '<p>' . __('No hay parcelas registradas.', 'flavor-chat-ia') . '</p>';
         }
+
+        // Modal editar parcela
+        echo '<div id="modal-editar-parcela" style="display:none;">
+            <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
+                <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
+                    <h2>' . __('Editar Parcela', 'flavor-chat-ia') . '</h2>
+                    <form method="post">
+                        ' . wp_nonce_field('editar_parcela_huerto', '_wpnonce', true, false) . '
+                        <input type="hidden" name="accion" value="editar_parcela">
+                        <input type="hidden" name="parcela_id" id="edit-parcela-id">
+                        <table class="form-table">
+                            <tr><th><label for="edit-parcela-codigo">' . __('Código', 'flavor-chat-ia') . '</label></th>
+                            <td><input type="text" id="edit-parcela-codigo" name="codigo" class="regular-text"></td></tr>
+                            <tr><th><label for="edit-parcela-tamano">' . __('Tamaño (m²)', 'flavor-chat-ia') . '</label></th>
+                            <td><input type="number" id="edit-parcela-tamano" name="tamano_m2" step="0.1" min="0" class="small-text"></td></tr>
+                            <tr><th><label for="edit-parcela-estado">' . __('Estado', 'flavor-chat-ia') . '</label></th>
+                            <td><select id="edit-parcela-estado" name="estado">
+                                <option value="disponible">' . __('Disponible', 'flavor-chat-ia') . '</option>
+                                <option value="ocupada">' . __('Ocupada', 'flavor-chat-ia') . '</option>
+                                <option value="reservada">' . __('Reservada', 'flavor-chat-ia') . '</option>
+                            </select></td></tr>
+                        </table>
+                        <p class="submit">
+                            <button type="submit" class="button button-primary">' . __('Guardar', 'flavor-chat-ia') . '</button>
+                            <button type="button" class="button" id="cerrar-modal-parcela">' . __('Cancelar', 'flavor-chat-ia') . '</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>';
+
+        echo '<script>
+        jQuery(document).ready(function($) {
+            $(".hu-editar-parcela").on("click", function(e) {
+                e.preventDefault();
+                $("#edit-parcela-id").val($(this).data("id"));
+                $("#edit-parcela-codigo").val($(this).data("codigo"));
+                $("#edit-parcela-tamano").val($(this).data("tamano"));
+                $("#edit-parcela-estado").val($(this).data("estado"));
+                $("#modal-editar-parcela").fadeIn();
+            });
+            $("#cerrar-modal-parcela, .modal-overlay").on("click", function(e) {
+                if (e.target === this) $("#modal-editar-parcela").fadeOut();
+            });
+        });
+        </script>';
 
         echo '</div>';
     }
@@ -387,7 +433,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($usuario ? $usuario->user_email : '-') . '</td>';
                 echo '<td>' . esc_html($hortelano['parcela_codigo'] ?? '-') . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($hortelano['created_at']))) . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $hortelano['user_id'])) . '" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -438,8 +484,18 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($usuario ? $usuario->user_email : '-') . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($solicitud['created_at']))) . '</td>';
                 echo '<td>';
-                echo '<a href="#" class="button button-small button-primary">' . __('Asignar', 'flavor-chat-ia') . '</a> ';
-                echo '<a href="#" class="button button-small">' . __('Rechazar', 'flavor-chat-ia') . '</a>';
+                echo '<form method="post" style="display:inline;">';
+                echo wp_nonce_field('asignar_parcela_huerto', '_wpnonce', true, false);
+                echo '<input type="hidden" name="accion" value="asignar_parcela">';
+                echo '<input type="hidden" name="solicitud_id" value="' . esc_attr($solicitud['id']) . '">';
+                echo '<button type="submit" class="button button-small button-primary" onclick="return confirm(\'' . esc_js(__('¿Asignar parcela a este usuario?', 'flavor-chat-ia')) . '\');">' . __('Asignar', 'flavor-chat-ia') . '</button>';
+                echo '</form> ';
+                echo '<form method="post" style="display:inline;">';
+                echo wp_nonce_field('rechazar_solicitud_huerto', '_wpnonce', true, false);
+                echo '<input type="hidden" name="accion" value="rechazar_solicitud">';
+                echo '<input type="hidden" name="solicitud_id" value="' . esc_attr($solicitud['id']) . '">';
+                echo '<button type="submit" class="button button-small" onclick="return confirm(\'' . esc_js(__('¿Rechazar esta solicitud?', 'flavor-chat-ia')) . '\');">' . __('Rechazar', 'flavor-chat-ia') . '</button>';
+                echo '</form>';
                 echo '</td>';
                 echo '</tr>';
                 $posicion++;

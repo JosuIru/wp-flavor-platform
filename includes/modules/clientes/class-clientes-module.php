@@ -772,7 +772,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($this->format_price((float) $cliente['valor_estimado'])) . '</td>';
                 echo '<td>';
                 echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-fichas&cliente_id=' . $cliente['id'])) . '" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> ';
-                echo '<a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a>';
+                echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-nuevo&editar=' . $cliente['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a>';
                 echo '</td>';
                 echo '</tr>';
             }

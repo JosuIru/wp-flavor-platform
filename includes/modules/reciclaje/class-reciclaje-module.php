@@ -590,7 +590,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html(ucfirst(str_replace('_', ' ', $punto->tipo))) . '</td>';
                 echo '<td>' . esc_html($punto->direccion) . '</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($punto->estado)) . '</span></td>';
-                echo '<td><a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('admin.php?page=reciclaje-puntos&action=editar&id=' . $punto->id)) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -783,7 +783,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
                             </span>
                         </td>
                         <td>
-                            <a href="#" class="button button-small"><?php esc_html_e('Editar', 'flavor-chat-ia'); ?></a>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=reciclaje&tab=puntos&action=editar&id=' . $punto->id)); ?>" class="button button-small"><?php esc_html_e('Editar', 'flavor-chat-ia'); ?></a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

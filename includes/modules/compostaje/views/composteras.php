@@ -73,7 +73,7 @@ $composteras = $wpdb->get_results("SELECT * FROM $tabla_composteras ORDER BY nom
                                 </span>
                             </td>
                             <td>
-                                <a href="#" class="button button-small"><?php echo esc_html__('Editar', 'flavor-chat-ia'); ?></a>
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=compostaje&tab=composteras&action=editar&id=' . $compostera->id)); ?>" class="button button-small"><?php echo esc_html__('Editar', 'flavor-chat-ia'); ?></a>
                                 <button class="button button-small ver-en-mapa" data-lat="<?php echo esc_attr($compostera->latitud); ?>" data-lng="<?php echo esc_attr($compostera->longitud); ?>">
                                     <?php echo esc_html__('Ver en Mapa', 'flavor-chat-ia'); ?>
                                 </button>
@@ -158,4 +158,108 @@ jQuery(document).ready(function($) {
         grid-template-columns: 1fr;
     }
 }
+
+.flavor-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99999;
+}
+
+.flavor-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    min-width: 400px;
+    max-width: 90%;
+    z-index: 100000;
+}
+
+.flavor-modal-content h3 {
+    margin-top: 0;
+}
+
+.flavor-modal-content .form-row {
+    margin-bottom: 15px;
+}
+
+.flavor-modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.flavor-modal-content input,
+.flavor-modal-content select {
+    width: 100%;
+    padding: 8px;
+}
+
+.flavor-modal-actions {
+    margin-top: 20px;
+    text-align: right;
+}
 </style>
+
+<!-- Modal Nueva Compostera -->
+<div id="modal-nueva-compostera" style="display:none;">
+    <div class="flavor-modal-overlay" onclick="cerrarModalCompostera()"></div>
+    <div class="flavor-modal-content">
+        <h3><?php echo esc_html__('Nueva Compostera', 'flavor-chat-ia'); ?></h3>
+        <form id="form-nueva-compostera" method="post">
+            <?php wp_nonce_field('nueva_compostera', 'compostera_nonce'); ?>
+            <input type="hidden" name="accion" value="crear_compostera">
+
+            <div class="form-row">
+                <label><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></label>
+                <input type="text" name="nombre" required>
+            </div>
+
+            <div class="form-row">
+                <label><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></label>
+                <select name="tipo">
+                    <option value="comunitaria"><?php echo esc_html__('Comunitaria', 'flavor-chat-ia'); ?></option>
+                    <option value="individual"><?php echo esc_html__('Individual', 'flavor-chat-ia'); ?></option>
+                    <option value="escolar"><?php echo esc_html__('Escolar', 'flavor-chat-ia'); ?></option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label><?php echo esc_html__('Capacidad (litros)', 'flavor-chat-ia'); ?></label>
+                <input type="number" name="capacidad_litros" value="500" min="100">
+            </div>
+
+            <div class="form-row">
+                <label><?php echo esc_html__('Latitud', 'flavor-chat-ia'); ?></label>
+                <input type="text" name="latitud" placeholder="43.3183">
+            </div>
+
+            <div class="form-row">
+                <label><?php echo esc_html__('Longitud', 'flavor-chat-ia'); ?></label>
+                <input type="text" name="longitud" placeholder="-1.9812">
+            </div>
+
+            <div class="flavor-modal-actions">
+                <button type="button" class="button" onclick="cerrarModalCompostera()"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Crear Compostera', 'flavor-chat-ia'); ?></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function abrirModalCompostera() {
+    document.getElementById('modal-nueva-compostera').style.display = 'block';
+}
+
+function cerrarModalCompostera() {
+    document.getElementById('modal-nueva-compostera').style.display = 'none';
+}
+</script>

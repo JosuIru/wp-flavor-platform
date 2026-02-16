@@ -168,39 +168,100 @@ $aprobados_hoy = $wpdb->get_var("
 
 <script>
 function aprobar(id) {
-    if (confirm('¿Aprobar este contenido?')) {
-        alert('Aprobar multimedia #' + id);
-        // Implementar aprobación
-        location.reload();
+    if (confirm('<?php echo esc_js(__('¿Aprobar este contenido?', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_multimedia_moderar',
+            multimedia_id: id,
+            estado: 'aprobado',
+            nonce: '<?php echo wp_create_nonce('moderacion_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al aprobar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 
 function rechazar(id) {
-    const motivo = prompt('Motivo del rechazo (opcional):');
+    const motivo = prompt('<?php echo esc_js(__('Motivo del rechazo (opcional):', 'flavor-chat-ia')); ?>');
     if (motivo !== null) {
-        alert('Rechazar multimedia #' + id + ' - Motivo: ' + motivo);
-        // Implementar rechazo
-        location.reload();
+        jQuery.post(ajaxurl, {
+            action: 'flavor_multimedia_moderar',
+            multimedia_id: id,
+            estado: 'rechazado',
+            motivo: motivo,
+            nonce: '<?php echo wp_create_nonce('moderacion_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error al rechazar', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 
 function verDetalle(id) {
-    alert('Ver detalle completo de multimedia #' + id);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-multimedia&tab=galeria&ver='); ?>' + id;
 }
 
 function seleccionarTodos() {
-    alert('Seleccionar todos los elementos');
+    var checkboxes = document.querySelectorAll('input[name="multimedia_ids[]"]');
+    var selectAll = document.getElementById('select-all');
+    checkboxes.forEach(function(cb) {
+        cb.checked = selectAll ? selectAll.checked : true;
+    });
 }
 
 function aprobarSeleccionados() {
-    if (confirm('¿Aprobar todos los elementos seleccionados?')) {
-        alert('Aprobar seleccionados');
+    var ids = [];
+    document.querySelectorAll('input[name="multimedia_ids[]"]:checked').forEach(function(cb) {
+        ids.push(cb.value);
+    });
+    if (ids.length === 0) {
+        alert('<?php echo esc_js(__('Selecciona al menos un elemento', 'flavor-chat-ia')); ?>');
+        return;
+    }
+    if (confirm('<?php echo esc_js(__('¿Aprobar los elementos seleccionados?', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_multimedia_moderar_masivo',
+            ids: ids,
+            estado: 'aprobado',
+            nonce: '<?php echo wp_create_nonce('moderacion_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 
 function rechazarSeleccionados() {
-    if (confirm('¿Rechazar todos los elementos seleccionados?')) {
-        alert('Rechazar seleccionados');
+    var ids = [];
+    document.querySelectorAll('input[name="multimedia_ids[]"]:checked').forEach(function(cb) {
+        ids.push(cb.value);
+    });
+    if (ids.length === 0) {
+        alert('<?php echo esc_js(__('Selecciona al menos un elemento', 'flavor-chat-ia')); ?>');
+        return;
+    }
+    if (confirm('<?php echo esc_js(__('¿Rechazar los elementos seleccionados?', 'flavor-chat-ia')); ?>')) {
+        jQuery.post(ajaxurl, {
+            action: 'flavor_multimedia_moderar_masivo',
+            ids: ids,
+            estado: 'rechazado',
+            nonce: '<?php echo wp_create_nonce('moderacion_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.data || '<?php echo esc_js(__('Error', 'flavor-chat-ia')); ?>');
+            }
+        });
     }
 }
 </script>

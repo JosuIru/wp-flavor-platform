@@ -137,6 +137,26 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
     }
   }
 
+  Future<void> _updateCartQuantity(String itemKey, int nuevaCantidad) async {
+    if (nuevaCantidad < 1) return;
+
+    final api = ref.read(apiClientProvider);
+    final response = await api.post('/woocommerce/carrito/update', data: {
+      'item_key': itemKey,
+      'cantidad': nuevaCantidad,
+    });
+
+    if (response.success) {
+      _loadCarrito();
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.error ?? 'Error al actualizar cantidad')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -458,13 +478,15 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
                           children: [
                             IconButton(
                               icon: const Icon(Icons.remove, size: 18),
-                              onPressed: cantidad > 1 ? () {} : null,
+                              onPressed: cantidad > 1
+                                  ? () => _updateCartQuantity(itemKey, cantidad - 1)
+                                  : null,
                               visualDensity: VisualDensity.compact,
                             ),
                             Text('$cantidad'),
                             IconButton(
                               icon: const Icon(Icons.add, size: 18),
-                              onPressed: () {},
+                              onPressed: () => _updateCartQuantity(itemKey, cantidad + 1),
                               visualDensity: VisualDensity.compact,
                             ),
                           ],
@@ -636,10 +658,85 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
     );
   }
 
-  void _proceedToCheckout() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Redirigiendo al checkout...')),
+  void _proceedToCheckout() async {
+    final api = ref.read(apiClientProvider);
+
+    // Mostrar dialogo de confirmacion
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final subtotal = _carrito.fold<double>(0, (sum, item) {
+          final precio = double.tryParse(item['precio']?.toString() ?? '0') ?? 0;
+          final cantidad = item['cantidad'] ?? 1;
+          return sum + (precio * cantidad);
+        });
+
+        return AlertDialog(
+          title: const Text('Confirmar pedido'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${_carrito.length} producto(s) en tu carrito'),
+              const SizedBox(height: 8),
+              Text(
+                'Total: ${_formatCurrency(subtotal)}',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Al confirmar, se creara tu pedido y recibiras instrucciones de pago.',
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Confirmar pedido'),
+            ),
+          ],
+        );
+      },
     );
+
+    if (confirmar != true) return;
+
+    // Crear pedido
+    try {
+      final response = await api.post('/woocommerce/checkout', data: {
+        'items': _carrito,
+      });
+
+      if (response.success) {
+        final numeroPedido = response.data?['order_number'] ?? '';
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Pedido #$numeroPedido creado correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Limpiar carrito y cargar pedidos
+          _carrito.clear();
+          _loadCarrito();
+          _loadMisPedidos();
+          _tabController.animateTo(2); // Ir a pestaña de pedidos
+        }
+      } else {
+        throw Exception(response.error ?? 'Error al crear pedido');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 
   Color _getEstadoColor(String estado) {

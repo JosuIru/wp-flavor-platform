@@ -655,7 +655,7 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
             <?php if (empty($reservas_activas) && empty($reservas_pasadas)): ?>
                 <div class="sin-reservas">
                     <p><?php _e('No tienes reservas de parking.', 'flavor-chat-ia'); ?></p>
-                    <a href="#" class="btn-buscar-parking"><?php _e('Buscar plaza disponible', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(home_url('/parkings/')); ?>" class="btn-buscar-parking"><?php _e('Buscar plaza disponible', 'flavor-chat-ia'); ?></a>
                 </div>
             <?php else: ?>
 

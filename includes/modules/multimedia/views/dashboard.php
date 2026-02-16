@@ -166,7 +166,7 @@ jQuery(document).ready(function($) {
 });
 
 function verMultimedia(id) {
-    alert('Ver multimedia #' + id);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-multimedia&tab=galeria&ver='); ?>' + id;
 }
 </script>
 

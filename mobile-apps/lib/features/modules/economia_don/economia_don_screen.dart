@@ -250,14 +250,293 @@ class _EconomiaDonScreenState extends ConsumerState<EconomiaDonScreen> {
   }
 
   void _mostrarFormulario({required bool esOferta}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Formulario ${esOferta ? 'oferta' : 'necesidad'} - proximamente')),
+    final tituloController = TextEditingController();
+    final descripcionController = TextEditingController();
+    String categoriaSeleccionada = 'servicios';
+
+    final categorias = [
+      {'id': 'servicios', 'nombre': 'Servicios'},
+      {'id': 'objetos', 'nombre': 'Objetos'},
+      {'id': 'conocimientos', 'nombre': 'Conocimientos'},
+      {'id': 'tiempo', 'nombre': 'Tiempo'},
+      {'id': 'otros', 'nombre': 'Otros'},
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      esOferta ? Icons.volunteer_activism : Icons.pan_tool,
+                      color: esOferta ? Colors.green.shade600 : Colors.orange.shade600,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      esOferta ? 'Ofrecer algo' : 'Pedir algo',
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  esOferta
+                      ? 'Comparte lo que puedes dar a la comunidad'
+                      : 'Expresa lo que necesitas de la comunidad',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: tituloController,
+                  decoration: InputDecoration(
+                    labelText: esOferta ? 'Que ofreces?' : 'Que necesitas?',
+                    prefixIcon: const Icon(Icons.title),
+                    border: const OutlineInputBorder(),
+                    hintText: esOferta
+                        ? 'Ej: Clases de guitarra, bicicleta, etc.'
+                        : 'Ej: Ayuda con mudanza, herramientas, etc.',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: categoriaSeleccionada,
+                  decoration: const InputDecoration(
+                    labelText: 'Categoria',
+                    prefixIcon: Icon(Icons.category),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: categorias.map((cat) {
+                    return DropdownMenuItem<String>(
+                      value: cat['id'],
+                      child: Text(cat['nombre']!),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setModalState(() => categoriaSeleccionada = value);
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripcion',
+                    prefixIcon: Icon(Icons.description),
+                    border: OutlineInputBorder(),
+                    hintText: 'Describe con mas detalle...',
+                  ),
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: esOferta ? Colors.green : Colors.orange,
+                    ),
+                    onPressed: () async {
+                      if (tituloController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('El titulo es obligatorio')),
+                        );
+                        return;
+                      }
+                      Navigator.pop(context);
+                      await _enviarPublicacion(
+                        esOferta: esOferta,
+                        titulo: tituloController.text,
+                        categoria: categoriaSeleccionada,
+                        descripcion: descripcionController.text,
+                      );
+                    },
+                    icon: const Icon(Icons.send),
+                    label: Text(esOferta ? 'Publicar oferta' : 'Publicar necesidad'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
+  Future<void> _enviarPublicacion({
+    required bool esOferta,
+    required String titulo,
+    required String categoria,
+    required String descripcion,
+  }) async {
+    final api = ref.read(apiClientProvider);
+    final endpoint = esOferta ? '/economia-don/ofertas' : '/economia-don/necesidades';
+
+    try {
+      final response = await api.post(endpoint, data: {
+        'titulo': titulo,
+        'categoria': categoria,
+        'descripcion': descripcion,
+      });
+
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(esOferta ? 'Oferta publicada' : 'Necesidad publicada'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadData();
+        }
+      } else {
+        throw Exception(response.error ?? 'Error al publicar');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
   void _contactar(Map<String, dynamic> item) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Contactar a ${item['autor']} - proximamente')),
+    final mensajeController = TextEditingController();
+    final autorNombre = item['autor'] ?? 'Usuario';
+    final itemTitulo = item['titulo'] ?? '';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 20,
+          right: 20,
+          top: 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.chat_bubble, color: Colors.blue),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Contactar a $autorNombre',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Sobre: $itemTitulo',
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: mensajeController,
+              decoration: const InputDecoration(
+                labelText: 'Tu mensaje',
+                prefixIcon: Icon(Icons.message),
+                border: OutlineInputBorder(),
+                hintText: 'Hola, me interesa...',
+              ),
+              maxLines: 4,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () async {
+                  if (mensajeController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Escribe un mensaje')),
+                    );
+                    return;
+                  }
+                  Navigator.pop(context);
+                  await _enviarMensaje(
+                    itemId: item['id']?.toString() ?? '',
+                    autorId: item['autor_id']?.toString() ?? '',
+                    mensaje: mensajeController.text,
+                  );
+                },
+                icon: const Icon(Icons.send),
+                label: const Text('Enviar mensaje'),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
+  }
+
+  Future<void> _enviarMensaje({
+    required String itemId,
+    required String autorId,
+    required String mensaje,
+  }) async {
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.post('/economia-don/contactar', data: {
+        'item_id': itemId,
+        'destinatario_id': autorId,
+        'mensaje': mensaje,
+      });
+
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Mensaje enviado correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        throw Exception(response.error ?? 'Error al enviar');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 }

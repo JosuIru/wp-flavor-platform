@@ -106,7 +106,7 @@ if (!defined('ABSPATH')) {
                 <span class="dashicons dashicons-yes-alt"></span>
                 <h3><?php esc_html_e('¡Colectivo creado con éxito!', 'flavor-chat-ia'); ?></h3>
                 <p><?php esc_html_e('Has sido registrado como presidente del colectivo.', 'flavor-chat-ia'); ?></p>
-                <a href="#" id="col-ir-colectivo" class="flavor-col-btn flavor-col-btn-primary">
+                <a href="javascript:void(0);" id="col-ir-colectivo" class="flavor-col-btn flavor-col-btn-primary" onclick="if(window.colectivoCreado)location.href=window.colectivoCreado.url;else location.reload();">
                     <?php esc_html_e('Ver mi colectivo', 'flavor-chat-ia'); ?>
                 </a>
             </div>

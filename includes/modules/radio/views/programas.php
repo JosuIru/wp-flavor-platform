@@ -177,6 +177,6 @@ function cerrarModalNuevoPrograma() {
 }
 
 function editarPrograma(id) {
-    alert('Editar programa #' + id);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-radio&tab=programas&editar='); ?>' + id;
 }
 </script>

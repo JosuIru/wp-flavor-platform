@@ -263,8 +263,7 @@ jQuery(document).ready(function($) {
 
     $(document).on('click', '.btn-editar-voluntario', function() {
         const voluntarioId = $(this).data('id');
-        // Implementar carga de datos del voluntario
-        alert('Editar voluntario #' + voluntarioId);
+        window.location.href = '<?php echo admin_url('admin.php?page=flavor-ayuda-vecinal&tab=voluntarios&editar='); ?>' + voluntarioId;
     });
 });
 </script>

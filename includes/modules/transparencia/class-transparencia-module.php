@@ -2566,7 +2566,7 @@ KNOWLEDGE;
                                 <td><?php echo esc_html($documento['fecha_publicacion']); ?></td>
                                 <td><?php echo number_format($documento['visitas']); ?></td>
                                 <td>
-                                    <a href="#" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia&action=editar&id=' . $documento['id'])); ?>" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
                                     <a href="<?php echo esc_url($documento['url']); ?>" target="_blank" class="button button-small"><?php _e('Ver', 'flavor-chat-ia'); ?></a>
                                 </td>
                             </tr>

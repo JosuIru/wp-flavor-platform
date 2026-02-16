@@ -1648,13 +1648,62 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             echo '<td><span class="status-badge ' . esc_attr($estado_clase) . '">' . esc_html(ucfirst($foro->estado)) . '</span></td>';
             echo '<td>' . intval($foro->orden) . '</td>';
             echo '<td>';
-            echo '<a href="#" class="button button-small">' . esc_html__('Editar', 'flavor-chat-ia') . '</a> ';
-            echo '<a href="#" class="button button-small">' . esc_html__('Ver', 'flavor-chat-ia') . '</a>';
+            echo '<a href="#" class="button button-small foro-editar" data-id="' . esc_attr($foro->id) . '" data-nombre="' . esc_attr($foro->nombre) . '" data-descripcion="' . esc_attr($foro->descripcion) . '" data-estado="' . esc_attr($foro->estado) . '" data-orden="' . esc_attr($foro->orden) . '">' . esc_html__('Editar', 'flavor-chat-ia') . '</a> ';
+            echo '<a href="' . esc_url(home_url('/foro/' . $foro->slug)) . '" class="button button-small" target="_blank">' . esc_html__('Ver', 'flavor-chat-ia') . '</a>';
             echo '</td>';
             echo '</tr>';
         }
 
         echo '</tbody></table>';
+
+        // Modal editar foro
+        echo '<div id="modal-editar-foro" style="display:none;">
+            <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
+                <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
+                    <h2>' . esc_html__('Editar Foro', 'flavor-chat-ia') . '</h2>
+                    <form method="post">
+                        ' . wp_nonce_field('editar_foro', '_wpnonce', true, false) . '
+                        <input type="hidden" name="accion" value="editar_foro">
+                        <input type="hidden" name="foro_id" id="edit-foro-id">
+                        <table class="form-table">
+                            <tr><th><label for="edit-foro-nombre">' . esc_html__('Nombre', 'flavor-chat-ia') . '</label></th>
+                            <td><input type="text" id="edit-foro-nombre" name="nombre" class="regular-text" required></td></tr>
+                            <tr><th><label for="edit-foro-descripcion">' . esc_html__('Descripción', 'flavor-chat-ia') . '</label></th>
+                            <td><textarea id="edit-foro-descripcion" name="descripcion" rows="3" class="large-text"></textarea></td></tr>
+                            <tr><th><label for="edit-foro-estado">' . esc_html__('Estado', 'flavor-chat-ia') . '</label></th>
+                            <td><select id="edit-foro-estado" name="estado">
+                                <option value="activo">' . esc_html__('Activo', 'flavor-chat-ia') . '</option>
+                                <option value="cerrado">' . esc_html__('Cerrado', 'flavor-chat-ia') . '</option>
+                                <option value="archivado">' . esc_html__('Archivado', 'flavor-chat-ia') . '</option>
+                            </select></td></tr>
+                            <tr><th><label for="edit-foro-orden">' . esc_html__('Orden', 'flavor-chat-ia') . '</label></th>
+                            <td><input type="number" id="edit-foro-orden" name="orden" class="small-text" min="0"></td></tr>
+                        </table>
+                        <p class="submit">
+                            <button type="submit" class="button button-primary">' . esc_html__('Guardar', 'flavor-chat-ia') . '</button>
+                            <button type="button" class="button" id="cerrar-modal-foro">' . esc_html__('Cancelar', 'flavor-chat-ia') . '</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>';
+
+        echo '<script>
+        jQuery(document).ready(function($) {
+            $(".foro-editar").on("click", function(e) {
+                e.preventDefault();
+                $("#edit-foro-id").val($(this).data("id"));
+                $("#edit-foro-nombre").val($(this).data("nombre"));
+                $("#edit-foro-descripcion").val($(this).data("descripcion"));
+                $("#edit-foro-estado").val($(this).data("estado"));
+                $("#edit-foro-orden").val($(this).data("orden"));
+                $("#modal-editar-foro").fadeIn();
+            });
+            $("#cerrar-modal-foro, .modal-overlay").on("click", function(e) {
+                if (e.target === this) $("#modal-editar-foro").fadeOut();
+            });
+        });
+        </script>';
     }
 
     /**

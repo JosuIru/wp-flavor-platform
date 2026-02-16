@@ -412,12 +412,41 @@ jQuery(document).ready(function($) {
         $('#modal-detalle').fadeOut();
     });
 
-    // Ver detalle
-    $('.ver-servicio-detalle').click(function(e) {
+    // Editar servicio
+    $('.editar-servicio').click(function(e) {
         e.preventDefault();
         var id = $(this).data('id');
-        // Aquí se cargaría vía AJAX el detalle
-        $('#modal-detalle').fadeIn();
+        var $btn = $(this);
+        var $row = $btn.closest('tr');
+
+        $('#modal-titulo').text('<?php echo esc_js(__('Editar Servicio', 'flavor-chat-ia')); ?>');
+        $('#servicio_id').val(id);
+        $('input[name="accion"]').val('editar_servicio');
+
+        // Cargar datos del servicio vía AJAX
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'banco_tiempo_obtener_servicio',
+                servicio_id: id,
+                nonce: '<?php echo wp_create_nonce("banco_tiempo_nonce"); ?>'
+            },
+            success: function(response) {
+                if (response.success && response.data) {
+                    var s = response.data;
+                    $('#usuario_id').val(s.usuario_id);
+                    $('#nombre').val(s.nombre);
+                    $('#descripcion').val(s.descripcion);
+                    $('#categoria').val(s.categoria);
+                    $('#horas_estimadas').val(s.horas_estimadas);
+                }
+                $('#modal-servicio').fadeIn();
+            },
+            error: function() {
+                alert('<?php echo esc_js(__('Error al cargar el servicio', 'flavor-chat-ia')); ?>');
+            }
+        });
     });
 
     // Cambiar estado

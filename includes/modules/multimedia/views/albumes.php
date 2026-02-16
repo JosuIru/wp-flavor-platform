@@ -106,9 +106,37 @@ $albumes = $wpdb->get_results("
 
 </div>
 
+<div id="modal-album" class="flavor-modal" style="display:none;">
+    <div class="flavor-modal-overlay" onclick="cerrarModalAlbum()"></div>
+    <div class="flavor-modal-content" style="min-width:400px;">
+        <button class="flavor-modal-close" onclick="cerrarModalAlbum()">&times;</button>
+        <h3><?php echo esc_html__('Nuevo Álbum', 'flavor-chat-ia'); ?></h3>
+        <form id="form-nuevo-album" method="post">
+            <?php wp_nonce_field('nuevo_album', 'album_nonce'); ?>
+            <input type="hidden" name="accion" value="crear_album">
+            <div class="form-row" style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Nombre del álbum', 'flavor-chat-ia'); ?></label>
+                <input type="text" name="nombre" required style="width:100%;padding:8px;">
+            </div>
+            <div class="form-row" style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Descripción', 'flavor-chat-ia'); ?></label>
+                <textarea name="descripcion" rows="3" style="width:100%;padding:8px;"></textarea>
+            </div>
+            <div style="text-align:right;">
+                <button type="button" class="button" onclick="cerrarModalAlbum()"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Crear Álbum', 'flavor-chat-ia'); ?></button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 function abrirModalNuevoAlbum() {
-    alert('Crear nuevo álbum');
+    document.getElementById('modal-album').style.display = 'block';
+}
+
+function cerrarModalAlbum() {
+    document.getElementById('modal-album').style.display = 'none';
 }
 
 function verAlbum(id) {
@@ -116,7 +144,7 @@ function verAlbum(id) {
 }
 
 function editarAlbum(id) {
-    alert('Editar álbum #' + id);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-multimedia&tab=albumes&editar='); ?>' + id;
 }
 </script>
 

@@ -838,70 +838,107 @@ class Flavor_App_Integration {
 
     /**
      * Obtiene items para el menú hamburguesa en modo híbrido
+     *
+     * Filtro disponible: 'flavor_app_drawer_items'
+     * Permite a módulos y plugins añadir items al menú hamburguesa.
+     *
+     * Ejemplo de uso:
+     * add_filter('flavor_app_drawer_items', function($items) {
+     *     $items[] = [
+     *         'title' => 'Mi Sección',
+     *         'icon' => 'star',
+     *         'content_type' => 'module',
+     *         'content_ref' => 'mi_modulo',
+     *         'api_endpoint' => '/wp-json/flavor-chat-ia/v1/modules/mi_modulo',
+     *         'order' => 100,
+     *         'depth' => 0,
+     *     ];
+     *     return $items;
+     * });
      */
     private function get_drawer_items_payload($app_config) {
-        $menu_items = $this->get_menu_items_for_source($app_config['web_sections_menu'] ?? '');
-        if (empty($menu_items)) {
-            return [];
-        }
-
-        $saved = $app_config['drawer_items'] ?? [];
-        $enabled_map = [];
-        $meta_map = [];
-        foreach ($saved as $item) {
-            $url = $item['url'] ?? '';
-            if (!$url) continue;
-            $enabled_map[$url] = !empty($item['enabled']);
-            $meta_map[$url] = [
-                'icon' => $item['icon'] ?? 'public',
-                'content_type' => $item['content_type'] ?? 'page',
-                'content_ref' => $item['content_ref'] ?? '',
-                'api_endpoint' => $item['api_endpoint'] ?? '',
-                'title' => $item['title'] ?? '',
-                'order' => isset($item['order']) ? intval($item['order']) : 0,
-            ];
-        }
-
+        $saved_drawer_items = $app_config['drawer_items'] ?? [];
         $payload = [];
-        foreach ($menu_items as $index => $item) {
-            $url = $item['url'] ?? '';
-            if (!$url) continue;
-            if (!empty($enabled_map) && empty($enabled_map[$url])) {
-                continue;
+
+        // Si hay drawer_items guardados directamente (configuración nueva), usarlos
+        if (!empty($saved_drawer_items)) {
+            foreach ($saved_drawer_items as $index => $item) {
+                // Saltar items no habilitados
+                if (empty($item['enabled'])) {
+                    continue;
+                }
+
+                $content_type = $item['content_type'] ?? 'page';
+                $content_ref = $item['content_ref'] ?? '';
+
+                // Obtener content_ref del campo correcto según el tipo
+                if ($content_type === 'page' && empty($content_ref)) {
+                    $content_ref = $item['content_ref_page'] ?? '';
+                } elseif ($content_type === 'cpt' && empty($content_ref)) {
+                    $content_ref = $item['content_ref_cpt'] ?? '';
+                } elseif ($content_type === 'module' && empty($content_ref)) {
+                    $content_ref = $item['content_ref_module'] ?? '';
+                }
+
+                // Generar api_endpoint
+                $api_endpoint = '';
+                if ($content_ref) {
+                    $api_endpoint = $this->generate_api_endpoint_for_tab($content_type, $content_ref);
+                }
+
+                $payload[] = [
+                    'title' => $item['title'] ?? 'Item',
+                    'icon' => $item['icon'] ?? 'public',
+                    'content_type' => $content_type,
+                    'content_ref' => $content_ref,
+                    'api_endpoint' => $api_endpoint,
+                    'order' => isset($item['order']) ? intval($item['order']) : $index,
+                    'depth' => 0,
+                ];
             }
-            $meta = $meta_map[$url] ?? [];
+        } else {
+            // Fallback: usar menú de WordPress si no hay drawer_items guardados
+            $menu_items = $this->get_menu_items_for_source($app_config['web_sections_menu'] ?? '');
 
-            // Procesar contenido para renderizado nativo
-            $content_type = $meta['content_type'] ?? 'page';
-            $content_ref = $meta['content_ref'] ?? '';
-            $api_endpoint = $meta['api_endpoint'] ?? '';
+            foreach ($menu_items as $index => $item) {
+                $url = $item['url'] ?? '';
+                if (!$url) continue;
 
-            // Si no hay api_endpoint guardado, generarlo dinámicamente
-            if (empty($api_endpoint) && $content_ref) {
-                $api_endpoint = $this->generate_api_endpoint_for_tab($content_type, $content_ref);
-            }
+                // Procesar contenido para renderizado nativo
+                $content_type = 'page';
+                $content_ref = '';
+                $api_endpoint = '';
 
-            // Si aún no hay content_ref, intentar inferirlo de la URL
-            if (empty($content_ref) && $content_type === 'page') {
+                // Intentar inferir content_ref de la URL
                 $converted = $this->convert_web_url_to_native($url);
                 if ($converted) {
                     $content_type = $converted['content_type'];
                     $content_ref = $converted['content_ref'];
                     $api_endpoint = $this->generate_api_endpoint_for_tab($content_type, $content_ref);
                 }
-            }
 
-            $payload[] = [
-                'title' => $meta['title'] ?: ($item['title'] ?? $url),
-                'icon' => $meta['icon'] ?? 'public',
-                'content_type' => $content_type,
-                'content_ref' => $content_ref,
-                'api_endpoint' => $api_endpoint,
-                'order' => isset($meta['order']) ? intval($meta['order']) : ($item['order'] ?? $index),
-                'depth' => $item['depth'] ?? 0,
-            ];
+                $payload[] = [
+                    'title' => $item['title'] ?? $url,
+                    'icon' => 'public',
+                    'content_type' => $content_type,
+                    'content_ref' => $content_ref,
+                    'api_endpoint' => $api_endpoint,
+                    'order' => $item['order'] ?? $index,
+                    'depth' => $item['depth'] ?? 0,
+                ];
+            }
         }
 
+        /**
+         * Filtro para añadir/modificar items del menú hamburguesa (drawer) de la app móvil.
+         *
+         * @param array $payload Items actuales del drawer
+         * @param array $app_config Configuración completa de la app
+         * @return array Items modificados
+         */
+        $payload = apply_filters('flavor_app_drawer_items', $payload, $app_config);
+
+        // Ordenar por order después del filtro
         usort($payload, function($a, $b) {
             return ($a['order'] ?? 0) <=> ($b['order'] ?? 0);
         });

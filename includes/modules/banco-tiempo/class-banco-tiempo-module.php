@@ -1111,7 +1111,7 @@ KNOWLEDGE;
                 echo '<td>' . esc_html(number_format((float)$intercambio['horas'], 1)) . 'h</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($intercambio['estado'])) . '</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($intercambio['fecha_solicitud']))) . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small bt-ver-intercambio" data-id="' . esc_attr($intercambio['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
 
@@ -1120,6 +1120,51 @@ KNOWLEDGE;
             echo '<p>' . __('No hay intercambios registrados.', 'flavor-chat-ia') . '</p>';
         }
 
+        // Modal para ver detalles del intercambio
+        ?>
+        <div id="modal-intercambio-detalle" style="display:none;">
+            <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
+                <div class="modal-content" style="position:relative;max-width:600px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
+                    <h2><?php _e('Detalles del Intercambio', 'flavor-chat-ia'); ?></h2>
+                    <div id="intercambio-detalle-contenido"></div>
+                    <p><button type="button" class="button" id="cerrar-modal-intercambio"><?php _e('Cerrar', 'flavor-chat-ia'); ?></button></p>
+                </div>
+            </div>
+        </div>
+        <script>
+        jQuery(document).ready(function($) {
+            $('.bt-ver-intercambio').on('click', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var $row = $(this).closest('tr');
+                var servicio = $row.find('td:eq(0)').text();
+                var solicitante = $row.find('td:eq(1)').text();
+                var receptor = $row.find('td:eq(2)').text();
+                var horas = $row.find('td:eq(3)').text();
+                var estado = $row.find('td:eq(4)').text();
+                var fecha = $row.find('td:eq(5)').text();
+
+                var html = '<table class="form-table">' +
+                    '<tr><th><?php _e("Servicio", "flavor-chat-ia"); ?>:</th><td><strong>' + servicio + '</strong></td></tr>' +
+                    '<tr><th><?php _e("Solicitante", "flavor-chat-ia"); ?>:</th><td>' + solicitante + '</td></tr>' +
+                    '<tr><th><?php _e("Receptor", "flavor-chat-ia"); ?>:</th><td>' + receptor + '</td></tr>' +
+                    '<tr><th><?php _e("Horas", "flavor-chat-ia"); ?>:</th><td>' + horas + '</td></tr>' +
+                    '<tr><th><?php _e("Estado", "flavor-chat-ia"); ?>:</th><td>' + estado + '</td></tr>' +
+                    '<tr><th><?php _e("Fecha", "flavor-chat-ia"); ?>:</th><td>' + fecha + '</td></tr>' +
+                    '</table>';
+
+                $('#intercambio-detalle-contenido').html(html);
+                $('#modal-intercambio-detalle').fadeIn();
+            });
+
+            $('#cerrar-modal-intercambio, .modal-overlay').on('click', function(e) {
+                if (e.target === this) {
+                    $('#modal-intercambio-detalle').fadeOut();
+                }
+            });
+        });
+        </script>
+        <?php
         echo '</div>';
     }
 
@@ -1187,7 +1232,7 @@ KNOWLEDGE;
                 echo '<td>' . esc_html(number_format($horas_dadas, 1)) . 'h</td>';
                 echo '<td>' . esc_html(number_format($horas_recibidas, 1)) . 'h</td>';
                 echo '<td><span class="' . esc_attr($clase_saldo) . '">' . esc_html(($saldo >= 0 ? '+' : '') . number_format($saldo, 1)) . 'h</span></td>';
-                echo '<td><a href="#" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $miembro['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
 
@@ -1246,7 +1291,7 @@ KNOWLEDGE;
                 echo '<td>' . esc_html(number_format((float)$servicio['horas_estimadas'], 1)) . 'h</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($servicio['estado'])) . '</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($servicio['fecha_publicacion']))) . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small bt-editar-servicio" data-id="' . esc_attr($servicio['id']) . '" data-titulo="' . esc_attr($servicio['titulo']) . '" data-categoria="' . esc_attr($servicio['categoria']) . '" data-horas="' . esc_attr($servicio['horas_estimadas']) . '" data-estado="' . esc_attr($servicio['estado']) . '">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
 
@@ -1255,6 +1300,75 @@ KNOWLEDGE;
             echo '<p>' . __('No hay servicios publicados.', 'flavor-chat-ia') . '</p>';
         }
 
+        // Modal para editar servicio
+        ?>
+        <div id="modal-editar-servicio" style="display:none;">
+            <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
+                <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
+                    <h2><?php _e('Editar Servicio', 'flavor-chat-ia'); ?></h2>
+                    <form id="form-editar-servicio" method="post">
+                        <?php wp_nonce_field('bt_editar_servicio', 'bt_nonce'); ?>
+                        <input type="hidden" name="servicio_id" id="edit-servicio-id" />
+                        <table class="form-table">
+                            <tr>
+                                <th><label for="edit-titulo"><?php _e('Título', 'flavor-chat-ia'); ?></label></th>
+                                <td><input type="text" id="edit-titulo" name="titulo" class="regular-text" required /></td>
+                            </tr>
+                            <tr>
+                                <th><label for="edit-categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <select id="edit-categoria" name="categoria">
+                                        <option value="cuidados"><?php _e('Cuidados', 'flavor-chat-ia'); ?></option>
+                                        <option value="educacion"><?php _e('Educación', 'flavor-chat-ia'); ?></option>
+                                        <option value="bricolaje"><?php _e('Bricolaje', 'flavor-chat-ia'); ?></option>
+                                        <option value="tecnologia"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
+                                        <option value="transporte"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
+                                        <option value="otros"><?php _e('Otros', 'flavor-chat-ia'); ?></option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><label for="edit-horas"><?php _e('Horas Estimadas', 'flavor-chat-ia'); ?></label></th>
+                                <td><input type="number" id="edit-horas" name="horas_estimadas" step="0.5" min="0.5" class="small-text" /></td>
+                            </tr>
+                            <tr>
+                                <th><label for="edit-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <select id="edit-estado" name="estado">
+                                        <option value="activo"><?php _e('Activo', 'flavor-chat-ia'); ?></option>
+                                        <option value="inactivo"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        <p>
+                            <button type="submit" class="button button-primary"><?php _e('Guardar', 'flavor-chat-ia'); ?></button>
+                            <button type="button" class="button" id="cerrar-modal-servicio"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+        jQuery(document).ready(function($) {
+            $('.bt-editar-servicio').on('click', function(e) {
+                e.preventDefault();
+                $('#edit-servicio-id').val($(this).data('id'));
+                $('#edit-titulo').val($(this).data('titulo'));
+                $('#edit-categoria').val($(this).data('categoria'));
+                $('#edit-horas').val($(this).data('horas'));
+                $('#edit-estado').val($(this).data('estado'));
+                $('#modal-editar-servicio').fadeIn();
+            });
+
+            $('#cerrar-modal-servicio, .modal-overlay').on('click', function(e) {
+                if (e.target === this) {
+                    $('#modal-editar-servicio').fadeOut();
+                }
+            });
+        });
+        </script>
+        <?php
         echo '</div>';
     }
 
@@ -1353,4 +1467,168 @@ KNOWLEDGE;
             ],
         ];
     }
+}
+
+// Registrar handlers AJAX para banco de tiempo
+add_action('wp_ajax_banco_tiempo_ver_intercambio', 'banco_tiempo_ajax_ver_intercambio');
+add_action('wp_ajax_banco_tiempo_obtener_servicio', 'banco_tiempo_ajax_obtener_servicio');
+add_action('wp_ajax_banco_tiempo_historial_usuario', 'banco_tiempo_ajax_historial_usuario');
+
+/**
+ * AJAX: Ver detalles de un intercambio
+ */
+function banco_tiempo_ajax_ver_intercambio() {
+    check_ajax_referer('banco_tiempo_nonce', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+    }
+
+    $intercambio_id = isset($_POST['intercambio_id']) ? absint($_POST['intercambio_id']) : 0;
+
+    if (!$intercambio_id) {
+        wp_send_json_error(__('ID no válido', 'flavor-chat-ia'));
+    }
+
+    global $wpdb;
+    $tabla_intercambios = $wpdb->prefix . 'flavor_banco_tiempo_intercambios';
+    $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+
+    $intercambio = $wpdb->get_row($wpdb->prepare(
+        "SELECT i.*, s.titulo as servicio_nombre,
+                u1.display_name as ofertante, u2.display_name as solicitante
+         FROM {$tabla_intercambios} i
+         LEFT JOIN {$tabla_servicios} s ON i.servicio_id = s.id
+         LEFT JOIN {$wpdb->users} u1 ON i.ofertante_id = u1.ID
+         LEFT JOIN {$wpdb->users} u2 ON i.solicitante_id = u2.ID
+         WHERE i.id = %d",
+        $intercambio_id
+    ));
+
+    if (!$intercambio) {
+        wp_send_json_error(__('Intercambio no encontrado', 'flavor-chat-ia'));
+    }
+
+    wp_send_json_success([
+        'servicio_nombre' => $intercambio->servicio_nombre,
+        'ofertante' => $intercambio->ofertante,
+        'solicitante' => $intercambio->solicitante,
+        'horas' => number_format($intercambio->horas, 1),
+        'estado' => ucfirst($intercambio->estado),
+        'fecha' => date_i18n('d/m/Y H:i', strtotime($intercambio->fecha_creacion)),
+        'notas' => $intercambio->notas ?? '',
+    ]);
+}
+
+/**
+ * AJAX: Obtener datos de un servicio para edición
+ */
+function banco_tiempo_ajax_obtener_servicio() {
+    check_ajax_referer('banco_tiempo_nonce', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+    }
+
+    $servicio_id = isset($_POST['servicio_id']) ? absint($_POST['servicio_id']) : 0;
+
+    if (!$servicio_id) {
+        wp_send_json_error(__('ID no válido', 'flavor-chat-ia'));
+    }
+
+    global $wpdb;
+    $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+
+    $servicio = $wpdb->get_row($wpdb->prepare(
+        "SELECT * FROM {$tabla_servicios} WHERE id = %d",
+        $servicio_id
+    ));
+
+    if (!$servicio) {
+        wp_send_json_error(__('Servicio no encontrado', 'flavor-chat-ia'));
+    }
+
+    wp_send_json_success([
+        'id' => $servicio->id,
+        'usuario_id' => $servicio->usuario_id,
+        'nombre' => $servicio->titulo,
+        'descripcion' => $servicio->descripcion,
+        'categoria' => $servicio->categoria,
+        'horas_estimadas' => $servicio->horas_estimadas,
+        'estado' => $servicio->estado,
+    ]);
+}
+
+/**
+ * AJAX: Historial de un usuario en banco de tiempo
+ */
+function banco_tiempo_ajax_historial_usuario() {
+    check_ajax_referer('banco_tiempo_nonce', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+    }
+
+    $usuario_id = isset($_POST['usuario_id']) ? absint($_POST['usuario_id']) : 0;
+
+    if (!$usuario_id) {
+        wp_send_json_error(__('ID no válido', 'flavor-chat-ia'));
+    }
+
+    global $wpdb;
+    $tabla_intercambios = $wpdb->prefix . 'flavor_banco_tiempo_intercambios';
+    $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+
+    // Calcular estadísticas
+    $horas_ganadas = $wpdb->get_var($wpdb->prepare(
+        "SELECT COALESCE(SUM(horas), 0) FROM {$tabla_intercambios}
+         WHERE ofertante_id = %d AND estado = 'completado'",
+        $usuario_id
+    ));
+
+    $horas_gastadas = $wpdb->get_var($wpdb->prepare(
+        "SELECT COALESCE(SUM(horas), 0) FROM {$tabla_intercambios}
+         WHERE solicitante_id = %d AND estado = 'completado'",
+        $usuario_id
+    ));
+
+    $total_intercambios = $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM {$tabla_intercambios}
+         WHERE (ofertante_id = %d OR solicitante_id = %d) AND estado = 'completado'",
+        $usuario_id, $usuario_id
+    ));
+
+    // Obtener historial
+    $historial = $wpdb->get_results($wpdb->prepare(
+        "SELECT i.*, s.titulo as servicio,
+                u1.display_name as ofertante, u2.display_name as solicitante
+         FROM {$tabla_intercambios} i
+         LEFT JOIN {$tabla_servicios} s ON i.servicio_id = s.id
+         LEFT JOIN {$wpdb->users} u1 ON i.ofertante_id = u1.ID
+         LEFT JOIN {$wpdb->users} u2 ON i.solicitante_id = u2.ID
+         WHERE i.ofertante_id = %d OR i.solicitante_id = %d
+         ORDER BY i.fecha_creacion DESC
+         LIMIT 50",
+        $usuario_id, $usuario_id
+    ));
+
+    $historial_formateado = [];
+    foreach ($historial as $item) {
+        $es_ofertante = $item->ofertante_id == $usuario_id;
+        $historial_formateado[] = [
+            'fecha' => date_i18n('d/m/Y', strtotime($item->fecha_creacion)),
+            'tipo' => $es_ofertante ? __('Ofrecido', 'flavor-chat-ia') : __('Solicitado', 'flavor-chat-ia'),
+            'servicio' => $item->servicio,
+            'con_usuario' => $es_ofertante ? $item->solicitante : $item->ofertante,
+            'horas' => number_format($item->horas, 1) . ' h',
+        ];
+    }
+
+    wp_send_json_success([
+        'horas_ganadas' => number_format($horas_ganadas, 1),
+        'horas_gastadas' => number_format($horas_gastadas, 1),
+        'saldo' => number_format($horas_ganadas - $horas_gastadas, 1),
+        'intercambios' => $total_intercambios,
+        'historial' => $historial_formateado,
+    ]);
 }

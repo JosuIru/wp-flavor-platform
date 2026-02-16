@@ -36,6 +36,9 @@
             // Filtros
             $(document).on('change', '.flavor-parkings-filtros select', this.handleFiltroChange.bind(this));
 
+            // Ver disponibilidad de parking
+            $(document).on('click', '.btn-ver-parking', this.handleVerDisponibilidad.bind(this));
+
             // Actualizar disponibilidad en tiempo real
             if (typeof flavorParkingsData !== 'undefined' && flavorParkingsData.autoRefresh) {
                 setInterval(this.actualizarDisponibilidad.bind(this), 30000);
@@ -291,6 +294,66 @@
                             }
                         });
                     }
+                }
+            });
+        },
+
+        /**
+         * Maneja ver disponibilidad de parking
+         */
+        handleVerDisponibilidad: function(e) {
+            e.preventDefault();
+
+            var $button = $(e.target).closest('.btn-ver-parking');
+            var parkingId = $button.data('parking-id');
+
+            // Crear modal si no existe
+            if (!$('#flavor-modal-disponibilidad').length) {
+                $('body').append(
+                    '<div id="flavor-modal-disponibilidad" class="flavor-modal" style="display:none;">' +
+                        '<div class="flavor-modal-overlay"></div>' +
+                        '<div class="flavor-modal-content">' +
+                            '<button class="flavor-modal-close">&times;</button>' +
+                            '<div class="flavor-modal-body"></div>' +
+                        '</div>' +
+                    '</div>'
+                );
+
+                $(document).on('click', '#flavor-modal-disponibilidad .flavor-modal-close, #flavor-modal-disponibilidad .flavor-modal-overlay', function() {
+                    $('#flavor-modal-disponibilidad').fadeOut();
+                });
+            }
+
+            var $modal = $('#flavor-modal-disponibilidad');
+            var $body = $modal.find('.flavor-modal-body');
+
+            $body.html('<div class="flavor-loading"><span class="dashicons dashicons-update spin"></span> Cargando...</div>');
+            $modal.fadeIn();
+
+            $.ajax({
+                url: flavorParkingsData.ajaxUrl,
+                type: 'GET',
+                data: {
+                    action: 'flavor_parkings_disponibilidad',
+                    parking_id: parkingId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var data = response.data;
+                        var html = '<h3>' + (data.nombre || 'Parking') + '</h3>' +
+                            '<div class="flavor-disponibilidad-info">' +
+                                '<p><strong>Plazas libres:</strong> ' + (data.disponibles || 0) + ' de ' + (data.total || 0) + '</p>' +
+                                '<p><strong>Ocupación:</strong> ' + (data.ocupacion || 0) + '%</p>' +
+                                (data.precio_hora ? '<p><strong>Precio/hora:</strong> ' + data.precio_hora + '€</p>' : '') +
+                                (data.precio_mes ? '<p><strong>Precio/mes:</strong> ' + data.precio_mes + '€</p>' : '') +
+                            '</div>';
+                        $body.html(html);
+                    } else {
+                        $body.html('<p class="flavor-error">No se pudo cargar la información.</p>');
+                    }
+                },
+                error: function() {
+                    $body.html('<p class="flavor-error">Error de conexión.</p>');
                 }
             });
         },

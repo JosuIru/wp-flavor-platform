@@ -728,6 +728,305 @@
     };
 
     // ========================================
+    // MÓDULO: Editor de Drawer (Menú Hamburguesa)
+    // ========================================
+    var moduloEditorDrawer = {
+        init: function() {
+            this.bindAddDrawerItem();
+            this.bindAddDrawerFromMenu();
+            this.bindAddAllDrawerItems();
+            this.bindRemoveDrawerItem();
+            this.initSortable();
+        },
+
+        initSortable: function() {
+            if (!$.fn.sortable) return;
+
+            // Usar el ID correcto según el PHP: flavor-drawer-sections-sortable
+            $('#flavor-drawer-sections-sortable').sortable({
+                handle: '.section-drag-handle',
+                placeholder: 'ui-sortable-placeholder',
+                update: function() {
+                    moduloEditorDrawer.actualizarOrdenDrawer();
+                }
+            });
+        },
+
+        bindAddDrawerItem: function() {
+            $('#flavor-add-drawer-item').on('click', function() {
+                moduloEditorDrawer.addDrawerItem('', '', 'public');
+            });
+        },
+
+        bindAddDrawerFromMenu: function() {
+            $('#flavor-add-drawer-from-menu').on('click', function() {
+                var $select = $('#flavor-drawer-section-select');
+                var url = $select.val();
+                if (!url) {
+                    alert('Selecciona una sección del menú');
+                    return;
+                }
+
+                var $selectedOption = $select.find('option:selected');
+                var title = $selectedOption.data('title') || $selectedOption.text();
+                var icon = moduloEditorDrawer.guessIconFromLabel(title, url);
+
+                moduloEditorDrawer.addDrawerItem(title, url, icon);
+
+                // Limpiar selección
+                $select.val('');
+            });
+        },
+
+        bindAddAllDrawerItems: function() {
+            $('#flavor-add-all-drawer-items').on('click', function() {
+                var $select = $('#flavor-drawer-section-select');
+                var addedCount = 0;
+
+                $select.find('option').each(function() {
+                    var url = $(this).val();
+                    if (!url) return; // Saltar la opción vacía
+
+                    var title = $(this).data('title') || $(this).text();
+                    var icon = moduloEditorDrawer.guessIconFromLabel(title, url);
+
+                    // Solo añadir si no existe ya
+                    if (!moduloEditorDrawer.drawerItemExists(title, url)) {
+                        moduloEditorDrawer.addDrawerItem(title, url, icon, true);
+                        addedCount++;
+                    }
+                });
+
+                if (addedCount > 0) {
+                    alert('Se añadieron ' + addedCount + ' secciones al menú hamburguesa');
+                } else {
+                    alert('Todas las secciones del menú ya están añadidas');
+                }
+            });
+        },
+
+        bindRemoveDrawerItem: function() {
+            $(document).on('click', '.flavor-drawer-remove', function() {
+                var $item = $(this).closest('.flavor-drawer-item, .flavor-info-section-item');
+                $item.fadeOut(200, function() {
+                    $(this).remove();
+                    moduloEditorDrawer.actualizarOrdenDrawer();
+                });
+            });
+        },
+
+        /**
+         * Verifica si ya existe un item con el mismo título o URL
+         */
+        drawerItemExists: function(title, url) {
+            var exists = false;
+            $('#flavor-drawer-sections-sortable .flavor-drawer-item, #flavor-drawer-sections-sortable .flavor-info-section-item').each(function() {
+                var existingTitle = $(this).find('.flavor-drawer-title-value').val() || $(this).find('.section-label').text();
+                var existingUrl = $(this).find('.flavor-drawer-url-value').val() || $(this).data('drawer-url');
+
+                if ((title && existingTitle === title) || (url && existingUrl === url)) {
+                    exists = true;
+                    return false;
+                }
+            });
+            return exists;
+        },
+
+        /**
+         * Añade un nuevo item al drawer
+         * Usa la misma estructura HTML que el PHP para mantener consistencia
+         */
+        addDrawerItem: function(title, url, icon, skipAnimation) {
+            var $list = $('#flavor-drawer-sections-sortable');
+            var index = $list.find('.flavor-info-section-item, .flavor-drawer-item').length;
+            var safeTitle = title || 'Nueva sección';
+            var safeUrl = url || '';
+            var safeIcon = icon || 'public';
+
+            // Detectar tipo de contenido
+            var contentType = 'page';
+            var contentRef = '';
+            if (safeUrl) {
+                contentRef = moduloEditorDrawer.extractPageSlugFromUrl(safeUrl);
+            }
+
+            // Usar la misma estructura que el PHP (flavor-info-section-item flavor-drawer-item)
+            var html = ''
+                + '<li class="flavor-info-section-item flavor-drawer-item" data-drawer-url="' + safeUrl + '">'
+                +   '<span class="section-drag-handle dashicons dashicons-menu"></span>'
+                +   '<label class="flavor-toggle-switch">'
+                +     '<input type="hidden" name="flavor_apps_config[drawer_items][' + index + '][enabled]" value="0">'
+                +     '<input type="checkbox" name="flavor_apps_config[drawer_items][' + index + '][enabled]" value="1" checked>'
+                +     '<span class="flavor-toggle-slider"></span>'
+                +   '</label>'
+                +   '<button type="button" class="flavor-tab-icon-btn flavor-drawer-icon-btn" data-drawer-index="' + index + '">'
+                +     '<span class="material-icons">' + safeIcon + '</span>'
+                +   '</button>'
+                +   '<span class="section-label">' + safeTitle + '</span>'
+                // Selector de tipo de contenido
+                +   '<select name="flavor_apps_config[drawer_items][' + index + '][content_type]" class="flavor-drawer-content-type">'
+                +     '<option value="native_screen">Pantalla nativa</option>'
+                +     '<option value="page"' + (contentType === 'page' ? ' selected' : '') + '>Página</option>'
+                +     '<option value="cpt">Contenido (CPT)</option>'
+                +     '<option value="module">Módulo</option>'
+                +   '</select>'
+                // Selector de pantalla nativa
+                +   '<select name="flavor_apps_config[drawer_items][' + index + '][content_ref]" class="flavor-drawer-content-ref flavor-drawer-native-screen" style="display:none;">'
+                +     '<option value="info">Info</option>'
+                +     '<option value="chat">Chat</option>'
+                +     '<option value="reservations">Reservas</option>'
+                +     '<option value="my_tickets">Mis Tickets</option>'
+                +     '<option value="profile">Perfil</option>'
+                +     '<option value="notifications">Notificaciones</option>'
+                +     '<option value="settings">Configuración</option>'
+                +   '</select>'
+                // Selector de página
+                +   '<select name="flavor_apps_config[drawer_items][' + index + '][content_ref_page]" class="flavor-drawer-content-ref flavor-drawer-page"' + (contentType !== 'page' ? ' style="display:none;"' : '') + '>'
+                +     '<option value="">Seleccionar página...</option>'
+                +     moduloEditorDrawer.getPageOptionsHtml(contentRef)
+                +   '</select>'
+                // Selector de CPT
+                +   '<select name="flavor_apps_config[drawer_items][' + index + '][content_ref_cpt]" class="flavor-drawer-content-ref flavor-drawer-cpt" style="display:none;">'
+                +     '<option value="">Seleccionar tipo...</option>'
+                +     moduloEditorDrawer.getCptOptionsHtml()
+                +   '</select>'
+                // Selector de módulo
+                +   '<select name="flavor_apps_config[drawer_items][' + index + '][content_ref_module]" class="flavor-drawer-content-ref flavor-drawer-module" style="display:none;">'
+                +     '<option value="">Seleccionar módulo...</option>'
+                +     moduloEditorDrawer.getModuleOptionsHtml()
+                +   '</select>'
+                +   '<button type="button" class="button-link-delete flavor-drawer-remove" title="Eliminar">'
+                +     '<span class="dashicons dashicons-trash"></span>'
+                +   '</button>'
+                // Hidden inputs
+                +   '<input type="hidden" name="flavor_apps_config[drawer_items][' + index + '][title]" value="' + safeTitle + '" class="flavor-drawer-title-value">'
+                +   '<input type="hidden" name="flavor_apps_config[drawer_items][' + index + '][url]" value="' + safeUrl + '" class="flavor-drawer-url-value">'
+                +   '<input type="hidden" name="flavor_apps_config[drawer_items][' + index + '][icon]" value="' + safeIcon + '" class="flavor-drawer-icon-value">'
+                +   '<input type="hidden" name="flavor_apps_config[drawer_items][' + index + '][order]" value="' + index + '" class="flavor-drawer-order">'
+                + '</li>';
+
+            if (skipAnimation) {
+                $list.append(html);
+            } else {
+                var $newItem = $(html).hide();
+                $list.append($newItem);
+                $newItem.slideDown(200);
+            }
+
+            moduloEditorDrawer.actualizarOrdenDrawer();
+        },
+
+        /**
+         * Extrae el slug de página de una URL
+         */
+        extractPageSlugFromUrl: function(url) {
+            if (!url) return '';
+            try {
+                var urlObj = new URL(url, window.location.origin);
+                var pathname = urlObj.pathname.replace(/^\/|\/$/g, '');
+                if (!pathname) return '';
+                if (pathname.includes('wp-admin') || pathname.includes('wp-json')) return '';
+                var segments = pathname.split('/');
+                return segments[segments.length - 1] || '';
+            } catch (e) {
+                return '';
+            }
+        },
+
+        /**
+         * Genera el HTML de opciones de páginas existentes
+         */
+        getPageOptionsHtml: function(selectedSlug) {
+            var html = '';
+            var $existingSelect = $('.flavor-drawer-page').first();
+            if ($existingSelect.length) {
+                $existingSelect.find('option').each(function() {
+                    var val = $(this).val();
+                    if (!val) return;
+                    var text = $(this).text();
+                    var selected = (val === selectedSlug) ? ' selected' : '';
+                    html += '<option value="' + val + '"' + selected + '>' + text + '</option>';
+                });
+            }
+            return html;
+        },
+
+        /**
+         * Genera el HTML de opciones de CPTs disponibles
+         */
+        getCptOptionsHtml: function() {
+            var html = '';
+            var $existingSelect = $('.flavor-drawer-cpt').first();
+            if ($existingSelect.length) {
+                $existingSelect.find('option').each(function() {
+                    var val = $(this).val();
+                    if (!val) return;
+                    var text = $(this).text();
+                    html += '<option value="' + val + '">' + text + '</option>';
+                });
+            }
+            return html;
+        },
+
+        /**
+         * Genera el HTML de opciones de módulos disponibles
+         */
+        getModuleOptionsHtml: function() {
+            var html = '';
+            var $existingSelect = $('.flavor-drawer-module').first();
+            if ($existingSelect.length) {
+                $existingSelect.find('option').each(function() {
+                    var val = $(this).val();
+                    if (!val) return;
+                    var text = $(this).text();
+                    html += '<option value="' + val + '">' + text + '</option>';
+                });
+            }
+            return html;
+        },
+
+        /**
+         * Intenta adivinar el icono apropiado según el título y URL
+         */
+        guessIconFromLabel: function(label, url) {
+            var text = ((label || '') + ' ' + (url || '')).toLowerCase();
+            if (text.includes('home') || text.includes('inicio') || text === '/') return 'home';
+            if (text.includes('chat')) return 'chat_bubble';
+            if (text.includes('reserv') || text.includes('book') || text.includes('cita')) return 'calendar_today';
+            if (text.includes('ticket')) return 'confirmation_number';
+            if (text.includes('contact') || text.includes('telefono') || text.includes('phone')) return 'phone';
+            if (text.includes('ubic') || text.includes('map') || text.includes('location')) return 'location_on';
+            if (text.includes('blog') || text.includes('news') || text.includes('noticias')) return 'announcement';
+            if (text.includes('store') || text.includes('tienda')) return 'store';
+            if (text.includes('shop') || text.includes('cart') || text.includes('compra')) return 'shopping_cart';
+            if (text.includes('event') || text.includes('evento')) return 'event';
+            if (text.includes('menu') || text.includes('carta')) return 'menu_book';
+            if (text.includes('about') || text.includes('info') || text.includes('acerca')) return 'info';
+            if (text.includes('portal')) return 'dashboard';
+            if (text.includes('perfil') || text.includes('profile') || text.includes('cuenta')) return 'person';
+            if (text.includes('config') || text.includes('settings') || text.includes('ajuste')) return 'settings';
+            if (text.includes('notif')) return 'notifications';
+            if (text.includes('ayuda') || text.includes('help') || text.includes('faq')) return 'help';
+            return 'public';
+        },
+
+        actualizarOrdenDrawer: function() {
+            $('#flavor-drawer-sections-sortable .flavor-info-section-item, #flavor-drawer-sections-sortable .flavor-drawer-item').each(function(index) {
+                $(this).find('.flavor-drawer-order').val(index);
+
+                // Actualizar índices en los nombres de campos
+                $(this).find('input, select').each(function() {
+                    var name = $(this).attr('name');
+                    if (name) {
+                        var newName = name.replace(/\[drawer_items\]\[\d+\]/, '[drawer_items][' + index + ']');
+                        $(this).attr('name', newName);
+                    }
+                });
+            });
+        }
+    };
+
+    // ========================================
     // MÓDULO: Activación de módulos del plugin
     // ========================================
     var moduloActivacionModulos = {
@@ -1164,11 +1463,11 @@
         moduloFuncionalidadBase.init();
         moduloPreviewTiempoReal.init();
         moduloEditorTabs.init();
-        moduloEditorTabs.initDrawerSortable();
         moduloInfoSections.init();
         moduloPresets.init();
         moduloSelectorModulos.init();
         moduloActivacionModulos.init();
+        moduloEditorDrawer.init(); // Incluye initSortable para el drawer
     });
 
 })(jQuery);

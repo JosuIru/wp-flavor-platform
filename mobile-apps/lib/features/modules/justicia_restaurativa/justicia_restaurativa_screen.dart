@@ -218,14 +218,373 @@ class _JusticiaRestaurativaScreenState extends ConsumerState<JusticiaRestaurativ
   }
 
   void _solicitarMediacion() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Formulario de mediacion - proximamente')),
+    final descripcionController = TextEditingController();
+    String tipoSeleccionado = 'vecinal';
+    String? mediadorSeleccionado;
+
+    final tipos = [
+      {'id': 'vecinal', 'nombre': 'Conflicto vecinal'},
+      {'id': 'comunitario', 'nombre': 'Conflicto comunitario'},
+      {'id': 'familiar', 'nombre': 'Conflicto familiar'},
+      {'id': 'laboral', 'nombre': 'Conflicto laboral'},
+      {'id': 'otro', 'nombre': 'Otro'},
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.handshake, color: Colors.indigo.shade600),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Solicitar Mediacion',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Describe la situacion que deseas resolver mediante el dialogo.',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 20),
+                DropdownButtonFormField<String>(
+                  value: tipoSeleccionado,
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo de conflicto',
+                    prefixIcon: Icon(Icons.category),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: tipos.map((tipo) {
+                    return DropdownMenuItem<String>(
+                      value: tipo['id'],
+                      child: Text(tipo['nombre']!),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setModalState(() => tipoSeleccionado = value);
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                if (_mediadores.isNotEmpty)
+                  DropdownButtonFormField<String>(
+                    value: mediadorSeleccionado,
+                    decoration: const InputDecoration(
+                      labelText: 'Mediador preferido (opcional)',
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                    ),
+                    items: [
+                      const DropdownMenuItem<String>(
+                        value: null,
+                        child: Text('Sin preferencia'),
+                      ),
+                      ..._mediadores.map((mediador) {
+                        return DropdownMenuItem<String>(
+                          value: mediador['id']?.toString(),
+                          child: Text(mediador['nombre'] ?? 'Mediador'),
+                        );
+                      }),
+                    ],
+                    onChanged: (value) {
+                      setModalState(() => mediadorSeleccionado = value);
+                    },
+                  ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Describe la situacion',
+                    prefixIcon: Icon(Icons.description),
+                    border: OutlineInputBorder(),
+                    hintText: 'Explica brevemente el conflicto...',
+                  ),
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 8),
+                Card(
+                  color: Colors.blue.shade50,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        Icon(Icons.privacy_tip, color: Colors.blue.shade600, size: 20),
+                        const SizedBox(width: 8),
+                        const Expanded(
+                          child: Text(
+                            'Tu solicitud sera tratada con confidencialidad.',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () async {
+                      if (descripcionController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Describe la situacion')),
+                        );
+                        return;
+                      }
+                      Navigator.pop(context);
+                      await _enviarSolicitudMediacion(
+                        tipo: tipoSeleccionado,
+                        mediadorId: mediadorSeleccionado,
+                        descripcion: descripcionController.text,
+                      );
+                    },
+                    icon: const Icon(Icons.send),
+                    label: const Text('Enviar solicitud'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
+  Future<void> _enviarSolicitudMediacion({
+    required String tipo,
+    String? mediadorId,
+    required String descripcion,
+  }) async {
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.post('/justicia-restaurativa/solicitar', data: {
+        'tipo': tipo,
+        'mediador_id': mediadorId,
+        'descripcion': descripcion,
+      });
+
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Solicitud enviada correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadData();
+        }
+      } else {
+        throw Exception(response.error ?? 'Error al enviar');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
   void _verDetalle(Map<String, dynamic> proceso) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Detalle de ${proceso['titulo']} - proximamente')),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.indigo.shade100,
+                    child: Icon(Icons.balance, color: Colors.indigo.shade600),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          proceso['titulo'] ?? 'Proceso',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        _buildEstadoChip(proceso['estado'] ?? ''),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              if ((proceso['descripcion'] ?? '').isNotEmpty) ...[
+                const Text(
+                  'Descripcion',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                Text(proceso['descripcion']),
+                const SizedBox(height: 20),
+              ],
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      _buildInfoRow(
+                        Icons.category,
+                        'Tipo',
+                        proceso['tipo'] ?? 'No especificado',
+                      ),
+                      const Divider(),
+                      _buildInfoRow(
+                        Icons.person,
+                        'Mediador',
+                        proceso['mediador_nombre'] ?? 'Por asignar',
+                      ),
+                      const Divider(),
+                      _buildInfoRow(
+                        Icons.calendar_today,
+                        'Fecha inicio',
+                        proceso['fecha_inicio'] ?? 'Pendiente',
+                      ),
+                      if ((proceso['proxima_sesion'] ?? '').isNotEmpty) ...[
+                        const Divider(),
+                        _buildInfoRow(
+                          Icons.event,
+                          'Proxima sesion',
+                          proceso['proxima_sesion'],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              if (proceso['estado'] == 'activo') ...[
+                const Text(
+                  'Acciones',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Abriendo mensajes...')),
+                          );
+                        },
+                        icon: const Icon(Icons.message),
+                        label: const Text('Mensajes'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Abriendo documentos...')),
+                          );
+                        },
+                        icon: const Icon(Icons.folder),
+                        label: const Text('Documentos'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEstadoChip(String estado) {
+    final Color estadoColor;
+    switch (estado.toLowerCase()) {
+      case 'activo':
+        estadoColor = Colors.green;
+        break;
+      case 'pendiente':
+        estadoColor = Colors.orange;
+        break;
+      case 'finalizado':
+        estadoColor = Colors.blue;
+        break;
+      default:
+        estadoColor = Colors.grey;
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: estadoColor.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        estado,
+        style: TextStyle(fontSize: 12, color: estadoColor, fontWeight: FontWeight.w500),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.grey.shade600),
+          const SizedBox(width: 12),
+          Text(label, style: TextStyle(color: Colors.grey.shade600)),
+          const Spacer(),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
+        ],
+      ),
     );
   }
 }

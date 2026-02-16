@@ -2018,7 +2018,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <div class="ci-sidebar-footer">
-                    <a href="#" class="ci-link-archivados" id="ci-toggle-archivados">
+                    <a href="javascript:void(0);" class="ci-link-archivados" id="ci-toggle-archivados" onclick="if(typeof ciToggleArchivados==='function')ciToggleArchivados();else alert('<?php echo esc_js(__('Funcionalidad en desarrollo', 'flavor-chat-ia')); ?>');">
                         <span class="dashicons dashicons-archive"></span>
                         <?php _e('Archivados', 'flavor-chat-ia'); ?>
                     </a>

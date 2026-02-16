@@ -336,8 +336,41 @@ jQuery(document).ready(function($) {
     $('.ver-detalle').click(function(e) {
         e.preventDefault();
         var id = $(this).data('id');
-        // Aquí cargar datos vía AJAX
+        var $contenido = $('#contenido-detalle-intercambio');
+        $contenido.html('<p style="text-align:center;"><span class="spinner is-active" style="float:none;"></span> Cargando...</p>');
         $('#modal-detalle-intercambio').fadeIn();
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'banco_tiempo_ver_intercambio',
+                intercambio_id: id,
+                nonce: '<?php echo wp_create_nonce("banco_tiempo_nonce"); ?>'
+            },
+            success: function(response) {
+                if (response.success && response.data) {
+                    var d = response.data;
+                    var html = '<table class="form-table">';
+                    html += '<tr><th>Servicio:</th><td>' + (d.servicio_nombre || '-') + '</td></tr>';
+                    html += '<tr><th>Ofertante:</th><td>' + (d.ofertante || '-') + '</td></tr>';
+                    html += '<tr><th>Solicitante:</th><td>' + (d.solicitante || '-') + '</td></tr>';
+                    html += '<tr><th>Horas:</th><td>' + (d.horas || '0') + ' h</td></tr>';
+                    html += '<tr><th>Estado:</th><td>' + (d.estado || '-') + '</td></tr>';
+                    html += '<tr><th>Fecha:</th><td>' + (d.fecha || '-') + '</td></tr>';
+                    if (d.notas) {
+                        html += '<tr><th>Notas:</th><td>' + d.notas + '</td></tr>';
+                    }
+                    html += '</table>';
+                    $contenido.html(html);
+                } else {
+                    $contenido.html('<p class="notice notice-error">No se pudo cargar el intercambio.</p>');
+                }
+            },
+            error: function() {
+                $contenido.html('<p class="notice notice-error">Error al cargar los datos.</p>');
+            }
+        });
     });
 
     $('#btn-cerrar-detalle, .modal-overlay').click(function(e) {

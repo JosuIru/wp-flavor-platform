@@ -757,7 +757,7 @@ KNOWLEDGE;
                 echo '<td><span class="' . esc_attr($clase_urgencia) . '">' . esc_html(ucfirst($solicitud['urgencia'])) . '</span></td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($solicitud['estado'])) . '</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($solicitud['fecha_solicitud']))) . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small av-ver-solicitud" data-id="' . esc_attr($solicitud['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
 
@@ -765,6 +765,47 @@ KNOWLEDGE;
         } else {
             echo '<p>' . __('No hay solicitudes registradas.', 'flavor-chat-ia') . '</p>';
         }
+
+        // Modal ver solicitud
+        echo '<div id="modal-ver-solicitud" style="display:none;">
+            <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
+                <div class="modal-content" style="position:relative;max-width:600px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
+                    <h2>' . __('Detalle de Solicitud', 'flavor-chat-ia') . '</h2>
+                    <div id="contenido-solicitud"></div>
+                    <p><button type="button" class="button" id="cerrar-modal-solicitud">' . __('Cerrar', 'flavor-chat-ia') . '</button></p>
+                </div>
+            </div>
+        </div>';
+
+        echo '<script>
+        jQuery(document).ready(function($) {
+            $(".av-ver-solicitud").on("click", function(e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                var $row = $(this).closest("tr");
+                var titulo = $row.find("td:eq(0)").text();
+                var solicitante = $row.find("td:eq(1)").text();
+                var categoria = $row.find("td:eq(2)").text();
+                var urgencia = $row.find("td:eq(3)").text();
+                var estado = $row.find("td:eq(4)").text();
+                var fecha = $row.find("td:eq(5)").text();
+
+                var html = "<table class=\"form-table\">";
+                html += "<tr><th>Título:</th><td>" + titulo + "</td></tr>";
+                html += "<tr><th>Solicitante:</th><td>" + solicitante + "</td></tr>";
+                html += "<tr><th>Categoría:</th><td>" + categoria + "</td></tr>";
+                html += "<tr><th>Urgencia:</th><td>" + urgencia + "</td></tr>";
+                html += "<tr><th>Estado:</th><td>" + estado + "</td></tr>";
+                html += "<tr><th>Fecha:</th><td>" + fecha + "</td></tr>";
+                html += "</table>";
+                $("#contenido-solicitud").html(html);
+                $("#modal-ver-solicitud").fadeIn();
+            });
+            $("#cerrar-modal-solicitud, .modal-overlay").on("click", function(e) {
+                if (e.target === this) $("#modal-ver-solicitud").fadeOut();
+            });
+        });
+        </script>';
 
         echo '</div>';
     }
@@ -829,7 +870,7 @@ KNOWLEDGE;
                 echo '<td>' . esc_html($ayudas_realizadas) . '</td>';
                 echo '<td><span class="puntos-solidaridad">' . esc_html($puntos_solidaridad) . ' pts</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($voluntario['ultima_oferta']))) . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $voluntario['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
 

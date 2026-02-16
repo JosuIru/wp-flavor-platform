@@ -220,7 +220,7 @@ $todos_los_grupos = get_posts([
                                         </a>
                                     <?php endif; ?>
                                     <hr>
-                                    <a href="#" class="gc-ver-detalles">
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=gc-consumidores&ver=' . $consumidor->id)); ?>" class="gc-ver-detalles">
                                         <span class="dashicons dashicons-visibility"></span> <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
                                     </a>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos&usuario_id=' . $consumidor->usuario_id)); ?>">

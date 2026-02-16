@@ -441,10 +441,15 @@ jQuery(document).ready(function($) {
         renderizarCalendario();
     });
 
-    // Exportar
+    // Exportar a ICS
     $('#btn-exportar-calendario').on('click', function() {
-        // Implementar exportación (ICS, PDF, etc.)
-        alert('<?php _e('Función de exportación en desarrollo', 'flavor-chat-ia'); ?>');
+        var params = new URLSearchParams({
+            action: 'espacios_comunes_exportar_calendario',
+            mes: mesActual,
+            anio: anioActual,
+            nonce: '<?php echo wp_create_nonce('espacios_calendario_nonce'); ?>'
+        });
+        window.location.href = ajaxurl + '?' + params.toString();
     });
 
     // Imprimir

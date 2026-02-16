@@ -717,7 +717,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($bar['direccion'] ?: '-') . '</td>';
                 echo '<td>' . esc_html(number_format(floatval($bar['valoracion_media']), 1)) . ' (' . esc_html($bar['valoraciones_count']) . ')</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($bar['estado'])) . '</span></td>';
-                echo '<td><a href="#" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a> <a href="#" class="button button-small">' . __('Ver Carta', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('admin.php?page=bares-nuevo&editar=' . $bar['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a> <a href="' . esc_url(admin_url('admin.php?page=bares-carta&bar_id=' . $bar['id'])) . '" class="button button-small">' . __('Ver Carta', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -778,13 +778,50 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html($this->obtener_etiqueta_estado_reserva($reserva['estado'])) . '</span></td>';
                 echo '<td>';
                 if ($reserva['estado'] === 'pendiente') {
-                    echo '<a href="#" class="button button-small button-primary">' . __('Confirmar', 'flavor-chat-ia') . '</a> ';
+                    echo '<form method="post" style="display:inline;">';
+                    echo wp_nonce_field('confirmar_reserva_bar', '_wpnonce', true, false);
+                    echo '<input type="hidden" name="accion" value="confirmar_reserva">';
+                    echo '<input type="hidden" name="reserva_id" value="' . esc_attr($reserva['id']) . '">';
+                    echo '<button type="submit" class="button button-small button-primary">' . __('Confirmar', 'flavor-chat-ia') . '</button>';
+                    echo '</form> ';
                 }
-                echo '<a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a>';
+                echo '<a href="#" class="button button-small bar-ver-reserva" data-id="' . esc_attr($reserva['id']) . '" data-nombre="' . esc_attr($reserva['nombre_reserva']) . '" data-telefono="' . esc_attr($reserva['telefono']) . '" data-fecha="' . esc_attr(date_i18n('d/m/Y', strtotime($reserva['fecha']))) . '" data-hora="' . esc_attr(substr($reserva['hora'], 0, 5)) . '" data-comensales="' . esc_attr($reserva['comensales']) . '">' . __('Ver', 'flavor-chat-ia') . '</a>';
                 echo '</td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
+
+            // Modal ver reserva
+            echo '<div id="modal-ver-reserva" style="display:none;">
+                <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
+                    <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
+                        <h2>' . __('Detalle de Reserva', 'flavor-chat-ia') . '</h2>
+                        <div id="contenido-reserva"></div>
+                        <p><button type="button" class="button" id="cerrar-modal-reserva">' . __('Cerrar', 'flavor-chat-ia') . '</button></p>
+                    </div>
+                </div>
+            </div>';
+
+            echo '<script>
+            jQuery(document).ready(function($) {
+                $(".bar-ver-reserva").on("click", function(e) {
+                    e.preventDefault();
+                    var d = $(this).data();
+                    var html = "<table class=\"form-table\">";
+                    html += "<tr><th>Nombre:</th><td><strong>" + d.nombre + "</strong></td></tr>";
+                    html += "<tr><th>Teléfono:</th><td>" + d.telefono + "</td></tr>";
+                    html += "<tr><th>Fecha:</th><td>" + d.fecha + "</td></tr>";
+                    html += "<tr><th>Hora:</th><td>" + d.hora + "</td></tr>";
+                    html += "<tr><th>Comensales:</th><td>" + d.comensales + "</td></tr>";
+                    html += "</table>";
+                    $("#contenido-reserva").html(html);
+                    $("#modal-ver-reserva").fadeIn();
+                });
+                $("#cerrar-modal-reserva, .modal-overlay").on("click", function(e) {
+                    if (e.target === this) $("#modal-ver-reserva").fadeOut();
+                });
+            });
+            </script>';
         } else {
             echo '<p>' . __('No hay reservas en esta categoría.', 'flavor-chat-ia') . '</p>';
         }

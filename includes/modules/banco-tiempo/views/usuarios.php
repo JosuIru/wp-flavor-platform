@@ -298,11 +298,47 @@ jQuery(document).ready(function($) {
     $('.ver-historial').click(function(e) {
         e.preventDefault();
         var usuarioId = $(this).data('usuario-id');
+        var $contenido = $('#contenido-historial');
 
+        $contenido.html('<p style="text-align:center;"><span class="spinner is-active" style="float:none;"></span> Cargando historial...</p>');
         $('#modal-historial').fadeIn();
 
-        // Aquí se cargaría el historial vía AJAX
-        $('#contenido-historial').html('<p>Cargando historial del usuario #' + usuarioId + '...</p>');
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'banco_tiempo_historial_usuario',
+                usuario_id: usuarioId,
+                nonce: '<?php echo wp_create_nonce("banco_tiempo_nonce"); ?>'
+            },
+            success: function(response) {
+                if (response.success && response.data) {
+                    var d = response.data;
+                    var html = '<div class="historial-resumen" style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px;">';
+                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + d.horas_ganadas + '</strong><br><small>Horas ganadas</small></div>';
+                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + d.horas_gastadas + '</strong><br><small>Horas gastadas</small></div>';
+                    html += '<div style="background:#d4edda;padding:15px;border-radius:4px;text-align:center;"><strong>' + d.saldo + '</strong><br><small>Saldo actual</small></div>';
+                    html += '<div style="background:#f0f0f1;padding:15px;border-radius:4px;text-align:center;"><strong>' + d.intercambios + '</strong><br><small>Intercambios</small></div>';
+                    html += '</div>';
+
+                    if (d.historial && d.historial.length > 0) {
+                        html += '<table class="wp-list-table widefat fixed striped"><thead><tr><th>Fecha</th><th>Tipo</th><th>Servicio</th><th>Con</th><th>Horas</th></tr></thead><tbody>';
+                        d.historial.forEach(function(item) {
+                            html += '<tr><td>' + item.fecha + '</td><td>' + item.tipo + '</td><td>' + item.servicio + '</td><td>' + item.con_usuario + '</td><td>' + item.horas + '</td></tr>';
+                        });
+                        html += '</tbody></table>';
+                    } else {
+                        html += '<p style="text-align:center;color:#646970;">No hay historial de intercambios.</p>';
+                    }
+                    $contenido.html(html);
+                } else {
+                    $contenido.html('<p class="notice notice-error">No se pudo cargar el historial.</p>');
+                }
+            },
+            error: function() {
+                $contenido.html('<p class="notice notice-error">Error al cargar el historial.</p>');
+            }
+        });
     });
 
     $('#btn-cerrar-historial, .modal-overlay').click(function(e) {

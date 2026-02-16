@@ -77,7 +77,7 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
 
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Cursos', 'flavor-chat-ia'); ?></h1>
-    <a href="#" class="page-title-action" id="btn-nuevo-curso"><?php echo esc_html__('Añadir Nuevo', 'flavor-chat-ia'); ?></a>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-cursos&tab=nuevo')); ?>" class="page-title-action" id="btn-nuevo-curso"><?php echo esc_html__('Añadir Nuevo', 'flavor-chat-ia'); ?></a>
     <hr class="wp-header-end">
 
     <!-- Filtros -->

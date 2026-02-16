@@ -4467,82 +4467,121 @@ class Chat_IA_Mobile_API {
         $mobile_config = $settings['mobile_apps'] ?? [];
         $client_config = $mobile_config['client_config'] ?? [];
 
-        // Obtener módulos activos desde flavor_apps_config
+        // Obtener configuración de navegación desde flavor_apps_config (panel de admin)
         $app_config = get_option('flavor_apps_config', []);
-        $enabled_modules = [];
-        if (isset($app_config['modules']) && is_array($app_config['modules'])) {
-            foreach ($app_config['modules'] as $module_id => $module_settings) {
-                if (!empty($module_settings['enabled'])) {
-                    $enabled_modules[] = $module_id;
+
+        // Tipo de navegación (hybrid, tabs_only, drawer_only)
+        $navigation_type = $app_config['navigation_type'] ?? 'hybrid';
+        $show_appbar = !empty($app_config['show_appbar']);
+
+        // Usar tabs configurados en el panel de navegación
+        $configured_tabs = isset($app_config['tabs']) && is_array($app_config['tabs'])
+            ? $app_config['tabs']
+            : [];
+
+        // Drawer items (menú hamburguesa) desde el panel
+        $drawer_items = isset($app_config['drawer_items']) && is_array($app_config['drawer_items'])
+            ? $app_config['drawer_items']
+            : [];
+
+        // Si hay tabs configurados en el panel, usarlos
+        if (!empty($configured_tabs)) {
+            $tabs = [];
+            $order = 0;
+            foreach ($configured_tabs as $tab) {
+                if (empty($tab['enabled'])) continue;
+
+                $tabs[] = [
+                    'id' => $tab['id'] ?? ('tab_' . $order),
+                    'label' => $tab['label'] ?? $tab['title'] ?? 'Tab',
+                    'icon' => $tab['icon'] ?? 'circle',
+                    'enabled' => true,
+                    'order' => $order++,
+                    'content_type' => $tab['content_type'] ?? 'native',
+                    'content_ref' => $tab['content_ref'] ?? $tab['content_ref_module'] ?? '',
+                ];
+            }
+        } else {
+            // Fallback: generar tabs desde módulos habilitados
+            $enabled_modules = [];
+            if (isset($app_config['modules']) && is_array($app_config['modules'])) {
+                foreach ($app_config['modules'] as $module_id => $module_settings) {
+                    if (!empty($module_settings['enabled'])) {
+                        $enabled_modules[] = $module_id;
+                    }
                 }
             }
-        }
 
-        // Tabs base (siempre disponibles)
-        $base_tabs = [
-            ['id' => 'info', 'label' => 'Info', 'icon' => 'info', 'enabled' => true, 'order' => 0],
-        ];
+            // Tabs base
+            $tabs = [
+                ['id' => 'info', 'label' => 'Info', 'icon' => 'info', 'enabled' => true, 'order' => 0, 'content_type' => 'native'],
+            ];
 
-        // Tabs adicionales según configuración de WP
-        $order = 1;
-        $additional_tabs = [];
+            $order = 1;
 
-        // Chat (si está habilitado)
-        if (isset($client_config['chat_enabled']) && $client_config['chat_enabled']) {
-            $additional_tabs[] = ['id' => 'chat', 'label' => 'Chat', 'icon' => 'chat_bubble', 'enabled' => true, 'order' => $order++];
-        }
-
-        // Reservas (si calendario-experiencias está activo)
-        if (isset($client_config['reservations_enabled']) && $client_config['reservations_enabled']) {
-            $additional_tabs[] = ['id' => 'reservations', 'label' => 'Reservar', 'icon' => 'calendar_today', 'enabled' => true, 'order' => $order++];
-            $additional_tabs[] = ['id' => 'my_tickets', 'label' => 'Mis Tickets', 'icon' => 'confirmation_number', 'enabled' => true, 'order' => $order++];
-        }
-
-        // Módulos dinámicos desde flavor_apps_config
-        $module_metadata = [
-            'grupos_consumo' => ['label' => 'Grupos Consumo', 'icon' => 'groups'],
-            'grupos-consumo' => ['label' => 'Grupos Consumo', 'icon' => 'groups'],
-            'banco_tiempo' => ['label' => 'Banco de Tiempo', 'icon' => 'handyman'],
-            'banco-tiempo' => ['label' => 'Banco de Tiempo', 'icon' => 'handyman'],
-            'marketplace' => ['label' => 'Marketplace', 'icon' => 'store'],
-            'eventos' => ['label' => 'Eventos', 'icon' => 'event'],
-            'socios' => ['label' => 'Socios', 'icon' => 'card_membership'],
-            'facturas' => ['label' => 'Facturas', 'icon' => 'receipt'],
-            'chat-grupos' => ['label' => 'Grupos', 'icon' => 'forum'],
-            'chat_grupos' => ['label' => 'Grupos', 'icon' => 'forum'],
-            'chat-interno' => ['label' => 'Mensajes', 'icon' => 'message'],
-            'chat_interno' => ['label' => 'Mensajes', 'icon' => 'message'],
-        ];
-
-        foreach ($enabled_modules as $module_id) {
-            // Omitir módulos base que ya están gestionados
-            if (in_array($module_id, ['chat', 'reservas', 'reservations'])) {
-                continue;
+            // Chat (si está habilitado)
+            if (!empty($client_config['chat_enabled'])) {
+                $tabs[] = ['id' => 'chat', 'label' => 'Chat', 'icon' => 'chat_bubble', 'enabled' => true, 'order' => $order++, 'content_type' => 'native'];
             }
 
-            $metadata = $module_metadata[$module_id] ?? [
-                'label' => ucwords(str_replace(['_', '-'], ' ', $module_id)),
-                'icon' => 'extension'
+            // Reservas
+            if (!empty($client_config['reservations_enabled'])) {
+                $tabs[] = ['id' => 'reservations', 'label' => 'Reservar', 'icon' => 'calendar_today', 'enabled' => true, 'order' => $order++, 'content_type' => 'native'];
+                $tabs[] = ['id' => 'my_tickets', 'label' => 'Mis Tickets', 'icon' => 'confirmation_number', 'enabled' => true, 'order' => $order++, 'content_type' => 'native'];
+            }
+
+            // Módulos dinámicos
+            $module_metadata = [
+                'grupos_consumo' => ['label' => 'Grupos Consumo', 'icon' => 'groups'],
+                'grupos-consumo' => ['label' => 'Grupos Consumo', 'icon' => 'groups'],
+                'banco_tiempo' => ['label' => 'Banco de Tiempo', 'icon' => 'handyman'],
+                'banco-tiempo' => ['label' => 'Banco de Tiempo', 'icon' => 'handyman'],
+                'marketplace' => ['label' => 'Marketplace', 'icon' => 'store'],
+                'eventos' => ['label' => 'Eventos', 'icon' => 'event'],
             ];
 
-            $additional_tabs[] = [
-                'id' => $module_id,
-                'label' => $metadata['label'],
-                'icon' => $metadata['icon'],
-                'enabled' => true,
-                'order' => $order++
+            foreach ($enabled_modules as $module_id) {
+                if (in_array($module_id, ['chat', 'reservas', 'reservations'])) continue;
+
+                $metadata = $module_metadata[$module_id] ?? [
+                    'label' => ucwords(str_replace(['_', '-'], ' ', $module_id)),
+                    'icon' => 'extension'
+                ];
+
+                $tabs[] = [
+                    'id' => $module_id,
+                    'label' => $metadata['label'],
+                    'icon' => $metadata['icon'],
+                    'enabled' => true,
+                    'order' => $order++,
+                    'content_type' => 'module',
+                    'content_ref' => $module_id,
+                ];
+            }
+        }
+
+        // Procesar drawer items
+        $processed_drawer = [];
+        foreach ($drawer_items as $item) {
+            if (empty($item['enabled'])) continue;
+
+            $processed_drawer[] = [
+                'id' => $item['id'] ?? sanitize_title($item['title'] ?? 'item'),
+                'title' => $item['title'] ?? 'Item',
+                'icon' => $item['icon'] ?? 'circle',
+                'content_type' => $item['content_type'] ?? 'page',
+                'content_ref' => $item['content_ref'] ?? $item['content_ref_page'] ?? $item['url'] ?? '',
+                'order' => intval($item['order'] ?? 0),
             ];
         }
 
-        // Combinar tabs base con adicionales
-        $tabs = array_merge($base_tabs, $additional_tabs);
+        // Ordenar drawer items
+        usort($processed_drawer, function($a, $b) {
+            return ($a['order'] ?? 0) - ($b['order'] ?? 0);
+        });
 
-        // Permitir override manual si existe
-        if (!empty($client_config['tabs'])) {
-            $tabs = $client_config['tabs'];
-        }
-
-        $default_tab = $client_config['default_tab'] ?? 'info';
+        // Tab por defecto
+        $default_tab = $app_config['default_tab'] ?? $client_config['default_tab'] ?? 'info';
 
         // Funcionalidades habilitadas
         $features = [
@@ -4641,7 +4680,10 @@ class Chat_IA_Mobile_API {
         return rest_ensure_response([
             'success' => true,
             'config' => [
+                'navigation_type' => $navigation_type,
+                'show_appbar' => $show_appbar,
                 'tabs' => $tabs,
+                'drawer_items' => $processed_drawer,
                 'default_tab' => $default_tab,
                 'features' => $features,
                 'branding' => $branding,
@@ -4650,7 +4692,7 @@ class Chat_IA_Mobile_API {
                 'texts' => $texts,
                 'tab_order' => $tab_order,
                 'tabs_enabled' => $tabs_enabled,
-                'version' => '2.0.0',
+                'version' => '2.1.0',
                 'cache_duration' => 3600,
             ],
         ]);

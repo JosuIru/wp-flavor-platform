@@ -1299,7 +1299,7 @@ KNOWLEDGE;
                                     </td>
                                     <td><?php echo esc_html(number_format($bicicleta->kilometros_acumulados)); ?> km</td>
                                     <td>
-                                        <a href="#" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=bicicletas-flota&action=editar&id=' . $bicicleta->id)); ?>" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -1370,7 +1370,7 @@ KNOWLEDGE;
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="#" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=bicicletas-estaciones&action=editar&id=' . $estacion->id)); ?>" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -1442,7 +1442,12 @@ KNOWLEDGE;
                                     <td><?php echo esc_html(date_i18n('d/m/Y H:i', $inicio)); ?></td>
                                     <td><?php echo esc_html($duracion_texto); ?></td>
                                     <td>
-                                        <a href="#" class="button button-small"><?php _e('Finalizar', 'flavor-chat-ia'); ?></a>
+                                        <form method="post" style="display:inline;">
+                                            <?php wp_nonce_field('finalizar_prestamo_bici', '_wpnonce'); ?>
+                                            <input type="hidden" name="accion" value="finalizar_prestamo">
+                                            <input type="hidden" name="prestamo_id" value="<?php echo esc_attr($prestamo->id); ?>">
+                                            <button type="submit" class="button button-small" onclick="return confirm('<?php echo esc_js(__('¿Finalizar este préstamo?', 'flavor-chat-ia')); ?>');"><?php _e('Finalizar', 'flavor-chat-ia'); ?></button>
+                                        </form>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

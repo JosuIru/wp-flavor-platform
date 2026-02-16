@@ -218,11 +218,11 @@ function cerrarModalNuevaSerie() {
 }
 
 function verDetalleSerie(serieId) {
-    alert('Ver detalles de serie #' + serieId);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-chat-podcast&tab=series&ver='); ?>' + serieId;
 }
 
 function editarSerie(serieId) {
-    alert('Editar serie #' + serieId);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-chat-podcast&tab=series&editar='); ?>' + serieId;
 }
 
 function verEpisodiosSerie(serieId) {

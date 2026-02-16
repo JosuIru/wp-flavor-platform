@@ -79,12 +79,56 @@ $locutores = $wpdb->get_results("
 
 </div>
 
+<!-- Modal Nuevo Locutor -->
+<div id="modal-locutor" class="flavor-modal" style="display:none;">
+    <div class="flavor-modal-overlay" onclick="cerrarModalLocutor()"></div>
+    <div class="flavor-modal-content" style="min-width:450px;">
+        <button class="flavor-modal-close" onclick="cerrarModalLocutor()">&times;</button>
+        <h3><?php echo esc_html__('Nuevo Locutor', 'flavor-chat-ia'); ?></h3>
+        <form id="form-locutor" method="post">
+            <?php wp_nonce_field('nuevo_locutor', 'locutor_nonce'); ?>
+            <input type="hidden" name="accion" value="crear_locutor">
+            <div style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></label>
+                <input type="text" name="nombre" required style="width:100%;padding:8px;">
+            </div>
+            <div style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></label>
+                <input type="email" name="email" style="width:100%;padding:8px;">
+            </div>
+            <div style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Biografía', 'flavor-chat-ia'); ?></label>
+                <textarea name="bio" rows="3" style="width:100%;padding:8px;"></textarea>
+            </div>
+            <div style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('URL Foto', 'flavor-chat-ia'); ?></label>
+                <input type="url" name="foto_url" style="width:100%;padding:8px;">
+            </div>
+            <div style="text-align:right;">
+                <button type="button" class="button" onclick="cerrarModalLocutor()"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar', 'flavor-chat-ia'); ?></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.flavor-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100000; }
+.flavor-modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); }
+.flavor-modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 25px; border-radius: 8px; }
+.flavor-modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; }
+</style>
+
 <script>
 function abrirModalNuevoLocutor() {
-    alert('Agregar nuevo locutor');
+    document.getElementById('modal-locutor').style.display = 'block';
+}
+
+function cerrarModalLocutor() {
+    document.getElementById('modal-locutor').style.display = 'none';
 }
 
 function editarLocutor(id) {
-    alert('Editar locutor #' + id);
+    window.location.href = '<?php echo admin_url('admin.php?page=flavor-radio&tab=locutores&editar='); ?>' + id;
 }
 </script>

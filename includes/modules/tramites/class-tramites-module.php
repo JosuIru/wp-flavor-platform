@@ -2099,8 +2099,26 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 <p class="flavor-resultado-numero"></p>
                 <p class="flavor-resultado-mensaje"><?php esc_html_e('Recibiras un email de confirmacion con los detalles.', 'flavor-chat-ia'); ?></p>
                 <div class="flavor-resultado-acciones">
-                    <a href="#" class="flavor-btn flavor-btn-secondary flavor-ver-expediente"><?php esc_html_e('Ver mi expediente', 'flavor-chat-ia'); ?></a>
+                    <a href="#" class="flavor-btn flavor-btn-secondary flavor-ver-expediente" onclick="flavorVerExpediente(this); return false;"><?php esc_html_e('Ver mi expediente', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(remove_query_arg('tramite')); ?>" class="flavor-btn flavor-btn-outline"><?php esc_html_e('Iniciar otro tramite', 'flavor-chat-ia'); ?></a>
                 </div>
+                <script>
+                function flavorVerExpediente(el) {
+                    var contenedor = el.closest('.flavor-tramite-resultado');
+                    var numeroEl = contenedor.querySelector('.flavor-resultado-numero');
+                    if (numeroEl) {
+                        var texto = numeroEl.textContent;
+                        var match = texto.match(/EXP-\d{4}-\d+/);
+                        if (match) {
+                            var numero = match[0];
+                            var url = new URL(window.location.href);
+                            url.searchParams.delete('tramite');
+                            url.searchParams.set('expediente', numero);
+                            window.location.href = url.toString();
+                        }
+                    }
+                }
+                </script>
             </div>
         </div>
         <?php

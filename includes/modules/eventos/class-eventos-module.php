@@ -341,7 +341,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($evento['fecha_inicio']))) . '</td>';
                 echo '<td>' . esc_html(ucfirst($evento['tipo'])) . '</td>';
                 echo '<td>' . esc_html($evento['inscritos_count']) . ($evento['aforo_maximo'] > 0 ? '/' . $evento['aforo_maximo'] : '') . '</td>';
-                echo '<td><a href="#" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('admin.php?page=eventos-editar&id=' . $evento['id'])) . '" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -458,7 +458,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($inscripcion['evento_titulo'] ?? __('Evento eliminado', 'flavor-chat-ia')) . '</td>';
                 echo '<td>' . esc_html($inscripcion['num_plazas']) . '</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($inscripcion['estado'])) . '</span></td>';
-                echo '<td><a href="#" class="button button-small">' . __('Gestionar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small ev-gestionar-inscripcion" data-id="' . esc_attr($inscripcion['id']) . '" data-estado="' . esc_attr($inscripcion['estado']) . '">' . __('Gestionar', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -466,6 +466,48 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             echo '<p>' . __('No hay asistentes registrados.', 'flavor-chat-ia') . '</p>';
         }
 
+        // Modal para gestionar inscripción
+        ?>
+        <div id="modal-gestionar-inscripcion" style="display:none;">
+            <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
+                <div class="modal-content" style="position:relative;max-width:400px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
+                    <h2><?php _e('Gestionar Inscripción', 'flavor-chat-ia'); ?></h2>
+                    <form id="form-gestionar-inscripcion" method="post">
+                        <?php wp_nonce_field('ev_gestionar_inscripcion', 'ev_nonce'); ?>
+                        <input type="hidden" name="inscripcion_id" id="gestionar-inscripcion-id" />
+                        <p>
+                            <label for="gestionar-estado"><?php _e('Cambiar estado:', 'flavor-chat-ia'); ?></label>
+                            <select id="gestionar-estado" name="estado" style="width:100%;">
+                                <option value="pendiente"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
+                                <option value="confirmada"><?php _e('Confirmada', 'flavor-chat-ia'); ?></option>
+                                <option value="cancelada"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                            </select>
+                        </p>
+                        <p>
+                            <button type="submit" class="button button-primary"><?php _e('Guardar', 'flavor-chat-ia'); ?></button>
+                            <button type="button" class="button" id="cerrar-modal-inscripcion"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+        jQuery(document).ready(function($) {
+            $('.ev-gestionar-inscripcion').on('click', function(e) {
+                e.preventDefault();
+                $('#gestionar-inscripcion-id').val($(this).data('id'));
+                $('#gestionar-estado').val($(this).data('estado'));
+                $('#modal-gestionar-inscripcion').fadeIn();
+            });
+
+            $('#cerrar-modal-inscripcion, .modal-overlay').on('click', function(e) {
+                if (e.target === this) {
+                    $('#modal-gestionar-inscripcion').fadeOut();
+                }
+            });
+        });
+        </script>
+        <?php
         echo '</div>';
     }
 

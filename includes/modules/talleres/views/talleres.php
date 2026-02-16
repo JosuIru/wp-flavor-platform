@@ -47,7 +47,7 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_talleres WHE
 
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Talleres', 'flavor-chat-ia'); ?></h1>
-    <a href="#" class="page-title-action"><?php echo esc_html__('Añadir Nuevo', 'flavor-chat-ia'); ?></a>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=nuevo')); ?>" class="page-title-action"><?php echo esc_html__('Añadir Nuevo', 'flavor-chat-ia'); ?></a>
     <hr class="wp-header-end">
 
     <div class="flavor-filters">

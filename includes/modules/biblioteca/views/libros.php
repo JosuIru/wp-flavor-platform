@@ -71,7 +71,7 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
 
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo esc_html__('Catálogo de Libros', 'flavor-chat-ia'); ?></h1>
-    <a href="#" class="page-title-action" id="btn-nuevo-libro"><?php echo esc_html__('Añadir Libro', 'flavor-chat-ia'); ?></a>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-biblioteca&tab=nuevo')); ?>" class="page-title-action" id="btn-nuevo-libro"><?php echo esc_html__('Añadir Libro', 'flavor-chat-ia'); ?></a>
     <hr class="wp-header-end">
 
     <!-- Filtros -->
@@ -215,11 +215,69 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
 <?php include plugin_dir_path(__FILE__) . '../../assets/css/admin-common.css'; ?>
 </style>
 
+<!-- Modal Libro -->
+<div id="modal-libro" class="flavor-modal" style="display:none;">
+    <div class="flavor-modal-overlay" onclick="cerrarModalLibro()"></div>
+    <div class="flavor-modal-content" style="min-width:500px;max-height:80vh;overflow-y:auto;">
+        <button class="flavor-modal-close" onclick="cerrarModalLibro()">&times;</button>
+        <div id="modal-libro-contenido"></div>
+    </div>
+</div>
+
+<style>
+.flavor-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100000; }
+.flavor-modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); }
+.flavor-modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 25px; border-radius: 8px; }
+.flavor-modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; z-index: 1; }
+</style>
+
 <script>
 jQuery(document).ready(function($) {
-    $('#btn-nuevo-libro, .btn-editar-libro, .btn-historial-libro').on('click', function(e) {
+    // Nuevo libro
+    $('#btn-nuevo-libro').on('click', function(e) {
         e.preventDefault();
-        alert('Funcionalidad en desarrollo');
+        window.location.href = '<?php echo admin_url('admin.php?page=flavor-chat-biblioteca&tab=nuevo'); ?>';
+    });
+
+    // Editar libro
+    $('.btn-editar-libro').on('click', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        window.location.href = '<?php echo admin_url('admin.php?page=flavor-chat-biblioteca&tab=editar&id='); ?>' + id;
+    });
+
+    // Historial libro
+    $('.btn-historial-libro').on('click', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        $('#modal-libro-contenido').html('<p><?php echo esc_js(__('Cargando historial...', 'flavor-chat-ia')); ?></p>');
+        $('#modal-libro').show();
+
+        $.get(ajaxurl, {
+            action: 'flavor_biblioteca_historial',
+            libro_id: id,
+            nonce: '<?php echo wp_create_nonce('biblioteca_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                var html = '<h3><?php echo esc_js(__('Historial de Préstamos', 'flavor-chat-ia')); ?></h3>';
+                if (response.data.length === 0) {
+                    html += '<p><?php echo esc_js(__('No hay préstamos registrados', 'flavor-chat-ia')); ?></p>';
+                } else {
+                    html += '<table class="wp-list-table widefat striped"><thead><tr><th><?php echo esc_js(__('Usuario', 'flavor-chat-ia')); ?></th><th><?php echo esc_js(__('Fecha préstamo', 'flavor-chat-ia')); ?></th><th><?php echo esc_js(__('Fecha devolución', 'flavor-chat-ia')); ?></th></tr></thead><tbody>';
+                    response.data.forEach(function(p) {
+                        html += '<tr><td>' + p.usuario + '</td><td>' + p.fecha_prestamo + '</td><td>' + (p.fecha_devolucion || '-') + '</td></tr>';
+                    });
+                    html += '</tbody></table>';
+                }
+                $('#modal-libro-contenido').html(html);
+            } else {
+                $('#modal-libro-contenido').html('<p><?php echo esc_js(__('Error al cargar', 'flavor-chat-ia')); ?></p>');
+            }
+        });
     });
 });
+
+function cerrarModalLibro() {
+    document.getElementById('modal-libro').style.display = 'none';
+}
 </script>

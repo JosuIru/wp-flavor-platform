@@ -362,8 +362,32 @@ function cerrarModalRecogida() {
 }
 
 function verDetalleRecogida(id) {
-    // Aquí se puede implementar un modal con los detalles de la recogida
-    alert('Ver recogida #' + id);
+    jQuery.get(ajaxurl, {
+        action: 'flavor_reciclaje_ver_recogida',
+        recogida_id: id,
+        nonce: '<?php echo wp_create_nonce('reciclaje_nonce'); ?>'
+    }, function(response) {
+        if (response.success) {
+            var r = response.data;
+            var html = '<h3>' + r.tipo + '</h3>' +
+                '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-chat-ia')); ?></strong> ' + r.fecha + '</p>' +
+                '<p><strong><?php echo esc_js(__('Horario:', 'flavor-chat-ia')); ?></strong> ' + r.horario + '</p>' +
+                '<p><strong><?php echo esc_js(__('Zona:', 'flavor-chat-ia')); ?></strong> ' + r.zona + '</p>' +
+                (r.notas ? '<p><strong><?php echo esc_js(__('Notas:', 'flavor-chat-ia')); ?></strong> ' + r.notas + '</p>' : '');
+
+            if (!document.getElementById('modal-detalle-recogida')) {
+                jQuery('body').append('<div id="modal-detalle-recogida" class="flavor-modal" style="display:none;"><div class="flavor-modal-overlay" onclick="cerrarDetalleRecogida()"></div><div class="flavor-modal-content" style="min-width:400px;"><button class="flavor-modal-close" onclick="cerrarDetalleRecogida()">&times;</button><div id="contenido-detalle-recogida"></div></div></div>');
+            }
+            document.getElementById('contenido-detalle-recogida').innerHTML = html;
+            document.getElementById('modal-detalle-recogida').style.display = 'block';
+        } else {
+            alert('<?php echo esc_js(__('Error al cargar', 'flavor-chat-ia')); ?>');
+        }
+    });
+}
+
+function cerrarDetalleRecogida() {
+    document.getElementById('modal-detalle-recogida').style.display = 'none';
 }
 </script>
 

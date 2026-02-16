@@ -132,13 +132,80 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
 
 </div>
 
+<div id="modal-subir" class="flavor-modal" style="display:none;">
+    <div class="flavor-modal-overlay" onclick="cerrarModalSubir()"></div>
+    <div class="flavor-modal-content" style="min-width:500px;">
+        <button class="flavor-modal-close" onclick="cerrarModalSubir()">&times;</button>
+        <h3><?php echo esc_html__('Subir Archivo Multimedia', 'flavor-chat-ia'); ?></h3>
+        <form id="form-subir-multimedia" method="post" enctype="multipart/form-data">
+            <?php wp_nonce_field('subir_multimedia', 'multimedia_nonce'); ?>
+            <input type="hidden" name="accion" value="subir_multimedia">
+            <div class="form-row" style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Archivo', 'flavor-chat-ia'); ?></label>
+                <input type="file" name="archivo" accept="image/*,video/*,audio/*" required>
+            </div>
+            <div class="form-row" style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></label>
+                <input type="text" name="titulo" style="width:100%;padding:8px;">
+            </div>
+            <div class="form-row" style="margin-bottom:15px;">
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Descripción', 'flavor-chat-ia'); ?></label>
+                <textarea name="descripcion" rows="2" style="width:100%;padding:8px;"></textarea>
+            </div>
+            <div style="text-align:right;">
+                <button type="button" class="button" onclick="cerrarModalSubir()"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Subir', 'flavor-chat-ia'); ?></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modal-detalle" class="flavor-modal" style="display:none;">
+    <div class="flavor-modal-overlay" onclick="cerrarModalDetalle()"></div>
+    <div class="flavor-modal-content" style="min-width:600px;">
+        <button class="flavor-modal-close" onclick="cerrarModalDetalle()">&times;</button>
+        <div id="modal-detalle-contenido"></div>
+    </div>
+</div>
+
 <script>
 function abrirModalSubir() {
-    alert('Subir nuevo archivo multimedia');
+    document.getElementById('modal-subir').style.display = 'block';
+}
+
+function cerrarModalSubir() {
+    document.getElementById('modal-subir').style.display = 'none';
 }
 
 function verDetalle(id) {
-    alert('Ver detalle de multimedia #' + id);
+    document.getElementById('modal-detalle-contenido').innerHTML = '<p><?php echo esc_js(__('Cargando...', 'flavor-chat-ia')); ?></p>';
+    document.getElementById('modal-detalle').style.display = 'block';
+
+    jQuery.get(ajaxurl, {
+        action: 'flavor_multimedia_ver_detalle',
+        id: id,
+        nonce: '<?php echo wp_create_nonce('multimedia_nonce'); ?>'
+    }, function(response) {
+        if (response.success) {
+            var m = response.data;
+            var html = '<div style="display:flex;gap:20px;">' +
+                '<div style="flex:1;"><img src="' + m.url + '" style="max-width:100%;border-radius:8px;"></div>' +
+                '<div style="flex:1;">' +
+                '<h3>' + (m.titulo || '<?php echo esc_js(__('Sin título', 'flavor-chat-ia')); ?>') + '</h3>' +
+                '<p>' + (m.descripcion || '') + '</p>' +
+                '<p><strong><?php echo esc_js(__('Tipo:', 'flavor-chat-ia')); ?></strong> ' + m.tipo + '</p>' +
+                '<p><strong><?php echo esc_js(__('Tamaño:', 'flavor-chat-ia')); ?></strong> ' + m.tamano + '</p>' +
+                '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-chat-ia')); ?></strong> ' + m.fecha + '</p>' +
+                '</div></div>';
+            document.getElementById('modal-detalle-contenido').innerHTML = html;
+        } else {
+            document.getElementById('modal-detalle-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', 'flavor-chat-ia')); ?></p>';
+        }
+    });
+}
+
+function cerrarModalDetalle() {
+    document.getElementById('modal-detalle').style.display = 'none';
 }
 
 jQuery(document).ready(function($) {
