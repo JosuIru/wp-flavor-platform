@@ -859,8 +859,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
         add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
 
         // Shortcodes
-        add_shortcode('sello_conciencia', [$this, 'shortcode_sello']);
-        add_shortcode('premisas_conciencia', [$this, 'shortcode_premisas']);
+        $this->register_shortcodes();
 
         // AJAX para refrescar evaluación
         add_action('wp_ajax_sello_conciencia_evaluar', [$this, 'ajax_evaluar']);
@@ -872,6 +871,14 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
         // Enqueue assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('sello_conciencia', [$this, 'shortcode_sello']);
+        add_shortcode('premisas_conciencia', [$this, 'shortcode_premisas']);
     }
 
     /**

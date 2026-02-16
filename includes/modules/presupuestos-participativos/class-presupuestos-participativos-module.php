@@ -2156,7 +2156,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Error al crear el proyecto. Por favor, inténtalo de nuevo.', 'flavor-chat-ia'),
             ];
         }
 
@@ -2243,7 +2243,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para votar.', 'flavor-chat-ia'),
             ];
         }
 
@@ -2258,7 +2258,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         if (!$edicion) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Actualmente no hay ninguna votación abierta.', 'flavor-chat-ia'),
             ];
         }
 

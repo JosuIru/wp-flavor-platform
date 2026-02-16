@@ -690,7 +690,7 @@ class Flavor_Client_Dashboard {
 
         // Debug: log si no hay widgets (solo en WP_DEBUG)
         if (empty($widgets_agrupados) && defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[Flavor Dashboard] No hay widgets agrupados. Registry: ' . ($usar_registry ? 'sí' : 'no') . ', Widgets locales: ' . count($widgets));
+            flavor_log_debug( 'No hay widgets agrupados. Registry: ' . ($usar_registry ? 'sí' : 'no') . ', Widgets locales: ' . count($widgets), 'ClientDashboard' );
         }
 
         ob_start();

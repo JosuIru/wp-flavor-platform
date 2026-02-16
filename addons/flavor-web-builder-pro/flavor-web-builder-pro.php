@@ -96,7 +96,7 @@ function flavor_web_builder_pro_init() {
 
     // Log de inicialización en modo debug
     if (defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG) {
-        error_log('[Flavor Web Builder Pro] Addon inicializado correctamente v' . FLAVOR_WEB_BUILDER_VERSION);
+        flavor_log_debug( 'Addon inicializado correctamente v' . FLAVOR_WEB_BUILDER_VERSION, 'WebBuilderPro' );
     }
 }
 

@@ -114,10 +114,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         add_action('save_post_jr_proceso', [$this, 'guardar_meta_proceso']);
 
         // Shortcodes
-        add_shortcode('justicia_restaurativa', [$this, 'shortcode_info']);
-        add_shortcode('solicitar_mediacion', [$this, 'shortcode_solicitar']);
-        add_shortcode('mis_procesos', [$this, 'shortcode_mis_procesos']);
-        add_shortcode('mediadores', [$this, 'shortcode_mediadores']);
+        $this->register_shortcodes();
 
         // AJAX
         add_action('wp_ajax_jr_solicitar_proceso', [$this, 'ajax_solicitar_proceso']);
@@ -134,6 +131,16 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
 
         // Restricción de acceso (confidencialidad)
         add_action('template_redirect', [$this, 'verificar_acceso_proceso']);
+    }
+
+    /**
+     * Registra los shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('justicia_restaurativa', [$this, 'shortcode_info']);
+        add_shortcode('solicitar_mediacion', [$this, 'shortcode_solicitar']);
+        add_shortcode('mis_procesos', [$this, 'shortcode_mis_procesos']);
+        add_shortcode('mediadores', [$this, 'shortcode_mediadores']);
     }
 
     /**

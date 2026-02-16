@@ -94,6 +94,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $this->registrar_en_panel_unificado();
 
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -395,6 +396,40 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Migra las tablas a la versión actual si es necesario
+     */
+    public function maybe_migrate_tables() {
+        $version_actual = get_option('flavor_cursos_db_version', '1.0.0');
+
+        if (version_compare($version_actual, '1.1.0', '<')) {
+            $this->migrate_to_1_1_0();
+            update_option('flavor_cursos_db_version', '1.1.0');
+        }
+    }
+
+    /**
+     * Migración a versión 1.1.0 - Agrega columna destacado
+     */
+    private function migrate_to_1_1_0() {
+        global $wpdb;
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
+            return;
+        }
+
+        // Verificar y agregar columna destacado
+        $columna_existe = $wpdb->get_results(
+            $wpdb->prepare("SHOW COLUMNS FROM $tabla_cursos LIKE %s", 'destacado')
+        );
+
+        if (empty($columna_existe)) {
+            $wpdb->query("ALTER TABLE $tabla_cursos ADD COLUMN destacado tinyint(1) DEFAULT 0 AFTER numero_valoraciones");
+            $wpdb->query("ALTER TABLE $tabla_cursos ADD KEY destacado (destacado)");
+        }
+    }
+
+    /**
      * Crea las tablas necesarias
      */
     private function create_tables() {
@@ -608,7 +643,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
     /**
      * Acción: Ver catálogo
      */
-    private function action_catalogo_cursos($params) {
+    public function action_catalogo_cursos($params) {
         global $wpdb;
         $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
@@ -1416,7 +1451,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         if (!$inscripcion) {
             return rest_ensure_response([
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('No estás inscrito en este curso.', 'flavor-chat-ia'),
             ]);
         }
 

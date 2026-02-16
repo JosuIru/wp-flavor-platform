@@ -365,13 +365,26 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
     /**
      * Registrar shortcodes
      */
-    public function registrar_shortcodes() {
+    public function register_shortcodes() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
         add_shortcode('flavor_mapa_parkings', [$this, 'shortcode_mapa_parkings']);
         add_shortcode('flavor_disponibilidad_parking', [$this, 'shortcode_disponibilidad']);
         add_shortcode('flavor_mis_reservas_parking', [$this, 'shortcode_mis_reservas']);
         add_shortcode('flavor_solicitar_plaza', [$this, 'shortcode_solicitar_plaza']);
         add_shortcode('flavor_parking_grid', [$this, 'shortcode_parking_grid']);
         add_shortcode('flavor_parking_stats', [$this, 'shortcode_estadisticas']);
+    }
+
+    /**
+     * Registrar shortcodes (alias para hooks de WordPress)
+     */
+    public function registrar_shortcodes() {
+        $this->register_shortcodes();
     }
 
     /**

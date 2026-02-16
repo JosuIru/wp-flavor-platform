@@ -83,12 +83,19 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         add_action('manage_marketplace_item_posts_custom_column', [$this, 'contenido_columnas_admin'], 10, 2);
 
         // Shortcodes
-        add_shortcode('marketplace_listado', [$this, 'shortcode_listado']);
-        add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario']);
+        $this->register_shortcodes();
 
         // AJAX para frontend
         add_action('wp_ajax_marketplace_crear_anuncio', [$this, 'ajax_crear_anuncio']);
         add_action('wp_ajax_nopriv_marketplace_crear_anuncio', [$this, 'ajax_crear_anuncio']);
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('marketplace_listado', [$this, 'shortcode_listado']);
+        add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario']);
     }
 
     /**

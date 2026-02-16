@@ -174,9 +174,14 @@ class Flavor_Module_Shortcodes {
 
         // === BANCO TIEMPO ===
         $this->register_fallback_shortcode('flavor_banco_tiempo_servicios', 'banco-tiempo', 'servicios');
-        $this->register_fallback_shortcode('flavor_banco_tiempo_mis_intercambios', 'banco-tiempo', 'mis-intercambios');
+        $this->register_fallback_shortcode('flavor_banco_tiempo_mis_intercambios', 'banco-tiempo', 'intercambios');
         $this->register_fallback_shortcode('flavor_banco_tiempo_ofrecer', 'banco-tiempo', 'ofrecer');
         $this->register_fallback_shortcode('flavor_banco_tiempo_mi_saldo', 'banco-tiempo', 'mi-saldo');
+        $this->register_fallback_shortcode('flavor_banco_tiempo_ranking', 'banco-tiempo', 'ranking-comunidad');
+        $this->register_fallback_shortcode('flavor_banco_tiempo_donar', 'banco-tiempo', 'donar-horas');
+        $this->register_fallback_shortcode('flavor_banco_tiempo_fondo', 'banco-tiempo', 'fondo-solidario');
+        $this->register_fallback_shortcode('flavor_banco_tiempo_sostenibilidad', 'banco-tiempo', 'dashboard-sostenibilidad');
+        $this->register_fallback_shortcode('flavor_banco_tiempo_reputacion', 'banco-tiempo', 'mi-reputacion');
 
         // === COMUNIDADES ===
         $this->register_fallback_shortcode('flavor_comunidades_listado', 'comunidades', 'listado');
@@ -253,6 +258,58 @@ class Flavor_Module_Shortcodes {
         // === ADVERTISING ===
         $this->register_fallback_shortcode('flavor_advertising_banner', 'advertising', 'banner');
         $this->register_fallback_shortcode('flavor_advertising_mis_campanas', 'advertising', 'mis-campanas');
+
+        // === HUELLA ECOLÓGICA ===
+        $this->register_fallback_shortcode('flavor_huella_calculadora', 'huella-ecologica', 'calculadora');
+        $this->register_fallback_shortcode('flavor_huella_comunidad', 'huella-ecologica', 'comunidad');
+        $this->register_fallback_shortcode('flavor_huella_logros', 'huella-ecologica', 'logros');
+        $this->register_fallback_shortcode('flavor_huella_mis_registros', 'huella-ecologica', 'mis-registros');
+        $this->register_fallback_shortcode('flavor_huella_proyectos', 'huella-ecologica', 'proyectos');
+
+        // === SABERES ANCESTRALES ===
+        $this->register_fallback_shortcode('flavor_saberes_catalogo', 'saberes-ancestrales', 'catalogo');
+        $this->register_fallback_shortcode('flavor_saberes_compartir', 'saberes-ancestrales', 'compartir');
+        $this->register_fallback_shortcode('flavor_saberes_talleres', 'saberes-ancestrales', 'talleres');
+
+        // === ECONOMÍA DEL DON ===
+        $this->register_fallback_shortcode('flavor_don_listado', 'economia-don', 'listado-dones');
+        $this->register_fallback_shortcode('flavor_don_mis_dones', 'economia-don', 'mis-dones');
+        $this->register_fallback_shortcode('flavor_don_muro_gratitud', 'economia-don', 'muro-gratitud');
+        $this->register_fallback_shortcode('flavor_don_ofrecer', 'economia-don', 'ofrecer-don');
+
+        // === ECONOMÍA DE SUFICIENCIA ===
+        $this->register_fallback_shortcode('flavor_suficiencia_biblioteca', 'economia-suficiencia', 'biblioteca');
+        $this->register_fallback_shortcode('flavor_suficiencia_compromisos', 'economia-suficiencia', 'compromisos');
+        $this->register_fallback_shortcode('flavor_suficiencia_evaluacion', 'economia-suficiencia', 'evaluacion');
+        $this->register_fallback_shortcode('flavor_suficiencia_intro', 'economia-suficiencia', 'intro');
+        $this->register_fallback_shortcode('flavor_suficiencia_mi_camino', 'economia-suficiencia', 'mi-camino');
+
+        // === TRABAJO DIGNO ===
+        $this->register_fallback_shortcode('flavor_trabajo_emprendimientos', 'trabajo-digno', 'emprendimientos');
+        $this->register_fallback_shortcode('flavor_trabajo_formacion', 'trabajo-digno', 'formacion');
+        $this->register_fallback_shortcode('flavor_trabajo_mi_perfil', 'trabajo-digno', 'mi-perfil');
+        $this->register_fallback_shortcode('flavor_trabajo_ofertas', 'trabajo-digno', 'ofertas');
+        $this->register_fallback_shortcode('flavor_trabajo_publicar', 'trabajo-digno', 'publicar');
+
+        // === SELLO CONCIENCIA ===
+        $this->register_fallback_shortcode('flavor_sello_badge', 'sello-conciencia', 'badge');
+        $this->register_fallback_shortcode('flavor_sello_premisas', 'sello-conciencia', 'premisas');
+
+        // === CÍRCULOS DE CUIDADOS ===
+        $this->register_fallback_shortcode('flavor_circulos_listado', 'circulos-cuidados', 'listado-circulos');
+        $this->register_fallback_shortcode('flavor_circulos_mis_cuidados', 'circulos-cuidados', 'mis-cuidados');
+        $this->register_fallback_shortcode('flavor_circulos_necesidades', 'circulos-cuidados', 'necesidades');
+
+        // === JUSTICIA RESTAURATIVA ===
+        $this->register_fallback_shortcode('flavor_justicia_info', 'justicia-restaurativa', 'info');
+        $this->register_fallback_shortcode('flavor_justicia_mediadores', 'justicia-restaurativa', 'mediadores');
+        $this->register_fallback_shortcode('flavor_justicia_mis_procesos', 'justicia-restaurativa', 'mis-procesos');
+        $this->register_fallback_shortcode('flavor_justicia_solicitar', 'justicia-restaurativa', 'solicitar');
+
+        // === EMAIL MARKETING ===
+        $this->register_fallback_shortcode('flavor_newsletter_darse_baja', 'email-marketing', 'darse-baja');
+        $this->register_fallback_shortcode('flavor_newsletter_formulario', 'email-marketing', 'formulario-suscripcion');
+        $this->register_fallback_shortcode('flavor_newsletter_preferencias', 'email-marketing', 'preferencias');
     }
 
     /**

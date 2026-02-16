@@ -343,12 +343,12 @@ class Flavor_Performance_Cache {
 
         $stats = $this->get_estadisticas();
 
-        error_log('=== Flavor Performance Cache Stats ===');
-        error_log('Hits: ' . $stats['hits']);
-        error_log('Misses: ' . $stats['misses']);
-        error_log('Sets: ' . $stats['sets']);
-        error_log('Hit Rate: ' . $stats['hit_rate'] . '%');
-        error_log('Memory Items: ' . $stats['memoria_items']);
+        flavor_log_debug( '=== Flavor Performance Cache Stats ===', 'Cache' );
+        flavor_log_debug( 'Hits: ' . $stats['hits'], 'Cache' );
+        flavor_log_debug( 'Misses: ' . $stats['misses'], 'Cache' );
+        flavor_log_debug( 'Sets: ' . $stats['sets'], 'Cache' );
+        flavor_log_debug( 'Hit Rate: ' . $stats['hit_rate'] . '%', 'Cache' );
+        flavor_log_debug( 'Memory Items: ' . $stats['memoria_items'], 'Cache' );
     }
 
     /**

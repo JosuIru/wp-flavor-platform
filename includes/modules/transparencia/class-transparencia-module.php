@@ -162,7 +162,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     /**
      * Registrar shortcodes
      */
-    private function register_shortcodes() {
+    public function register_shortcodes() {
         add_shortcode('transparencia_portal', [$this, 'shortcode_portal']);
         add_shortcode('transparencia_presupuesto_actual', [$this, 'shortcode_presupuesto_actual']);
         add_shortcode('transparencia_ultimos_gastos', [$this, 'shortcode_ultimos_gastos']);

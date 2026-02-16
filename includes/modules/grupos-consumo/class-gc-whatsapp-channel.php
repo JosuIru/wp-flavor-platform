@@ -526,7 +526,7 @@ class Flavor_GC_WhatsApp_Channel {
      */
     private function log_error($mensaje) {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[GC WhatsApp] ' . $mensaje);
+            flavor_log_debug( $mensaje, 'GC-WhatsApp' );
         }
 
         // Guardar en tabla de logs si existe
@@ -547,7 +547,7 @@ class Flavor_GC_WhatsApp_Channel {
      */
     private function log_mensaje_entrante($datos) {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[GC WhatsApp] Mensaje recibido: ' . wp_json_encode($datos));
+            flavor_log_debug( 'Mensaje recibido: ' . wp_json_encode( $datos ), 'GC-WhatsApp' );
         }
     }
 

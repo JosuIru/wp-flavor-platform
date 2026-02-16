@@ -739,7 +739,7 @@ class Flavor_GC_Telegram_Channel {
      */
     private function log_error($mensaje) {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[GC Telegram] ' . $mensaje);
+            flavor_log_debug( $mensaje, 'GC-Telegram' );
         }
     }
 

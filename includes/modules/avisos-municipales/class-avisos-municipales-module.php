@@ -143,6 +143,62 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                 created_at datetime NOT NULL,
                 PRIMARY KEY (id),
                 KEY usuario_id (usuario_id)
+            ) $charset_collate;",
+
+            $this->tablas['categorias'] => "CREATE TABLE {$this->tablas['categorias']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                nombre varchar(100) NOT NULL,
+                slug varchar(100) NOT NULL,
+                descripcion text DEFAULT NULL,
+                icono varchar(50) DEFAULT 'info',
+                color varchar(20) DEFAULT '#6b7280',
+                orden int(11) DEFAULT 0,
+                activa tinyint(1) DEFAULT 1,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY slug (slug),
+                KEY activa (activa),
+                KEY orden (orden)
+            ) $charset_collate;",
+
+            $this->tablas['zonas'] => "CREATE TABLE {$this->tablas['zonas']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                nombre varchar(100) NOT NULL,
+                slug varchar(100) NOT NULL,
+                descripcion text DEFAULT NULL,
+                tipo enum('municipio','barrio','distrito','calle') DEFAULT 'barrio',
+                geometria text DEFAULT NULL,
+                activa tinyint(1) DEFAULT 1,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY slug (slug),
+                KEY tipo (tipo),
+                KEY activa (activa)
+            ) $charset_collate;",
+
+            $this->tablas['suscripciones'] => "CREATE TABLE {$this->tablas['suscripciones']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
+                categoria_id bigint(20) UNSIGNED DEFAULT NULL,
+                zona_id bigint(20) UNSIGNED DEFAULT NULL,
+                canal enum('email','push','sms') DEFAULT 'email',
+                activa tinyint(1) DEFAULT 1,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY usuario_id (usuario_id),
+                KEY categoria_id (categoria_id),
+                KEY zona_id (zona_id)
+            ) $charset_collate;",
+
+            $this->tablas['lecturas'] => "CREATE TABLE {$this->tablas['lecturas']} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                aviso_id bigint(20) UNSIGNED NOT NULL,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
+                fecha_lectura datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY aviso_usuario (aviso_id, usuario_id),
+                KEY aviso_id (aviso_id),
+                KEY usuario_id (usuario_id)
             ) $charset_collate;"
         ];
     }
@@ -188,6 +244,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
@@ -230,16 +287,68 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['avisos'])) {
+        $db_version = get_option('flavor_avisos_db_version', '0');
+        $current_version = '2.1.0'; // Incrementado para forzar recreación
+
+        if (version_compare($db_version, $current_version, '<')) {
             $this->create_tables();
             $this->insertar_datos_iniciales();
+            update_option('flavor_avisos_db_version', $current_version);
         }
     }
 
     /**
-     * Crea las tablas necesarias
+     * Verifica y aplica migraciones de base de datos
      */
-        /**
+    public function maybe_migrate_tables() {
+        $version_migracion = get_option('flavor_avisos_migration_version', '1.0.0');
+
+        if (version_compare($version_migracion, '1.1.0', '<')) {
+            $this->migrate_to_1_1_0();
+            update_option('flavor_avisos_migration_version', '1.1.0');
+        }
+    }
+
+    /**
+     * Migración a versión 1.1.0 - Agregar columnas para compatibilidad
+     */
+    private function migrate_to_1_1_0() {
+        global $wpdb;
+
+        $tabla_avisos = $this->tablas['avisos'];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+            return;
+        }
+
+        // Columnas a agregar
+        $columnas = [
+            'publicado' => "tinyint(1) DEFAULT 0 AFTER estado",
+            'destacado' => "tinyint(1) DEFAULT 0 AFTER publicado",
+            'fecha_inicio' => "datetime DEFAULT NULL AFTER fecha_publicacion",
+            'fecha_fin' => "datetime DEFAULT NULL AFTER fecha_inicio",
+            'categoria_id' => "bigint(20) UNSIGNED DEFAULT NULL AFTER categoria",
+            'zona_id' => "bigint(20) UNSIGNED DEFAULT NULL AFTER categoria_id",
+        ];
+
+        foreach ($columnas as $columna => $definicion) {
+            $existe = $wpdb->get_results($wpdb->prepare("SHOW COLUMNS FROM $tabla_avisos LIKE %s", $columna));
+            if (empty($existe)) {
+                $wpdb->query("ALTER TABLE $tabla_avisos ADD COLUMN $columna $definicion");
+            }
+        }
+
+        // Actualizar publicado basado en estado
+        $wpdb->query("UPDATE $tabla_avisos SET publicado = 1 WHERE estado = 'publicado'");
+
+        // Copiar fecha_publicacion a fecha_inicio si no tiene valor
+        $wpdb->query("UPDATE $tabla_avisos SET fecha_inicio = fecha_publicacion WHERE fecha_inicio IS NULL AND fecha_publicacion IS NOT NULL");
+
+        // Copiar fecha_expiracion a fecha_fin
+        $wpdb->query("UPDATE $tabla_avisos SET fecha_fin = fecha_expiracion WHERE fecha_fin IS NULL");
+    }
+
+    /**
      * Crea las tablas necesarias
      */
     private function create_tables() {

@@ -88,7 +88,7 @@ function flavor_advertising_pro_init() {
 
     // Log de inicialización en modo debug
     if (defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG) {
-        error_log('[Flavor Advertising Pro] Addon inicializado correctamente v' . FLAVOR_ADVERTISING_VERSION);
+        flavor_log_debug( 'Addon inicializado correctamente v' . FLAVOR_ADVERTISING_VERSION, 'AdvertisingPro' );
     }
 }
 

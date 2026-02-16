@@ -109,9 +109,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         add_action('save_post_cc_necesidad', [$this, 'guardar_meta_necesidad']);
 
         // Shortcodes
-        add_shortcode('circulos_cuidados', [$this, 'shortcode_listado']);
-        add_shortcode('mis_cuidados', [$this, 'shortcode_mis_cuidados']);
-        add_shortcode('necesidades_cuidados', [$this, 'shortcode_necesidades']);
+        $this->register_shortcodes();
 
         // AJAX
         add_action('wp_ajax_cc_unirse_circulo', [$this, 'ajax_unirse_circulo']);
@@ -133,6 +131,15 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
         // Assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('circulos_cuidados', [$this, 'shortcode_listado']);
+        add_shortcode('mis_cuidados', [$this, 'shortcode_mis_cuidados']);
+        add_shortcode('necesidades_cuidados', [$this, 'shortcode_necesidades']);
     }
 
     /**

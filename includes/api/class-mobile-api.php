@@ -693,7 +693,7 @@ class Chat_IA_Mobile_API {
 
             // Log para auditoría
             if ($regenerate) {
-                error_log('Chat IA Mobile - Admin site secret regenerado');
+                flavor_chat_ia_log( 'Admin site secret regenerado', 'info', 'MobileAPI' );
             }
         }
 
@@ -714,7 +714,7 @@ class Chat_IA_Mobile_API {
 
         if (!hash_equals($valid_secret, $site_token)) {
             // Log intento fallido
-            error_log('Chat IA Mobile - Intento de vinculación admin fallido desde IP: ' . $_SERVER['REMOTE_ADDR']);
+            flavor_chat_ia_log( 'Intento de vinculación admin fallido desde IP: ' . $_SERVER['REMOTE_ADDR'], 'warning', 'MobileAPI' );
             return new WP_Error('invalid_token', 'Token de sitio inválido', ['status' => 403]);
         }
 
@@ -1815,10 +1815,10 @@ class Chat_IA_Mobile_API {
      * Verifica permisos de admin
      */
     public function check_admin_permission($request) {
-        error_log("[Mobile API] check_admin_permission - verificando token...");
+        flavor_log_debug( 'check_admin_permission - verificando token...', 'MobileAPI' );
 
         if (!$this->check_auth_token($request)) {
-            error_log("[Mobile API] check_admin_permission - TOKEN INVÁLIDO");
+            flavor_log_debug( 'check_admin_permission - TOKEN INVÁLIDO', 'MobileAPI' );
             return new WP_Error(
                 'rest_unauthorized',
                 'Token de autenticación inválido o expirado',
@@ -1827,10 +1827,10 @@ class Chat_IA_Mobile_API {
         }
 
         $user = wp_get_current_user();
-        error_log("[Mobile API] check_admin_permission - Usuario: " . $user->user_login . " (ID: " . $user->ID . ")");
+        flavor_log_debug( 'check_admin_permission - Usuario: ' . $user->user_login . ' (ID: ' . $user->ID . ')', 'MobileAPI' );
 
         if (!current_user_can('manage_options')) {
-            error_log("[Mobile API] check_admin_permission - SIN PERMISOS ADMIN");
+            flavor_log_debug( 'check_admin_permission - SIN PERMISOS ADMIN', 'MobileAPI' );
             return new WP_Error(
                 'rest_forbidden',
                 'No tienes permisos de administrador',
@@ -1838,7 +1838,7 @@ class Chat_IA_Mobile_API {
             );
         }
 
-        error_log("[Mobile API] check_admin_permission - OK");
+        flavor_log_debug( 'check_admin_permission - OK', 'MobileAPI' );
         return true;
     }
 
@@ -2550,11 +2550,11 @@ class Chat_IA_Mobile_API {
         $hoy = date('Y-m-d');
 
         // Log para debug
-        error_log("[Mobile API] get_admin_dashboard llamado - tabla: $tabla");
+        flavor_log_debug( "get_admin_dashboard llamado - tabla: $tabla", 'MobileAPI' );
 
         // Verificar si la tabla existe
         $tabla_existe = Flavor_Chat_Helpers::tabla_existe($tabla);
-        error_log("[Mobile API] Tabla existe: " . ($tabla_existe ? 'SI' : 'NO'));
+        flavor_log_debug( 'Tabla existe: ' . ( $tabla_existe ? 'SI' : 'NO' ), 'MobileAPI' );
         if (!$tabla_existe) {
             return rest_ensure_response([
                 'success' => true,
@@ -4087,7 +4087,7 @@ class Chat_IA_Mobile_API {
         $sent = wp_mail($email, $subject, $message, $headers);
 
         if (!$sent) {
-            error_log('Chat IA Mobile - Error enviando email de verificación a: ' . $email);
+            flavor_log_error( 'Error enviando email de verificación a: ' . $email, 'MobileAPI' );
             return new WP_Error('email_error', 'Error al enviar el código. Inténtalo de nuevo.', ['status' => 500]);
         }
 
@@ -4883,7 +4883,7 @@ class Chat_IA_Mobile_API {
 
             return $ai_config;
         } catch (Exception $e) {
-            error_log('Chat IA - Error en autoconfiguración IA: ' . $e->getMessage());
+            flavor_log_error( 'Error en autoconfiguración IA: ' . $e->getMessage(), 'MobileAPI' );
             return null;
         }
     }
@@ -4946,7 +4946,7 @@ PROMPT;
         ]);
 
         if (is_wp_error($response)) {
-            error_log('Chat IA - Error API: ' . $response->get_error_message());
+            flavor_log_error( 'Error API: ' . $response->get_error_message(), 'MobileAPI' );
             return null;
         }
 

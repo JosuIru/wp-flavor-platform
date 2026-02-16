@@ -45,7 +45,7 @@ class Flavor_Dex_Solana_Pool_Manager {
         $token_b_datos = $this->token_registry->obtener_token_por_simbolo($token_b_simbolo);
 
         if (!$token_a_datos || !$token_b_datos) {
-            error_log('[DEX Solana] Tokens no encontrados en registry: ' . $token_a_simbolo . ', ' . $token_b_simbolo);
+            flavor_chat_ia_log( 'Tokens no encontrados en registry: ' . $token_a_simbolo . ', ' . $token_b_simbolo, 'warning', 'DEX-Solana' );
             return false;
         }
 
@@ -53,7 +53,7 @@ class Flavor_Dex_Solana_Pool_Manager {
         $mint_address_token_b = $token_b_datos['mint_address'] ?? null;
 
         if (!$mint_address_token_a || !$mint_address_token_b) {
-            error_log('[DEX Solana] Mint addresses no encontradas para tokens: ' . $token_a_simbolo . ', ' . $token_b_simbolo);
+            flavor_chat_ia_log( 'Mint addresses no encontradas para tokens: ' . $token_a_simbolo . ', ' . $token_b_simbolo, 'warning', 'DEX-Solana' );
             return false;
         }
 

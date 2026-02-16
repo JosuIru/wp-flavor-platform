@@ -32,6 +32,28 @@ if (defined('FLAVOR_CHAT_IA_LOADED')) {
 }
 define('FLAVOR_CHAT_IA_LOADED', true);
 
+/**
+ * Desactivar display de errores para feeds y REST API
+ * Esto evita que los notices de PHP rompan las respuestas XML/JSON
+ * Solo en requests que requieren output limpio (feeds, REST, AJAX)
+ */
+if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    $is_feed_or_api_request = (
+        strpos($request_uri, '/wp-json/') !== false ||
+        strpos($request_uri, '/feed/') !== false ||
+        strpos($request_uri, 'feed=') !== false ||
+        (defined('DOING_AJAX') && DOING_AJAX) ||
+        (defined('REST_REQUEST') && REST_REQUEST) ||
+        (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) ||
+        preg_match('/\.(xml|rss|atom|json)$/', $request_uri)
+    );
+
+    if ($is_feed_or_api_request) {
+        @ini_set('display_errors', 0);
+    }
+}
+
 // Constantes del plugin
 define('FLAVOR_CHAT_IA_VERSION', '3.1.1');
 define('FLAVOR_CHAT_IA_PATH', plugin_dir_path(__FILE__));
@@ -42,22 +64,71 @@ define('FLAVOR_CHAT_IA_BASENAME', plugin_basename(__FILE__));
 define('FLAVOR_CHAT_IA_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
 
 /**
- * Logging seguro
+ * Logging seguro con niveles y control por entorno
+ *
+ * Niveles (de menor a mayor severidad):
+ * - debug: Solo en desarrollo, información detallada para depuración
+ * - info: Información operativa general
+ * - warning: Situaciones que requieren atención pero no son críticas
+ * - error: Errores que requieren intervención
  *
  * @param string $message Mensaje a loguear
- * @param string $level Nivel: 'info', 'warning', 'error'
+ * @param string $level Nivel: 'debug', 'info', 'warning', 'error'
+ * @param string $module Módulo origen (opcional, para filtrado)
  */
-function flavor_chat_ia_log($message, $level = 'info') {
-    if (!FLAVOR_CHAT_IA_DEBUG) {
+function flavor_chat_ia_log( $message, $level = 'info', $module = '' ) {
+    // Niveles y su prioridad numérica
+    $level_priority = [
+        'debug'   => 0,
+        'info'    => 1,
+        'warning' => 2,
+        'error'   => 3,
+    ];
+
+    // Nivel mínimo a loguear según entorno
+    // En producción (sin WP_DEBUG): solo errores
+    // En desarrollo (WP_DEBUG): todo
+    // Con FLAVOR_CHAT_IA_DEBUG: nivel configurable
+    $min_level = 'error'; // Default: solo errores
+
+    if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+        $min_level = 'debug'; // Desarrollo: todo
+    }
+
+    // Permitir override con constante específica
+    if ( defined( 'FLAVOR_LOG_LEVEL' ) ) {
+        $min_level = FLAVOR_LOG_LEVEL;
+    }
+
+    // Verificar si el nivel actual cumple el mínimo
+    $current_priority = isset( $level_priority[ $level ] ) ? $level_priority[ $level ] : 1;
+    $min_priority = isset( $level_priority[ $min_level ] ) ? $level_priority[ $min_level ] : 3;
+
+    if ( $current_priority < $min_priority ) {
         return;
     }
 
-    if (!WP_DEBUG && $level !== 'error') {
-        return;
+    // Construir prefijo
+    $prefix = '[Flavor ' . strtoupper( $level ) . ']';
+    if ( ! empty( $module ) ) {
+        $prefix .= ' [' . $module . ']';
     }
 
-    $prefix = '[Flavor Platform ' . strtoupper($level) . '] ';
-    error_log($prefix . $message);
+    error_log( $prefix . ' ' . $message );
+}
+
+/**
+ * Shorthand para log de debug (solo en desarrollo)
+ */
+function flavor_log_debug( $message, $module = '' ) {
+    flavor_chat_ia_log( $message, 'debug', $module );
+}
+
+/**
+ * Shorthand para log de error (siempre se loguea)
+ */
+function flavor_log_error( $message, $module = '' ) {
+    flavor_chat_ia_log( $message, 'error', $module );
 }
 
 /**
@@ -287,6 +358,9 @@ final class Flavor_Chat_IA {
         // Widgets de Dashboard (separado por complejidad)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-dashboard-vb-widgets.php';
 
+        // Visual Builder Pro (v2.0+) - Editor fullscreen tipo Photoshop/Figma
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
+
         // Sistema de Animaciones
         require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
 
@@ -450,7 +524,9 @@ final class Flavor_Chat_IA {
         // Declarar compatibilidad HPOS de WooCommerce
         add_action('before_woocommerce_init', [$this, 'declare_hpos_compatibility']);
 
-        // Internacionalización - Cargar en init según requiere WP 6.7+
+        // Internacionalización - Cargar en 'init' según recomendación de WordPress 6.7+
+        // Esto evita el notice "_load_textdomain_just_in_time" que aparece cuando
+        // se carga el textdomain demasiado temprano (antes de init)
         add_action('init', [$this, 'load_textdomain'], 0);
 
         // Limpiar rewrite rules una sola vez tras desactivar controladores frontend
@@ -784,6 +860,11 @@ final class Flavor_Chat_IA {
         }
         if (class_exists('Flavor_Color_Picker')) {
             Flavor_Color_Picker::get_instance();
+        }
+
+        // Inicializar Visual Builder Pro (editor fullscreen tipo Photoshop/Figma)
+        if (function_exists('flavor_vbp')) {
+            flavor_vbp();
         }
 
         // Inicializar Sistema de Animaciones

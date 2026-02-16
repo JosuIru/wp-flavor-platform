@@ -137,7 +137,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible.', 'flavor-chat-ia'),
             ];
         }
 
@@ -224,7 +224,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($product_id <= 0) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('ID de producto inválido.', 'flavor-chat-ia'),
             ];
         }
 
@@ -233,7 +233,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Producto no encontrado.', 'flavor-chat-ia'),
             ];
         }
 
@@ -241,7 +241,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product->is_in_stock()) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Este producto no está disponible actualmente.', 'flavor-chat-ia'),
             ];
         }
 
@@ -267,10 +267,10 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Este producto requiere seleccionar una variación.', 'flavor-chat-ia'),
                 'requiere_variacion' => true,
                 'atributos' => $attributes,
-                'instrucciones' => 'Pregunta al usuario qué variación prefiere.',
+                'instrucciones' => __('Pregunta al usuario qué variación prefiere.', 'flavor-chat-ia'),
             ];
         }
 
@@ -281,7 +281,11 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             if ($cart_item_key) {
                 return [
                     'success' => true,
-                    'mensaje' => sprintf('%s añadido al carrito.', $product->get_name()),
+                    'mensaje' => sprintf(
+                        /* translators: %s: nombre del producto */
+                        __('%s añadido al carrito.', 'flavor-chat-ia'),
+                        $product->get_name()
+                    ),
                     'cart_item_key' => $cart_item_key,
                     'producto' => [
                         'id' => $product_id,
@@ -298,7 +302,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('No se pudo añadir el producto al carrito.', 'flavor-chat-ia'),
             ];
 
         } catch (Exception $e) {
@@ -363,7 +367,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+            'error' => __('No se pudo eliminar el producto del carrito.', 'flavor-chat-ia'),
         ];
     }
 
@@ -374,7 +378,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible.', 'flavor-chat-ia'),
             ];
         }
 
@@ -396,7 +400,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$cart_item) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Producto no encontrado en el carrito.', 'flavor-chat-ia'),
             ];
         }
 
@@ -426,7 +430,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible.', 'flavor-chat-ia'),
             ];
         }
 
@@ -435,7 +439,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (empty($codigo)) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Debes proporcionar un código de cupón.', 'flavor-chat-ia'),
             ];
         }
 
@@ -443,7 +447,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (WC()->cart->has_discount($codigo)) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Este cupón ya está aplicado.', 'flavor-chat-ia'),
             ];
         }
 
@@ -573,7 +577,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($product_id <= 0) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('ID de producto inválido.', 'flavor-chat-ia'),
             ];
         }
 
@@ -582,7 +586,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product) {
             return [
                 'success' => false,
-                'error' => __('en_stock', 'flavor-chat-ia'),
+                'error' => __('Producto no encontrado.', 'flavor-chat-ia'),
             ];
         }
 
@@ -667,7 +671,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($order_id <= 0) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('ID de pedido inválido.', 'flavor-chat-ia'),
             ];
         }
 
@@ -676,7 +680,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$order) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Pedido no encontrado.', 'flavor-chat-ia'),
             ];
         }
 
@@ -684,7 +688,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!empty($email) && $order->get_billing_email() !== $email) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('No tienes permiso para ver este pedido.', 'flavor-chat-ia'),
             ];
         }
 

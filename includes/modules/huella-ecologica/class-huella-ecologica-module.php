@@ -262,7 +262,7 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
     /**
      * Registra los shortcodes
      */
-    private function register_shortcodes(): void {
+    public function register_shortcodes(): void {
         add_shortcode('huella_ecologica_calculadora', [$this, 'shortcode_calculadora']);
         add_shortcode('huella_ecologica_mis_registros', [$this, 'shortcode_mis_registros']);
         add_shortcode('huella_ecologica_comunidad', [$this, 'shortcode_comunidad']);

@@ -256,7 +256,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
     /**
      * Registra los shortcodes
      */
-    private function register_shortcodes(): void {
+    public function register_shortcodes(): void {
         add_shortcode('suficiencia_intro', [$this, 'shortcode_intro']);
         add_shortcode('suficiencia_evaluacion', [$this, 'shortcode_evaluacion']);
         add_shortcode('suficiencia_compromisos', [$this, 'shortcode_compromisos']);

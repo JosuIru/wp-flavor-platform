@@ -45,29 +45,29 @@ class Flavor_Page_Creator_V3 {
      * @param string $module_id ID del módulo activado
      */
     public function on_module_activated($module_id) {
-        error_log("[Page Creator V3] Módulo activado: {$module_id}, creando páginas...");
+        flavor_log_debug( "Módulo activado: {$module_id}, creando páginas...", 'PageCreator' );
 
         $module_loader = Flavor_Module_Loader::get_instance();
         $module_instance = $module_loader->get_module_instance($module_id);
 
         if (!$module_instance) {
-            error_log("[Page Creator V3] No se pudo obtener instancia del módulo {$module_id}");
+            flavor_chat_ia_log( "No se pudo obtener instancia del módulo {$module_id}", 'warning', 'PageCreator' );
             return;
         }
 
         if (!method_exists($module_instance, 'get_pages_definition')) {
-            error_log("[Page Creator V3] El módulo {$module_id} no implementa get_pages_definition()");
+            flavor_log_debug( "El módulo {$module_id} no implementa get_pages_definition()", 'PageCreator' );
             return;
         }
 
         $pages = $module_instance->get_pages_definition();
 
         if (empty($pages)) {
-            error_log("[Page Creator V3] El módulo {$module_id} no tiene páginas definidas");
+            flavor_log_debug( "El módulo {$module_id} no tiene páginas definidas", 'PageCreator' );
             return;
         }
 
-        error_log("[Page Creator V3] Creando " . count($pages) . " páginas para {$module_id}");
+        flavor_log_debug( "Creando " . count($pages) . " páginas para {$module_id}", 'PageCreator' );
         $this->create_pages_for_module($module_id, $pages);
     }
 
@@ -79,7 +79,7 @@ class Flavor_Page_Creator_V3 {
     public function on_module_deactivated($module_id) {
         // Por ahora, no eliminar páginas automáticamente
         // En el futuro podríamos agregar una opción de configuración
-        error_log("[Page Creator V3] Módulo desactivado: {$module_id} (páginas no eliminadas)");
+        flavor_log_debug( "Módulo desactivado: {$module_id} (páginas no eliminadas)", 'PageCreator' );
     }
 
     /**
@@ -112,17 +112,17 @@ class Flavor_Page_Creator_V3 {
         $all_pages = $this->get_all_pages_definitions();
 
         if (empty($all_pages)) {
-            error_log("[Page Creator V3] No hay páginas definidas en ningún módulo");
+            flavor_log_debug( 'No hay páginas definidas en ningún módulo', 'PageCreator' );
             return;
         }
 
-        error_log("[Page Creator V3] Creando páginas para " . count($all_pages) . " módulos");
+        flavor_log_debug( 'Creando páginas para ' . count($all_pages) . ' módulos', 'PageCreator' );
 
         foreach ($all_pages as $module_id => $pages) {
             $this->create_pages_for_module($module_id, $pages);
         }
 
-        error_log("[Page Creator V3] Páginas creadas correctamente");
+        flavor_log_debug( 'Páginas creadas correctamente', 'PageCreator' );
     }
 
     /**
@@ -152,7 +152,7 @@ class Flavor_Page_Creator_V3 {
 
         // Validar datos requeridos
         if (empty($page_data['title']) || empty($page_data['slug'])) {
-            error_log("[Page Creator V3] Error: página sin título o slug en módulo {$module_id}");
+            flavor_chat_ia_log( "Error: página sin título o slug en módulo {$module_id}", 'warning', 'PageCreator' );
             return new WP_Error('invalid_page_data', 'Título y slug son requeridos');
         }
 
@@ -209,21 +209,21 @@ class Flavor_Page_Creator_V3 {
             $page_id = wp_update_post($page_args);
 
             if (is_wp_error($page_id)) {
-                error_log("[Page Creator V3] Error actualizando página '{$page_data['title']}': " . $page_id->get_error_message());
+                flavor_log_error( "Error actualizando página '{$page_data['title']}': " . $page_id->get_error_message(), 'PageCreator' );
                 return $page_id;
             }
 
-            error_log("[Page Creator V3] Página actualizada: {$page_data['title']} (ID: {$page_id})");
+            flavor_log_debug( "Página actualizada: {$page_data['title']} (ID: {$page_id})", 'PageCreator' );
         } else {
             // Crear nueva página
             $page_id = wp_insert_post($page_args);
 
             if (is_wp_error($page_id)) {
-                error_log("[Page Creator V3] Error creando página '{$page_data['title']}': " . $page_id->get_error_message());
+                flavor_log_error( "Error creando página '{$page_data['title']}': " . $page_id->get_error_message(), 'PageCreator' );
                 return $page_id;
             }
 
-            error_log("[Page Creator V3] Página creada: {$page_data['title']} (ID: {$page_id})");
+            flavor_log_debug( "Página creada: {$page_data['title']} (ID: {$page_id})", 'PageCreator' );
         }
 
         // Asignar template si es necesario
@@ -289,7 +289,7 @@ class Flavor_Page_Creator_V3 {
             }
         }
 
-        error_log("[Page Creator V3] Eliminadas {$deleted_count} páginas del módulo {$module_id}");
+        flavor_log_debug( "Eliminadas {$deleted_count} páginas del módulo {$module_id}", 'PageCreator' );
         return $deleted_count;
     }
 

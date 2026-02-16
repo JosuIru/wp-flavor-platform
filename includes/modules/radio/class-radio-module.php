@@ -126,12 +126,7 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_flavor_radio_admin_stats', [$this, 'ajax_admin_stats']);
 
         // Shortcodes
-        add_shortcode('flavor_radio_player', [$this, 'shortcode_player']);
-        add_shortcode('flavor_radio_programacion', [$this, 'shortcode_programacion']);
-        add_shortcode('flavor_radio_dedicatorias', [$this, 'shortcode_dedicatorias']);
-        add_shortcode('flavor_radio_chat', [$this, 'shortcode_chat']);
-        add_shortcode('flavor_radio_proponer', [$this, 'shortcode_proponer_programa']);
-        add_shortcode('flavor_radio_podcasts', [$this, 'shortcode_podcasts']);
+        $this->register_shortcodes();
 
         // Enqueue assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
@@ -157,6 +152,18 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             ];
             return $schedules;
         });
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('flavor_radio_player', [$this, 'shortcode_player']);
+        add_shortcode('flavor_radio_programacion', [$this, 'shortcode_programacion']);
+        add_shortcode('flavor_radio_dedicatorias', [$this, 'shortcode_dedicatorias']);
+        add_shortcode('flavor_radio_chat', [$this, 'shortcode_chat']);
+        add_shortcode('flavor_radio_proponer', [$this, 'shortcode_proponer_programa']);
+        add_shortcode('flavor_radio_podcasts', [$this, 'shortcode_podcasts']);
     }
 
     /**

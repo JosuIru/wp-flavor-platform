@@ -56,9 +56,7 @@ class Flavor_Menu_Simplifier {
         remove_menu_page('clientes_semana');
 
         // 5. Log para debugging
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[Flavor Menu Simplifier] Menús simplificados: Gestión y categorías removidos, CPTs ocultados');
-        }
+        flavor_log_debug( 'Menús simplificados: Gestión y categorías removidos, CPTs ocultados', 'MenuSimplifier' );
     }
 }
 

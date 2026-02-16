@@ -127,7 +127,7 @@ class Flavor_API_Key_Encryption {
 
         if ($encrypted === false) {
             // Log error pero no exponer detalles
-            error_log('[Flavor Security] API key encryption failed');
+            flavor_log_error( 'API key encryption failed', 'Security' );
             return $api_key; // Retornar sin encriptar para no perder datos
         }
 
@@ -170,7 +170,7 @@ class Flavor_API_Key_Encryption {
         $data = base64_decode(substr($encrypted_key, strlen(self::ENCRYPTED_PREFIX)));
 
         if ($data === false) {
-            error_log('[Flavor Security] API key decryption failed: invalid base64');
+            flavor_log_error( 'API key decryption failed: invalid base64', 'Security' );
             return '';
         }
 
@@ -193,7 +193,7 @@ class Flavor_API_Key_Encryption {
         );
 
         if ($decrypted === false) {
-            error_log('[Flavor Security] API key decryption failed');
+            flavor_log_error( 'API key decryption failed', 'Security' );
             return '';
         }
 
@@ -263,7 +263,7 @@ class Flavor_API_Key_Encryption {
         // Verificar HMAC
         $calculated_hmac = hash_hmac('sha256', $iv . $encrypted, $key, true);
         if (!hash_equals($hmac, $calculated_hmac)) {
-            error_log('[Flavor Security] HMAC verification failed');
+            flavor_log_error( 'HMAC verification failed', 'Security' );
             return '';
         }
 

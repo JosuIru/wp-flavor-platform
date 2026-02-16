@@ -73,6 +73,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -242,6 +243,81 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
             $this->create_tables();
+        }
+    }
+
+    /**
+     * Migra las tablas si es necesario
+     */
+    public function maybe_migrate_tables() {
+        $version_actual = get_option('flavor_biblioteca_db_version', '1.0.0');
+
+        if (version_compare($version_actual, '1.1.0', '<')) {
+            $this->migrate_to_1_1_0();
+            update_option('flavor_biblioteca_db_version', '1.1.0');
+        }
+
+        if (version_compare($version_actual, '1.2.0', '<')) {
+            $this->migrate_to_1_2_0();
+            update_option('flavor_biblioteca_db_version', '1.2.0');
+        }
+    }
+
+    /**
+     * Migración a versión 1.1.0 - Agregar columnas faltantes
+     */
+    private function migrate_to_1_1_0() {
+        global $wpdb;
+
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+
+        // Verificar y agregar portada_url si no existe
+        $columna_existe = $wpdb->get_results(
+            $wpdb->prepare(
+                "SHOW COLUMNS FROM $tabla_libros LIKE %s",
+                'portada_url'
+            )
+        );
+
+        if (empty($columna_existe)) {
+            $wpdb->query("ALTER TABLE $tabla_libros ADD COLUMN portada_url varchar(500) DEFAULT NULL AFTER descripcion");
+        }
+    }
+
+    /**
+     * Migración a versión 1.2.0 - Agregar columnas en prestamos y reservas
+     */
+    private function migrate_to_1_2_0() {
+        global $wpdb;
+
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+        $tabla_reservas = $wpdb->prefix . 'flavor_biblioteca_reservas';
+
+        // Columnas para prestamos
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+            $columnas_prestamos = [
+                'prestatario_id' => "bigint(20) unsigned NOT NULL AFTER libro_id",
+                'prestamista_id' => "bigint(20) unsigned NOT NULL AFTER prestatario_id",
+                'fecha_solicitud' => "datetime DEFAULT CURRENT_TIMESTAMP AFTER prestamista_id",
+            ];
+
+            foreach ($columnas_prestamos as $columna => $definicion) {
+                $existe = $wpdb->get_results($wpdb->prepare("SHOW COLUMNS FROM $tabla_prestamos LIKE %s", $columna));
+                if (empty($existe)) {
+                    $wpdb->query("ALTER TABLE $tabla_prestamos ADD COLUMN $columna $definicion");
+                    if ($columna === 'prestatario_id' || $columna === 'prestamista_id') {
+                        $wpdb->query("ALTER TABLE $tabla_prestamos ADD KEY $columna ($columna)");
+                    }
+                }
+            }
+        }
+
+        // Columnas para reservas
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+            $existe = $wpdb->get_results($wpdb->prepare("SHOW COLUMNS FROM $tabla_reservas LIKE %s", 'fecha_solicitud'));
+            if (empty($existe)) {
+                $wpdb->query("ALTER TABLE $tabla_reservas ADD COLUMN fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP AFTER usuario_id");
+            }
         }
     }
 

@@ -120,10 +120,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         add_action('save_post_ed_don', [$this, 'guardar_meta_don']);
 
         // Shortcodes
-        add_shortcode('economia_don', [$this, 'shortcode_listado']);
-        add_shortcode('mis_dones', [$this, 'shortcode_mis_dones']);
-        add_shortcode('ofrecer_don', [$this, 'shortcode_ofrecer']);
-        add_shortcode('muro_gratitud', [$this, 'shortcode_muro_gratitud']);
+        $this->register_shortcodes();
 
         // AJAX
         add_action('wp_ajax_ed_solicitar_don', [$this, 'ajax_solicitar_don']);
@@ -136,6 +133,16 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         // Assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('economia_don', [$this, 'shortcode_listado']);
+        add_shortcode('mis_dones', [$this, 'shortcode_mis_dones']);
+        add_shortcode('ofrecer_don', [$this, 'shortcode_ofrecer']);
+        add_shortcode('muro_gratitud', [$this, 'shortcode_muro_gratitud']);
     }
 
     /**

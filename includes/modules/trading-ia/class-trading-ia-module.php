@@ -82,7 +82,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         return array(
             $tabla_trades => "CREATE TABLE {$tabla_trades} (
                 id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                user_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                usuario_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
                 tipo enum('compra','venta') NOT NULL,
                 token varchar(20) NOT NULL,
                 cantidad decimal(20,8) NOT NULL,
@@ -95,42 +95,58 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                 pnl_porcentaje decimal(10,4) DEFAULT NULL,
                 confianza_ia int(11) DEFAULT NULL,
                 razon_ia text,
+                timestamp datetime NOT NULL,
                 fecha_apertura datetime NOT NULL,
                 fecha_cierre datetime DEFAULT NULL,
                 PRIMARY KEY (id),
-                KEY user_id (user_id),
+                KEY usuario_id (usuario_id),
                 KEY estado (estado),
                 KEY token (token),
+                KEY timestamp (timestamp),
                 KEY fecha_apertura (fecha_apertura)
             ) $charset_collate;",
 
             $tabla_portfolio => "CREATE TABLE {$tabla_portfolio} (
                 id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                user_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                token varchar(20) NOT NULL,
-                cantidad decimal(20,8) NOT NULL DEFAULT 0,
-                valor_promedio decimal(20,8) NOT NULL DEFAULT 0,
-                ultima_actualizacion datetime NOT NULL,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
+                balance_usd decimal(20,8) NOT NULL DEFAULT 1000,
+                balance_inicial decimal(20,8) NOT NULL DEFAULT 1000,
+                tokens_json longtext DEFAULT NULL,
+                precios_entrada_json longtext DEFAULT NULL,
+                fees_acumuladas_usd decimal(10,6) DEFAULT 0,
+                contador_trades int(11) DEFAULT 0,
+                fecha_creacion datetime DEFAULT NULL,
+                fecha_actualizacion datetime DEFAULT NULL,
                 PRIMARY KEY (id),
-                UNIQUE KEY user_token (user_id, token)
+                UNIQUE KEY usuario_id (usuario_id)
             ) $charset_collate;",
 
             $tabla_reglas => "CREATE TABLE {$tabla_reglas} (
                 id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                user_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                regla_id varchar(50) NOT NULL,
+                usuario_id bigint(20) UNSIGNED NOT NULL,
                 nombre varchar(255) NOT NULL,
-                condicion text NOT NULL,
-                accion varchar(50) NOT NULL,
-                activa tinyint(1) NOT NULL DEFAULT 1,
-                prioridad int(11) NOT NULL DEFAULT 50,
-                fecha_creacion datetime NOT NULL,
+                token_condicion varchar(20) DEFAULT '*',
+                indicador varchar(50) NOT NULL,
+                operador varchar(5) NOT NULL,
+                valor decimal(20,8) NOT NULL,
+                accion_tipo varchar(50) NOT NULL,
+                accion_parametros_json text DEFAULT NULL,
+                activa tinyint(1) DEFAULT 1,
+                creada_por varchar(10) DEFAULT 'ia',
+                razon text DEFAULT NULL,
+                veces_activada int(11) DEFAULT 0,
+                ultima_activacion datetime DEFAULT NULL,
+                fecha_creacion datetime DEFAULT NULL,
                 PRIMARY KEY (id),
-                KEY user_id (user_id)
+                KEY regla_id (regla_id),
+                KEY usuario_id (usuario_id),
+                KEY activa (activa)
             ) $charset_collate;",
 
             $tabla_alertas => "CREATE TABLE {$tabla_alertas} (
                 id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                user_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                usuario_id bigint(20) UNSIGNED NOT NULL DEFAULT 0,
                 token varchar(20) NOT NULL,
                 tipo_alerta enum('precio_mayor','precio_menor','cambio_porcentaje') NOT NULL,
                 valor_objetivo decimal(20,8) NOT NULL,
@@ -139,7 +155,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                 fecha_creacion datetime NOT NULL,
                 fecha_notificacion datetime DEFAULT NULL,
                 PRIMARY KEY (id),
-                KEY user_id (user_id),
+                KEY usuario_id (usuario_id),
                 KEY activa (activa)
             ) $charset_collate;"
         );
@@ -2058,7 +2074,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                                 </span>
                             </div>
                             <div class="token-precio">
-                                $<?php echo number_format($datos['precio_usd'] ?? 0, $datos['precio_usd'] < 1 ? 8 : 2); ?>
+                                $<?php $precio = $datos['precio_usd'] ?? 0; echo number_format($precio, $precio < 1 ? 8 : 2); ?>
                             </div>
                             <div class="token-volumen">
                                 <?php _e('Vol:', 'flavor-chat-ia'); ?> $<?php echo $this->formatear_numero_grande($datos['volumen_24h'] ?? 0); ?>
@@ -3311,10 +3327,85 @@ KNOWLEDGE;
      */
     public function maybe_create_tables() {
         global $wpdb;
-        $tabla_trades = $wpdb->prefix . 'flavor_trading_ia_trades';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_trades)) {
+        $db_version = get_option('flavor_trading_ia_db_version', '0');
+        $current_version = '2.0.0';
+
+        // Si la versión es antigua, forzar actualización de tablas
+        if (version_compare($db_version, $current_version, '<')) {
             $this->create_tables();
+            $this->migrate_tables_v2();
+            update_option('flavor_trading_ia_db_version', $current_version);
+        }
+    }
+
+    /**
+     * Migración de tablas a v2 (user_id -> usuario_id)
+     */
+    private function migrate_tables_v2() {
+        global $wpdb;
+
+        $tablas_columnas = array(
+            $wpdb->prefix . 'flavor_trading_ia_portfolio' => array(
+                'usuario_id' => 'bigint(20) UNSIGNED NOT NULL',
+                'balance_usd' => 'decimal(20,8) NOT NULL DEFAULT 1000',
+                'balance_inicial' => 'decimal(20,8) NOT NULL DEFAULT 1000',
+                'tokens_json' => 'longtext DEFAULT NULL',
+                'precios_entrada_json' => 'longtext DEFAULT NULL',
+                'fees_acumuladas_usd' => 'decimal(10,6) DEFAULT 0',
+                'contador_trades' => 'int(11) DEFAULT 0',
+                'fecha_creacion' => 'datetime DEFAULT NULL',
+                'fecha_actualizacion' => 'datetime DEFAULT NULL',
+            ),
+            $wpdb->prefix . 'flavor_trading_ia_reglas' => array(
+                'regla_id' => 'varchar(50) NOT NULL',
+                'usuario_id' => 'bigint(20) UNSIGNED NOT NULL',
+                'token_condicion' => "varchar(20) DEFAULT '*'",
+                'indicador' => 'varchar(50) NOT NULL',
+                'operador' => 'varchar(5) NOT NULL',
+                'valor' => 'decimal(20,8) NOT NULL',
+                'accion_tipo' => 'varchar(50) NOT NULL',
+                'accion_parametros_json' => 'text DEFAULT NULL',
+                'creada_por' => "varchar(10) DEFAULT 'ia'",
+                'razon' => 'text DEFAULT NULL',
+                'veces_activada' => 'int(11) DEFAULT 0',
+                'ultima_activacion' => 'datetime DEFAULT NULL',
+            ),
+            $wpdb->prefix . 'flavor_trading_ia_trades' => array(
+                'usuario_id' => 'bigint(20) UNSIGNED NOT NULL DEFAULT 0',
+                'timestamp' => 'datetime NOT NULL',
+            ),
+        );
+
+        foreach ($tablas_columnas as $tabla => $columnas) {
+            if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                continue;
+            }
+
+            foreach ($columnas as $columna => $definicion) {
+                // Verificar si la columna existe
+                $columna_existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                     WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+                    DB_NAME, $tabla, $columna
+                ));
+
+                if (!$columna_existe) {
+                    $wpdb->query("ALTER TABLE {$tabla} ADD COLUMN {$columna} {$definicion}");
+                }
+            }
+
+            // Migrar user_id a usuario_id si existe
+            $user_id_existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                 WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = 'user_id'",
+                DB_NAME, $tabla
+            ));
+
+            if ($user_id_existe) {
+                // Copiar datos de user_id a usuario_id
+                $wpdb->query("UPDATE {$tabla} SET usuario_id = user_id WHERE usuario_id = 0 OR usuario_id IS NULL");
+            }
         }
     }
 

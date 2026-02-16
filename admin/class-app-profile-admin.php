@@ -212,7 +212,7 @@ class Flavor_App_Profile_Admin {
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         // Debug: verificar qué perfiles están activos
-        error_log('Perfiles activos: ' . implode(', ', $perfiles_activos));
+        flavor_log_debug( 'Perfiles activos: ' . implode(', ', $perfiles_activos), 'AppProfile' );
 
         $loader = Flavor_Chat_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
@@ -736,15 +736,15 @@ class Flavor_App_Profile_Admin {
         }
 
         // Log para debug
-        error_log(sprintf('[Flavor AJAX] Toggle módulo: %s, activar: %s', $modulo_id, $activar ? 'SÍ' : 'NO'));
+        flavor_log_debug( sprintf( 'Toggle módulo: %s, activar: %s', $modulo_id, $activar ? 'SÍ' : 'NO' ), 'AppProfile' );
 
         try {
             // Verificar si es un módulo requerido ANTES de intentar desactivarlo
             if (!$activar) {
                 $modulos_requeridos = $this->gestor_perfiles->obtener_modulos_requeridos();
-                error_log('[Flavor AJAX] Módulos requeridos del perfil: ' . implode(', ', $modulos_requeridos));
-                error_log('[Flavor AJAX] Intentando desactivar: ' . $modulo_id);
-                error_log('[Flavor AJAX] ¿Es requerido?: ' . (in_array($modulo_id, $modulos_requeridos) ? 'SÍ' : 'NO'));
+                flavor_log_debug( 'Módulos requeridos del perfil: ' . implode(', ', $modulos_requeridos), 'AppProfile' );
+                flavor_log_debug( 'Intentando desactivar: ' . $modulo_id, 'AppProfile' );
+                flavor_log_debug( '¿Es requerido?: ' . (in_array($modulo_id, $modulos_requeridos) ? 'SÍ' : 'NO'), 'AppProfile' );
 
                 if (in_array($modulo_id, $modulos_requeridos)) {
                     wp_send_json_error([
@@ -767,7 +767,7 @@ class Flavor_App_Profile_Admin {
             }
 
             // Log del resultado
-            error_log(sprintf('[Flavor AJAX] Resultado operación: %s', $resultado ? 'OK' : 'FAIL'));
+            flavor_log_debug( sprintf( 'Resultado operación: %s', $resultado ? 'OK' : 'FAIL' ), 'AppProfile' );
 
             // Si la operación falló, enviar error
             if ($resultado === false) {
@@ -789,8 +789,8 @@ class Flavor_App_Profile_Admin {
             $modulos_activos = $configuracion['active_modules'] ?? [];
 
             // Log de módulos activos
-            error_log('[Flavor AJAX] Módulos activos después del cambio (DIRECTO DE BD): ' . implode(', ', $modulos_activos));
-            error_log('[Flavor AJAX] ¿Módulo está en el array?: ' . (in_array($modulo_id, $modulos_activos) ? 'SÍ' : 'NO'));
+            flavor_log_debug( 'Módulos activos después del cambio (DIRECTO DE BD): ' . implode(', ', $modulos_activos), 'AppProfile' );
+            flavor_log_debug( '¿Módulo está en el array?: ' . (in_array($modulo_id, $modulos_activos) ? 'SÍ' : 'NO'), 'AppProfile' );
 
             // Verificar que el cambio se aplicó correctamente
             $modulo_esta_activo = in_array($modulo_id, $modulos_activos);
@@ -816,7 +816,7 @@ class Flavor_App_Profile_Admin {
                 'modulos_activos' => array_values($modulos_activos)
             ]);
         } catch (Exception $e) {
-            error_log('[Flavor AJAX] Error en toggle: ' . $e->getMessage());
+            flavor_log_error( 'Error en toggle: ' . $e->getMessage(), 'AppProfile' );
             wp_send_json_error([
                 'message' => $e->getMessage()
             ]);
@@ -1794,7 +1794,7 @@ class Flavor_App_Profile_Admin {
      * AJAX: Ejecuta un paso de instalacion
      */
     public function ajax_ejecutar_paso_instalacion() {
-        error_log('[AJAX] Inicio ajax_ejecutar_paso_instalacion');
+        flavor_log_debug( 'Inicio ajax_ejecutar_paso_instalacion', 'AppProfile' );
         check_ajax_referer('flavor_activar_plantilla', '_wpnonce');
 
         if (!current_user_can('manage_options')) {
@@ -1807,7 +1807,7 @@ class Flavor_App_Profile_Admin {
         $modulos_opcionales = json_decode(stripslashes($_POST['modulos_opcionales'] ?? '[]'), true);
         $cargar_demo = isset($_POST['cargar_demo']) && $_POST['cargar_demo'] === '1';
 
-        error_log('[AJAX] Paso: ' . $paso . ', Plantilla: ' . $plantilla_id);
+        flavor_log_debug( 'Paso: ' . $paso . ', Plantilla: ' . $plantilla_id, 'AppProfile' );
 
         if (empty($paso) || empty($plantilla_id)) {
             wp_send_json_error(['mensaje' => __('Parametros invalidos', 'flavor-chat-ia')]);
@@ -1822,12 +1822,12 @@ class Flavor_App_Profile_Admin {
         // Ejecutar el paso correspondiente
         $resultado = $this->ejecutar_paso_instalacion($paso, $plantilla_id, $opciones);
 
-        error_log('[AJAX] Resultado del paso ' . $paso . ': ' . ($resultado['success'] ? 'SUCCESS' : 'ERROR'));
+        flavor_log_debug( 'Resultado del paso ' . $paso . ': ' . ($resultado['success'] ? 'SUCCESS' : 'ERROR'), 'AppProfile' );
 
         if ($resultado['success']) {
             wp_send_json_success($resultado);
         } else {
-            error_log('[AJAX] Error: ' . json_encode($resultado));
+            flavor_log_debug( 'Error: ' . json_encode($resultado), 'AppProfile' );
             wp_send_json_error($resultado);
         }
     }
@@ -1881,38 +1881,38 @@ class Flavor_App_Profile_Admin {
      * Paso: Instalar modulos
      */
     private function paso_instalar_modulos($plantilla_id, $perfil, $opciones) {
-        error_log('[PASO_INSTALAR_MODULOS] INICIO - Plantilla: ' . $plantilla_id);
+        flavor_log_debug( 'INICIO - Plantilla: ' . $plantilla_id, 'InstalarModulos' );
 
         try {
             // Activar modulos requeridos
             $modulos_a_activar = $perfil['modulos_requeridos'] ?? [];
-            error_log('[PASO_INSTALAR_MODULOS] Módulos requeridos: ' . json_encode($modulos_a_activar));
+            flavor_log_debug( 'Módulos requeridos: ' . json_encode($modulos_a_activar), 'InstalarModulos' );
 
             // Agregar modulos opcionales seleccionados
             if (!empty($opciones['modulos_opcionales'])) {
                 $modulos_a_activar = array_merge($modulos_a_activar, $opciones['modulos_opcionales']);
             }
             $modulos_a_activar = $this->normalizar_ids_modulos($modulos_a_activar);
-            error_log('[PASO_INSTALAR_MODULOS] Módulos totales a activar: ' . json_encode($modulos_a_activar));
+            flavor_log_debug( 'Módulos totales a activar: ' . json_encode($modulos_a_activar), 'InstalarModulos' );
 
             // Actualizar modulos activos
-            error_log('[PASO_INSTALAR_MODULOS] Actualizando active_modules...');
+            flavor_log_debug( 'Actualizando active_modules...', 'InstalarModulos' );
             $configuracion = get_option('flavor_chat_ia_settings', []);
             $modulos_actuales = $configuracion['active_modules'] ?? [];
-            error_log('[PASO_INSTALAR_MODULOS] Módulos actuales antes: ' . json_encode($modulos_actuales));
+            flavor_log_debug( 'Módulos actuales antes: ' . json_encode($modulos_actuales), 'InstalarModulos' );
 
             $modulos_combinados = array_unique(array_merge($modulos_actuales, $modulos_a_activar));
-            error_log('[PASO_INSTALAR_MODULOS] Módulos combinados: ' . json_encode($modulos_combinados));
+            flavor_log_debug( 'Módulos combinados: ' . json_encode($modulos_combinados), 'InstalarModulos' );
 
             $configuracion['active_modules'] = $modulos_combinados;
 
             // Intentar guardar con update_option primero
             $update_result = update_option('flavor_chat_ia_settings', $configuracion);
-            error_log('[PASO_INSTALAR_MODULOS] update_option result: ' . ($update_result ? 'true' : 'false'));
+            flavor_log_debug( 'update_option result: ' . ($update_result ? 'true' : 'false'), 'InstalarModulos' );
 
             // Si update_option devuelve false, forzar guardado directo en BD
             if (!$update_result) {
-                error_log('[PASO_INSTALAR_MODULOS] update_option falló, usando WPDB directo...');
+                flavor_log_debug( 'update_option falló, usando WPDB directo...', 'InstalarModulos' );
                 global $wpdb;
                 $serialized = maybe_serialize($configuracion);
                 $wpdb_result = $wpdb->update(
@@ -1922,7 +1922,7 @@ class Flavor_App_Profile_Admin {
                     ['%s'],
                     ['%s']
                 );
-                error_log('[PASO_INSTALAR_MODULOS] WPDB update result: ' . $wpdb_result);
+                flavor_log_debug( 'WPDB update result: ' . $wpdb_result, 'InstalarModulos' );
 
                 // Limpiar caché de opciones
                 wp_cache_delete('flavor_chat_ia_settings', 'options');
@@ -1932,30 +1932,30 @@ class Flavor_App_Profile_Admin {
             // Verificar que se guardó correctamente
             $configuracion_verificacion = get_option('flavor_chat_ia_settings', []);
             $modulos_guardados = $configuracion_verificacion['active_modules'] ?? [];
-            error_log('[PASO_INSTALAR_MODULOS] Módulos guardados después: ' . json_encode($modulos_guardados));
+            flavor_log_debug( 'Módulos guardados después: ' . json_encode($modulos_guardados), 'InstalarModulos' );
 
             // Cargar el helper para guardar el perfil directamente en BD
-            error_log('[PASO_INSTALAR_MODULOS] Cargando Profile Saver...');
+            flavor_log_debug( 'Cargando Profile Saver...', 'InstalarModulos' );
             require_once FLAVOR_CHAT_IA_PATH . 'includes/class-profile-saver.php';
 
             // Guardar app_profile directamente en BD (bypass WordPress cache/hooks)
-            error_log('[PASO_INSTALAR_MODULOS] Guardando perfil...');
+            flavor_log_debug( 'Guardando perfil...', 'InstalarModulos' );
             $resultado_perfil = Flavor_Profile_Saver::guardar_perfil($plantilla_id);
-            error_log('[PASO_INSTALAR_MODULOS] Perfil guardado - Exito: ' . ($resultado_perfil['exito'] ? 'true' : 'false'));
+            flavor_log_debug( 'Perfil guardado - Exito: ' . ($resultado_perfil['exito'] ? 'true' : 'false'), 'InstalarModulos' );
 
             // IMPORTANTE: Limpiar caché para asegurar que los módulos se vean como activos
-            error_log('[PASO_INSTALAR_MODULOS] Limpiando caché...');
+            flavor_log_debug( 'Limpiando caché...', 'InstalarModulos' );
             wp_cache_delete('flavor_chat_ia_settings', 'options');
             wp_cache_delete('alloptions', 'options');
 
             // IMPORTANTE: Inicializar módulos recién activados
-            error_log('[PASO_INSTALAR_MODULOS] Inicializando módulos...');
+            flavor_log_debug( 'Inicializando módulos...', 'InstalarModulos' );
 
             // Asegurar que Module Loader esté disponible
             if (!class_exists('Flavor_Chat_Module_Loader')) {
-                error_log('[PASO_INSTALAR_MODULOS] Cargando Flavor_Chat_Module_Loader...');
+                flavor_log_debug( 'Cargando Flavor_Chat_Module_Loader...', 'InstalarModulos' );
                 require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-module-loader.php';
-                error_log('[PASO_INSTALAR_MODULOS] Clase cargada correctamente');
+                flavor_log_debug( 'Clase cargada correctamente', 'InstalarModulos' );
             }
 
             $modulos_inicializados = 0;
@@ -1963,11 +1963,11 @@ class Flavor_App_Profile_Admin {
             $module_loader = Flavor_Chat_Module_Loader::get_instance();
 
             foreach ($modulos_a_activar as $module_id) {
-                error_log('[PASO_INSTALAR_MODULOS] Procesando módulo: ' . $module_id);
+                flavor_log_debug( 'Procesando módulo: ' . $module_id, 'InstalarModulos' );
                 try {
                     // Cargar el módulo si no está ya cargado
                     $module = $module_loader->get_module($module_id);
-                    error_log('[PASO_INSTALAR_MODULOS] Módulo cargado: ' . ($module ? get_class($module) : 'NULL'));
+                    flavor_log_debug( 'Módulo cargado: ' . ($module ? get_class($module) : 'NULL'), 'InstalarModulos' );
 
                     if ($module) {
                         // Crear tablas si el módulo lo necesita
@@ -2003,9 +2003,9 @@ class Flavor_App_Profile_Admin {
                 );
             }
 
-            error_log('[PASO_INSTALAR_MODULOS] ÉXITO - Módulos activados: ' . $total_modulos . ', Inicializados: ' . $modulos_inicializados);
+            flavor_log_debug( 'ÉXITO - Módulos activados: ' . $total_modulos . ', Inicializados: ' . $modulos_inicializados, 'InstalarModulos' );
             if (!empty($errores_inicializacion)) {
-                error_log('[PASO_INSTALAR_MODULOS] Errores: ' . json_encode($errores_inicializacion));
+                flavor_log_error( 'Errores de inicialización: ' . json_encode($errores_inicializacion), 'InstalarModulos' );
             }
 
             return [
@@ -2021,8 +2021,8 @@ class Flavor_App_Profile_Admin {
                 'debug_exito' => $resultado_perfil['exito'],
             ];
         } catch (Exception $excepcion) {
-            error_log('[PASO_INSTALAR_MODULOS] ERROR FATAL: ' . $excepcion->getMessage());
-            error_log('[PASO_INSTALAR_MODULOS] Stack trace: ' . $excepcion->getTraceAsString());
+            flavor_log_error( 'ERROR FATAL: ' . $excepcion->getMessage(), 'InstalarModulos' );
+            flavor_log_error( 'Stack trace: ' . $excepcion->getTraceAsString(), 'InstalarModulos' );
             return [
                 'success' => false,
                 'mensaje' => $excepcion->getMessage(),
@@ -2427,7 +2427,7 @@ class Flavor_App_Profile_Admin {
         $menu_id = $locations['primary'] ?? 0;
 
         if (!$menu_id) {
-            error_log('[SYNC_MENU] No hay menú principal configurado, saltando sincronización');
+            flavor_log_debug( 'No hay menú principal configurado, saltando sincronización', 'SyncMenu' );
             return;
         }
 
@@ -2442,7 +2442,7 @@ class Flavor_App_Profile_Admin {
         $modulos_activos = $this->normalizar_ids_modulos($modulos_activos);
         $menu_sync = $opciones['menu_sync'] ?? 'merge';
 
-        error_log('[SYNC_MENU] Sincronizando menú ID: ' . $menu_id . ' con modo: ' . $menu_sync);
+        flavor_log_debug( 'Sincronizando menú ID: ' . $menu_id . ' con modo: ' . $menu_sync, 'SyncMenu' );
 
         $items = wp_get_nav_menu_items($menu_id);
         $existing_page_ids = [];
@@ -2484,7 +2484,7 @@ class Flavor_App_Profile_Admin {
         }
 
         if (empty($all_pages)) {
-            error_log('[SYNC_MENU] No se encontraron páginas para añadir al menú');
+            flavor_log_debug( 'No se encontraron páginas para añadir al menú', 'SyncMenu' );
             return;
         }
 
@@ -2507,11 +2507,11 @@ class Flavor_App_Profile_Admin {
             });
         }
 
-        error_log('[SYNC_MENU] Páginas padre: ' . count($parent_pages) . ', Páginas hijo: ' . count($child_pages));
+        flavor_log_debug( 'Páginas padre: ' . count($parent_pages) . ', Páginas hijo: ' . count($child_pages), 'SyncMenu' );
 
         // Log de todas las páginas padre
         foreach ($parent_pages as $page) {
-            error_log('[SYNC_MENU] Página padre detectada: ID=' . $page->ID . ' Título="' . $page->post_title . '"');
+            flavor_log_debug( 'Página padre detectada: ID=' . $page->ID . ' Título="' . $page->post_title . '"', 'SyncMenu' );
         }
 
         // Mapa de page_id => menu_item_id
@@ -2520,7 +2520,7 @@ class Flavor_App_Profile_Admin {
         // Primero añadir todas las páginas padre
         foreach ($parent_pages as $page) {
             if (in_array((int) $page->ID, $existing_page_ids, true)) {
-                error_log('[SYNC_MENU] Página padre ya existe en menú: ' . $page->post_title);
+                flavor_log_debug( 'Página padre ya existe en menú: ' . $page->post_title, 'SyncMenu' );
 
                 // IMPORTANTE: Buscar el menu_item_id existente y añadirlo al mapeo
                 $existing_items = wp_get_nav_menu_items($menu_id);
@@ -2528,7 +2528,7 @@ class Flavor_App_Profile_Admin {
                     foreach ($existing_items as $item) {
                         if ($item->object === 'page' && $item->object_id == $page->ID) {
                             $page_to_menu_item[$page->ID] = $item->ID;
-                            error_log('[SYNC_MENU] Añadido al mapeo página padre existente: ' . $page->post_title . ' (menu_item: ' . $item->ID . ')');
+                            flavor_log_debug( 'Añadido al mapeo página padre existente: ' . $page->post_title . ' (menu_item: ' . $item->ID . ')', 'SyncMenu' );
                             break;
                         }
                     }
@@ -2547,19 +2547,19 @@ class Flavor_App_Profile_Admin {
             if (!is_wp_error($menu_item_id)) {
                 $page_to_menu_item[$page->ID] = $menu_item_id;
                 $existing_page_ids[] = (int) $page->ID;
-                error_log('[SYNC_MENU] Añadida página padre al menú: ' . $page->post_title . ' (menu_item: ' . $menu_item_id . ')');
+                flavor_log_debug( 'Añadida página padre al menú: ' . $page->post_title . ' (menu_item: ' . $menu_item_id . ')', 'SyncMenu' );
             }
         }
 
         // Log del mapa de páginas a menu items
-        error_log('[SYNC_MENU] Mapa page_to_menu_item: ' . json_encode($page_to_menu_item));
+        flavor_log_debug( 'Mapa page_to_menu_item: ' . json_encode($page_to_menu_item), 'SyncMenu' );
 
         // Luego añadir páginas hijo bajo sus padres
         foreach ($child_pages as $page) {
-            error_log('[SYNC_MENU] Procesando página hijo: ID=' . $page->ID . ' Título="' . $page->post_title . '" post_parent=' . $page->post_parent);
+            flavor_log_debug( 'Procesando página hijo: ID=' . $page->ID . ' Título="' . $page->post_title . '" post_parent=' . $page->post_parent, 'SyncMenu' );
 
             if (in_array((int) $page->ID, $existing_page_ids, true)) {
-                error_log('[SYNC_MENU] Página hijo ya existe en menú: ' . $page->post_title);
+                flavor_log_debug( 'Página hijo ya existe en menú: ' . $page->post_title, 'SyncMenu' );
 
                 // Verificar que el padre también esté en el mapeo para futuros hijos
                 if (!isset($page_to_menu_item[$page->post_parent])) {
@@ -2568,7 +2568,7 @@ class Flavor_App_Profile_Admin {
                         foreach ($existing_items as $item) {
                             if ($item->object === 'page' && $item->object_id == $page->post_parent) {
                                 $page_to_menu_item[$page->post_parent] = $item->ID;
-                                error_log('[SYNC_MENU] Añadido al mapeo padre de hijo existente: ID=' . $page->post_parent . ' (menu_item: ' . $item->ID . ')');
+                                flavor_log_debug( 'Añadido al mapeo padre de hijo existente: ID=' . $page->post_parent . ' (menu_item: ' . $item->ID . ')', 'SyncMenu' );
                                 break;
                             }
                         }
@@ -2579,7 +2579,7 @@ class Flavor_App_Profile_Admin {
 
             // Verificar si el padre está en el menú
             $parent_menu_item_id = $page_to_menu_item[$page->post_parent] ?? 0;
-            error_log('[SYNC_MENU] Buscando padre ' . $page->post_parent . ' en mapa, encontrado menu_item_id: ' . $parent_menu_item_id);
+            flavor_log_debug( 'Buscando padre ' . $page->post_parent . ' en mapa, encontrado menu_item_id: ' . $parent_menu_item_id, 'SyncMenu' );
 
             if (!$parent_menu_item_id) {
                 // Si el padre no está en el menú, buscar si ya existe
@@ -2606,7 +2606,7 @@ class Flavor_App_Profile_Admin {
 
             if (!is_wp_error($menu_item_id)) {
                 $existing_page_ids[] = (int) $page->ID;
-                error_log('[SYNC_MENU] Añadida página hijo al menú: ' . $page->post_title . ' bajo parent_id: ' . $parent_menu_item_id);
+                flavor_log_debug( 'Añadida página hijo al menú: ' . $page->post_title . ' bajo parent_id: ' . $parent_menu_item_id, 'SyncMenu' );
             }
         }
     }

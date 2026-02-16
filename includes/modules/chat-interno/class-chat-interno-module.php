@@ -36,8 +36,9 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+        $existe = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $tabla_conversaciones ) );
 
-        return Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones);
+        return ! empty( $existe );
     }
 
     /**
@@ -56,6 +57,18 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      */
     public function is_active() {
         return $this->can_activate();
+    }
+
+    /**
+     * Verifica si una tabla existe en la base de datos
+     *
+     * @param string $nombre_tabla Nombre completo de la tabla (con prefijo)
+     * @return bool
+     */
+    private function tabla_existe( $nombre_tabla ) {
+        global $wpdb;
+        $resultado = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $nombre_tabla ) );
+        return ! empty( $resultado );
     }
 
     /**
@@ -136,8 +149,13 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     public function maybe_create_tables() {
         global $wpdb;
         $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+        $tabla_estados = $wpdb->prefix . 'flavor_chat_estados_usuario';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+        // Verificar si falta alguna de las tablas principales
+        $existe_conversaciones = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $tabla_conversaciones ) );
+        $existe_estados = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $tabla_estados ) );
+
+        if ( ! $existe_conversaciones || ! $existe_estados ) {
             $this->create_tables();
         }
     }
@@ -2544,9 +2562,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         ));
 
         // Log
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log("Chat Interno: Limpieza ejecutada. Mensajes anteriores a {$fecha_limite} eliminados.");
-        }
+        flavor_log_debug( "Limpieza ejecutada. Mensajes anteriores a {$fecha_limite} eliminados.", 'ChatInterno' );
     }
 
     /**
@@ -2762,7 +2778,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+        if (!$this->tabla_existe($tabla_conversaciones)) {
             return 0;
         }
 
@@ -2817,7 +2833,7 @@ KNOWLEDGE;
         $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
         $tabla_participantes = $wpdb->prefix . 'flavor_chat_participantes';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+        if (!$this->tabla_existe($tabla_conversaciones)) {
             echo '<div class="notice notice-warning"><p>' . __('Las tablas no estan creadas.', 'flavor-chat-ia') . '</p></div>';
             return;
         }
@@ -2922,11 +2938,11 @@ KNOWLEDGE;
         $total_conversaciones = 0;
         $total_mensajes_hoy = 0;
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+        if ($this->tabla_existe($tabla_conversaciones)) {
             $total_conversaciones = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_conversaciones}");
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
+        if ($this->tabla_existe($tabla_mensajes)) {
             $total_mensajes_hoy = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_mensajes} WHERE DATE(fecha_envio) = %s",
                 current_time('Y-m-d')
@@ -2956,7 +2972,7 @@ KNOWLEDGE;
         $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
 
         $total_activas = 0;
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_conversaciones)) {
+        if ($this->tabla_existe($tabla_conversaciones)) {
             $total_activas = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_conversaciones} WHERE estado = 'activa'");
         }
 
@@ -2989,7 +3005,7 @@ KNOWLEDGE;
             return $estadisticas;
         }
 
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_participantes)) {
+        if ($this->tabla_existe($tabla_participantes)) {
             // Mis conversaciones activas
             $mis_chats = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(DISTINCT p.conversacion_id)
@@ -3007,7 +3023,7 @@ KNOWLEDGE;
             ];
 
             // Mensajes sin leer (comparando IDs de mensaje)
-            if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
+            if ($this->tabla_existe($tabla_mensajes)) {
                 $sin_leer = (int) $wpdb->get_var($wpdb->prepare(
                     "SELECT COUNT(*) FROM {$tabla_mensajes} m
                      INNER JOIN {$tabla_participantes} p ON m.conversacion_id = p.conversacion_id

@@ -1034,9 +1034,11 @@ class Flavor_Dynamic_Pages {
 
             // === BANCO DE TIEMPO ===
             'banco-tiempo' => [
-                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'small', 'shortcode' => '[flavor_module_listing module="banco-tiempo" vista="saldo"]'],
-                ['title' => __('Mis Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'medium', 'shortcode' => '[flavor_banco_tiempo_acciones]'],
-                ['title' => __('Servicios Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="banco-tiempo" limit="6"]'],
+                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'shortcode' => '[flavor_banco_tiempo_mi_saldo]'],
+                ['title' => __('Mis Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'medium', 'shortcode' => '[flavor_banco_tiempo_mis_intercambios]'],
+                ['title' => __('Servicios Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'large', 'shortcode' => '[flavor_banco_tiempo_servicios]'],
+                ['title' => __('Mi Reputación', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'medium', 'shortcode' => '[bt_mi_reputacion]'],
+                ['title' => __('Fondo Solidario', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'small', 'shortcode' => '[bt_fondo_solidario]'],
             ],
 
             // === BICICLETAS COMPARTIDAS ===
@@ -1275,6 +1277,69 @@ class Flavor_Dynamic_Pages {
                 ['title' => __('Fichas de Clientes', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="clientes" vista="fichas"]'],
                 ['title' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="clientes" vista="estadisticas"]'],
                 ['title' => __('Nuevo Cliente', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_module_form module="clientes" action="crear"]'],
+            ],
+
+            // === HUELLA ECOLÓGICA ===
+            'huella-ecologica' => [
+                ['title' => __('Calculadora', 'flavor-chat-ia'), 'icon' => 'dashicons-calculator', 'size' => 'large', 'shortcode' => '[flavor_huella_calculadora]'],
+                ['title' => __('Mis Registros', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'medium', 'shortcode' => '[flavor_huella_mis_registros]'],
+                ['title' => __('Logros', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'shortcode' => '[flavor_huella_logros]'],
+                ['title' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[flavor_huella_comunidad]'],
+                ['title' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'size' => 'large', 'shortcode' => '[flavor_huella_proyectos]'],
+            ],
+
+            // === SABERES ANCESTRALES ===
+            'saberes-ancestrales' => [
+                ['title' => __('Catálogo de Saberes', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'size' => 'large', 'shortcode' => '[flavor_saberes_catalogo]'],
+                ['title' => __('Compartir Saber', 'flavor-chat-ia'), 'icon' => 'dashicons-share', 'size' => 'medium', 'shortcode' => '[flavor_saberes_compartir]'],
+                ['title' => __('Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'size' => 'medium', 'shortcode' => '[flavor_saberes_talleres]'],
+            ],
+
+            // === ECONOMÍA DEL DON ===
+            'economia-don' => [
+                ['title' => __('Dones Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'large', 'shortcode' => '[flavor_don_listado]'],
+                ['title' => __('Mis Dones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[flavor_don_mis_dones]'],
+                ['title' => __('Muro de Gratitud', 'flavor-chat-ia'), 'icon' => 'dashicons-format-quote', 'size' => 'medium', 'shortcode' => '[flavor_don_muro_gratitud]'],
+                ['title' => __('Ofrecer Don', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_don_ofrecer]'],
+            ],
+
+            // === ECONOMÍA DE SUFICIENCIA ===
+            'economia-suficiencia' => [
+                ['title' => __('Introducción', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_intro]'],
+                ['title' => __('Mi Camino', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'large', 'shortcode' => '[flavor_suficiencia_mi_camino]'],
+                ['title' => __('Evaluación', 'flavor-chat-ia'), 'icon' => 'dashicons-forms', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_evaluacion]'],
+                ['title' => __('Compromisos', 'flavor-chat-ia'), 'icon' => 'dashicons-yes-alt', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_compromisos]'],
+                ['title' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_biblioteca]'],
+            ],
+
+            // === TRABAJO DIGNO ===
+            'trabajo-digno' => [
+                ['title' => __('Ofertas de Empleo', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman', 'size' => 'large', 'shortcode' => '[flavor_trabajo_ofertas]'],
+                ['title' => __('Mi Perfil Laboral', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_mi_perfil]'],
+                ['title' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_formacion]'],
+                ['title' => __('Emprendimientos', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_emprendimientos]'],
+                ['title' => __('Publicar Oferta', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_publicar]'],
+            ],
+
+            // === CÍRCULOS DE CUIDADOS ===
+            'circulos-cuidados' => [
+                ['title' => __('Círculos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'large', 'shortcode' => '[flavor_circulos_listado]'],
+                ['title' => __('Mis Cuidados', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'medium', 'shortcode' => '[flavor_circulos_mis_cuidados]'],
+                ['title' => __('Necesidades', 'flavor-chat-ia'), 'icon' => 'dashicons-sos', 'size' => 'medium', 'shortcode' => '[flavor_circulos_necesidades]'],
+            ],
+
+            // === JUSTICIA RESTAURATIVA ===
+            'justicia-restaurativa' => [
+                ['title' => __('Información', 'flavor-chat-ia'), 'icon' => 'dashicons-info', 'size' => 'medium', 'shortcode' => '[flavor_justicia_info]'],
+                ['title' => __('Mis Procesos', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'large', 'shortcode' => '[flavor_justicia_mis_procesos]'],
+                ['title' => __('Mediadores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[flavor_justicia_mediadores]'],
+                ['title' => __('Solicitar Mediación', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_justicia_solicitar]'],
+            ],
+
+            // === SELLO CONCIENCIA ===
+            'sello-conciencia' => [
+                ['title' => __('Mi Badge', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'shortcode' => '[flavor_sello_badge]'],
+                ['title' => __('Premisas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'large', 'shortcode' => '[flavor_sello_premisas]'],
             ],
         ];
 

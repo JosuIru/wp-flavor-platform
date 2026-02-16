@@ -262,16 +262,14 @@ class Flavor_Menu_Organizer {
         }
 
         // Log para debugging
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            if (!empty($assigned)) {
-                error_log('[Flavor Menu Organizer] Items asignados: ' . count($assigned));
-            }
-            if (!empty($unassigned)) {
-                error_log('[Flavor Menu Organizer] Items sin asignar: ' . implode(', ', $unassigned));
-            }
-            if (!empty($skipped)) {
-                error_log('[Flavor Menu Organizer] Items de plataforma (conservados): ' . count($skipped));
-            }
+        if (!empty($assigned)) {
+            flavor_log_debug( 'Items asignados: ' . count($assigned), 'MenuOrganizer' );
+        }
+        if (!empty($unassigned)) {
+            flavor_log_debug( 'Items sin asignar: ' . implode(', ', $unassigned), 'MenuOrganizer' );
+        }
+        if (!empty($skipped)) {
+            flavor_log_debug( 'Items de plataforma (conservados): ' . count($skipped), 'MenuOrganizer' );
         }
     }
 

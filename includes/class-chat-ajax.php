@@ -512,7 +512,7 @@ class Chat_IA_Ajax {
         if (!$force_refresh) {
             $cached = get_transient($cache_key);
             if ($cached && is_array($cached)) {
-                error_log('Chat IA Autoconfig: Usando resultado cacheado');
+                flavor_log_debug( 'Autoconfig: Usando resultado cacheado', 'ChatIA' );
                 wp_send_json_success($cached);
                 return;
             }
@@ -557,7 +557,7 @@ class Chat_IA_Ajax {
 
                 // Esperar antes de reintentar (solo si no es el último intento)
                 if ($attempt < $max_retries) {
-                    error_log("Chat IA Autoconfig: Overload detectado, reintentando en 3s (intento {$attempt}/{$max_retries})");
+                    flavor_chat_ia_log( "Autoconfig: Overload detectado, reintentando en 3s (intento {$attempt}/{$max_retries})", 'warning', 'ChatIA' );
                     sleep(3);
                 }
             }
@@ -576,7 +576,7 @@ class Chat_IA_Ajax {
             wp_send_json_success($result);
 
         } catch (Exception $e) {
-            error_log('Chat IA Autoconfig Error: ' . $e->getMessage());
+            flavor_log_error( 'Autoconfig Error: ' . $e->getMessage(), 'ChatIA' );
             wp_send_json_error(['error' => $e->getMessage()]);
         }
     }
@@ -841,14 +841,14 @@ IMPORTANTE:
 
         if (!$response['success']) {
             $error_msg = $response['error'] ?? 'Error desconocido de la API';
-            error_log('Chat IA Autoconfig API Error: ' . $error_msg);
+            flavor_log_error( 'Autoconfig API Error: ' . $error_msg, 'ChatIA' );
             return ['error' => sprintf(__('Error de la API: %s', 'flavor-chat-ia'), $error_msg)];
         }
 
         $text = $response['response'] ?? '';
 
         if (empty($text)) {
-            error_log('Chat IA Autoconfig: Empty response from API');
+            flavor_chat_ia_log( 'Autoconfig: Empty response from API', 'warning', 'ChatIA' );
             return ['error' => __('La IA no devolvió ninguna respuesta', 'flavor-chat-ia')];
         }
 
@@ -858,22 +858,22 @@ IMPORTANTE:
         }
 
         // Log para debug
-        error_log('Chat IA Autoconfig: Raw response length: ' . strlen($text));
+        flavor_log_debug( 'Autoconfig: Raw response length: ' . strlen($text), 'ChatIA' );
 
         // Extraer JSON de forma robusta
         $json_text = self::extract_json_from_text($text);
 
         if (empty($json_text)) {
-            error_log('Chat IA Autoconfig: Could not extract JSON from response');
-            error_log('Chat IA Autoconfig: Raw text (first 1000 chars) - ' . substr($text, 0, 1000));
+            flavor_chat_ia_log( 'Autoconfig: Could not extract JSON from response', 'warning', 'ChatIA' );
+            flavor_log_debug( 'Autoconfig: Raw text (first 1000 chars) - ' . substr($text, 0, 1000), 'ChatIA' );
             return ['error' => __('No se pudo extraer JSON de la respuesta de la IA. Inténtalo de nuevo.', 'flavor-chat-ia')];
         }
 
         $analysis = json_decode($json_text, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            error_log('Chat IA Autoconfig: JSON parse error - ' . json_last_error_msg());
-            error_log('Chat IA Autoconfig: Extracted JSON (first 500 chars) - ' . substr($json_text, 0, 500));
+            flavor_chat_ia_log( 'Autoconfig: JSON parse error - ' . json_last_error_msg(), 'warning', 'ChatIA' );
+            flavor_log_debug( 'Autoconfig: Extracted JSON (first 500 chars) - ' . substr($json_text, 0, 500), 'ChatIA' );
 
             // Dar un mensaje más descriptivo
             $json_error = json_last_error_msg();
@@ -883,7 +883,7 @@ IMPORTANTE:
         // Normalizar estructura si la IA devolvió formato plano
         $analysis = self::normalize_autoconfig_response($analysis);
 
-        error_log('Chat IA Autoconfig: Normalized response keys: ' . implode(', ', array_keys($analysis)));
+        flavor_log_debug( 'Autoconfig: Normalized response keys: ' . implode(', ', array_keys($analysis)), 'ChatIA' );
 
         return $analysis;
     }
@@ -915,7 +915,7 @@ IMPORTANTE:
         }
 
         if ($has_flat_structure) {
-            error_log('Chat IA Autoconfig: Detectada estructura plana, normalizando...');
+            flavor_log_debug( 'Autoconfig: Detectada estructura plana, normalizando...', 'ChatIA' );
 
             // Construir estructura normalizada
             $normalized = [

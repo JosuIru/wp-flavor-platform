@@ -122,11 +122,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_flavor_mm_admin_stats', [$this, 'ajax_admin_stats']);
 
         // Shortcodes
-        add_shortcode('flavor_galeria', [$this, 'shortcode_galeria']);
-        add_shortcode('flavor_albumes', [$this, 'shortcode_albumes']);
-        add_shortcode('flavor_subir_multimedia', [$this, 'shortcode_subir']);
-        add_shortcode('flavor_mi_galeria', [$this, 'shortcode_mi_galeria']);
-        add_shortcode('flavor_carousel', [$this, 'shortcode_carousel']);
+        $this->register_shortcodes();
 
         // Enqueue scripts
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
@@ -143,6 +139,17 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         if (!wp_next_scheduled('flavor_multimedia_cleanup')) {
             wp_schedule_event(time(), 'daily', 'flavor_multimedia_cleanup');
         }
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('flavor_galeria', [$this, 'shortcode_galeria']);
+        add_shortcode('flavor_albumes', [$this, 'shortcode_albumes']);
+        add_shortcode('flavor_subir_multimedia', [$this, 'shortcode_subir']);
+        add_shortcode('flavor_mi_galeria', [$this, 'shortcode_mi_galeria']);
+        add_shortcode('flavor_carousel', [$this, 'shortcode_carousel']);
     }
 
     public function maybe_create_tables() {

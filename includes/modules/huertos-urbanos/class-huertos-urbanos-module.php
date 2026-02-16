@@ -124,7 +124,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $this->registrar_ajax_handlers();
 
         // Registrar shortcodes
-        $this->registrar_shortcodes();
+        $this->register_shortcodes();
 
         // Registrar REST API
         add_action('rest_api_init', [$this, 'registrar_rest_routes']);
@@ -524,7 +524,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     /**
      * Registra los shortcodes
      */
-    private function registrar_shortcodes() {
+    public function register_shortcodes() {
         add_shortcode('mapa_huertos', [$this, 'shortcode_mapa_huertos']);
         add_shortcode('mi_parcela', [$this, 'shortcode_mi_parcela']);
         add_shortcode('calendario_cultivos', [$this, 'shortcode_calendario_cultivos']);

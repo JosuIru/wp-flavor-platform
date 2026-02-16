@@ -598,7 +598,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     private function action_detalle_espacio($params) {
         if (empty($params['espacio_id'])) {
-            return ['success' => false, 'error' => 'ID de espacio requerido'];
+            return ['success' => false, 'error' => __('ID de espacio requerido.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -610,7 +610,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => 'Espacio no encontrado'];
+            return ['success' => false, 'error' => __('Espacio no encontrado.', 'flavor-chat-ia')];
         }
 
         $espacio_formateado = $this->formatear_espacio($espacio, true);
@@ -626,7 +626,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     private function action_disponibilidad($params) {
         if (empty($params['espacio_id'])) {
-            return ['success' => false, 'error' => 'ID de espacio requerido'];
+            return ['success' => false, 'error' => __('ID de espacio requerido.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -644,7 +644,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => 'Espacio no encontrado'];
+            return ['success' => false, 'error' => __('Espacio no encontrado.', 'flavor-chat-ia')];
         }
 
         // Obtener reservas en el rango
@@ -686,11 +686,11 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     private function action_crear_reserva($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => 'Debes iniciar sesión'];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para reservar.', 'flavor-chat-ia')];
         }
 
         if (empty($params['espacio_id']) || empty($params['fecha_inicio']) || empty($params['fecha_fin'])) {
-            return ['success' => false, 'error' => 'Espacio, fecha inicio y fecha fin son requeridos'];
+            return ['success' => false, 'error' => __('Espacio, fecha de inicio y fecha de fin son requeridos.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -709,7 +709,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => 'Espacio no disponible'];
+            return ['success' => false, 'error' => __('Espacio no disponible.', 'flavor-chat-ia')];
         }
 
         // Validar fechas
@@ -719,11 +719,11 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         $fin_timestamp = strtotime($fecha_fin);
 
         if ($inicio_timestamp <= $ahora) {
-            return ['success' => false, 'error' => 'La fecha de inicio debe ser futura'];
+            return ['success' => false, 'error' => __('La fecha de inicio debe ser futura.', 'flavor-chat-ia')];
         }
 
         if ($fin_timestamp <= $inicio_timestamp) {
-            return ['success' => false, 'error' => 'La fecha fin debe ser posterior al inicio'];
+            return ['success' => false, 'error' => __('La fecha de fin debe ser posterior al inicio.', 'flavor-chat-ia')];
         }
 
         // Validar anticipación mínima

@@ -146,7 +146,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
             if (!empty($tokens_disponibles)) {
                 $this->pool_manager->sembrar_pools_iniciales();
             } else {
-                error_log('[DEX Solana] No se pueden crear pools: registro de tokens vacío');
+                flavor_chat_ia_log( 'No se pueden crear pools: registro de tokens vacío', 'warning', 'DEX-Solana' );
             }
         }
         if ($this->get_setting('farming_activo', true) && !empty($tokens_disponibles)) {

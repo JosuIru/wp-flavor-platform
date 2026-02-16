@@ -83,6 +83,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     public function init() {
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_ajax_flavor_chat_grupos_send', [$this, 'ajax_enviar_mensaje']);
@@ -124,6 +125,59 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
             $this->create_tables();
+        }
+    }
+
+    /**
+     * Verifica y aplica migraciones de base de datos
+     */
+    public function maybe_migrate_tables() {
+        $version_actual = get_option('flavor_chat_grupos_db_version', '1.0.0');
+
+        if (version_compare($version_actual, '1.1.0', '<')) {
+            $this->migrate_to_1_1_0();
+            update_option('flavor_chat_grupos_db_version', '1.1.0');
+        }
+    }
+
+    /**
+     * Migración a versión 1.1.0 - Añade columnas slug y color
+     */
+    private function migrate_to_1_1_0() {
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+            return;
+        }
+
+        // Verificar y añadir columna slug
+        $slug_existe = $wpdb->get_results(
+            $wpdb->prepare("SHOW COLUMNS FROM $tabla_grupos LIKE %s", 'slug')
+        );
+        if (empty($slug_existe)) {
+            $wpdb->query("ALTER TABLE $tabla_grupos ADD COLUMN slug varchar(255) NOT NULL DEFAULT '' AFTER nombre");
+            $wpdb->query("ALTER TABLE $tabla_grupos ADD UNIQUE KEY slug (slug)");
+
+            // Generar slugs para grupos existentes
+            $grupos = $wpdb->get_results("SELECT id, nombre FROM $tabla_grupos WHERE slug = '' OR slug IS NULL");
+            foreach ($grupos as $grupo) {
+                $slug = sanitize_title($grupo->nombre);
+                $slug_base = $slug;
+                $contador = 2;
+                while ($wpdb->get_var($wpdb->prepare("SELECT id FROM $tabla_grupos WHERE slug = %s AND id != %d", $slug, $grupo->id))) {
+                    $slug = $slug_base . '-' . $contador++;
+                }
+                $wpdb->update($tabla_grupos, ['slug' => $slug], ['id' => $grupo->id]);
+            }
+        }
+
+        // Verificar y añadir columna color
+        $color_existe = $wpdb->get_results(
+            $wpdb->prepare("SHOW COLUMNS FROM $tabla_grupos LIKE %s", 'color')
+        );
+        if (empty($color_existe)) {
+            $wpdb->query("ALTER TABLE $tabla_grupos ADD COLUMN color varchar(7) DEFAULT '#2271b1' AFTER imagen_url");
         }
     }
 

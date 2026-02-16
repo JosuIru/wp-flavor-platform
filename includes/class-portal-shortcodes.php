@@ -359,18 +359,50 @@ class Flavor_Portal_Shortcodes {
     }
 
     /**
-     * Obtiene notificaciones del usuario
+     * Obtiene notificaciones del usuario desde el sistema real
      */
     private function get_user_notifications() {
-        // Ejemplo de notificaciones - integrar con sistema real
-        return [
-            [
-                'type' => 'info',
-                'icon' => 'ℹ️',
-                'text' => __('Bienvenido a tu nuevo portal comunitario', 'flavor-chat-ia'),
-                'link' => '',
-            ],
+        $user_id = get_current_user_id();
+
+        if ( ! $user_id ) {
+            return [];
+        }
+
+        // Verificar si existe el centro de notificaciones
+        if ( ! class_exists( 'Flavor_Notification_Center' ) ) {
+            return [];
+        }
+
+        $notification_center = Flavor_Notification_Center::get_instance();
+        $raw_notifications = $notification_center->get_notifications( $user_id, [
+            'unread_only' => false,
+            'limit'       => 5,
+        ] );
+
+        if ( empty( $raw_notifications ) ) {
+            return [];
+        }
+
+        // Mapeo de tipos a iconos
+        $type_icons = [
+            'info'    => 'ℹ️',
+            'success' => '✅',
+            'warning' => '⚠️',
+            'error'   => '❌',
         ];
+
+        $notifications = [];
+        foreach ( $raw_notifications as $notification ) {
+            $type = isset( $notification['type'] ) ? $notification['type'] : 'info';
+            $notifications[] = [
+                'type' => $type,
+                'icon' => isset( $type_icons[ $type ] ) ? $type_icons[ $type ] : 'ℹ️',
+                'text' => isset( $notification['title'] ) ? $notification['title'] : '',
+                'link' => isset( $notification['link'] ) ? $notification['link'] : '',
+            ];
+        }
+
+        return $notifications;
     }
 
     /**
@@ -505,11 +537,59 @@ class Flavor_Portal_Shortcodes {
     }
 
     /**
-     * Obtiene actividades del usuario
+     * Obtiene actividades del usuario desde el Activity Log real
      */
     private function get_user_activities() {
-        // TODO: Integrar con Activity Log real
-        return [];
+        $user_id = get_current_user_id();
+
+        if ( ! $user_id ) {
+            return [];
+        }
+
+        // Verificar si existe el Activity Log
+        if ( ! class_exists( 'Flavor_Activity_Log' ) ) {
+            return [];
+        }
+
+        $activity_log = Flavor_Activity_Log::get_instance();
+        $resultado = $activity_log->obtener_actividad( [
+            'usuario_id' => $user_id,
+            'por_pagina' => 5,
+            'pagina'     => 1,
+        ] );
+
+        if ( empty( $resultado['registros'] ) ) {
+            return [];
+        }
+
+        // Mapeo de tipos a iconos
+        $type_icons = [
+            'info'        => '📝',
+            'exito'       => '✅',
+            'advertencia' => '⚠️',
+            'error'       => '❌',
+        ];
+
+        $activities = [];
+        foreach ( $resultado['registros'] as $registro ) {
+            $tipo = isset( $registro->tipo ) ? $registro->tipo : 'info';
+            $fecha = isset( $registro->fecha ) ? $registro->fecha : '';
+
+            // Formatear tiempo relativo
+            $tiempo_relativo = '';
+            if ( $fecha ) {
+                $timestamp = strtotime( $fecha );
+                $tiempo_relativo = human_time_diff( $timestamp, current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'flavor-chat-ia' );
+            }
+
+            $activities[] = [
+                'icon' => isset( $type_icons[ $tipo ] ) ? $type_icons[ $tipo ] : '📝',
+                'text' => isset( $registro->titulo ) ? $registro->titulo : '',
+                'time' => $tiempo_relativo,
+            ];
+        }
+
+        return $activities;
     }
 
     /**

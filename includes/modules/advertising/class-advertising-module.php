@@ -400,10 +400,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_flavor_ads_procesar_pago', [$this, 'ajax_admin_procesar_pago']);
 
         // Shortcodes
-        add_shortcode('flavor_ad', [$this, 'shortcode_ad']);
-        add_shortcode('flavor_ads_dashboard', [$this, 'shortcode_dashboard']);
-        add_shortcode('flavor_ads_crear', [$this, 'shortcode_crear']);
-        add_shortcode('flavor_ads_ingresos', [$this, 'shortcode_ingresos']);
+        $this->register_shortcodes();
 
         // WP Cron
         add_action('flavor_ads_procesar_pagos', [$this, 'cron_procesar_pagos']);
@@ -419,6 +416,16 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         // Enqueue assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('flavor_ad', [$this, 'shortcode_ad']);
+        add_shortcode('flavor_ads_dashboard', [$this, 'shortcode_dashboard']);
+        add_shortcode('flavor_ads_crear', [$this, 'shortcode_crear']);
+        add_shortcode('flavor_ads_ingresos', [$this, 'shortcode_ingresos']);
     }
 
     /**

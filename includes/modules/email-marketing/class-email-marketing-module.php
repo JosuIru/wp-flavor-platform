@@ -137,19 +137,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
-        // Shortcodes principales
-        add_shortcode('em_formulario_suscripcion', [$this, 'shortcode_formulario_suscripcion']);
-        add_shortcode('em_preferencias', [$this, 'shortcode_preferencias']);
-        add_shortcode('em_confirmar_suscripcion', [$this, 'shortcode_confirmar']);
-        add_shortcode('em_darse_baja', [$this, 'shortcode_baja']);
-
-        // Shortcodes adicionales
-        add_shortcode('flavor_suscripcion_newsletter', [$this, 'shortcode_suscripcion_newsletter']);
-        add_shortcode('flavor_preferencias_email', [$this, 'shortcode_preferencias_email']);
-        add_shortcode('flavor_archivo_newsletters', [$this, 'shortcode_archivo_newsletters']);
-        add_shortcode('flavor_contador_suscriptores', [$this, 'shortcode_contador_suscriptores']);
-        add_shortcode('flavor_formulario_popup', [$this, 'shortcode_formulario_popup']);
-        add_shortcode('flavor_email_preview', [$this, 'shortcode_email_preview']);
+        // Shortcodes
+        $this->register_shortcodes();
 
         // AJAX handlers públicos
         add_action('wp_ajax_em_suscribirse', [$this, 'ajax_suscribirse']);
@@ -260,6 +249,25 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en panel unificado de administración
         $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        // Shortcodes principales
+        add_shortcode('em_formulario_suscripcion', [$this, 'shortcode_formulario_suscripcion']);
+        add_shortcode('em_preferencias', [$this, 'shortcode_preferencias']);
+        add_shortcode('em_confirmar_suscripcion', [$this, 'shortcode_confirmar']);
+        add_shortcode('em_darse_baja', [$this, 'shortcode_baja']);
+
+        // Shortcodes adicionales
+        add_shortcode('flavor_suscripcion_newsletter', [$this, 'shortcode_suscripcion_newsletter']);
+        add_shortcode('flavor_preferencias_email', [$this, 'shortcode_preferencias_email']);
+        add_shortcode('flavor_archivo_newsletters', [$this, 'shortcode_archivo_newsletters']);
+        add_shortcode('flavor_contador_suscriptores', [$this, 'shortcode_contador_suscriptores']);
+        add_shortcode('flavor_formulario_popup', [$this, 'shortcode_formulario_popup']);
+        add_shortcode('flavor_email_preview', [$this, 'shortcode_email_preview']);
     }
 
     /**

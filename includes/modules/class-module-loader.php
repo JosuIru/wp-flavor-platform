@@ -929,7 +929,7 @@ class Flavor_Chat_Module_Loader {
         try {
             return new $class_name();
         } catch (Exception $e) {
-            error_log("[Flavor Loader] Error al instanciar módulo '{$module_id}': " . $e->getMessage());
+            flavor_log_error( "Error al instanciar módulo '{$module_id}': " . $e->getMessage(), 'ModuleLoader' );
             return null;
         }
     }

@@ -114,7 +114,7 @@ class Flavor_Unified_Dashboard {
         foreach ($archivos_requeridos as $archivo) {
             $ruta_completa = $dashboard_path . $archivo;
             if (!file_exists($ruta_completa)) {
-                error_log("Flavor Dashboard: Archivo no encontrado: {$ruta_completa}");
+                flavor_log_error( "Archivo no encontrado: {$ruta_completa}", 'Dashboard' );
                 return;
             }
             require_once $ruta_completa;

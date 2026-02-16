@@ -231,7 +231,7 @@ class Flavor_GC_Payment_Manager {
             return $resultado;
 
         } catch (Exception $e) {
-            error_log('GC Payment Error: ' . $e->getMessage());
+            flavor_log_error( 'Payment Error: ' . $e->getMessage(), 'GruposConsumo' );
 
             return [
                 'success' => false,

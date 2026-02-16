@@ -490,11 +490,11 @@ class Flavor_Unified_Admin_Panel {
      */
     public function render_dashboard() {
         try {
-            error_log('[Flavor Debug] Iniciando render_dashboard');
+            flavor_log_debug( 'Iniciando render_dashboard', 'UnifiedAdmin' );
             $modulos = $this->modulos_registrados;
-            error_log('[Flavor Debug] Módulos registrados: ' . count($modulos));
+            flavor_log_debug( 'Módulos registrados: ' . count($modulos), 'UnifiedAdmin' );
         } catch (Exception $e) {
-            error_log('[Flavor Debug] Error al obtener módulos: ' . $e->getMessage());
+            flavor_log_error( 'Error al obtener módulos: ' . $e->getMessage(), 'UnifiedAdmin' );
             $modulos = [];
         }
         ?>
@@ -514,11 +514,11 @@ class Flavor_Unified_Admin_Panel {
                 <div class="flavor-gestion-resumen">
                     <?php
                     try {
-                        error_log('[Flavor Debug] Llamando a render_widgets_resumen');
+                        flavor_log_debug( 'Llamando a render_widgets_resumen', 'UnifiedAdmin' );
                         $this->render_widgets_resumen();
-                        error_log('[Flavor Debug] render_widgets_resumen completado');
+                        flavor_log_debug( 'render_widgets_resumen completado', 'UnifiedAdmin' );
                     } catch (Exception $e) {
-                        error_log('[Flavor Debug] Error en render_widgets_resumen: ' . $e->getMessage());
+                        flavor_log_error( 'Error en render_widgets_resumen: ' . $e->getMessage(), 'UnifiedAdmin' );
                         echo '<div class="notice notice-error"><p>Error al cargar estadísticas: ' . esc_html($e->getMessage()) . '</p></div>';
                     }
                     ?>
@@ -605,7 +605,7 @@ class Flavor_Unified_Admin_Panel {
                 <?php
                 // Validar que $stat es un array y tiene las claves necesarias
                 if (!is_array($stat) || !isset($stat['icon']) || !isset($stat['valor']) || !isset($stat['label'])) {
-                    error_log('[Flavor Debug] Estadística inválida: ' . print_r($stat, true));
+                    flavor_log_debug( 'Estadística inválida: ' . print_r($stat, true), 'UnifiedAdmin' );
                     continue;
                 }
                 ?>
@@ -641,7 +641,7 @@ class Flavor_Unified_Admin_Panel {
 
                     // Validar que es un array
                     if (!is_array($modulo_stats)) {
-                        error_log("[Flavor Debug] Módulo {$modulo_id} devolvió estadísticas no-array: " . gettype($modulo_stats));
+                        flavor_log_debug( "Módulo {$modulo_id} devolvió estadísticas no-array: " . gettype($modulo_stats), 'UnifiedAdmin' );
                         continue;
                     }
 
@@ -650,15 +650,15 @@ class Flavor_Unified_Admin_Panel {
                         if (is_array($stat) && isset($stat['icon']) && isset($stat['valor']) && isset($stat['label'])) {
                             $stats[] = $stat;
                         } else {
-                            error_log("[Flavor Debug] Módulo {$modulo_id} devolvió estadística inválida: " . print_r($stat, true));
+                            flavor_log_debug( "Módulo {$modulo_id} devolvió estadística inválida: " . print_r($stat, true), 'UnifiedAdmin' );
                         }
                     }
                 } catch (Exception $e) {
                     // Log error pero continuar con otros módulos
-                    error_log("Error en estadísticas del módulo {$modulo_id}: " . $e->getMessage());
+                    flavor_log_error( "Error en estadísticas del módulo {$modulo_id}: " . $e->getMessage(), 'UnifiedAdmin' );
                 } catch (Error $e) {
                     // Capturar errores fatales también
-                    error_log("Error fatal en estadísticas del módulo {$modulo_id}: " . $e->getMessage());
+                    flavor_log_error( "Error fatal en estadísticas del módulo {$modulo_id}: " . $e->getMessage(), 'UnifiedAdmin' );
                 }
             }
         }

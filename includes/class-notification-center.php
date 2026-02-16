@@ -103,7 +103,7 @@ class Flavor_Notification_Center {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
 
-        error_log("[Flavor Notifications] Tabla creada: {$table_name}");
+        flavor_log_debug( "Tabla creada: {$table_name}", 'Notifications' );
     }
 
     /**
@@ -124,7 +124,7 @@ class Flavor_Notification_Center {
                 ADD COLUMN module_id varchar(100) NOT NULL DEFAULT '' AFTER user_id,
                 ADD KEY module_id (module_id)"
             );
-            error_log("[Flavor Notifications] Columna 'module_id' agregada");
+            flavor_log_debug( "Columna 'module_id' agregada", 'Notifications' );
         }
 
         // Verificar y agregar type si no existe
@@ -133,7 +133,7 @@ class Flavor_Notification_Center {
                 "ALTER TABLE {$table_name}
                 ADD COLUMN type varchar(20) NOT NULL DEFAULT 'info' AFTER module_id"
             );
-            error_log("[Flavor Notifications] Columna 'type' agregada");
+            flavor_log_debug( "Columna 'type' agregada", 'Notifications' );
         }
 
         // Verificar y agregar link si no existe
@@ -142,7 +142,7 @@ class Flavor_Notification_Center {
                 "ALTER TABLE {$table_name}
                 ADD COLUMN link varchar(255) DEFAULT '' AFTER message"
             );
-            error_log("[Flavor Notifications] Columna 'link' agregada");
+            flavor_log_debug( "Columna 'link' agregada", 'Notifications' );
         }
 
         // Verificar y agregar metadata si no existe
@@ -151,7 +151,7 @@ class Flavor_Notification_Center {
                 "ALTER TABLE {$table_name}
                 ADD COLUMN metadata longtext DEFAULT NULL AFTER link"
             );
-            error_log("[Flavor Notifications] Columna 'metadata' agregada");
+            flavor_log_debug( "Columna 'metadata' agregada", 'Notifications' );
         }
 
         // Verificar y agregar read_at si no existe
@@ -160,7 +160,7 @@ class Flavor_Notification_Center {
                 "ALTER TABLE {$table_name}
                 ADD COLUMN read_at datetime DEFAULT NULL AFTER created_at"
             );
-            error_log("[Flavor Notifications] Columna 'read_at' agregada");
+            flavor_log_debug( "Columna 'read_at' agregada", 'Notifications' );
         }
     }
 
@@ -206,7 +206,7 @@ class Flavor_Notification_Center {
         $result = $wpdb->insert($table_name, $data);
 
         if (!$result) {
-            error_log("[Flavor Notifications] Error al insertar notificación: " . $wpdb->last_error);
+            flavor_log_error( 'Error al insertar notificación: ' . $wpdb->last_error, 'Notifications' );
             return false;
         }
 

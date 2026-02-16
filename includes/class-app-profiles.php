@@ -361,8 +361,8 @@ class Flavor_App_Profiles {
         $perfil_id = $this->obtener_perfil_activo();
         $perfil = $this->obtener_perfil($perfil_id);
 
-        error_log('[Flavor] obtener_modulos_requeridos() - Perfil activo: ' . $perfil_id);
-        error_log('[Flavor] Módulos requeridos: ' . implode(', ', $perfil['modulos_requeridos'] ?? []));
+        flavor_log_debug( 'obtener_modulos_requeridos() - Perfil activo: ' . $perfil_id, 'AppProfiles' );
+        flavor_log_debug( 'Módulos requeridos: ' . implode(', ', $perfil['modulos_requeridos'] ?? []), 'AppProfiles' );
 
         return $perfil['modulos_requeridos'] ?? [];
     }
@@ -551,12 +551,12 @@ class Flavor_App_Profiles {
         $can_activate = apply_filters('flavor_before_activate_module', true, $modulo_id);
 
         if (is_wp_error($can_activate)) {
-            error_log("[Flavor] No se puede activar '{$modulo_id}': " . $can_activate->get_error_message());
+            flavor_log_debug( "No se puede activar '{$modulo_id}': " . $can_activate->get_error_message(), 'AppProfiles' );
             return false;
         }
 
         if (!$can_activate) {
-            error_log("[Flavor] No se puede activar '{$modulo_id}': validación falló");
+            flavor_log_debug( "No se puede activar '{$modulo_id}': validación falló", 'AppProfiles' );
             return false;
         }
 
@@ -633,7 +633,7 @@ class Flavor_App_Profiles {
 
             return $resultado['success'] ?? false;
         } catch (Exception $e) {
-            error_log('[Flavor] Error creando tablas: ' . $e->getMessage());
+            flavor_log_error( 'Error creando tablas: ' . $e->getMessage(), 'AppProfiles' );
             return false;
         }
     }
@@ -648,12 +648,12 @@ class Flavor_App_Profiles {
             'comercio' => [
                 'nombre' => 'Comercio',
                 'icono'  => 'dashicons-store',
-                'modulos' => ['woocommerce', 'marketplace', 'facturas', 'advertising'],
+                'modulos' => ['woocommerce', 'marketplace', 'facturas', 'advertising', 'reservas'],
             ],
             'comunidad' => [
                 'nombre' => 'Comunidad',
                 'icono'  => 'dashicons-groups',
-                'modulos' => ['socios', 'foros', 'red_social', 'chat_grupos', 'chat_interno', 'comunidades', 'colectivos'],
+                'modulos' => ['socios', 'foros', 'red_social', 'chat_grupos', 'chat_interno', 'comunidades', 'colectivos', 'circulos_cuidados', 'justicia_restaurativa'],
             ],
             'gobernanza' => [
                 'nombre' => 'Gobernanza',
@@ -663,17 +663,27 @@ class Flavor_App_Profiles {
             'sostenibilidad' => [
                 'nombre' => 'Sostenibilidad',
                 'icono'  => 'dashicons-palmtree',
-                'modulos' => ['huertos_urbanos', 'bicicletas_compartidas', 'compostaje', 'reciclaje', 'carpooling'],
+                'modulos' => ['huertos_urbanos', 'bicicletas_compartidas', 'compostaje', 'reciclaje', 'carpooling', 'huella_ecologica', 'biodiversidad_local'],
+            ],
+            'economia_social' => [
+                'nombre' => 'Economía Social',
+                'icono'  => 'dashicons-heart',
+                'modulos' => ['economia_suficiencia', 'economia_don', 'trabajo_digno', 'saberes_ancestrales', 'sello_conciencia'],
             ],
             'contenido' => [
                 'nombre' => 'Contenido',
                 'icono'  => 'dashicons-media-interactive',
-                'modulos' => ['cursos', 'podcast', 'radio', 'multimedia', 'biblioteca', 'talleres', 'eventos'],
+                'modulos' => ['cursos', 'podcast', 'radio', 'multimedia', 'biblioteca', 'talleres', 'eventos', 'email_marketing'],
             ],
             'operaciones' => [
                 'nombre' => 'Operaciones',
                 'icono'  => 'dashicons-admin-tools',
                 'modulos' => ['fichaje_empleados', 'incidencias', 'espacios_comunes', 'parkings', 'banco_tiempo', 'ayuda_vecinal', 'empresarial', 'clientes', 'bares', 'grupos_consumo'],
+            ],
+            'finanzas' => [
+                'nombre' => 'Finanzas',
+                'icono'  => 'dashicons-chart-line',
+                'modulos' => ['trading_ia', 'dex_solana', 'themacle'],
             ],
         ];
     }
@@ -741,33 +751,33 @@ class Flavor_App_Profiles {
         $can_deactivate = apply_filters('flavor_before_deactivate_module', true, $modulo_id);
 
         if (is_wp_error($can_deactivate)) {
-            error_log("[Flavor] No se puede desactivar '{$modulo_id}': " . $can_deactivate->get_error_message());
+            flavor_log_debug( "No se puede desactivar '{$modulo_id}': " . $can_deactivate->get_error_message(), 'AppProfiles' );
             return false;
         }
 
         if (!$can_deactivate) {
-            error_log("[Flavor] No se puede desactivar '{$modulo_id}': validación falló");
+            flavor_log_debug( "No se puede desactivar '{$modulo_id}': validación falló", 'AppProfiles' );
             return false;
         }
 
         $modulos_requeridos = $this->obtener_modulos_requeridos();
 
-        error_log("[Flavor] desactivar_modulo_opcional('{$modulo_id}')");
-        error_log('[Flavor] Módulos requeridos: ' . implode(', ', $modulos_requeridos));
+        flavor_log_debug( "desactivar_modulo_opcional('{$modulo_id}')", 'AppProfiles' );
+        flavor_log_debug( 'Módulos requeridos: ' . implode(', ', $modulos_requeridos), 'AppProfiles' );
 
         if (in_array($modulo_id, $modulos_requeridos)) {
-            error_log("[Flavor] '{$modulo_id}' ES REQUERIDO - Retornando false");
+            flavor_log_debug( "'{$modulo_id}' ES REQUERIDO - Retornando false", 'AppProfiles' );
             return false; // No se puede desactivar un módulo requerido
         }
 
         $configuracion = get_option('flavor_chat_ia_settings', []);
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
-        error_log('[Flavor] Módulos activos ANTES: ' . implode(', ', $modulos_activos));
+        flavor_log_debug( 'Módulos activos ANTES: ' . implode(', ', $modulos_activos), 'AppProfiles' );
 
         $clave = array_search($modulo_id, $modulos_activos);
         if ($clave !== false) {
-            error_log("[Flavor] Encontrado en posición {$clave} - Eliminando...");
+            flavor_log_debug( "Encontrado en posición {$clave} - Eliminando...", 'AppProfiles' );
             unset($modulos_activos[$clave]);
             $configuracion['active_modules'] = array_values($modulos_activos);
 
@@ -788,15 +798,15 @@ class Flavor_App_Profiles {
             // Limpiar TODO el caché
             wp_cache_flush();
 
-            error_log('[Flavor] Módulos activos DESPUÉS: ' . implode(', ', $configuracion['active_modules']));
-            error_log("[Flavor] update_option DIRECTO resultado: {$result}");
+            flavor_log_debug( 'Módulos activos DESPUÉS: ' . implode(', ', $configuracion['active_modules']), 'AppProfiles' );
+            flavor_log_debug( "update_option DIRECTO resultado: {$result}", 'AppProfiles' );
 
             // Verificar que se guardó correctamente (leer directo de BD)
             $verificacion_raw = $wpdb->get_var("SELECT option_value FROM {$wpdb->options} WHERE option_name = 'flavor_chat_ia_settings'");
             $verificacion = maybe_unserialize($verificacion_raw);
-            error_log('[Flavor] VERIFICACIÓN DIRECTA BD - Módulos: ' . implode(', ', $verificacion['active_modules'] ?? []));
+            flavor_log_debug( 'VERIFICACIÓN DIRECTA BD - Módulos: ' . implode(', ', $verificacion['active_modules'] ?? []), 'AppProfiles' );
         } else {
-            error_log("[Flavor] '{$modulo_id}' NO encontrado en módulos activos");
+            flavor_log_debug( "'{$modulo_id}' NO encontrado en módulos activos", 'AppProfiles' );
         }
 
         return true;

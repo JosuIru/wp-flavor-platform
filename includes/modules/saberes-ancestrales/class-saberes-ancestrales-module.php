@@ -221,7 +221,7 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
     /**
      * Registra los shortcodes
      */
-    private function register_shortcodes(): void {
+    public function register_shortcodes(): void {
         add_shortcode('saberes_catalogo', [$this, 'shortcode_catalogo']);
         add_shortcode('saberes_portadores', [$this, 'shortcode_portadores']);
         add_shortcode('saberes_talleres', [$this, 'shortcode_talleres']);

@@ -126,6 +126,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('wp_ajax_participacion_crear_propuesta', [$this, 'ajax_crear_propuesta']);
@@ -218,6 +219,54 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
             $this->create_tables();
+        }
+    }
+
+    /**
+     * Verifica y aplica migraciones de base de datos
+     */
+    public function maybe_migrate_tables() {
+        $version_migracion = get_option('flavor_participacion_migration_version', '1.0.0');
+
+        if (version_compare($version_migracion, '1.1.0', '<')) {
+            $this->migrate_to_1_1_0();
+            update_option('flavor_participacion_migration_version', '1.1.0');
+        }
+    }
+
+    /**
+     * Migración a versión 1.1.0 - Agregar columna total_apoyos
+     */
+    private function migrate_to_1_1_0() {
+        global $wpdb;
+
+        $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
+            return;
+        }
+
+        // Verificar y añadir total_apoyos
+        $existe = $wpdb->get_results($wpdb->prepare("SHOW COLUMNS FROM $tabla_propuestas LIKE %s", 'total_apoyos'));
+        if (empty($existe)) {
+            $wpdb->query("ALTER TABLE $tabla_propuestas ADD COLUMN total_apoyos int(11) DEFAULT 0 AFTER votos_abstencion");
+        }
+
+        // Verificar y añadir total_comentarios
+        $existe = $wpdb->get_results($wpdb->prepare("SHOW COLUMNS FROM $tabla_propuestas LIKE %s", 'total_comentarios'));
+        if (empty($existe)) {
+            $wpdb->query("ALTER TABLE $tabla_propuestas ADD COLUMN total_comentarios int(11) DEFAULT 0 AFTER total_apoyos");
+        }
+
+        // Recalcular total_apoyos desde la tabla de apoyos
+        $tabla_apoyos = $wpdb->prefix . 'flavor_apoyos';
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_apoyos)) {
+            $wpdb->query("
+                UPDATE $tabla_propuestas p
+                SET p.total_apoyos = (
+                    SELECT COUNT(*) FROM $tabla_apoyos a WHERE a.propuesta_id = p.id
+                )
+            ");
         }
     }
 

@@ -360,19 +360,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'registrar_estados_ciclo']);
 
         // Shortcodes
-        add_shortcode('gc_ciclo_actual', [$this, 'shortcode_ciclo_actual']);
-        add_shortcode('gc_productos', [$this, 'shortcode_productos']);
-        add_shortcode('gc_mi_pedido', [$this, 'shortcode_mi_pedido']);
-        add_shortcode('gc_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('gc_carrito', [$this, 'shortcode_carrito']);
-        add_shortcode('gc_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('gc_historial', [$this, 'shortcode_historial']);
-        add_shortcode('gc_suscripciones', [$this, 'shortcode_suscripciones']);
-        add_shortcode('gc_mi_cesta', [$this, 'shortcode_mi_cesta']);
-        add_shortcode('gc_grupos_lista', [$this, 'shortcode_grupos_lista']);
-        add_shortcode('gc_productores_cercanos', [$this, 'shortcode_productores_cercanos']);
-        add_shortcode('gc_panel', [$this, 'shortcode_panel']);
-        add_shortcode('gc_nav', [$this, 'shortcode_nav']);
+        $this->register_shortcodes();
         // gc_formulario_union se registra en class-gc-membership.php
 
         // Registrar en Panel Unificado de Gestión
@@ -398,6 +386,25 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         if (!wp_next_scheduled('gc_cerrar_ciclos_automatico')) {
             wp_schedule_event(time(), 'hourly', 'gc_cerrar_ciclos_automatico');
         }
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('gc_ciclo_actual', [$this, 'shortcode_ciclo_actual']);
+        add_shortcode('gc_productos', [$this, 'shortcode_productos']);
+        add_shortcode('gc_mi_pedido', [$this, 'shortcode_mi_pedido']);
+        add_shortcode('gc_catalogo', [$this, 'shortcode_catalogo']);
+        add_shortcode('gc_carrito', [$this, 'shortcode_carrito']);
+        add_shortcode('gc_calendario', [$this, 'shortcode_calendario']);
+        add_shortcode('gc_historial', [$this, 'shortcode_historial']);
+        add_shortcode('gc_suscripciones', [$this, 'shortcode_suscripciones']);
+        add_shortcode('gc_mi_cesta', [$this, 'shortcode_mi_cesta']);
+        add_shortcode('gc_grupos_lista', [$this, 'shortcode_grupos_lista']);
+        add_shortcode('gc_productores_cercanos', [$this, 'shortcode_productores_cercanos']);
+        add_shortcode('gc_panel', [$this, 'shortcode_panel']);
+        add_shortcode('gc_nav', [$this, 'shortcode_nav']);
     }
 
     /**

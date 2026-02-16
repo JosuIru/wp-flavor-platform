@@ -1496,16 +1496,18 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         $comunidades_formateadas = array_map(function ($comunidad) {
             $creador_datos = get_userdata($comunidad->creador_id);
-            return [
-                'id'             => (int) $comunidad->id,
-                'nombre'         => $comunidad->nombre,
-                'descripcion'    => $comunidad->descripcion,
-                'imagen'         => $comunidad->imagen,
-                'tipo'           => $comunidad->tipo,
-                'categoria'      => $comunidad->categoria,
-                'ubicacion'      => $comunidad->ubicacion,
-                'miembros_count' => (int) $comunidad->miembros_count,
-                'creador'        => [
+            return (object) [
+                'id'              => (int) $comunidad->id,
+                'nombre'          => $comunidad->nombre,
+                'descripcion'     => $comunidad->descripcion,
+                'imagen'          => $comunidad->imagen,
+                'imagen_portada'  => $comunidad->imagen,
+                'tipo'            => $comunidad->tipo,
+                'categoria'       => $comunidad->categoria,
+                'ubicacion'       => $comunidad->ubicacion,
+                'miembros_count'  => (int) $comunidad->miembros_count,
+                'total_miembros'  => (int) $comunidad->miembros_count,
+                'creador'         => (object) [
                     'id'     => (int) $comunidad->creador_id,
                     'nombre' => $creador_datos ? $creador_datos->display_name : __('Usuario', 'flavor-chat-ia'),
                 ],

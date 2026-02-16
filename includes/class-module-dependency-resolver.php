@@ -240,7 +240,7 @@ class Flavor_Module_Dependency_Resolver {
             if (!$result) {
                 $failed[] = $dep_id;
             } else {
-                error_log("[Flavor Dependencies] Auto-activado: {$dep_id}");
+                flavor_log_debug( "Auto-activado: {$dep_id}", 'Dependencies' );
             }
         }
 

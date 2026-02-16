@@ -203,7 +203,7 @@ abstract class Chat_IA_Engine_Base implements Chat_IA_Engine_Interface {
                 $wait_time = min($wait_time, 30); // Máximo 30 segundos
 
                 if ($attempt < $max_retries) {
-                    error_log("[Chat IA] Rate limit (HTTP {$status_code}), reintento {$attempt}/{$max_retries} en {$wait_time}s");
+                    flavor_log_debug( "Rate limit (HTTP {$status_code}), reintento {$attempt}/{$max_retries} en {$wait_time}s", 'ChatIA' );
                     sleep($wait_time);
                     continue;
                 }
@@ -244,7 +244,7 @@ abstract class Chat_IA_Engine_Base implements Chat_IA_Engine_Interface {
     protected function extract_error_message($body, $status_code) {
         // Log para debug
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[Chat IA Engine] Error response: ' . json_encode($body));
+            flavor_log_debug( 'Error response: ' . json_encode($body), 'ChatIA' );
         }
 
         if (isset($body['error']['message'])) {

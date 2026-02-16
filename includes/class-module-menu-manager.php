@@ -123,7 +123,7 @@ class Flavor_Module_Menu_Manager {
      * Cuando se activa un módulo, añadirlo al menú
      */
     public function on_module_activated($module_id) {
-        error_log("[Flavor Menu] Módulo activado: {$module_id}");
+        flavor_log_debug( "Módulo activado: {$module_id}", 'MenuManager' );
         $this->add_module_to_menu($module_id);
     }
 
@@ -131,7 +131,7 @@ class Flavor_Module_Menu_Manager {
      * Cuando se desactiva un módulo, quitarlo del menú
      */
     public function on_module_deactivated($module_id) {
-        error_log("[Flavor Menu] Módulo desactivado: {$module_id}");
+        flavor_log_debug( "Módulo desactivado: {$module_id}", 'MenuManager' );
         $this->remove_module_from_menu($module_id);
     }
 
@@ -151,13 +151,13 @@ class Flavor_Module_Menu_Manager {
      * Regenera el menú completo desde cero
      */
     public function regenerate_full_menu() {
-        error_log("[Flavor Menu] Regenerando menú completo...");
+        flavor_log_debug( 'Regenerando menú completo...', 'MenuManager' );
 
         // Obtener o crear el menú
         $menu_id = $this->get_or_create_menu();
 
         if (!$menu_id) {
-            error_log("[Flavor Menu] ERROR: No se pudo crear el menú");
+            flavor_log_error( 'No se pudo crear el menú', 'MenuManager' );
             return false;
         }
 
@@ -175,7 +175,7 @@ class Flavor_Module_Menu_Manager {
         $locations[self::MAIN_MENU_LOCATION] = $menu_id;
         set_theme_mod('nav_menu_locations', $locations);
 
-        error_log("[Flavor Menu] Menú regenerado correctamente");
+        flavor_log_debug( 'Menú regenerado correctamente', 'MenuManager' );
         return true;
     }
 
@@ -188,7 +188,7 @@ class Flavor_Module_Menu_Manager {
 
         if (!$menu) {
             $menu_id = wp_create_nav_menu($menu_name);
-            error_log("[Flavor Menu] Menú creado: ID {$menu_id}");
+            flavor_log_debug( "Menú creado: ID {$menu_id}", 'MenuManager' );
             return $menu_id;
         }
 
@@ -342,7 +342,7 @@ class Flavor_Module_Menu_Manager {
         $category = $this->module_categories[$category_key] ?? null;
 
         if (!$category) {
-            error_log("[Flavor Menu] WARN: Módulo '{$module_id}' sin categoría asignada");
+            flavor_log_debug( "WARN: Módulo '{$module_id}' sin categoría asignada", 'MenuManager' );
             return false;
         }
 
@@ -387,7 +387,7 @@ class Flavor_Module_Menu_Manager {
 
             if ($item_module_id === $module_id) {
                 wp_delete_post($item->ID, true);
-                error_log("[Flavor Menu] Item eliminado: {$module_id}");
+                flavor_log_debug( "Item eliminado: {$module_id}", 'MenuManager' );
             }
         }
 
@@ -453,7 +453,7 @@ class Flavor_Module_Menu_Manager {
         ]);
 
         if (is_wp_error($item_id)) {
-            error_log("[Flavor Menu] ERROR al crear item: " . $item_id->get_error_message());
+            flavor_log_error( 'Error al crear item: ' . $item_id->get_error_message(), 'MenuManager' );
             return false;
         }
 

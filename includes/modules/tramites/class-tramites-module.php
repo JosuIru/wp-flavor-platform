@@ -26,6 +26,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     private $tabla_expedientes;
     private $tabla_documentos;
     private $tabla_estados;
+    private $tabla_historial_estados;
     private $tabla_campos_formulario;
     private $tabla_historial;
 
@@ -43,6 +44,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $this->tabla_expedientes = $wpdb->prefix . 'flavor_expedientes';
         $this->tabla_documentos = $wpdb->prefix . 'flavor_documentos_expediente';
         $this->tabla_estados = $wpdb->prefix . 'flavor_estados_tramite';
+        $this->tabla_historial_estados = $wpdb->prefix . 'flavor_historial_estados_expediente';
         $this->tabla_campos_formulario = $wpdb->prefix . 'flavor_campos_formulario';
         $this->tabla_historial = $wpdb->prefix . 'flavor_historial_expediente';
 
@@ -88,6 +90,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 descripcion text,
                 categoria varchar(100) DEFAULT NULL,
                 icono varchar(50) DEFAULT NULL,
+                color varchar(20) DEFAULT '#6b7280',
                 plazo_resolucion_dias int(11) DEFAULT NULL,
                 requiere_cita tinyint(1) NOT NULL DEFAULT 0,
                 permite_online tinyint(1) NOT NULL DEFAULT 1,
@@ -105,12 +108,14 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 numero_expediente varchar(50) NOT NULL,
                 tipo_tramite_id bigint(20) UNSIGNED NOT NULL,
+                user_id bigint(20) UNSIGNED NOT NULL,
                 solicitante_id bigint(20) UNSIGNED NOT NULL,
-                estado enum('pendiente','en_proceso','requiere_documentacion','resuelto','rechazado','cancelado') NOT NULL DEFAULT 'pendiente',
+                estado_actual varchar(50) NOT NULL DEFAULT 'pendiente',
                 via_tramitacion enum('online','presencial') NOT NULL DEFAULT 'online',
                 datos_formulario longtext,
                 observaciones text,
                 fecha_solicitud datetime NOT NULL,
+                fecha_creacion datetime NOT NULL,
                 fecha_resolucion datetime DEFAULT NULL,
                 fecha_limite datetime DEFAULT NULL,
                 asignado_a bigint(20) UNSIGNED DEFAULT NULL,
@@ -120,8 +125,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 PRIMARY KEY (id),
                 UNIQUE KEY numero_expediente (numero_expediente),
                 KEY tipo_tramite_id (tipo_tramite_id),
+                KEY user_id (user_id),
                 KEY solicitante_id (solicitante_id),
-                KEY estado (estado),
+                KEY estado_actual (estado_actual),
                 KEY asignado_a (asignado_a)
             ) $charset_collate;",
 
@@ -139,6 +145,24 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             ) $charset_collate;",
 
             $this->tabla_estados => "CREATE TABLE {$this->tabla_estados} (
+                codigo varchar(50) NOT NULL,
+                nombre varchar(100) NOT NULL,
+                descripcion text DEFAULT NULL,
+                color varchar(20) DEFAULT '#6b7280',
+                icono varchar(50) DEFAULT 'info',
+                es_inicial tinyint(1) DEFAULT 0,
+                es_final tinyint(1) DEFAULT 0,
+                permite_edicion tinyint(1) DEFAULT 1,
+                permite_documentos tinyint(1) DEFAULT 1,
+                notifica_solicitante tinyint(1) DEFAULT 1,
+                orden int(11) DEFAULT 0,
+                activo tinyint(1) DEFAULT 1,
+                PRIMARY KEY (codigo),
+                KEY orden (orden),
+                KEY activo (activo)
+            ) $charset_collate;",
+
+            $this->tabla_historial_estados => "CREATE TABLE {$this->tabla_historial_estados} (
                 id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 expediente_id bigint(20) UNSIGNED NOT NULL,
                 estado_anterior varchar(50) DEFAULT NULL,
@@ -936,8 +960,91 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      * Crear tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_tipos_tramite)) {
+        $db_version = get_option('flavor_tramites_db_version', '0');
+        $current_version = '2.1.0'; // Incrementado para forzar recreación
+
+        if (version_compare($db_version, $current_version, '<')) {
             $this->create_tables();
+            $this->migrate_tables_v2();
+            $this->insert_default_data();
+            update_option('flavor_tramites_db_version', $current_version);
+        }
+    }
+
+    /**
+     * Migración de tablas a v2
+     */
+    private function migrate_tables_v2() {
+        global $wpdb;
+
+        // Añadir columnas faltantes a tipos_tramite
+        $columnas_tipos = [
+            'color' => "varchar(20) DEFAULT '#6b7280'",
+        ];
+        foreach ($columnas_tipos as $columna => $definicion) {
+            $existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+                DB_NAME, $this->tabla_tipos_tramite, $columna
+            ));
+            if (!$existe) {
+                $wpdb->query("ALTER TABLE {$this->tabla_tipos_tramite} ADD COLUMN {$columna} {$definicion}");
+            }
+        }
+
+        // Añadir columnas faltantes a expedientes
+        $columnas_expedientes = [
+            'estado_actual' => "varchar(50) NOT NULL DEFAULT 'pendiente'",
+            'user_id' => "bigint(20) UNSIGNED NOT NULL DEFAULT 0",
+            'fecha_creacion' => "datetime DEFAULT NULL",
+        ];
+        foreach ($columnas_expedientes as $columna => $definicion) {
+            $existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+                DB_NAME, $this->tabla_expedientes, $columna
+            ));
+            if (!$existe) {
+                $wpdb->query("ALTER TABLE {$this->tabla_expedientes} ADD COLUMN {$columna} {$definicion}");
+            }
+        }
+
+        // Migrar 'estado' a 'estado_actual' si existe
+        $estado_existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = 'estado'",
+            DB_NAME, $this->tabla_expedientes
+        ));
+        if ($estado_existe) {
+            $wpdb->query("UPDATE {$this->tabla_expedientes} SET estado_actual = estado WHERE estado_actual = 'pendiente' OR estado_actual = ''");
+        }
+
+        // Migrar solicitante_id a user_id
+        $wpdb->query("UPDATE {$this->tabla_expedientes} SET user_id = solicitante_id WHERE user_id = 0");
+
+        // Añadir columnas faltantes a estados_tramite
+        $columnas_estados = [
+            'codigo' => "varchar(50) NOT NULL",
+            'nombre' => "varchar(100) NOT NULL",
+            'descripcion' => "text DEFAULT NULL",
+            'color' => "varchar(20) DEFAULT '#6b7280'",
+            'icono' => "varchar(50) DEFAULT 'info'",
+            'es_inicial' => "tinyint(1) DEFAULT 0",
+            'es_final' => "tinyint(1) DEFAULT 0",
+            'permite_edicion' => "tinyint(1) DEFAULT 1",
+            'permite_documentos' => "tinyint(1) DEFAULT 1",
+            'notifica_solicitante' => "tinyint(1) DEFAULT 1",
+            'orden' => "int(11) DEFAULT 0",
+            'activo' => "tinyint(1) DEFAULT 1",
+        ];
+
+        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_estados)) {
+            foreach ($columnas_estados as $columna => $definicion) {
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+                    DB_NAME, $this->tabla_estados, $columna
+                ));
+                if (!$existe) {
+                    $wpdb->query("ALTER TABLE {$this->tabla_estados} ADD COLUMN {$columna} {$definicion}");
+                }
+            }
         }
     }
 

@@ -81,8 +81,8 @@ class Flavor_Platform_Menu_Cleaner {
 
         // Log para debugging
         if (defined('WP_DEBUG') && WP_DEBUG && !empty($removed_items)) {
-            error_log('[Flavor Platform Cleaner] Items removidos de Flavor Platform: ' . implode(', ', $removed_items));
-            error_log('[Flavor Platform Cleaner] Estos items ahora están en sus categorías correctas');
+            flavor_log_debug( 'Items removidos de Flavor Platform: ' . implode(', ', $removed_items), 'MenuCleaner' );
+            flavor_log_debug( 'Estos items ahora están en sus categorías correctas', 'MenuCleaner' );
         }
     }
 

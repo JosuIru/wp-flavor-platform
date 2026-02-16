@@ -434,7 +434,7 @@ class Chat_IA_Admin_Shortcuts {
 
         // Verificar permisos de rol
         if ($this->role_access && !$this->role_access->can_use_shortcut($shortcut_id)) {
-            error_log('[AdminShortcuts] Access denied for shortcut: ' . $shortcut_id);
+            flavor_log_debug( 'Access denied for shortcut: ' . $shortcut_id, 'AdminShortcuts' );
             return [
                 'success' => false,
                 'error' => $this->role_access->get_restriction_message('shortcut'),

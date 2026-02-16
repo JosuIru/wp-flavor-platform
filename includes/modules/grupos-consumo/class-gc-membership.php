@@ -288,7 +288,7 @@ class Flavor_GC_Membership {
         if ($resultado === false) {
             // Log del error para debugging
             $db_error = $wpdb->last_error;
-            error_log('GC Solicitud Union Error: ' . $db_error);
+            flavor_log_error( 'Solicitud Union Error: ' . $db_error, 'GruposConsumo' );
 
             // Si es admin, mostrar el error real para debugging
             $mensaje_error = __('Error al procesar la solicitud. Por favor, intentalo de nuevo.', 'flavor-chat-ia');

@@ -1181,7 +1181,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             if (!$latitud || !$longitud) {
                 return [
                     'success' => false,
-                    'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                    'error' => __('Se requiere la ubicación para fichar.', 'flavor-chat-ia'),
                 ];
             }
         }
@@ -1208,7 +1208,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Error al registrar el fichaje. Por favor, inténtalo de nuevo.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1241,7 +1241,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tus fichajes.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1293,7 +1293,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tu estado de fichaje.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1675,7 +1675,7 @@ KNOWLEDGE;
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para solicitar un cambio.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1687,7 +1687,7 @@ KNOWLEDGE;
         if (empty($fecha) || empty($tipo) || empty($hora) || empty($motivo)) {
             return [
                 'success' => false,
-                'error' => __('Acción no implementada: {$action_name}', 'flavor-chat-ia'),
+                'error' => __('Todos los campos son obligatorios: fecha, tipo, hora y motivo.', 'flavor-chat-ia'),
             ];
         }
 

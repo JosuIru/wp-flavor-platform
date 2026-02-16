@@ -2659,7 +2659,7 @@ class Flavor_Landing_Editor {
         $data = json_decode($json_content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            error_log('Flavor Landing Editor: Error parsing templates JSON - ' . json_last_error_msg());
+            flavor_log_error( 'Error parsing templates JSON - ' . json_last_error_msg(), 'LandingEditor' );
             return [];
         }
 

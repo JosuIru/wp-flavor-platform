@@ -135,6 +135,12 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             $resultado_perfil = $this->action_mi_perfil_socio([]);
             if ($resultado_perfil['success']) {
                 $socio = $resultado_perfil['socio'];
+                // Agregar tipo_label si no existe
+                if (!isset($socio['tipo_label'])) {
+                    $tipos_socio = $this->get_setting('tipos_socio', []);
+                    $tipo = $socio['tipo'] ?? 'standard';
+                    $socio['tipo_label'] = $tipos_socio[$tipo] ?? ucfirst($tipo);
+                }
             }
 
             $resultado_cuotas = $this->action_mis_cuotas(['estado' => 'pendiente']);
@@ -182,7 +188,8 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
 
         $socio = $resultado['socio'];
         $tipos_socio = $this->get_setting('tipos_socio', []);
-        $socio['tipo_label'] = $tipos_socio[$socio['tipo']] ?? ucfirst($socio['tipo']);
+        $tipo = $socio['tipo'] ?? 'standard';
+        $socio['tipo_label'] = $tipos_socio[$tipo] ?? ucfirst($tipo);
 
         ob_start();
         ?>
