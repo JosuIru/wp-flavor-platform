@@ -1,0 +1,836 @@
+/**
+ * Estilos del módulo de Encuestas
+ *
+ * @package FlavorChatIA
+ */
+
+/* =====================================================
+   VARIABLES
+   ===================================================== */
+:root {
+    --encuesta-primary: #8b5cf6;
+    --encuesta-primary-hover: #7c3aed;
+    --encuesta-success: #10b981;
+    --encuesta-warning: #f59e0b;
+    --encuesta-error: #ef4444;
+    --encuesta-info: #3b82f6;
+    --encuesta-border: #e5e7eb;
+    --encuesta-bg: #ffffff;
+    --encuesta-bg-alt: #f9fafb;
+    --encuesta-text: #1f2937;
+    --encuesta-text-muted: #6b7280;
+    --encuesta-radius: 8px;
+    --encuesta-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* =====================================================
+   ENCUESTA CONTENEDOR PRINCIPAL
+   ===================================================== */
+.flavor-encuesta {
+    background: var(--encuesta-bg);
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.flavor-encuesta__header {
+    margin-bottom: 1.25rem;
+}
+
+.flavor-encuesta__titulo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--encuesta-text);
+    margin: 0 0 0.5rem 0;
+}
+
+.flavor-encuesta__descripcion {
+    color: var(--encuesta-text-muted);
+    font-size: 0.9375rem;
+    margin: 0 0 0.75rem 0;
+}
+
+.flavor-encuesta__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Badges */
+.flavor-encuesta__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    background: var(--encuesta-bg-alt);
+    color: var(--encuesta-text-muted);
+}
+
+.flavor-encuesta__badge--activa {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.flavor-encuesta__badge--cerrada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.flavor-encuesta__badge--anonima {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Avisos */
+.flavor-encuesta__notice {
+    padding: 0.75rem 1rem;
+    border-radius: var(--encuesta-radius);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.flavor-encuesta__notice--info {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.flavor-encuesta__notice--success {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.flavor-encuesta__notice--warning {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+/* Footer */
+.flavor-encuesta__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--encuesta-border);
+    font-size: 0.8125rem;
+    color: var(--encuesta-text-muted);
+}
+
+/* =====================================================
+   FORMULARIO DE RESPUESTA
+   ===================================================== */
+.flavor-encuesta__form {
+    margin: 0;
+}
+
+.flavor-encuesta__campos {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.flavor-encuesta__campo {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--encuesta-border);
+}
+
+.flavor-encuesta__campo:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.flavor-encuesta__label {
+    display: block;
+    font-weight: 500;
+    color: var(--encuesta-text);
+    margin-bottom: 0.5rem;
+}
+
+.flavor-encuesta__required {
+    color: var(--encuesta-error);
+}
+
+.flavor-encuesta__help {
+    font-size: 0.8125rem;
+    color: var(--encuesta-text-muted);
+    margin: 0 0 0.5rem 0;
+}
+
+/* Inputs */
+.flavor-encuesta__input,
+.flavor-encuesta__textarea {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    background: var(--encuesta-bg);
+    color: var(--encuesta-text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.flavor-encuesta__input:focus,
+.flavor-encuesta__textarea:focus {
+    outline: none;
+    border-color: var(--encuesta-primary);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.flavor-encuesta__input--number {
+    max-width: 150px;
+}
+
+.flavor-encuesta__input--date {
+    max-width: 200px;
+}
+
+/* Opciones (Radio/Checkbox) */
+.flavor-encuesta__options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.flavor-encuesta__option {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.flavor-encuesta__option:hover {
+    border-color: var(--encuesta-primary);
+    background: rgba(139, 92, 246, 0.02);
+}
+
+.flavor-encuesta__option input[type="radio"],
+.flavor-encuesta__option input[type="checkbox"] {
+    width: 1.125rem;
+    height: 1.125rem;
+    accent-color: var(--encuesta-primary);
+}
+
+.flavor-encuesta__option-text {
+    flex: 1;
+    font-size: 0.9375rem;
+}
+
+.flavor-encuesta__options--binary {
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.flavor-encuesta__options--binary .flavor-encuesta__option {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Escala */
+.flavor-encuesta__scale {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.flavor-encuesta__scale-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+}
+
+.flavor-encuesta__scale-item input {
+    display: none;
+}
+
+.flavor-encuesta__scale-item span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2px solid var(--encuesta-border);
+    border-radius: 50%;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+
+.flavor-encuesta__scale-item:hover span {
+    border-color: var(--encuesta-primary);
+    color: var(--encuesta-primary);
+}
+
+.flavor-encuesta__scale-item input:checked + span {
+    background: var(--encuesta-primary);
+    border-color: var(--encuesta-primary);
+    color: white;
+}
+
+/* Estrellas */
+.flavor-encuesta__stars {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.flavor-encuesta__star {
+    cursor: pointer;
+}
+
+.flavor-encuesta__star input {
+    display: none;
+}
+
+.flavor-encuesta__star-icon {
+    font-size: 2rem;
+    color: var(--encuesta-border);
+    transition: color 0.15s;
+}
+
+.flavor-encuesta__star:hover .flavor-encuesta__star-icon,
+.flavor-encuesta__stars:hover .flavor-encuesta__star:hover ~ .flavor-encuesta__star .flavor-encuesta__star-icon {
+    color: var(--encuesta-warning);
+}
+
+.flavor-encuesta__star input:checked ~ .flavor-encuesta__star-icon,
+.flavor-encuesta__stars .flavor-encuesta__star:has(input:checked) ~ .flavor-encuesta__star .flavor-encuesta__star-icon {
+    color: var(--encuesta-warning);
+}
+
+.flavor-encuesta__star input:checked + .flavor-encuesta__star-icon {
+    color: var(--encuesta-warning);
+}
+
+/* Acciones */
+.flavor-encuesta__actions {
+    margin-top: 1.25rem;
+}
+
+.flavor-encuesta__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: white;
+    background: var(--encuesta-primary);
+    border: none;
+    border-radius: var(--encuesta-radius);
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.flavor-encuesta__submit:hover {
+    background: var(--encuesta-primary-hover);
+}
+
+.flavor-encuesta__submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* =====================================================
+   RESULTADOS
+   ===================================================== */
+.flavor-encuesta-resultados {
+    background: var(--encuesta-bg);
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.flavor-encuesta-resultados__header {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-encuesta-resultados__header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+}
+
+.flavor-encuesta-resultados__meta {
+    font-size: 0.875rem;
+    color: var(--encuesta-text-muted);
+}
+
+.flavor-encuesta-resultados__campos {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.flavor-encuesta-resultados__campo {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--encuesta-border);
+}
+
+.flavor-encuesta-resultados__campo:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.flavor-encuesta-resultados__pregunta {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 1rem 0;
+}
+
+/* Barras de resultados */
+.flavor-encuesta-resultados__bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-encuesta-resultados__bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.flavor-encuesta-resultados__bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.flavor-encuesta-resultados__bar-label {
+    color: var(--encuesta-text);
+}
+
+.flavor-encuesta-resultados__bar-stats {
+    color: var(--encuesta-text-muted);
+}
+
+.flavor-encuesta-resultados__bar-track {
+    height: 0.5rem;
+    background: var(--encuesta-bg-alt);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.flavor-encuesta-resultados__bar-fill {
+    height: 100%;
+    background: var(--encuesta-primary);
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+/* Estadísticas */
+.flavor-encuesta-resultados__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.flavor-encuesta-resultados__stat {
+    text-align: center;
+}
+
+.flavor-encuesta-resultados__stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--encuesta-primary);
+}
+
+.flavor-encuesta-resultados__stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--encuesta-text-muted);
+    text-transform: uppercase;
+}
+
+/* Estrellas en resultados */
+.flavor-encuesta-resultados__stars-display {
+    margin-top: 0.75rem;
+}
+
+.flavor-encuesta-resultados__star {
+    font-size: 1.5rem;
+    color: var(--encuesta-border);
+}
+
+.flavor-encuesta-resultados__star.filled {
+    color: var(--encuesta-warning);
+}
+
+/* Respuestas de texto */
+.flavor-encuesta-resultados__text-responses {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.flavor-encuesta-resultados__text-item {
+    padding: 0.75rem 1rem;
+    background: var(--encuesta-bg-alt);
+    border-radius: var(--encuesta-radius);
+    font-size: 0.875rem;
+}
+
+.flavor-encuesta-resultados__empty {
+    color: var(--encuesta-text-muted);
+    font-style: italic;
+}
+
+/* =====================================================
+   VERSIÓN MINI (CHAT)
+   ===================================================== */
+.flavor-encuesta-mini {
+    background: var(--encuesta-bg);
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    padding: 0.75rem;
+    max-width: 320px;
+}
+
+.flavor-encuesta-mini__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-encuesta-mini__icon {
+    font-size: 1.25rem;
+}
+
+.flavor-encuesta-mini__titulo {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--encuesta-text);
+}
+
+.flavor-encuesta-mini__opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.flavor-encuesta-mini__opcion {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    text-align: left;
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    background: var(--encuesta-bg);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.flavor-encuesta-mini__opcion:hover {
+    border-color: var(--encuesta-primary);
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.flavor-encuesta-mini__bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.flavor-encuesta-mini__bar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.flavor-encuesta-mini__bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+}
+
+.flavor-encuesta-mini__bar-bg {
+    height: 0.25rem;
+    background: var(--encuesta-bg-alt);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.flavor-encuesta-mini__bar-fill {
+    height: 100%;
+    background: var(--encuesta-primary);
+    border-radius: 9999px;
+}
+
+.flavor-encuesta-mini__meta {
+    margin-top: 0.5rem;
+    font-size: 0.6875rem;
+    color: var(--encuesta-text-muted);
+}
+
+/* =====================================================
+   FORMULARIO DE CREACIÓN
+   ===================================================== */
+.flavor-encuesta-crear {
+    background: var(--encuesta-bg);
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    padding: 1.5rem;
+}
+
+.flavor-encuesta-crear__section {
+    margin-bottom: 1.25rem;
+}
+
+.flavor-encuesta-crear__section:last-child {
+    margin-bottom: 0;
+}
+
+.flavor-encuesta-crear__label {
+    display: block;
+    font-weight: 500;
+    color: var(--encuesta-text);
+    margin-bottom: 0.5rem;
+}
+
+.flavor-encuesta-crear__input,
+.flavor-encuesta-crear__textarea {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    background: var(--encuesta-bg);
+}
+
+.flavor-encuesta-crear__input:focus,
+.flavor-encuesta-crear__textarea:focus {
+    outline: none;
+    border-color: var(--encuesta-primary);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Opciones de creación */
+.flavor-encuesta-crear__opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-encuesta-crear__opcion {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.flavor-encuesta-crear__opcion input {
+    flex: 1;
+}
+
+.flavor-encuesta-crear__remove-opcion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.25rem;
+    color: var(--encuesta-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--encuesta-radius);
+    transition: all 0.15s;
+}
+
+.flavor-encuesta-crear__remove-opcion:hover {
+    color: var(--encuesta-error);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.flavor-encuesta-crear__add-opcion {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--encuesta-primary);
+    background: none;
+    border: 1px dashed var(--encuesta-primary);
+    border-radius: var(--encuesta-radius);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.flavor-encuesta-crear__add-opcion:hover {
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.flavor-encuesta-crear__section--options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.flavor-encuesta-crear__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.flavor-encuesta-crear__checkbox input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--encuesta-primary);
+}
+
+.flavor-encuesta-crear__actions {
+    margin-top: 1.5rem;
+}
+
+.flavor-encuesta-crear__submit {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: white;
+    background: var(--encuesta-primary);
+    border: none;
+    border-radius: var(--encuesta-radius);
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.flavor-encuesta-crear__submit:hover {
+    background: var(--encuesta-primary-hover);
+}
+
+/* =====================================================
+   LISTA DE ENCUESTAS
+   ===================================================== */
+.flavor-encuestas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-encuestas-lista__item {
+    background: var(--encuesta-bg);
+    border: 1px solid var(--encuesta-border);
+    border-radius: var(--encuesta-radius);
+    overflow: hidden;
+}
+
+.flavor-encuestas-lista__link {
+    display: block;
+    padding: 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.15s;
+}
+
+.flavor-encuestas-lista__link:hover {
+    background: var(--encuesta-bg-alt);
+}
+
+.flavor-encuestas-lista__titulo {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--encuesta-text);
+}
+
+.flavor-encuestas-lista__meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    color: var(--encuesta-text-muted);
+}
+
+.flavor-encuestas-lista__estado {
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+}
+
+.flavor-encuestas-lista__estado--activa {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.flavor-encuestas-lista__estado--cerrada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.flavor-encuestas-lista__empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--encuesta-text-muted);
+}
+
+/* =====================================================
+   ERROR
+   ===================================================== */
+.flavor-encuesta__error {
+    padding: 1rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: var(--encuesta-radius);
+    color: #991b1b;
+    text-align: center;
+}
+
+/* =====================================================
+   ESTADOS DE CARGA
+   ===================================================== */
+.flavor-encuesta--loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.flavor-encuesta--loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 640px) {
+    .flavor-encuesta {
+        padding: 1rem;
+    }
+
+    .flavor-encuesta__titulo {
+        font-size: 1.125rem;
+    }
+
+    .flavor-encuesta__options--binary {
+        flex-direction: column;
+    }
+
+    .flavor-encuesta__scale {
+        justify-content: center;
+    }
+
+    .flavor-encuesta-resultados__stats {
+        justify-content: center;
+    }
+
+    .flavor-encuesta-crear__section--options {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}

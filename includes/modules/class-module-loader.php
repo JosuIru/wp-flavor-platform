@@ -15,6 +15,66 @@ if (file_exists($trait_file) && !trait_exists('Flavor_Module_Admin_Pages_Trait')
     require_once $trait_file;
 }
 
+// Cargar trait para tabs de dashboard (sistema flexible)
+$trait_dashboard_tabs = FLAVOR_CHAT_IA_PATH . 'includes/traits/trait-module-dashboard-tabs.php';
+if (file_exists($trait_dashboard_tabs) && !trait_exists('Flavor_Module_Dashboard_Tabs_Trait')) {
+    require_once $trait_dashboard_tabs;
+}
+
+// Cargar trait para integraciones de tabs de módulos de red
+$trait_tab_integrations = FLAVOR_CHAT_IA_PATH . 'includes/traits/trait-module-tab-integrations.php';
+if (file_exists($trait_tab_integrations) && !trait_exists('Flavor_Module_Tab_Integrations_Trait')) {
+    require_once $trait_tab_integrations;
+}
+
+// Cargar traits para integraciones dinámicas entre módulos (Provider/Consumer)
+$trait_integrations = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-integrations.php';
+if (file_exists($trait_integrations) && !trait_exists('Flavor_Module_Integration_Consumer')) {
+    require_once $trait_integrations;
+}
+
+// Cargar trait de notificaciones de módulos
+$trait_notifications = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-notifications.php';
+if (file_exists($trait_notifications) && !trait_exists('Flavor_Module_Notifications_Trait')) {
+    require_once $trait_notifications;
+}
+
+// Cargar trait de funciones WhatsApp
+$trait_whatsapp = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-whatsapp-features.php';
+if (file_exists($trait_whatsapp) && !trait_exists('Flavor_WhatsApp_Features')) {
+    require_once $trait_whatsapp;
+}
+
+// Cargar trait de Admin UI
+$trait_admin_ui = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-admin-ui.php';
+if (file_exists($trait_admin_ui) && !trait_exists('Flavor_Module_Admin_UI_Trait')) {
+    require_once $trait_admin_ui;
+}
+
+// Cargar trait de Dashboard Widget
+$trait_dashboard_widget = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-dashboard-widget.php';
+if (file_exists($trait_dashboard_widget) && !trait_exists('Flavor_Dashboard_Widget_Trait')) {
+    require_once $trait_dashboard_widget;
+}
+
+// Cargar trait de acciones frontend
+$trait_frontend_actions = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-frontend-actions.php';
+if (file_exists($trait_frontend_actions) && !trait_exists('Flavor_Module_Frontend_Actions')) {
+    require_once $trait_frontend_actions;
+}
+
+// Cargar gestor de contenido de entidades
+$entity_content_manager = FLAVOR_CHAT_IA_PATH . 'includes/class-entity-content-manager.php';
+if (file_exists($entity_content_manager) && !class_exists('Flavor_Entity_Content_Manager')) {
+    require_once $entity_content_manager;
+}
+
+// Cargar trait de funcionalidades de encuestas
+$trait_encuestas_features = FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-encuestas-features.php';
+if (file_exists($trait_encuestas_features) && !trait_exists('Flavor_Encuestas_Features')) {
+    require_once $trait_encuestas_features;
+}
+
 /**
  * Clase que gestiona la carga de módulos
  */
@@ -144,6 +204,11 @@ class Flavor_Chat_Module_Loader {
         $metadata = [];
 
         foreach ($this->registered_modules as $module_id => $module_data) {
+            // Validar que los datos del módulo son válidos
+            if (empty($module_data['file']) || !is_string($module_data['file'])) {
+                continue;
+            }
+
             if (!file_exists($module_data['file'])) {
                 continue;
             }
@@ -262,6 +327,10 @@ class Flavor_Chat_Module_Loader {
             'chat_interno' => [
                 'file' => $modules_path . 'chat-interno/class-chat-interno-module.php',
                 'class' => 'Flavor_Chat_Chat_Interno_Module',
+            ],
+            'chat_estados' => [
+                'file' => $modules_path . 'chat-estados/class-chat-estados-module.php',
+                'class' => 'Flavor_Chat_Estados_Module',
             ],
             'compostaje' => [
                 'file' => $modules_path . 'compostaje/class-compostaje-module.php',
@@ -395,16 +464,49 @@ class Flavor_Chat_Module_Loader {
                 'file' => $modules_path . 'trabajo-digno/class-trabajo-digno-module.php',
                 'class' => 'Flavor_Chat_Trabajo_Digno_Module',
             ],
+            'recetas' => [
+                'file' => $modules_path . 'recetas/class-recetas-module.php',
+                'class' => 'Flavor_Chat_Recetas_Module',
+            ],
+            'campanias' => [
+                'file' => $modules_path . 'campanias/class-campanias-module.php',
+                'class' => 'Flavor_Chat_Campanias_Module',
+            ],
+            'documentacion_legal' => [
+                'file' => $modules_path . 'documentacion-legal/class-documentacion-legal-module.php',
+                'class' => 'Flavor_Chat_Documentacion_Legal_Module',
+            ],
+            'seguimiento_denuncias' => [
+                'file' => $modules_path . 'seguimiento-denuncias/class-seguimiento-denuncias-module.php',
+                'class' => 'Flavor_Chat_Seguimiento_Denuncias_Module',
+            ],
+            'mapa_actores' => [
+                'file' => $modules_path . 'mapa-actores/class-mapa-actores-module.php',
+                'class' => 'Flavor_Chat_Mapa_Actores_Module',
+            ],
+            'encuestas' => [
+                'file' => $modules_path . 'encuestas/class-encuestas-module.php',
+                'class' => 'Flavor_Chat_Encuestas_Module',
+            ],
         ];
 
         foreach ($builtin_modules as $id => $module) {
-            if (file_exists($module['file'])) {
+            // Validar que el archivo del módulo es válido antes de verificar existencia
+            if (!empty($module['file']) && is_string($module['file']) && file_exists($module['file'])) {
                 $this->registered_modules[$id] = $module;
             }
         }
 
         // Permitir que otros plugins registren módulos
         $this->registered_modules = apply_filters('flavor_chat_ia_modules', $this->registered_modules);
+
+        // Validar módulos añadidos por filtros externos
+        foreach ($this->registered_modules as $id => $module) {
+            if (empty($module['file']) || !is_string($module['file']) ||
+                empty($module['class']) || !is_string($module['class'])) {
+                unset($this->registered_modules[$id]);
+            }
+        }
     }
 
     /**
@@ -436,7 +538,13 @@ class Flavor_Chat_Module_Loader {
             return true; // Ya cargado
         }
 
-        $module_info = $this->registered_modules[$module_id];
+        $module_info = $this->registered_modules[$module_id] ?? null;
+
+        // Validar que la información del módulo existe y tiene archivo
+        if (!$module_info || empty($module_info['file']) || !is_string($module_info['file'])) {
+            flavor_chat_ia_log("Información de módulo inválida: {$module_id}", 'error');
+            return false;
+        }
 
         // Cargar archivo
         if (!file_exists($module_info['file'])) {

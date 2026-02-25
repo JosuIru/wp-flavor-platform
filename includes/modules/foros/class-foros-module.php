@@ -18,6 +18,8 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
+    use Flavor_Encuestas_Features;
 
     /**
      * Constructor
@@ -28,6 +30,9 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Sistema de foros comunitarios con categorias, hilos y respuestas'; // Translation loaded on init
 
         parent::__construct();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -76,15 +81,440 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia', 'videos'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_foros_temas',
+                'context' => 'side',
+            ],
+        ];
+    }
+
+    /**
+     * Define los tabs que este módulo inyecta en otros módulos
+     *
+     * Cuando foros está activo, puede mostrar un tab de "Discusión" o "Foro"
+     * en los dashboards de grupos de consumo, eventos, comunidades, etc.
+     *
+     * @return array Configuración de tabs por módulo destino
+     */
+    public function get_tab_integrations() {
+        return [
+            // Tab de foro para Grupos de Consumo
+            'grupos_consumo' => [
+                'id'       => 'foro-grupo',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="grupo_consumo" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('grupo_consumo', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de discusión para Eventos
+            'eventos' => [
+                'id'       => 'discusion-evento',
+                'label'    => __('Discusión', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="evento" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('evento', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de foro para Comunidades
+            'comunidades' => [
+                'id'       => 'foro-comunidad',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="comunidad" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('comunidad', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de discusión para Cursos
+            'cursos' => [
+                'id'       => 'foro-curso',
+                'label'    => __('Foro del Curso', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="curso" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('curso', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab para Colectivos
+            'colectivos' => [
+                'id'       => 'foro-colectivo',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="colectivo" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('colectivo', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab para Círculos de Cuidados
+            'circulos_cuidados' => [
+                'id'       => 'foro-circulo',
+                'label'    => __('Discusión', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="circulo" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('circulo', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab para Banco de Tiempo
+            'banco_tiempo' => [
+                'id'       => 'foro-servicio',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="servicio_bt" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('servicio_bt', $contexto['entity_id']);
+                },
+            ],
+        ];
+    }
+
+    /**
+     * Cuenta los temas de foro asociados a una entidad
+     *
+     * @param string $tipo_entidad Tipo de entidad (grupo_consumo, evento, etc.)
+     * @param int    $entidad_id   ID de la entidad
+     * @return int Número de temas
+     */
+    public function contar_temas_entidad($tipo_entidad, $entidad_id) {
+        global $wpdb;
+
+        if (!$entidad_id) {
+            return 0;
+        }
+
+        $tabla_temas = $wpdb->prefix . 'flavor_foros_temas';
+
+        // Verificar si la tabla existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_temas)) {
+            return 0;
+        }
+
+        $total = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_temas}
+             WHERE entidad_tipo = %s AND entidad_id = %d AND estado = 'activo'",
+            $tipo_entidad,
+            $entidad_id
+        ));
+
+        return intval($total);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
+        add_action('init', [$this, 'register_shortcodes']);
         $this->registrar_en_panel_unificado();
 
         // REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Admin: Gestión de categorías de foros
+        add_action('admin_menu', [$this, 'register_admin_menu']);
+        add_action('wp_ajax_flavor_foros_guardar_categoria', [$this, 'ajax_guardar_categoria']);
+        add_action('wp_ajax_flavor_foros_eliminar_categoria', [$this, 'ajax_eliminar_categoria']);
+
+        // Integrar funcionalidades de encuestas
+        $this->init_encuestas_features('foro');
+    }
+
+    /**
+     * Registra shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('flavor_foros_integrado', [$this, 'shortcode_foro_integrado']);
+        add_shortcode('flavor_foros_listado', [$this, 'shortcode_listado_foros']);
+    }
+
+    /**
+     * Shortcode: Foro integrado para tabs de otros módulos
+     *
+     * Muestra un mini-foro asociado a una entidad específica
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_foro_integrado($atts) {
+        $atts = shortcode_atts([
+            'entidad'    => '',
+            'entidad_id' => 0,
+            'limite'     => 10,
+        ], $atts);
+
+        $entidad_tipo = sanitize_key($atts['entidad']);
+        $entidad_id = absint($atts['entidad_id']);
+
+        if (!$entidad_tipo || !$entidad_id) {
+            return '<p class="foros-aviso">' . __('Configuración del foro incompleta.', 'flavor-chat-ia') . '</p>';
+        }
+
+        global $wpdb;
+        $tabla_temas = $wpdb->prefix . 'flavor_foros_temas';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+
+        // Obtener temas de esta entidad
+        $temas = $wpdb->get_results($wpdb->prepare(
+            "SELECT t.*, u.display_name as autor_nombre,
+                    (SELECT COUNT(*) FROM {$tabla_respuestas} r WHERE r.tema_id = t.id) as num_respuestas,
+                    (SELECT MAX(r.fecha_creacion) FROM {$tabla_respuestas} r WHERE r.tema_id = t.id) as ultima_respuesta
+             FROM {$tabla_temas} t
+             LEFT JOIN {$wpdb->users} u ON t.usuario_id = u.ID
+             WHERE t.entidad_tipo = %s AND t.entidad_id = %d AND t.estado = 'activo'
+             ORDER BY t.fijado DESC, COALESCE(ultima_respuesta, t.fecha_creacion) DESC
+             LIMIT %d",
+            $entidad_tipo,
+            $entidad_id,
+            intval($atts['limite'])
+        ));
+
+        $puede_crear = is_user_logged_in();
+
+        ob_start();
+        ?>
+        <div class="flavor-foros-integrado" data-entidad="<?php echo esc_attr($entidad_tipo); ?>" data-entidad-id="<?php echo esc_attr($entidad_id); ?>">
+
+            <?php if ($puede_crear): ?>
+            <div class="foros-acciones-header">
+                <button type="button" class="foros-btn-nuevo-tema">
+                    <span class="dashicons dashicons-plus-alt2"></span>
+                    <?php _e('Nuevo tema', 'flavor-chat-ia'); ?>
+                </button>
+            </div>
+            <?php endif; ?>
+
+            <?php if (empty($temas)): ?>
+                <div class="foros-vacio">
+                    <span class="dashicons dashicons-format-chat"></span>
+                    <p><?php _e('Aún no hay temas de discusión.', 'flavor-chat-ia'); ?></p>
+                    <?php if ($puede_crear): ?>
+                    <p class="foros-vacio-cta"><?php _e('¡Sé el primero en iniciar una conversación!', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                <div class="foros-lista-temas">
+                    <?php foreach ($temas as $tema): ?>
+                    <article class="foros-tema <?php echo $tema->fijado ? 'foros-tema--fijado' : ''; ?>">
+                        <div class="foros-tema-avatar">
+                            <?php echo get_avatar($tema->usuario_id, 40); ?>
+                        </div>
+                        <div class="foros-tema-contenido">
+                            <h4 class="foros-tema-titulo">
+                                <?php if ($tema->fijado): ?>
+                                    <span class="dashicons dashicons-admin-post" title="<?php esc_attr_e('Fijado', 'flavor-chat-ia'); ?>"></span>
+                                <?php endif; ?>
+                                <a href="<?php echo esc_url(home_url('/mi-portal/foros/tema/' . $tema->id . '/')); ?>">
+                                    <?php echo esc_html($tema->titulo); ?>
+                                </a>
+                            </h4>
+                            <div class="foros-tema-meta">
+                                <span class="foros-tema-autor"><?php echo esc_html($tema->autor_nombre); ?></span>
+                                <span class="foros-tema-fecha"><?php echo esc_html(human_time_diff(strtotime($tema->fecha_creacion), current_time('timestamp'))); ?></span>
+                                <span class="foros-tema-respuestas">
+                                    <span class="dashicons dashicons-admin-comments"></span>
+                                    <?php echo intval($tema->num_respuestas); ?>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php if (count($temas) >= intval($atts['limite'])): ?>
+                <div class="foros-ver-mas">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/foros/?entidad=' . $entidad_tipo . '&entidad_id=' . $entidad_id)); ?>" class="foros-btn-ver-todos">
+                        <?php _e('Ver todos los temas', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+                <?php endif; ?>
+            <?php endif; ?>
+
+            <!-- Modal nuevo tema -->
+            <?php if ($puede_crear): ?>
+            <div class="foros-modal-tema" style="display: none;">
+                <div class="foros-modal-overlay"></div>
+                <div class="foros-modal-content">
+                    <button class="foros-modal-cerrar">&times;</button>
+                    <h3><?php _e('Nuevo tema de discusión', 'flavor-chat-ia'); ?></h3>
+                    <form class="foros-form-tema">
+                        <?php wp_nonce_field('flavor_foros_nonce', 'foros_nonce'); ?>
+                        <input type="hidden" name="entidad_tipo" value="<?php echo esc_attr($entidad_tipo); ?>">
+                        <input type="hidden" name="entidad_id" value="<?php echo esc_attr($entidad_id); ?>">
+
+                        <div class="foros-form-campo">
+                            <label><?php _e('Título', 'flavor-chat-ia'); ?></label>
+                            <input type="text" name="titulo" required placeholder="<?php esc_attr_e('Título del tema', 'flavor-chat-ia'); ?>">
+                        </div>
+
+                        <div class="foros-form-campo">
+                            <label><?php _e('Contenido', 'flavor-chat-ia'); ?></label>
+                            <textarea name="contenido" rows="5" required placeholder="<?php esc_attr_e('Escribe tu mensaje...', 'flavor-chat-ia'); ?>"></textarea>
+                        </div>
+
+                        <button type="submit" class="foros-btn-enviar"><?php _e('Publicar tema', 'flavor-chat-ia'); ?></button>
+                    </form>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .flavor-foros-integrado { font-family: inherit; }
+        .foros-acciones-header { margin-bottom: 16px; }
+        .foros-btn-nuevo-tema { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--module-color, #3b82f6); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem; }
+        .foros-btn-nuevo-tema:hover { opacity: 0.9; }
+        .foros-vacio { text-align: center; padding: 40px 20px; color: #6b7280; }
+        .foros-vacio .dashicons { font-size: 48px; width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.5; }
+        .foros-lista-temas { display: flex; flex-direction: column; gap: 12px; }
+        .foros-tema { display: flex; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; }
+        .foros-tema--fijado { background: #fef3c7; border: 1px solid #fcd34d; }
+        .foros-tema-avatar img { border-radius: 50%; }
+        .foros-tema-contenido { flex: 1; min-width: 0; }
+        .foros-tema-titulo { margin: 0 0 4px; font-size: 0.9375rem; }
+        .foros-tema-titulo a { color: inherit; text-decoration: none; }
+        .foros-tema-titulo a:hover { color: var(--module-color, #3b82f6); }
+        .foros-tema-meta { display: flex; gap: 12px; font-size: 0.8125rem; color: #6b7280; }
+        .foros-tema-respuestas { display: inline-flex; align-items: center; gap: 4px; }
+        .foros-tema-respuestas .dashicons { font-size: 14px; width: 14px; height: 14px; }
+        .foros-ver-mas { text-align: center; margin-top: 16px; }
+        .foros-btn-ver-todos { color: var(--module-color, #3b82f6); text-decoration: none; font-size: 0.875rem; }
+        .foros-modal-tema { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .foros-modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+        .foros-modal-content { position: relative; background: #fff; padding: 24px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .foros-modal-cerrar { position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 24px; cursor: pointer; color: #6b7280; }
+        .foros-form-campo { margin-bottom: 16px; }
+        .foros-form-campo label { display: block; margin-bottom: 4px; font-weight: 500; font-size: 0.875rem; }
+        .foros-form-campo input, .foros-form-campo textarea { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.9375rem; }
+        .foros-btn-enviar { width: 100%; padding: 12px; background: var(--module-color, #3b82f6); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9375rem; font-weight: 500; }
+        </style>
+
+        <script>
+        (function() {
+            const container = document.querySelector('.flavor-foros-integrado');
+            if (!container) return;
+
+            const btnNuevo = container.querySelector('.foros-btn-nuevo-tema');
+            const modal = container.querySelector('.foros-modal-tema');
+
+            if (btnNuevo && modal) {
+                btnNuevo.addEventListener('click', () => modal.style.display = 'flex');
+                modal.querySelector('.foros-modal-overlay').addEventListener('click', () => modal.style.display = 'none');
+                modal.querySelector('.foros-modal-cerrar').addEventListener('click', () => modal.style.display = 'none');
+
+                const form = modal.querySelector('.foros-form-tema');
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    formData.append('action', 'flavor_foros_crear_tema');
+
+                    try {
+                        const response = await fetch(ajaxurl || '/wp-admin/admin-ajax.php', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert(data.data || 'Error al crear el tema');
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error de conexión');
+                    }
+                });
+            }
+        })();
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Listado de foros
+     */
+    public function shortcode_listado_foros($atts) {
+        $atts = shortcode_atts([
+            'limite' => 20,
+            'categoria' => '',
+        ], $atts);
+
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $limite = absint($atts['limite']);
+        $categoria = sanitize_text_field($atts['categoria']);
+
+        $where = "WHERE estado = 'activo'";
+        if ($categoria) {
+            $where .= $wpdb->prepare(" AND categoria = %s", $categoria);
+        }
+
+        $foros = $wpdb->get_results(
+            "SELECT * FROM {$tabla_foros} {$where} ORDER BY ultima_actividad DESC LIMIT {$limite}"
+        );
+
+        ob_start();
+        ?>
+        <div class="flavor-foros-listado">
+            <?php if (empty($foros)): ?>
+                <p class="foros-vacio"><?php esc_html_e('No hay foros disponibles.', 'flavor-chat-ia'); ?></p>
+            <?php else: ?>
+                <div class="foros-grid">
+                    <?php foreach ($foros as $foro): ?>
+                        <div class="foro-card">
+                            <h3 class="foro-titulo">
+                                <a href="<?php echo esc_url(home_url('/foros/' . $foro->slug . '/')); ?>">
+                                    <?php echo esc_html($foro->nombre); ?>
+                                </a>
+                            </h3>
+                            <?php if ($foro->descripcion): ?>
+                                <p class="foro-descripcion"><?php echo esc_html(wp_trim_words($foro->descripcion, 20)); ?></p>
+                            <?php endif; ?>
+                            <div class="foro-meta">
+                                <span class="foro-temas"><?php echo esc_html($foro->total_temas ?? 0); ?> <?php esc_html_e('temas', 'flavor-chat-ia'); ?></span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
     /**
@@ -96,6 +526,66 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
             $this->create_tables();
+            $this->crear_categorias_ejemplo();
+        }
+    }
+
+    /**
+     * Crea categorías de foros de ejemplo
+     */
+    private function crear_categorias_ejemplo() {
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+
+        // Verificar si ya hay categorías
+        $count = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_foros");
+        if ($count > 0) {
+            return;
+        }
+
+        $categorias_ejemplo = [
+            [
+                'nombre'      => __('General', 'flavor-chat-ia'),
+                'descripcion' => __('Discusiones generales de la comunidad. Cualquier tema es bienvenido aquí.', 'flavor-chat-ia'),
+                'icono'       => '💬',
+                'orden'       => 1,
+                'estado'      => 'activo',
+            ],
+            [
+                'nombre'      => __('Presentaciones', 'flavor-chat-ia'),
+                'descripcion' => __('¡Preséntate a la comunidad! Cuéntanos quién eres y qué te trae por aquí.', 'flavor-chat-ia'),
+                'icono'       => '👋',
+                'orden'       => 2,
+                'estado'      => 'activo',
+            ],
+            [
+                'nombre'      => __('Ayuda y Soporte', 'flavor-chat-ia'),
+                'descripcion' => __('¿Tienes dudas o problemas? Pregunta aquí y la comunidad te ayudará.', 'flavor-chat-ia'),
+                'icono'       => '🆘',
+                'orden'       => 3,
+                'estado'      => 'activo',
+            ],
+            [
+                'nombre'      => __('Ideas y Sugerencias', 'flavor-chat-ia'),
+                'descripcion' => __('Comparte tus ideas para mejorar la comunidad. Todas las propuestas son bienvenidas.', 'flavor-chat-ia'),
+                'icono'       => '💡',
+                'orden'       => 4,
+                'estado'      => 'activo',
+            ],
+            [
+                'nombre'      => __('Eventos y Actividades', 'flavor-chat-ia'),
+                'descripcion' => __('Organiza o entérate de los próximos eventos y actividades de la comunidad.', 'flavor-chat-ia'),
+                'icono'       => '📅',
+                'orden'       => 5,
+                'estado'      => 'activo',
+            ],
+        ];
+
+        $fecha_actual = current_time('mysql');
+
+        foreach ($categorias_ejemplo as $categoria) {
+            $categoria['created_at'] = $fecha_actual;
+            $wpdb->insert($tabla_foros, $categoria);
         }
     }
 
@@ -2371,5 +2861,534 @@ KNOWLEDGE;
                 'parent' => 'foros',
             ],
         ];
+    }
+
+    // =========================================================
+    // Administración de Categorías de Foros
+    // =========================================================
+
+    /**
+     * Registra el menú de administración
+     */
+    public function register_admin_menu() {
+        add_submenu_page(
+            'flavor-app-composer',
+            __('Gestionar Foros', 'flavor-chat-ia'),
+            __('Foros', 'flavor-chat-ia'),
+            'manage_options',
+            'flavor-foros-admin',
+            [$this, 'render_admin_page']
+        );
+    }
+
+    /**
+     * Renderiza la página de administración de foros
+     */
+    public function render_admin_page() {
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+
+        // Obtener todas las categorías de foros
+        $categorias = $wpdb->get_results(
+            "SELECT f.*,
+                    COALESCE(COUNT(DISTINCT h.id), 0) AS total_hilos,
+                    COALESCE(SUM(h.respuestas_count), 0) AS total_respuestas
+             FROM $tabla_foros f
+             LEFT JOIN $tabla_hilos h ON h.foro_id = f.id AND h.estado != 'eliminado'
+             GROUP BY f.id
+             ORDER BY f.orden ASC, f.nombre ASC"
+        );
+
+        // Verificar si estamos editando
+        $editando = null;
+        if (isset($_GET['action']) && $_GET['action'] === 'editar' && isset($_GET['id'])) {
+            $editando = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM $tabla_foros WHERE id = %d",
+                absint($_GET['id'])
+            ));
+        }
+
+        $nonce = wp_create_nonce('flavor_foros_admin');
+        ?>
+        <div class="wrap">
+            <h1 class="wp-heading-inline">
+                <?php esc_html_e('Gestionar Categorías de Foros', 'flavor-chat-ia'); ?>
+            </h1>
+            <hr class="wp-header-end">
+
+            <div id="flavor-foros-admin" style="display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px;">
+                <!-- Lista de foros -->
+                <div class="flavor-foros-lista">
+                    <table class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;"><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 80px;"><?php esc_html_e('Hilos', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 100px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 120px;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody id="foros-lista">
+                            <?php if (empty($categorias)) : ?>
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 40px;">
+                                        <span class="dashicons dashicons-format-chat" style="font-size: 48px; color: #ccc;"></span>
+                                        <p><?php esc_html_e('No hay categorías de foros creadas.', 'flavor-chat-ia'); ?></p>
+                                        <p><?php esc_html_e('Usa el formulario de la derecha para crear tu primera categoría.', 'flavor-chat-ia'); ?></p>
+                                    </td>
+                                </tr>
+                            <?php else : ?>
+                                <?php foreach ($categorias as $cat) : ?>
+                                    <tr data-id="<?php echo esc_attr($cat->id); ?>">
+                                        <td>
+                                            <input type="number"
+                                                   value="<?php echo esc_attr($cat->orden); ?>"
+                                                   min="0"
+                                                   style="width: 50px;"
+                                                   class="foro-orden"
+                                                   data-id="<?php echo esc_attr($cat->id); ?>">
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                <span style="margin-right: 5px;"><?php echo esc_html($cat->icono); ?></span>
+                                                <?php echo esc_html($cat->nombre); ?>
+                                            </strong>
+                                        </td>
+                                        <td><?php echo esc_html(wp_trim_words($cat->descripcion, 10)); ?></td>
+                                        <td>
+                                            <span class="dashicons dashicons-admin-comments"></span>
+                                            <?php echo esc_html($cat->total_hilos); ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $estado_clase = [
+                                                'activo' => 'background: #d4edda; color: #155724;',
+                                                'cerrado' => 'background: #fff3cd; color: #856404;',
+                                                'archivado' => 'background: #f8d7da; color: #721c24;',
+                                            ];
+                                            ?>
+                                            <span style="padding: 3px 8px; border-radius: 3px; font-size: 11px; <?php echo $estado_clase[$cat->estado] ?? ''; ?>">
+                                                <?php echo esc_html(ucfirst($cat->estado)); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-foros-admin&action=editar&id=' . $cat->id)); ?>"
+                                               class="button button-small">
+                                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                            </a>
+                                            <button type="button"
+                                                    class="button button-small button-link-delete foro-eliminar"
+                                                    data-id="<?php echo esc_attr($cat->id); ?>"
+                                                    data-nombre="<?php echo esc_attr($cat->nombre); ?>">
+                                                <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Formulario -->
+                <div class="flavor-foros-form" style="background: #fff; padding: 20px; border: 1px solid #ccd0d4; border-radius: 4px;">
+                    <h2 style="margin-top: 0;">
+                        <?php echo $editando
+                            ? esc_html__('Editar Categoría', 'flavor-chat-ia')
+                            : esc_html__('Nueva Categoría', 'flavor-chat-ia'); ?>
+                    </h2>
+
+                    <form id="form-categoria-foro">
+                        <input type="hidden" name="id" value="<?php echo $editando ? esc_attr($editando->id) : ''; ?>">
+                        <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>">
+
+                        <p>
+                            <label for="nombre"><strong><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></strong></label>
+                            <input type="text"
+                                   id="nombre"
+                                   name="nombre"
+                                   class="widefat"
+                                   required
+                                   placeholder="<?php esc_attr_e('Ej: General, Soporte, Ideas...', 'flavor-chat-ia'); ?>"
+                                   value="<?php echo $editando ? esc_attr($editando->nombre) : ''; ?>">
+                        </p>
+
+                        <p>
+                            <label for="descripcion"><strong><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></strong></label>
+                            <textarea id="descripcion"
+                                      name="descripcion"
+                                      class="widefat"
+                                      rows="3"
+                                      placeholder="<?php esc_attr_e('Describe el propósito de este foro...', 'flavor-chat-ia'); ?>"><?php echo $editando ? esc_textarea($editando->descripcion) : ''; ?></textarea>
+                        </p>
+
+                        <p>
+                            <label for="icono"><strong><?php esc_html_e('Icono', 'flavor-chat-ia'); ?></strong></label>
+                            <input type="text"
+                                   id="icono"
+                                   name="icono"
+                                   class="widefat"
+                                   placeholder="💬"
+                                   value="<?php echo $editando ? esc_attr($editando->icono) : '💬'; ?>">
+                            <span class="description"><?php esc_html_e('Usa un emoji o nombre de dashicon (ej: forum, admin-comments)', 'flavor-chat-ia'); ?></span>
+                        </p>
+
+                        <p>
+                            <label for="orden"><strong><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></strong></label>
+                            <input type="number"
+                                   id="orden"
+                                   name="orden"
+                                   class="small-text"
+                                   min="0"
+                                   value="<?php echo $editando ? esc_attr($editando->orden) : '0'; ?>">
+                        </p>
+
+                        <p>
+                            <label for="estado"><strong><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></strong></label>
+                            <select id="estado" name="estado" class="widefat">
+                                <option value="activo" <?php selected($editando->estado ?? 'activo', 'activo'); ?>>
+                                    <?php esc_html_e('Activo - Los usuarios pueden crear hilos', 'flavor-chat-ia'); ?>
+                                </option>
+                                <option value="cerrado" <?php selected($editando->estado ?? '', 'cerrado'); ?>>
+                                    <?php esc_html_e('Cerrado - Solo lectura, no se pueden crear hilos', 'flavor-chat-ia'); ?>
+                                </option>
+                                <option value="archivado" <?php selected($editando->estado ?? '', 'archivado'); ?>>
+                                    <?php esc_html_e('Archivado - Oculto del listado público', 'flavor-chat-ia'); ?>
+                                </option>
+                            </select>
+                        </p>
+
+                        <p style="margin-top: 20px;">
+                            <button type="submit" class="button button-primary button-large">
+                                <?php echo $editando
+                                    ? esc_html__('Guardar Cambios', 'flavor-chat-ia')
+                                    : esc_html__('Crear Categoría', 'flavor-chat-ia'); ?>
+                            </button>
+                            <?php if ($editando) : ?>
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-foros-admin')); ?>" class="button">
+                                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                </a>
+                            <?php endif; ?>
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+            jQuery(document).ready(function($) {
+                var nonce = '<?php echo esc_js($nonce); ?>';
+
+                // Guardar categoría
+                $('#form-categoria-foro').on('submit', function(e) {
+                    e.preventDefault();
+                    var $form = $(this);
+                    var $btn = $form.find('button[type="submit"]');
+                    var originalText = $btn.text();
+
+                    $btn.prop('disabled', true).text('<?php echo esc_js(__('Guardando...', 'flavor-chat-ia')); ?>');
+
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'flavor_foros_guardar_categoria',
+                            nonce: nonce,
+                            id: $form.find('[name="id"]').val(),
+                            nombre: $form.find('[name="nombre"]').val(),
+                            descripcion: $form.find('[name="descripcion"]').val(),
+                            icono: $form.find('[name="icono"]').val(),
+                            orden: $form.find('[name="orden"]').val(),
+                            estado: $form.find('[name="estado"]').val()
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                window.location.href = '<?php echo esc_js(admin_url('admin.php?page=flavor-foros-admin&saved=1')); ?>';
+                            } else {
+                                alert(response.data || '<?php echo esc_js(__('Error al guardar', 'flavor-chat-ia')); ?>');
+                                $btn.prop('disabled', false).text(originalText);
+                            }
+                        },
+                        error: function() {
+                            alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                            $btn.prop('disabled', false).text(originalText);
+                        }
+                    });
+                });
+
+                // Eliminar categoría
+                $('.foro-eliminar').on('click', function() {
+                    var id = $(this).data('id');
+                    var nombre = $(this).data('nombre');
+
+                    if (!confirm('<?php echo esc_js(__('¿Eliminar la categoría', 'flavor-chat-ia')); ?> "' + nombre + '"?\n\n<?php echo esc_js(__('Los hilos dentro de esta categoría también se eliminarán.', 'flavor-chat-ia')); ?>')) {
+                        return;
+                    }
+
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'flavor_foros_eliminar_categoria',
+                            nonce: nonce,
+                            id: id
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                window.location.reload();
+                            } else {
+                                alert(response.data || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>');
+                            }
+                        }
+                    });
+                });
+
+                // Cambiar orden
+                $('.foro-orden').on('change', function() {
+                    var id = $(this).data('id');
+                    var orden = $(this).val();
+
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'flavor_foros_guardar_categoria',
+                            nonce: nonce,
+                            id: id,
+                            orden: orden,
+                            solo_orden: 1
+                        }
+                    });
+                });
+
+                // Mostrar mensaje de guardado
+                <?php if (isset($_GET['saved'])) : ?>
+                    var $notice = $('<div class="notice notice-success is-dismissible"><p><?php echo esc_js(__('Categoría guardada correctamente.', 'flavor-chat-ia')); ?></p></div>');
+                    $('.wrap h1').after($notice);
+                <?php endif; ?>
+            });
+            </script>
+        </div>
+        <?php
+    }
+
+    /**
+     * AJAX: Guardar categoría de foro
+     */
+    public function ajax_guardar_categoria() {
+        check_ajax_referer('flavor_foros_admin', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para esta acción.', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+
+        $id = absint($_POST['id'] ?? 0);
+        $solo_orden = isset($_POST['solo_orden']);
+
+        // Si solo actualizamos orden
+        if ($solo_orden && $id) {
+            $resultado = $wpdb->update(
+                $tabla_foros,
+                ['orden' => absint($_POST['orden'] ?? 0)],
+                ['id' => $id],
+                ['%d'],
+                ['%d']
+            );
+            wp_send_json_success();
+        }
+
+        // Validar nombre
+        $nombre = sanitize_text_field($_POST['nombre'] ?? '');
+        if (empty($nombre)) {
+            wp_send_json_error(__('El nombre es obligatorio.', 'flavor-chat-ia'));
+        }
+
+        $datos = [
+            'nombre'      => $nombre,
+            'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+            'icono'       => sanitize_text_field($_POST['icono'] ?? '💬'),
+            'orden'       => absint($_POST['orden'] ?? 0),
+            'estado'      => sanitize_key($_POST['estado'] ?? 'activo'),
+        ];
+
+        // Validar estado
+        if (!in_array($datos['estado'], ['activo', 'cerrado', 'archivado'], true)) {
+            $datos['estado'] = 'activo';
+        }
+
+        if ($id) {
+            // Actualizar
+            $resultado = $wpdb->update(
+                $tabla_foros,
+                $datos,
+                ['id' => $id],
+                ['%s', '%s', '%s', '%d', '%s'],
+                ['%d']
+            );
+        } else {
+            // Insertar
+            $datos['created_at'] = current_time('mysql');
+            $resultado = $wpdb->insert(
+                $tabla_foros,
+                $datos,
+                ['%s', '%s', '%s', '%d', '%s', '%s']
+            );
+            $id = $wpdb->insert_id;
+        }
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al guardar en la base de datos.', 'flavor-chat-ia'));
+        }
+
+        wp_send_json_success(['id' => $id]);
+    }
+
+    /**
+     * AJAX: Eliminar categoría de foro
+     */
+    public function ajax_eliminar_categoria() {
+        check_ajax_referer('flavor_foros_admin', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para esta acción.', 'flavor-chat-ia'));
+        }
+
+        $id = absint($_POST['id'] ?? 0);
+        if (!$id) {
+            wp_send_json_error(__('ID no válido.', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+
+        // Obtener hilos del foro
+        $hilos = $wpdb->get_col($wpdb->prepare(
+            "SELECT id FROM $tabla_hilos WHERE foro_id = %d",
+            $id
+        ));
+
+        // Eliminar respuestas de los hilos
+        if (!empty($hilos)) {
+            $placeholders = implode(',', array_fill(0, count($hilos), '%d'));
+            $wpdb->query($wpdb->prepare(
+                "DELETE FROM $tabla_respuestas WHERE hilo_id IN ($placeholders)",
+                $hilos
+            ));
+        }
+
+        // Eliminar hilos
+        $wpdb->delete($tabla_hilos, ['foro_id' => $id], ['%d']);
+
+        // Eliminar foro
+        $resultado = $wpdb->delete($tabla_foros, ['id' => $id], ['%d']);
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al eliminar.', 'flavor-chat-ia'));
+        }
+
+        wp_send_json_success();
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Dashboard - página oculta
+        add_submenu_page(
+            null,
+            __('Dashboard Foros', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'foros',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Listado de foros - página oculta
+        add_submenu_page(
+            null,
+            __('Listado de Foros', 'flavor-chat-ia'),
+            __('Foros', 'flavor-chat-ia'),
+            $capability,
+            'foros-listado',
+            [$this, 'render_pagina_foros']
+        );
+
+        // Hilos - página oculta
+        add_submenu_page(
+            null,
+            __('Hilos de Foros', 'flavor-chat-ia'),
+            __('Hilos', 'flavor-chat-ia'),
+            $capability,
+            'foros-hilos',
+            [$this, 'render_pagina_hilos']
+        );
+
+        // Moderación - página oculta
+        add_submenu_page(
+            null,
+            __('Moderación de Foros', 'flavor-chat-ia'),
+            __('Moderación', 'flavor-chat-ia'),
+            $capability,
+            'foros-moderacion',
+            [$this, 'render_pagina_moderacion']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Foros', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Panel de administración del módulo de foros.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de foros
+     */
+    public function render_pagina_foros() {
+        $views_path = dirname(__FILE__) . '/views/foros.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Foros', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de hilos
+     */
+    public function render_pagina_hilos() {
+        $views_path = dirname(__FILE__) . '/views/hilos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Hilos', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de moderación
+     */
+    public function render_pagina_moderacion() {
+        $views_path = dirname(__FILE__) . '/views/moderacion.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Moderación de Foros', 'flavor-chat-ia') . '</h1></div>';
+        }
     }
 }

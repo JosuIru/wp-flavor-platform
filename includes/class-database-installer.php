@@ -31,7 +31,10 @@ class Flavor_Database_Installer {
         // Insertar datos de ejemplo
         self::insert_sample_data($prefix);
 
-        update_option('flavor_db_version', '1.0.0');
+        // Añadir campos WhatsApp a tabla de mensajes
+        self::upgrade_whatsapp_fields();
+
+        update_option('flavor_db_version', '1.7.0');
     }
 
     /**
@@ -187,7 +190,27 @@ class Flavor_Database_Installer {
             UNIQUE KEY grupo_usuario (grupo_id, usuario_id)
         ) $charset_collate;";
 
-        // Foros
+        // Foros - Categorías/Subforos
+        $tables[] = "CREATE TABLE {$prefix}foros (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            descripcion text,
+            slug varchar(255) NOT NULL,
+            padre_id bigint(20) UNSIGNED DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            icono varchar(100) DEFAULT NULL,
+            color varchar(7) DEFAULT '#3b82f6',
+            solo_admins tinyint(1) DEFAULT 0,
+            estado varchar(50) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY padre_id (padre_id),
+            KEY estado (estado),
+            KEY orden (orden)
+        ) $charset_collate;";
+
+        // Foros - Temas (legacy)
         $tables[] = "CREATE TABLE {$prefix}foros_temas (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             titulo varchar(255) NOT NULL,
@@ -201,6 +224,53 @@ class Flavor_Database_Installer {
             PRIMARY KEY (id),
             KEY autor_id (autor_id),
             KEY estado (estado)
+        ) $charset_collate;";
+
+        // Foros - Hilos (nueva estructura)
+        $tables[] = "CREATE TABLE {$prefix}foros_hilos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            foro_id bigint(20) UNSIGNED NOT NULL,
+            autor_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            contenido text NOT NULL,
+            slug varchar(255) NOT NULL,
+            es_fijado tinyint(1) DEFAULT 0,
+            es_cerrado tinyint(1) DEFAULT 0,
+            vistas int(11) DEFAULT 0,
+            respuestas int(11) DEFAULT 0,
+            ultima_respuesta_id bigint(20) UNSIGNED DEFAULT NULL,
+            ultima_respuesta_fecha datetime DEFAULT NULL,
+            estado varchar(50) DEFAULT 'abierto',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY foro_id (foro_id),
+            KEY autor_id (autor_id),
+            KEY estado (estado),
+            KEY fecha_creacion (fecha_creacion),
+            KEY es_fijado (es_fijado)
+        ) $charset_collate;";
+
+        // Foros - Respuestas
+        $tables[] = "CREATE TABLE {$prefix}foros_respuestas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            hilo_id bigint(20) UNSIGNED NOT NULL,
+            autor_id bigint(20) UNSIGNED NOT NULL,
+            respuesta_padre_id bigint(20) UNSIGNED DEFAULT NULL,
+            contenido text NOT NULL,
+            es_solucion tinyint(1) DEFAULT 0,
+            votos_positivos int(11) DEFAULT 0,
+            votos_negativos int(11) DEFAULT 0,
+            estado varchar(50) DEFAULT 'publicado',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY hilo_id (hilo_id),
+            KEY autor_id (autor_id),
+            KEY respuesta_padre_id (respuesta_padre_id),
+            KEY es_solucion (es_solucion),
+            KEY fecha_creacion (fecha_creacion)
         ) $charset_collate;";
 
         // Mensajes
@@ -781,6 +851,557 @@ class Flavor_Database_Installer {
             KEY publicado (publicado)
         ) $charset_collate;";
 
+        // =====================================================
+        // TABLAS PARA RED DE NODOS FEDERADA
+        // =====================================================
+
+        // Tabla de nodos en la red federada
+        $tables[] = "CREATE TABLE {$prefix}network_nodes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text,
+            site_url varchar(500) NOT NULL,
+            api_url varchar(500) NOT NULL,
+            logo_url varchar(500) DEFAULT NULL,
+            es_nodo_local tinyint(1) DEFAULT 0,
+            activo tinyint(1) DEFAULT 1,
+            ultimo_sync datetime DEFAULT NULL,
+            metadata longtext,
+            fecha_registro datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY activo (activo),
+            KEY es_nodo_local (es_nodo_local)
+        ) $charset_collate;";
+
+        // Tabla de contenido compartido en la red
+        $tables[] = "CREATE TABLE {$prefix}network_shared_content (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nodo_id bigint(20) UNSIGNED NOT NULL,
+            tipo_contenido varchar(50) NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text,
+            url_externa varchar(500) DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            visible_red tinyint(1) DEFAULT 1,
+            nivel_visibilidad varchar(50) DEFAULT 'privado',
+            referencia_local bigint(20) UNSIGNED DEFAULT NULL,
+            metadata longtext,
+            estado varchar(50) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY nodo_id (nodo_id),
+            KEY tipo_contenido (tipo_contenido),
+            KEY visible_red (visible_red),
+            KEY nivel_visibilidad (nivel_visibilidad),
+            KEY estado (estado),
+            UNIQUE KEY nodo_referencia (nodo_id, tipo_contenido, referencia_local)
+        ) $charset_collate;";
+
+        // Tabla de relaciones de integraciones entre módulos
+        $tables[] = "CREATE TABLE {$prefix}module_integrations (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            consumer_type varchar(50) NOT NULL,
+            consumer_id bigint(20) UNSIGNED NOT NULL,
+            provider_type varchar(50) NOT NULL,
+            provider_id bigint(20) UNSIGNED NOT NULL,
+            orden int(11) DEFAULT 0,
+            metadata longtext,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY consumer (consumer_type, consumer_id),
+            KEY provider (provider_type, provider_id),
+            UNIQUE KEY unique_relation (consumer_type, consumer_id, provider_type, provider_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA SISTEMA DE PRIVACIDAD Y RGPD
+        // =====================================================
+
+        // Tabla de consentimientos de privacidad
+        $tables[] = "CREATE TABLE {$prefix}privacy_consents (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo_consentimiento varchar(100) NOT NULL,
+            consentido tinyint(1) NOT NULL DEFAULT 0,
+            ip_address varchar(45) DEFAULT NULL,
+            user_agent text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_tipo (tipo_consentimiento),
+            KEY idx_fecha (fecha)
+        ) $charset_collate;";
+
+        // Tabla de solicitudes de privacidad (exportación, eliminación)
+        $tables[] = "CREATE TABLE {$prefix}privacy_requests (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('exportar', 'eliminar', 'rectificar') NOT NULL,
+            estado enum('pendiente', 'procesando', 'completado', 'rechazado') DEFAULT 'pendiente',
+            motivo_rechazo text DEFAULT NULL,
+            datos longtext DEFAULT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_procesado datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_estado (estado),
+            KEY idx_tipo (tipo),
+            KEY idx_fecha (fecha_solicitud)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA SISTEMA DE MODERACIÓN
+        // =====================================================
+
+        // Tabla de reportes de contenido
+        $tables[] = "CREATE TABLE {$prefix}moderation_reports (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            tipo_contenido varchar(50) NOT NULL,
+            contenido_id bigint(20) UNSIGNED NOT NULL,
+            autor_contenido_id bigint(20) UNSIGNED NOT NULL,
+            reportador_id bigint(20) UNSIGNED NOT NULL,
+            razon varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            contenido_snapshot text DEFAULT NULL,
+            estado enum('pendiente', 'en_revision', 'resuelto', 'rechazado', 'escalado') DEFAULT 'pendiente',
+            prioridad enum('baja', 'media', 'alta', 'critica') DEFAULT 'media',
+            moderador_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_reporte datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_resolucion datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY idx_tipo_contenido (tipo_contenido, contenido_id),
+            KEY idx_autor (autor_contenido_id),
+            KEY idx_reportador (reportador_id),
+            KEY idx_estado (estado),
+            KEY idx_prioridad (prioridad),
+            KEY idx_moderador (moderador_id),
+            KEY idx_fecha (fecha_reporte)
+        ) $charset_collate;";
+
+        // Tabla de acciones de moderación
+        $tables[] = "CREATE TABLE {$prefix}moderation_actions (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            reporte_id bigint(20) UNSIGNED DEFAULT NULL,
+            moderador_id bigint(20) UNSIGNED NOT NULL,
+            usuario_afectado_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo_contenido varchar(50) DEFAULT NULL,
+            contenido_id bigint(20) UNSIGNED DEFAULT NULL,
+            accion varchar(50) NOT NULL,
+            notas text DEFAULT NULL,
+            notificado tinyint(1) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_reporte (reporte_id),
+            KEY idx_moderador (moderador_id),
+            KEY idx_usuario (usuario_afectado_id),
+            KEY idx_accion (accion),
+            KEY idx_fecha (fecha)
+        ) $charset_collate;";
+
+        // Tabla de sanciones a usuarios
+        $tables[] = "CREATE TABLE {$prefix}moderation_sanctions (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('warning', 'silenciado', 'ban_temporal', 'ban_permanente') NOT NULL,
+            motivo text NOT NULL,
+            moderador_id bigint(20) UNSIGNED NOT NULL,
+            reporte_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_inicio datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_fin datetime DEFAULT NULL,
+            activa tinyint(1) DEFAULT 1,
+            levantada_por bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_levantamiento datetime DEFAULT NULL,
+            motivo_levantamiento text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_tipo (tipo),
+            KEY idx_activa (activa),
+            KEY idx_fecha_inicio (fecha_inicio),
+            KEY idx_fecha_fin (fecha_fin)
+        ) $charset_collate;";
+
+        // Tabla de advertencias (warnings)
+        $tables[] = "CREATE TABLE {$prefix}moderation_warnings (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            moderador_id bigint(20) UNSIGNED NOT NULL,
+            reporte_id bigint(20) UNSIGNED DEFAULT NULL,
+            mensaje text NOT NULL,
+            tipo_contenido varchar(50) DEFAULT NULL,
+            contenido_id bigint(20) UNSIGNED DEFAULT NULL,
+            leida tinyint(1) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_moderador (moderador_id),
+            KEY idx_leida (leida),
+            KEY idx_fecha (fecha)
+        ) $charset_collate;";
+
+        // Tabla de contadores de reportes por contenido (para auto-ocultar)
+        $tables[] = "CREATE TABLE {$prefix}moderation_report_counts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            tipo_contenido varchar(50) NOT NULL,
+            contenido_id bigint(20) UNSIGNED NOT NULL,
+            total_reportes int(11) DEFAULT 0,
+            auto_ocultado tinyint(1) DEFAULT 0,
+            fecha_primer_reporte datetime DEFAULT NULL,
+            fecha_ultimo_reporte datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_contenido (tipo_contenido, contenido_id),
+            KEY idx_total (total_reportes),
+            KEY idx_auto_ocultado (auto_ocultado)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA CHAT ESTADOS (STORIES TIPO WHATSAPP)
+        // =====================================================
+
+        // Tabla principal de estados
+        $tables[] = "CREATE TABLE {$prefix}chat_estados (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('texto', 'imagen', 'video') DEFAULT 'texto',
+            contenido text DEFAULT NULL,
+            media_url varchar(500) DEFAULT NULL,
+            media_thumbnail varchar(500) DEFAULT NULL,
+            color_fondo varchar(7) DEFAULT '#128C7E',
+            font_size int(11) DEFAULT 24,
+            duracion int(11) DEFAULT 5 COMMENT 'Segundos de visualización',
+            privacidad enum('todos', 'contactos', 'contactos_excepto', 'solo_compartir') DEFAULT 'contactos',
+            excepciones text DEFAULT NULL COMMENT 'JSON de user_ids',
+            compartir_con text DEFAULT NULL COMMENT 'JSON de user_ids',
+            visualizaciones_count int(11) DEFAULT 0,
+            respuestas_count int(11) DEFAULT 0,
+            activo tinyint(1) DEFAULT 1,
+            expira_en datetime NOT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_activo (activo),
+            KEY idx_expira (expira_en),
+            KEY idx_fecha (fecha_creacion)
+        ) $charset_collate;";
+
+        // Tabla de visualizaciones de estados
+        $tables[] = "CREATE TABLE {$prefix}chat_estados_vistas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            estado_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_vista (estado_id, usuario_id),
+            KEY idx_estado (estado_id),
+            KEY idx_usuario (usuario_id)
+        ) $charset_collate;";
+
+        // Tabla de reacciones a estados
+        $tables[] = "CREATE TABLE {$prefix}chat_estados_reacciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            estado_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            emoji varchar(10) NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_reaccion (estado_id, usuario_id),
+            KEY idx_estado (estado_id)
+        ) $charset_collate;";
+
+        // Tabla de respuestas a estados
+        $tables[] = "CREATE TABLE {$prefix}chat_estados_respuestas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            estado_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            mensaje text NOT NULL,
+            leido tinyint(1) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_estado (estado_id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_leido (leido)
+        ) $charset_collate;";
+
+        // Tabla de usuarios silenciados en estados
+        $tables[] = "CREATE TABLE {$prefix}chat_estados_silenciados (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            silenciado_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_silenciado (usuario_id, silenciado_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // CAMPOS ADICIONALES PARA WHATSAPP FEATURES EN MENSAJES
+        // =====================================================
+        // Nota: Estos campos se añaden a la tabla existente de mensajes
+        // via ALTER TABLE al actualizar. Ver método upgrade_whatsapp_fields()
+
+        // =====================================================
+        // TABLAS PARA RED SOCIAL (PUBLICACIONES, PERFILES, INTERACCIONES)
+        // =====================================================
+
+        // Perfiles de usuarios en la red social
+        $tables[] = "CREATE TABLE {$prefix}social_perfiles (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            bio text DEFAULT NULL,
+            ubicacion varchar(255) DEFAULT NULL,
+            sitio_web varchar(500) DEFAULT NULL,
+            avatar_url varchar(500) DEFAULT NULL,
+            portada_url varchar(500) DEFAULT NULL,
+            seguidores_count int(11) DEFAULT 0,
+            siguiendo_count int(11) DEFAULT 0,
+            publicaciones_count int(11) DEFAULT 0,
+            verificado tinyint(1) DEFAULT 0,
+            privado tinyint(1) DEFAULT 0,
+            ultima_actividad datetime DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_id (usuario_id),
+            KEY idx_verificado (verificado),
+            KEY idx_ultima_actividad (ultima_actividad)
+        ) $charset_collate;";
+
+        // Publicaciones de la red social
+        $tables[] = "CREATE TABLE {$prefix}social_publicaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            contenido text NOT NULL,
+            tipo enum('texto', 'imagen', 'video', 'enlace', 'encuesta') DEFAULT 'texto',
+            media_urls text DEFAULT NULL COMMENT 'JSON array de URLs',
+            enlace_url varchar(500) DEFAULT NULL,
+            enlace_titulo varchar(255) DEFAULT NULL,
+            enlace_descripcion text DEFAULT NULL,
+            enlace_imagen varchar(500) DEFAULT NULL,
+            ubicacion varchar(255) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            privacidad enum('publico', 'seguidores', 'privado') DEFAULT 'publico',
+            permite_comentarios tinyint(1) DEFAULT 1,
+            es_fijada tinyint(1) DEFAULT 0,
+            es_compartido tinyint(1) DEFAULT 0,
+            publicacion_original_id bigint(20) UNSIGNED DEFAULT NULL,
+            likes_count int(11) DEFAULT 0,
+            comentarios_count int(11) DEFAULT 0,
+            compartidos_count int(11) DEFAULT 0,
+            vistas_count int(11) DEFAULT 0,
+            estado enum('publicado', 'borrador', 'oculto', 'eliminado') DEFAULT 'publicado',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_estado (estado),
+            KEY idx_privacidad (privacidad),
+            KEY idx_fecha (fecha_creacion),
+            KEY idx_tipo (tipo),
+            KEY idx_ubicacion (ubicacion),
+            KEY idx_compartido (publicacion_original_id),
+            FULLTEXT KEY ft_contenido (contenido)
+        ) $charset_collate;";
+
+        // Comentarios en publicaciones
+        $tables[] = "CREATE TABLE {$prefix}social_comentarios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            publicacion_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            padre_id bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Para respuestas anidadas',
+            contenido text NOT NULL,
+            likes_count int(11) DEFAULT 0,
+            respuestas_count int(11) DEFAULT 0,
+            estado enum('activo', 'oculto', 'eliminado') DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_publicacion (publicacion_id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_padre (padre_id),
+            KEY idx_fecha (fecha_creacion),
+            KEY idx_estado (estado)
+        ) $charset_collate;";
+
+        // Likes en publicaciones y comentarios
+        $tables[] = "CREATE TABLE {$prefix}social_likes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo_contenido enum('publicacion', 'comentario') NOT NULL,
+            contenido_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_like (usuario_id, tipo_contenido, contenido_id),
+            KEY idx_contenido (tipo_contenido, contenido_id),
+            KEY idx_fecha (fecha)
+        ) $charset_collate;";
+
+        // Hashtags
+        $tables[] = "CREATE TABLE {$prefix}social_hashtags (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            usos_count int(11) DEFAULT 0,
+            trending tinyint(1) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nombre (nombre),
+            KEY idx_usos (usos_count),
+            KEY idx_trending (trending)
+        ) $charset_collate;";
+
+        // Relación publicaciones-hashtags
+        $tables[] = "CREATE TABLE {$prefix}social_publicaciones_hashtags (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            publicacion_id bigint(20) UNSIGNED NOT NULL,
+            hashtag_id bigint(20) UNSIGNED NOT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_pub_hash (publicacion_id, hashtag_id),
+            KEY idx_hashtag (hashtag_id)
+        ) $charset_collate;";
+
+        // Seguidores (relaciones de seguimiento) - estructura original
+        $tables[] = "CREATE TABLE {$prefix}social_seguidores (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            seguidor_id bigint(20) UNSIGNED NOT NULL,
+            seguido_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('activo', 'pendiente', 'bloqueado') DEFAULT 'activo',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_follow (seguidor_id, seguido_id),
+            KEY idx_seguidor (seguidor_id),
+            KEY idx_seguido (seguido_id),
+            KEY idx_estado (estado)
+        ) $charset_collate;";
+
+        // Seguimientos (usada por módulo red_social)
+        $tables[] = "CREATE TABLE {$prefix}social_seguimientos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            seguidor_id bigint(20) UNSIGNED NOT NULL,
+            seguido_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('activo', 'pendiente', 'bloqueado') DEFAULT 'activo',
+            notificaciones_activas tinyint(1) DEFAULT 1,
+            fecha_seguimiento datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY seguidor_seguido (seguidor_id, seguido_id),
+            KEY seguido_id (seguido_id),
+            KEY estado (estado),
+            KEY fecha_seguimiento (fecha_seguimiento)
+        ) $charset_collate;";
+
+        // Menciones en publicaciones y comentarios
+        $tables[] = "CREATE TABLE {$prefix}social_menciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            tipo_contenido enum('publicacion', 'comentario') NOT NULL,
+            contenido_id bigint(20) UNSIGNED NOT NULL,
+            usuario_mencionado_id bigint(20) UNSIGNED NOT NULL,
+            notificado tinyint(1) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_contenido (tipo_contenido, contenido_id),
+            KEY idx_mencionado (usuario_mencionado_id),
+            KEY idx_notificado (notificado)
+        ) $charset_collate;";
+
+        // Guardados/Bookmarks
+        $tables[] = "CREATE TABLE {$prefix}social_guardados (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            publicacion_id bigint(20) UNSIGNED NOT NULL,
+            coleccion varchar(100) DEFAULT 'general',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_guardado (usuario_id, publicacion_id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_coleccion (coleccion)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA SISTEMA DE ENCUESTAS/FORMULARIOS
+        // =====================================================
+
+        // Encuestas principales
+        $tables[] = "CREATE TABLE {$prefix}encuestas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(500) NOT NULL,
+            descripcion text DEFAULT NULL,
+            autor_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('borrador', 'activa', 'cerrada', 'archivada') DEFAULT 'borrador',
+            tipo enum('encuesta', 'formulario', 'quiz') DEFAULT 'encuesta',
+            contexto_tipo varchar(50) DEFAULT NULL COMMENT 'chat_grupo, foro, red_social, comunidad, etc.',
+            contexto_id bigint(20) UNSIGNED DEFAULT NULL COMMENT 'ID de la entidad asociada',
+            es_anonima tinyint(1) DEFAULT 0,
+            permite_multiples tinyint(1) DEFAULT 0 COMMENT 'Múltiples opciones por pregunta',
+            mostrar_resultados enum('siempre', 'al_votar', 'al_cerrar', 'nunca') DEFAULT 'al_votar',
+            fecha_cierre datetime DEFAULT NULL,
+            total_respuestas int(11) DEFAULT 0 COMMENT 'Cache de respuestas totales',
+            total_participantes int(11) DEFAULT 0 COMMENT 'Cache de participantes únicos',
+            configuracion longtext DEFAULT NULL COMMENT 'JSON con config adicional',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_autor (autor_id),
+            KEY idx_estado (estado),
+            KEY idx_tipo (tipo),
+            KEY idx_contexto (contexto_tipo, contexto_id),
+            KEY idx_fecha_cierre (fecha_cierre),
+            KEY idx_fecha_creacion (fecha_creacion)
+        ) $charset_collate;";
+
+        // Campos/Preguntas de encuestas
+        $tables[] = "CREATE TABLE {$prefix}encuestas_campos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            encuesta_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('texto', 'textarea', 'seleccion_unica', 'seleccion_multiple', 'fecha', 'numero', 'escala', 'si_no', 'estrellas') DEFAULT 'seleccion_unica',
+            etiqueta varchar(500) NOT NULL COMMENT 'Texto de la pregunta',
+            descripcion text DEFAULT NULL COMMENT 'Descripción o ayuda',
+            opciones longtext DEFAULT NULL COMMENT 'JSON array de opciones para selección',
+            es_requerido tinyint(1) DEFAULT 1,
+            orden int(11) DEFAULT 0,
+            configuracion longtext DEFAULT NULL COMMENT 'JSON: min, max, step, etc.',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_encuesta (encuesta_id),
+            KEY idx_orden (orden),
+            KEY idx_tipo (tipo)
+        ) $charset_collate;";
+
+        // Respuestas individuales a campos
+        $tables[] = "CREATE TABLE {$prefix}encuestas_respuestas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            encuesta_id bigint(20) UNSIGNED NOT NULL,
+            campo_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL COMMENT 'NULL si anónima',
+            sesion_id varchar(64) DEFAULT NULL COMMENT 'Tracking para respuestas anónimas',
+            valor text DEFAULT NULL COMMENT 'Respuesta de texto/número',
+            opcion_index int(11) DEFAULT NULL COMMENT 'Índice de opción seleccionada (para optimizar conteo)',
+            fecha_respuesta datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_encuesta (encuesta_id),
+            KEY idx_campo (campo_id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_sesion (sesion_id),
+            KEY idx_opcion (campo_id, opcion_index),
+            KEY idx_fecha (fecha_respuesta)
+        ) $charset_collate;";
+
+        // Participantes en encuestas (tracking de quién ha completado)
+        $tables[] = "CREATE TABLE {$prefix}encuestas_participantes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            encuesta_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            sesion_id varchar(64) DEFAULT NULL,
+            completada tinyint(1) DEFAULT 0,
+            fecha_inicio datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_completada datetime DEFAULT NULL,
+            ip_address varchar(45) DEFAULT NULL,
+            user_agent varchar(255) DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_participante (encuesta_id, usuario_id),
+            KEY idx_encuesta (encuesta_id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_sesion (sesion_id),
+            KEY idx_completada (completada)
+        ) $charset_collate;";
+
         return $tables;
     }
 
@@ -965,6 +1586,20 @@ class Flavor_Database_Installer {
             'mensaje' => 'Gracias por unirte a nuestra comunidad',
             'tipo' => 'info'
         ]);
+
+        // Nodo local para la red federada
+        $site_name = get_bloginfo('name') ?: 'Mi Comunidad';
+        $site_url = home_url();
+        $wpdb->insert("{$prefix}network_nodes", [
+            'nombre' => $site_name,
+            'slug' => sanitize_title($site_name),
+            'descripcion' => get_bloginfo('description'),
+            'site_url' => $site_url,
+            'api_url' => rest_url('flavor-integration/v1/'),
+            'logo_url' => get_site_icon_url(),
+            'es_nodo_local' => 1,
+            'activo' => 1
+        ]);
     }
 
     /**
@@ -985,7 +1620,19 @@ class Flavor_Database_Installer {
             'fichajes', 'biblioteca_prestamos', 'bares', 'podcast_episodios',
             'carpooling_viajes', 'grupos_consumo', 'grupos_consumo_miembros',
             'compostaje_aportes', 'ayuda_vecinal', 'recursos_compartidos',
-            'facturas', 'bicicletas', 'bicicletas_alquileres', 'parkings'
+            'facturas', 'bicicletas', 'bicicletas_alquileres', 'parkings',
+            // Tablas de foros extendidas
+            'foros', 'foros_hilos', 'foros_respuestas',
+            // Tablas de red social
+            'social_seguimientos',
+            // Tablas de integraciones y red
+            'interactions', 'interaction_counts', 'network_nodes', 'network_shared_content', 'module_integrations',
+            // Tablas de privacidad RGPD
+            'privacy_consents', 'privacy_requests',
+            // Tablas de moderación
+            'moderation_reports', 'moderation_actions', 'moderation_sanctions', 'moderation_warnings', 'moderation_report_counts',
+            // Tablas de chat estados (Stories)
+            'chat_estados', 'chat_estados_vistas', 'chat_estados_reacciones', 'chat_estados_respuestas', 'chat_estados_silenciados'
         ];
 
         foreach ($tables as $table) {
@@ -1129,6 +1776,56 @@ class Flavor_Database_Installer {
 
             // Parkings
             ['tabla' => 'parkings', 'nombre' => 'estado', 'columnas' => 'estado'],
+
+            // =====================================================
+            // Índices para optimización del Feed Unificado (Mi Red)
+            // =====================================================
+
+            // Red Social - publicaciones
+            ['tabla' => 'social_publicaciones', 'nombre' => 'feed_estado_fecha', 'columnas' => 'estado, fecha_publicacion'],
+            ['tabla' => 'social_publicaciones', 'nombre' => 'feed_visibilidad', 'columnas' => 'visibilidad'],
+            ['tabla' => 'social_publicaciones', 'nombre' => 'feed_autor_fecha', 'columnas' => 'usuario_id, fecha_publicacion'],
+            ['tabla' => 'social_publicaciones', 'nombre' => 'feed_entidad', 'columnas' => 'entidad_tipo, entidad_id'],
+
+            // Multimedia
+            ['tabla' => 'multimedia', 'nombre' => 'feed_estado_fecha', 'columnas' => 'estado, fecha_creacion'],
+            ['tabla' => 'multimedia', 'nombre' => 'feed_tipo_estado', 'columnas' => 'tipo, estado'],
+            ['tabla' => 'multimedia', 'nombre' => 'feed_usuario', 'columnas' => 'usuario_id, fecha_creacion'],
+
+            // Podcast
+            ['tabla' => 'podcast_episodios', 'nombre' => 'feed_estado_fecha', 'columnas' => 'estado, fecha_publicacion'],
+            ['tabla' => 'podcast_series', 'nombre' => 'feed_entidad', 'columnas' => 'entidad_tipo, entidad_id'],
+
+            // Radio
+            ['tabla' => 'radio_programas', 'nombre' => 'feed_estado', 'columnas' => 'estado'],
+            ['tabla' => 'radio_emisiones', 'nombre' => 'feed_fecha', 'columnas' => 'fecha_emision'],
+
+            // Comunidades
+            ['tabla' => 'comunidades', 'nombre' => 'feed_estado', 'columnas' => 'estado'],
+            ['tabla' => 'comunidades_publicaciones', 'nombre' => 'feed_estado_fecha', 'columnas' => 'estado, fecha_publicacion'],
+            ['tabla' => 'comunidades_miembros', 'nombre' => 'feed_usuario_estado', 'columnas' => 'usuario_id, estado'],
+
+            // Foros
+            ['tabla' => 'foros_temas', 'nombre' => 'feed_estado_fecha', 'columnas' => 'estado, fecha_creacion'],
+            ['tabla' => 'foros_temas', 'nombre' => 'feed_entidad', 'columnas' => 'entidad_tipo, entidad_id'],
+
+            // Colectivos
+            ['tabla' => 'colectivos_miembros', 'nombre' => 'feed_usuario_estado', 'columnas' => 'usuario_id, estado'],
+            ['tabla' => 'colectivos_proyectos', 'nombre' => 'feed_colectivo_estado', 'columnas' => 'colectivo_id, estado'],
+            ['tabla' => 'colectivos_asambleas', 'nombre' => 'feed_colectivo_fecha', 'columnas' => 'colectivo_id, fecha_hora'],
+
+            // Círculos de Cuidados
+            ['tabla' => 'circulos_cuidados', 'nombre' => 'feed_privacidad_estado', 'columnas' => 'privacidad, estado'],
+            ['tabla' => 'circulos_miembros', 'nombre' => 'feed_usuario_estado', 'columnas' => 'usuario_id, estado'],
+            ['tabla' => 'circulos_actividades', 'nombre' => 'feed_circulo_fecha', 'columnas' => 'circulo_id, fecha_inicio'],
+
+            // Notificaciones sociales
+            ['tabla' => 'social_notificaciones', 'nombre' => 'feed_receptor_leida', 'columnas' => 'receptor_id, leida'],
+            ['tabla' => 'social_notificaciones', 'nombre' => 'feed_receptor_fecha', 'columnas' => 'receptor_id, fecha_creacion'],
+
+            // Reacciones y comentarios
+            ['tabla' => 'social_reacciones', 'nombre' => 'feed_post_tipo', 'columnas' => 'post_id, tipo'],
+            ['tabla' => 'social_comentarios', 'nombre' => 'feed_post_fecha', 'columnas' => 'post_id, fecha_creacion'],
         ];
 
         foreach ($indices as $indice) {
@@ -1177,15 +1874,55 @@ class Flavor_Database_Installer {
      */
     public static function maybe_upgrade() {
         $version_actual = get_option('flavor_db_version', '1.0.0');
-        $version_nueva = '1.2.0'; // Versión con tablas de radio
+        $version_nueva = '1.7.0'; // Versión con tablas de foros extendidas y social_seguimientos
 
         if (version_compare($version_actual, $version_nueva, '<')) {
             // Crear tablas faltantes
             self::create_missing_tables();
             // Añadir índices faltantes
             self::add_missing_indexes();
+            // Crear nodo local si no existe
+            self::maybe_create_local_node();
+            // Añadir campos WhatsApp a tabla de mensajes
+            self::upgrade_whatsapp_fields();
             update_option('flavor_db_version', $version_nueva);
         }
+    }
+
+    /**
+     * Crea el nodo local si no existe
+     */
+    private static function maybe_create_local_node() {
+        global $wpdb;
+        $prefix = $wpdb->prefix . 'flavor_';
+
+        // Verificar si la tabla existe
+        $tabla_existe = $wpdb->get_var("SHOW TABLES LIKE '{$prefix}network_nodes'");
+        if (!$tabla_existe) {
+            return;
+        }
+
+        // Verificar si ya existe el nodo local
+        $nodo_local_existe = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$prefix}network_nodes WHERE es_nodo_local = 1"
+        );
+
+        if ($nodo_local_existe > 0) {
+            return;
+        }
+
+        // Crear nodo local
+        $site_name = get_bloginfo('name') ?: 'Mi Comunidad';
+        $wpdb->insert("{$prefix}network_nodes", [
+            'nombre' => $site_name,
+            'slug' => sanitize_title($site_name),
+            'descripcion' => get_bloginfo('description'),
+            'site_url' => home_url(),
+            'api_url' => rest_url('flavor-integration/v1/'),
+            'logo_url' => get_site_icon_url(),
+            'es_nodo_local' => 1,
+            'activo' => 1
+        ]);
     }
 
     /**
@@ -1293,5 +2030,93 @@ class Flavor_Database_Installer {
 <!-- wp:paragraph -->
 <p>' . __('Todo el contenido de este sitio, incluyendo textos, gráficos, logos e imágenes, es propiedad del sitio o sus licenciantes y está protegido por las leyes de propiedad intelectual.', 'flavor-chat-ia') . '</p>
 <!-- /wp:paragraph -->';
+    }
+
+    /**
+     * Añade campos WhatsApp a las tablas de mensajes existentes
+     *
+     * Campos añadidos:
+     * - delivery_status: Estado de entrega (pending, sent, delivered, read)
+     * - delivery_timestamp: Fecha del último cambio de estado
+     * - es_temporal: Si el mensaje es temporal/efímero
+     * - fecha_expiracion: Cuándo expira el mensaje temporal
+     * - has_links: Si el mensaje contiene enlaces
+     * - link_previews: JSON con URLs detectadas para preview
+     */
+    public static function upgrade_whatsapp_fields() {
+        global $wpdb;
+
+        // Tablas de mensajes a actualizar (chat interno y grupos)
+        $tablas_mensajes = [
+            $wpdb->prefix . 'flavor_chat_mensajes',
+            $wpdb->prefix . 'flavor_chat_grupos_mensajes',
+        ];
+
+        foreach ($tablas_mensajes as $tabla_mensajes) {
+            self::add_whatsapp_fields_to_table($tabla_mensajes);
+        }
+    }
+
+    /**
+     * Añade campos WhatsApp a una tabla específica de mensajes
+     *
+     * @param string $tabla_mensajes Nombre completo de la tabla
+     */
+    private static function add_whatsapp_fields_to_table($tabla_mensajes) {
+        global $wpdb;
+
+        // Verificar si la tabla existe
+        $tabla_existe = $wpdb->get_var(
+            $wpdb->prepare("SHOW TABLES LIKE %s", $tabla_mensajes)
+        );
+
+        if (!$tabla_existe) {
+            return;
+        }
+
+        // Obtener columnas existentes
+        $columnas_existentes = $wpdb->get_col("DESCRIBE {$tabla_mensajes}", 0);
+
+        // Determinar columna de referencia para AFTER (puede variar entre tablas)
+        $columna_referencia = in_array('eliminado_para', $columnas_existentes) ? 'eliminado_para' : 'eliminado';
+
+        // Campos a añadir con sus definiciones SQL
+        $campos_nuevos = [
+            'delivery_status' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN delivery_status enum('pending','sent','delivered','read') DEFAULT 'sent' AFTER {$columna_referencia}",
+            'delivery_timestamp' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN delivery_timestamp datetime DEFAULT NULL AFTER delivery_status",
+            'es_temporal' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN es_temporal tinyint(1) DEFAULT 0 AFTER delivery_timestamp",
+            'fecha_expiracion' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN fecha_expiracion datetime DEFAULT NULL AFTER es_temporal",
+            'has_links' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN has_links tinyint(1) DEFAULT 0 AFTER fecha_expiracion",
+            'link_previews' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN link_previews text DEFAULT NULL AFTER has_links",
+        ];
+
+        foreach ($campos_nuevos as $campo => $sql) {
+            if (!in_array($campo, $columnas_existentes)) {
+                $wpdb->query($sql);
+            }
+        }
+
+        // Añadir índices para los nuevos campos
+        $indices_nuevos = [
+            'idx_delivery_status' => "ALTER TABLE {$tabla_mensajes} ADD INDEX idx_delivery_status (delivery_status)",
+            'idx_es_temporal' => "ALTER TABLE {$tabla_mensajes} ADD INDEX idx_es_temporal (es_temporal)",
+            'idx_fecha_expiracion' => "ALTER TABLE {$tabla_mensajes} ADD INDEX idx_fecha_expiracion (fecha_expiracion)",
+        ];
+
+        foreach ($indices_nuevos as $nombre_indice => $sql) {
+            // Verificar si el índice ya existe
+            $indice_existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(1) FROM INFORMATION_SCHEMA.STATISTICS
+                 WHERE table_schema = DATABASE()
+                 AND table_name = %s
+                 AND index_name = %s",
+                $tabla_mensajes,
+                $nombre_indice
+            ));
+
+            if (!$indice_existe) {
+                $wpdb->query($sql);
+            }
+        }
     }
 }

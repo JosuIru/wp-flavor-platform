@@ -12,6 +12,9 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
+    use Flavor_Module_Dashboard_Tabs_Trait;
+    use Flavor_Encuestas_Features;
 
     protected $id = 'eventos';
     protected $name = 'Eventos y Calendario';
@@ -58,16 +61,109 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         ];
     }
 
+    /**
+     * Tipos de contenido que este módulo acepta como integraciones
+     *
+     * @return array Lista de IDs de tipos de contenido aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['recetas', 'multimedia', 'podcast'];
+    }
+
+    /**
+     * Targets donde se pueden vincular integraciones
+     *
+     * @return array Configuración de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type' => 'custom_table',
+                'table' => 'flavor_eventos',
+                'module_id' => $this->id,
+            ],
+        ];
+    }
+
+    // =========================================================================
+    // TABS DEL DASHBOARD (SISTEMA FLEXIBLE)
+    // =========================================================================
+
+    /**
+     * Define los tabs del dashboard para Mi Portal
+     *
+     * @return array Configuración de tabs
+     */
+    protected function define_dashboard_tabs() {
+        return [
+            'proximos' => [
+                'label'    => __('Próximos', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-calendar',
+                'content'  => '[eventos_proximos limit="12"]',
+                'priority' => 10,
+            ],
+            'inscripciones' => [
+                'label'    => __('Mis Inscripciones', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-tickets-alt',
+                'content'  => '[eventos_mis_inscripciones]',
+                'priority' => 20,
+                'cap'      => 'read',
+            ],
+            'calendario' => [
+                'label'    => __('Calendario', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-calendar-alt',
+                'content'  => '[eventos_calendario]',
+                'priority' => 30,
+            ],
+            'mapa' => [
+                'label'    => __('Mapa', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-location',
+                'content'  => '[eventos_mapa]',
+                'priority' => 40,
+            ],
+            'valoraciones' => [
+                'label'    => __('Valoraciones', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-star-filled',
+                'content'  => '[flavor_encuestas_contexto tipo="evento" estado="activa" limit="10"]',
+                'priority' => 50,
+                'cap'      => 'read',
+            ],
+        ];
+    }
+
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
 
+        // Registrar como consumidor de integraciones
+        $this->register_as_integration_consumer();
+
+        // Inicializar funcionalidades de encuestas
+        $this->init_encuestas_features('evento');
+
         // Cargar funcionalidades del Sello de Conciencia (+12 pts)
         $this->cargar_funcionalidades_conciencia();
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-eventos-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Eventos_Frontend_Controller::get_instance();
+        }
     }
 
     /**
@@ -1422,4 +1518,56 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         ];
     }
 
+    // =========================================================================
+    // PÁGINAS DE ADMINISTRACIÓN
+    // =========================================================================
+
+    /**
+     * Registra las páginas de administración del módulo (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas del sidebar (primer parámetro null)
+        add_submenu_page(null, __('Eventos - Dashboard', 'flavor-chat-ia'), __('Dashboard', 'flavor-chat-ia'), $capability, 'eventos', [$this, 'render_pagina_dashboard']);
+        add_submenu_page(null, __('Todos los Eventos', 'flavor-chat-ia'), __('Eventos', 'flavor-chat-ia'), $capability, 'eventos-listado', [$this, 'render_pagina_eventos']);
+        add_submenu_page(null, __('Calendario', 'flavor-chat-ia'), __('Calendario', 'flavor-chat-ia'), $capability, 'eventos-calendario', [$this, 'render_pagina_calendario']);
+        add_submenu_page(null, __('Asistentes', 'flavor-chat-ia'), __('Asistentes', 'flavor-chat-ia'), $capability, 'eventos-asistentes', [$this, 'render_pagina_asistentes']);
+        add_submenu_page(null, __('Entradas', 'flavor-chat-ia'), __('Entradas', 'flavor-chat-ia'), $capability, 'eventos-entradas', [$this, 'render_pagina_entradas']);
+    }
+
+    public function render_pagina_dashboard() {
+        echo '<div class="wrap"><h1>' . esc_html__('Dashboard Eventos', 'flavor-chat-ia') . '</h1>';
+        $path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($path)) include $path;
+        echo '</div>';
+    }
+
+    public function render_pagina_eventos() {
+        echo '<div class="wrap"><h1>' . esc_html__('Todos los Eventos', 'flavor-chat-ia') . '</h1>';
+        $path = dirname(__FILE__) . '/views/eventos.php';
+        if (file_exists($path)) include $path;
+        echo '</div>';
+    }
+
+    public function render_pagina_calendario() {
+        echo '<div class="wrap"><h1>' . esc_html__('Calendario', 'flavor-chat-ia') . '</h1>';
+        $path = dirname(__FILE__) . '/views/calendario.php';
+        if (file_exists($path)) include $path;
+        echo '</div>';
+    }
+
+    public function render_pagina_asistentes() {
+        echo '<div class="wrap"><h1>' . esc_html__('Asistentes', 'flavor-chat-ia') . '</h1>';
+        $path = dirname(__FILE__) . '/views/asistentes.php';
+        if (file_exists($path)) include $path;
+        echo '</div>';
+    }
+
+    public function render_pagina_entradas() {
+        echo '<div class="wrap"><h1>' . esc_html__('Entradas', 'flavor-chat-ia') . '</h1>';
+        $path = dirname(__FILE__) . '/views/entradas.php';
+        if (file_exists($path)) include $path;
+        echo '</div>';
+    }
 }

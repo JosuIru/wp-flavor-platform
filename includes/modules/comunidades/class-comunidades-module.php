@@ -18,6 +18,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
+    use Flavor_Encuestas_Features;
 
     /**
      * Constructor
@@ -81,9 +83,38 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia', 'podcast', 'publicaciones', 'biblioteca', 'recetas'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_comunidades',
+                'context' => 'normal',
+                'label'   => __('Comunidad', 'flavor-chat-ia'),
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        // Registrar como consumer de integraciones
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -91,8 +122,40 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         $this->register_ajax_handlers();
 
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         // Registrar en Panel Unificado de Gestion
         $this->registrar_en_panel_unificado();
+
+        // Sistema de notificaciones cross-comunidad
+        $this->init_cross_community_notifications();
+
+        // Integrar funcionalidades de encuestas
+        $this->init_encuestas_features('comunidad');
+    }
+
+    /**
+     * Inicializa el sistema de notificaciones cross-comunidad
+     */
+    private function init_cross_community_notifications() {
+        // Hooks para disparar notificaciones cross-comunidad
+        add_action('flavor_comunidad_nueva_publicacion', [$this, 'notificar_nueva_publicacion'], 10, 3);
+        add_action('flavor_comunidad_nuevo_evento', [$this, 'notificar_nuevo_evento'], 10, 3);
+        add_action('flavor_comunidad_nuevo_miembro', [$this, 'notificar_nuevo_miembro'], 10, 2);
+        add_action('flavor_comunidad_recurso_compartido', [$this, 'notificar_recurso_compartido'], 10, 4);
+        add_action('flavor_comunidad_mencion', [$this, 'notificar_mencion'], 10, 4);
+        add_action('flavor_red_nuevo_contenido', [$this, 'notificar_contenido_federado'], 10, 2);
+
+        // Hook para contenido cross-posteado
+        add_action('flavor_comunidad_crosspost', [$this, 'notificar_crosspost'], 10, 4);
+
+        // AJAX para gestión de preferencias de notificaciones
+        add_action('wp_ajax_comunidades_guardar_preferencias_notificaciones', [$this, 'ajax_guardar_preferencias_notificaciones']);
+        add_action('wp_ajax_comunidades_obtener_notificaciones', [$this, 'ajax_obtener_notificaciones']);
+        add_action('wp_ajax_comunidades_marcar_notificacion_leida', [$this, 'ajax_marcar_notificacion_leida']);
+        add_action('wp_ajax_comunidades_marcar_todas_leidas', [$this, 'ajax_marcar_todas_leidas']);
+        add_action('wp_ajax_comunidades_eliminar_notificacion', [$this, 'ajax_eliminar_notificacion']);
     }
 
     /**
@@ -104,6 +167,67 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         add_shortcode('comunidades_detalle', [$this, 'shortcode_detalle']);
         add_shortcode('comunidades_actividad', [$this, 'shortcode_feed_actividad']);
         add_shortcode('comunidades_mis_comunidades', [$this, 'shortcode_mis_comunidades']);
+        // Nuevos shortcodes de interconexión
+        add_shortcode('comunidades_feed_unificado', [$this, 'shortcode_feed_unificado']);
+        add_shortcode('comunidades_calendario', [$this, 'shortcode_calendario_coordinado']);
+        add_shortcode('comunidades_recursos_compartidos', [$this, 'shortcode_recursos_compartidos']);
+        add_shortcode('comunidades_notificaciones', [$this, 'shortcode_centro_notificaciones']);
+        add_shortcode('comunidades_busqueda', [$this, 'shortcode_busqueda_federada']);
+        add_shortcode('comunidades_tablon', [$this, 'shortcode_tablon_anuncios']);
+        add_shortcode('comunidades_metricas', [$this, 'shortcode_metricas_colaboracion']);
+    }
+
+    /**
+     * Shortcode: Métricas de colaboración
+     * [comunidades_metricas]
+     */
+    public function shortcode_metricas_colaboracion($atts) {
+        ob_start();
+        include dirname(__FILE__) . '/views/metricas-colaboracion.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Tablón de anuncios inter-comunidades
+     * [comunidades_tablon limite="20" destacados="false" incluir_red="true"]
+     */
+    public function shortcode_tablon_anuncios($atts) {
+        $atributos = shortcode_atts([
+            'limite'      => 20,
+            'destacados'  => 'false',
+            'incluir_red' => 'true',
+        ], $atts);
+
+        ob_start();
+        include dirname(__FILE__) . '/views/tablon-anuncios.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Búsqueda federada unificada
+     * [comunidades_busqueda]
+     */
+    public function shortcode_busqueda_federada($atts) {
+        ob_start();
+        include dirname(__FILE__) . '/views/busqueda-federada.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Centro de notificaciones cross-comunidad
+     * [comunidades_notificaciones]
+     */
+    public function shortcode_centro_notificaciones($atts) {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-login-requerido">' .
+                   '<p>' . __('Inicia sesión para ver tus notificaciones.', 'flavor-chat-ia') . '</p>' .
+                   '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn-primario">' .
+                   __('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
+        }
+
+        ob_start();
+        include dirname(__FILE__) . '/views/centro-notificaciones.php';
+        return ob_get_clean();
     }
 
     /**
@@ -122,11 +246,35 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             add_action('wp_ajax_' . $accion, [$this, 'ajax_' . str_replace('comunidades_', '', $accion)]);
         }
 
+        add_action('wp_ajax_comunidades_cargar_actividad', [$this, 'ajax_cargar_actividad']);
+        add_action('wp_ajax_nopriv_comunidades_cargar_actividad', [$this, 'ajax_cargar_actividad']);
+        add_action('wp_ajax_comunidades_like', [$this, 'ajax_like']);
+
         // Acciones públicas
         add_action('wp_ajax_comunidades_cargar_mas', [$this, 'ajax_cargar_mas']);
         add_action('wp_ajax_nopriv_comunidades_cargar_mas', [$this, 'ajax_cargar_mas']);
         add_action('wp_ajax_comunidades_obtener_comunidad', [$this, 'ajax_obtener_comunidad']);
         add_action('wp_ajax_nopriv_comunidades_obtener_comunidad', [$this, 'ajax_obtener_comunidad']);
+
+        // AJAX para interconexión de comunidades
+        add_action('wp_ajax_comunidades_feed_unificado', [$this, 'ajax_feed_unificado']);
+        add_action('wp_ajax_comunidades_compartir_publicacion', [$this, 'ajax_compartir_publicacion']);
+        add_action('wp_ajax_comunidades_calendario_eventos', [$this, 'ajax_calendario_eventos']);
+        add_action('wp_ajax_comunidades_recursos_compartidos', [$this, 'ajax_recursos_compartidos']);
+
+        // AJAX para búsqueda federada (público)
+        add_action('wp_ajax_comunidades_busqueda_federada', [$this, 'ajax_busqueda_federada']);
+        add_action('wp_ajax_nopriv_comunidades_busqueda_federada', [$this, 'ajax_busqueda_federada']);
+
+        // AJAX para tablón de anuncios
+        add_action('wp_ajax_comunidades_obtener_anuncios', [$this, 'ajax_obtener_anuncios']);
+        add_action('wp_ajax_nopriv_comunidades_obtener_anuncios', [$this, 'ajax_obtener_anuncios']);
+        add_action('wp_ajax_comunidades_crear_anuncio', [$this, 'ajax_crear_anuncio']);
+        add_action('wp_ajax_comunidades_mis_comunidades_admin', [$this, 'ajax_mis_comunidades_admin']);
+
+        // AJAX para métricas de colaboración
+        add_action('wp_ajax_comunidades_obtener_metricas', [$this, 'ajax_obtener_metricas']);
+        add_action('wp_ajax_nopriv_comunidades_obtener_metricas', [$this, 'ajax_obtener_metricas']);
     }
 
     /**
@@ -175,7 +323,20 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return false;
         }
 
-        $shortcodes = ['comunidades_listar', 'comunidades_crear', 'comunidades_detalle', 'comunidades_actividad', 'comunidades_mis_comunidades'];
+        $shortcodes = [
+            'comunidades_listar',
+            'comunidades_crear',
+            'comunidades_detalle',
+            'comunidades_actividad',
+            'comunidades_mis_comunidades',
+            'comunidades_feed_unificado',
+            'comunidades_calendario',
+            'comunidades_recursos_compartidos',
+            'comunidades_notificaciones',
+            'comunidades_busqueda',
+            'comunidades_tablon',
+            'comunidades_metricas',
+        ];
 
         foreach ($shortcodes as $shortcode) {
             if (has_shortcode($post->post_content, $shortcode)) {
@@ -275,6 +436,10 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             }
         }
 
+        // Obtener grupo de chat de la comunidad (solo si es miembro)
+        $grupo_chat_id = $es_miembro ? $this->obtener_grupo_chat_comunidad($comunidad_id) : null;
+        $chat_grupos_activo = class_exists('Flavor_Chat_Chat_Grupos_Module') && $grupo_chat_id;
+
         ob_start();
         include dirname(__FILE__) . '/views/detalle-comunidad.php';
         return ob_get_clean();
@@ -303,10 +468,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         ]);
 
         $actividades = $resultado['success'] ? ($resultado['actividades'] ?? []) : [];
-
-        ob_start();
-        include dirname(__FILE__) . '/views/feed-actividad.php';
-        return ob_get_clean();
+        return $this->render_feed_html($actividades, $comunidad_id);
     }
 
     /**
@@ -330,6 +492,612 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         ob_start();
         include dirname(__FILE__) . '/views/mis-comunidades.php';
         return ob_get_clean();
+    }
+
+    // =========================================================================
+    // Shortcodes de Interconexión Federada
+    // =========================================================================
+
+    /**
+     * Shortcode: Feed unificado de todas las comunidades del usuario (locales + federadas)
+     * [comunidades_feed_unificado limite="20" mostrar_origen="true" incluir_red="true"]
+     */
+    public function shortcode_feed_unificado($atts) {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-com-notice flavor-com-notice-warning">' .
+                   sprintf(
+                       __('Debes <a href="%s">iniciar sesión</a> para ver el feed unificado.', 'flavor-chat-ia'),
+                       wp_login_url(get_permalink())
+                   ) .
+                   '</div>';
+        }
+
+        $atributos = shortcode_atts([
+            'limite'        => 30,
+            'mostrar_origen' => 'true',
+            'incluir_red'   => 'true',
+            'filtro_comunidad' => '',
+        ], $atts);
+
+        $usuario_id = get_current_user_id();
+        $limite = intval($atributos['limite']);
+        $incluir_red = $atributos['incluir_red'] === 'true';
+
+        // Obtener actividades de comunidades locales
+        $actividades_locales = $this->obtener_feed_unificado_local($usuario_id, $limite);
+
+        // Obtener contenido de la red federada si está habilitado
+        $contenido_red = [];
+        if ($incluir_red && class_exists('Flavor_Network_Content_Bridge')) {
+            $contenido_red = $this->obtener_contenido_red_comunidades($limite);
+        }
+
+        // Combinar y ordenar por fecha
+        $feed_combinado = $this->combinar_feed_federado($actividades_locales, $contenido_red);
+
+        // Limitar resultados finales
+        $feed_combinado = array_slice($feed_combinado, 0, $limite);
+
+        // Obtener comunidades del usuario para el filtro
+        $mis_comunidades = $this->action_mis_comunidades([]);
+        $comunidades_usuario = $mis_comunidades['success'] ? $mis_comunidades['comunidades'] : [];
+
+        ob_start();
+        include dirname(__FILE__) . '/views/feed-unificado.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene el feed unificado de comunidades locales del usuario
+     */
+    private function obtener_feed_unificado_local($usuario_id, $limite = 30) {
+        global $wpdb;
+
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_comunidades_actividad_reacciones';
+
+        // Obtener comunidades del usuario
+        $comunidades_ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT comunidad_id FROM $tabla_miembros WHERE user_id = %d AND estado = 'activo'",
+            $usuario_id
+        ));
+
+        if (empty($comunidades_ids)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($comunidades_ids), '%d'));
+
+        // Obtener actividades de todas sus comunidades
+        $query = $wpdb->prepare(
+            "SELECT a.*,
+                    c.nombre AS comunidad_nombre,
+                    c.imagen AS comunidad_imagen,
+                    c.categoria AS comunidad_categoria,
+                    u.display_name AS autor_nombre,
+                    u.ID AS autor_id,
+                    'local' AS origen_tipo
+             FROM $tabla_actividad a
+             INNER JOIN $tabla_comunidades c ON a.comunidad_id = c.id
+             LEFT JOIN {$wpdb->users} u ON u.ID = a.user_id
+             WHERE a.comunidad_id IN ($placeholders)
+             ORDER BY a.es_fijado DESC, a.created_at DESC
+             LIMIT %d",
+            array_merge($comunidades_ids, [$limite])
+        );
+
+        $actividades = $wpdb->get_results($query);
+
+        // Agregar conteo de likes
+        foreach ($actividades as &$actividad) {
+            $actividad->likes_count = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_reacciones WHERE actividad_id = %d",
+                $actividad->id
+            ));
+            $actividad->usuario_dio_like = (bool) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_reacciones WHERE actividad_id = %d AND user_id = %d",
+                $actividad->id,
+                $usuario_id
+            ));
+        }
+
+        return $actividades;
+    }
+
+    /**
+     * Obtiene contenido de comunidades de la red federada
+     */
+    private function obtener_contenido_red_comunidades($limite = 20) {
+        if (!class_exists('Flavor_Network_Content_Bridge')) {
+            return [];
+        }
+
+        $tipos_comunidad = ['comunidades', 'grupos_consumo', 'banco_tiempo'];
+        $contenido = [];
+
+        foreach ($tipos_comunidad as $tipo) {
+            $items = apply_filters('flavor_get_network_content', [], $tipo, [
+                'limite'        => $limite,
+                'excluir_local' => true,
+            ]);
+
+            foreach ($items as $item) {
+                $item->origen_tipo = 'federado';
+                $item->tipo_comunidad = $tipo;
+                $contenido[] = $item;
+            }
+        }
+
+        return $contenido;
+    }
+
+    /**
+     * Combina actividades locales con contenido federado
+     */
+    private function combinar_feed_federado($locales, $federados) {
+        $combinado = [];
+
+        // Normalizar actividades locales
+        foreach ($locales as $local) {
+            $combinado[] = (object) [
+                'id'                => $local->id,
+                'tipo'              => $local->tipo ?? 'publicacion',
+                'titulo'            => $local->titulo ?? '',
+                'contenido'         => $local->contenido ?? '',
+                'imagen'            => $local->imagen ?? '',
+                'autor_nombre'      => $local->autor_nombre ?? '',
+                'autor_id'          => $local->autor_id ?? 0,
+                'comunidad_id'      => $local->comunidad_id ?? 0,
+                'comunidad_nombre'  => $local->comunidad_nombre ?? '',
+                'comunidad_imagen'  => $local->comunidad_imagen ?? '',
+                'comunidad_categoria' => $local->comunidad_categoria ?? '',
+                'likes_count'       => $local->likes_count ?? 0,
+                'usuario_dio_like'  => $local->usuario_dio_like ?? false,
+                'fecha'             => $local->created_at ?? '',
+                'origen_tipo'       => 'local',
+                'url_externa'       => '',
+                'nodo_nombre'       => get_bloginfo('name'),
+                'nodo_logo'         => get_site_icon_url(),
+            ];
+        }
+
+        // Normalizar contenido federado
+        foreach ($federados as $fed) {
+            $metadata = is_string($fed->metadata ?? '') ? json_decode($fed->metadata, true) : ($fed->metadata ?? []);
+            $combinado[] = (object) [
+                'id'                => $fed->id ?? 0,
+                'tipo'              => 'contenido_red',
+                'titulo'            => $fed->titulo ?? '',
+                'contenido'         => $fed->descripcion ?? '',
+                'imagen'            => $fed->imagen_url ?? '',
+                'autor_nombre'      => $metadata['author'] ?? '',
+                'autor_id'          => 0,
+                'comunidad_id'      => 0,
+                'comunidad_nombre'  => $fed->titulo ?? '',
+                'comunidad_imagen'  => $fed->imagen_url ?? '',
+                'comunidad_categoria' => $fed->tipo_comunidad ?? '',
+                'likes_count'       => 0,
+                'usuario_dio_like'  => false,
+                'fecha'             => $fed->fecha_creacion ?? '',
+                'origen_tipo'       => 'federado',
+                'url_externa'       => $fed->url_externa ?? '',
+                'nodo_nombre'       => $fed->nodo_nombre ?? '',
+                'nodo_logo'         => $fed->nodo_logo ?? '',
+            ];
+        }
+
+        // Ordenar por fecha descendente
+        usort($combinado, function($a, $b) {
+            return strtotime($b->fecha ?: '1970-01-01') - strtotime($a->fecha ?: '1970-01-01');
+        });
+
+        return $combinado;
+    }
+
+    /**
+     * Shortcode: Calendario coordinado de eventos de comunidades
+     * [comunidades_calendario vista="mes" incluir_red="true"]
+     */
+    public function shortcode_calendario_coordinado($atts) {
+        $atributos = shortcode_atts([
+            'vista'       => 'mes',
+            'incluir_red' => 'true',
+            'comunidad_id' => 0,
+        ], $atts);
+
+        $usuario_id = get_current_user_id();
+        $incluir_red = $atributos['incluir_red'] === 'true';
+
+        // Obtener eventos locales de comunidades
+        $eventos_locales = $this->obtener_eventos_comunidades($usuario_id);
+
+        // Obtener eventos de la red federada
+        $eventos_red = [];
+        if ($incluir_red) {
+            $eventos_red = apply_filters('flavor_get_network_content', [], 'eventos', [
+                'limite'        => 50,
+                'excluir_local' => true,
+            ]);
+        }
+
+        // Combinar eventos
+        $todos_eventos = $this->combinar_eventos_calendario($eventos_locales, $eventos_red);
+
+        ob_start();
+        include dirname(__FILE__) . '/views/calendario-coordinado.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene eventos de las comunidades del usuario
+     */
+    private function obtener_eventos_comunidades($usuario_id) {
+        global $wpdb;
+
+        // Verificar si el módulo de eventos está activo
+        if (!class_exists('Flavor_Chat_Eventos_Module')) {
+            return [];
+        }
+
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        // Obtener comunidades del usuario
+        $comunidades_ids = [];
+        if ($usuario_id) {
+            $comunidades_ids = $wpdb->get_col($wpdb->prepare(
+                "SELECT comunidad_id FROM $tabla_miembros WHERE user_id = %d AND estado = 'activo'",
+                $usuario_id
+            ));
+        }
+
+        // Verificar si la tabla de eventos existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") !== $tabla_eventos) {
+            return [];
+        }
+
+        // Obtener eventos de esas comunidades o eventos públicos
+        $where_comunidades = '';
+        if (!empty($comunidades_ids)) {
+            $placeholders = implode(',', array_fill(0, count($comunidades_ids), '%d'));
+            $where_comunidades = $wpdb->prepare(
+                "comunidad_id IN ($placeholders) OR",
+                $comunidades_ids
+            );
+        }
+
+        $eventos = $wpdb->get_results(
+            "SELECT * FROM $tabla_eventos
+             WHERE ($where_comunidades visibilidad = 'publico')
+               AND fecha_inicio >= CURDATE()
+             ORDER BY fecha_inicio ASC
+             LIMIT 100"
+        );
+
+        return $eventos ?: [];
+    }
+
+    /**
+     * Combina eventos locales con eventos de la red
+     */
+    private function combinar_eventos_calendario($locales, $federados) {
+        $eventos = [];
+
+        foreach ($locales as $evento) {
+            $eventos[] = [
+                'id'          => $evento->id,
+                'titulo'      => $evento->titulo ?? $evento->nombre ?? '',
+                'descripcion' => $evento->descripcion ?? '',
+                'fecha_inicio' => $evento->fecha_inicio ?? '',
+                'fecha_fin'   => $evento->fecha_fin ?? '',
+                'ubicacion'   => $evento->ubicacion ?? '',
+                'origen'      => 'local',
+                'url'         => get_permalink($evento->id ?? 0),
+                'color'       => '#3b82f6',
+            ];
+        }
+
+        foreach ($federados as $evento) {
+            $metadata = is_string($evento->metadata ?? '') ? json_decode($evento->metadata, true) : [];
+            $eventos[] = [
+                'id'          => 'fed_' . ($evento->id ?? 0),
+                'titulo'      => $evento->titulo ?? '',
+                'descripcion' => $evento->descripcion ?? '',
+                'fecha_inicio' => $metadata['fecha_inicio'] ?? $evento->fecha_creacion ?? '',
+                'fecha_fin'   => $metadata['fecha_fin'] ?? '',
+                'ubicacion'   => $metadata['ubicacion'] ?? '',
+                'origen'      => 'federado',
+                'url'         => $evento->url_externa ?? '',
+                'nodo_nombre' => $evento->nodo_nombre ?? '',
+                'color'       => '#10b981',
+            ];
+        }
+
+        // Ordenar por fecha de inicio
+        usort($eventos, function($a, $b) {
+            return strtotime($a['fecha_inicio'] ?: '2999-12-31') - strtotime($b['fecha_inicio'] ?: '2999-12-31');
+        });
+
+        return $eventos;
+    }
+
+    /**
+     * Shortcode: Recursos compartidos entre comunidades
+     * [comunidades_recursos_compartidos tipos="recetas,biblioteca,multimedia" limite="12"]
+     */
+    public function shortcode_recursos_compartidos($atts) {
+        $atributos = shortcode_atts([
+            'tipos'        => 'recetas,biblioteca,multimedia,podcast',
+            'limite'       => 12,
+            'columnas'     => 4,
+            'comunidad_id' => 0,
+            'incluir_red'  => 'true',
+        ], $atts);
+
+        $tipos = array_map('trim', explode(',', $atributos['tipos']));
+        $limite = intval($atributos['limite']);
+        $incluir_red = $atributos['incluir_red'] === 'true';
+
+        // Obtener recursos locales integrados
+        $recursos_locales = $this->obtener_recursos_integrados($tipos, $limite);
+
+        // Obtener recursos de la red federada
+        $recursos_red = [];
+        if ($incluir_red) {
+            foreach ($tipos as $tipo) {
+                $items = apply_filters('flavor_get_network_content', [], $tipo, [
+                    'limite'        => $limite,
+                    'excluir_local' => true,
+                ]);
+                foreach ($items as $item) {
+                    $item->origen = 'federado';
+                    $recursos_red[] = $item;
+                }
+            }
+        }
+
+        // Combinar recursos
+        $recursos = array_merge($recursos_locales, $recursos_red);
+
+        // Ordenar por fecha
+        usort($recursos, function($a, $b) {
+            $fecha_a = $a->fecha ?? $a->fecha_creacion ?? $a->post_date ?? '';
+            $fecha_b = $b->fecha ?? $b->fecha_creacion ?? $b->post_date ?? '';
+            return strtotime($fecha_b ?: '1970-01-01') - strtotime($fecha_a ?: '1970-01-01');
+        });
+
+        $recursos = array_slice($recursos, 0, $limite);
+
+        ob_start();
+        include dirname(__FILE__) . '/views/recursos-compartidos.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene recursos integrados de los módulos providers
+     */
+    private function obtener_recursos_integrados($tipos, $limite = 20) {
+        $recursos = [];
+
+        // Mapeo de tipos a post_types
+        $tipo_a_post_type = [
+            'recetas'     => 'flavor_receta',
+            'biblioteca'  => 'flavor_biblioteca',
+            'multimedia'  => 'flavor_multimedia',
+            'podcast'     => 'flavor_podcast',
+            'videos'      => 'flavor_video',
+        ];
+
+        foreach ($tipos as $tipo) {
+            $post_type = $tipo_a_post_type[$tipo] ?? $tipo;
+
+            $posts = get_posts([
+                'post_type'      => $post_type,
+                'post_status'    => 'publish',
+                'posts_per_page' => $limite,
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+            ]);
+
+            foreach ($posts as $post) {
+                $recursos[] = (object) [
+                    'id'          => $post->ID,
+                    'titulo'      => $post->post_title,
+                    'descripcion' => wp_trim_words($post->post_content, 20),
+                    'imagen'      => get_the_post_thumbnail_url($post->ID, 'medium'),
+                    'url'         => get_permalink($post->ID),
+                    'tipo'        => $tipo,
+                    'fecha'       => $post->post_date,
+                    'autor'       => get_the_author_meta('display_name', $post->post_author),
+                    'origen'      => 'local',
+                ];
+            }
+        }
+
+        return $recursos;
+    }
+
+    // =========================================================================
+    // AJAX Handlers para Interconexión
+    // =========================================================================
+
+    /**
+     * AJAX: Obtener feed unificado
+     */
+    public function ajax_feed_unificado() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            return;
+        }
+
+        $usuario_id = get_current_user_id();
+        $limite = absint($_POST['limite'] ?? 20);
+        $offset = absint($_POST['offset'] ?? 0);
+        $comunidad_filtro = absint($_POST['comunidad_id'] ?? 0);
+        $incluir_red = isset($_POST['incluir_red']) ? $_POST['incluir_red'] === 'true' : true;
+
+        $actividades = $this->obtener_feed_unificado_local($usuario_id, $limite + $offset);
+        $actividades = array_slice($actividades, $offset, $limite);
+
+        $contenido_red = [];
+        if ($incluir_red) {
+            $contenido_red = $this->obtener_contenido_red_comunidades($limite);
+        }
+
+        $feed = $this->combinar_feed_federado($actividades, $contenido_red);
+        $feed = array_slice($feed, 0, $limite);
+
+        wp_send_json_success([
+            'feed'    => $feed,
+            'total'   => count($feed),
+            'hay_mas' => count($actividades) >= $limite,
+        ]);
+    }
+
+    /**
+     * AJAX: Compartir publicación en otra comunidad (cross-posting)
+     */
+    public function ajax_compartir_publicacion() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            return;
+        }
+
+        $actividad_id = absint($_POST['actividad_id'] ?? 0);
+        $comunidad_destino = absint($_POST['comunidad_destino'] ?? 0);
+        $comentario = sanitize_textarea_field($_POST['comentario'] ?? '');
+        $usuario_id = get_current_user_id();
+
+        if (!$actividad_id || !$comunidad_destino) {
+            wp_send_json_error(['message' => __('Datos incompletos.', 'flavor-chat-ia')], 400);
+            return;
+        }
+
+        // Verificar que el usuario es miembro de la comunidad destino
+        if (!$this->es_miembro_activo($comunidad_destino, $usuario_id)) {
+            wp_send_json_error(['message' => __('No eres miembro de la comunidad destino.', 'flavor-chat-ia')], 403);
+            return;
+        }
+
+        global $wpdb;
+        $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+
+        // Obtener publicación original
+        $original = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_actividad WHERE id = %d",
+            $actividad_id
+        ));
+
+        if (!$original) {
+            wp_send_json_error(['message' => __('Publicación no encontrada.', 'flavor-chat-ia')], 404);
+            return;
+        }
+
+        // Crear publicación compartida
+        $contenido_compartido = '';
+        if ($comentario) {
+            $contenido_compartido = $comentario . "\n\n---\n\n";
+        }
+        $contenido_compartido .= $original->contenido;
+
+        $insertado = $wpdb->insert($tabla_actividad, [
+            'comunidad_id'        => $comunidad_destino,
+            'user_id'             => $usuario_id,
+            'tipo'                => 'compartido',
+            'contenido'           => $contenido_compartido,
+            'imagen'              => $original->imagen,
+            'referencia_original' => $actividad_id,
+            'created_at'          => current_time('mysql'),
+        ]);
+
+        if ($insertado) {
+            // Notificar al autor original
+            do_action('flavor_comunidad_publicacion_compartida', $actividad_id, $comunidad_destino, $usuario_id);
+
+            wp_send_json_success([
+                'message' => __('Publicación compartida exitosamente.', 'flavor-chat-ia'),
+                'nueva_id' => $wpdb->insert_id,
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Error al compartir.', 'flavor-chat-ia')], 500);
+        }
+    }
+
+    /**
+     * AJAX: Obtener eventos del calendario coordinado
+     */
+    public function ajax_calendario_eventos() {
+        $usuario_id = get_current_user_id();
+        $mes = absint($_POST['mes'] ?? date('n'));
+        $anio = absint($_POST['anio'] ?? date('Y'));
+        $incluir_red = isset($_POST['incluir_red']) ? $_POST['incluir_red'] === 'true' : true;
+
+        $eventos_locales = $this->obtener_eventos_comunidades($usuario_id);
+
+        $eventos_red = [];
+        if ($incluir_red) {
+            $eventos_red = apply_filters('flavor_get_network_content', [], 'eventos', [
+                'limite'        => 50,
+                'excluir_local' => true,
+            ]);
+        }
+
+        $eventos = $this->combinar_eventos_calendario($eventos_locales, $eventos_red);
+
+        // Filtrar por mes/año
+        $eventos = array_filter($eventos, function($evento) use ($mes, $anio) {
+            $fecha = strtotime($evento['fecha_inicio'] ?? '');
+            return $fecha && date('n', $fecha) == $mes && date('Y', $fecha) == $anio;
+        });
+
+        wp_send_json_success([
+            'eventos' => array_values($eventos),
+            'mes'     => $mes,
+            'anio'    => $anio,
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener recursos compartidos
+     */
+    public function ajax_recursos_compartidos() {
+        $tipos = isset($_POST['tipos']) ? array_map('sanitize_text_field', (array) $_POST['tipos']) : ['recetas', 'biblioteca'];
+        $limite = absint($_POST['limite'] ?? 12);
+        $incluir_red = isset($_POST['incluir_red']) ? $_POST['incluir_red'] === 'true' : true;
+
+        $recursos_locales = $this->obtener_recursos_integrados($tipos, $limite);
+
+        $recursos_red = [];
+        if ($incluir_red) {
+            foreach ($tipos as $tipo) {
+                $items = apply_filters('flavor_get_network_content', [], $tipo, [
+                    'limite'        => $limite,
+                    'excluir_local' => true,
+                ]);
+                foreach ($items as $item) {
+                    $item->origen = 'federado';
+                    $recursos_red[] = $item;
+                }
+            }
+        }
+
+        $recursos = array_merge($recursos_locales, $recursos_red);
+        $recursos = array_slice($recursos, 0, $limite);
+
+        wp_send_json_success([
+            'recursos' => $recursos,
+            'total'    => count($recursos),
+        ]);
     }
 
     // =========================================================================
@@ -517,6 +1285,68 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             wp_send_json_success($resultado);
         } else {
             wp_send_json_error($resultado, 404);
+        }
+    }
+
+    /**
+     * AJAX: Cargar actividad de una comunidad
+     */
+    public function ajax_cargar_actividad() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        $comunidad_id = absint($_POST['comunidad_id'] ?? $_GET['comunidad_id'] ?? 0);
+        if (!$comunidad_id) {
+            wp_send_json_error(['message' => __('ID de comunidad no válido.', 'flavor-chat-ia')], 400);
+            return;
+        }
+
+        $resultado = $this->action_feed_actividad([
+            'comunidad_id' => $comunidad_id,
+            'limite' => absint($_POST['limite'] ?? 10),
+            'offset' => absint($_POST['offset'] ?? 0),
+        ]);
+
+        if (!$resultado['success']) {
+            wp_send_json_error(['message' => $resultado['error'] ?? __('No se pudo cargar la actividad.', 'flavor-chat-ia')], 400);
+            return;
+        }
+
+        wp_send_json_success([
+            'actividades' => $resultado['actividades'],
+            'html' => $this->render_feed_html($resultado['actividades'], $comunidad_id),
+            'total' => $resultado['total'] ?? count($resultado['actividades']),
+        ]);
+    }
+
+    /**
+     * AJAX: Marcar / desmarcar like en una actividad
+     */
+    public function ajax_like() {
+        if (!$this->verificar_seguridad_ajax()) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión para reaccionar.', 'flavor-chat-ia')], 401);
+            return;
+        }
+
+        $actividad_id = absint($_POST['actividad_id'] ?? 0);
+        if (!$actividad_id) {
+            wp_send_json_error(['message' => __('Actividad no válida.', 'flavor-chat-ia')], 400);
+            return;
+        }
+
+        $resultado = $this->action_toggle_like(['actividad_id' => $actividad_id]);
+        if ($resultado['success']) {
+            wp_send_json_success([
+                'likes' => $resultado['likes'],
+                'liked' => $resultado['liked'],
+            ]);
+        } else {
+            wp_send_json_error(['message' => $resultado['error'] ?? __('No se pudo reaccionar.', 'flavor-chat-ia')], 400);
         }
     }
 
@@ -1201,6 +2031,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $sql_comunidades = "CREATE TABLE IF NOT EXISTS $tabla_comunidades (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             nombre varchar(200) NOT NULL,
+            slug varchar(200) DEFAULT NULL,
             descripcion text DEFAULT NULL,
             imagen varchar(255) DEFAULT NULL,
             tipo enum('abierta','cerrada','secreta') DEFAULT 'abierta',
@@ -1217,7 +2048,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             KEY creador_id (creador_id),
             KEY tipo (tipo),
             KEY categoria (categoria),
-            KEY estado (estado)
+            KEY estado (estado),
+            KEY slug (slug)
         ) $charset_collate;";
 
         $sql_miembros = "CREATE TABLE IF NOT EXISTS $tabla_miembros (
@@ -1255,10 +2087,75 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             KEY created_at (created_at)
         ) $charset_collate;";
 
+        $tabla_reacciones = $wpdb->prefix . 'flavor_comunidades_actividad_reacciones';
+        $sql_reacciones = "CREATE TABLE IF NOT EXISTS $tabla_reacciones (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            actividad_id bigint(20) unsigned NOT NULL,
+            user_id bigint(20) unsigned NOT NULL,
+            tipo enum('like') DEFAULT 'like',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY actividad_usuario (actividad_id, user_id),
+            KEY actividad_id (actividad_id),
+            KEY user_id (user_id)
+        ) $charset_collate;";
+
+        // Tabla de anuncios inter-comunidades
+        $tabla_anuncios = $wpdb->prefix . 'flavor_comunidades_anuncios';
+        $sql_anuncios = "CREATE TABLE IF NOT EXISTS $tabla_anuncios (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            comunidad_id bigint(20) unsigned NOT NULL,
+            user_id bigint(20) unsigned NOT NULL,
+            titulo varchar(200) NOT NULL,
+            contenido text NOT NULL,
+            categoria varchar(50) DEFAULT 'general',
+            destacado tinyint(1) DEFAULT 0,
+            compartir_red tinyint(1) DEFAULT 0,
+            fecha_expiracion date DEFAULT NULL,
+            estado enum('borrador','publicado','archivado') DEFAULT 'publicado',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY comunidad_id (comunidad_id),
+            KEY user_id (user_id),
+            KEY categoria (categoria),
+            KEY estado (estado),
+            KEY destacado (destacado),
+            KEY fecha_expiracion (fecha_expiracion)
+        ) $charset_collate;";
+
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta($sql_comunidades);
         dbDelta($sql_miembros);
         dbDelta($sql_actividad);
+        dbDelta($sql_reacciones);
+        dbDelta($sql_anuncios);
+
+        // Añadir columna referencia_original si no existe (para cross-posting)
+        $columnas_actividad = $wpdb->get_col("SHOW COLUMNS FROM $tabla_actividad");
+        if (!in_array('referencia_original', $columnas_actividad)) {
+            $wpdb->query("ALTER TABLE $tabla_actividad ADD COLUMN referencia_original bigint(20) unsigned DEFAULT NULL AFTER contenido");
+            $wpdb->query("ALTER TABLE $tabla_actividad ADD INDEX idx_referencia (referencia_original)");
+        }
+        if (!in_array('imagen', $columnas_actividad)) {
+            $wpdb->query("ALTER TABLE $tabla_actividad ADD COLUMN imagen varchar(500) DEFAULT NULL AFTER adjuntos");
+        }
+        if (!in_array('metadata', $columnas_actividad)) {
+            $wpdb->query("ALTER TABLE $tabla_actividad ADD COLUMN metadata longtext DEFAULT NULL");
+        }
+
+        // Añadir columna slug si no existe
+        $columnas_comunidades = $wpdb->get_col("SHOW COLUMNS FROM $tabla_comunidades");
+        if (!in_array('slug', $columnas_comunidades)) {
+            $wpdb->query("ALTER TABLE $tabla_comunidades ADD COLUMN slug varchar(200) DEFAULT NULL AFTER nombre");
+            $wpdb->query("ALTER TABLE $tabla_comunidades ADD INDEX idx_slug (slug)");
+            // Generar slugs para comunidades existentes
+            $comunidades_sin_slug = $wpdb->get_results("SELECT id, nombre FROM $tabla_comunidades WHERE slug IS NULL OR slug = ''");
+            foreach ($comunidades_sin_slug as $comunidad) {
+                $slug = sanitize_title($comunidad->nombre);
+                $wpdb->update($tabla_comunidades, ['slug' => $slug], ['id' => $comunidad->id]);
+            }
+        }
 
         // Insertar datos de ejemplo si las tablas estan vacias
         if ((int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_comunidades") === 0) {
@@ -1529,6 +2426,107 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Accion: Obtener el feed de actividad de una comunidad
+     */
+    private function action_feed_actividad($parametros) {
+        $comunidad_id = absint($parametros['comunidad_id'] ?? 0);
+
+        if (!$comunidad_id) {
+            return [
+                'success' => false,
+                'error' => __('Comunidad no especificada.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $limite = max(1, min(absint($parametros['limite'] ?? 10), 50));
+        $offset = absint($parametros['offset'] ?? 0);
+
+        global $wpdb;
+        $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_comunidades_actividad_reacciones';
+
+        $query = $wpdb->prepare(
+            "SELECT a.*, u.display_name AS autor_nombre
+             FROM $tabla_actividad a
+             LEFT JOIN {$wpdb->users} u ON u.ID = a.user_id
+             WHERE a.comunidad_id = %d
+             ORDER BY a.es_fijado DESC, a.created_at DESC
+             LIMIT %d OFFSET %d",
+            $comunidad_id,
+            $limite,
+            $offset
+        );
+
+        $actividades = $wpdb->get_results($query);
+
+        if (empty($actividades)) {
+            return [
+                'success' => true,
+                'actividades' => [],
+                'total' => 0,
+                'comunidad_id' => $comunidad_id,
+            ];
+        }
+
+        $actividad_ids = array_map(function($actividad) {
+            return (int)$actividad->id;
+        }, $actividades);
+        $placeholders = implode(',', array_fill(0, count($actividad_ids), '%d')) ?: 'NULL';
+
+        $likes_map = [];
+        if (!empty($actividad_ids)) {
+            $likes_query = $wpdb->prepare(
+                "SELECT actividad_id, COUNT(*) as total FROM $tabla_reacciones WHERE actividad_id IN ($placeholders) GROUP BY actividad_id",
+                ...$actividad_ids
+            );
+            foreach ($wpdb->get_results($likes_query) as $fila) {
+                $likes_map[(int)$fila->actividad_id] = (int)$fila->total;
+            }
+        }
+
+        $liked_map = [];
+        $usuario_actual_id = get_current_user_id();
+        if (!empty($actividad_ids) && $usuario_actual_id) {
+            $liked_query = $wpdb->prepare(
+                "SELECT actividad_id FROM $tabla_reacciones WHERE user_id = %d AND actividad_id IN ($placeholders)",
+                $usuario_actual_id,
+                ...$actividad_ids
+            );
+            foreach ($wpdb->get_results($liked_query) as $fila) {
+                $liked_map[(int)$fila->actividad_id] = true;
+            }
+        }
+
+        $actividades_formateadas = array_map(function ($actividad) use ($likes_map, $liked_map) {
+            $imagen = '';
+            if (!empty($actividad->adjuntos)) {
+                $adjuntos = array_filter(array_map('trim', explode(',', $actividad->adjuntos)));
+                $imagen = array_shift($adjuntos) ?: '';
+            }
+
+            return (object) [
+                'id' => (int)$actividad->id,
+                'titulo' => $actividad->titulo,
+                'contenido' => $actividad->contenido,
+                'tipo' => $actividad->tipo,
+                'imagen' => $imagen,
+                'autor_nombre' => $actividad->autor_nombre ?: __('Usuario', 'flavor-chat-ia'),
+                'fecha' => $actividad->created_at,
+                'likes' => $likes_map[$actividad->id] ?? (int)$actividad->reacciones_count,
+                'liked' => isset($liked_map[$actividad->id]),
+                'comentarios' => (int)$actividad->comentarios_count,
+            ];
+        }, $actividades);
+
+        return [
+            'success' => true,
+            'actividades' => $actividades_formateadas,
+            'total' => count($actividades_formateadas),
+            'comunidad_id' => $comunidad_id,
+        ];
+    }
+
+    /**
      * Accion: Ver detalle de una comunidad y su actividad reciente
      */
     private function action_ver_comunidad($parametros) {
@@ -1744,14 +2742,166 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             ['%d', '%d', '%s', '%s', '%s', '%s']
         );
 
+        // Crear grupo de chat asociado a la comunidad
+        $grupo_chat_id = $this->crear_grupo_chat_comunidad($nueva_comunidad_id, $nombre_comunidad, $descripcion_comunidad, $tipo_comunidad);
+
+        // Hook para extensibilidad
+        do_action('flavor_comunidad_creada', $nueva_comunidad_id, [
+            'nombre' => $nombre_comunidad,
+            'tipo' => $tipo_comunidad,
+            'creador_id' => $usuario_actual_id,
+            'grupo_chat_id' => $grupo_chat_id,
+        ]);
+
         return [
-            'success'      => true,
-            'comunidad_id' => $nueva_comunidad_id,
-            'mensaje'      => sprintf(
+            'success'       => true,
+            'comunidad_id'  => $nueva_comunidad_id,
+            'grupo_chat_id' => $grupo_chat_id,
+            'mensaje'       => sprintf(
                 __('Comunidad "%s" creada con exito. Ya eres administrador.', 'flavor-chat-ia'),
                 $nombre_comunidad
             ),
         ];
+    }
+
+    /**
+     * Crea un grupo de chat asociado a una comunidad
+     *
+     * @param int    $comunidad_id ID de la comunidad
+     * @param string $nombre Nombre de la comunidad
+     * @param string $descripcion Descripción de la comunidad
+     * @param string $tipo Tipo de comunidad (abierta, cerrada, secreta)
+     * @return int|false ID del grupo creado o false si falla
+     */
+    private function crear_grupo_chat_comunidad($comunidad_id, $nombre, $descripcion, $tipo) {
+        global $wpdb;
+
+        // Verificar si el módulo de chat grupos está activo
+        $chat_grupos_activo = class_exists('Flavor_Chat_Chat_Grupos_Module');
+        if (!$chat_grupos_activo) {
+            return false;
+        }
+
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+
+        // Verificar si la tabla existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+            return false;
+        }
+
+        // Mapear tipo de comunidad a tipo de grupo
+        $tipo_grupo = ($tipo === 'secreta') ? 'privado' : (($tipo === 'cerrada') ? 'privado' : 'publico');
+
+        // Crear el grupo de chat
+        $slug_grupo = sanitize_title($nombre . '-' . $comunidad_id);
+        $creador_id = get_current_user_id();
+
+        $resultado = $wpdb->insert(
+            $tabla_grupos,
+            [
+                'nombre'       => $nombre,
+                'slug'         => $slug_grupo,
+                'descripcion'  => $descripcion,
+                'tipo'         => $tipo_grupo,
+                'creador_id'   => $creador_id,
+                'comunidad_id' => $comunidad_id,
+                'estado'       => 'activo',
+                'created_at'   => current_time('mysql'),
+            ],
+            ['%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s']
+        );
+
+        if ($resultado === false) {
+            return false;
+        }
+
+        $grupo_id = $wpdb->insert_id;
+
+        // Añadir al creador como admin del grupo
+        $tabla_miembros_grupo = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros_grupo)) {
+            $wpdb->insert(
+                $tabla_miembros_grupo,
+                [
+                    'grupo_id'  => $grupo_id,
+                    'user_id'   => $creador_id,
+                    'rol'       => 'admin',
+                    'estado'    => 'activo',
+                    'joined_at' => current_time('mysql'),
+                ],
+                ['%d', '%d', '%s', '%s', '%s']
+            );
+        }
+
+        // Guardar relación comunidad-grupo
+        update_post_meta($comunidad_id, '_flavor_grupo_chat_id', $grupo_id);
+
+        return $grupo_id;
+    }
+
+    /**
+     * Obtiene el grupo de chat asociado a una comunidad
+     *
+     * @param int $comunidad_id ID de la comunidad
+     * @return int|null ID del grupo de chat o null
+     */
+    public function obtener_grupo_chat_comunidad($comunidad_id) {
+        global $wpdb;
+
+        // Primero buscar en meta
+        $grupo_id = get_post_meta($comunidad_id, '_flavor_grupo_chat_id', true);
+        if ($grupo_id) {
+            return (int) $grupo_id;
+        }
+
+        // Si no hay meta, buscar por comunidad_id en tabla de grupos
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+            return null;
+        }
+
+        $grupo_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_grupos} WHERE comunidad_id = %d AND estado = 'activo' LIMIT 1",
+            $comunidad_id
+        ));
+
+        return $grupo_id ? (int) $grupo_id : null;
+    }
+
+    /**
+     * Sincroniza la membresía de un usuario con el grupo de chat de la comunidad
+     *
+     * @param int    $comunidad_id ID de la comunidad
+     * @param int    $usuario_id   ID del usuario
+     * @param string $accion       'unirse' o 'salir'
+     * @return bool True si la sincronización fue exitosa
+     */
+    private function sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_id, $accion) {
+        // Verificar que el módulo de chat-grupos está activo
+        if (!class_exists('Flavor_Chat_Chat_Grupos_Module')) {
+            return false;
+        }
+
+        // Obtener el grupo de chat de la comunidad
+        $grupo_id = $this->obtener_grupo_chat_comunidad($comunidad_id);
+        if (!$grupo_id) {
+            return false;
+        }
+
+        // Obtener instancia del módulo de chat-grupos
+        $modulo_chat_grupos = Flavor_Module_Loader::get_instance()->get_module('chat_grupos');
+        if (!$modulo_chat_grupos) {
+            return false;
+        }
+
+        // Sincronizar según la acción
+        if ($accion === 'unirse') {
+            $resultado = $modulo_chat_grupos->agregar_miembro_programatico($grupo_id, $usuario_id);
+        } else {
+            $resultado = $modulo_chat_grupos->quitar_miembro_programatico($grupo_id, $usuario_id);
+        }
+
+        return !empty($resultado['success']);
     }
 
     /**
@@ -1865,6 +3015,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 $fecha_actual,
                 $comunidad_id
             ));
+
+            // Sincronizar con grupo de chat de la comunidad
+            $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_actual_id, 'unirse');
         }
 
         $mensaje_respuesta = ($estado_inicial === 'pendiente')
@@ -1950,6 +3103,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             $fecha_actual,
             $comunidad_id
         ));
+
+        // Sincronizar con grupo de chat de la comunidad
+        $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_actual_id, 'salir');
 
         $comunidad = $wpdb->get_row($wpdb->prepare(
             "SELECT nombre FROM $tabla_comunidades WHERE id = %d",
@@ -2123,6 +3279,107 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Accion: Marcar o desmarcar like en una actividad
+     */
+    private function action_toggle_like($parametros) {
+        $usuario_id = get_current_user_id();
+        $actividad_id = absint($parametros['actividad_id'] ?? 0);
+
+        if (!$usuario_id || !$actividad_id) {
+            return [
+                'success' => false,
+                'error' => __('Datos inválidos para reaccionar.', 'flavor-chat-ia'),
+            ];
+        }
+
+        global $wpdb;
+        $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_comunidades_actividad_reacciones';
+
+        $actividad = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, comunidad_id FROM $tabla_actividad WHERE id = %d",
+            $actividad_id
+        ));
+
+        if (!$actividad) {
+            return [
+                'success' => false,
+                'error' => __('Actividad no encontrada.', 'flavor-chat-ia'),
+            ];
+        }
+
+        if (!$this->es_miembro_activo($actividad->comunidad_id, $usuario_id)) {
+            return [
+                'success' => false,
+                'error' => __('Debes ser miembro activo para reaccionar.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $reaccion_existente = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_reacciones WHERE actividad_id = %d AND user_id = %d",
+            $actividad_id,
+            $usuario_id
+        ));
+
+        $delta = 0;
+        $liked = false;
+
+        if ($reaccion_existente) {
+            $wpdb->delete(
+                $tabla_reacciones,
+                ['id' => $reaccion_existente],
+                ['%d']
+            );
+            $delta = -1;
+            $liked = false;
+        } else {
+            $wpdb->insert(
+                $tabla_reacciones,
+                [
+                    'actividad_id' => $actividad_id,
+                    'user_id' => $usuario_id,
+                    'tipo' => 'like',
+                ],
+                ['%d', '%d', '%s']
+            );
+            $delta = 1;
+            $liked = true;
+        }
+
+        if ($delta !== 0) {
+            $wpdb->query($wpdb->prepare(
+                "UPDATE $tabla_actividad SET reacciones_count = GREATEST(reacciones_count + %d, 0) WHERE id = %d",
+                $delta,
+                $actividad_id
+            ));
+        }
+
+        $likes = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT reacciones_count FROM $tabla_actividad WHERE id = %d",
+            $actividad_id
+        ));
+
+        return [
+            'success' => true,
+            'liked' => $liked,
+            'likes' => $likes,
+        ];
+    }
+
+    /**
+     * Renderiza el HTML del feed de actividad
+     *
+     * @param array|object $actividades
+     * @param int $comunidad_id
+     * @return string
+     */
+    private function render_feed_html($actividades, $comunidad_id) {
+        ob_start();
+        include dirname(__FILE__) . '/views/feed-actividad.php';
+        return ob_get_clean();
+    }
+
+    /**
      * Accion: Listar miembros de una comunidad
      */
     private function action_miembros($parametros) {
@@ -2283,6 +3540,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     $fecha_actual,
                     $comunidad_id
                 ));
+                // Sincronizar con grupo de chat (quitar acceso)
+                $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_objetivo_id, 'salir');
                 $mensaje_resultado = __('Miembro suspendido.', 'flavor-chat-ia');
                 break;
 
@@ -2299,6 +3558,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     $fecha_actual,
                     $comunidad_id
                 ));
+                // Sincronizar con grupo de chat (quitar acceso)
+                $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_objetivo_id, 'salir');
                 $mensaje_resultado = __('Miembro baneado de la comunidad.', 'flavor-chat-ia');
                 break;
 
@@ -2321,6 +3582,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     $fecha_actual,
                     $comunidad_id
                 ));
+                // Sincronizar con grupo de chat
+                $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_objetivo_id, 'unirse');
                 $mensaje_resultado = __('Miembro aprobado y activado.', 'flavor-chat-ia');
                 break;
 
@@ -2337,6 +3600,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     $fecha_actual,
                     $comunidad_id
                 ));
+                // Sincronizar con grupo de chat
+                $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_objetivo_id, 'unirse');
                 $mensaje_resultado = __('Miembro reactivado.', 'flavor-chat-ia');
                 break;
 
@@ -2672,6 +3937,1817 @@ KNOWLEDGE;
 [flavor_module_listing module="comunidades" action="mis_comunidades" columnas="3" limite="12"]',
                 'parent' => 'comunidades',
             ],
+            [
+                'title' => __('Feed Unificado', 'flavor-chat-ia'),
+                'slug' => 'feed',
+                'content' => '[comunidades_feed_unificado limite="30" incluir_red="true"]',
+                'parent' => 'comunidades',
+            ],
+            [
+                'title' => __('Calendario', 'flavor-chat-ia'),
+                'slug' => 'calendario',
+                'content' => '[comunidades_calendario incluir_red="true"]',
+                'parent' => 'comunidades',
+            ],
+            [
+                'title' => __('Recursos Compartidos', 'flavor-chat-ia'),
+                'slug' => 'recursos',
+                'content' => '[comunidades_recursos_compartidos columnas="4" limite="20"]',
+                'parent' => 'comunidades',
+            ],
+            [
+                'title' => __('Tablón de Anuncios', 'flavor-chat-ia'),
+                'slug' => 'tablon',
+                'content' => '[comunidades_tablon limite="20" incluir_red="true"]',
+                'parent' => 'comunidades',
+            ],
+            [
+                'title' => __('Buscar', 'flavor-chat-ia'),
+                'slug' => 'buscar',
+                'content' => '[comunidades_busqueda]',
+                'parent' => 'comunidades',
+            ],
+            [
+                'title' => __('Notificaciones', 'flavor-chat-ia'),
+                'slug' => 'notificaciones',
+                'content' => '[comunidades_notificaciones]',
+                'parent' => 'comunidades',
+            ],
+            [
+                'title' => __('Métricas', 'flavor-chat-ia'),
+                'slug' => 'metricas',
+                'content' => '[comunidades_metricas]',
+                'parent' => 'comunidades',
+            ],
         ];
+    }
+
+    // =========================================================================
+    // TABLÓN DE ANUNCIOS INTER-COMUNIDADES
+    // =========================================================================
+
+    /**
+     * AJAX: Obtiene anuncios del tablón
+     */
+    public function ajax_obtener_anuncios() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : 'todos';
+        $incluir_red = isset($_POST['incluir_red']) && $_POST['incluir_red'] === 'true';
+        $limite = isset($_POST['limite']) ? intval($_POST['limite']) : 20;
+
+        $usuario_id = get_current_user_id();
+        $anuncios = [];
+
+        global $wpdb;
+        $tabla_anuncios = $wpdb->prefix . 'flavor_comunidades_anuncios';
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        // Verificar si la tabla existe, si no, crearla
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_anuncios'") !== $tabla_anuncios) {
+            $this->crear_tabla_anuncios();
+        }
+
+        // Obtener anuncios locales
+        $where_categoria = $categoria !== 'todos'
+            ? $wpdb->prepare(" AND a.categoria = %s", $categoria)
+            : '';
+
+        // Si el usuario está logueado, mostrar anuncios de sus comunidades + públicos
+        if ($usuario_id) {
+            $query = $wpdb->prepare(
+                "SELECT a.*, c.nombre AS comunidad_nombre, c.imagen AS comunidad_imagen, c.slug AS comunidad_slug,
+                        'local' AS origen
+                 FROM $tabla_anuncios a
+                 INNER JOIN $tabla_comunidades c ON c.id = a.comunidad_id
+                 LEFT JOIN $tabla_miembros m ON m.comunidad_id = a.comunidad_id AND m.user_id = %d
+                 WHERE a.estado = 'publicado'
+                   AND (a.fecha_expiracion IS NULL OR a.fecha_expiracion >= NOW())
+                   AND (c.visibilidad = 'publica' OR m.user_id IS NOT NULL)
+                   {$where_categoria}
+                 ORDER BY a.destacado DESC, a.created_at DESC
+                 LIMIT %d",
+                $usuario_id, $limite
+            );
+        } else {
+            // Solo anuncios de comunidades públicas
+            $query = $wpdb->prepare(
+                "SELECT a.*, c.nombre AS comunidad_nombre, c.imagen AS comunidad_imagen, c.slug AS comunidad_slug,
+                        'local' AS origen
+                 FROM $tabla_anuncios a
+                 INNER JOIN $tabla_comunidades c ON c.id = a.comunidad_id
+                 WHERE a.estado = 'publicado'
+                   AND c.visibilidad = 'publica'
+                   AND (a.fecha_expiracion IS NULL OR a.fecha_expiracion >= NOW())
+                   {$where_categoria}
+                 ORDER BY a.destacado DESC, a.created_at DESC
+                 LIMIT %d",
+                $limite
+            );
+        }
+
+        $anuncios_locales = $wpdb->get_results($query);
+
+        foreach ($anuncios_locales as $anuncio) {
+            $anuncios[] = [
+                'id'               => $anuncio->id,
+                'titulo'           => $anuncio->titulo,
+                'contenido'        => $anuncio->contenido,
+                'categoria'        => $anuncio->categoria,
+                'destacado'        => (bool) $anuncio->destacado,
+                'fecha'            => date_i18n('j M Y', strtotime($anuncio->created_at)),
+                'comunidad_id'     => $anuncio->comunidad_id,
+                'comunidad_nombre' => $anuncio->comunidad_nombre,
+                'comunidad_imagen' => $anuncio->comunidad_imagen,
+                'url'              => home_url("/comunidades/{$anuncio->comunidad_slug}/"),
+                'origen'           => 'local',
+            ];
+        }
+
+        // Obtener anuncios de la red federada
+        if ($incluir_red && class_exists('Flavor_Network_Content_Bridge')) {
+            $anuncios_federados = $this->obtener_anuncios_federados($categoria, $limite);
+            $anuncios = array_merge($anuncios, $anuncios_federados);
+        }
+
+        // Ordenar: destacados primero, luego por fecha
+        usort($anuncios, function($a, $b) {
+            if ($a['destacado'] !== $b['destacado']) {
+                return $b['destacado'] ? 1 : -1;
+            }
+            return strtotime($b['fecha']) - strtotime($a['fecha']);
+        });
+
+        wp_send_json_success([
+            'anuncios' => array_slice($anuncios, 0, $limite),
+        ]);
+    }
+
+    /**
+     * AJAX: Crea un nuevo anuncio
+     */
+    public function ajax_crear_anuncio() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+        }
+
+        $comunidad_id = isset($_POST['comunidad_id']) ? intval($_POST['comunidad_id']) : 0;
+        $titulo = isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '';
+        $contenido = isset($_POST['contenido']) ? sanitize_textarea_field($_POST['contenido']) : '';
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : 'general';
+        $destacado = isset($_POST['destacado']) && $_POST['destacado'] === '1';
+        $compartir_red = isset($_POST['compartir_red']) && $_POST['compartir_red'] === '1';
+        $fecha_expiracion = isset($_POST['fecha_expiracion']) && !empty($_POST['fecha_expiracion'])
+            ? sanitize_text_field($_POST['fecha_expiracion'])
+            : null;
+
+        // Validaciones
+        if (!$comunidad_id || !$titulo || !$contenido) {
+            wp_send_json_error(['message' => __('Faltan campos obligatorios', 'flavor-chat-ia')]);
+        }
+
+        // Verificar que el usuario puede publicar en esta comunidad
+        if (!$this->usuario_puede_publicar_anuncio($usuario_id, $comunidad_id)) {
+            wp_send_json_error(['message' => __('No tienes permiso para publicar anuncios en esta comunidad', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_anuncios = $wpdb->prefix . 'flavor_comunidades_anuncios';
+
+        // Crear tabla si no existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_anuncios'") !== $tabla_anuncios) {
+            $this->crear_tabla_anuncios();
+        }
+
+        $resultado = $wpdb->insert(
+            $tabla_anuncios,
+            [
+                'comunidad_id'     => $comunidad_id,
+                'user_id'          => $usuario_id,
+                'titulo'           => $titulo,
+                'contenido'        => $contenido,
+                'categoria'        => $categoria,
+                'destacado'        => $destacado ? 1 : 0,
+                'compartir_red'    => $compartir_red ? 1 : 0,
+                'fecha_expiracion' => $fecha_expiracion,
+                'estado'           => 'publicado',
+                'created_at'       => current_time('mysql'),
+            ],
+            ['%d', '%d', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s']
+        );
+
+        if ($resultado) {
+            $anuncio_id = $wpdb->insert_id;
+
+            // Compartir en la red federada si está habilitado
+            if ($compartir_red && class_exists('Flavor_Network_Content_Bridge')) {
+                $this->compartir_anuncio_en_red($anuncio_id);
+            }
+
+            // Disparar notificaciones
+            $comunidad = $this->obtener_comunidad($comunidad_id);
+            do_action('flavor_comunidad_nuevo_anuncio', $comunidad_id, $anuncio_id, (object) [
+                'titulo'    => $titulo,
+                'categoria' => $categoria,
+                'user_id'   => $usuario_id,
+            ]);
+
+            wp_send_json_success([
+                'message'    => __('Anuncio publicado correctamente', 'flavor-chat-ia'),
+                'anuncio_id' => $anuncio_id,
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Error al publicar el anuncio', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Obtiene comunidades donde el usuario puede publicar anuncios
+     */
+    public function ajax_mis_comunidades_admin() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        // Obtener comunidades donde el usuario es admin o creador
+        $comunidades = $wpdb->get_results($wpdb->prepare(
+            "SELECT c.id, c.nombre, c.imagen
+             FROM $tabla_comunidades c
+             INNER JOIN $tabla_miembros m ON m.comunidad_id = c.id
+             WHERE m.user_id = %d
+               AND m.rol IN ('admin', 'creador', 'moderador')
+               AND m.estado = 'activo'
+               AND c.estado = 'activa'
+             ORDER BY c.nombre ASC",
+            $usuario_id
+        ));
+
+        wp_send_json_success([
+            'comunidades' => $comunidades,
+        ]);
+    }
+
+    /**
+     * Crea la tabla de anuncios si no existe
+     */
+    private function crear_tabla_anuncios() {
+        global $wpdb;
+        $tabla_anuncios = $wpdb->prefix . 'flavor_comunidades_anuncios';
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE IF NOT EXISTS $tabla_anuncios (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            comunidad_id bigint(20) unsigned NOT NULL,
+            user_id bigint(20) unsigned NOT NULL,
+            titulo varchar(200) NOT NULL,
+            contenido text NOT NULL,
+            categoria varchar(50) DEFAULT 'general',
+            destacado tinyint(1) DEFAULT 0,
+            compartir_red tinyint(1) DEFAULT 0,
+            fecha_expiracion date DEFAULT NULL,
+            estado enum('borrador','publicado','archivado') DEFAULT 'publicado',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY comunidad_id (comunidad_id),
+            KEY user_id (user_id),
+            KEY categoria (categoria),
+            KEY estado (estado),
+            KEY destacado (destacado)
+        ) $charset_collate;";
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+    }
+
+    /**
+     * Verifica si un usuario puede publicar anuncios en una comunidad
+     *
+     * @param int $usuario_id ID del usuario
+     * @param int $comunidad_id ID de la comunidad
+     * @return bool
+     */
+    private function usuario_puede_publicar_anuncio($usuario_id, $comunidad_id) {
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        $rol = $wpdb->get_var($wpdb->prepare(
+            "SELECT rol FROM $tabla_miembros
+             WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
+            $comunidad_id, $usuario_id
+        ));
+
+        return in_array($rol, ['admin', 'creador', 'moderador']);
+    }
+
+    /**
+     * Obtiene anuncios de la red federada
+     *
+     * @param string $categoria Filtro de categoría
+     * @param int    $limite Límite de resultados
+     * @return array
+     */
+    private function obtener_anuncios_federados($categoria, $limite) {
+        global $wpdb;
+        $tabla_shared = $wpdb->prefix . 'flavor_network_shared_content';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_shared'") !== $tabla_shared) {
+            return [];
+        }
+
+        $where_categoria = $categoria !== 'todos'
+            ? $wpdb->prepare(" AND JSON_UNQUOTE(JSON_EXTRACT(s.metadata, '$.categoria')) = %s", $categoria)
+            : '';
+
+        $query = $wpdb->prepare(
+            "SELECT s.*, n.nombre AS nodo_nombre
+             FROM $tabla_shared s
+             LEFT JOIN {$wpdb->prefix}flavor_network_directory n ON n.id = s.nodo_id
+             WHERE s.tipo_contenido = 'anuncio'
+               AND s.estado = 'activo'
+               AND s.visible_red = 1
+               {$where_categoria}
+             ORDER BY s.fecha_creacion DESC
+             LIMIT %d",
+            $limite
+        );
+
+        $anuncios_red = $wpdb->get_results($query);
+        $resultado = [];
+
+        foreach ($anuncios_red as $anuncio) {
+            $metadata = json_decode($anuncio->metadata ?? '{}', true);
+
+            $resultado[] = [
+                'id'               => $anuncio->id,
+                'titulo'           => $anuncio->titulo,
+                'contenido'        => $anuncio->descripcion,
+                'categoria'        => $metadata['categoria'] ?? 'general',
+                'destacado'        => (bool) ($metadata['destacado'] ?? false),
+                'fecha'            => date_i18n('j M Y', strtotime($anuncio->fecha_creacion)),
+                'comunidad_id'     => 0,
+                'comunidad_nombre' => $anuncio->nodo_nombre ?? __('Red federada', 'flavor-chat-ia'),
+                'comunidad_imagen' => '',
+                'url'              => $anuncio->url_externa,
+                'origen'           => 'federado',
+            ];
+        }
+
+        return $resultado;
+    }
+
+    /**
+     * Comparte un anuncio en la red federada
+     *
+     * @param int $anuncio_id ID del anuncio
+     */
+    private function compartir_anuncio_en_red($anuncio_id) {
+        global $wpdb;
+        $tabla_anuncios = $wpdb->prefix . 'flavor_comunidades_anuncios';
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+
+        $anuncio = $wpdb->get_row($wpdb->prepare(
+            "SELECT a.*, c.nombre AS comunidad_nombre, c.slug AS comunidad_slug
+             FROM $tabla_anuncios a
+             INNER JOIN $tabla_comunidades c ON c.id = a.comunidad_id
+             WHERE a.id = %d",
+            $anuncio_id
+        ));
+
+        if (!$anuncio) {
+            return;
+        }
+
+        // Usar el Network Content Bridge para compartir
+        do_action('flavor_share_to_network', [
+            'tipo_contenido' => 'anuncio',
+            'titulo'         => $anuncio->titulo,
+            'descripcion'    => $anuncio->contenido,
+            'url_externa'    => home_url("/comunidades/{$anuncio->comunidad_slug}/"),
+            'metadata'       => [
+                'categoria'  => $anuncio->categoria,
+                'destacado'  => (bool) $anuncio->destacado,
+                'comunidad'  => $anuncio->comunidad_nombre,
+            ],
+        ]);
+    }
+
+    // =========================================================================
+    // MÉTRICAS DE COLABORACIÓN
+    // =========================================================================
+
+    /**
+     * AJAX: Obtiene métricas de colaboración entre comunidades
+     */
+    public function ajax_obtener_metricas() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $periodo = isset($_POST['periodo']) ? intval($_POST['periodo']) : 30;
+        $fecha_inicio = date('Y-m-d', strtotime("-{$periodo} days"));
+
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+        $tabla_shared = $wpdb->prefix . 'flavor_network_shared_content';
+
+        // Resumen general
+        $comunidades_activas = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(DISTINCT c.id)
+             FROM $tabla_comunidades c
+             INNER JOIN $tabla_actividad a ON a.comunidad_id = c.id
+             WHERE c.estado = 'activa' AND a.created_at >= %s",
+            $fecha_inicio
+        ));
+
+        $total_publicaciones = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_actividad WHERE created_at >= %s",
+            $fecha_inicio
+        ));
+
+        // Colaboraciones (cross-posts y recursos compartidos)
+        $colaboraciones = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_actividad
+             WHERE referencia_original IS NOT NULL AND created_at >= %s",
+            $fecha_inicio
+        )) ?: 0;
+
+        // Contenido federado
+        $contenido_federado = 0;
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_shared'") === $tabla_shared) {
+            $contenido_federado = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_shared WHERE fecha_creacion >= %s",
+                $fecha_inicio
+            )) ?: 0;
+        }
+
+        // Top 5 comunidades más activas
+        $top_comunidades = $wpdb->get_results($wpdb->prepare(
+            "SELECT c.id, c.nombre,
+                    (SELECT COUNT(*) FROM $tabla_miembros WHERE comunidad_id = c.id AND estado = 'activo') AS miembros,
+                    COUNT(a.id) AS actividad
+             FROM $tabla_comunidades c
+             LEFT JOIN $tabla_actividad a ON a.comunidad_id = c.id AND a.created_at >= %s
+             WHERE c.estado = 'activa'
+             GROUP BY c.id
+             ORDER BY actividad DESC
+             LIMIT 5",
+            $fecha_inicio
+        ));
+
+        // Tipos de colaboración
+        $tipos_colaboracion = [
+            ['tipo' => 'publicacion', 'label' => __('Publicaciones', 'flavor-chat-ia'), 'icono' => '📝', 'cantidad' => 0],
+            ['tipo' => 'crosspost', 'label' => __('Cross-posts', 'flavor-chat-ia'), 'icono' => '🔄', 'cantidad' => 0],
+            ['tipo' => 'evento', 'label' => __('Eventos', 'flavor-chat-ia'), 'icono' => '📅', 'cantidad' => 0],
+            ['tipo' => 'recurso', 'label' => __('Recursos', 'flavor-chat-ia'), 'icono' => '📦', 'cantidad' => 0],
+            ['tipo' => 'anuncio', 'label' => __('Anuncios', 'flavor-chat-ia'), 'icono' => '📢', 'cantidad' => 0],
+        ];
+
+        // Contar por tipo
+        $conteos_tipo = $wpdb->get_results($wpdb->prepare(
+            "SELECT tipo, COUNT(*) AS cantidad
+             FROM $tabla_actividad
+             WHERE created_at >= %s
+             GROUP BY tipo",
+            $fecha_inicio
+        ));
+
+        foreach ($conteos_tipo as $conteo) {
+            foreach ($tipos_colaboracion as &$tipo) {
+                if ($tipo['tipo'] === $conteo->tipo) {
+                    $tipo['cantidad'] = (int) $conteo->cantidad;
+                    break;
+                }
+            }
+        }
+
+        // Actividad reciente (últimas 10 colaboraciones)
+        $actividad_reciente = $wpdb->get_results($wpdb->prepare(
+            "SELECT a.tipo, a.titulo, a.created_at,
+                    c.nombre AS comunidad_nombre,
+                    u.display_name AS usuario
+             FROM $tabla_actividad a
+             INNER JOIN $tabla_comunidades c ON c.id = a.comunidad_id
+             LEFT JOIN {$wpdb->users} u ON u.ID = a.user_id
+             WHERE a.created_at >= %s
+             ORDER BY a.created_at DESC
+             LIMIT 10",
+            $fecha_inicio
+        ));
+
+        $actividad_formateada = array_map(function($act) {
+            return [
+                'descripcion' => sprintf(
+                    __('%s publicó en %s', 'flavor-chat-ia'),
+                    $act->usuario ?: __('Alguien', 'flavor-chat-ia'),
+                    $act->comunidad_nombre
+                ),
+                'fecha' => human_time_diff(strtotime($act->created_at), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+            ];
+        }, $actividad_reciente);
+
+        // Recursos más compartidos (simulado basado en actividad)
+        $recursos_compartidos = $wpdb->get_results($wpdb->prepare(
+            "SELECT titulo, tipo, COUNT(*) AS compartidos
+             FROM $tabla_actividad
+             WHERE referencia_original IS NOT NULL AND created_at >= %s
+             GROUP BY referencia_original
+             ORDER BY compartidos DESC
+             LIMIT 5",
+            $fecha_inicio
+        ));
+
+        if (empty($recursos_compartidos)) {
+            $recursos_compartidos = [];
+        }
+
+        // Conexiones entre comunidades (basado en cross-posts)
+        $conexiones = $wpdb->get_results($wpdb->prepare(
+            "SELECT
+                c1.nombre AS comunidad_a,
+                c2.nombre AS comunidad_b,
+                COUNT(*) AS interacciones
+             FROM $tabla_actividad a1
+             INNER JOIN $tabla_actividad a2 ON a1.referencia_original = a2.id
+             INNER JOIN $tabla_comunidades c1 ON c1.id = a1.comunidad_id
+             INNER JOIN $tabla_comunidades c2 ON c2.id = a2.comunidad_id
+             WHERE a1.created_at >= %s AND c1.id != c2.id
+             GROUP BY c1.id, c2.id
+             ORDER BY interacciones DESC
+             LIMIT 5",
+            $fecha_inicio
+        ));
+
+        if (empty($conexiones)) {
+            $conexiones = [];
+        }
+
+        // Métricas federadas
+        $federado = [
+            'nodos_conectados' => 0,
+            'contenido_recibido' => 0,
+            'contenido_compartido' => 0,
+            'puntuacion_nodo' => 0,
+        ];
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_shared'") === $tabla_shared) {
+            $tabla_nodos = $wpdb->prefix . 'flavor_network_directory';
+
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_nodos'") === $tabla_nodos) {
+                $federado['nodos_conectados'] = (int) $wpdb->get_var(
+                    "SELECT COUNT(*) FROM $tabla_nodos WHERE estado = 'activo'"
+                );
+            }
+
+            $federado['contenido_recibido'] = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_shared WHERE fecha_creacion >= %s",
+                $fecha_inicio
+            ));
+
+            // Contenido local compartido a la red
+            $federado['contenido_compartido'] = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_actividad
+                 WHERE created_at >= %s
+                 AND JSON_EXTRACT(metadata, '$.compartido_red') = true",
+                $fecha_inicio
+            ));
+
+            // Puntuación del nodo (basada en actividad)
+            $federado['puntuacion_nodo'] = min(100, round(
+                ($federado['contenido_compartido'] * 2) +
+                ($federado['contenido_recibido'] * 1) +
+                ($federado['nodos_conectados'] * 5)
+            ));
+        }
+
+        wp_send_json_success([
+            'resumen' => [
+                'comunidades_activas' => (int) $comunidades_activas,
+                'colaboraciones' => (int) $colaboraciones,
+                'publicaciones' => (int) $total_publicaciones,
+                'contenido_federado' => (int) $contenido_federado,
+            ],
+            'top_comunidades' => $top_comunidades,
+            'tipos_colaboracion' => $tipos_colaboracion,
+            'actividad_reciente' => $actividad_formateada,
+            'recursos_compartidos' => $recursos_compartidos,
+            'conexiones' => $conexiones,
+            'federado' => $federado,
+        ]);
+    }
+
+    // =========================================================================
+    // BÚSQUEDA FEDERADA UNIFICADA
+    // =========================================================================
+
+    /**
+     * AJAX: Ejecuta búsqueda federada unificada
+     */
+    public function ajax_busqueda_federada() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $termino = isset($_POST['termino']) ? sanitize_text_field($_POST['termino']) : '';
+        $tipo = isset($_POST['tipo']) ? sanitize_text_field($_POST['tipo']) : 'todos';
+        $origen = isset($_POST['origen']) ? sanitize_text_field($_POST['origen']) : 'todos';
+        $pagina = isset($_POST['pagina']) ? max(1, intval($_POST['pagina'])) : 1;
+        $por_pagina = 15;
+
+        if (empty($termino) || strlen($termino) < 2) {
+            wp_send_json_error(['message' => __('Término de búsqueda muy corto', 'flavor-chat-ia')]);
+        }
+
+        $resultados = [];
+        $total = 0;
+
+        // Buscar en contenido local
+        if ($origen === 'todos' || $origen === 'local') {
+            $resultados_locales = $this->buscar_contenido_local($termino, $tipo, $por_pagina);
+            foreach ($resultados_locales as $item) {
+                $item->origen = 'local';
+                $resultados[] = $item;
+            }
+        }
+
+        // Buscar en contenido federado
+        if ($origen === 'todos' || $origen === 'federado') {
+            $resultados_federados = $this->buscar_contenido_federado($termino, $tipo, $por_pagina);
+            foreach ($resultados_federados as $item) {
+                $item->origen = 'federado';
+                $resultados[] = $item;
+            }
+        }
+
+        // Ordenar por relevancia (fecha más reciente primero)
+        usort($resultados, function($a, $b) {
+            $fecha_a = strtotime($a->fecha ?? '1970-01-01');
+            $fecha_b = strtotime($b->fecha ?? '1970-01-01');
+            return $fecha_b - $fecha_a;
+        });
+
+        $total = count($resultados);
+
+        // Paginación
+        $offset = ($pagina - 1) * $por_pagina;
+        $resultados_paginados = array_slice($resultados, $offset, $por_pagina);
+
+        // Formatear resultados
+        $resultados_formateados = array_map(function($item) {
+            return [
+                'id'          => $item->id ?? 0,
+                'tipo'        => $item->tipo ?? 'contenido',
+                'tipo_label'  => $this->obtener_label_tipo($item->tipo ?? 'contenido'),
+                'titulo'      => $item->titulo ?? '',
+                'descripcion' => $item->descripcion ?? '',
+                'imagen'      => $item->imagen ?? '',
+                'url'         => $item->url ?? '',
+                'autor'       => $item->autor ?? '',
+                'fecha'       => $item->fecha ? date_i18n('j M Y', strtotime($item->fecha)) : '',
+                'origen'      => $item->origen ?? 'local',
+                'nodo_nombre' => $item->nodo_nombre ?? '',
+                'icono'       => $this->obtener_icono_tipo($item->tipo ?? 'contenido'),
+            ];
+        }, $resultados_paginados);
+
+        wp_send_json_success([
+            'resultados' => $resultados_formateados,
+            'total'      => $total,
+            'pagina'     => $pagina,
+            'paginas'    => ceil($total / $por_pagina),
+        ]);
+    }
+
+    /**
+     * Busca contenido en la base de datos local
+     *
+     * @param string $termino Término de búsqueda
+     * @param string $tipo Tipo de contenido
+     * @param int    $limite Límite de resultados
+     * @return array
+     */
+    private function buscar_contenido_local($termino, $tipo, $limite = 20) {
+        global $wpdb;
+        $resultados = [];
+        $termino_like = '%' . $wpdb->esc_like($termino) . '%';
+
+        // Buscar comunidades
+        if ($tipo === 'todos' || $tipo === 'comunidades') {
+            $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+            $comunidades = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, nombre AS titulo, descripcion, imagen, slug, created_at AS fecha, 'comunidades' AS tipo
+                 FROM $tabla_comunidades
+                 WHERE (nombre LIKE %s OR descripcion LIKE %s) AND estado = 'activa'
+                 LIMIT %d",
+                $termino_like, $termino_like, $limite
+            ));
+
+            foreach ($comunidades as $comunidad) {
+                $comunidad->url = home_url('/comunidades/' . $comunidad->slug . '/');
+                $resultados[] = $comunidad;
+            }
+        }
+
+        // Buscar publicaciones en comunidades
+        if ($tipo === 'todos' || $tipo === 'publicaciones') {
+            $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+            $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+
+            $publicaciones = $wpdb->get_results($wpdb->prepare(
+                "SELECT a.id, a.titulo, a.contenido AS descripcion, a.imagen, a.created_at AS fecha,
+                        'publicaciones' AS tipo, c.slug AS comunidad_slug, u.display_name AS autor
+                 FROM $tabla_actividad a
+                 INNER JOIN $tabla_comunidades c ON c.id = a.comunidad_id
+                 LEFT JOIN {$wpdb->users} u ON u.ID = a.user_id
+                 WHERE (a.titulo LIKE %s OR a.contenido LIKE %s)
+                 ORDER BY a.created_at DESC
+                 LIMIT %d",
+                $termino_like, $termino_like, $limite
+            ));
+
+            foreach ($publicaciones as $pub) {
+                $pub->url = home_url('/comunidades/' . $pub->comunidad_slug . '/#actividad-' . $pub->id);
+                $resultados[] = $pub;
+            }
+        }
+
+        // Buscar eventos
+        if ($tipo === 'todos' || $tipo === 'eventos') {
+            $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") === $tabla_eventos) {
+                $eventos = $wpdb->get_results($wpdb->prepare(
+                    "SELECT id, titulo, descripcion, imagen, fecha_inicio AS fecha, 'eventos' AS tipo, slug
+                     FROM $tabla_eventos
+                     WHERE (titulo LIKE %s OR descripcion LIKE %s) AND estado = 'publicado'
+                     ORDER BY fecha_inicio DESC
+                     LIMIT %d",
+                    $termino_like, $termino_like, $limite
+                ));
+
+                foreach ($eventos as $evento) {
+                    $evento->url = home_url('/eventos/' . $evento->slug . '/');
+                    $resultados[] = $evento;
+                }
+            }
+        }
+
+        // Buscar recetas
+        if ($tipo === 'todos' || $tipo === 'recetas') {
+            $tabla_recetas = $wpdb->prefix . 'flavor_recetas';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_recetas'") === $tabla_recetas) {
+                $recetas = $wpdb->get_results($wpdb->prepare(
+                    "SELECT id, titulo, descripcion, imagen, created_at AS fecha, 'recetas' AS tipo, slug
+                     FROM $tabla_recetas
+                     WHERE (titulo LIKE %s OR descripcion LIKE %s OR ingredientes LIKE %s) AND estado = 'publicada'
+                     ORDER BY created_at DESC
+                     LIMIT %d",
+                    $termino_like, $termino_like, $termino_like, $limite
+                ));
+
+                foreach ($recetas as $receta) {
+                    $receta->url = home_url('/recetas/' . $receta->slug . '/');
+                    $resultados[] = $receta;
+                }
+            }
+        }
+
+        // Buscar en biblioteca
+        if ($tipo === 'todos' || $tipo === 'biblioteca') {
+            $tabla_biblioteca = $wpdb->prefix . 'flavor_biblioteca';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_biblioteca'") === $tabla_biblioteca) {
+                $documentos = $wpdb->get_results($wpdb->prepare(
+                    "SELECT id, titulo, descripcion, NULL AS imagen, created_at AS fecha, 'biblioteca' AS tipo, slug
+                     FROM $tabla_biblioteca
+                     WHERE (titulo LIKE %s OR descripcion LIKE %s) AND estado = 'publicado'
+                     ORDER BY created_at DESC
+                     LIMIT %d",
+                    $termino_like, $termino_like, $limite
+                ));
+
+                foreach ($documentos as $doc) {
+                    $doc->url = home_url('/biblioteca/' . $doc->slug . '/');
+                    $resultados[] = $doc;
+                }
+            }
+        }
+
+        // Buscar multimedia
+        if ($tipo === 'todos' || $tipo === 'multimedia') {
+            $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_multimedia'") === $tabla_multimedia) {
+                $multimedia = $wpdb->get_results($wpdb->prepare(
+                    "SELECT id, titulo, descripcion, thumbnail AS imagen, created_at AS fecha, 'multimedia' AS tipo, slug
+                     FROM $tabla_multimedia
+                     WHERE (titulo LIKE %s OR descripcion LIKE %s) AND estado = 'publicado'
+                     ORDER BY created_at DESC
+                     LIMIT %d",
+                    $termino_like, $termino_like, $limite
+                ));
+
+                foreach ($multimedia as $media) {
+                    $media->url = home_url('/multimedia/' . $media->slug . '/');
+                    $resultados[] = $media;
+                }
+            }
+        }
+
+        return $resultados;
+    }
+
+    /**
+     * Busca contenido en la red federada
+     *
+     * @param string $termino Término de búsqueda
+     * @param string $tipo Tipo de contenido
+     * @param int    $limite Límite de resultados
+     * @return array
+     */
+    private function buscar_contenido_federado($termino, $tipo, $limite = 20) {
+        if (!class_exists('Flavor_Network_Content_Bridge')) {
+            return [];
+        }
+
+        global $wpdb;
+        $resultados = [];
+        $tabla_shared = $wpdb->prefix . 'flavor_network_shared_content';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_shared'") !== $tabla_shared) {
+            return [];
+        }
+
+        $termino_like = '%' . $wpdb->esc_like($termino) . '%';
+
+        // Mapear tipos a tipos de contenido de red
+        $tipos_red = [];
+        if ($tipo === 'todos') {
+            $tipos_red = ['comunidades', 'grupos_consumo', 'banco_tiempo', 'eventos', 'recetas', 'biblioteca', 'multimedia'];
+        } else {
+            $tipos_red = [$tipo];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($tipos_red), '%s'));
+
+        $query = $wpdb->prepare(
+            "SELECT s.*, n.nombre AS nodo_nombre, n.logo_url AS nodo_logo
+             FROM $tabla_shared s
+             LEFT JOIN {$wpdb->prefix}flavor_network_directory n ON n.id = s.nodo_id
+             WHERE (s.titulo LIKE %s OR s.descripcion LIKE %s)
+               AND s.tipo_contenido IN ($placeholders)
+               AND s.estado = 'activo'
+               AND s.visible_red = 1
+             ORDER BY s.fecha_creacion DESC
+             LIMIT %d",
+            array_merge([$termino_like, $termino_like], $tipos_red, [$limite])
+        );
+
+        $contenido_red = $wpdb->get_results($query);
+
+        foreach ($contenido_red as $item) {
+            $resultados[] = (object) [
+                'id'          => $item->id,
+                'tipo'        => $item->tipo_contenido,
+                'titulo'      => $item->titulo,
+                'descripcion' => $item->descripcion,
+                'imagen'      => $item->imagen_url,
+                'url'         => $item->url_externa,
+                'fecha'       => $item->fecha_creacion,
+                'autor'       => '',
+                'nodo_nombre' => $item->nodo_nombre ?? '',
+                'nodo_logo'   => $item->nodo_logo ?? '',
+            ];
+        }
+
+        return $resultados;
+    }
+
+    /**
+     * Obtiene el label legible de un tipo de contenido
+     *
+     * @param string $tipo Tipo de contenido
+     * @return string
+     */
+    private function obtener_label_tipo($tipo) {
+        $labels = [
+            'comunidades'   => __('Comunidad', 'flavor-chat-ia'),
+            'publicaciones' => __('Publicación', 'flavor-chat-ia'),
+            'eventos'       => __('Evento', 'flavor-chat-ia'),
+            'recetas'       => __('Receta', 'flavor-chat-ia'),
+            'biblioteca'    => __('Documento', 'flavor-chat-ia'),
+            'multimedia'    => __('Multimedia', 'flavor-chat-ia'),
+            'grupos_consumo' => __('Grupo de Consumo', 'flavor-chat-ia'),
+            'banco_tiempo'  => __('Banco de Tiempo', 'flavor-chat-ia'),
+        ];
+
+        return $labels[$tipo] ?? ucfirst($tipo);
+    }
+
+    /**
+     * Obtiene el icono de un tipo de contenido
+     *
+     * @param string $tipo Tipo de contenido
+     * @return string
+     */
+    private function obtener_icono_tipo($tipo) {
+        $iconos = [
+            'comunidades'   => 'groups',
+            'publicaciones' => 'admin-post',
+            'eventos'       => 'calendar-alt',
+            'recetas'       => 'carrot',
+            'biblioteca'    => 'book',
+            'multimedia'    => 'format-gallery',
+            'grupos_consumo' => 'cart',
+            'banco_tiempo'  => 'clock',
+        ];
+
+        return $iconos[$tipo] ?? 'admin-site';
+    }
+
+    // =========================================================================
+    // SISTEMA DE NOTIFICACIONES CROSS-COMUNIDAD
+    // =========================================================================
+
+    /**
+     * Notifica a los miembros de comunidades relacionadas sobre una nueva publicación
+     *
+     * @param int    $comunidad_id ID de la comunidad
+     * @param int    $publicacion_id ID de la publicación
+     * @param object $publicacion Datos de la publicación
+     */
+    public function notificar_nueva_publicacion($comunidad_id, $publicacion_id, $publicacion) {
+        if (!class_exists('Flavor_Notifications_System')) {
+            return;
+        }
+
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+        if (!$comunidad) {
+            return;
+        }
+
+        // Obtener comunidades relacionadas por categoría
+        $comunidades_relacionadas = $this->obtener_comunidades_relacionadas($comunidad_id);
+
+        // Obtener miembros que siguen actividad de comunidades relacionadas
+        foreach ($comunidades_relacionadas as $comunidad_relacionada) {
+            $miembros_interesados = $this->obtener_miembros_con_preferencia(
+                $comunidad_relacionada->id,
+                'notificar_comunidades_relacionadas'
+            );
+
+            foreach ($miembros_interesados as $miembro_id) {
+                // Verificar que no sea el autor
+                if ($miembro_id == ($publicacion->user_id ?? 0)) {
+                    continue;
+                }
+
+                $notificacion = Flavor_Notifications_System::get_instance();
+                $notificacion->create(
+                    $miembro_id,
+                    'comunidad_relacionada',
+                    sprintf(__('Nueva actividad en %s', 'flavor-chat-ia'), $comunidad->nombre),
+                    sprintf(
+                        __('Hay una nueva publicación en la comunidad relacionada "%s"', 'flavor-chat-ia'),
+                        $comunidad->nombre
+                    ),
+                    [
+                        'link' => home_url("/comunidades/{$comunidad->slug}/"),
+                        'icon' => '🏘️',
+                    ]
+                );
+            }
+        }
+
+        // Notificar a todos los miembros de la comunidad (excepto el autor)
+        $this->notificar_miembros_comunidad(
+            $comunidad_id,
+            'nueva_publicacion',
+            sprintf(__('Nueva publicación en %s', 'flavor-chat-ia'), $comunidad->nombre),
+            sprintf(
+                __('%s publicó en %s', 'flavor-chat-ia'),
+                get_userdata($publicacion->user_id)->display_name ?? __('Alguien', 'flavor-chat-ia'),
+                $comunidad->nombre
+            ),
+            [
+                'link' => home_url("/comunidades/{$comunidad->slug}/#actividad-{$publicacion_id}"),
+                'icon' => '📝',
+                'excluir_usuario' => $publicacion->user_id ?? 0,
+            ]
+        );
+    }
+
+    /**
+     * Notifica sobre un nuevo evento en una comunidad
+     *
+     * @param int    $comunidad_id ID de la comunidad
+     * @param int    $evento_id ID del evento
+     * @param object $evento Datos del evento
+     */
+    public function notificar_nuevo_evento($comunidad_id, $evento_id, $evento) {
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+        if (!$comunidad) {
+            return;
+        }
+
+        $fecha_evento = isset($evento->fecha_inicio)
+            ? date_i18n('j M Y H:i', strtotime($evento->fecha_inicio))
+            : '';
+
+        // Notificar a miembros de la comunidad
+        $this->notificar_miembros_comunidad(
+            $comunidad_id,
+            'nuevo_evento',
+            sprintf(__('Nuevo evento: %s', 'flavor-chat-ia'), $evento->titulo ?? ''),
+            sprintf(
+                __('Se ha creado el evento "%s" para %s en la comunidad %s', 'flavor-chat-ia'),
+                $evento->titulo ?? '',
+                $fecha_evento,
+                $comunidad->nombre
+            ),
+            [
+                'link' => home_url("/eventos/{$evento_id}/"),
+                'icon' => '📅',
+            ]
+        );
+
+        // Notificar a comunidades relacionadas con eventos similares
+        $comunidades_relacionadas = $this->obtener_comunidades_relacionadas($comunidad_id);
+        foreach ($comunidades_relacionadas as $comunidad_relacionada) {
+            $miembros = $this->obtener_miembros_con_preferencia(
+                $comunidad_relacionada->id,
+                'notificar_eventos_red'
+            );
+
+            foreach ($miembros as $miembro_id) {
+                $this->crear_notificacion_usuario(
+                    $miembro_id,
+                    'evento_red',
+                    sprintf(__('Evento en la red: %s', 'flavor-chat-ia'), $evento->titulo ?? ''),
+                    sprintf(
+                        __('La comunidad "%s" organiza: %s el %s', 'flavor-chat-ia'),
+                        $comunidad->nombre,
+                        $evento->titulo ?? '',
+                        $fecha_evento
+                    ),
+                    [
+                        'link' => home_url("/eventos/{$evento_id}/"),
+                        'icon' => '🗓️',
+                    ]
+                );
+            }
+        }
+    }
+
+    /**
+     * Notifica cuando un nuevo miembro se une a la comunidad
+     *
+     * @param int $comunidad_id ID de la comunidad
+     * @param int $usuario_id ID del nuevo miembro
+     */
+    public function notificar_nuevo_miembro($comunidad_id, $usuario_id) {
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+        if (!$comunidad) {
+            return;
+        }
+
+        $nuevo_miembro = get_userdata($usuario_id);
+        if (!$nuevo_miembro) {
+            return;
+        }
+
+        // Notificar a los administradores de la comunidad
+        $admins = $this->obtener_administradores_comunidad($comunidad_id);
+        foreach ($admins as $admin_id) {
+            if ($admin_id == $usuario_id) {
+                continue;
+            }
+
+            $this->crear_notificacion_usuario(
+                $admin_id,
+                'nuevo_miembro',
+                __('Nuevo miembro en tu comunidad', 'flavor-chat-ia'),
+                sprintf(
+                    __('%s se ha unido a %s', 'flavor-chat-ia'),
+                    $nuevo_miembro->display_name,
+                    $comunidad->nombre
+                ),
+                [
+                    'link' => home_url("/comunidades/{$comunidad->slug}/miembros/"),
+                    'icon' => '👋',
+                ]
+            );
+        }
+
+        // Notificar al usuario sobre comunidades relacionadas
+        $comunidades_relacionadas = $this->obtener_comunidades_relacionadas($comunidad_id);
+        if (!empty($comunidades_relacionadas)) {
+            $nombres_comunidades = array_slice(array_map(function($c) {
+                return $c->nombre;
+            }, $comunidades_relacionadas), 0, 3);
+
+            $this->crear_notificacion_usuario(
+                $usuario_id,
+                'comunidades_sugeridas',
+                __('Comunidades que te pueden interesar', 'flavor-chat-ia'),
+                sprintf(
+                    __('Como miembro de %s, quizás te interesen: %s', 'flavor-chat-ia'),
+                    $comunidad->nombre,
+                    implode(', ', $nombres_comunidades)
+                ),
+                [
+                    'link' => home_url('/comunidades/'),
+                    'icon' => '🎯',
+                ]
+            );
+        }
+    }
+
+    /**
+     * Notifica cuando se comparte un recurso entre comunidades
+     *
+     * @param int    $comunidad_origen_id ID de la comunidad origen
+     * @param int    $comunidad_destino_id ID de la comunidad destino
+     * @param string $tipo_recurso Tipo de recurso compartido
+     * @param object $recurso Datos del recurso
+     */
+    public function notificar_recurso_compartido($comunidad_origen_id, $comunidad_destino_id, $tipo_recurso, $recurso) {
+        $comunidad_origen = $this->obtener_comunidad($comunidad_origen_id);
+        $comunidad_destino = $this->obtener_comunidad($comunidad_destino_id);
+
+        if (!$comunidad_origen || !$comunidad_destino) {
+            return;
+        }
+
+        $tipos_iconos = [
+            'receta'     => '🍳',
+            'documento'  => '📄',
+            'multimedia' => '🎬',
+            'podcast'    => '🎙️',
+            'evento'     => '📅',
+        ];
+
+        $icono = $tipos_iconos[$tipo_recurso] ?? '📦';
+
+        // Notificar a miembros de la comunidad destino
+        $this->notificar_miembros_comunidad(
+            $comunidad_destino_id,
+            'recurso_compartido',
+            sprintf(__('Recurso compartido desde %s', 'flavor-chat-ia'), $comunidad_origen->nombre),
+            sprintf(
+                __('La comunidad "%s" ha compartido: %s', 'flavor-chat-ia'),
+                $comunidad_origen->nombre,
+                $recurso->titulo ?? $tipo_recurso
+            ),
+            [
+                'link' => home_url("/comunidades/{$comunidad_destino->slug}/recursos/"),
+                'icon' => $icono,
+            ]
+        );
+    }
+
+    /**
+     * Notifica cuando alguien menciona a un usuario
+     *
+     * @param int    $usuario_mencionado_id Usuario mencionado
+     * @param int    $usuario_autor_id Usuario que menciona
+     * @param int    $comunidad_id ID de la comunidad
+     * @param object $contexto Datos del contexto (publicación, comentario, etc.)
+     */
+    public function notificar_mencion($usuario_mencionado_id, $usuario_autor_id, $comunidad_id, $contexto) {
+        if ($usuario_mencionado_id == $usuario_autor_id) {
+            return;
+        }
+
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+        $autor = get_userdata($usuario_autor_id);
+
+        if (!$comunidad || !$autor) {
+            return;
+        }
+
+        $this->crear_notificacion_usuario(
+            $usuario_mencionado_id,
+            'mencion',
+            __('Te han mencionado', 'flavor-chat-ia'),
+            sprintf(
+                __('%s te ha mencionado en %s', 'flavor-chat-ia'),
+                $autor->display_name,
+                $comunidad->nombre
+            ),
+            [
+                'link' => $contexto->url ?? home_url("/comunidades/{$comunidad->slug}/"),
+                'icon' => '💬',
+            ]
+        );
+    }
+
+    /**
+     * Notifica sobre contenido federado relevante
+     *
+     * @param string $tipo_contenido Tipo de contenido
+     * @param object $contenido Datos del contenido federado
+     */
+    public function notificar_contenido_federado($tipo_contenido, $contenido) {
+        // Solo notificar si el contenido es relevante para las comunidades del usuario
+        $usuarios_interesados = $this->obtener_usuarios_interesados_en_tipo($tipo_contenido);
+
+        foreach ($usuarios_interesados as $usuario_id) {
+            // Verificar preferencias del usuario
+            if (!$this->usuario_acepta_notificaciones_federadas($usuario_id)) {
+                continue;
+            }
+
+            $this->crear_notificacion_usuario(
+                $usuario_id,
+                'contenido_federado',
+                sprintf(__('Nuevo contenido en la red: %s', 'flavor-chat-ia'), $tipo_contenido),
+                sprintf(
+                    __('"%s" desde %s', 'flavor-chat-ia'),
+                    $contenido->titulo ?? __('Sin título', 'flavor-chat-ia'),
+                    $contenido->nodo_nombre ?? __('Red federada', 'flavor-chat-ia')
+                ),
+                [
+                    'link' => $contenido->url_externa ?? '#',
+                    'icon' => '🌐',
+                ]
+            );
+        }
+    }
+
+    /**
+     * Notifica sobre contenido cross-posteado
+     *
+     * @param int    $publicacion_original_id ID de la publicación original
+     * @param int    $comunidad_origen_id Comunidad de origen
+     * @param int    $comunidad_destino_id Comunidad de destino
+     * @param int    $usuario_id Usuario que hace el crosspost
+     */
+    public function notificar_crosspost($publicacion_original_id, $comunidad_origen_id, $comunidad_destino_id, $usuario_id) {
+        $comunidad_origen = $this->obtener_comunidad($comunidad_origen_id);
+        $comunidad_destino = $this->obtener_comunidad($comunidad_destino_id);
+        $usuario = get_userdata($usuario_id);
+
+        if (!$comunidad_origen || !$comunidad_destino || !$usuario) {
+            return;
+        }
+
+        // Notificar a la comunidad destino
+        $this->notificar_miembros_comunidad(
+            $comunidad_destino_id,
+            'crosspost',
+            sprintf(__('Contenido compartido desde %s', 'flavor-chat-ia'), $comunidad_origen->nombre),
+            sprintf(
+                __('%s ha compartido una publicación de %s en esta comunidad', 'flavor-chat-ia'),
+                $usuario->display_name,
+                $comunidad_origen->nombre
+            ),
+            [
+                'link' => home_url("/comunidades/{$comunidad_destino->slug}/"),
+                'icon' => '🔄',
+                'excluir_usuario' => $usuario_id,
+            ]
+        );
+    }
+
+    // =========================================================================
+    // MÉTODOS AUXILIARES DE NOTIFICACIONES
+    // =========================================================================
+
+    /**
+     * Obtiene comunidades relacionadas por categoría
+     *
+     * @param int $comunidad_id ID de la comunidad
+     * @return array Comunidades relacionadas
+     */
+    private function obtener_comunidades_relacionadas($comunidad_id) {
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+        if (!$comunidad || empty($comunidad->categoria)) {
+            return [];
+        }
+
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT id, nombre, slug, categoria
+             FROM $tabla_comunidades
+             WHERE categoria = %s
+               AND id != %d
+               AND estado = 'activa'
+             LIMIT 10",
+            $comunidad->categoria,
+            $comunidad_id
+        ));
+    }
+
+    /**
+     * Obtiene miembros con una preferencia específica activa
+     *
+     * @param int    $comunidad_id ID de la comunidad
+     * @param string $preferencia Clave de preferencia
+     * @return array IDs de usuarios
+     */
+    private function obtener_miembros_con_preferencia($comunidad_id, $preferencia) {
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        $miembros = $wpdb->get_col($wpdb->prepare(
+            "SELECT user_id FROM $tabla_miembros
+             WHERE comunidad_id = %d AND estado = 'activo'",
+            $comunidad_id
+        ));
+
+        // Filtrar por preferencia
+        return array_filter($miembros, function($usuario_id) use ($preferencia) {
+            $preferencias = get_user_meta($usuario_id, 'flavor_notificaciones_comunidades', true);
+            $preferencias = is_array($preferencias) ? $preferencias : [];
+            return !isset($preferencias[$preferencia]) || $preferencias[$preferencia] !== false;
+        });
+    }
+
+    /**
+     * Obtiene administradores de una comunidad
+     *
+     * @param int $comunidad_id ID de la comunidad
+     * @return array IDs de administradores
+     */
+    private function obtener_administradores_comunidad($comunidad_id) {
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        return $wpdb->get_col($wpdb->prepare(
+            "SELECT user_id FROM $tabla_miembros
+             WHERE comunidad_id = %d
+               AND rol IN ('admin', 'creador')
+               AND estado = 'activo'",
+            $comunidad_id
+        ));
+    }
+
+    /**
+     * Notifica a todos los miembros de una comunidad
+     *
+     * @param int    $comunidad_id ID de la comunidad
+     * @param string $tipo Tipo de notificación
+     * @param string $titulo Título
+     * @param string $mensaje Mensaje
+     * @param array  $args Argumentos adicionales
+     */
+    private function notificar_miembros_comunidad($comunidad_id, $tipo, $titulo, $mensaje, $args = []) {
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        $excluir_usuario = $args['excluir_usuario'] ?? 0;
+
+        $miembros = $wpdb->get_col($wpdb->prepare(
+            "SELECT user_id FROM $tabla_miembros
+             WHERE comunidad_id = %d AND estado = 'activo'",
+            $comunidad_id
+        ));
+
+        foreach ($miembros as $miembro_id) {
+            if ($miembro_id == $excluir_usuario) {
+                continue;
+            }
+
+            // Verificar preferencias del usuario para este tipo
+            if (!$this->usuario_acepta_notificacion($miembro_id, $tipo)) {
+                continue;
+            }
+
+            $this->crear_notificacion_usuario($miembro_id, $tipo, $titulo, $mensaje, $args);
+        }
+    }
+
+    /**
+     * Crea una notificación para un usuario
+     *
+     * @param int    $usuario_id ID del usuario
+     * @param string $tipo Tipo de notificación
+     * @param string $titulo Título
+     * @param string $mensaje Mensaje
+     * @param array  $args Argumentos adicionales
+     */
+    private function crear_notificacion_usuario($usuario_id, $tipo, $titulo, $mensaje, $args = []) {
+        if (!class_exists('Flavor_Notifications_System')) {
+            return;
+        }
+
+        $notificaciones = Flavor_Notifications_System::get_instance();
+        $notificaciones->create(
+            $usuario_id,
+            $tipo,
+            $titulo,
+            $mensaje,
+            [
+                'link' => $args['link'] ?? '',
+                'icon' => $args['icon'] ?? '🔔',
+            ]
+        );
+    }
+
+    /**
+     * Verifica si un usuario acepta un tipo de notificación
+     *
+     * @param int    $usuario_id ID del usuario
+     * @param string $tipo Tipo de notificación
+     * @return bool
+     */
+    private function usuario_acepta_notificacion($usuario_id, $tipo) {
+        $preferencias = get_user_meta($usuario_id, 'flavor_notificaciones_comunidades', true);
+        $preferencias = is_array($preferencias) ? $preferencias : [];
+
+        // Por defecto acepta todas las notificaciones
+        return !isset($preferencias[$tipo]) || $preferencias[$tipo] !== false;
+    }
+
+    /**
+     * Verifica si un usuario acepta notificaciones federadas
+     *
+     * @param int $usuario_id ID del usuario
+     * @return bool
+     */
+    private function usuario_acepta_notificaciones_federadas($usuario_id) {
+        $preferencias = get_user_meta($usuario_id, 'flavor_notificaciones_comunidades', true);
+        $preferencias = is_array($preferencias) ? $preferencias : [];
+
+        return !isset($preferencias['contenido_federado']) || $preferencias['contenido_federado'] !== false;
+    }
+
+    /**
+     * Obtiene usuarios interesados en un tipo de contenido
+     *
+     * @param string $tipo_contenido Tipo de contenido
+     * @return array IDs de usuarios
+     */
+    private function obtener_usuarios_interesados_en_tipo($tipo_contenido) {
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+
+        // Mapear tipos de contenido a categorías de comunidades
+        $mapeo_tipos = [
+            'grupos_consumo' => 'consumo',
+            'banco_tiempo'   => 'servicios',
+            'eventos'        => 'eventos',
+            'recetas'        => 'gastronomia',
+        ];
+
+        $categoria = $mapeo_tipos[$tipo_contenido] ?? null;
+
+        if (!$categoria) {
+            return [];
+        }
+
+        return $wpdb->get_col($wpdb->prepare(
+            "SELECT DISTINCT m.user_id
+             FROM $tabla_miembros m
+             INNER JOIN $tabla_comunidades c ON c.id = m.comunidad_id
+             WHERE c.categoria = %s
+               AND m.estado = 'activo'
+             LIMIT 100",
+            $categoria
+        ));
+    }
+
+    // =========================================================================
+    // AJAX HANDLERS PARA NOTIFICACIONES
+    // =========================================================================
+
+    /**
+     * AJAX: Guarda preferencias de notificación del usuario
+     */
+    public function ajax_guardar_preferencias_notificacion() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+        }
+
+        $preferencias_raw = isset($_POST['preferencias']) ? $_POST['preferencias'] : [];
+        $preferencias = [];
+
+        // Tipos de notificación permitidos
+        $tipos_permitidos = [
+            'nueva_publicacion',
+            'nuevo_evento',
+            'nuevo_miembro',
+            'recurso_compartido',
+            'mencion',
+            'contenido_federado',
+            'crosspost',
+            'notificar_comunidades_relacionadas',
+            'notificar_eventos_red',
+        ];
+
+        foreach ($tipos_permitidos as $tipo) {
+            $preferencias[$tipo] = isset($preferencias_raw[$tipo]) && $preferencias_raw[$tipo] === 'true';
+        }
+
+        update_user_meta($usuario_id, 'flavor_notificaciones_comunidades', $preferencias);
+
+        wp_send_json_success([
+            'message' => __('Preferencias guardadas correctamente', 'flavor-chat-ia'),
+            'preferencias' => $preferencias,
+        ]);
+    }
+
+    /**
+     * AJAX: Obtiene notificaciones del usuario
+     */
+    public function ajax_obtener_notificaciones() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+        }
+
+        if (!class_exists('Flavor_Notifications_System')) {
+            wp_send_json_error(['message' => __('Sistema de notificaciones no disponible', 'flavor-chat-ia')]);
+        }
+
+        $limite = isset($_POST['limite']) ? intval($_POST['limite']) : 20;
+        $solo_no_leidas = isset($_POST['solo_no_leidas']) && $_POST['solo_no_leidas'] === 'true';
+
+        $notificaciones_system = Flavor_Notifications_System::get_instance();
+        $notificaciones = $notificaciones_system->get_user_notifications($usuario_id, [
+            'limit' => $limite,
+            'unread_only' => $solo_no_leidas,
+        ]);
+
+        // Filtrar solo notificaciones de comunidades
+        $tipos_comunidad = [
+            'nueva_publicacion',
+            'nuevo_evento',
+            'nuevo_miembro',
+            'recurso_compartido',
+            'mencion',
+            'contenido_federado',
+            'crosspost',
+            'comunidad_relacionada',
+            'evento_red',
+            'comunidades_sugeridas',
+        ];
+
+        $notificaciones_comunidad = array_filter($notificaciones, function($n) use ($tipos_comunidad) {
+            return in_array($n->type, $tipos_comunidad);
+        });
+
+        $contador_no_leidas = $notificaciones_system->get_unread_count($usuario_id);
+
+        wp_send_json_success([
+            'notificaciones' => array_values($notificaciones_comunidad),
+            'no_leidas' => $contador_no_leidas,
+        ]);
+    }
+
+    /**
+     * AJAX: Marca una notificación como leída
+     */
+    public function ajax_marcar_notificacion_leida() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+        }
+
+        if (!class_exists('Flavor_Notifications_System')) {
+            wp_send_json_error(['message' => __('Sistema de notificaciones no disponible', 'flavor-chat-ia')]);
+        }
+
+        $notificacion_id = isset($_POST['notificacion_id']) ? intval($_POST['notificacion_id']) : 0;
+        $marcar_todas = isset($_POST['marcar_todas']) && $_POST['marcar_todas'] === 'true';
+
+        $notificaciones_system = Flavor_Notifications_System::get_instance();
+
+        if ($marcar_todas) {
+            $resultado = $notificaciones_system->mark_all_as_read($usuario_id);
+        } else {
+            $resultado = $notificaciones_system->mark_as_read($notificacion_id, $usuario_id);
+        }
+
+        if ($resultado) {
+            wp_send_json_success([
+                'message' => __('Notificación marcada como leída', 'flavor-chat-ia'),
+                'no_leidas' => $notificaciones_system->get_unread_count($usuario_id),
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Error al marcar notificación', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Marca todas las notificaciones como leídas
+     */
+    public function ajax_marcar_todas_leidas() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+        }
+
+        if (!class_exists('Flavor_Notifications_System')) {
+            wp_send_json_error(['message' => __('Sistema de notificaciones no disponible', 'flavor-chat-ia')]);
+        }
+
+        $notificaciones_system = Flavor_Notifications_System::get_instance();
+        $resultado = $notificaciones_system->mark_all_as_read($usuario_id);
+
+        if ($resultado !== false) {
+            wp_send_json_success([
+                'message' => __('Todas las notificaciones marcadas como leídas', 'flavor-chat-ia'),
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Error al marcar notificaciones', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Elimina una notificación
+     */
+    public function ajax_eliminar_notificacion() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+        }
+
+        $notificacion_id = isset($_POST['notificacion_id']) ? intval($_POST['notificacion_id']) : 0;
+        if (!$notificacion_id) {
+            wp_send_json_error(['message' => __('ID de notificación no válido', 'flavor-chat-ia')]);
+        }
+
+        if (!class_exists('Flavor_Notifications_System')) {
+            wp_send_json_error(['message' => __('Sistema de notificaciones no disponible', 'flavor-chat-ia')]);
+        }
+
+        $notificaciones_system = Flavor_Notifications_System::get_instance();
+        $resultado = $notificaciones_system->delete($notificacion_id, $usuario_id);
+
+        if ($resultado) {
+            wp_send_json_success([
+                'message' => __('Notificación eliminada', 'flavor-chat-ia'),
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Error al eliminar notificación', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Guarda las preferencias de notificaciones
+     */
+    public function ajax_guardar_preferencias_notificaciones() {
+        check_ajax_referer('flavor_comunidades_nonce', 'nonce');
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+        }
+
+        $preferencias_json = isset($_POST['preferencias']) ? sanitize_text_field($_POST['preferencias']) : '{}';
+        $preferencias = json_decode($preferencias_json, true);
+
+        if (!is_array($preferencias)) {
+            wp_send_json_error(['message' => __('Preferencias no válidas', 'flavor-chat-ia')]);
+        }
+
+        // Guardar preferencias en user meta
+        update_user_meta($usuario_id, 'comunidades_preferencias_notificaciones', $preferencias);
+
+        wp_send_json_success([
+            'message' => __('Preferencias guardadas correctamente', 'flavor-chat-ia'),
+        ]);
+    }
+
+    /**
+     * Obtiene datos de una comunidad por ID
+     *
+     * @param int $comunidad_id ID de la comunidad
+     * @return object|null
+     */
+    private function obtener_comunidad($comunidad_id) {
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_comunidades WHERE id = %d",
+            $comunidad_id
+        ));
+    }
+
+    // =========================================================================
+    // PÁGINAS DE ADMINISTRACIÓN
+    // =========================================================================
+
+    /**
+     * Registra las páginas de administración del módulo (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Página principal (oculta)
+        add_submenu_page(
+            null,
+            __('Comunidades', 'flavor-chat-ia'),
+            __('Comunidades', 'flavor-chat-ia'),
+            $capability,
+            'comunidades',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Página: Listado (oculta)
+        add_submenu_page(
+            null,
+            __('Todas las Comunidades', 'flavor-chat-ia'),
+            __('Listado', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-listado',
+            [$this, 'render_pagina_listado']
+        );
+
+        // Página: Feed de Actividad (oculta)
+        add_submenu_page(
+            null,
+            __('Feed de Actividad', 'flavor-chat-ia'),
+            __('Actividad', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-actividad',
+            [$this, 'render_pagina_actividad']
+        );
+
+        // Página: Métricas (oculta)
+        add_submenu_page(
+            null,
+            __('Métricas de Colaboración', 'flavor-chat-ia'),
+            __('Métricas', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-metricas',
+            [$this, 'render_pagina_metricas']
+        );
+    }
+
+    /**
+     * Renderiza página dashboard
+     */
+    public function render_pagina_dashboard() {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('Dashboard Comunidades', 'flavor-chat-ia') . '</h1>';
+        $views_path = dirname(__FILE__) . '/views/listado-comunidades.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza página de listado
+     */
+    public function render_pagina_listado() {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('Todas las Comunidades', 'flavor-chat-ia') . '</h1>';
+        $views_path = dirname(__FILE__) . '/views/listado-comunidades.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza página de actividad
+     */
+    public function render_pagina_actividad() {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('Feed de Actividad', 'flavor-chat-ia') . '</h1>';
+        $views_path = dirname(__FILE__) . '/views/feed-actividad.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza página de métricas
+     */
+    public function render_pagina_metricas() {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('Métricas de Colaboración', 'flavor-chat-ia') . '</h1>';
+        $views_path = dirname(__FILE__) . '/views/metricas-colaboracion.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
+        echo '</div>';
     }
 }

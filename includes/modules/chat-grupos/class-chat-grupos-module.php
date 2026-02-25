@@ -16,6 +16,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_WhatsApp_Features;
+    use Flavor_Encuestas_Features;
 
     /**
      * Constructor
@@ -78,6 +80,161 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define los tabs que este módulo inyecta en otros módulos
+     *
+     * Cuando chat-grupos está activo, puede mostrar un tab de "Chat"
+     * en los dashboards de grupos de consumo, eventos, comunidades, etc.
+     *
+     * @return array Configuración de tabs por módulo destino
+     */
+    public function get_tab_integrations() {
+        return [
+            // Tab de chat para Grupos de Consumo
+            'grupos_consumo' => [
+                'id'       => 'chat-grupo',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="grupo_consumo" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('grupo_consumo', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Eventos
+            'eventos' => [
+                'id'       => 'chat-evento',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="evento" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('evento', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Comunidades
+            'comunidades' => [
+                'id'       => 'chat-comunidad',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="comunidad" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('comunidad', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Cursos
+            'cursos' => [
+                'id'       => 'chat-curso',
+                'label'    => __('Chat del Curso', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="curso" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('curso', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Colectivos
+            'colectivos' => [
+                'id'       => 'chat-colectivo',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="colectivo" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('colectivo', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Círculos de Cuidados
+            'circulos_cuidados' => [
+                'id'       => 'chat-circulo',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="circulo" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('circulo', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Banco de Tiempo
+            'banco_tiempo' => [
+                'id'       => 'chat-servicio',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="servicio_bt" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('servicio_bt', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+        ];
+    }
+
+    /**
+     * Cuenta mensajes no leídos de un chat asociado a una entidad
+     *
+     * @param string $tipo_entidad Tipo de entidad
+     * @param int    $entidad_id   ID de la entidad
+     * @param int    $user_id      ID del usuario
+     * @return int Número de mensajes no leídos
+     */
+    public function contar_mensajes_no_leidos_entidad($tipo_entidad, $entidad_id, $user_id) {
+        global $wpdb;
+
+        if (!$entidad_id || !$user_id) {
+            return 0;
+        }
+
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $tabla_leidos = $wpdb->prefix . 'flavor_chat_grupos_leidos';
+
+        // Verificar si las tablas existen
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+            return 0;
+        }
+
+        // Obtener el grupo asociado a la entidad
+        $grupo_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_grupos}
+             WHERE entidad_tipo = %s AND entidad_id = %d",
+            $tipo_entidad,
+            $entidad_id
+        ));
+
+        if (!$grupo_id) {
+            return 0;
+        }
+
+        // Contar mensajes no leídos
+        $ultimo_leido = $wpdb->get_var($wpdb->prepare(
+            "SELECT ultimo_mensaje_id FROM {$tabla_leidos}
+             WHERE grupo_id = %d AND usuario_id = %d",
+            $grupo_id,
+            $user_id
+        ));
+
+        if (!$ultimo_leido) {
+            $ultimo_leido = 0;
+        }
+
+        $no_leidos = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_mensajes}
+             WHERE grupo_id = %d AND id > %d AND usuario_id != %d",
+            $grupo_id,
+            $ultimo_leido,
+            $user_id
+        ));
+
+        return intval($no_leidos);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
@@ -114,6 +271,23 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         // Panel de administración unificado
         $this->registrar_en_panel_unificado();
+
+        // Inicializar funcionalidades WhatsApp (doble check, link preview, mensajes temporales)
+        $this->init_whatsapp_features();
+
+        // Integrar funcionalidades de encuestas centralizadas
+        $this->init_encuestas_features('chat_grupo');
+    }
+
+    /**
+     * Obtiene el nombre de la tabla de mensajes
+     * Requerido por Flavor_WhatsApp_Features trait
+     *
+     * @return string
+     */
+    protected function get_mensajes_table() {
+        global $wpdb;
+        return $wpdb->prefix . 'flavor_chat_grupos_mensajes';
     }
 
     /**
@@ -137,6 +311,61 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         if (version_compare($version_actual, '1.1.0', '<')) {
             $this->migrate_to_1_1_0();
             update_option('flavor_chat_grupos_db_version', '1.1.0');
+        }
+
+        if (version_compare($version_actual, '1.2.0', '<')) {
+            $this->migrate_to_1_2_0();
+            update_option('flavor_chat_grupos_db_version', '1.2.0');
+        }
+
+        if (version_compare($version_actual, '1.3.0', '<')) {
+            $this->migrate_to_1_3_0();
+            update_option('flavor_chat_grupos_db_version', '1.3.0');
+        }
+    }
+
+    /**
+     * Migración a versión 1.2.0 - Añade columna comunidad_id para integración
+     */
+    private function migrate_to_1_2_0() {
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+            return;
+        }
+
+        // Verificar y añadir columna comunidad_id
+        $comunidad_id_existe = $wpdb->get_results(
+            $wpdb->prepare("SHOW COLUMNS FROM $tabla_grupos LIKE %s", 'comunidad_id')
+        );
+
+        if (empty($comunidad_id_existe)) {
+            $wpdb->query("ALTER TABLE $tabla_grupos ADD COLUMN comunidad_id bigint(20) unsigned DEFAULT NULL AFTER creador_id");
+            $wpdb->query("ALTER TABLE $tabla_grupos ADD INDEX idx_comunidad_id (comunidad_id)");
+        }
+    }
+
+    /**
+     * Migración a versión 1.3.0 - Añade campos entidad_tipo y entidad_id para integración universal
+     */
+    private function migrate_to_1_3_0() {
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+            return;
+        }
+
+        // Verificar y añadir columna entidad_tipo
+        $entidad_tipo_existe = $wpdb->get_results(
+            $wpdb->prepare("SHOW COLUMNS FROM $tabla_grupos LIKE %s", 'entidad_tipo')
+        );
+
+        if (empty($entidad_tipo_existe)) {
+            $wpdb->query("ALTER TABLE $tabla_grupos ADD COLUMN entidad_tipo varchar(50) DEFAULT NULL AFTER comunidad_id");
+            $wpdb->query("ALTER TABLE $tabla_grupos ADD COLUMN entidad_id bigint(20) unsigned DEFAULT NULL AFTER entidad_tipo");
+            $wpdb->query("ALTER TABLE $tabla_grupos ADD INDEX idx_entidad (entidad_tipo, entidad_id)");
         }
     }
 
@@ -353,6 +582,10 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         add_shortcode('flavor_grupos_lista', [$this, 'shortcode_grupos_lista']);
         add_shortcode('flavor_grupos_explorar', [$this, 'shortcode_grupos_explorar']);
         add_shortcode('flavor_grupos_crear', [$this, 'shortcode_crear_grupo']);
+        add_shortcode('chat_grupos_sin_leer', [$this, 'shortcode_sin_leer']);
+        add_shortcode('chat_mensajes_sin_leer', [$this, 'shortcode_mensajes_sin_leer']);
+        // Shortcode de integración para tabs de otros módulos
+        add_shortcode('flavor_chat_grupo_integrado', [$this, 'shortcode_chat_integrado']);
     }
 
     /**
@@ -408,12 +641,18 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         global $post;
         if (!$post) return false;
 
-        $shortcodes = ['flavor_chat_grupos', 'flavor_chat_grupo', 'flavor_grupos_lista', 'flavor_grupos_explorar', 'flavor_grupos_crear'];
-        foreach ($shortcodes as $sc) {
-            if (has_shortcode($post->post_content, $sc)) {
+        $shortcodes = ['flavor_chat_grupos', 'flavor_chat_grupo', 'flavor_grupos_lista', 'flavor_grupos_explorar', 'flavor_grupos_crear', 'flavor_chat_grupo_integrado'];
+        foreach ($shortcodes as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
                 return true;
             }
         }
+
+        // También cargar si estamos en un contexto de tab integrado
+        if (did_action('flavor_rendering_tab_integrado')) {
+            return true;
+        }
+
         return false;
     }
 
@@ -2392,7 +2631,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     }
 
     public function shortcode_chat_grupo($atts) {
-        $atts = shortcode_atts(['id' => 0, 'slug' => ''], $atts);
+        $atts = shortcode_atts([
+            'id' => 0,
+            'slug' => '',
+            'embebido' => 0,
+            'altura' => '500px',
+        ], $atts);
 
         $grupo_id = intval($atts['id']);
         if (!$grupo_id && $atts['slug']) {
@@ -2407,7 +2651,298 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             return '<p>' . __('Grupo no encontrado.', 'flavor-chat-ia') . '</p>';
         }
 
+        if (!is_user_logged_in()) {
+            return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        // Modo embebido: interfaz compacta sin sidebar
+        if ($atts['embebido']) {
+            return $this->render_chat_embebido($grupo_id, $atts['altura']);
+        }
+
+        // Modo normal: carga el chat completo y abre el grupo
         return $this->shortcode_chat_grupos([]) . "<script>document.addEventListener('DOMContentLoaded', function() { if(window.FlavorChatGrupos) FlavorChatGrupos.abrirGrupo({$grupo_id}); });</script>";
+    }
+
+    /**
+     * Shortcode: Chat integrado para tabs de otros módulos
+     *
+     * Muestra un chat asociado a una entidad específica.
+     * Si no existe el grupo de chat, lo crea automáticamente.
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_chat_integrado($atts) {
+        $atts = shortcode_atts([
+            'entidad'    => '',
+            'entidad_id' => 0,
+            'altura'     => '450px',
+        ], $atts);
+
+        if (!is_user_logged_in()) {
+            return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $entidad_tipo = sanitize_key($atts['entidad']);
+        $entidad_id = absint($atts['entidad_id']);
+
+        if (!$entidad_tipo || !$entidad_id) {
+            return '<p class="cg-aviso">' . __('Configuración del chat incompleta.', 'flavor-chat-ia') . '</p>';
+        }
+
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+
+        // Buscar grupo existente para esta entidad
+        $grupo_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_grupos}
+             WHERE entidad_tipo = %s AND entidad_id = %d AND estado = 'activo'",
+            $entidad_tipo,
+            $entidad_id
+        ));
+
+        // Si no existe, intentar crear automáticamente
+        if (!$grupo_id) {
+            $grupo_id = $this->crear_grupo_para_entidad($entidad_tipo, $entidad_id);
+        }
+
+        if (!$grupo_id) {
+            return '<div class="cg-no-grupo">
+                <span class="dashicons dashicons-format-status"></span>
+                <p>' . __('El chat de este grupo aún no está disponible.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        // Verificar/añadir usuario como miembro
+        $this->asegurar_membresia_entidad($grupo_id, get_current_user_id(), $entidad_tipo, $entidad_id);
+
+        // Usar el render embebido existente
+        return $this->render_chat_embebido($grupo_id, $atts['altura']);
+    }
+
+    /**
+     * Crea un grupo de chat para una entidad
+     *
+     * @param string $entidad_tipo Tipo de entidad
+     * @param int    $entidad_id   ID de la entidad
+     * @return int|false ID del grupo creado o false
+     */
+    private function crear_grupo_para_entidad($entidad_tipo, $entidad_id) {
+        global $wpdb;
+
+        // Obtener nombre de la entidad
+        $nombre_grupo = $this->obtener_nombre_entidad($entidad_tipo, $entidad_id);
+        if (!$nombre_grupo) {
+            return false;
+        }
+
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+
+        $resultado = $wpdb->insert($tabla_grupos, [
+            'nombre'        => sprintf(__('Chat: %s', 'flavor-chat-ia'), $nombre_grupo),
+            'slug'          => sanitize_title($entidad_tipo . '-' . $entidad_id),
+            'descripcion'   => sprintf(__('Grupo de chat para %s', 'flavor-chat-ia'), $nombre_grupo),
+            'tipo'          => 'entidad',
+            'privacidad'    => 'miembros',
+            'entidad_tipo'  => $entidad_tipo,
+            'entidad_id'    => $entidad_id,
+            'creador_id'    => get_current_user_id() ?: 1,
+            'estado'        => 'activo',
+            'fecha_creacion' => current_time('mysql'),
+        ]);
+
+        return $resultado ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * Obtiene el nombre de una entidad
+     */
+    private function obtener_nombre_entidad($tipo, $id) {
+        global $wpdb;
+
+        $tablas = [
+            'grupo_consumo' => ['tabla' => 'flavor_grupos_consumo', 'campo' => 'nombre'],
+            'evento'        => ['tabla' => 'flavor_eventos', 'campo' => 'titulo'],
+            'comunidad'     => ['tabla' => 'flavor_comunidades', 'campo' => 'nombre'],
+            'curso'         => ['tabla' => 'flavor_cursos', 'campo' => 'titulo'],
+            'colectivo'     => ['tabla' => 'flavor_colectivos', 'campo' => 'nombre'],
+            'circulo'       => ['tabla' => 'flavor_circulos_cuidados', 'campo' => 'nombre'],
+        ];
+
+        if (!isset($tablas[$tipo])) {
+            return ucfirst(str_replace('_', ' ', $tipo)) . ' #' . $id;
+        }
+
+        $config = $tablas[$tipo];
+        $tabla_completa = $wpdb->prefix . $config['tabla'];
+
+        return $wpdb->get_var($wpdb->prepare(
+            "SELECT {$config['campo']} FROM {$tabla_completa} WHERE id = %d",
+            $id
+        )) ?: ucfirst(str_replace('_', ' ', $tipo)) . ' #' . $id;
+    }
+
+    /**
+     * Asegura que el usuario sea miembro del grupo (si pertenece a la entidad)
+     */
+    private function asegurar_membresia_entidad($grupo_id, $usuario_id, $entidad_tipo, $entidad_id) {
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+
+        // Verificar si ya es miembro
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_miembros} WHERE grupo_id = %d AND usuario_id = %d",
+            $grupo_id,
+            $usuario_id
+        ));
+
+        if ($existe) {
+            return true;
+        }
+
+        // Verificar si el usuario pertenece a la entidad antes de añadirlo
+        if (!$this->usuario_pertenece_a_entidad($usuario_id, $entidad_tipo, $entidad_id)) {
+            return false;
+        }
+
+        $wpdb->insert($tabla_miembros, [
+            'grupo_id'       => $grupo_id,
+            'usuario_id'     => $usuario_id,
+            'rol'            => 'miembro',
+            'fecha_union'    => current_time('mysql'),
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Verifica si un usuario pertenece a una entidad
+     *
+     * @param int    $usuario_id   ID del usuario
+     * @param string $entidad_tipo Tipo de entidad (comunidad, grupo_consumo, colectivo, etc.)
+     * @param int    $entidad_id   ID de la entidad
+     * @return bool
+     */
+    private function usuario_pertenece_a_entidad($usuario_id, $entidad_tipo, $entidad_id) {
+        global $wpdb;
+
+        // Mapeo de tipos de entidad a tablas de membresía
+        $tablas_membresia = [
+            'comunidad'      => ['tabla' => 'flavor_comunidades_miembros', 'campo_entidad' => 'comunidad_id'],
+            'grupo_consumo'  => ['tabla' => 'flavor_gc_miembros', 'campo_entidad' => 'grupo_id'],
+            'colectivo'      => ['tabla' => 'flavor_colectivos_miembros', 'campo_entidad' => 'colectivo_id'],
+            'circulo'        => ['tabla' => 'flavor_circulos_miembros', 'campo_entidad' => 'circulo_id'],
+            'huerto'         => ['tabla' => 'flavor_huertos_parcelas', 'campo_entidad' => 'huerto_id'],
+        ];
+
+        if (!isset($tablas_membresia[$entidad_tipo])) {
+            // Si no hay tabla de membresía definida, permitir (compatibilidad)
+            return true;
+        }
+
+        $config = $tablas_membresia[$entidad_tipo];
+        $tabla = $wpdb->prefix . $config['tabla'];
+        $campo_entidad = $config['campo_entidad'];
+
+        // Verificar si la tabla existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla}'") !== $tabla) {
+            return true; // Tabla no existe, permitir por compatibilidad
+        }
+
+        // Verificar membresía
+        $es_miembro = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla} WHERE {$campo_entidad} = %d AND usuario_id = %d",
+            $entidad_id,
+            $usuario_id
+        ));
+
+        return $es_miembro > 0;
+    }
+
+    /**
+     * Renderiza un chat de grupo en modo embebido (sin sidebar)
+     *
+     * @param int    $grupo_id ID del grupo
+     * @param string $altura   Altura del contenedor CSS
+     * @return string HTML del chat embebido
+     */
+    private function render_chat_embebido($grupo_id, $altura) {
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+
+        $grupo = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_grupos WHERE id = %d AND estado = 'activo'",
+            $grupo_id
+        ));
+
+        if (!$grupo) {
+            return '<p>' . __('Grupo no disponible.', 'flavor-chat-ia') . '</p>';
+        }
+
+        // Verificar membresía
+        $usuario_id = get_current_user_id();
+        $es_miembro = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_miembros WHERE grupo_id = %d AND usuario_id = %d",
+            $grupo_id, $usuario_id
+        ));
+
+        if (!$es_miembro) {
+            return '<div class="cg-no-acceso"><p>' . __('No tienes acceso a este chat.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $altura_css = esc_attr($altura);
+
+        ob_start();
+        ?>
+        <div class="cg-embebido" data-grupo-id="<?php echo esc_attr($grupo_id); ?>" data-user-id="<?php echo esc_attr($usuario_id); ?>" style="height: <?php echo $altura_css; ?>;">
+            <div class="cg-embebido-header">
+                <div class="cg-grupo-avatar">
+                    <?php if ($grupo->imagen): ?>
+                        <img src="<?php echo esc_url($grupo->imagen); ?>" alt="">
+                    <?php else: ?>
+                        <span class="dashicons dashicons-groups"></span>
+                    <?php endif; ?>
+                </div>
+                <div class="cg-grupo-datos">
+                    <h4 class="cg-grupo-nombre"><?php echo esc_html($grupo->nombre); ?></h4>
+                    <span class="cg-grupo-miembros"><?php printf(__('%d miembros', 'flavor-chat-ia'), $grupo->miembros_count); ?></span>
+                </div>
+                <div class="cg-embebido-acciones">
+                    <button class="cg-btn-buscar-emb" title="<?php esc_attr_e('Buscar', 'flavor-chat-ia'); ?>">
+                        <span class="dashicons dashicons-search"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="cg-embebido-mensajes" id="cg-emb-mensajes-<?php echo esc_attr($grupo_id); ?>">
+                <div class="cg-loading"><?php _e('Cargando mensajes...', 'flavor-chat-ia'); ?></div>
+            </div>
+            <div class="cg-embebido-escribiendo" style="display:none;"></div>
+            <div class="cg-embebido-input">
+                <button class="cg-btn-adjuntar-emb" title="<?php esc_attr_e('Adjuntar', 'flavor-chat-ia'); ?>">
+                    <span class="dashicons dashicons-paperclip"></span>
+                </button>
+                <div class="cg-input-wrapper">
+                    <textarea class="cg-emb-mensaje-input" placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-chat-ia'); ?>" rows="1"></textarea>
+                </div>
+                <button class="cg-btn-enviar-emb" title="<?php esc_attr_e('Enviar', 'flavor-chat-ia'); ?>">
+                    <span class="dashicons dashicons-arrow-right-alt"></span>
+                </button>
+            </div>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.FlavorChatGruposEmbebido) {
+                FlavorChatGruposEmbebido.init(<?php echo $grupo_id; ?>);
+            } else if (window.FlavorChatGrupos) {
+                // Fallback: usar el controlador principal si existe
+                FlavorChatGrupos.initEmbebido(<?php echo $grupo_id; ?>);
+            }
+        });
+        </script>
+        <?php
+        return ob_get_clean();
     }
 
     public function shortcode_grupos_lista($atts) {
@@ -2542,6 +3077,133 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         </div>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Grupos con mensajes sin leer (widget)
+     * Muestra la cantidad de grupos con mensajes pendientes
+     */
+    public function shortcode_sin_leer($atts) {
+        if (!is_user_logged_in()) {
+            return '';
+        }
+
+        $atts = shortcode_atts([
+            'mostrar_lista' => 'true',
+            'limite' => 3,
+        ], $atts);
+
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $usuario_id = get_current_user_id();
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
+            return '';
+        }
+
+        // Obtener grupos con mensajes sin leer
+        $limite = intval($atts['limite']);
+        $grupos_sin_leer = $wpdb->get_results($wpdb->prepare(
+            "SELECT g.id, g.nombre, g.color,
+                    (SELECT COUNT(*) FROM $tabla_mensajes m
+                     WHERE m.grupo_id = g.id
+                     AND m.fecha_creacion > COALESCE(mem.ultima_lectura, '1970-01-01')
+                     AND m.usuario_id != %d) as sin_leer
+             FROM $tabla_grupos g
+             INNER JOIN $tabla_miembros mem ON g.id = mem.grupo_id AND mem.usuario_id = %d
+             HAVING sin_leer > 0
+             ORDER BY sin_leer DESC
+             LIMIT %d",
+            $usuario_id,
+            $usuario_id,
+            $limite
+        ));
+
+        $total_sin_leer = array_sum(wp_list_pluck($grupos_sin_leer, 'sin_leer'));
+
+        if (empty($grupos_sin_leer)) {
+            return '';
+        }
+
+        ob_start();
+        ?>
+        <div class="chat-grupos-sin-leer">
+            <div class="sin-leer-badge">
+                <span class="badge-numero"><?php echo esc_html($total_sin_leer); ?></span>
+                <span class="badge-texto"><?php esc_html_e('mensajes sin leer', 'flavor-chat-ia'); ?></span>
+            </div>
+
+            <?php if ($atts['mostrar_lista'] === 'true'): ?>
+            <ul class="grupos-sin-leer-lista">
+                <?php foreach ($grupos_sin_leer as $grupo): ?>
+                <li>
+                    <a href="<?php echo esc_url(home_url('/chat-grupos/grupo/?id=' . $grupo->id)); ?>">
+                        <span class="grupo-color" style="background:<?php echo esc_attr($grupo->color ?: '#2271b1'); ?>"></span>
+                        <span class="grupo-nombre"><?php echo esc_html($grupo->nombre); ?></span>
+                        <span class="grupo-sin-leer"><?php echo esc_html($grupo->sin_leer); ?></span>
+                    </a>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Total mensajes sin leer (badge simple)
+     * Muestra solo el número de mensajes pendientes
+     */
+    public function shortcode_mensajes_sin_leer($atts) {
+        if (!is_user_logged_in()) {
+            return '';
+        }
+
+        $atts = shortcode_atts([
+            'formato' => 'badge', // badge, texto, numero
+        ], $atts);
+
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+        $usuario_id = get_current_user_id();
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_mensajes)) {
+            return '';
+        }
+
+        // Contar todos los mensajes sin leer
+        $total = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*)
+             FROM $tabla_mensajes m
+             INNER JOIN $tabla_miembros mem ON m.grupo_id = mem.grupo_id AND mem.usuario_id = %d
+             WHERE m.fecha_creacion > COALESCE(mem.ultima_lectura, '1970-01-01')
+             AND m.usuario_id != %d",
+            $usuario_id,
+            $usuario_id
+        ));
+
+        $total = intval($total);
+
+        if ($total === 0) {
+            return '';
+        }
+
+        switch ($atts['formato']) {
+            case 'numero':
+                return esc_html($total);
+
+            case 'texto':
+                return sprintf(esc_html__('%d mensajes sin leer', 'flavor-chat-ia'), $total);
+
+            case 'badge':
+            default:
+                return '<span class="chat-mensajes-badge">' . esc_html($total) . '</span>';
+        }
     }
 
     // ==================== Dashboard Integration ====================
@@ -2924,6 +3586,127 @@ KNOWLEDGE;
             Flavor_Page_Creator::create_pages_for_modules(['chat_grupos']);
             update_option('flavor_chat_grupos_pages_created', 1, false);
         }
+    }
+
+    /**
+     * Agrega un miembro a un grupo programáticamente
+     *
+     * Usado por otros módulos (como Comunidades) para sincronizar membresías.
+     *
+     * @param int    $grupo_id   ID del grupo
+     * @param int    $usuario_id ID del usuario a agregar
+     * @param string $rol        Rol del usuario (miembro, moderador, admin)
+     * @return array Resultado de la operación
+     */
+    public function agregar_miembro_programatico($grupo_id, $usuario_id, $rol = 'miembro') {
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+
+        // Verificar que el grupo existe
+        $grupo = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_grupos WHERE id = %d AND estado = 'activo'",
+            $grupo_id
+        ));
+
+        if (!$grupo) {
+            return ['success' => false, 'error' => __('Grupo no encontrado.', 'flavor-chat-ia')];
+        }
+
+        // Verificar si ya es miembro
+        $membresia_existente = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_miembros WHERE grupo_id = %d AND usuario_id = %d",
+            $grupo_id, $usuario_id
+        ));
+
+        if ($membresia_existente) {
+            return ['success' => true, 'mensaje' => __('El usuario ya es miembro del grupo.', 'flavor-chat-ia')];
+        }
+
+        // Verificar límite de miembros
+        if ($grupo->miembros_count >= $grupo->max_miembros) {
+            return ['success' => false, 'error' => __('El grupo ha alcanzado el límite de miembros.', 'flavor-chat-ia')];
+        }
+
+        // Añadir como miembro
+        $insertado = $wpdb->insert($tabla_miembros, [
+            'grupo_id' => $grupo_id,
+            'usuario_id' => $usuario_id,
+            'rol' => $rol,
+        ]);
+
+        if (!$insertado) {
+            return ['success' => false, 'error' => __('Error al agregar miembro.', 'flavor-chat-ia')];
+        }
+
+        // Actualizar contador
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $tabla_grupos SET miembros_count = miembros_count + 1 WHERE id = %d",
+            $grupo_id
+        ));
+
+        // Mensaje de sistema (silencioso para sincronización)
+        $usuario = get_userdata($usuario_id);
+        if ($usuario) {
+            $this->crear_mensaje_sistema($grupo_id, 'usuario_unido', [
+                'usuario_id' => $usuario_id,
+                'usuario_nombre' => $usuario->display_name,
+            ]);
+        }
+
+        return ['success' => true, 'mensaje' => __('Miembro agregado correctamente.', 'flavor-chat-ia')];
+    }
+
+    /**
+     * Quita un miembro de un grupo programáticamente
+     *
+     * Usado por otros módulos (como Comunidades) para sincronizar membresías.
+     *
+     * @param int $grupo_id   ID del grupo
+     * @param int $usuario_id ID del usuario a quitar
+     * @return array Resultado de la operación
+     */
+    public function quitar_miembro_programatico($grupo_id, $usuario_id) {
+        global $wpdb;
+        $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
+        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+
+        // Verificar si es miembro
+        $miembro = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_miembros WHERE grupo_id = %d AND usuario_id = %d",
+            $grupo_id, $usuario_id
+        ));
+
+        if (!$miembro) {
+            return ['success' => true, 'mensaje' => __('El usuario no es miembro del grupo.', 'flavor-chat-ia')];
+        }
+
+        // Eliminar membresía
+        $eliminado = $wpdb->delete($tabla_miembros, [
+            'grupo_id' => $grupo_id,
+            'usuario_id' => $usuario_id,
+        ]);
+
+        if (!$eliminado) {
+            return ['success' => false, 'error' => __('Error al quitar miembro.', 'flavor-chat-ia')];
+        }
+
+        // Actualizar contador
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $tabla_grupos SET miembros_count = GREATEST(miembros_count - 1, 0) WHERE id = %d",
+            $grupo_id
+        ));
+
+        // Mensaje de sistema
+        $usuario = get_userdata($usuario_id);
+        if ($usuario) {
+            $this->crear_mensaje_sistema($grupo_id, 'usuario_salio', [
+                'usuario_id' => $usuario_id,
+                'usuario_nombre' => $usuario->display_name,
+            ]);
+        }
+
+        return ['success' => true, 'mensaje' => __('Miembro eliminado correctamente.', 'flavor-chat-ia')];
     }
 
     /**

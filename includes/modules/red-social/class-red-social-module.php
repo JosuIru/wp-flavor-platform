@@ -11,11 +11,17 @@ if (!defined('ABSPATH')) {
 
 /**
  * Modulo de Red Social - Alternativa social media para la comunidad
+ *
+ * INTEGRACIONES:
+ * - Este modulo es PROVIDER de publicaciones
+ * - Las publicaciones pueden vincularse a productos, eventos, etc.
  */
 class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Provider;
+    use Flavor_Encuestas_Features;
 
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
@@ -26,6 +32,35 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
     /** @var array Tipos de notificacion */
     const TIPOS_NOTIFICACION = ['like', 'comentario', 'seguidor', 'mencion', 'compartido', 'historia'];
 
+    /** @var array Puntos por tipo de acción */
+    const PUNTOS_ACCION = [
+        'publicacion' => 10,
+        'comentario' => 5,
+        'like_recibido' => 2,
+        'like_dado' => 1,
+        'compartido' => 8,
+        'seguidor_ganado' => 3,
+        'seguir_usuario' => 1,
+        'historia' => 5,
+        'mencion_recibida' => 2,
+        'login_diario' => 2,
+        'primera_publicacion' => 25,
+        'verificacion_perfil' => 50,
+        'invitar_usuario' => 15,
+        'badge_obtenido' => 10,
+    ];
+
+    /** @var array Niveles de reputación con puntos mínimos */
+    const NIVELES_REPUTACION = [
+        'nuevo' => ['min' => 0, 'label' => 'Nuevo', 'icono' => '🌱', 'color' => '#9ca3af'],
+        'activo' => ['min' => 50, 'label' => 'Activo', 'icono' => '⭐', 'color' => '#3b82f6'],
+        'contribuidor' => ['min' => 200, 'label' => 'Contribuidor', 'icono' => '🌟', 'color' => '#8b5cf6'],
+        'experto' => ['min' => 500, 'label' => 'Experto', 'icono' => '💫', 'color' => '#f59e0b'],
+        'lider' => ['min' => 1000, 'label' => 'Líder', 'icono' => '🏆', 'color' => '#ef4444'],
+        'embajador' => ['min' => 2500, 'label' => 'Embajador', 'icono' => '👑', 'color' => '#10b981'],
+        'leyenda' => ['min' => 5000, 'label' => 'Leyenda', 'icono' => '🔥', 'color' => '#ec4899'],
+    ];
+
     /**
      * Constructor
      */
@@ -35,6 +70,9 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Red social alternativa sin publicidad, centrada en la comunidad y sus intereses.'; // Translation loaded on init
 
         parent::__construct();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -81,6 +119,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $tabla_notificaciones = $wpdb->prefix . 'flavor_social_notificaciones';
         $tabla_guardados = $wpdb->prefix . 'flavor_social_guardados';
         $tabla_perfiles = $wpdb->prefix . 'flavor_social_perfiles';
+        $tabla_engagement = $wpdb->prefix . 'flavor_social_engagement';
 
         return [
             $tabla_publicaciones => "CREATE TABLE $tabla_publicaciones (
@@ -231,6 +270,84 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (id),
                 UNIQUE KEY usuario_id (usuario_id)
+            ) $charset_collate;",
+
+            $tabla_engagement => "CREATE TABLE $tabla_engagement (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                autor_id bigint(20) unsigned NOT NULL,
+                tipo_interaccion enum('like','comentario','compartido','guardado','clic','tiempo_lectura') NOT NULL,
+                contenido_id bigint(20) unsigned DEFAULT NULL,
+                peso decimal(5,2) DEFAULT 1.00,
+                fecha_interaccion datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY usuario_autor (usuario_id, autor_id),
+                KEY autor_id (autor_id),
+                KEY fecha_interaccion (fecha_interaccion),
+                KEY tipo_interaccion (tipo_interaccion)
+            ) $charset_collate;",
+
+            $wpdb->prefix . 'flavor_social_reputacion' => "CREATE TABLE {$wpdb->prefix}flavor_social_reputacion (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                puntos_totales int(11) DEFAULT 0,
+                nivel varchar(50) DEFAULT 'nuevo',
+                puntos_semana int(11) DEFAULT 0,
+                puntos_mes int(11) DEFAULT 0,
+                racha_dias int(11) DEFAULT 0,
+                ultima_actividad datetime DEFAULT NULL,
+                fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY usuario_id (usuario_id),
+                KEY nivel (nivel),
+                KEY puntos_totales (puntos_totales)
+            ) $charset_collate;",
+
+            $wpdb->prefix . 'flavor_social_badges' => "CREATE TABLE {$wpdb->prefix}flavor_social_badges (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                nombre varchar(100) NOT NULL,
+                slug varchar(100) NOT NULL,
+                descripcion text,
+                icono varchar(255) DEFAULT NULL,
+                color varchar(20) DEFAULT '#3b82f6',
+                categoria enum('participacion','creacion','comunidad','especial','temporal') DEFAULT 'participacion',
+                puntos_requeridos int(11) DEFAULT 0,
+                condicion_especial text DEFAULT NULL COMMENT 'JSON con condiciones especiales',
+                es_unico tinyint(1) DEFAULT 0 COMMENT 'Solo se puede obtener una vez',
+                activo tinyint(1) DEFAULT 1,
+                orden int(11) DEFAULT 0,
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY slug (slug),
+                KEY categoria (categoria),
+                KEY activo (activo)
+            ) $charset_collate;",
+
+            $wpdb->prefix . 'flavor_social_usuario_badges' => "CREATE TABLE {$wpdb->prefix}flavor_social_usuario_badges (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                badge_id bigint(20) unsigned NOT NULL,
+                fecha_obtenido datetime DEFAULT CURRENT_TIMESTAMP,
+                destacado tinyint(1) DEFAULT 0 COMMENT 'Mostrar en perfil',
+                PRIMARY KEY (id),
+                UNIQUE KEY usuario_badge (usuario_id, badge_id),
+                KEY badge_id (badge_id),
+                KEY fecha_obtenido (fecha_obtenido)
+            ) $charset_collate;",
+
+            $wpdb->prefix . 'flavor_social_historial_puntos' => "CREATE TABLE {$wpdb->prefix}flavor_social_historial_puntos (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                puntos int(11) NOT NULL,
+                tipo_accion varchar(50) NOT NULL,
+                descripcion varchar(255) DEFAULT NULL,
+                referencia_id bigint(20) unsigned DEFAULT NULL,
+                referencia_tipo varchar(50) DEFAULT NULL,
+                fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY usuario_id (usuario_id),
+                KEY tipo_accion (tipo_accion),
+                KEY fecha_creacion (fecha_creacion)
             ) $charset_collate;"
         ];
     }
@@ -259,9 +376,140 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define el tipo de contenido que ofrece este modulo
+     */
+    protected function get_integration_content_type() {
+        return [
+            'id'         => 'publicaciones',
+            'label'      => __('Publicaciones', 'flavor-chat-ia'),
+            'icon'       => 'dashicons-share',
+            'table'      => 'flavor_social_publicaciones',
+            'capability' => 'edit_posts',
+        ];
+    }
+
+    /**
+     * Define los tabs que este módulo inyecta en otros módulos
+     *
+     * Cuando red-social está activo, puede mostrar un tab de "Publicaciones"
+     * en los dashboards de grupos de consumo, eventos, comunidades, etc.
+     *
+     * @return array Configuración de tabs por módulo destino
+     */
+    public function get_tab_integrations() {
+        return [
+            // Tab de publicaciones para Grupos de Consumo
+            'grupos_consumo' => [
+                'id'       => 'posts-grupo',
+                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="grupo_consumo" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('grupo_consumo', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de publicaciones para Eventos
+            'eventos' => [
+                'id'       => 'posts-evento',
+                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="evento" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('evento', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de publicaciones para Comunidades
+            'comunidades' => [
+                'id'       => 'feed-comunidad',
+                'label'    => __('Feed', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="comunidad" entidad_id="{entity_id}"]',
+                'priority' => 80,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('comunidad', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de publicaciones para Colectivos
+            'colectivos' => [
+                'id'       => 'posts-colectivo',
+                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="colectivo" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('colectivo', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab para Círculos de Cuidados
+            'circulos_cuidados' => [
+                'id'       => 'posts-circulo',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="circulo" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('circulo', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab para Banco de Tiempo
+            'banco_tiempo' => [
+                'id'       => 'posts-servicio',
+                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="servicio_bt" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('servicio_bt', $contexto['entity_id']);
+                },
+            ],
+        ];
+    }
+
+    /**
+     * Cuenta publicaciones asociadas a una entidad
+     *
+     * @param string $tipo_entidad Tipo de entidad
+     * @param int    $entidad_id   ID de la entidad
+     * @return int Número de publicaciones
+     */
+    public function contar_publicaciones_entidad($tipo_entidad, $entidad_id) {
+        global $wpdb;
+
+        if (!$entidad_id) {
+            return 0;
+        }
+
+        $tabla = $wpdb->prefix . 'flavor_social_publicaciones';
+
+        // Verificar si la tabla existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return 0;
+        }
+
+        $total = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla}
+             WHERE entidad_tipo = %s AND entidad_id = %d AND estado = 'publicado'",
+            $tipo_entidad,
+            $entidad_id
+        ));
+
+        return intval($total);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        // Registrar como proveedor de integraciones
+        $this->register_as_integration_provider();
+
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en panel de administración unificado
         $this->registrar_en_panel_unificado();
@@ -297,6 +545,9 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         if (!wp_next_scheduled('rs_limpiar_historias_expiradas')) {
             wp_schedule_event(time(), 'hourly', 'rs_limpiar_historias_expiradas');
         }
+
+        // Integrar funcionalidades de encuestas
+        $this->init_encuestas_features('red_social');
     }
 
     /**
@@ -309,6 +560,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         add_shortcode('rs_crear_publicacion', [$this, 'shortcode_crear_publicacion']);
         add_shortcode('rs_notificaciones', [$this, 'shortcode_notificaciones']);
         add_shortcode('rs_historias', [$this, 'shortcode_historias']);
+        add_shortcode('rs_reputacion', [$this, 'shortcode_reputacion']);
+        add_shortcode('rs_ranking', [$this, 'shortcode_ranking']);
+        add_shortcode('rs_badges', [$this, 'shortcode_badges']);
+        add_shortcode('rs_mi_actividad', [$this, 'shortcode_mi_actividad']);
+
+        // Shortcode de integración para tabs de otros módulos
+        add_shortcode('flavor_social_feed', [$this, 'shortcode_feed_integrado']);
     }
 
     /**
@@ -405,7 +663,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $adjuntos_json = null;
 
         if (empty($contenido) && empty($_FILES['adjuntos'])) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El contenido no puede estar vacío', 'flavor-chat-ia')]);
         }
 
         $max_caracteres = $this->get_setting('max_caracteres_publicacion');
@@ -442,7 +700,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s']);
 
         if ($resultado_insercion === false) {
-            wp_send_json_error(['message' => __('publicacion_id', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear la publicación', 'flavor-chat-ia')]);
         }
 
         $publicacion_id = $wpdb->insert_id;
@@ -455,6 +713,17 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         // Actualizar contador de perfil
         $this->actualizar_contador_perfil($usuario_id, 'total_publicaciones', 1);
+
+        // Añadir puntos de reputación
+        $total_publicaciones = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_publicaciones WHERE autor_id = %d AND estado = 'publicado'",
+            $usuario_id
+        ));
+        if ((int) $total_publicaciones === 1) {
+            $this->agregar_puntos_reputacion($usuario_id, 'primera_publicacion', $publicacion_id, 'publicacion');
+        } else {
+            $this->agregar_puntos_reputacion($usuario_id, 'publicacion', $publicacion_id, 'publicacion');
+        }
 
         // Obtener HTML de la publicacion
         $publicacion_html = $this->renderizar_publicacion($publicacion_id);
@@ -481,7 +750,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $tipo_reaccion = sanitize_text_field($_POST['tipo'] ?? 'me_gusta');
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => __('usuario_id', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Publicación no válida', 'flavor-chat-ia')]);
         }
 
         if (!in_array($tipo_reaccion, self::TIPOS_REACCION)) {
@@ -532,9 +801,15 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 $publicacion_id
             ));
 
-            if ($publicacion && $publicacion->autor_id != $usuario_id) {
+            if ($publicacion && (int) $publicacion->autor_id !== $usuario_id) {
                 $this->crear_notificacion($publicacion->autor_id, $usuario_id, 'like', $publicacion_id, 'publicacion');
+                // Registrar engagement para feed inteligente
+                $this->registrar_engagement($usuario_id, $publicacion->autor_id, 'like', $publicacion_id);
+                // Puntos de reputación: autor recibe puntos por like
+                $this->agregar_puntos_reputacion($publicacion->autor_id, 'like_recibido', $publicacion_id, 'publicacion');
             }
+            // Puntos por dar like
+            $this->agregar_puntos_reputacion($usuario_id, 'like_dado', $publicacion_id, 'publicacion');
 
             $accion_realizada = 'agregado';
         }
@@ -566,7 +841,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $padre_id = absint($_POST['padre_id'] ?? 0);
 
         if (!$publicacion_id || empty($contenido)) {
-            wp_send_json_error(['message' => __('publicacion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Publicación y contenido son requeridos', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -583,7 +858,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ], ['%d', '%d', '%d', '%s', '%s', '%s']);
 
         if ($resultado_insercion === false) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear el comentario', 'flavor-chat-ia')]);
         }
 
         $comentario_id = $wpdb->insert_id;
@@ -600,12 +875,17 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             $publicacion_id
         ));
 
-        if ($publicacion && $publicacion->autor_id != $usuario_id) {
+        if ($publicacion && (int) $publicacion->autor_id !== $usuario_id) {
             $this->crear_notificacion($publicacion->autor_id, $usuario_id, 'comentario', $publicacion_id, 'publicacion');
+            // Registrar engagement para feed inteligente (comentarios tienen más peso)
+            $this->registrar_engagement($usuario_id, $publicacion->autor_id, 'comentario', $publicacion_id);
         }
 
         // Procesar menciones en comentario
         $this->procesar_menciones($contenido, $publicacion_id, $usuario_id);
+
+        // Puntos de reputación por comentar
+        $this->agregar_puntos_reputacion($usuario_id, 'comentario', $comentario_id, 'comentario');
 
         $comentario_html = $this->renderizar_comentario($comentario_id);
 
@@ -626,7 +906,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $offset = absint($_POST['offset'] ?? 0);
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Publicación no válida', 'flavor-chat-ia')]);
         }
 
         global $wpdb;
@@ -767,6 +1047,10 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             $this->actualizar_contador_perfil($seguidor_id, 'total_siguiendo', 1);
 
             $this->crear_notificacion($seguido_id, $seguidor_id, 'seguidor', $seguidor_id, 'usuario');
+
+            // Puntos de reputación por seguir y ser seguido
+            $this->agregar_puntos_reputacion($seguidor_id, 'seguir_usuario', $seguido_id, 'usuario');
+            $this->agregar_puntos_reputacion($seguido_id, 'seguidor_ganado', $seguidor_id, 'usuario');
 
             $accion_realizada = 'siguiendo';
         }
@@ -1949,11 +2233,20 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
         $tabla_seguimientos = $wpdb->prefix . 'flavor_social_seguimientos';
+        $tabla_engagement = $wpdb->prefix . 'flavor_social_engagement';
 
         $desde_id = $desde_id > 0 ? $desde_id : PHP_INT_MAX;
 
+        // Verificar si usar algoritmo inteligente
+        $algoritmo_configurado = $this->get_setting('timeline_algoritmo');
+
         switch ($tipo) {
             case 'timeline':
+                // Si está configurado como inteligente y hay usuario logueado
+                if ($algoritmo_configurado === 'inteligente' && $usuario_id) {
+                    return $this->obtener_feed_inteligente($usuario_id, $desde_id, $limite);
+                }
+
                 if ($usuario_id) {
                     $sql = "SELECT p.* FROM $tabla_publicaciones p
                             WHERE p.estado = 'publicado'
@@ -1988,9 +2281,162 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                         LIMIT %d";
                 return $wpdb->get_results($wpdb->prepare($sql, $desde_id, $limite));
 
+            case 'inteligente':
+                if ($usuario_id) {
+                    return $this->obtener_feed_inteligente($usuario_id, $desde_id, $limite);
+                }
+                // Fallback a cronológico si no hay usuario
+                return $this->obtener_publicaciones_feed('comunidad', 0, $desde_id, $limite);
+
             default:
                 return [];
         }
+    }
+
+    /**
+     * Obtiene el feed con algoritmo inteligente personalizado
+     *
+     * El score se calcula en base a:
+     * - Afinidad con el autor (interacciones previas)
+     * - Engagement de la publicación (likes, comentarios, compartidos)
+     * - Decadencia temporal (publicaciones más recientes tienen mayor peso)
+     * - Diversidad (evitar demasiadas publicaciones del mismo autor)
+     */
+    private function obtener_feed_inteligente($usuario_id, $desde_id, $limite) {
+        global $wpdb;
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
+        $tabla_seguimientos = $wpdb->prefix . 'flavor_social_seguimientos';
+        $tabla_engagement = $wpdb->prefix . 'flavor_social_engagement';
+
+        $desde_id = $desde_id > 0 ? $desde_id : PHP_INT_MAX;
+
+        // Query con score calculado
+        // Score = (afinidad_autor * 10) + (engagement_pub * 2) + (recencia * 5)
+        // - afinidad_autor: suma de interacciones del usuario con el autor en últimos 30 días
+        // - engagement_pub: (likes + comentarios*2 + compartidos*3) / LOG(edad_horas + 2)
+        // - recencia: 1 / LOG(edad_horas + 2)
+        $sql = "SELECT p.*,
+                    COALESCE(afinidad.total_interacciones, 0) as afinidad_autor,
+                    (p.me_gusta + p.comentarios * 2 + p.compartidos * 3) as engagement_raw,
+                    TIMESTAMPDIFF(HOUR, p.fecha_publicacion, NOW()) as edad_horas,
+                    (
+                        COALESCE(afinidad.total_interacciones, 0) * 10 +
+                        (p.me_gusta + p.comentarios * 2 + p.compartidos * 3) / LOG(TIMESTAMPDIFF(HOUR, p.fecha_publicacion, NOW()) + 2) +
+                        100 / LOG(TIMESTAMPDIFF(HOUR, p.fecha_publicacion, NOW()) + 2) +
+                        CASE WHEN p.autor_id IN (SELECT seguido_id FROM $tabla_seguimientos WHERE seguidor_id = %d) THEN 50 ELSE 0 END +
+                        CASE WHEN p.adjuntos IS NOT NULL AND p.adjuntos != '' AND p.adjuntos != '[]' THEN 10 ELSE 0 END
+                    ) as score_total
+                FROM $tabla_publicaciones p
+                LEFT JOIN (
+                    SELECT autor_id, SUM(peso) as total_interacciones
+                    FROM $tabla_engagement
+                    WHERE usuario_id = %d
+                    AND fecha_interaccion > DATE_SUB(NOW(), INTERVAL 30 DAY)
+                    GROUP BY autor_id
+                ) afinidad ON p.autor_id = afinidad.autor_id
+                WHERE p.estado = 'publicado'
+                AND p.id < %d
+                AND (
+                    p.autor_id = %d
+                    OR p.autor_id IN (SELECT seguido_id FROM $tabla_seguimientos WHERE seguidor_id = %d)
+                    OR p.visibilidad IN ('publica', 'comunidad')
+                )
+                AND p.fecha_publicacion > DATE_SUB(NOW(), INTERVAL 14 DAY)
+                ORDER BY score_total DESC, p.fecha_publicacion DESC
+                LIMIT %d";
+
+        $publicaciones = $wpdb->get_results($wpdb->prepare(
+            $sql,
+            $usuario_id,
+            $usuario_id,
+            $desde_id,
+            $usuario_id,
+            $usuario_id,
+            $limite * 2 // Obtener más para aplicar diversidad
+        ));
+
+        // Aplicar diversidad: no más de 3 publicaciones seguidas del mismo autor
+        $publicaciones_filtradas = $this->aplicar_diversidad_feed($publicaciones, 3);
+
+        return array_slice($publicaciones_filtradas, 0, $limite);
+    }
+
+    /**
+     * Aplica diversidad al feed limitando publicaciones consecutivas del mismo autor
+     */
+    private function aplicar_diversidad_feed($publicaciones, $max_consecutivas) {
+        $resultado = [];
+        $contador_autor = [];
+        $ultimo_autor = null;
+        $consecutivas = 0;
+
+        foreach ($publicaciones as $publicacion) {
+            $autor_id = $publicacion->autor_id;
+
+            if ($autor_id === $ultimo_autor) {
+                $consecutivas++;
+                if ($consecutivas > $max_consecutivas) {
+                    continue; // Saltar esta publicación
+                }
+            } else {
+                $consecutivas = 1;
+                $ultimo_autor = $autor_id;
+            }
+
+            $resultado[] = $publicacion;
+        }
+
+        return $resultado;
+    }
+
+    /**
+     * Registra una interacción para el algoritmo de feed
+     */
+    public function registrar_engagement($usuario_id, $autor_id, $tipo_interaccion, $contenido_id = null) {
+        global $wpdb;
+        $tabla_engagement = $wpdb->prefix . 'flavor_social_engagement';
+
+        // Pesos por tipo de interacción
+        $pesos_interaccion = [
+            'like' => 1.0,
+            'comentario' => 2.0,
+            'compartido' => 3.0,
+            'guardado' => 2.5,
+            'clic' => 0.5,
+            'tiempo_lectura' => 0.3,
+        ];
+
+        $peso = $pesos_interaccion[$tipo_interaccion] ?? 1.0;
+
+        $wpdb->insert(
+            $tabla_engagement,
+            [
+                'usuario_id' => $usuario_id,
+                'autor_id' => $autor_id,
+                'tipo_interaccion' => $tipo_interaccion,
+                'contenido_id' => $contenido_id,
+                'peso' => $peso,
+                'fecha_interaccion' => current_time('mysql'),
+            ],
+            ['%d', '%d', '%s', '%d', '%f', '%s']
+        );
+    }
+
+    /**
+     * Obtiene el score de afinidad entre dos usuarios
+     */
+    public function obtener_afinidad_usuario($usuario_id, $autor_id) {
+        global $wpdb;
+        $tabla_engagement = $wpdb->prefix . 'flavor_social_engagement';
+
+        return (float) $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(SUM(peso), 0)
+             FROM $tabla_engagement
+             WHERE usuario_id = %d AND autor_id = %d
+             AND fecha_interaccion > DATE_SUB(NOW(), INTERVAL 30 DAY)",
+            $usuario_id,
+            $autor_id
+        ));
     }
 
     /**
@@ -3334,5 +3780,1441 @@ KNOWLEDGE;
                 'parent' => 'red-social',
             ],
         ];
+    }
+
+    // =========================================================================
+    // SISTEMA DE REPUTACIÓN / KARMA
+    // =========================================================================
+
+    /**
+     * Añade puntos de reputación a un usuario
+     *
+     * @param int    $usuario_id  ID del usuario
+     * @param string $tipo_accion Tipo de acción (ver PUNTOS_ACCION)
+     * @param int    $referencia_id ID de referencia opcional
+     * @param string $referencia_tipo Tipo de referencia opcional
+     * @return int|false Nuevos puntos totales o false en error
+     */
+    public function agregar_puntos_reputacion($usuario_id, $tipo_accion, $referencia_id = null, $referencia_tipo = null) {
+        if (!isset(self::PUNTOS_ACCION[$tipo_accion])) {
+            return false;
+        }
+
+        $puntos = self::PUNTOS_ACCION[$tipo_accion];
+
+        global $wpdb;
+        $tabla_reputacion = $wpdb->prefix . 'flavor_social_reputacion';
+        $tabla_historial = $wpdb->prefix . 'flavor_social_historial_puntos';
+
+        // Asegurar que existe el registro de reputación
+        $this->asegurar_registro_reputacion($usuario_id);
+
+        // Registrar en historial
+        $wpdb->insert(
+            $tabla_historial,
+            [
+                'usuario_id' => $usuario_id,
+                'puntos' => $puntos,
+                'tipo_accion' => $tipo_accion,
+                'descripcion' => $this->get_descripcion_accion($tipo_accion),
+                'referencia_id' => $referencia_id,
+                'referencia_tipo' => $referencia_tipo,
+                'fecha_creacion' => current_time('mysql'),
+            ],
+            ['%d', '%d', '%s', '%s', '%d', '%s', '%s']
+        );
+
+        // Actualizar puntos totales
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $tabla_reputacion
+             SET puntos_totales = puntos_totales + %d,
+                 puntos_semana = puntos_semana + %d,
+                 puntos_mes = puntos_mes + %d,
+                 ultima_actividad = NOW(),
+                 racha_dias = CASE
+                     WHEN DATE(ultima_actividad) = CURDATE() - INTERVAL 1 DAY THEN racha_dias + 1
+                     WHEN DATE(ultima_actividad) = CURDATE() THEN racha_dias
+                     ELSE 1
+                 END
+             WHERE usuario_id = %d",
+            $puntos,
+            $puntos,
+            $puntos,
+            $usuario_id
+        ));
+
+        // Obtener nuevos puntos y actualizar nivel si es necesario
+        $datos_reputacion = $wpdb->get_row($wpdb->prepare(
+            "SELECT puntos_totales, nivel FROM $tabla_reputacion WHERE usuario_id = %d",
+            $usuario_id
+        ));
+
+        if ($datos_reputacion) {
+            $nuevo_nivel = $this->calcular_nivel($datos_reputacion->puntos_totales);
+            if ($nuevo_nivel !== $datos_reputacion->nivel) {
+                $wpdb->update(
+                    $tabla_reputacion,
+                    ['nivel' => $nuevo_nivel],
+                    ['usuario_id' => $usuario_id],
+                    ['%s'],
+                    ['%d']
+                );
+
+                // Notificar subida de nivel
+                $this->notificar_subida_nivel($usuario_id, $nuevo_nivel);
+            }
+
+            // Verificar si obtiene algún badge
+            $this->verificar_badges_usuario($usuario_id);
+
+            return $datos_reputacion->puntos_totales + $puntos;
+        }
+
+        return false;
+    }
+
+    /**
+     * Asegura que existe el registro de reputación del usuario
+     */
+    private function asegurar_registro_reputacion($usuario_id) {
+        global $wpdb;
+        $tabla_reputacion = $wpdb->prefix . 'flavor_social_reputacion';
+
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_reputacion WHERE usuario_id = %d",
+            $usuario_id
+        ));
+
+        if (!$existe) {
+            $wpdb->insert(
+                $tabla_reputacion,
+                [
+                    'usuario_id' => $usuario_id,
+                    'puntos_totales' => 0,
+                    'nivel' => 'nuevo',
+                    'puntos_semana' => 0,
+                    'puntos_mes' => 0,
+                    'racha_dias' => 0,
+                    'ultima_actividad' => current_time('mysql'),
+                ],
+                ['%d', '%d', '%s', '%d', '%d', '%d', '%s']
+            );
+        }
+    }
+
+    /**
+     * Calcula el nivel basado en puntos totales
+     */
+    private function calcular_nivel($puntos_totales) {
+        $nivel_actual = 'nuevo';
+
+        foreach (self::NIVELES_REPUTACION as $nivel => $config) {
+            if ($puntos_totales >= $config['min']) {
+                $nivel_actual = $nivel;
+            }
+        }
+
+        return $nivel_actual;
+    }
+
+    /**
+     * Obtiene la descripción de una acción
+     */
+    private function get_descripcion_accion($tipo_accion) {
+        $descripciones = [
+            'publicacion' => __('Publicación creada', 'flavor-chat-ia'),
+            'comentario' => __('Comentario realizado', 'flavor-chat-ia'),
+            'like_recibido' => __('Like recibido', 'flavor-chat-ia'),
+            'like_dado' => __('Like dado', 'flavor-chat-ia'),
+            'compartido' => __('Contenido compartido', 'flavor-chat-ia'),
+            'seguidor_ganado' => __('Nuevo seguidor', 'flavor-chat-ia'),
+            'seguir_usuario' => __('Usuario seguido', 'flavor-chat-ia'),
+            'historia' => __('Historia publicada', 'flavor-chat-ia'),
+            'mencion_recibida' => __('Mencionado', 'flavor-chat-ia'),
+            'login_diario' => __('Actividad diaria', 'flavor-chat-ia'),
+            'primera_publicacion' => __('Primera publicación', 'flavor-chat-ia'),
+            'verificacion_perfil' => __('Perfil verificado', 'flavor-chat-ia'),
+            'invitar_usuario' => __('Usuario invitado', 'flavor-chat-ia'),
+            'badge_obtenido' => __('Badge obtenido', 'flavor-chat-ia'),
+        ];
+
+        return $descripciones[$tipo_accion] ?? $tipo_accion;
+    }
+
+    /**
+     * Notifica al usuario que subió de nivel
+     */
+    private function notificar_subida_nivel($usuario_id, $nuevo_nivel) {
+        $info_nivel = self::NIVELES_REPUTACION[$nuevo_nivel] ?? null;
+        if (!$info_nivel) {
+            return;
+        }
+
+        // Crear notificación interna
+        $this->crear_notificacion(
+            $usuario_id,
+            0, // Sistema
+            'nivel_subido',
+            0,
+            'reputacion'
+        );
+
+        // Hook para otras integraciones
+        do_action('flavor_social_nivel_subido', $usuario_id, $nuevo_nivel, $info_nivel);
+    }
+
+    /**
+     * Obtiene la información de reputación de un usuario
+     */
+    public function obtener_reputacion_usuario($usuario_id) {
+        global $wpdb;
+        $tabla_reputacion = $wpdb->prefix . 'flavor_social_reputacion';
+
+        $this->asegurar_registro_reputacion($usuario_id);
+
+        $datos = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_reputacion WHERE usuario_id = %d",
+            $usuario_id
+        ));
+
+        if (!$datos) {
+            return null;
+        }
+
+        $nivel_info = self::NIVELES_REPUTACION[$datos->nivel] ?? self::NIVELES_REPUTACION['nuevo'];
+        $siguiente_nivel = $this->obtener_siguiente_nivel($datos->nivel);
+
+        return [
+            'puntos_totales' => (int) $datos->puntos_totales,
+            'nivel' => $datos->nivel,
+            'nivel_label' => $nivel_info['label'],
+            'nivel_icono' => $nivel_info['icono'],
+            'nivel_color' => $nivel_info['color'],
+            'puntos_semana' => (int) $datos->puntos_semana,
+            'puntos_mes' => (int) $datos->puntos_mes,
+            'racha_dias' => (int) $datos->racha_dias,
+            'siguiente_nivel' => $siguiente_nivel ? $siguiente_nivel['nombre'] : null,
+            'puntos_para_siguiente' => $siguiente_nivel ? $siguiente_nivel['min'] - $datos->puntos_totales : 0,
+            'progreso_nivel' => $siguiente_nivel ? $this->calcular_progreso_nivel($datos->puntos_totales, $datos->nivel) : 100,
+            'badges' => $this->obtener_badges_usuario($usuario_id),
+        ];
+    }
+
+    /**
+     * Obtiene el siguiente nivel
+     */
+    private function obtener_siguiente_nivel($nivel_actual) {
+        $niveles = array_keys(self::NIVELES_REPUTACION);
+        $indice_actual = array_search($nivel_actual, $niveles);
+
+        if ($indice_actual === false || $indice_actual >= count($niveles) - 1) {
+            return null;
+        }
+
+        $siguiente = $niveles[$indice_actual + 1];
+        return [
+            'nombre' => $siguiente,
+            'min' => self::NIVELES_REPUTACION[$siguiente]['min'],
+            'label' => self::NIVELES_REPUTACION[$siguiente]['label'],
+        ];
+    }
+
+    /**
+     * Calcula el progreso hacia el siguiente nivel (0-100%)
+     */
+    private function calcular_progreso_nivel($puntos_totales, $nivel_actual) {
+        $nivel_info = self::NIVELES_REPUTACION[$nivel_actual] ?? null;
+        $siguiente = $this->obtener_siguiente_nivel($nivel_actual);
+
+        if (!$nivel_info || !$siguiente) {
+            return 100;
+        }
+
+        $puntos_nivel_actual = $nivel_info['min'];
+        $puntos_siguiente = $siguiente['min'];
+        $rango = $puntos_siguiente - $puntos_nivel_actual;
+
+        if ($rango <= 0) {
+            return 100;
+        }
+
+        $progreso = $puntos_totales - $puntos_nivel_actual;
+        return min(100, max(0, ($progreso / $rango) * 100));
+    }
+
+    /**
+     * Obtiene los badges de un usuario
+     */
+    public function obtener_badges_usuario($usuario_id) {
+        global $wpdb;
+        $tabla_badges = $wpdb->prefix . 'flavor_social_badges';
+        $tabla_usuario_badges = $wpdb->prefix . 'flavor_social_usuario_badges';
+
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT b.*, ub.fecha_obtenido, ub.destacado
+             FROM $tabla_badges b
+             INNER JOIN $tabla_usuario_badges ub ON b.id = ub.badge_id
+             WHERE ub.usuario_id = %d AND b.activo = 1
+             ORDER BY ub.destacado DESC, ub.fecha_obtenido DESC",
+            $usuario_id
+        ));
+    }
+
+    /**
+     * Verifica y otorga badges al usuario si cumple condiciones
+     */
+    public function verificar_badges_usuario($usuario_id) {
+        global $wpdb;
+        $tabla_badges = $wpdb->prefix . 'flavor_social_badges';
+        $tabla_usuario_badges = $wpdb->prefix . 'flavor_social_usuario_badges';
+        $tabla_reputacion = $wpdb->prefix . 'flavor_social_reputacion';
+
+        // Obtener datos del usuario
+        $reputacion = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_reputacion WHERE usuario_id = %d",
+            $usuario_id
+        ));
+
+        if (!$reputacion) {
+            return;
+        }
+
+        // Obtener badges que el usuario no tiene
+        $badges_disponibles = $wpdb->get_results($wpdb->prepare(
+            "SELECT b.* FROM $tabla_badges b
+             WHERE b.activo = 1
+             AND b.id NOT IN (SELECT badge_id FROM $tabla_usuario_badges WHERE usuario_id = %d)",
+            $usuario_id
+        ));
+
+        foreach ($badges_disponibles as $badge) {
+            $otorgar = false;
+
+            // Verificar por puntos requeridos
+            if ($badge->puntos_requeridos > 0 && $reputacion->puntos_totales >= $badge->puntos_requeridos) {
+                $otorgar = true;
+            }
+
+            // Verificar condiciones especiales
+            if (!$otorgar && !empty($badge->condicion_especial)) {
+                $condicion = json_decode($badge->condicion_especial, true);
+                $otorgar = $this->verificar_condicion_badge($usuario_id, $condicion);
+            }
+
+            if ($otorgar) {
+                $this->otorgar_badge($usuario_id, $badge->id);
+            }
+        }
+    }
+
+    /**
+     * Verifica una condición especial de badge
+     */
+    private function verificar_condicion_badge($usuario_id, $condicion) {
+        if (!is_array($condicion) || empty($condicion['tipo'])) {
+            return false;
+        }
+
+        global $wpdb;
+
+        switch ($condicion['tipo']) {
+            case 'publicaciones_count':
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_social_publicaciones
+                     WHERE autor_id = %d AND estado = 'publicado'",
+                    $usuario_id
+                ));
+                return $count >= ($condicion['valor'] ?? 0);
+
+            case 'seguidores_count':
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_social_seguimientos
+                     WHERE seguido_id = %d",
+                    $usuario_id
+                ));
+                return $count >= ($condicion['valor'] ?? 0);
+
+            case 'racha_dias':
+                $reputacion = $wpdb->get_var($wpdb->prepare(
+                    "SELECT racha_dias FROM {$wpdb->prefix}flavor_social_reputacion
+                     WHERE usuario_id = %d",
+                    $usuario_id
+                ));
+                return $reputacion >= ($condicion['valor'] ?? 0);
+
+            case 'comentarios_count':
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_social_comentarios
+                     WHERE autor_id = %d AND estado = 'publicado'",
+                    $usuario_id
+                ));
+                return $count >= ($condicion['valor'] ?? 0);
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Otorga un badge a un usuario
+     */
+    public function otorgar_badge($usuario_id, $badge_id) {
+        global $wpdb;
+        $tabla_usuario_badges = $wpdb->prefix . 'flavor_social_usuario_badges';
+
+        // Verificar si ya lo tiene
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_usuario_badges WHERE usuario_id = %d AND badge_id = %d",
+            $usuario_id,
+            $badge_id
+        ));
+
+        if ($existe) {
+            return false;
+        }
+
+        // Otorgar badge
+        $resultado = $wpdb->insert(
+            $tabla_usuario_badges,
+            [
+                'usuario_id' => $usuario_id,
+                'badge_id' => $badge_id,
+                'fecha_obtenido' => current_time('mysql'),
+                'destacado' => 0,
+            ],
+            ['%d', '%d', '%s', '%d']
+        );
+
+        if ($resultado) {
+            // Añadir puntos por badge
+            $this->agregar_puntos_reputacion($usuario_id, 'badge_obtenido', $badge_id, 'badge');
+
+            // Hook para notificaciones
+            do_action('flavor_social_badge_otorgado', $usuario_id, $badge_id);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Obtiene el ranking de usuarios por reputación
+     */
+    public function obtener_ranking_reputacion($limite = 10, $periodo = 'total') {
+        global $wpdb;
+        $tabla_reputacion = $wpdb->prefix . 'flavor_social_reputacion';
+
+        $campo_ordenar = 'puntos_totales';
+        if ($periodo === 'semana') {
+            $campo_ordenar = 'puntos_semana';
+        } elseif ($periodo === 'mes') {
+            $campo_ordenar = 'puntos_mes';
+        }
+
+        $usuarios = $wpdb->get_results($wpdb->prepare(
+            "SELECT r.*, u.display_name, u.user_login
+             FROM $tabla_reputacion r
+             INNER JOIN {$wpdb->users} u ON r.usuario_id = u.ID
+             ORDER BY r.{$campo_ordenar} DESC
+             LIMIT %d",
+            $limite
+        ));
+
+        $ranking = [];
+        $posicion = 1;
+
+        foreach ($usuarios as $usuario) {
+            $nivel_info = self::NIVELES_REPUTACION[$usuario->nivel] ?? self::NIVELES_REPUTACION['nuevo'];
+
+            $ranking[] = [
+                'posicion' => $posicion++,
+                'usuario_id' => $usuario->usuario_id,
+                'nombre' => $usuario->display_name,
+                'username' => $usuario->user_login,
+                'avatar' => get_avatar_url($usuario->usuario_id, ['size' => 50]),
+                'puntos' => (int) $usuario->$campo_ordenar,
+                'puntos_totales' => (int) $usuario->puntos_totales,
+                'nivel' => $usuario->nivel,
+                'nivel_label' => $nivel_info['label'],
+                'nivel_icono' => $nivel_info['icono'],
+                'nivel_color' => $nivel_info['color'],
+                'racha_dias' => (int) $usuario->racha_dias,
+            ];
+        }
+
+        return $ranking;
+    }
+
+    /**
+     * Instala los badges predeterminados
+     */
+    public function instalar_badges_predeterminados() {
+        global $wpdb;
+        $tabla_badges = $wpdb->prefix . 'flavor_social_badges';
+
+        $badges_predeterminados = [
+            [
+                'nombre' => 'Primeros Pasos',
+                'slug' => 'primeros-pasos',
+                'descripcion' => 'Completaste tu perfil y publicaste tu primer contenido',
+                'icono' => '🎯',
+                'color' => '#3b82f6',
+                'categoria' => 'participacion',
+                'puntos_requeridos' => 25,
+                'orden' => 1,
+            ],
+            [
+                'nombre' => 'Comunicador',
+                'slug' => 'comunicador',
+                'descripcion' => 'Has comentado en más de 50 publicaciones',
+                'icono' => '💬',
+                'color' => '#8b5cf6',
+                'categoria' => 'participacion',
+                'condicion_especial' => json_encode(['tipo' => 'comentarios_count', 'valor' => 50]),
+                'orden' => 2,
+            ],
+            [
+                'nombre' => 'Creador Activo',
+                'slug' => 'creador-activo',
+                'descripcion' => 'Has creado más de 20 publicaciones',
+                'icono' => '✍️',
+                'color' => '#f59e0b',
+                'categoria' => 'creacion',
+                'condicion_especial' => json_encode(['tipo' => 'publicaciones_count', 'valor' => 20]),
+                'orden' => 3,
+            ],
+            [
+                'nombre' => 'Influencer',
+                'slug' => 'influencer',
+                'descripcion' => 'Has conseguido más de 100 seguidores',
+                'icono' => '⭐',
+                'color' => '#ec4899',
+                'categoria' => 'comunidad',
+                'condicion_especial' => json_encode(['tipo' => 'seguidores_count', 'valor' => 100]),
+                'orden' => 4,
+            ],
+            [
+                'nombre' => 'Constante',
+                'slug' => 'constante',
+                'descripcion' => 'Has mantenido una racha de 7 días de actividad',
+                'icono' => '🔥',
+                'color' => '#ef4444',
+                'categoria' => 'participacion',
+                'condicion_especial' => json_encode(['tipo' => 'racha_dias', 'valor' => 7]),
+                'orden' => 5,
+            ],
+            [
+                'nombre' => 'Maratonista',
+                'slug' => 'maratonista',
+                'descripcion' => 'Has mantenido una racha de 30 días de actividad',
+                'icono' => '🏃',
+                'color' => '#10b981',
+                'categoria' => 'participacion',
+                'condicion_especial' => json_encode(['tipo' => 'racha_dias', 'valor' => 30]),
+                'orden' => 6,
+            ],
+            [
+                'nombre' => 'Centenario',
+                'slug' => 'centenario',
+                'descripcion' => 'Has alcanzado 100 puntos de reputación',
+                'icono' => '💯',
+                'color' => '#6366f1',
+                'categoria' => 'participacion',
+                'puntos_requeridos' => 100,
+                'orden' => 7,
+            ],
+            [
+                'nombre' => 'Veterano',
+                'slug' => 'veterano',
+                'descripcion' => 'Has alcanzado 1000 puntos de reputación',
+                'icono' => '🏆',
+                'color' => '#f97316',
+                'categoria' => 'especial',
+                'puntos_requeridos' => 1000,
+                'orden' => 8,
+            ],
+        ];
+
+        foreach ($badges_predeterminados as $badge) {
+            $existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM $tabla_badges WHERE slug = %s",
+                $badge['slug']
+            ));
+
+            if (!$existe) {
+                $wpdb->insert(
+                    $tabla_badges,
+                    array_merge($badge, [
+                        'es_unico' => 1,
+                        'activo' => 1,
+                        'fecha_creacion' => current_time('mysql'),
+                    ])
+                );
+            }
+        }
+    }
+
+    // =========================================================================
+    // SHORTCODES DE REPUTACIÓN
+    // =========================================================================
+
+    /**
+     * Shortcode: Mostrar tarjeta de reputación del usuario
+     * [rs_reputacion usuario_id="123"]
+     */
+    public function shortcode_reputacion($atts) {
+        $atts = shortcode_atts([
+            'usuario_id' => get_current_user_id(),
+            'mostrar_badges' => 'true',
+            'mostrar_progreso' => 'true',
+        ], $atts, 'rs_reputacion');
+
+        $usuario_id = absint($atts['usuario_id']);
+        if (!$usuario_id) {
+            return '<p class="rs-mensaje">' . __('Usuario no encontrado', 'flavor-chat-ia') . '</p>';
+        }
+
+        $reputacion = $this->obtener_reputacion_usuario($usuario_id);
+        if (!$reputacion) {
+            return '';
+        }
+
+        $usuario = get_userdata($usuario_id);
+        $mostrar_badges = $atts['mostrar_badges'] === 'true';
+        $mostrar_progreso = $atts['mostrar_progreso'] === 'true';
+
+        ob_start();
+        ?>
+        <div class="rs-reputacion-card">
+            <div class="rs-reputacion-header">
+                <div class="rs-reputacion-avatar">
+                    <img src="<?php echo esc_url(get_avatar_url($usuario_id, ['size' => 80])); ?>" alt="">
+                    <span class="rs-nivel-badge" style="background: <?php echo esc_attr($reputacion['nivel_color']); ?>">
+                        <?php echo esc_html($reputacion['nivel_icono']); ?>
+                    </span>
+                </div>
+                <div class="rs-reputacion-info">
+                    <h3><?php echo esc_html($usuario->display_name); ?></h3>
+                    <span class="rs-nivel-label" style="color: <?php echo esc_attr($reputacion['nivel_color']); ?>">
+                        <?php echo esc_html($reputacion['nivel_label']); ?>
+                    </span>
+                    <div class="rs-puntos-total">
+                        <strong><?php echo number_format($reputacion['puntos_totales']); ?></strong>
+                        <?php esc_html_e('puntos', 'flavor-chat-ia'); ?>
+                    </div>
+                </div>
+            </div>
+
+            <?php if ($mostrar_progreso && $reputacion['siguiente_nivel']): ?>
+            <div class="rs-reputacion-progreso">
+                <div class="rs-progreso-bar">
+                    <div class="rs-progreso-fill" style="width: <?php echo esc_attr($reputacion['progreso_nivel']); ?>%"></div>
+                </div>
+                <div class="rs-progreso-texto">
+                    <?php printf(
+                        esc_html__('%d puntos para %s', 'flavor-chat-ia'),
+                        $reputacion['puntos_para_siguiente'],
+                        $reputacion['siguiente_nivel']
+                    ); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="rs-reputacion-stats">
+                <div class="rs-stat">
+                    <span class="rs-stat-valor"><?php echo number_format($reputacion['puntos_semana']); ?></span>
+                    <span class="rs-stat-label"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="rs-stat">
+                    <span class="rs-stat-valor"><?php echo number_format($reputacion['puntos_mes']); ?></span>
+                    <span class="rs-stat-label"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="rs-stat">
+                    <span class="rs-stat-valor"><?php echo $reputacion['racha_dias']; ?> 🔥</span>
+                    <span class="rs-stat-label"><?php esc_html_e('Racha', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+
+            <?php if ($mostrar_badges && !empty($reputacion['badges'])): ?>
+            <div class="rs-badges-lista">
+                <h4><?php esc_html_e('Badges', 'flavor-chat-ia'); ?></h4>
+                <div class="rs-badges-grid">
+                    <?php foreach (array_slice($reputacion['badges'], 0, 6) as $badge): ?>
+                    <div class="rs-badge-item" title="<?php echo esc_attr($badge->descripcion); ?>">
+                        <span class="rs-badge-icono" style="background: <?php echo esc_attr($badge->color); ?>">
+                            <?php echo esc_html($badge->icono); ?>
+                        </span>
+                        <span class="rs-badge-nombre"><?php echo esc_html($badge->nombre); ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Ranking de reputación
+     * [rs_ranking limite="10" periodo="total"]
+     */
+    public function shortcode_ranking($atts) {
+        $atts = shortcode_atts([
+            'limite' => 10,
+            'periodo' => 'total', // total, semana, mes
+        ], $atts, 'rs_ranking');
+
+        $ranking = $this->obtener_ranking_reputacion(absint($atts['limite']), $atts['periodo']);
+
+        if (empty($ranking)) {
+            return '<p class="rs-mensaje">' . __('No hay datos de ranking', 'flavor-chat-ia') . '</p>';
+        }
+
+        $periodo_labels = [
+            'total' => __('Total', 'flavor-chat-ia'),
+            'semana' => __('Esta semana', 'flavor-chat-ia'),
+            'mes' => __('Este mes', 'flavor-chat-ia'),
+        ];
+
+        ob_start();
+        ?>
+        <div class="rs-ranking">
+            <h3 class="rs-ranking-titulo">
+                🏆 <?php esc_html_e('Ranking de reputación', 'flavor-chat-ia'); ?>
+                <span class="rs-ranking-periodo"><?php echo esc_html($periodo_labels[$atts['periodo']] ?? ''); ?></span>
+            </h3>
+            <div class="rs-ranking-lista">
+                <?php foreach ($ranking as $usuario): ?>
+                <div class="rs-ranking-item <?php echo $usuario['posicion'] <= 3 ? 'rs-ranking-top' : ''; ?>">
+                    <span class="rs-ranking-posicion">
+                        <?php
+                        if ($usuario['posicion'] === 1) echo '🥇';
+                        elseif ($usuario['posicion'] === 2) echo '🥈';
+                        elseif ($usuario['posicion'] === 3) echo '🥉';
+                        else echo '#' . $usuario['posicion'];
+                        ?>
+                    </span>
+                    <img class="rs-ranking-avatar" src="<?php echo esc_url($usuario['avatar']); ?>" alt="">
+                    <div class="rs-ranking-info">
+                        <span class="rs-ranking-nombre"><?php echo esc_html($usuario['nombre']); ?></span>
+                        <span class="rs-ranking-nivel" style="color: <?php echo esc_attr($usuario['nivel_color']); ?>">
+                            <?php echo esc_html($usuario['nivel_icono'] . ' ' . $usuario['nivel_label']); ?>
+                        </span>
+                    </div>
+                    <div class="rs-ranking-puntos">
+                        <strong><?php echo number_format($usuario['puntos']); ?></strong>
+                        <span><?php esc_html_e('pts', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mostrar badges disponibles
+     * [rs_badges categoria="todos"]
+     */
+    public function shortcode_badges($atts) {
+        $atts = shortcode_atts([
+            'categoria' => 'todos',
+        ], $atts, 'rs_badges');
+
+        global $wpdb;
+        $tabla_badges = $wpdb->prefix . 'flavor_social_badges';
+
+        $where = "WHERE activo = 1";
+        if ($atts['categoria'] !== 'todos') {
+            $where .= $wpdb->prepare(" AND categoria = %s", $atts['categoria']);
+        }
+
+        $badges = $wpdb->get_results("SELECT * FROM $tabla_badges {$where} ORDER BY orden ASC");
+
+        if (empty($badges)) {
+            return '<p class="rs-mensaje">' . __('No hay badges disponibles', 'flavor-chat-ia') . '</p>';
+        }
+
+        $usuario_id = get_current_user_id();
+        $badges_usuario = [];
+        if ($usuario_id) {
+            $badges_obtenidos = $this->obtener_badges_usuario($usuario_id);
+            $badges_usuario = array_column($badges_obtenidos, 'id');
+        }
+
+        ob_start();
+        ?>
+        <div class="rs-badges-catalogo">
+            <h3><?php esc_html_e('Badges disponibles', 'flavor-chat-ia'); ?></h3>
+            <div class="rs-badges-grid-large">
+                <?php foreach ($badges as $badge): ?>
+                <?php $obtenido = in_array($badge->id, $badges_usuario); ?>
+                <div class="rs-badge-card <?php echo $obtenido ? 'rs-badge-obtenido' : 'rs-badge-bloqueado'; ?>">
+                    <div class="rs-badge-icono-large" style="background: <?php echo esc_attr($badge->color); ?>">
+                        <?php echo esc_html($badge->icono); ?>
+                    </div>
+                    <h4><?php echo esc_html($badge->nombre); ?></h4>
+                    <p><?php echo esc_html($badge->descripcion); ?></p>
+                    <?php if ($obtenido): ?>
+                    <span class="rs-badge-estado">✓ <?php esc_html_e('Obtenido', 'flavor-chat-ia'); ?></span>
+                    <?php elseif ($badge->puntos_requeridos > 0): ?>
+                    <span class="rs-badge-requisito"><?php printf(esc_html__('%d puntos requeridos', 'flavor-chat-ia'), $badge->puntos_requeridos); ?></span>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mi actividad social
+     * Muestra resumen de actividad reciente del usuario en la red social
+     */
+    public function shortcode_mi_actividad($atts) {
+        $atts = shortcode_atts([
+            'limite' => 5,
+        ], $atts);
+
+        if (!is_user_logged_in()) {
+            return '<p class="rs-login-required">' . __('Inicia sesión para ver tu actividad.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $usuario_id = get_current_user_id();
+        $limite = absint($atts['limite']);
+
+        global $wpdb;
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_rs_publicaciones';
+        $tabla_seguidores = $wpdb->prefix . 'flavor_rs_seguidores';
+        $tabla_reacciones = $wpdb->prefix . 'flavor_rs_reacciones';
+
+        // Estadísticas del usuario
+        $num_publicaciones = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_publicaciones WHERE autor_id = %d",
+            $usuario_id
+        ));
+
+        $num_seguidores = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_seguidores WHERE seguido_id = %d",
+            $usuario_id
+        ));
+
+        $num_siguiendo = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_seguidores WHERE seguidor_id = %d",
+            $usuario_id
+        ));
+
+        // Últimas publicaciones
+        $publicaciones_recientes = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, contenido, fecha_creacion,
+                    (SELECT COUNT(*) FROM $tabla_reacciones WHERE publicacion_id = p.id) as num_reacciones
+             FROM $tabla_publicaciones p
+             WHERE autor_id = %d
+             ORDER BY fecha_creacion DESC
+             LIMIT %d",
+            $usuario_id,
+            $limite
+        ));
+
+        ob_start();
+        ?>
+        <div class="rs-mi-actividad">
+            <div class="rs-actividad-stats">
+                <div class="stat-item">
+                    <span class="stat-numero"><?php echo esc_html(number_format_i18n($num_publicaciones)); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-numero"><?php echo esc_html(number_format_i18n($num_seguidores)); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Seguidores', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-numero"><?php echo esc_html(number_format_i18n($num_siguiendo)); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Siguiendo', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+
+            <?php if (!empty($publicaciones_recientes)): ?>
+            <div class="rs-actividad-reciente">
+                <h4><?php esc_html_e('Actividad reciente', 'flavor-chat-ia'); ?></h4>
+                <ul class="rs-lista-publicaciones">
+                    <?php foreach ($publicaciones_recientes as $pub): ?>
+                    <li>
+                        <span class="pub-contenido"><?php echo esc_html(wp_trim_words($pub->contenido, 10)); ?></span>
+                        <span class="pub-meta">
+                            <?php echo esc_html(human_time_diff(strtotime($pub->fecha_creacion))); ?>
+                            <?php if ($pub->num_reacciones > 0): ?>
+                                · <span class="dashicons dashicons-heart"></span> <?php echo esc_html($pub->num_reacciones); ?>
+                            <?php endif; ?>
+                        </span>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php else: ?>
+            <p class="rs-sin-actividad"><?php esc_html_e('Aún no has publicado nada.', 'flavor-chat-ia'); ?></p>
+            <?php endif; ?>
+
+            <a href="<?php echo esc_url(home_url('/red-social/perfil/')); ?>" class="rs-ver-perfil">
+                <?php esc_html_e('Ver mi perfil completo', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode de integración para tabs de otros módulos
+     *
+     * Muestra el feed social asociado a una entidad (grupo, comunidad, etc.)
+     * Usado en el sistema de tabs universales.
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del feed social
+     */
+    public function shortcode_feed_integrado($atts) {
+        $atributos = shortcode_atts([
+            'entidad'           => '',
+            'entidad_id'        => 0,
+            'limite'            => 10,
+            'permite_publicar'  => 'true',
+            'mostrar_reacciones' => 'true',
+            'mostrar_comentarios' => 'true',
+        ], $atts);
+
+        $entidad = sanitize_text_field($atributos['entidad']);
+        $entidad_id = absint($atributos['entidad_id']);
+        $limite = absint($atributos['limite']);
+        $permite_publicar = filter_var($atributos['permite_publicar'], FILTER_VALIDATE_BOOLEAN);
+        $mostrar_reacciones = filter_var($atributos['mostrar_reacciones'], FILTER_VALIDATE_BOOLEAN);
+        $mostrar_comentarios = filter_var($atributos['mostrar_comentarios'], FILTER_VALIDATE_BOOLEAN);
+
+        if (empty($entidad) || $entidad_id === 0) {
+            return '<div class="flavor-notice warning">' . __('Configuración de feed social incompleta.', 'flavor-chat-ia') . '</div>';
+        }
+
+        // Obtener publicaciones asociadas a esta entidad
+        $publicaciones = $this->obtener_publicaciones_entidad($entidad, $entidad_id, $limite);
+        $puede_publicar = $permite_publicar && is_user_logged_in() && $this->usuario_puede_publicar_entidad($entidad, $entidad_id);
+        $usuario_actual = get_current_user_id();
+
+        ob_start();
+        ?>
+        <div class="flavor-social-feed-integrado" data-entidad="<?php echo esc_attr($entidad); ?>" data-entidad-id="<?php echo esc_attr($entidad_id); ?>">
+
+            <?php if ($puede_publicar): ?>
+            <!-- Formulario de nueva publicación -->
+            <div class="feed-nueva-publicacion">
+                <div class="publicacion-avatar">
+                    <?php echo get_avatar($usuario_actual, 40); ?>
+                </div>
+                <form class="form-publicar" data-entidad="<?php echo esc_attr($entidad); ?>" data-entidad-id="<?php echo esc_attr($entidad_id); ?>">
+                    <textarea name="contenido" placeholder="<?php esc_attr_e('¿Qué quieres compartir con el grupo?', 'flavor-chat-ia'); ?>" rows="2"></textarea>
+                    <div class="publicacion-acciones">
+                        <div class="publicacion-adjuntos">
+                            <button type="button" class="btn-adjuntar-imagen" title="<?php esc_attr_e('Añadir imagen', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-format-image"></span>
+                            </button>
+                            <input type="file" name="imagen" accept="image/*" style="display:none;">
+                        </div>
+                        <button type="submit" class="flavor-btn flavor-btn--primary flavor-btn--sm">
+                            <?php _e('Publicar', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                    <div class="preview-imagen" style="display:none;">
+                        <img src="" alt="">
+                        <button type="button" class="btn-quitar-imagen">&times;</button>
+                    </div>
+                </form>
+            </div>
+            <?php endif; ?>
+
+            <?php if (empty($publicaciones)): ?>
+            <div class="feed-vacio">
+                <span class="dashicons dashicons-format-status"></span>
+                <p><?php _e('No hay publicaciones todavía.', 'flavor-chat-ia'); ?></p>
+                <?php if ($puede_publicar): ?>
+                <p class="texto-secundario"><?php _e('¡Sé el primero en compartir algo!', 'flavor-chat-ia'); ?></p>
+                <?php endif; ?>
+            </div>
+            <?php else: ?>
+
+            <div class="feed-publicaciones">
+                <?php foreach ($publicaciones as $publicacion): ?>
+                <?php
+                $autor = get_userdata($publicacion->usuario_id);
+                $es_autor = $usuario_actual === (int)$publicacion->usuario_id;
+                $reacciones = $this->obtener_reacciones_publicacion($publicacion->id);
+                $mi_reaccion = $usuario_actual ? $this->obtener_mi_reaccion($publicacion->id, $usuario_actual) : null;
+                ?>
+                <article class="feed-post" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
+                    <header class="post-header">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/perfil/' . $publicacion->usuario_id)); ?>" class="post-avatar">
+                            <?php echo get_avatar($publicacion->usuario_id, 44); ?>
+                        </a>
+                        <div class="post-meta">
+                            <span class="post-autor"><?php echo esc_html($autor ? $autor->display_name : __('Usuario', 'flavor-chat-ia')); ?></span>
+                            <span class="post-fecha"><?php echo human_time_diff(strtotime($publicacion->fecha_creacion), current_time('timestamp')); ?></span>
+                        </div>
+                        <?php if ($es_autor): ?>
+                        <div class="post-opciones">
+                            <button class="btn-opciones-post"><span class="dashicons dashicons-ellipsis"></span></button>
+                            <div class="menu-opciones" style="display:none;">
+                                <button class="btn-editar-post"><?php _e('Editar', 'flavor-chat-ia'); ?></button>
+                                <button class="btn-eliminar-post"><?php _e('Eliminar', 'flavor-chat-ia'); ?></button>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </header>
+
+                    <div class="post-contenido">
+                        <?php echo wp_kses_post(nl2br($publicacion->contenido)); ?>
+                    </div>
+
+                    <?php if (!empty($publicacion->imagenes)): ?>
+                    <?php $imagenes = maybe_unserialize($publicacion->imagenes); ?>
+                    <?php if (is_array($imagenes) && count($imagenes) > 0): ?>
+                    <div class="post-imagenes <?php echo count($imagenes) > 1 ? 'galeria-grid' : ''; ?>">
+                        <?php foreach ($imagenes as $imagen): ?>
+                        <img src="<?php echo esc_url($imagen); ?>" alt="" loading="lazy" class="post-imagen">
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if ($mostrar_reacciones): ?>
+                    <div class="post-reacciones">
+                        <div class="reacciones-resumen">
+                            <?php if (!empty($reacciones)): ?>
+                            <?php
+                            $emojis_reacciones = ['like' => '👍', 'love' => '❤️', 'haha' => '😄', 'wow' => '😮', 'sad' => '😢', 'angry' => '😠'];
+                            $total_reacciones = array_sum($reacciones);
+                            ?>
+                            <span class="reacciones-iconos">
+                                <?php foreach (array_slice($reacciones, 0, 3) as $tipo => $cantidad): ?>
+                                <span><?php echo $emojis_reacciones[$tipo] ?? '👍'; ?></span>
+                                <?php endforeach; ?>
+                            </span>
+                            <span class="reacciones-count"><?php echo number_format_i18n($total_reacciones); ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ($mostrar_comentarios): ?>
+                        <span class="comentarios-count">
+                            <?php echo number_format_i18n($publicacion->num_comentarios ?? 0); ?> <?php _e('comentarios', 'flavor-chat-ia'); ?>
+                        </span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="post-acciones-bar">
+                        <button class="btn-reaccionar <?php echo $mi_reaccion ? 'activo' : ''; ?>" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
+                            <span class="dashicons dashicons-thumbs-up"></span>
+                            <?php _e('Me gusta', 'flavor-chat-ia'); ?>
+                        </button>
+                        <?php if ($mostrar_comentarios): ?>
+                        <button class="btn-comentar" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
+                            <span class="dashicons dashicons-admin-comments"></span>
+                            <?php _e('Comentar', 'flavor-chat-ia'); ?>
+                        </button>
+                        <?php endif; ?>
+                        <button class="btn-compartir" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
+                            <span class="dashicons dashicons-share"></span>
+                            <?php _e('Compartir', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if ($mostrar_comentarios): ?>
+                    <div class="post-comentarios" style="display:none;">
+                        <div class="comentarios-lista"></div>
+                        <?php if (is_user_logged_in()): ?>
+                        <form class="form-comentar">
+                            <input type="hidden" name="post_id" value="<?php echo esc_attr($publicacion->id); ?>">
+                            <?php echo get_avatar($usuario_actual, 32); ?>
+                            <input type="text" name="comentario" placeholder="<?php esc_attr_e('Escribe un comentario...', 'flavor-chat-ia'); ?>">
+                            <button type="submit"><span class="dashicons dashicons-arrow-right-alt2"></span></button>
+                        </form>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                </article>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="feed-cargar-mas" style="display:none;">
+                <button class="flavor-btn flavor-btn--secondary" data-offset="<?php echo esc_attr($limite); ?>">
+                    <?php _e('Cargar más publicaciones', 'flavor-chat-ia'); ?>
+                </button>
+            </div>
+
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .flavor-social-feed-integrado { max-width: 100%; }
+
+        .feed-nueva-publicacion { display: flex; gap: 0.75rem; padding: 1rem; background: var(--flavor-bg-card, #fff); border-radius: 8px; border: 1px solid var(--flavor-border, #e0e0e0); margin-bottom: 1rem; }
+        .publicacion-avatar img { border-radius: 50%; }
+        .form-publicar { flex: 1; }
+        .form-publicar textarea { width: 100%; border: 1px solid var(--flavor-border, #ddd); border-radius: 20px; padding: 0.75rem 1rem; resize: none; font-family: inherit; }
+        .form-publicar textarea:focus { outline: none; border-color: var(--flavor-primary, #4f46e5); }
+        .publicacion-acciones { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+        .publicacion-adjuntos { display: flex; gap: 0.5rem; }
+        .publicacion-adjuntos button { background: none; border: none; cursor: pointer; padding: 0.5rem; border-radius: 50%; color: var(--flavor-text-secondary, #666); }
+        .publicacion-adjuntos button:hover { background: var(--flavor-bg-secondary, #f0f0f0); }
+        .preview-imagen { position: relative; margin-top: 0.5rem; }
+        .preview-imagen img { max-height: 150px; border-radius: 8px; }
+        .btn-quitar-imagen { position: absolute; top: 0; right: 0; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; }
+
+        .feed-vacio { text-align: center; padding: 3rem; color: var(--flavor-text-secondary, #666); }
+        .feed-vacio .dashicons { font-size: 3rem; width: 3rem; height: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+        .feed-publicaciones { display: flex; flex-direction: column; gap: 1rem; }
+
+        .feed-post { background: var(--flavor-bg-card, #fff); border-radius: 8px; border: 1px solid var(--flavor-border, #e0e0e0); overflow: hidden; }
+        .post-header { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; }
+        .post-avatar img { border-radius: 50%; }
+        .post-meta { flex: 1; }
+        .post-autor { display: block; font-weight: 600; color: var(--flavor-text-primary, #333); }
+        .post-fecha { font-size: 0.8rem; color: var(--flavor-text-muted, #888); }
+        .post-opciones { position: relative; }
+        .btn-opciones-post { background: none; border: none; cursor: pointer; padding: 0.5rem; border-radius: 50%; }
+        .btn-opciones-post:hover { background: var(--flavor-bg-secondary, #f0f0f0); }
+        .menu-opciones { position: absolute; right: 0; top: 100%; background: var(--flavor-bg-card, #fff); border: 1px solid var(--flavor-border, #ddd); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10; }
+        .menu-opciones button { display: block; width: 100%; padding: 0.75rem 1rem; text-align: left; border: none; background: none; cursor: pointer; }
+        .menu-opciones button:hover { background: var(--flavor-bg-secondary, #f0f0f0); }
+
+        .post-contenido { padding: 0 1rem 1rem; line-height: 1.5; }
+        .post-imagenes { padding: 0 1rem 1rem; }
+        .post-imagenes img { width: 100%; border-radius: 8px; cursor: pointer; }
+        .galeria-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+
+        .post-reacciones { display: flex; justify-content: space-between; padding: 0.5rem 1rem; border-top: 1px solid var(--flavor-border, #e0e0e0); font-size: 0.85rem; color: var(--flavor-text-secondary, #666); }
+        .reacciones-iconos span { margin-right: -4px; }
+        .reacciones-count { margin-left: 0.5rem; }
+
+        .post-acciones-bar { display: flex; justify-content: space-around; padding: 0.5rem; border-top: 1px solid var(--flavor-border, #e0e0e0); }
+        .post-acciones-bar button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; background: none; border: none; cursor: pointer; color: var(--flavor-text-secondary, #666); font-size: 0.9rem; border-radius: 4px; transition: background 0.2s; }
+        .post-acciones-bar button:hover { background: var(--flavor-bg-secondary, #f0f0f0); }
+        .post-acciones-bar button.activo { color: var(--flavor-primary, #4f46e5); }
+
+        .post-comentarios { padding: 1rem; background: var(--flavor-bg-secondary, #f5f5f5); }
+        .comentarios-lista { margin-bottom: 1rem; }
+        .form-comentar { display: flex; align-items: center; gap: 0.5rem; }
+        .form-comentar img { border-radius: 50%; }
+        .form-comentar input[type="text"] { flex: 1; padding: 0.5rem 1rem; border: 1px solid var(--flavor-border, #ddd); border-radius: 20px; background: var(--flavor-bg-card, #fff); }
+        .form-comentar button { background: none; border: none; cursor: pointer; color: var(--flavor-primary, #4f46e5); }
+
+        .feed-cargar-mas { text-align: center; padding: 1rem; }
+        </style>
+
+        <script>
+        (function($) {
+            var $container = $('.flavor-social-feed-integrado[data-entidad-id="<?php echo esc_js($entidad_id); ?>"]');
+            var entidad = '<?php echo esc_js($entidad); ?>';
+            var entidadId = <?php echo intval($entidad_id); ?>;
+
+            // Toggle comentarios
+            $container.on('click', '.btn-comentar', function() {
+                $(this).closest('.feed-post').find('.post-comentarios').slideToggle();
+            });
+
+            // Toggle menu opciones
+            $container.on('click', '.btn-opciones-post', function(e) {
+                e.stopPropagation();
+                $(this).siblings('.menu-opciones').toggle();
+            });
+
+            // Cerrar menus al hacer click fuera
+            $(document).on('click', function() {
+                $container.find('.menu-opciones').hide();
+            });
+
+            // Reaccionar
+            $container.on('click', '.btn-reaccionar', function() {
+                var $btn = $(this);
+                var postId = $btn.data('post-id');
+
+                $.post(flavorRedSocial.ajaxUrl, {
+                    action: 'rs_reaccionar',
+                    nonce: flavorRedSocial.nonce,
+                    post_id: postId,
+                    tipo: 'like'
+                }, function(response) {
+                    if (response.success) {
+                        $btn.toggleClass('activo');
+                    }
+                });
+            });
+
+            // Adjuntar imagen
+            $container.find('.btn-adjuntar-imagen').on('click', function() {
+                $(this).siblings('input[type="file"]').click();
+            });
+
+            $container.find('input[name="imagen"]').on('change', function() {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $container.find('.preview-imagen img').attr('src', e.target.result);
+                        $container.find('.preview-imagen').show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            $container.find('.btn-quitar-imagen').on('click', function() {
+                $container.find('input[name="imagen"]').val('');
+                $container.find('.preview-imagen').hide();
+            });
+
+            // Publicar
+            $container.find('.form-publicar').on('submit', function(e) {
+                e.preventDefault();
+                var $form = $(this);
+                var contenido = $form.find('textarea').val().trim();
+
+                if (!contenido) return;
+
+                var formData = new FormData(this);
+                formData.append('action', 'rs_crear_publicacion');
+                formData.append('nonce', flavorRedSocial.nonce);
+                formData.append('entidad', entidad);
+                formData.append('entidad_id', entidadId);
+                formData.append('contenido', contenido);
+
+                $.ajax({
+                    url: flavorRedSocial.ajaxUrl,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.data?.message || 'Error al publicar');
+                        }
+                    }
+                });
+            });
+
+            // Comentar
+            $container.on('submit', '.form-comentar', function(e) {
+                e.preventDefault();
+                var $form = $(this);
+                var postId = $form.find('input[name="post_id"]').val();
+                var comentario = $form.find('input[name="comentario"]').val().trim();
+
+                if (!comentario) return;
+
+                $.post(flavorRedSocial.ajaxUrl, {
+                    action: 'rs_comentar',
+                    nonce: flavorRedSocial.nonce,
+                    post_id: postId,
+                    comentario: comentario
+                }, function(response) {
+                    if (response.success) {
+                        $form.find('input[name="comentario"]').val('');
+                        // Recargar comentarios
+                        location.reload();
+                    }
+                });
+            });
+        })(jQuery);
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene publicaciones asociadas a una entidad
+     *
+     * @param string $entidad    Tipo de entidad
+     * @param int    $entidad_id ID de la entidad
+     * @param int    $limite     Número máximo de publicaciones
+     * @return array Lista de publicaciones
+     */
+    private function obtener_publicaciones_entidad($entidad, $entidad_id, $limite = 10) {
+        global $wpdb;
+
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_social_posts';
+
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT p.*,
+                    (SELECT COUNT(*) FROM {$wpdb->prefix}flavor_social_comentarios WHERE post_id = p.id) as num_comentarios
+             FROM {$tabla_publicaciones} p
+             WHERE p.entidad_tipo = %s AND p.entidad_id = %d AND p.estado = 'publicado'
+             ORDER BY p.fecha_creacion DESC
+             LIMIT %d",
+            $entidad,
+            $entidad_id,
+            $limite
+        ));
+    }
+
+    /**
+     * Verifica si el usuario puede publicar en una entidad
+     *
+     * @param string $entidad    Tipo de entidad
+     * @param int    $entidad_id ID de la entidad
+     * @return bool
+     */
+    private function usuario_puede_publicar_entidad($entidad, $entidad_id) {
+        if (!is_user_logged_in()) {
+            return false;
+        }
+
+        $usuario_id = get_current_user_id();
+
+        // Verificar permisos según el tipo de entidad
+        $modulo_entidad = Flavor_Chat_Module_Loader::get_instance()->get_module($entidad);
+        if ($modulo_entidad && method_exists($modulo_entidad, 'usuario_es_miembro')) {
+            return $modulo_entidad->usuario_es_miembro($entidad_id, $usuario_id);
+        }
+
+        return true;
+    }
+
+    /**
+     * Obtiene las reacciones de una publicación agrupadas por tipo
+     *
+     * @param int $post_id ID de la publicación
+     * @return array Reacciones agrupadas
+     */
+    private function obtener_reacciones_publicacion($post_id) {
+        global $wpdb;
+
+        $tabla_reacciones = $wpdb->prefix . 'flavor_social_reacciones';
+
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT tipo, COUNT(*) as cantidad FROM {$tabla_reacciones}
+             WHERE post_id = %d GROUP BY tipo",
+            $post_id
+        ), ARRAY_A);
+
+        $reacciones = [];
+        foreach ($resultados as $fila) {
+            $reacciones[$fila['tipo']] = (int) $fila['cantidad'];
+        }
+
+        return $reacciones;
+    }
+
+    /**
+     * Obtiene la reacción del usuario actual a una publicación
+     *
+     * @param int $post_id    ID de la publicación
+     * @param int $usuario_id ID del usuario
+     * @return string|null Tipo de reacción o null
+     */
+    private function obtener_mi_reaccion($post_id, $usuario_id) {
+        global $wpdb;
+
+        $tabla_reacciones = $wpdb->prefix . 'flavor_social_reacciones';
+
+        return $wpdb->get_var($wpdb->prepare(
+            "SELECT tipo FROM {$tabla_reacciones}
+             WHERE post_id = %d AND usuario_id = %d",
+            $post_id,
+            $usuario_id
+        ));
+    }
+
+    /**
+     * Registrar páginas de administración
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (sin menú visible en el sidebar)
+        add_submenu_page(
+            null,
+            __('Red Social', 'flavor-chat-ia'),
+            __('Red Social', 'flavor-chat-ia'),
+            $capability,
+            'red-social',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        add_submenu_page(
+            null,
+            __('Publicaciones', 'flavor-chat-ia'),
+            __('Publicaciones', 'flavor-chat-ia'),
+            $capability,
+            'red-social-publicaciones',
+            [$this, 'render_pagina_publicaciones']
+        );
+
+        add_submenu_page(
+            null,
+            __('Usuarios', 'flavor-chat-ia'),
+            __('Usuarios', 'flavor-chat-ia'),
+            $capability,
+            'red-social-usuarios',
+            [$this, 'render_pagina_usuarios']
+        );
+
+        add_submenu_page(
+            null,
+            __('Moderación', 'flavor-chat-ia'),
+            __('Moderación', 'flavor-chat-ia'),
+            $capability,
+            'red-social-moderacion',
+            [$this, 'render_pagina_moderacion']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Red Social', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Panel de administración del módulo de red social.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de publicaciones
+     */
+    public function render_pagina_publicaciones() {
+        $views_path = dirname(__FILE__) . '/views/publicaciones.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Publicaciones', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de usuarios
+     */
+    public function render_pagina_usuarios() {
+        $views_path = dirname(__FILE__) . '/views/usuarios.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Usuarios', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de moderación
+     */
+    public function render_pagina_moderacion() {
+        $views_path = dirname(__FILE__) . '/views/moderacion.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Moderación de Contenido', 'flavor-chat-ia') . '</h1></div>';
+        }
     }
 }

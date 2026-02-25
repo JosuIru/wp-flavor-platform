@@ -16,6 +16,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
+    use Flavor_Encuestas_Features;
 
     /**
      * Constructor
@@ -87,17 +89,45 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Tipos de contenido que este módulo acepta como integraciones
+     *
+     * @return array Lista de IDs de tipos de contenido aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia', 'biblioteca', 'podcast'];
+    }
+
+    /**
+     * Targets donde se pueden vincular integraciones
+     *
+     * @return array Configuración de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type' => 'custom_table',
+                'table' => 'flavor_cursos',
+                'module_id' => $this->id,
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
         // Registrar en el panel de administración unificado
         $this->registrar_en_panel_unificado();
 
+        // Registrar como consumidor de integraciones
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
 
         // AJAX handlers
         add_action('wp_ajax_cursos_inscribirse', [$this, 'ajax_inscribirse']);
@@ -116,6 +146,23 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             wp_schedule_event(time(), 'daily', 'cursos_enviar_recordatorios');
         }
         add_action('cursos_enviar_recordatorios', [$this, 'enviar_recordatorios']);
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
+
+        // Integrar funcionalidades de encuestas
+        $this->init_encuestas_features('curso');
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-cursos-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Cursos_Frontend_Controller::get_instance();
+        }
     }
 
     /**
@@ -290,12 +337,22 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
     /**
      * Registrar shortcodes
+     * Solo registra si no existen ya (el Frontend Controller puede haberlos registrado antes)
      */
     public function register_shortcodes() {
-        add_shortcode('cursos_catalogo', [$this, 'shortcode_catalogo']);
+        // Shortcodes que pueden estar en el Frontend Controller - registrar solo como fallback
+        if (!shortcode_exists('cursos_catalogo')) {
+            add_shortcode('cursos_catalogo', [$this, 'shortcode_catalogo']);
+        }
+        if (!shortcode_exists('cursos_mis_cursos')) {
+            add_shortcode('cursos_mis_cursos', [$this, 'shortcode_mis_cursos']);
+        }
+        if (!shortcode_exists('cursos_aula')) {
+            add_shortcode('cursos_aula', [$this, 'shortcode_aula']);
+        }
+
+        // Shortcodes exclusivos del módulo principal
         add_shortcode('cursos_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('cursos_mis_cursos', [$this, 'shortcode_mis_cursos']);
-        add_shortcode('cursos_aula', [$this, 'shortcode_aula']);
         add_shortcode('cursos_instructor', [$this, 'shortcode_instructor']);
         add_shortcode('cursos_certificado', [$this, 'shortcode_certificado']);
     }
@@ -2375,5 +2432,118 @@ KNOWLEDGE;
                 'parent' => 'cursos',
             ],
         ];
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas del sidebar (primer parámetro null)
+        add_submenu_page(
+            null,
+            __('Cursos - Dashboard', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'cursos',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        add_submenu_page(
+            null,
+            __('Cursos', 'flavor-chat-ia'),
+            __('Cursos', 'flavor-chat-ia'),
+            $capability,
+            'cursos-listado',
+            [$this, 'render_pagina_cursos']
+        );
+
+        add_submenu_page(
+            null,
+            __('Alumnos', 'flavor-chat-ia'),
+            __('Alumnos', 'flavor-chat-ia'),
+            $capability,
+            'cursos-alumnos',
+            [$this, 'render_pagina_alumnos']
+        );
+
+        add_submenu_page(
+            null,
+            __('Instructores', 'flavor-chat-ia'),
+            __('Instructores', 'flavor-chat-ia'),
+            $capability,
+            'cursos-instructores',
+            [$this, 'render_pagina_instructores']
+        );
+
+        add_submenu_page(
+            null,
+            __('Matrículas', 'flavor-chat-ia'),
+            __('Matrículas', 'flavor-chat-ia'),
+            $capability,
+            'cursos-matriculas',
+            [$this, 'render_pagina_matriculas']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Cursos', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de cursos
+     */
+    public function render_pagina_cursos() {
+        $views_path = dirname(__FILE__) . '/views/cursos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cursos', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de alumnos
+     */
+    public function render_pagina_alumnos() {
+        $views_path = dirname(__FILE__) . '/views/alumnos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Alumnos', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de instructores
+     */
+    public function render_pagina_instructores() {
+        $views_path = dirname(__FILE__) . '/views/instructores.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Instructores', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de matrículas
+     */
+    public function render_pagina_matriculas() {
+        $views_path = dirname(__FILE__) . '/views/matriculas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Matrículas', 'flavor-chat-ia') . '</h1></div>';
+        }
     }
 }
