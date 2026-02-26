@@ -2,185 +2,105 @@
 /**
  * Frontend: Archive de Eventos
  *
+ * Versión refactorizada usando componentes shared y Archive Renderer.
+ *
  * @package FlavorChatIA
+ * @since 5.0.0 Refactorizado con componentes reutilizables
  */
-if (!defined('ABSPATH')) exit;
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// Cargar el Archive Renderer
+if (!class_exists('Flavor_Archive_Renderer')) {
+    require_once FLAVOR_PLUGIN_PATH . 'includes/class-archive-renderer.php';
+}
+
+// Cargar funciones helper
+if (!function_exists('flavor_render_component')) {
+    require_once FLAVOR_PLUGIN_PATH . 'templates/components/shared/_functions.php';
+}
+
+// Variables esperadas
 $eventos = $eventos ?? [];
-$total_eventos = $total_eventos ?? 0;
+$total_eventos = $total_eventos ?? count($eventos);
 $estadisticas = $estadisticas ?? [];
 $categorias = $categorias ?? [];
+$current_page = $current_page ?? 1;
+$per_page = $per_page ?? 12;
 $vista_activa = $vista_activa ?? 'lista';
-?>
 
-<div class="flavor-frontend flavor-eventos-archive">
-    <!-- Header con gradiente rosa -->
-    <div class="bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-2xl p-8 mb-8 shadow-lg">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-            <div>
-                <h1 class="text-3xl font-bold mb-2"><?php echo esc_html__('🎉 Eventos', 'flavor-chat-ia'); ?></h1>
-                <p class="text-rose-100"><?php echo esc_html__('Descubre y participa en los eventos de tu comunidad', 'flavor-chat-ia'); ?></p>
-            </div>
-            <div class="flex items-center gap-4">
-                <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
-                    <?php echo esc_html($total_eventos); ?> eventos activos
-                </span>
-                <button class="bg-white text-pink-600 px-6 py-3 rounded-xl font-semibold hover:bg-rose-50 transition-all shadow-md"
-                        onclick="flavorEventos.crearEvento()">
-                    <?php echo esc_html__('➕ Crear Evento', 'flavor-chat-ia'); ?>
-                </button>
-            </div>
-        </div>
-    </div>
+// Construir stats
+$stats = [];
+if (!empty($estadisticas)) {
+    $stats = [
+        ['value' => $estadisticas['eventos_activos'] ?? 0, 'label' => __('Eventos activos', 'flavor-chat-ia'), 'icon' => '📅'],
+        ['value' => $estadisticas['asistentes'] ?? 0, 'label' => __('Asistentes', 'flavor-chat-ia'), 'icon' => '👥'],
+        ['value' => $estadisticas['organizadores'] ?? 0, 'label' => __('Organizadores', 'flavor-chat-ia'), 'icon' => '🎤'],
+        ['value' => $estadisticas['este_mes'] ?? 0, 'label' => __('Este mes', 'flavor-chat-ia'), 'icon' => '🗓️'],
+    ];
+}
 
-    <!-- Estadisticas -->
-    <?php if (!empty($estadisticas)): ?>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <div class="text-3xl mb-2">📅</div>
-            <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['eventos_activos'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500"><?php echo esc_html__('Eventos activos', 'flavor-chat-ia'); ?></p>
-        </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <div class="text-3xl mb-2">👥</div>
-            <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['asistentes'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500"><?php echo esc_html__('Asistentes', 'flavor-chat-ia'); ?></p>
-        </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <div class="text-3xl mb-2">🎤</div>
-            <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['organizadores'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500"><?php echo esc_html__('Organizadores', 'flavor-chat-ia'); ?></p>
-        </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-            <div class="text-3xl mb-2">🗓️</div>
-            <p class="text-2xl font-bold text-gray-800"><?php echo esc_html($estadisticas['este_mes'] ?? 0); ?></p>
-            <p class="text-sm text-gray-500"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></p>
-        </div>
-    </div>
-    <?php endif; ?>
+// Filtros base
+$filters = [
+    ['id' => 'todos', 'label' => __('Todos', 'flavor-chat-ia'), 'active' => true],
+    ['id' => 'musica', 'label' => __('Música', 'flavor-chat-ia'), 'icon' => '🎵'],
+    ['id' => 'deporte', 'label' => __('Deporte', 'flavor-chat-ia'), 'icon' => '⚽'],
+    ['id' => 'cultura', 'label' => __('Cultura', 'flavor-chat-ia'), 'icon' => '🎭'],
+    ['id' => 'infantil', 'label' => __('Infantil', 'flavor-chat-ia'), 'icon' => '👶'],
+];
 
-    <!-- Como funciona -->
-    <div class="bg-rose-50 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo esc_html__('💡 ¿Como funciona?', 'flavor-chat-ia'); ?></h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="text-center">
-                <div class="w-16 h-16 bg-rose-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🔍</div>
-                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Descubre', 'flavor-chat-ia'); ?></h3>
-                <p class="text-sm text-gray-600"><?php echo esc_html__('Encuentra eventos cerca de ti por categoria y fecha', 'flavor-chat-ia'); ?></p>
-            </div>
-            <div class="text-center">
-                <div class="w-16 h-16 bg-rose-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">✅</div>
-                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Inscribete', 'flavor-chat-ia'); ?></h3>
-                <p class="text-sm text-gray-600"><?php echo esc_html__('Reserva tu plaza facilmente con un solo clic', 'flavor-chat-ia'); ?></p>
-            </div>
-            <div class="text-center">
-                <div class="w-16 h-16 bg-rose-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎊</div>
-                <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html__('Participa', 'flavor-chat-ia'); ?></h3>
-                <p class="text-sm text-gray-600"><?php echo esc_html__('Disfruta del evento y comparte tu experiencia', 'flavor-chat-ia'); ?></p>
-            </div>
-        </div>
-    </div>
+// Añadir categorías dinámicas
+foreach ($categorias as $cat) {
+    $filters[] = [
+        'id'    => $cat['slug'] ?? sanitize_title($cat['nombre'] ?? ''),
+        'label' => $cat['nombre'] ?? '',
+        'icon'  => $cat['icono'] ?? '',
+    ];
+}
 
-    <!-- Toggle vista y filtros -->
-    <div class="flex items-center justify-between mb-6">
-        <div class="flex flex-wrap gap-2">
-            <button class="px-4 py-2 rounded-full bg-rose-100 text-rose-700 font-medium hover:bg-rose-200 transition-colors filter-active" data-categoria="todos">
-                <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
-            </button>
-            <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="musica">
-                <?php echo esc_html__('🎵 Musica', 'flavor-chat-ia'); ?>
-            </button>
-            <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="deporte">
-                <?php echo esc_html__('⚽ Deporte', 'flavor-chat-ia'); ?>
-            </button>
-            <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="cultura">
-                <?php echo esc_html__('🎭 Cultura', 'flavor-chat-ia'); ?>
-            </button>
-            <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="infantil">
-                <?php echo esc_html__('👶 Infantil', 'flavor-chat-ia'); ?>
-            </button>
-            <?php foreach ($categorias as $categoria_evento): ?>
-            <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors" data-categoria="<?php echo esc_attr($categoria_evento['slug']); ?>">
-                <?php echo esc_html($categoria_evento['icono'] ?? ''); ?> <?php echo esc_html($categoria_evento['nombre']); ?>
-            </button>
-            <?php endforeach; ?>
-        </div>
-        <div class="flex items-center gap-2 ml-4">
-            <button class="p-2 rounded-lg <?php echo $vista_activa === 'lista' ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-500'; ?> hover:bg-rose-100 transition-colors" data-vista="lista" title="<?php echo esc_attr__('Vista lista', 'flavor-chat-ia'); ?>">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            <button class="p-2 rounded-lg <?php echo $vista_activa === 'calendario' ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-500'; ?> hover:bg-rose-100 transition-colors" data-vista="calendario" title="<?php echo esc_attr__('Vista calendario', 'flavor-chat-ia'); ?>">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </button>
-        </div>
-    </div>
+// Pasos de "Cómo funciona"
+$como_funciona_steps = [
+    ['icon' => '🔍', 'title' => __('Descubre', 'flavor-chat-ia'), 'text' => __('Encuentra eventos cerca de ti por categoría y fecha', 'flavor-chat-ia')],
+    ['icon' => '✅', 'title' => __('Inscríbete', 'flavor-chat-ia'), 'text' => __('Reserva tu plaza fácilmente con un solo clic', 'flavor-chat-ia')],
+    ['icon' => '🎊', 'title' => __('Participa', 'flavor-chat-ia'), 'text' => __('Disfruta del evento y comparte tu experiencia', 'flavor-chat-ia')],
+];
 
-    <!-- Grid de eventos -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php if (empty($eventos)): ?>
-        <div class="col-span-full text-center py-16 bg-gray-50 rounded-2xl">
-            <div class="text-6xl mb-4">🎉</div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay eventos programados', 'flavor-chat-ia'); ?></h3>
-            <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Crea el primer evento de la comunidad!', 'flavor-chat-ia'); ?></p>
-            <button class="bg-rose-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-rose-600 transition-colors"
-                    onclick="flavorEventos.crearEvento()">
-                <?php echo esc_html__('Crear Evento', 'flavor-chat-ia'); ?>
-            </button>
-        </div>
-        <?php else: ?>
-        <?php foreach ($eventos as $evento): ?>
-        <article class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all overflow-hidden border border-gray-100 group">
-            <div class="p-5">
-                <!-- Fecha destacada -->
-                <div class="flex items-start gap-4 mb-4">
-                    <div class="bg-rose-100 text-rose-700 rounded-xl p-3 text-center min-w-[60px] flex-shrink-0">
-                        <p class="text-xs font-medium uppercase"><?php echo esc_html($evento['mes'] ?? 'Ene'); ?></p>
-                        <p class="text-2xl font-bold leading-none"><?php echo esc_html($evento['dia'] ?? '01'); ?></p>
-                    </div>
-                    <div class="min-w-0">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-1 group-hover:text-pink-600 transition-colors">
-                            <a href="<?php echo esc_url($evento['url'] ?? '#'); ?>">
-                                <?php echo esc_html($evento['titulo']); ?>
-                            </a>
-                        </h3>
-                        <p class="text-gray-600 text-sm line-clamp-2"><?php echo esc_html($evento['descripcion'] ?? ''); ?></p>
-                    </div>
-                </div>
+// Renderizar usando el Archive Renderer
+$renderer = new Flavor_Archive_Renderer();
 
-                <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full flex items-center gap-1">
-                        📍 <?php echo esc_html($evento['ubicacion'] ?? 'Por confirmar'); ?>
-                    </span>
-                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full flex items-center gap-1">
-                        🕐 <?php echo esc_html($evento['hora'] ?? ''); ?>
-                    </span>
-                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full flex items-center gap-1">
-                        👥 <?php echo esc_html($evento['asistentes'] ?? 0); ?> asistentes
-                    </span>
-                </div>
-
-                <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-                    <span class="<?php echo ($evento['precio'] ?? 0) == 0 ? 'bg-green-100 text-green-700' : 'bg-rose-100 text-rose-700'; ?> text-xs font-medium px-3 py-1 rounded-full">
-                        <?php echo ($evento['precio'] ?? 0) == 0 ? 'Gratis' : esc_html($evento['precio']) . ' €'; ?>
-                    </span>
-                    <a href="<?php echo esc_url($evento['url'] ?? '#'); ?>"
-                       class="bg-rose-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-rose-600 transition-colors">
-                        <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
-                    </a>
-                </div>
-            </div>
-        </article>
-        <?php endforeach; ?>
-        <?php endif; ?>
-    </div>
-
-    <!-- Paginacion -->
-    <?php if ($total_eventos > 12): ?>
-    <div class="flex justify-center mt-8">
-        <nav class="flex items-center gap-2">
-            <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?></button>
-            <span class="px-4 py-2 text-gray-600">Pagina 1 de <?php echo ceil($total_eventos / 12); ?></span>
-            <button class="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 transition-colors"><?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?></button>
-        </nav>
-    </div>
-    <?php endif; ?>
-</div>
+echo $renderer->render([
+    'module'       => 'eventos',
+    'title'        => __('Eventos', 'flavor-chat-ia'),
+    'subtitle'     => __('Descubre y participa en los eventos de tu comunidad', 'flavor-chat-ia'),
+    'icon'         => '🎉',
+    'color'        => 'pink',
+    'items'        => $eventos,
+    'total'        => $total_eventos,
+    'per_page'     => $per_page,
+    'current_page' => $current_page,
+    'stats'        => $stats,
+    'stats_layout' => 'vertical',
+    'columns'      => 3,
+    'layout'       => 'grid',
+    'filters'      => $filters,
+    'filter_data_attr' => 'categoria',
+    'cta_text'     => __('Crear Evento', 'flavor-chat-ia'),
+    'cta_icon'     => '➕',
+    'cta_action'   => 'flavorEventos.crearEvento()',
+    'card_template' => 'eventos/card',
+    'extra_content' => function() use ($como_funciona_steps) {
+        flavor_render_component('como-funciona', [
+            'steps' => $como_funciona_steps,
+            'color' => 'pink',
+        ]);
+    },
+    'empty_state'  => [
+        'icon'       => '🎉',
+        'title'      => __('No hay eventos programados', 'flavor-chat-ia'),
+        'text'       => __('¡Crea el primer evento de la comunidad!', 'flavor-chat-ia'),
+        'cta_text'   => __('Crear Evento', 'flavor-chat-ia'),
+        'cta_action' => 'flavorEventos.crearEvento()',
+    ],
+]);
