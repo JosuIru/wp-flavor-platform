@@ -2,109 +2,111 @@
 /**
  * Frontend: Archive de Reciclaje
  *
+ * Versión refactorizada usando componentes shared y Archive Renderer.
+ *
  * @package FlavorChatIA
+ * @since 5.0.0 Refactorizado con componentes reutilizables
  */
 
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
+// Cargar el Archive Renderer
+if (!class_exists('Flavor_Archive_Renderer')) {
+    require_once FLAVOR_PLUGIN_PATH . 'includes/class-archive-renderer.php';
+}
+
+// Cargar funciones helper
+if (!function_exists('flavor_render_component')) {
+    require_once FLAVOR_PLUGIN_PATH . 'templates/components/shared/_functions.php';
+}
+
+// Variables esperadas
 $puntos = $puntos ?? [];
-$total_puntos = $total_puntos ?? 0;
-?>
+$total_puntos = $total_puntos ?? count($puntos);
+$estadisticas = $estadisticas ?? [];
+$current_page = $current_page ?? 1;
+$per_page = $per_page ?? 12;
 
-<div class="flavor-archive reciclaje">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-emerald-500 to-green-600 py-12 px-4">
-        <div class="container mx-auto max-w-6xl">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2"><?php echo esc_html__('Puntos de Reciclaje', 'flavor-chat-ia'); ?></h1>
-            <p class="text-white/90 text-lg"><?php echo esc_html__('Encuentra donde reciclar cada tipo de residuo', 'flavor-chat-ia'); ?></p>
-            <div class="mt-4 flex items-center gap-4 text-white/80 text-sm">
-                <span><?php echo esc_html($total_puntos); ?> puntos de reciclaje</span>
-            </div>
-        </div>
-    </div>
+// Contenedores guía
+$contenedores_guia = [
+    ['color' => 'bg-yellow-400', 'nombre' => __('Amarillo', 'flavor-chat-ia'), 'residuos' => __('Plásticos y envases', 'flavor-chat-ia')],
+    ['color' => 'bg-blue-500', 'nombre' => __('Azul', 'flavor-chat-ia'), 'residuos' => __('Papel y cartón', 'flavor-chat-ia')],
+    ['color' => 'bg-green-600', 'nombre' => __('Verde', 'flavor-chat-ia'), 'residuos' => __('Vidrio', 'flavor-chat-ia')],
+    ['color' => 'bg-amber-700', 'nombre' => __('Marrón', 'flavor-chat-ia'), 'residuos' => __('Orgánico', 'flavor-chat-ia')],
+    ['color' => 'bg-gray-500', 'nombre' => __('Gris', 'flavor-chat-ia'), 'residuos' => __('Resto', 'flavor-chat-ia')],
+];
 
-    <div class="container mx-auto max-w-6xl px-4 py-8">
-        <!-- Guia rapida de contenedores -->
+// Construir stats
+$stats = [];
+if (!empty($estadisticas)) {
+    $stats = [
+        ['value' => $estadisticas['puntos_totales'] ?? 0, 'label' => __('Puntos de reciclaje', 'flavor-chat-ia'), 'icon' => '📍'],
+        ['value' => $estadisticas['kg_reciclados'] ?? '0', 'label' => __('Kg reciclados', 'flavor-chat-ia'), 'icon' => '♻️'],
+        ['value' => $estadisticas['usuarios_activos'] ?? 0, 'label' => __('Usuarios activos', 'flavor-chat-ia'), 'icon' => '👥'],
+        ['value' => $estadisticas['co2_evitado'] ?? '0 kg', 'label' => __('CO2 evitado', 'flavor-chat-ia'), 'icon' => '🌿'],
+    ];
+}
+
+// Filtros por tipo de contenedor
+$filters = [
+    ['id' => 'todos', 'label' => __('Todos', 'flavor-chat-ia'), 'active' => true],
+    ['id' => 'amarillo', 'label' => __('Amarillo', 'flavor-chat-ia'), 'icon' => '🟡'],
+    ['id' => 'azul', 'label' => __('Azul', 'flavor-chat-ia'), 'icon' => '🔵'],
+    ['id' => 'verde', 'label' => __('Verde', 'flavor-chat-ia'), 'icon' => '🟢'],
+    ['id' => 'marron', 'label' => __('Marrón', 'flavor-chat-ia'), 'icon' => '🟤'],
+    ['id' => 'punto_limpio', 'label' => __('Punto Limpio', 'flavor-chat-ia'), 'icon' => '🏭'],
+];
+
+// Pasos de "Cómo funciona"
+$como_funciona_steps = [
+    ['icon' => '🔍', 'title' => __('Localiza', 'flavor-chat-ia'), 'text' => __('Encuentra el punto de reciclaje más cercano', 'flavor-chat-ia')],
+    ['icon' => '🗑️', 'title' => __('Separa', 'flavor-chat-ia'), 'text' => __('Clasifica tus residuos por tipo de contenedor', 'flavor-chat-ia')],
+    ['icon' => '🌍', 'title' => __('Recicla', 'flavor-chat-ia'), 'text' => __('Deposita cada residuo en su contenedor correcto', 'flavor-chat-ia')],
+];
+
+// Renderizar usando el Archive Renderer
+$renderer = new Flavor_Archive_Renderer();
+
+echo $renderer->render([
+    'module'       => 'reciclaje',
+    'title'        => __('Puntos de Reciclaje', 'flavor-chat-ia'),
+    'subtitle'     => __('Encuentra dónde reciclar cada tipo de residuo', 'flavor-chat-ia'),
+    'icon'         => '♻️',
+    'color'        => 'emerald',
+    'items'        => $puntos,
+    'total'        => $total_puntos,
+    'per_page'     => $per_page,
+    'current_page' => $current_page,
+    'stats'        => $stats,
+    'stats_layout' => 'vertical',
+    'columns'      => 1,
+    'layout'       => 'list',
+    'filters'      => $filters,
+    'filter_data_attr' => 'tipo',
+    'card_template' => 'reciclaje/card',
+    'extra_content' => function() use ($como_funciona_steps, $contenedores_guia) {
+        // Guía de contenedores
+        ?>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <?php
-            $contenedores = [
-                ['color' => 'bg-yellow-400', 'nombre' => 'Amarillo', 'residuos' => 'Plasticos y envases'],
-                ['color' => 'bg-blue-500', 'nombre' => 'Azul', 'residuos' => 'Papel y carton'],
-                ['color' => 'bg-green-600', 'nombre' => 'Verde', 'residuos' => 'Vidrio'],
-                ['color' => 'bg-amber-700', 'nombre' => 'Marron', 'residuos' => 'Organico'],
-                ['color' => 'bg-gray-500', 'nombre' => 'Gris', 'residuos' => 'Resto'],
-            ];
-            foreach ($contenedores as $cont):
-            ?>
-                <div class="bg-white rounded-xl p-4 shadow-md text-center">
-                    <div class="w-12 h-12 rounded-xl <?php echo $cont['color']; ?> mx-auto mb-2"></div>
-                    <p class="font-bold text-gray-900 text-sm"><?php echo esc_html($cont['nombre']); ?></p>
-                    <p class="text-xs text-gray-500"><?php echo esc_html($cont['residuos']); ?></p>
-                </div>
+            <?php foreach ($contenedores_guia as $cont): ?>
+            <div class="bg-white rounded-xl p-4 shadow-md text-center">
+                <div class="w-12 h-12 rounded-xl <?php echo esc_attr($cont['color']); ?> mx-auto mb-2"></div>
+                <p class="font-bold text-gray-900 text-sm"><?php echo esc_html($cont['nombre']); ?></p>
+                <p class="text-xs text-gray-500"><?php echo esc_html($cont['residuos']); ?></p>
+            </div>
             <?php endforeach; ?>
         </div>
-
-        <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Sidebar de filtros -->
-            <aside class="lg:w-72 flex-shrink-0">
-                <?php include __DIR__ . '/filters.php'; ?>
-            </aside>
-
-            <!-- Lista de puntos -->
-            <main class="flex-1">
-                <!-- Mapa -->
-                <div class="bg-white rounded-2xl shadow-md overflow-hidden mb-6">
-                    <div class="h-64 bg-gray-200 flex items-center justify-center">
-                        <div class="text-center text-gray-500">
-                            <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-                            </svg>
-                            <p class="text-sm"><?php echo esc_html__('Mapa de puntos de reciclaje', 'flavor-chat-ia'); ?></p>
-                        </div>
-                    </div>
-                </div>
-
-                <?php if (empty($puntos)): ?>
-                    <div class="bg-gray-50 rounded-2xl p-12 text-center">
-                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        </svg>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay puntos cercanos', 'flavor-chat-ia'); ?></h3>
-                        <p class="text-gray-500"><?php echo esc_html__('Activa tu ubicacion para ver los puntos mas proximos', 'flavor-chat-ia'); ?></p>
-                    </div>
-                <?php else: ?>
-                    <div class="space-y-4">
-                        <?php foreach ($puntos as $punto): ?>
-                            <article class="bg-white rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="font-bold text-gray-900 mb-1"><?php echo esc_html($punto['nombre']); ?></h3>
-                                        <p class="text-sm text-gray-500 mb-2"><?php echo esc_html($punto['direccion'] ?? ''); ?></p>
-
-                                        <!-- Contenedores disponibles -->
-                                        <div class="flex gap-2 mb-2">
-                                            <?php foreach ($punto['contenedores'] ?? [] as $cont): ?>
-                                                <span class="w-6 h-6 rounded <?php echo esc_attr($cont['color']); ?>" title="<?php echo esc_attr($cont['nombre']); ?>"></span>
-                                            <?php endforeach; ?>
-                                        </div>
-
-                                        <span class="text-sm text-emerald-600"><?php echo esc_html($punto['distancia'] ?? '200m'); ?></span>
-                                    </div>
-                                    <a href="<?php echo esc_url($punto['url'] ?? '#'); ?>"
-                                       class="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-700 font-medium text-sm hover:bg-emerald-200 transition-colors flex-shrink-0">
-                                        <?php echo esc_html__('Como llegar', 'flavor-chat-ia'); ?>
-                                    </a>
-                                </div>
-                            </article>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </main>
-        </div>
-    </div>
-</div>
+        <?php
+        flavor_render_component('como-funciona', [
+            'steps' => $como_funciona_steps,
+            'color' => 'emerald',
+        ]);
+    },
+    'empty_state'  => [
+        'icon'       => '📍',
+        'title'      => __('No hay puntos cercanos', 'flavor-chat-ia'),
+        'text'       => __('Activa tu ubicación para ver los puntos más próximos', 'flavor-chat-ia'),
+    ],
+]);
