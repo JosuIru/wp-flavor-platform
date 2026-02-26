@@ -17,6 +17,9 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Integration_Consumer;
+
     /**
      * Categorías de saberes
      */
@@ -113,16 +116,592 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['recetas', 'biblioteca', 'multimedia', 'podcast', 'videos'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_saberes',
+                'context' => 'normal',
+            ],
+        ];
+    }
+
+    /**
      * Inicializa el módulo
      */
     public function init(): void {
-        $this->register_post_types();
-        $this->register_taxonomies();
+        $this->register_as_integration_consumer();
+
+        // Registrar CPT y taxonomías en el hook 'init' de WordPress
+        add_action('init', [$this, 'register_all_cpts'], 5);
+
         $this->register_ajax_handlers();
         $this->register_shortcodes();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Registrar en Panel Unificado de Gestión
+        $this->registrar_en_panel_unificado();
+
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs(): void {
+        $tab_file = dirname(__FILE__) . '/class-saberes-ancestrales-dashboard-tab.php';
+        if (file_exists($tab_file)) {
+            require_once $tab_file;
+            if (class_exists('Flavor_Saberes_Ancestrales_Dashboard_Tab')) {
+                Flavor_Saberes_Ancestrales_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Registra todos los CPTs y taxonomías
+     */
+    public function register_all_cpts(): void {
+        $this->register_post_types();
+        $this->register_taxonomies();
+    }
+
+    /**
+     * Registrar rutas REST API
+     */
+    public function register_rest_routes(): void {
+        $namespace = 'flavor/v1';
+
+        // Listar saberes
+        register_rest_route($namespace, '/saberes', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_listar_saberes'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'categoria' => ['type' => 'string'],
+                'limite' => ['type' => 'integer', 'default' => 20],
+            ],
+        ]);
+
+        // Obtener saber por ID
+        register_rest_route($namespace, '/saberes/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_obtener_saber'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Registrar nuevo saber
+        register_rest_route($namespace, '/saberes', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_registrar_saber'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        // Listar talleres
+        register_rest_route($namespace, '/saberes/talleres', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_listar_talleres'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Inscribirse en taller
+        register_rest_route($namespace, '/saberes/talleres/(?P<id>\d+)/inscribirse', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_inscribirse_taller'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        // Mis aprendizajes
+        register_rest_route($namespace, '/saberes/mis-aprendizajes', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_mis_aprendizajes'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+    }
+
+    /**
+     * API: Listar saberes
+     */
+    public function api_listar_saberes($request): \WP_REST_Response {
+        $categoria = $request->get_param('categoria');
+        $limite = $request->get_param('limite') ?: 20;
+
+        $args = [
+            'post_type' => 'sa_saber',
+            'post_status' => 'publish',
+            'posts_per_page' => $limite,
+        ];
+
+        if ($categoria) {
+            $args['tax_query'] = [[
+                'taxonomy' => 'sa_categoria',
+                'field' => 'slug',
+                'terms' => $categoria,
+            ]];
+        }
+
+        $saberes = get_posts($args);
+        $resultado = [];
+
+        foreach ($saberes as $saber) {
+            $categoria_term = wp_get_post_terms($saber->ID, 'sa_categoria', ['fields' => 'slugs']);
+            $resultado[] = [
+                'id' => $saber->ID,
+                'titulo' => $saber->post_title,
+                'descripcion' => wp_trim_words($saber->post_content, 30),
+                'categoria' => !empty($categoria_term) ? $categoria_term[0] : '',
+                'portador' => get_post_meta($saber->ID, '_sa_portador', true),
+                'origen' => get_post_meta($saber->ID, '_sa_origen', true),
+                'agradecimientos' => (int) get_post_meta($saber->ID, '_sa_agradecimientos', true),
+                'fecha' => get_the_date('Y-m-d', $saber),
+            ];
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'total' => count($resultado),
+            'saberes' => $resultado,
+            'categorias' => array_keys(self::CATEGORIAS_SABER),
+        ], 200);
+    }
+
+    /**
+     * API: Obtener saber por ID
+     */
+    public function api_obtener_saber($request): \WP_REST_Response {
+        $id = $request->get_param('id');
+        $saber = get_post($id);
+
+        if (!$saber || $saber->post_type !== 'sa_saber') {
+            return new \WP_REST_Response(['success' => false, 'error' => 'Saber no encontrado'], 404);
+        }
+
+        $categoria_term = wp_get_post_terms($saber->ID, 'sa_categoria', ['fields' => 'slugs']);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'saber' => [
+                'id' => $saber->ID,
+                'titulo' => $saber->post_title,
+                'contenido' => $saber->post_content,
+                'categoria' => !empty($categoria_term) ? $categoria_term[0] : '',
+                'portador' => get_post_meta($saber->ID, '_sa_portador', true),
+                'origen' => get_post_meta($saber->ID, '_sa_origen', true),
+                'agradecimientos' => (int) get_post_meta($saber->ID, '_sa_agradecimientos', true),
+                'imagen' => get_the_post_thumbnail_url($saber->ID, 'large'),
+                'autor' => get_the_author_meta('display_name', $saber->post_author),
+                'fecha' => get_the_date('Y-m-d', $saber),
+            ],
+        ], 200);
+    }
+
+    /**
+     * API: Registrar saber
+     */
+    public function api_registrar_saber($request): \WP_REST_Response {
+        $titulo = sanitize_text_field($request->get_param('titulo'));
+        $descripcion = sanitize_textarea_field($request->get_param('descripcion'));
+        $categoria = sanitize_key($request->get_param('categoria'));
+        $portador = sanitize_text_field($request->get_param('portador'));
+        $origen = sanitize_text_field($request->get_param('origen'));
+
+        if (empty($titulo) || empty($descripcion)) {
+            return new \WP_REST_Response(['success' => false, 'error' => 'Título y descripción requeridos'], 400);
+        }
+
+        $saber_id = wp_insert_post([
+            'post_type' => 'sa_saber',
+            'post_status' => 'pending',
+            'post_author' => get_current_user_id(),
+            'post_title' => $titulo,
+            'post_content' => $descripcion,
+        ]);
+
+        if (is_wp_error($saber_id)) {
+            return new \WP_REST_Response(['success' => false, 'error' => $saber_id->get_error_message()], 500);
+        }
+
+        if ($categoria && isset(self::CATEGORIAS_SABER[$categoria])) {
+            wp_set_object_terms($saber_id, $categoria, 'sa_categoria');
+        }
+
+        update_post_meta($saber_id, '_sa_origen', $origen);
+        update_post_meta($saber_id, '_sa_portador', $portador);
+        update_post_meta($saber_id, '_sa_documentado_por', get_current_user_id());
+        update_post_meta($saber_id, '_sa_fecha_documentacion', current_time('mysql'));
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'mensaje' => __('Saber documentado. Será revisado antes de publicarse.', 'flavor-chat-ia'),
+            'id' => $saber_id,
+        ], 201);
+    }
+
+    /**
+     * API: Listar talleres
+     */
+    public function api_listar_talleres($request): \WP_REST_Response {
+        $talleres = get_posts([
+            'post_type' => 'sa_taller',
+            'post_status' => 'publish',
+            'posts_per_page' => 20,
+            'meta_key' => '_sa_fecha',
+            'orderby' => 'meta_value',
+            'order' => 'ASC',
+            'meta_query' => [[
+                'key' => '_sa_fecha',
+                'value' => current_time('Y-m-d'),
+                'compare' => '>=',
+                'type' => 'DATE',
+            ]],
+        ]);
+
+        $resultado = [];
+        foreach ($talleres as $taller) {
+            $inscritos = get_post_meta($taller->ID, '_sa_inscritos', true) ?: [];
+            $plazas = (int) get_post_meta($taller->ID, '_sa_plazas', true) ?: 20;
+            $resultado[] = [
+                'id' => $taller->ID,
+                'titulo' => $taller->post_title,
+                'descripcion' => wp_trim_words($taller->post_content, 30),
+                'fecha' => get_post_meta($taller->ID, '_sa_fecha', true),
+                'plazas' => $plazas,
+                'inscritos' => count($inscritos),
+                'plazas_libres' => $plazas - count($inscritos),
+            ];
+        }
+
+        return new \WP_REST_Response(['success' => true, 'talleres' => $resultado], 200);
+    }
+
+    /**
+     * API: Inscribirse en taller
+     */
+    public function api_inscribirse_taller($request): \WP_REST_Response {
+        $taller_id = $request->get_param('id');
+        $user_id = get_current_user_id();
+
+        $taller = get_post($taller_id);
+        if (!$taller || $taller->post_type !== 'sa_taller') {
+            return new \WP_REST_Response(['success' => false, 'error' => 'Taller no encontrado'], 404);
+        }
+
+        $inscritos = get_post_meta($taller_id, '_sa_inscritos', true) ?: [];
+        $plazas = (int) get_post_meta($taller_id, '_sa_plazas', true) ?: 20;
+
+        if (in_array($user_id, $inscritos)) {
+            return new \WP_REST_Response(['success' => false, 'error' => 'Ya estás inscrito'], 400);
+        }
+
+        if (count($inscritos) >= $plazas) {
+            return new \WP_REST_Response(['success' => false, 'error' => 'No quedan plazas'], 400);
+        }
+
+        $inscritos[] = $user_id;
+        update_post_meta($taller_id, '_sa_inscritos', $inscritos);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'mensaje' => __('Inscripción completada', 'flavor-chat-ia'),
+            'plazas_restantes' => $plazas - count($inscritos),
+        ], 200);
+    }
+
+    /**
+     * API: Mis aprendizajes
+     */
+    public function api_mis_aprendizajes($request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+        $estadisticas = $this->get_estadisticas_usuario($user_id);
+
+        // Saberes documentados por el usuario
+        $saberes = get_posts([
+            'post_type' => 'sa_saber',
+            'author' => $user_id,
+            'posts_per_page' => 10,
+        ]);
+
+        $mis_saberes = array_map(function($saber) {
+            return [
+                'id' => $saber->ID,
+                'titulo' => $saber->post_title,
+                'estado' => $saber->post_status,
+            ];
+        }, $saberes);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'estadisticas' => $estadisticas,
+            'saberes_documentados' => $mis_saberes,
+        ], 200);
+    }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     */
+    protected function get_admin_config(): array {
+        return [
+            'id' => 'saberes-ancestrales',
+            'label' => __('Saberes Ancestrales', 'flavor-chat-ia'),
+            'icon' => 'dashicons-book',
+            'capability' => 'manage_options',
+            'categoria' => 'cultura',
+            'paginas' => [
+                [
+                    'slug' => 'saberes-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'saberes-listado',
+                    'titulo' => __('Saberes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                    'badge' => [$this, 'contar_saberes_pendientes'],
+                ],
+                [
+                    'slug' => 'saberes-talleres',
+                    'titulo' => __('Talleres', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_talleres'],
+                ],
+                [
+                    'slug' => 'saberes-portadores',
+                    'titulo' => __('Portadores', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_portadores'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta saberes pendientes de revisión
+     */
+    public function contar_saberes_pendientes(): int {
+        global $wpdb;
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'sa_saber' AND post_status = 'pending'"
+        );
+    }
+
+    /**
+     * Estadísticas para el dashboard unificado
+     */
+    public function get_estadisticas_dashboard(): array {
+        $stats = $this->get_estadisticas();
+        $resultado = [];
+
+        $resultado[] = [
+            'icon' => 'dashicons-book',
+            'valor' => $stats['saberes_total'],
+            'label' => __('Saberes documentados', 'flavor-chat-ia'),
+            'color' => 'green',
+            'enlace' => admin_url('admin.php?page=saberes-listado'),
+        ];
+
+        $resultado[] = [
+            'icon' => 'dashicons-groups',
+            'valor' => $stats['portadores'],
+            'label' => __('Portadores', 'flavor-chat-ia'),
+            'color' => 'blue',
+            'enlace' => admin_url('admin.php?page=saberes-portadores'),
+        ];
+
+        if ($stats['talleres_proximos'] > 0) {
+            $resultado[] = [
+                'icon' => 'dashicons-calendar-alt',
+                'valor' => $stats['talleres_proximos'],
+                'label' => __('Talleres próximos', 'flavor-chat-ia'),
+                'color' => 'orange',
+                'enlace' => admin_url('admin.php?page=saberes-talleres'),
+            ];
+        }
+
+        return $resultado;
+    }
+
+    /**
+     * Renderiza el dashboard admin
+     */
+    public function render_admin_dashboard(): void {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Saberes Ancestrales', 'flavor-chat-ia'));
+
+        $stats = $this->get_estadisticas();
+
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-book"></span>';
+        echo '<div class="stat-content"><span class="stat-number">' . esc_html($stats['saberes_total']) . '</span>';
+        echo '<span class="stat-label">' . esc_html__('Saberes', 'flavor-chat-ia') . '</span></div></div>';
+
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-groups"></span>';
+        echo '<div class="stat-content"><span class="stat-number">' . esc_html($stats['portadores']) . '</span>';
+        echo '<span class="stat-label">' . esc_html__('Portadores', 'flavor-chat-ia') . '</span></div></div>';
+
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-calendar-alt"></span>';
+        echo '<div class="stat-content"><span class="stat-number">' . esc_html($stats['talleres_proximos']) . '</span>';
+        echo '<span class="stat-label">' . esc_html__('Talleres próximos', 'flavor-chat-ia') . '</span></div></div>';
+        echo '</div>';
+
+        if (!empty($stats['saberes_por_categoria'])) {
+            echo '<h3>' . esc_html__('Por categoría', 'flavor-chat-ia') . '</h3>';
+            echo '<table class="widefat striped"><thead><tr><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th><th>' . esc_html__('Total', 'flavor-chat-ia') . '</th></tr></thead><tbody>';
+            foreach ($stats['saberes_por_categoria'] as $cat) {
+                $categoria_nombre = self::CATEGORIAS_SABER[$cat['categoria']]['nombre'] ?? $cat['categoria'];
+                echo '<tr><td>' . esc_html($categoria_nombre) . '</td><td>' . esc_html($cat['total']) . '</td></tr>';
+            }
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza listado de saberes
+     */
+    public function render_admin_listado(): void {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Saberes Documentados', 'flavor-chat-ia'));
+
+        $estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $categoria = isset($_GET['categoria']) ? sanitize_key($_GET['categoria']) : '';
+
+        echo '<form method="get" style="margin: 12px 0;">';
+        echo '<input type="hidden" name="page" value="saberes-listado">';
+        echo '<select name="estado"><option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        foreach (['publish' => 'Publicado', 'pending' => 'Pendiente', 'draft' => 'Borrador'] as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html($label) . '</option>';
+        }
+        echo '</select> ';
+        echo '<select name="categoria"><option value="">' . esc_html__('Todas las categorías', 'flavor-chat-ia') . '</option>';
+        foreach (self::CATEGORIAS_SABER as $key => $cat) {
+            echo '<option value="' . esc_attr($key) . '" ' . selected($categoria, $key, false) . '>' . esc_html($cat['nombre']) . '</option>';
+        }
+        echo '</select> ';
+        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '</form>';
+
+        $args = ['post_type' => 'sa_saber', 'posts_per_page' => 50];
+        if ($estado) {
+            $args['post_status'] = $estado;
+        } else {
+            $args['post_status'] = ['publish', 'pending', 'draft'];
+        }
+        if ($categoria) {
+            $args['tax_query'] = [['taxonomy' => 'sa_categoria', 'field' => 'slug', 'terms' => $categoria]];
+        }
+
+        $saberes = get_posts($args);
+
+        if (empty($saberes)) {
+            echo '<p>' . esc_html__('No hay saberes con esos filtros.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<table class="widefat striped"><thead><tr>';
+            echo '<th>ID</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Autor', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th></tr></thead><tbody>';
+
+            foreach ($saberes as $saber) {
+                $cat_terms = wp_get_post_terms($saber->ID, 'sa_categoria', ['fields' => 'names']);
+                echo '<tr>';
+                echo '<td>' . esc_html($saber->ID) . '</td>';
+                echo '<td>' . esc_html($saber->post_title) . '</td>';
+                echo '<td>' . esc_html(implode(', ', $cat_terms)) . '</td>';
+                echo '<td>' . esc_html(ucfirst($saber->post_status)) . '</td>';
+                echo '<td>' . esc_html(get_the_author_meta('display_name', $saber->post_author)) . '</td>';
+                echo '<td><a href="' . esc_url(get_edit_post_link($saber->ID)) . '" class="button button-small">' . esc_html__('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza listado de talleres
+     */
+    public function render_admin_talleres(): void {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Talleres de Saberes', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Taller', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=sa_taller'), 'class' => 'button-primary'],
+        ]);
+
+        $talleres = get_posts(['post_type' => 'sa_taller', 'posts_per_page' => 50, 'post_status' => ['publish', 'draft']]);
+
+        if (empty($talleres)) {
+            echo '<p>' . esc_html__('No hay talleres programados.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<table class="widefat striped"><thead><tr>';
+            echo '<th>ID</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Plazas', 'flavor-chat-ia') . '</th><th>' . esc_html__('Inscritos', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th></tr></thead><tbody>';
+
+            foreach ($talleres as $taller) {
+                $inscritos = get_post_meta($taller->ID, '_sa_inscritos', true) ?: [];
+                $plazas = (int) get_post_meta($taller->ID, '_sa_plazas', true) ?: 20;
+                $fecha = get_post_meta($taller->ID, '_sa_fecha', true);
+                echo '<tr>';
+                echo '<td>' . esc_html($taller->ID) . '</td>';
+                echo '<td>' . esc_html($taller->post_title) . '</td>';
+                echo '<td>' . esc_html($fecha ?: '-') . '</td>';
+                echo '<td>' . esc_html($plazas) . '</td>';
+                echo '<td>' . esc_html(count($inscritos)) . '</td>';
+                echo '<td><a href="' . esc_url(get_edit_post_link($taller->ID)) . '" class="button button-small">' . esc_html__('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza listado de portadores
+     */
+    public function render_admin_portadores(): void {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Portadores de Saberes', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Portador', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=sa_portador'), 'class' => 'button-primary'],
+        ]);
+
+        $portadores = get_posts(['post_type' => 'sa_portador', 'posts_per_page' => 50, 'post_status' => ['publish', 'draft']]);
+
+        if (empty($portadores)) {
+            echo '<p>' . esc_html__('No hay portadores registrados.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<table class="widefat striped"><thead><tr>';
+            echo '<th>ID</th><th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th></tr></thead><tbody>';
+
+            foreach ($portadores as $portador) {
+                echo '<tr>';
+                echo '<td>' . esc_html($portador->ID) . '</td>';
+                echo '<td>' . esc_html($portador->post_title) . '</td>';
+                echo '<td><a href="' . esc_url(get_edit_post_link($portador->ID)) . '" class="button button-small">' . esc_html__('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        }
+
+        echo '</div>';
     }
 
     /**
@@ -222,11 +801,17 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
      * Registra los shortcodes
      */
     public function register_shortcodes(): void {
+        // Shortcodes principales
         add_shortcode('saberes_catalogo', [$this, 'shortcode_catalogo']);
         add_shortcode('saberes_portadores', [$this, 'shortcode_portadores']);
         add_shortcode('saberes_talleres', [$this, 'shortcode_talleres']);
         add_shortcode('saberes_compartir', [$this, 'shortcode_compartir']);
         add_shortcode('saberes_mis_aprendizajes', [$this, 'shortcode_mis_aprendizajes']);
+
+        // Aliases con prefijo flavor_ para compatibilidad con dynamic-pages
+        add_shortcode('flavor_saberes_catalogo', [$this, 'shortcode_catalogo']);
+        add_shortcode('flavor_saberes_compartir', [$this, 'shortcode_compartir']);
+        add_shortcode('flavor_saberes_talleres', [$this, 'shortcode_talleres']);
     }
 
     /**
@@ -618,5 +1203,46 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
                 'el pasado con el presente, y que cada saber ancestral contiene conciencia cristalizada.',
             'categoria' => 'cultura',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_actions() {
+        return [
+            'buscar_saberes' => [
+                'description' => 'Buscar saberes ancestrales por categoría',
+                'params' => ['categoria'],
+            ],
+            'ver_talleres' => [
+                'description' => 'Ver talleres de transmisión de saberes',
+                'params' => [],
+            ],
+            'guardianes_saber' => [
+                'description' => 'Ver guardianes de saberes de la comunidad',
+                'params' => [],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_knowledge_base() {
+        return __('Saberes Ancestrales preserva y transmite el conocimiento tradicional de la comunidad, conectando generaciones y honrando la sabiduría de los mayores.', 'flavor-chat-ia');
     }
 }

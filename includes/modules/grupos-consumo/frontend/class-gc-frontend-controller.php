@@ -123,7 +123,7 @@ class Flavor_GC_Frontend_Controller {
         $configuracion_js = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('flavor-chat-ia/v1/gc/'),
-            'nonce' => wp_create_nonce('gc_frontend_nonce'),
+            'nonce' => wp_create_nonce('gc_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(get_permalink()),
@@ -953,7 +953,7 @@ class Flavor_GC_Frontend_Controller {
         if (!$suscripcion): ?>
             <div class="gc-sin-suscripcion">
                 <p><?php _e('No tienes una suscripción activa.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo home_url('/grupos-consumo/cestas/'); ?>" class="gc-btn-ver-cestas">
+                <a href="<?php echo home_url('/mi-portal/grupos-consumo/cestas/'); ?>" class="gc-btn-ver-cestas">
                     <?php _e('Ver cestas disponibles', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -999,7 +999,7 @@ class Flavor_GC_Frontend_Controller {
      * AJAX: Agregar producto a lista
      */
     public function ajax_agregar_lista() {
-        check_ajax_referer('gc_frontend_nonce', 'nonce');
+        check_ajax_referer('gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
@@ -1080,7 +1080,7 @@ class Flavor_GC_Frontend_Controller {
      * AJAX: Quitar producto de lista
      */
     public function ajax_quitar_lista() {
-        check_ajax_referer('gc_frontend_nonce', 'nonce');
+        check_ajax_referer('gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
@@ -1104,7 +1104,7 @@ class Flavor_GC_Frontend_Controller {
      * AJAX: Actualizar cantidad
      */
     public function ajax_actualizar_cantidad() {
-        check_ajax_referer('gc_frontend_nonce', 'nonce');
+        check_ajax_referer('gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
@@ -1131,7 +1131,7 @@ class Flavor_GC_Frontend_Controller {
      * AJAX: Convertir lista en pedido
      */
     public function ajax_convertir_pedido() {
-        check_ajax_referer('gc_frontend_nonce', 'nonce');
+        check_ajax_referer('gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);

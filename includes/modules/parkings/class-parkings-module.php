@@ -46,6 +46,26 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_parkings_obtener_plaza', [$this, 'ajax_obtener_plaza']);
+        add_action('wp_ajax_nopriv_parkings_obtener_plaza', [$this, 'ajax_obtener_plaza']);
+        add_action('wp_ajax_parkings_reservar_plaza', [$this, 'ajax_reservar_plaza']);
+        add_action('wp_ajax_nopriv_parkings_reservar_plaza', [$this, 'ajax_reservar_plaza']);
+        add_action('wp_ajax_parkings_cancelar_reserva', [$this, 'ajax_cancelar_reserva']);
+        add_action('wp_ajax_nopriv_parkings_cancelar_reserva', [$this, 'ajax_cancelar_reserva']);
+        add_action('wp_ajax_parkings_solicitar_plaza', [$this, 'ajax_solicitar_plaza']);
+        add_action('wp_ajax_nopriv_parkings_solicitar_plaza', [$this, 'ajax_solicitar_plaza']);
+        add_action('wp_ajax_parkings_cancelar_solicitud', [$this, 'ajax_cancelar_solicitud']);
+        add_action('wp_ajax_nopriv_parkings_cancelar_solicitud', [$this, 'ajax_cancelar_solicitud']);
+        add_action('wp_ajax_parkings_obtener_disponibilidad', [$this, 'ajax_obtener_disponibilidad']);
+        add_action('wp_ajax_nopriv_parkings_obtener_disponibilidad', [$this, 'ajax_obtener_disponibilidad']);
+        add_action('wp_ajax_parkings_liberar_plaza', [$this, 'ajax_liberar_plaza']);
+        add_action('wp_ajax_nopriv_parkings_liberar_plaza', [$this, 'ajax_liberar_plaza']);
+        add_action('wp_ajax_parkings_registrar_entrada', [$this, 'ajax_registrar_entrada']);
+        add_action('wp_ajax_nopriv_parkings_registrar_entrada', [$this, 'ajax_registrar_entrada']);
+        add_action('wp_ajax_parkings_registrar_salida', [$this, 'ajax_registrar_salida']);
+        add_action('wp_ajax_nopriv_parkings_registrar_salida', [$this, 'ajax_registrar_salida']);
+
         global $wpdb;
 
         $this->id = 'parkings';
@@ -867,9 +887,9 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
                         </div>
                     </div>
                     <div class="parking-acciones">
-                        <a href="#" class="btn-ver-parking" data-parking-id="<?php echo esc_attr($parking->id); ?>">
+                        <button type="button" class="btn-ver-parking" data-parking-id="<?php echo esc_attr($parking->id); ?>">
                             <?php _e('Ver disponibilidad', 'flavor-chat-ia'); ?>
-                        </a>
+                        </button>
                     </div>
                 </div>
             <?php endforeach; ?>

@@ -24,6 +24,14 @@ while (have_posts()) :
 ?>
 
 <div class="flavor-container py-8">
+    <?php
+    // Breadcrumbs centralizados
+    echo Flavor_Breadcrumbs::render([
+        'archive_label' => __('Parkings', 'flavor-chat-ia'),
+        'archive_url' => home_url('/parkings/')
+    ]);
+    ?>
+
     <div class="grid lg:grid-cols-3 gap-8">
         <!-- Contenido principal -->
         <div class="lg:col-span-2">
@@ -110,6 +118,13 @@ while (have_posts()) :
                         <?php esc_html_e('Inicia sesión', 'flavor-chat-ia'); ?>
                     </a>
                 <?php endif; ?>
+
+                <?php
+                // Shared features: valoraciones, favoritos, compartir
+                if (function_exists('flavor_render_post_features')) {
+                    flavor_render_post_features(['ratings', 'favorites', 'share', 'views']);
+                }
+                ?>
             </div>
         </aside>
     </div>

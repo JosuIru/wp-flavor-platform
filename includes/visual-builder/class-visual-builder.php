@@ -153,8 +153,16 @@ class Flavor_Visual_Builder {
 
     /**
      * Añadir meta boxes
+     *
+     * No registra el metabox si el Page Builder Pro (Vue.js) está activo,
+     * ya que ese addon proporciona un editor más avanzado.
      */
     public function add_meta_boxes() {
+        // No registrar si Page Builder Pro está activo (evitar duplicados)
+        if (class_exists('Flavor_Page_Builder') || class_exists('Flavor_VBP_Page_Builder')) {
+            return;
+        }
+
         $post_types = ['flavor_landing', 'page', 'post'];
 
         foreach ($post_types as $post_type) {
@@ -532,6 +540,11 @@ class Flavor_Visual_Builder {
      */
     public function enqueue_admin_assets($hook) {
         global $post;
+
+        // No cargar si Page Builder Pro está activo (usa sus propios assets)
+        if (class_exists('Flavor_Page_Builder') || class_exists('Flavor_VBP_Page_Builder')) {
+            return;
+        }
 
         // Solo cargar en páginas de edición
         if (!in_array($hook, ['post.php', 'post-new.php'])) {

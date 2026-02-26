@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Trabajo_Digno_Widget extends Flavor_Dashboard_Widget_Base {
 
-    private $module;
+    protected $module;
 
     public function __construct($module) {
         $this->module = $module;

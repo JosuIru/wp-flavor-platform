@@ -1,0 +1,1047 @@
+/**
+ * Estilos frontend para Trámites Municipales
+ * @package FlavorChatIA
+ */
+
+/* Catálogo */
+.flavor-tramites-catalogo {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.flavor-tramites-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.flavor-tramites-header h2 {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+}
+
+.flavor-tramites-intro {
+    color: #6b7280;
+    font-size: 1.1rem;
+}
+
+/* Filtros */
+.flavor-tramites-filtros {
+    margin-bottom: 2rem;
+}
+
+.flavor-tramites-filtros .flavor-filtros-form {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.flavor-filtro-grupo input,
+.flavor-filtro-grupo select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: #fff;
+    min-width: 200px;
+}
+
+/* Categorías */
+.flavor-tramites-categorias {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.flavor-categoria-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1rem;
+    background: #fff;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #1f2937;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.flavor-categoria-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.flavor-categoria-icono {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-categoria-icono .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #fff;
+}
+
+.flavor-categoria-nombre {
+    font-weight: 600;
+    text-align: center;
+}
+
+.flavor-categoria-count {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Grid de trámites */
+.flavor-tramites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-tramite-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.flavor-tramite-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.flavor-tramite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.flavor-tramite-icono {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    border-radius: 10px;
+}
+
+.flavor-tramite-icono .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #4f46e5;
+}
+
+.flavor-tramite-titulo {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+.flavor-tramite-titulo a {
+    color: #1f2937;
+    text-decoration: none;
+}
+
+.flavor-tramite-titulo a:hover {
+    color: #3b82f6;
+}
+
+.flavor-tramite-descripcion {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+}
+
+.flavor-tramite-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.flavor-tramite-tiempo {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #6b7280;
+}
+
+.flavor-tramite-tiempo .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-tramite-precio {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.flavor-tramite-precio.flavor-gratuito {
+    color: #22c55e;
+}
+
+/* Detalle de trámite */
+.flavor-tramite-detalle {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.flavor-tramite-hero {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.flavor-tramite-hero-content {
+    flex: 1;
+}
+
+.flavor-tramite-hero-content h1 {
+    margin: 0.5rem 0;
+    font-size: 2rem;
+}
+
+.flavor-tramite-descripcion-larga {
+    color: #4b5563;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.flavor-tramite-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.flavor-tramite-badges .flavor-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.flavor-tramite-hero-aside {
+    flex-shrink: 0;
+    width: 320px;
+}
+
+.flavor-tramite-resumen-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-resumen-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.flavor-resumen-item:last-of-type {
+    border-bottom: none;
+    margin-bottom: 1rem;
+}
+
+.flavor-resumen-label {
+    color: #6b7280;
+}
+
+.flavor-resumen-valor {
+    font-weight: 600;
+}
+
+.flavor-tramite-contenido {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+}
+
+.flavor-tramite-main section {
+    margin-bottom: 2rem;
+}
+
+.flavor-tramite-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-tramite-section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+}
+
+/* Pasos */
+.flavor-pasos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-paso-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.flavor-paso-numero {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 50%;
+}
+
+.flavor-paso-contenido h4 {
+    margin: 0 0 0.25rem;
+}
+
+.flavor-paso-contenido p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+/* Documentos */
+.flavor-documentos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-documento-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.flavor-documento-icono {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 8px;
+}
+
+.flavor-documento-info {
+    flex: 1;
+}
+
+.flavor-documento-nombre {
+    display: block;
+    font-weight: 500;
+}
+
+.flavor-documento-desc {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Sidebar */
+.flavor-tramite-sidebar .flavor-sidebar-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-sidebar-card h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+}
+
+.flavor-contacto-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.flavor-contacto-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.flavor-contacto-item:hover {
+    text-decoration: underline;
+}
+
+/* Formulario solicitar */
+.flavor-solicitar-tramite {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.flavor-solicitar-header {
+    margin-bottom: 2rem;
+}
+
+.flavor-solicitar-header h1 {
+    margin: 0.5rem 0;
+    font-size: 1.75rem;
+}
+
+.flavor-solicitar-pasos {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.flavor-paso-indicador {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    opacity: 0.5;
+}
+
+.flavor-paso-indicador.activo {
+    opacity: 1;
+}
+
+.flavor-paso-indicador.completado {
+    opacity: 1;
+}
+
+.flavor-paso-num {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e5e7eb;
+    border-radius: 50%;
+    font-weight: 600;
+}
+
+.flavor-paso-indicador.activo .flavor-paso-num {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #fff;
+}
+
+.flavor-paso-indicador.completado .flavor-paso-num {
+    background: #22c55e;
+    color: #fff;
+}
+
+.flavor-paso-texto {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.flavor-form-paso {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-form-paso h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.25rem;
+}
+
+.flavor-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+/* Documentos upload */
+.flavor-documentos-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-documento-upload-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    gap: 1rem;
+}
+
+.flavor-documento-upload-info {
+    flex: 1;
+}
+
+.flavor-documento-upload-zona {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flavor-documento-upload-zona input[type="file"] {
+    display: none;
+}
+
+.flavor-upload-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #fff;
+    border: 1px dashed #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.flavor-upload-label:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.flavor-archivo-seleccionado {
+    font-size: 0.85rem;
+    color: #22c55e;
+}
+
+/* Resumen solicitud */
+.flavor-resumen-solicitud {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-resumen-seccion {
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.flavor-resumen-seccion h3 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+/* Mis solicitudes */
+.flavor-mis-solicitudes {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.flavor-solicitudes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.flavor-solicitudes-header h2 {
+    margin: 0;
+}
+
+/* Seguimiento */
+.flavor-seguimiento-tramite {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.flavor-seguimiento-header {
+    margin-bottom: 2rem;
+}
+
+.flavor-seguimiento-titulo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.flavor-seguimiento-titulo h1 {
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+.flavor-expediente-numero {
+    color: #6b7280;
+}
+
+.flavor-seguimiento-contenido {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+}
+
+.flavor-seguimiento-main .flavor-panel {
+    margin-bottom: 1.5rem;
+}
+
+/* Timeline */
+.flavor-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.flavor-timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.flavor-timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+.flavor-timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.flavor-timeline-marker {
+    position: absolute;
+    left: -30px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 50%;
+}
+
+.flavor-timeline-item.activo .flavor-timeline-marker {
+    border-color: #3b82f6;
+    background: #3b82f6;
+}
+
+.flavor-timeline-item.activo .flavor-timeline-marker .dashicons {
+    color: #fff;
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+}
+
+.flavor-timeline-fecha {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.flavor-timeline-contenido h4 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+}
+
+.flavor-timeline-contenido p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* Mensajes */
+.flavor-mensajes-lista {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.flavor-mensaje-item {
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-mensaje-item.admin {
+    background: #eff6ff;
+    border-left: 3px solid #3b82f6;
+}
+
+.flavor-mensaje-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.flavor-mensaje-header strong {
+    color: #1f2937;
+}
+
+.flavor-mensaje-header span {
+    color: #9ca3af;
+}
+
+.flavor-mensaje-cuerpo {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.flavor-form-mensaje textarea {
+    width: 100%;
+    resize: vertical;
+}
+
+/* Citas */
+.flavor-tramites-citas {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.flavor-citas-header h2 {
+    margin: 0 0 1.5rem;
+}
+
+.flavor-solicitar-cita {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-solicitar-cita h3 {
+    margin: 0 0 1rem;
+}
+
+.flavor-citas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-cita-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-cita-card.pasada {
+    opacity: 0.6;
+}
+
+.flavor-cita-fecha {
+    flex-shrink: 0;
+    width: 60px;
+    text-align: center;
+    padding: 0.5rem;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-radius: 8px;
+    color: #fff;
+}
+
+.flavor-cita-dia {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.flavor-cita-mes {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.flavor-cita-info {
+    flex: 1;
+}
+
+.flavor-cita-info h4 {
+    margin: 0 0 0.25rem;
+}
+
+.flavor-cita-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-cita-info .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* Documentos públicos */
+.flavor-documentos-publicos {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.flavor-documentos-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.flavor-documentos-header h2 {
+    margin: 0 0 0.5rem;
+}
+
+.flavor-documentos-header p {
+    color: #6b7280;
+}
+
+.flavor-documentos-filtros {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-documentos-filtros select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.flavor-documentos-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-documento-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-documento-icono {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef3c7;
+    border-radius: 8px;
+}
+
+.flavor-documento-icono .dashicons-pdf {
+    color: #dc2626;
+}
+
+.flavor-documento-icono .dashicons-media-document {
+    color: #2563eb;
+}
+
+.flavor-documento-info {
+    flex: 1;
+}
+
+.flavor-documento-info h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.flavor-documento-meta {
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+/* Buscar */
+.flavor-buscar-tramites {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.flavor-buscar-form {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-buscar-input-grupo {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.flavor-buscar-input-grupo input {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.flavor-buscar-input-grupo input:focus {
+    border-color: #3b82f6;
+    outline: none;
+}
+
+.flavor-resultados-busqueda {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.flavor-resultado-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #1f2937;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.flavor-resultado-item:hover {
+    background: #f9fafb;
+    transform: translateX(4px);
+}
+
+.flavor-resultado-item .dashicons {
+    color: #6b7280;
+}
+
+.flavor-resultado-item strong {
+    display: block;
+}
+
+.flavor-resultado-item span {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* Dashboard */
+.flavor-dashboard-tramites .flavor-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.flavor-dashboard-citas .flavor-cita-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-dashboard-citas .flavor-cita-item.pasada {
+    opacity: 0.5;
+}
+
+.flavor-dashboard-citas .flavor-cita-fecha-box {
+    flex-shrink: 0;
+    width: 50px;
+    text-align: center;
+    padding: 0.5rem;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-radius: 6px;
+    color: #fff;
+}
+
+.flavor-dashboard-citas .flavor-dia {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.flavor-dashboard-citas .flavor-mes {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+}
+
+.flavor-dashboard-citas .flavor-cita-detalles {
+    flex: 1;
+}
+
+.flavor-dashboard-citas .flavor-cita-detalles h4 {
+    margin: 0 0 0.25rem;
+    font-size: 0.95rem;
+}
+
+.flavor-dashboard-citas .flavor-cita-detalles p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-tramite-hero {
+        flex-direction: column;
+    }
+
+    .flavor-tramite-hero-aside {
+        width: 100%;
+    }
+
+    .flavor-tramite-contenido {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-seguimiento-contenido {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-solicitar-pasos {
+        gap: 1rem;
+    }
+
+    .flavor-paso-texto {
+        display: none;
+    }
+
+    .flavor-documento-upload-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .flavor-buscar-input-grupo {
+        flex-direction: column;
+    }
+}

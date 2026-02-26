@@ -16,30 +16,16 @@ while (have_posts()) :
     the_post();
 
     // Obtener metadatos
-    $precio      = get_post_meta(get_the_ID(), '_precio', true);
-    $condicion   = get_post_meta(get_the_ID(), '_condicion', true);
+    $precio      = get_post_meta(get_the_ID(), '_marketplace_precio', true);
+    $condicion   = get_post_meta(get_the_ID(), '_marketplace_condicion', true);
     $vendedor_id = get_the_author_meta('ID');
 ?>
 
 <div class="flavor-container py-8">
-    <!-- Breadcrumbs -->
-    <nav class="flex mb-6 text-sm">
-        <ol class="inline-flex items-center space-x-2">
-            <li>
-                <a href="<?php echo home_url('/'); ?>" class="text-gray-600 hover:text-primary">
-                    <?php esc_html_e('Inicio', 'flavor-chat-ia'); ?>
-                </a>
-            </li>
-            <li><span class="mx-2">/</span></li>
-            <li>
-                <a href="<?php echo get_post_type_archive_link('marketplace'); ?>" class="text-gray-600 hover:text-primary">
-                    <?php esc_html_e('Marketplace', 'flavor-chat-ia'); ?>
-                </a>
-            </li>
-            <li><span class="mx-2">/</span></li>
-            <li class="text-gray-900 font-medium"><?php the_title(); ?></li>
-        </ol>
-    </nav>
+    <?php
+    // Breadcrumbs centralizados
+    echo Flavor_Breadcrumbs::render(['archive_label' => __('Marketplace', 'flavor-chat-ia')]);
+    ?>
 
     <div class="grid lg:grid-cols-2 gap-8">
         <!-- Imagen del producto -->
@@ -55,7 +41,7 @@ while (have_posts()) :
                 <?php the_title(); ?>
             </h1>
 
-            <div class="text-5xl font-bold text-primary mb-6">
+            <div class="text-5xl font-bold mb-6" style="color: var(--flavor-primary, #22c55e);">
                 <?php echo esc_html($precio); ?>€
             </div>
 
@@ -84,15 +70,24 @@ while (have_posts()) :
             <!-- Botón de contacto -->
             <?php if (is_user_logged_in()) : ?>
                 <a href="mailto:<?php echo antispambot(get_the_author_meta('user_email')); ?>"
-                   class="block text-center px-6 py-4 bg-primary text-white rounded-lg hover:bg-primary-dark font-bold">
+                   class="flavor-btn flavor-btn--primary block text-center px-6 py-4 rounded-lg font-bold transition-colors"
+                   style="background: var(--flavor-primary, #22c55e); color: white;">
                     <?php esc_html_e('Contactar Vendedor', 'flavor-chat-ia'); ?>
                 </a>
             <?php else : ?>
                 <a href="<?php echo wp_login_url(get_permalink()); ?>"
-                   class="block text-center px-6 py-4 bg-primary text-white rounded-lg hover:bg-primary-dark font-bold">
+                   class="flavor-btn flavor-btn--primary block text-center px-6 py-4 rounded-lg font-bold transition-colors"
+                   style="background: var(--flavor-primary, #22c55e); color: white;">
                     <?php esc_html_e('Inicia sesión para contactar', 'flavor-chat-ia'); ?>
                 </a>
             <?php endif; ?>
+
+            <?php
+            // Shared features: valoraciones, favoritos, compartir
+            if (function_exists('flavor_render_post_features')) {
+                flavor_render_post_features(['ratings', 'favorites', 'share', 'views']);
+            }
+            ?>
         </div>
     </div>
 </div>

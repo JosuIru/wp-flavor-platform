@@ -4,6 +4,44 @@
  */
 
 /* ========================================================================
+   BOTONES - Reset para asegurar texto visible
+   ======================================================================== */
+
+/* Botones siempre con texto blanco, sin importar si son enlaces */
+.flavor-button,
+.flavor-btn,
+a.flavor-button,
+a.flavor-btn,
+[class*="flavor-"] .btn,
+[class*="flavor-"] a.btn,
+[class*="flavor-"] button[type="submit"],
+.flavor-dashboard button.primary,
+.flavor-module-content .btn-primary,
+.flavor-module-content a.btn-primary {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+.flavor-button:hover,
+.flavor-btn:hover,
+a.flavor-button:hover,
+a.flavor-btn:hover,
+[class*="flavor-"] .btn:hover,
+[class*="flavor-"] a.btn:hover {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Botones outline (con borde) mantienen color del borde como texto */
+.btn-outline,
+a.btn-outline,
+.flavor-btn--outline,
+a.flavor-btn--outline {
+    color: currentColor !important;
+    background: transparent !important;
+}
+
+/* ========================================================================
    SERVICIOS LANDING
    ======================================================================== */
 
@@ -1306,4 +1344,331 @@
     .flavor-login-gate__button {
         width: 100%;
     }
+}
+
+/* ========================================================================
+   VARIABLES GLOBALES - INTEGRACIÓN CON DESIGN SETTINGS
+   Estas variables heredan de la configuración de Diseño del plugin
+   ======================================================================== */
+
+:root {
+    /* Colores primarios - heredados de Design Settings */
+    --portal-primary: var(--flavor-primary, #3b82f6);
+    --portal-primary-dark: color-mix(in srgb, var(--portal-primary) 85%, #000);
+    --portal-primary-light: color-mix(in srgb, var(--portal-primary) 30%, #fff);
+    --portal-primary-bg: color-mix(in srgb, var(--portal-primary) 8%, #fff);
+
+    /* Colores secundarios */
+    --portal-secondary: var(--flavor-secondary, #8b5cf6);
+    --portal-accent: var(--flavor-accent, #f59e0b);
+
+    /* Estados */
+    --portal-success: var(--flavor-success, #10b981);
+    --portal-warning: var(--flavor-warning, #f59e0b);
+    --portal-error: var(--flavor-error, #ef4444);
+
+    /* Textos */
+    --portal-text: var(--flavor-text, #1f2937);
+    --portal-text-muted: var(--flavor-text-muted, #6b7280);
+
+    /* Componentes */
+    --portal-card-radius: var(--flavor-card-radius, 12px);
+    --portal-button-radius: var(--flavor-button-radius, 8px);
+    --portal-card-shadow: var(--flavor-card-shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+    --portal-card-padding: var(--flavor-card-padding, 24px);
+
+    /* Tipografía */
+    --portal-font-body: var(--flavor-font-body, inherit);
+    --portal-font-headings: var(--flavor-font-headings, inherit);
+}
+
+/* Fallback para navegadores sin color-mix */
+@supports not (color: color-mix(in srgb, red, blue)) {
+    :root {
+        --portal-primary-dark: #2563eb;
+        --portal-primary-light: #93c5fd;
+        --portal-primary-bg: #eff6ff;
+    }
+}
+
+/* ========================================================================
+   APLICACIÓN GLOBAL DE VARIABLES A COMPONENTES
+   ======================================================================== */
+
+/* Tipografía global */
+.flavor-portal,
+.flavor-dashboard,
+.flavor-module-content,
+[class*="flavor-"] {
+    font-family: var(--portal-font-body);
+    color: var(--portal-text);
+}
+
+.flavor-portal h1,
+.flavor-portal h2,
+.flavor-portal h3,
+.flavor-portal h4,
+.flavor-dashboard h1,
+.flavor-dashboard h2,
+.flavor-dashboard h3,
+.flavor-dashboard h4,
+[class*="flavor-"] h1,
+[class*="flavor-"] h2,
+[class*="flavor-"] h3,
+[class*="flavor-"] h4 {
+    font-family: var(--portal-font-headings);
+}
+
+/* Botones globales */
+.flavor-button,
+.flavor-btn,
+[class*="flavor-"] .btn,
+[class*="flavor-"] button[type="submit"],
+.flavor-dashboard button.primary,
+.flavor-module-content .btn-primary {
+    background: var(--portal-primary);
+    color: white;
+    border-radius: var(--portal-button-radius);
+    border: none;
+    padding: 12px 24px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.flavor-button:hover,
+.flavor-btn:hover,
+[class*="flavor-"] .btn:hover,
+.flavor-dashboard button.primary:hover {
+    background: var(--portal-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.flavor-button-secondary,
+.flavor-btn-secondary,
+[class*="flavor-"] .btn-secondary {
+    background: transparent;
+    color: var(--portal-primary);
+    border: 2px solid var(--portal-primary);
+}
+
+.flavor-button-secondary:hover,
+.flavor-btn-secondary:hover,
+[class*="flavor-"] .btn-secondary:hover {
+    background: var(--portal-primary-bg);
+}
+
+/* Cards globales */
+.flavor-card,
+.flavor-widget,
+.flavor-dashboard-widget,
+.flavor-module-card,
+[class*="flavor-"] .card {
+    background: white;
+    border-radius: var(--portal-card-radius);
+    box-shadow: var(--portal-card-shadow);
+    padding: var(--portal-card-padding);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Headers de secciones */
+.flavor-section-header,
+.flavor-widget-header,
+.flavor-dashboard-header {
+    border-bottom: 2px solid var(--portal-primary);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+/* Links */
+.flavor-portal a,
+.flavor-dashboard a,
+[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn) {
+    color: var(--portal-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.flavor-portal a:hover,
+.flavor-dashboard a:hover,
+[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn):hover {
+    color: var(--portal-primary-dark);
+    text-decoration: underline;
+}
+
+/* Badges y estados */
+.flavor-badge,
+.flavor-tag,
+[class*="flavor-"] .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.flavor-badge-primary,
+[class*="flavor-"] .badge-primary {
+    background: var(--portal-primary-bg);
+    color: var(--portal-primary);
+}
+
+.flavor-badge-success,
+[class*="flavor-"] .badge-success {
+    background: color-mix(in srgb, var(--portal-success) 15%, #fff);
+    color: var(--portal-success);
+}
+
+.flavor-badge-warning,
+[class*="flavor-"] .badge-warning {
+    background: color-mix(in srgb, var(--portal-warning) 15%, #fff);
+    color: var(--portal-warning);
+}
+
+.flavor-badge-error,
+[class*="flavor-"] .badge-error {
+    background: color-mix(in srgb, var(--portal-error) 15%, #fff);
+    color: var(--portal-error);
+}
+
+/* Inputs y formularios */
+.flavor-input,
+.flavor-select,
+.flavor-textarea,
+[class*="flavor-"] input[type="text"],
+[class*="flavor-"] input[type="email"],
+[class*="flavor-"] input[type="number"],
+[class*="flavor-"] input[type="password"],
+[class*="flavor-"] input[type="search"],
+[class*="flavor-"] select,
+[class*="flavor-"] textarea {
+    border: 2px solid #e5e7eb;
+    border-radius: var(--portal-button-radius);
+    padding: 12px 16px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.flavor-input:focus,
+.flavor-select:focus,
+.flavor-textarea:focus,
+[class*="flavor-"] input:focus,
+[class*="flavor-"] select:focus,
+[class*="flavor-"] textarea:focus {
+    outline: none;
+    border-color: var(--portal-primary);
+    box-shadow: 0 0 0 3px var(--portal-primary-bg);
+}
+
+/* Alertas y mensajes */
+.flavor-alert,
+.flavor-notice,
+[class*="flavor-"] .alert {
+    padding: 16px 20px;
+    border-radius: var(--portal-button-radius);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.flavor-alert-info,
+[class*="flavor-"] .alert-info {
+    background: var(--portal-primary-bg);
+    border-left: 4px solid var(--portal-primary);
+    color: var(--portal-primary-dark);
+}
+
+.flavor-alert-success,
+[class*="flavor-"] .alert-success {
+    background: color-mix(in srgb, var(--portal-success) 10%, #fff);
+    border-left: 4px solid var(--portal-success);
+    color: var(--portal-success);
+}
+
+.flavor-alert-warning,
+[class*="flavor-"] .alert-warning {
+    background: color-mix(in srgb, var(--portal-warning) 10%, #fff);
+    border-left: 4px solid var(--portal-warning);
+    color: #92400e;
+}
+
+.flavor-alert-error,
+[class*="flavor-"] .alert-error {
+    background: color-mix(in srgb, var(--portal-error) 10%, #fff);
+    border-left: 4px solid var(--portal-error);
+    color: var(--portal-error);
+}
+
+/* Texto muted */
+.text-muted,
+.flavor-text-muted,
+[class*="flavor-"] .text-muted {
+    color: var(--portal-text-muted);
+}
+
+/* Loaders */
+.flavor-loader,
+.flavor-spinner,
+[class*="flavor-"] .loader {
+    border: 3px solid var(--portal-primary-bg);
+    border-top-color: var(--portal-primary);
+    border-radius: 50%;
+    animation: flavor-spin 0.8s linear infinite;
+}
+
+@keyframes flavor-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Tabs */
+.flavor-tabs,
+[class*="flavor-"] .tabs {
+    border-bottom: 2px solid #e5e7eb;
+    display: flex;
+    gap: 4px;
+}
+
+.flavor-tab,
+[class*="flavor-"] .tab {
+    padding: 12px 20px;
+    font-weight: 600;
+    color: var(--portal-text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.flavor-tab:hover,
+[class*="flavor-"] .tab:hover {
+    color: var(--portal-primary);
+}
+
+.flavor-tab.active,
+.flavor-tab--active,
+[class*="flavor-"] .tab.active {
+    color: var(--portal-primary);
+    border-bottom-color: var(--portal-primary);
+}
+
+/* Progress bars */
+.flavor-progress,
+[class*="flavor-"] .progress {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.flavor-progress-bar,
+[class*="flavor-"] .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--portal-primary), var(--portal-secondary));
+    border-radius: 4px;
+    transition: width 0.3s ease;
 }

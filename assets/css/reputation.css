@@ -1,0 +1,489 @@
+/**
+ * Estilos del sistema de reputación frontend
+ */
+
+/* Variables */
+:root {
+    --flavor-rep-primary: #3b82f6;
+    --flavor-rep-success: #10b981;
+    --flavor-rep-warning: #f59e0b;
+    --flavor-rep-danger: #ef4444;
+    --flavor-rep-purple: #8b5cf6;
+    --flavor-rep-gray: #64748b;
+    --flavor-rep-light: #f8fafc;
+    --flavor-rep-border: #e2e8f0;
+}
+
+/* Utilidades */
+.flavor-error,
+.flavor-empty,
+.flavor-login-required {
+    padding: 20px;
+    text-align: center;
+    background: var(--flavor-rep-light);
+    border-radius: 8px;
+    color: var(--flavor-rep-gray);
+}
+
+/* ===================
+   LEADERBOARD
+   =================== */
+.flavor-leaderboard {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, var(--flavor-rep-primary), var(--flavor-rep-purple));
+    color: #fff;
+}
+
+.leaderboard-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.leaderboard-periodo {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.leaderboard-list {
+    padding: 10px 0;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    transition: background 0.2s;
+}
+
+.leaderboard-item:hover {
+    background: var(--flavor-rep-light);
+}
+
+.leaderboard-item.top-1 {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+}
+
+.leaderboard-item.top-2 {
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent);
+}
+
+.leaderboard-item.top-3 {
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent);
+}
+
+.leaderboard-posicion {
+    width: 32px;
+    text-align: center;
+}
+
+.leaderboard-posicion .medal {
+    font-size: 24px;
+}
+
+.leaderboard-posicion .numero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--flavor-rep-light);
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--flavor-rep-gray);
+}
+
+.leaderboard-avatar img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.leaderboard-info {
+    flex: 1;
+}
+
+.leaderboard-nombre {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.leaderboard-nivel {
+    font-size: 12px;
+    color: var(--flavor-rep-gray);
+}
+
+.leaderboard-puntos {
+    text-align: right;
+}
+
+.leaderboard-puntos .puntos-valor {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--flavor-rep-primary);
+}
+
+.leaderboard-puntos .puntos-label {
+    font-size: 11px;
+    color: var(--flavor-rep-gray);
+    margin-left: 2px;
+}
+
+.leaderboard-racha {
+    font-size: 14px;
+    padding: 4px 8px;
+    background: var(--flavor-rep-light);
+    border-radius: 12px;
+}
+
+/* ===================
+   MI REPUTACIÓN
+   =================== */
+.flavor-mi-reputacion {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+}
+
+.reputacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.nivel-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nivel-badge.nivel-nuevo { background: #e2e8f0; color: #475569; }
+.nivel-badge.nivel-activo { background: #dbeafe; color: #1d4ed8; }
+.nivel-badge.nivel-contribuidor { background: #dcfce7; color: #16a34a; }
+.nivel-badge.nivel-experto { background: #fef3c7; color: #d97706; }
+.nivel-badge.nivel-lider { background: #fce7f3; color: #db2777; }
+.nivel-badge.nivel-embajador { background: #ede9fe; color: #7c3aed; }
+.nivel-badge.nivel-leyenda { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #fff; }
+
+.reputacion-puntos {
+    text-align: right;
+}
+
+.reputacion-puntos .puntos-total {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--flavor-rep-primary);
+    line-height: 1;
+}
+
+.reputacion-puntos .puntos-label {
+    display: block;
+    font-size: 13px;
+    color: var(--flavor-rep-gray);
+}
+
+.reputacion-progreso {
+    margin-bottom: 24px;
+}
+
+.progreso-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--flavor-rep-gray);
+    margin-bottom: 8px;
+}
+
+.progreso-siguiente {
+    font-weight: 600;
+    color: var(--flavor-rep-purple);
+}
+
+.progreso-barra {
+    height: 8px;
+    background: var(--flavor-rep-light);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progreso-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--flavor-rep-primary), var(--flavor-rep-purple));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.progreso-porcentaje {
+    text-align: right;
+    font-size: 12px;
+    color: var(--flavor-rep-gray);
+    margin-top: 4px;
+}
+
+.reputacion-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 20px 0;
+    border-top: 1px solid var(--flavor-rep-border);
+    border-bottom: 1px solid var(--flavor-rep-border);
+    margin-bottom: 24px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-valor {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--flavor-rep-gray);
+}
+
+.reputacion-badges h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--flavor-rep-gray);
+}
+
+.badges-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.badge-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--flavor-rep-light);
+    border-radius: 16px;
+    border-left: 3px solid var(--badge-color, var(--flavor-rep-primary));
+}
+
+.badge-icono {
+    font-size: 16px;
+}
+
+.badge-nombre {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.badge-more {
+    background: var(--flavor-rep-gray);
+    color: #fff;
+    border-left: none;
+}
+
+/* ===================
+   BADGES GRID
+   =================== */
+.badges-grid-full {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.badge-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid var(--badge-color, var(--flavor-rep-primary));
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.badge-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.badge-card.bloqueado {
+    opacity: 0.6;
+    filter: grayscale(50%);
+}
+
+.badge-card .badge-icono {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.badge-card .badge-info {
+    flex: 1;
+}
+
+.badge-card .badge-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.badge-card .badge-info p {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: var(--flavor-rep-gray);
+    line-height: 1.4;
+}
+
+.badge-fecha,
+.badge-requisito {
+    font-size: 11px;
+    color: var(--flavor-rep-gray);
+}
+
+.badge-estado {
+    font-size: 20px;
+}
+
+.estado-obtenido {
+    color: var(--flavor-rep-success);
+}
+
+.estado-bloqueado {
+    opacity: 0.5;
+}
+
+.badge-destacado {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 14px;
+}
+
+/* ===================
+   HISTORIAL
+   =================== */
+.flavor-historial-puntos {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.historial-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--flavor-rep-border);
+}
+
+.historial-item:last-child {
+    border-bottom: none;
+}
+
+.historial-puntos {
+    width: 60px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.historial-puntos.positivo {
+    color: var(--flavor-rep-success);
+}
+
+.historial-puntos.negativo {
+    color: var(--flavor-rep-danger);
+}
+
+.historial-info {
+    flex: 1;
+}
+
+.historial-descripcion {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.historial-fecha {
+    font-size: 12px;
+    color: var(--flavor-rep-gray);
+    margin-top: 2px;
+}
+
+/* ===================
+   NIVEL INLINE
+   =================== */
+.flavor-nivel-inline {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.flavor-nivel-inline.nivel-nuevo { background: #e2e8f0; color: #475569; }
+.flavor-nivel-inline.nivel-activo { background: #dbeafe; color: #1d4ed8; }
+.flavor-nivel-inline.nivel-contribuidor { background: #dcfce7; color: #16a34a; }
+.flavor-nivel-inline.nivel-experto { background: #fef3c7; color: #d97706; }
+.flavor-nivel-inline.nivel-lider { background: #fce7f3; color: #db2777; }
+.flavor-nivel-inline.nivel-embajador { background: #ede9fe; color: #7c3aed; }
+.flavor-nivel-inline.nivel-leyenda { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #fff; }
+
+/* ===================
+   RESPONSIVE
+   =================== */
+@media (max-width: 640px) {
+    .reputacion-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .reputacion-puntos {
+        text-align: center;
+    }
+
+    .reputacion-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .leaderboard-item {
+        flex-wrap: wrap;
+    }
+
+    .leaderboard-racha {
+        width: 100%;
+        text-align: center;
+        margin-top: 8px;
+    }
+
+    .badges-grid-full {
+        grid-template-columns: 1fr;
+    }
+}

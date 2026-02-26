@@ -19,7 +19,7 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
      *
      * @var Flavor_Chat_Huella_Ecologica_Module
      */
-    private $module;
+    protected $module;
 
     /**
      * Constructor

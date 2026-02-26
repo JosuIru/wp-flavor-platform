@@ -1,0 +1,616 @@
+/**
+ * Estilos frontend para Biodiversidad Local
+ * @package FlavorChatIA
+ */
+
+/* Catalogo */
+.flavor-biodiversidad-catalogo {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.flavor-biodiversidad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.flavor-biodiversidad-stats-mini {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.flavor-biodiversidad-stats-mini strong {
+    color: #1f2937;
+}
+
+/* Filtros */
+.flavor-biodiversidad-filtros {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-biodiversidad-filtros .flavor-filtros-form {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.flavor-filtro-grupo input,
+.flavor-filtro-grupo select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #fff;
+    min-width: 180px;
+}
+
+.flavor-filtro-grupo input[type="text"] {
+    min-width: 250px;
+}
+
+/* Grid de especies */
+.flavor-especies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-especie-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-especie-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.flavor-especie-imagen {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+
+.flavor-especie-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-especie-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-especie-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.flavor-especie-estado {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.flavor-especie-contenido {
+    padding: 1.25rem;
+}
+
+.flavor-especie-nombre {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+}
+
+.flavor-especie-nombre a {
+    color: #1f2937;
+    text-decoration: none;
+}
+
+.flavor-especie-nombre a:hover {
+    color: #22c55e;
+}
+
+.flavor-especie-cientifico {
+    margin: 0 0 0.75rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.flavor-especie-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.flavor-categoria {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-categoria .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-avistamientos {
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* CTA */
+.flavor-biodiversidad-cta {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-radius: 12px;
+}
+
+/* Detalle de especie */
+.flavor-especie-detalle {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.flavor-especie-header-detalle {
+    display: flex;
+    gap: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-especie-imagen-grande {
+    flex-shrink: 0;
+    width: 300px;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.flavor-especie-imagen-grande img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-especie-placeholder-grande {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-especie-info-principal h1 {
+    margin: 0.5rem 0;
+    font-size: 2rem;
+}
+
+.flavor-nombre-cientifico {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+    color: #6b7280;
+}
+
+.flavor-taxonomia {
+    margin: 0 0 1rem;
+    color: #6b7280;
+}
+
+.flavor-especie-badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.flavor-especie-stats-detalle {
+    display: flex;
+    gap: 2rem;
+    margin: 1.5rem 0;
+}
+
+.flavor-especie-stats-detalle .flavor-stat-item {
+    text-align: center;
+}
+
+.flavor-especie-stats-detalle .flavor-stat-valor {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.flavor-especie-stats-detalle .flavor-stat-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Contenido detalle */
+.flavor-especie-contenido-detalle {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+}
+
+.flavor-especie-main section {
+    margin-bottom: 1.5rem;
+}
+
+/* Avistamientos */
+.flavor-avistamientos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-avistamiento-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.flavor-avistamiento-fecha {
+    flex-shrink: 0;
+    text-align: center;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    min-width: 50px;
+}
+
+.flavor-avistamiento-fecha .flavor-dia {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.flavor-avistamiento-fecha .flavor-mes {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.flavor-avistamiento-info {
+    flex: 1;
+}
+
+.flavor-avistamiento-ubicacion {
+    margin: 0 0 0.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.flavor-avistamiento-notas {
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.flavor-avistamiento-observador {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+.flavor-avistamiento-observador img {
+    border-radius: 50%;
+}
+
+.flavor-avistamiento-imagen-mini {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.flavor-avistamiento-imagen-mini img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Reportar avistamiento */
+.flavor-reportar-avistamiento {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-autocomplete-container {
+    position: relative;
+}
+
+.flavor-autocomplete-resultados {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+}
+
+.flavor-autocomplete-resultados.activo {
+    display: block;
+}
+
+.flavor-autocomplete-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.flavor-autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.flavor-autocomplete-item:hover {
+    background: #f9fafb;
+}
+
+.flavor-autocomplete-item strong {
+    display: block;
+}
+
+.flavor-autocomplete-item em {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.flavor-ubicacion-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+#ubicacion-status {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+#ubicacion-status.success {
+    color: #22c55e;
+}
+
+#mini-mapa-ubicacion {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Mis avistamientos */
+.flavor-mis-avistamientos {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Proyectos */
+.flavor-proyectos-biodiversidad {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.flavor-proyectos-biodiversidad .flavor-proyectos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-proyectos-biodiversidad .flavor-proyecto-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-proyectos-biodiversidad .flavor-proyecto-imagen {
+    height: 160px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.flavor-proyectos-biodiversidad .flavor-proyecto-contenido {
+    padding: 1.25rem;
+}
+
+.flavor-proyectos-biodiversidad .flavor-proyecto-contenido h3 {
+    margin: 0.5rem 0;
+}
+
+.flavor-proyectos-biodiversidad .flavor-proyecto-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Detalle proyecto */
+.flavor-proyecto-detalle {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.flavor-proyecto-header-detalle {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-proyecto-header-detalle h1 {
+    margin: 0.75rem 0;
+    font-size: 1.75rem;
+}
+
+.flavor-proyecto-meta-detalle {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* Estadisticas */
+.flavor-biodiversidad-estadisticas {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.flavor-stats-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.flavor-stats-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-stat-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.flavor-stat-bar-label {
+    flex-shrink: 0;
+    width: 140px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.flavor-stat-bar-track {
+    flex: 1;
+    height: 24px;
+    background: #f3f4f6;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.flavor-stat-bar-fill {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.5s ease;
+}
+
+.flavor-stat-bar-valor {
+    flex-shrink: 0;
+    width: 40px;
+    text-align: right;
+    font-weight: 600;
+}
+
+.flavor-estados-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.flavor-estado-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid;
+}
+
+.flavor-estado-sigla {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.flavor-estado-nombre {
+    flex: 1;
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+.flavor-estado-total {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-especie-header-detalle {
+        flex-direction: column;
+    }
+
+    .flavor-especie-imagen-grande {
+        width: 100%;
+        height: 200px;
+    }
+
+    .flavor-especie-contenido-detalle {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-stats-charts {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-stat-bar-item {
+        flex-wrap: wrap;
+    }
+
+    .flavor-stat-bar-label {
+        width: 100%;
+    }
+}

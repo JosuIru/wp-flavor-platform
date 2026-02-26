@@ -76,7 +76,31 @@ $tendencia_votos = $wpdb->get_results("
 
     <hr class="wp-header-end">
 
-    <!-- Métricas principales -->
+    <!-- Accesos Rapidos -->
+    <div class="pp-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('admin.php?page=pp-proyectos'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-portfolio" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Proyectos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=pp-presupuesto'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-money-alt" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Presupuesto', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=pp-votos'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-chart-pie" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Votos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=pp-resultados'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #dba617;"></span>
+            <span><?php echo esc_html__('Resultados', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=pp-configuracion'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuracion', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
+
+    <!-- Metricas principales -->
     <div class="flavor-metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
 
         <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">

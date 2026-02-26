@@ -107,6 +107,21 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+
+        // Cargar frontend controller
+        $this->init_frontend();
+    }
+
+    /**
+     * Inicializa el controlador frontend
+     */
+    private function init_frontend() {
+        $frontend_file = dirname(__FILE__) . '/frontend/class-fichaje-empleados-frontend-controller.php';
+
+        if (file_exists($frontend_file)) {
+            require_once $frontend_file;
+            new Flavor_Fichaje_Empleados_Frontend_Controller($this);
+        }
     }
 
     /**

@@ -1,8 +1,42 @@
-# 📚 Índice de Documentación - Flavor Platform v3.1.0
+# 📚 Índice de Documentación - Flavor Platform v4.0
 
 ## 🎯 ¿Qué documento necesitas?
 
 Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
+
+---
+
+## 🏗️ Estándares de Desarrollo
+
+### ¿Quieres crear un nuevo módulo?
+👉 Lee: **[ESTANDARES-MODULOS.md](ESTANDARES-MODULOS.md)**
+- Estructura de archivos
+- Interfaz y clase base
+- Pantallas requeridas (Dashboard, Listado, Detalle, Formulario)
+- Variables de diseño CSS
+- Sistema de integraciones (Provider/Consumer)
+- Dashboard widgets
+- Funcionalidades compartidas
+- Red de nodos
+- REST API
+- Checklist de módulo completo
+
+---
+
+## 📊 Estado del Sistema
+
+### ¿Quieres ver el estado real de los módulos?
+👉 Lee: **[ESTADO-REAL-MODULOS.md](ESTADO-REAL-MODULOS.md)**
+- Auditoría completa del 23/02/2026
+- 54 módulos: 46 completos, 8 parciales
+- Plan de acción priorizado
+- Estadísticas globales
+
+### ¿Ves datos de demostración en los dashboards?
+👉 Lee: **[DATOS-DEMO-HARDCODEADOS.md](DATOS-DEMO-HARDCODEADOS.md)**
+- 16 módulos con datos de demo (corregido)
+- Toggle `flavor_demo_mode` para activar/desactivar
+- Shortcodes correctos por módulo
 
 ---
 
@@ -25,6 +59,31 @@ Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
 - ~200 puntos de verificación
 - Organizado por secciones
 - Para testing completo
+
+---
+
+## 🔗 Sistemas Modulares
+
+### ¿Quieres vincular contenido entre módulos?
+👉 Lee: **[INTEGRACIONES.md](INTEGRACIONES.md)**
+- Sistema Provider/Consumer
+- Traits para módulos
+- API REST de integraciones
+- Matriz de configuración
+
+### ¿Quieres compartir contenido en la red de nodos?
+👉 Lee: **[RED-DE-NODOS.md](RED-DE-NODOS.md)**
+- Red federada descentralizada
+- Niveles de visibilidad
+- Shortcodes de red
+- Sincronización P2P
+
+### ¿Quieres añadir valoraciones, favoritos, etc?
+👉 Lee: **[FUNCIONALIDADES-COMPARTIDAS.md](FUNCIONALIDADES-COMPARTIDAS.md)**
+- Ratings, favoritos, comentarios
+- Seguir, compartir, vistas
+- API REST y AJAX
+- Personalización
 
 ---
 
@@ -83,12 +142,15 @@ Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
 
 ### Soy Desarrollador
 **Empieza aquí**:
-1. [IMPLEMENTACION-COMPLETA-FINAL.md](IMPLEMENTACION-COMPLETA-FINAL.md) - Qué se hizo
-2. [COMPONENTES-NUEVOS.md](COMPONENTES-NUEVOS.md) - Referencia técnica
-3. [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md) - Ejemplo práctico
+1. [ESTANDARES-MODULOS.md](ESTANDARES-MODULOS.md) - **Estándares obligatorios**
+2. [IMPLEMENTACION-COMPLETA-FINAL.md](IMPLEMENTACION-COMPLETA-FINAL.md) - Qué se hizo
+3. [COMPONENTES-NUEVOS.md](COMPONENTES-NUEVOS.md) - Referencia técnica
+4. [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md) - Ejemplo práctico
 
 **Luego**:
 - [RESUMEN-IMPLEMENTACION.md](RESUMEN-IMPLEMENTACION.md) - Detalles técnicos
+- [INTEGRACIONES.md](INTEGRACIONES.md) - Sistema de integraciones
+- [FUNCIONALIDADES-COMPARTIDAS.md](FUNCIONALIDADES-COMPARTIDAS.md) - Features reutilizables
 
 ### Soy Gerente de Proyecto
 **Lee solo**:
@@ -120,8 +182,21 @@ Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
 2. [COMPONENTES-NUEVOS.md](COMPONENTES-NUEVOS.md) → Notifications System
 
 ### Quiero crear un módulo nuevo
-1. [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md) - Ejemplo completo
-2. [COMPONENTES-NUEVOS.md](COMPONENTES-NUEVOS.md) - Componentes disponibles
+1. [ESTANDARES-MODULOS.md](ESTANDARES-MODULOS.md) - **Estándares obligatorios**
+2. [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md) - Ejemplo completo
+3. [COMPONENTES-NUEVOS.md](COMPONENTES-NUEVOS.md) - Componentes disponibles
+
+### Quiero vincular recetas/multimedia a productos
+1. [INTEGRACIONES.md](INTEGRACIONES.md) - Sistema de integraciones
+2. Usar traits `Flavor_Module_Integration_Consumer`
+
+### Quiero compartir contenido en la red
+1. [RED-DE-NODOS.md](RED-DE-NODOS.md) - Configurar visibilidad
+2. Usar shortcode `[flavor_red_contenido]`
+
+### Quiero añadir valoraciones/favoritos
+1. [FUNCIONALIDADES-COMPARTIDAS.md](FUNCIONALIDADES-COMPARTIDAS.md) - Features
+2. Usar `flavor_enable_feature()` y `flavor_render_features()`
 
 ---
 
@@ -164,12 +239,32 @@ Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
 - **Ejemplo**: [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md)
 - **Verificación**: [CHECKLIST-VERIFICACION.md](CHECKLIST-VERIFICACION.md) → Navegación
 
+#### Integraciones entre Módulos
+- **Guía completa**: [INTEGRACIONES.md](INTEGRACIONES.md)
+- **Providers**: recetas, multimedia, podcast, biblioteca, eventos, cursos
+- **Consumers**: 27 módulos actualizados
+- **API**: `/wp-json/flavor-integration/v1/`
+
+#### Red de Nodos Federada
+- **Guía completa**: [RED-DE-NODOS.md](RED-DE-NODOS.md)
+- **Compartir contenido**: Nivel de visibilidad en editor
+- **Shortcodes**: `[flavor_red_contenido]`, `[flavor_red_recetas]`
+- **API**: `/wp-json/flavor-integration/v1/network-content`
+
+#### Funcionalidades Compartidas
+- **Guía completa**: [FUNCIONALIDADES-COMPARTIDAS.md](FUNCIONALIDADES-COMPARTIDAS.md)
+- **Features**: ratings, favorites, comments, follow, share, views, etc
+- **Helpers**: `flavor_enable_feature()`, `flavor_render_features()`
+- **API**: `/wp-json/flavor-features/v1/`
+
 ---
 
 ## 📊 Comparativa de Documentos
 
 | Documento | Longitud | Tiempo Lectura | Audiencia | Cuándo Leer |
 |-----------|----------|----------------|-----------|-------------|
+| **ESTANDARES-MODULOS** | Largo | 25 min | Desarrolladores | Antes de crear módulos |
+| **ESTADO-REAL-MODULOS** | Medio | 8 min | Todos | Ver estado actual |
 | **RESUMEN-EJECUTIVO** | Corto | 3 min | Todos | Primero siempre |
 | **GUIA-INICIO-RAPIDO** | Medio | 10 min | Admin/Dev | Al empezar |
 | **CHECKLIST-VERIFICACION** | Largo | 30 min | QA/Admin | Para testing |
@@ -178,6 +273,9 @@ Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
 | **IMPLEMENTACION-COMPLETA** | Largo | 25 min | Técnicos | Entender sistema |
 | **RESUMEN-INTEGRACION** | Medio | 12 min | Admin | Usar paneles admin |
 | **RESUMEN-IMPLEMENTACION** | Largo | 30 min | Arquitectos | Decisiones técnicas |
+| **INTEGRACIONES** | Medio | 15 min | Desarrolladores | Vincular módulos |
+| **RED-DE-NODOS** | Medio | 12 min | Admin/Dev | Compartir en red |
+| **FUNCIONALIDADES-COMPARTIDAS** | Medio | 15 min | Desarrolladores | Añadir features |
 
 ---
 
@@ -212,6 +310,9 @@ Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
 
 ## 🔗 Links Rápidos
 
+### Estado y Auditoría
+- [ESTADO-REAL-MODULOS.md](ESTADO-REAL-MODULOS.md) - **Auditoría actualizada 23/02/2026**
+
 ### Documentación Principal
 - [RESUMEN-EJECUTIVO.md](RESUMEN-EJECUTIVO.md)
 - [GUIA-INICIO-RAPIDO.md](GUIA-INICIO-RAPIDO.md)
@@ -221,6 +322,11 @@ Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
 - [COMPONENTES-NUEVOS.md](COMPONENTES-NUEVOS.md)
 - [IMPLEMENTACION-COMPLETA-FINAL.md](IMPLEMENTACION-COMPLETA-FINAL.md)
 - [RESUMEN-IMPLEMENTACION.md](RESUMEN-IMPLEMENTACION.md)
+
+### Sistemas Modulares
+- [INTEGRACIONES.md](INTEGRACIONES.md) - Integraciones entre módulos
+- [RED-DE-NODOS.md](RED-DE-NODOS.md) - Red federada
+- [FUNCIONALIDADES-COMPARTIDAS.md](FUNCIONALIDADES-COMPARTIDAS.md) - Features reutilizables
 
 ### Ejemplos y Guías
 - [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md)
@@ -260,12 +366,12 @@ Esta guía te ayuda a encontrar la documentación correcta según tu necesidad.
 - 🎯 = Objetivo/Meta
 
 ### Versiones
-Toda la documentación corresponde a **Flavor Platform v3.1.0**.
+Toda la documentación corresponde a **Flavor Platform v4.0**.
 Si usas una versión diferente, algunos features pueden no estar disponibles.
 
 ### Actualizaciones
 Este índice se actualiza cuando se añade nueva documentación.
-**Última actualización**: 12 de febrero de 2026
+**Última actualización**: 25 de febrero de 2026
 
 ---
 
@@ -274,5 +380,5 @@ Abre un issue en GitHub o contacta a: support@gailu.net
 
 ---
 
-_Índice de Documentación - Flavor Platform v3.1.0_
-_Actualizado: 12/02/2026_
+_Índice de Documentación - Flavor Platform v4.0_
+_Actualizado: 25/02/2026_

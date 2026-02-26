@@ -342,6 +342,9 @@ class Flavor_Marketplace_API {
 
         $this->procesar_imagenes($imagenes, $post_id);
 
+        // Hook para sistema de reputación
+        do_action('flavor_anuncio_publicado', $usuario_id, $post_id);
+
         $post = get_post($post_id);
         $anuncio = $this->formatear_anuncio($post);
 
@@ -430,7 +433,7 @@ class Flavor_Marketplace_API {
         }
 
         // Verificar que es el autor
-        if ($post->post_author != $usuario_id) {
+        if ((int) $post->post_author !== $usuario_id) {
             return new WP_Error(
                 'sin_permiso',
                 'No tienes permiso para editar este anuncio',
@@ -494,7 +497,7 @@ class Flavor_Marketplace_API {
         }
 
         // Verificar que es el autor
-        if ($post->post_author != $usuario_id && !current_user_can('delete_others_posts')) {
+        if ((int) $post->post_author !== $usuario_id && !current_user_can('delete_others_posts')) {
             return new WP_Error(
                 'sin_permiso',
                 'No tienes permiso para eliminar este anuncio',
@@ -621,7 +624,7 @@ class Flavor_Marketplace_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Anuncio publicado con éxito', 'flavor-chat-ia'),
+            'mensaje' => __('Mensaje enviado correctamente', 'flavor-chat-ia'),
         ], 200);
     }
 
@@ -643,7 +646,7 @@ class Flavor_Marketplace_API {
         }
 
         // Solo el autor puede marcar como vendido
-        if ($post->post_author != $usuario_id) {
+        if ((int) $post->post_author !== $usuario_id) {
             return new WP_Error(
                 'sin_permiso',
                 'Solo el autor puede marcar el anuncio como vendido',
@@ -656,7 +659,7 @@ class Flavor_Marketplace_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Anuncio publicado con éxito', 'flavor-chat-ia'),
+            'mensaje' => __('Anuncio marcado como vendido', 'flavor-chat-ia'),
         ], 200);
     }
 

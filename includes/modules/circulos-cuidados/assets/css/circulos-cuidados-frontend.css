@@ -1,0 +1,628 @@
+/**
+ * Estilos frontend para Círculos de Cuidados
+ * @package FlavorChatIA
+ */
+
+/* General */
+.flavor-circulos-cuidados {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.flavor-circulos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.flavor-circulos-header h2 {
+    margin: 0;
+}
+
+/* Grid de círculos */
+.flavor-circulos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-circulo-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-circulo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.flavor-circulo-imagen {
+    height: 120px;
+    background: linear-gradient(135deg, #ec4899, #be185d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-circulo-imagen .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.flavor-circulo-contenido {
+    padding: 1.25rem;
+}
+
+.flavor-circulo-tipo {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.flavor-tipo-mayores {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.flavor-tipo-infancia {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.flavor-tipo-enfermedad {
+    background: #fce7f3;
+    color: #9d174d;
+}
+
+.flavor-tipo-duelo {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.flavor-tipo-maternidad {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.flavor-tipo-discapacidad {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.flavor-circulo-nombre {
+    margin: 0.5rem 0;
+    font-size: 1.15rem;
+}
+
+.flavor-circulo-nombre a {
+    color: #1f2937;
+    text-decoration: none;
+}
+
+.flavor-circulo-nombre a:hover {
+    color: #ec4899;
+}
+
+.flavor-circulo-descripcion {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+}
+
+.flavor-circulo-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.flavor-circulo-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-circulo-meta .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* Detalle de círculo */
+.flavor-circulo-detalle {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.flavor-circulo-header-detalle {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-circulo-header-detalle h1 {
+    margin: 0.5rem 0;
+    font-size: 1.75rem;
+}
+
+.flavor-circulo-stats {
+    display: flex;
+    gap: 2rem;
+    margin: 1.5rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.flavor-circulo-stats .flavor-stat {
+    text-align: center;
+}
+
+.flavor-circulo-stats .flavor-stat-valor {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ec4899;
+}
+
+.flavor-circulo-stats .flavor-stat-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Necesidades */
+.flavor-necesidades-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-necesidad-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-necesidad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.flavor-necesidad-urgencia {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.flavor-urgencia-alta {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.flavor-urgencia-media {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.flavor-urgencia-baja {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.flavor-necesidad-titulo {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+.flavor-necesidad-descripcion {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+}
+
+.flavor-necesidad-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.flavor-necesidad-info {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.flavor-necesidad-info span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-necesidad-autor {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.flavor-necesidad-autor img {
+    border-radius: 50%;
+}
+
+/* Formularios */
+.flavor-crear-circulo,
+.flavor-publicar-necesidad {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-crear-circulo h2,
+.flavor-publicar-necesidad h2 {
+    margin: 0 0 1.5rem;
+}
+
+.flavor-tipo-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.flavor-tipo-opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.flavor-tipo-opcion:hover {
+    border-color: #ec4899;
+}
+
+.flavor-tipo-opcion input {
+    display: none;
+}
+
+.flavor-tipo-opcion input:checked + .flavor-tipo-contenido {
+    color: #ec4899;
+}
+
+.flavor-tipo-opcion:has(input:checked) {
+    border-color: #ec4899;
+    background: #fdf2f8;
+}
+
+.flavor-tipo-contenido {
+    text-align: center;
+}
+
+.flavor-tipo-contenido .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 0.25rem;
+}
+
+.flavor-tipo-contenido span {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Mis círculos */
+.flavor-mis-circulos {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.flavor-mis-circulos-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-mi-circulo-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-mi-circulo-icono {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ec4899, #be185d);
+    border-radius: 10px;
+}
+
+.flavor-mi-circulo-icono .dashicons {
+    color: #fff;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.flavor-mi-circulo-info {
+    flex: 1;
+}
+
+.flavor-mi-circulo-info h4 {
+    margin: 0 0 0.25rem;
+}
+
+.flavor-mi-circulo-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Mis horas */
+.flavor-mis-horas {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.flavor-horas-resumen {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.flavor-horas-stat {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-horas-stat .valor {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ec4899;
+}
+
+.flavor-horas-stat .label {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.flavor-horas-lista {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-hora-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.flavor-hora-item:last-child {
+    border-bottom: none;
+}
+
+.flavor-hora-fecha {
+    flex-shrink: 0;
+    text-align: center;
+    min-width: 50px;
+}
+
+.flavor-hora-fecha .dia {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.flavor-hora-fecha .mes {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.flavor-hora-detalle {
+    flex: 1;
+}
+
+.flavor-hora-detalle h4 {
+    margin: 0 0 0.25rem;
+    font-size: 0.95rem;
+}
+
+.flavor-hora-detalle p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.flavor-hora-cantidad {
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.flavor-hora-cantidad.positiva {
+    color: #22c55e;
+}
+
+.flavor-hora-cantidad.negativa {
+    color: #6b7280;
+}
+
+/* Mapa */
+.flavor-mapa-circulos {
+    max-width: 100%;
+}
+
+.flavor-mapa-container {
+    height: 500px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dashboard tab */
+.flavor-dashboard-circulos .flavor-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.flavor-circulos-activos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-circulo-mini-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.flavor-circulo-mini-icono {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ec4899, #be185d);
+    border-radius: 8px;
+}
+
+.flavor-circulo-mini-icono .dashicons {
+    color: #fff;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.flavor-circulo-mini-info h4 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.flavor-circulo-mini-info p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Necesidades urgentes */
+.flavor-necesidades-urgentes {
+    margin-top: 1.5rem;
+}
+
+.flavor-necesidad-urgente-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #fff5f7;
+    border-radius: 8px;
+    border-left: 3px solid #ec4899;
+    margin-bottom: 0.5rem;
+}
+
+.flavor-necesidad-urgente-item .flavor-urgencia-indicador {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    background: #dc2626;
+    border-radius: 50%;
+    margin-top: 6px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.flavor-necesidad-urgente-info h4 {
+    margin: 0 0 0.25rem;
+    font-size: 0.9rem;
+}
+
+.flavor-necesidad-urgente-info p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-circulos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-circulo-stats {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .flavor-horas-resumen {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-tipo-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flavor-necesidad-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

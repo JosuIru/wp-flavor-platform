@@ -26,24 +26,13 @@ while (have_posts()) :
 ?>
 
 <div class="flavor-container py-8">
-    <!-- Breadcrumbs -->
-    <nav class="flex mb-6 text-sm">
-        <ol class="inline-flex items-center space-x-2">
-            <li>
-                <a href="<?php echo home_url('/'); ?>">
-                    <?php esc_html_e('Inicio', 'flavor-chat-ia'); ?>
-                </a>
-            </li>
-            <li><span class="mx-2">/</span></li>
-            <li>
-                <a href="<?php echo get_post_type_archive_link('carpooling'); ?>">
-                    <?php esc_html_e('Carpooling', 'flavor-chat-ia'); ?>
-                </a>
-            </li>
-            <li><span class="mx-2">/</span></li>
-            <li><?php esc_html_e('Viaje', 'flavor-chat-ia'); ?></li>
-        </ol>
-    </nav>
+    <?php
+    // Breadcrumbs centralizados
+    echo Flavor_Breadcrumbs::render([
+        'archive_label' => __('Carpooling', 'flavor-chat-ia'),
+        'archive_url' => home_url('/carpooling/')
+    ]);
+    ?>
 
     <!-- Contenido principal -->
     <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
@@ -146,6 +135,13 @@ while (have_posts()) :
             </h2>
             <?php the_content(); ?>
         </div>
+
+        <?php
+        // Shared features: valoraciones, favoritos, compartir
+        if (function_exists('flavor_render_post_features')) {
+            flavor_render_post_features(['ratings', 'favorites', 'share', 'views']);
+        }
+        ?>
     </div>
 </div>
 

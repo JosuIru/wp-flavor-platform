@@ -47,7 +47,7 @@ class Flavor_Page_Creator_V3 {
     public function on_module_activated($module_id) {
         flavor_log_debug( "Módulo activado: {$module_id}, creando páginas...", 'PageCreator' );
 
-        $module_loader = Flavor_Module_Loader::get_instance();
+        $module_loader = Flavor_Chat_Module_Loader::get_instance();
         $module_instance = $module_loader->get_module_instance($module_id);
 
         if (!$module_instance) {
@@ -89,7 +89,7 @@ class Flavor_Page_Creator_V3 {
      */
     public function get_all_pages_definitions() {
         $all_pages = [];
-        $module_loader = Flavor_Module_Loader::get_instance();
+        $module_loader = Flavor_Chat_Module_Loader::get_instance();
         $loaded_modules = $module_loader->get_loaded_modules();
 
         foreach ($loaded_modules as $module_id => $module_instance) {

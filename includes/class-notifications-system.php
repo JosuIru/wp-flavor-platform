@@ -135,6 +135,17 @@ class Flavor_Notifications_System {
             'reserva' => '🏛️',
             'pedido' => '🛒',
             'pago' => '💰',
+            // Comunidades cross-comunidad
+            'nueva_publicacion' => '📝',
+            'nuevo_evento' => '📅',
+            'nuevo_miembro' => '👋',
+            'recurso_compartido' => '📦',
+            'mencion' => '💬',
+            'contenido_federado' => '🌐',
+            'crosspost' => '🔄',
+            'comunidad_relacionada' => '🏘️',
+            'evento_red' => '🗓️',
+            'comunidades_sugeridas' => '🎯',
         ];
 
         return $icons[$type] ?? 'ℹ️';
@@ -391,7 +402,7 @@ class Flavor_Notifications_System {
             'info',
             __('Pedido Listo', 'flavor-chat-ia'),
             __('Tu pedido está listo para recoger', 'flavor-chat-ia'),
-            ['link' => home_url('/grupos-consumo/mi-grupo/'), 'icon' => '🛒']
+            ['link' => home_url('/mi-portal/grupos-consumo/mi-grupo/'), 'icon' => '🛒']
         );
     }
 }

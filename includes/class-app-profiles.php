@@ -268,6 +268,38 @@ class Flavor_App_Profiles {
                 'impacto_social' => ['impacto_social', 'transparencia'],
                 'color' => '#be185d',
             ],
+            'coordinadora_territorial' => [
+                'nombre' => 'Coordinadora Territorial',
+                'descripcion' => 'Plataforma para coordinar valles, pueblos y colectivos. Organización ciudadana, denuncia, participación y dinamización del territorio.',
+                'icono' => 'dashicons-location-alt',
+                'modulos_requeridos' => ['comunidades', 'colectivos', 'incidencias', 'participacion', 'campanias'],
+                'modulos_opcionales' => [
+                    'foros',
+                    'chat_grupos',
+                    'avisos_municipales',
+                    'eventos',
+                    'presupuestos_participativos',
+                    'multimedia',
+                    'podcast',
+                    'ayuda_vecinal',
+                    'banco_tiempo',
+                    'grupos_consumo',
+                    'carpooling',
+                    'biodiversidad_local',
+                    'transparencia',
+                    'saberes_ancestrales',
+                    'huertos_urbanos',
+                    'justicia_restaurativa',
+                    'circulos_cuidados',
+                    'trabajo_digno',
+                    'documentacion_legal',
+                    'seguimiento_denuncias',
+                    'mapa_actores',
+                ],
+                'tipo_organizacion' => ['comunidad', 'movimiento', 'plataforma'],
+                'impacto_social' => ['participacion', 'cohesion_social', 'territorio', 'denuncia'],
+                'color' => '#dc2626',
+            ],
             'personalizado' => [
                 'nombre' => 'Personalizado',
                 'descripcion' => 'Selecciona manualmente los módulos que necesitas.',
@@ -543,9 +575,16 @@ class Flavor_App_Profiles {
      * @return bool
      */
     public function activar_modulo_opcional($modulo_id) {
-        if (!$this->es_modulo_disponible($modulo_id)) {
+        // Verificar que el módulo esté registrado en el sistema (no solo en el perfil)
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $modulos_registrados = $loader->get_registered_modules();
+
+        if (!isset($modulos_registrados[$modulo_id])) {
+            flavor_log_debug( "Módulo '{$modulo_id}' no está registrado en el sistema", 'AppProfiles' );
             return false;
         }
+
+        flavor_log_debug( "Intentando activar módulo: {$modulo_id}", 'AppProfiles' );
 
         // Hook para validar dependencias antes de activar
         $can_activate = apply_filters('flavor_before_activate_module', true, $modulo_id);
@@ -560,32 +599,93 @@ class Flavor_App_Profiles {
             return false;
         }
 
-        $configuracion = get_option('flavor_chat_ia_settings', []);
-        $modulos_activos = $configuracion['active_modules'] ?? [];
+        global $wpdb;
+
+        // LEER DIRECTO DE BD para evitar cualquier caché
+        $config_raw = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
+                'flavor_chat_ia_settings'
+            )
+        );
+        $configuracion = $config_raw ? maybe_unserialize($config_raw) : [];
+        $modulos_activos = isset($configuracion['active_modules']) && is_array($configuracion['active_modules'])
+            ? $configuracion['active_modules']
+            : [];
+
+        flavor_log_debug( "Módulos activos ANTES (directo BD): " . implode(', ', $modulos_activos), 'AppProfiles' );
 
         if (!in_array($modulo_id, $modulos_activos)) {
             $modulos_activos[] = $modulo_id;
-            $configuracion['active_modules'] = $modulos_activos;
+            $configuracion['active_modules'] = array_values(array_unique($modulos_activos));
 
-            // CRÍTICO: Remover hooks que puedan interferir
-            remove_all_actions('update_option_flavor_chat_ia_settings');
+            flavor_log_debug( "Módulos activos DESPUÉS: " . implode(', ', $configuracion['active_modules']), 'AppProfiles' );
 
-            // Guardar directamente en BD
-            global $wpdb;
+            // Serializar configuración
             $value = maybe_serialize($configuracion);
-            $wpdb->update(
-                $wpdb->options,
-                ['option_value' => $value],
-                ['option_name' => 'flavor_chat_ia_settings'],
-                ['%s'],
-                ['%s']
+
+            // ESCRIBIR DIRECTO EN BD - Siempre usar wpdb para evitar problemas de caché/hooks
+            $existe = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT option_id FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
+                    'flavor_chat_ia_settings'
+                )
             );
 
-            // Limpiar TODO el caché
+            if ($existe) {
+                // UPDATE directo con query raw para evitar cualquier interferencia
+                $sql = $wpdb->prepare(
+                    "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s",
+                    $value,
+                    'flavor_chat_ia_settings'
+                );
+                $resultado = $wpdb->query($sql);
+                flavor_log_debug( "UPDATE directo - SQL ejecutado, filas afectadas: {$resultado}", 'AppProfiles' );
+            } else {
+                // INSERT si no existe
+                $resultado = $wpdb->insert(
+                    $wpdb->options,
+                    [
+                        'option_name'  => 'flavor_chat_ia_settings',
+                        'option_value' => $value,
+                        'autoload'     => 'yes'
+                    ],
+                    ['%s', '%s', '%s']
+                );
+                flavor_log_debug( "INSERT nuevo - resultado: " . ($resultado ? 'OK' : 'FAIL'), 'AppProfiles' );
+            }
+
+            // VERIFICAR que se guardó correctamente
+            $verificacion_raw = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
+                    'flavor_chat_ia_settings'
+                )
+            );
+            $verificacion = maybe_unserialize($verificacion_raw);
+            $modulos_verificados = $verificacion['active_modules'] ?? [];
+
+            $modulo_guardado = in_array($modulo_id, $modulos_verificados);
+            flavor_log_debug( "VERIFICACIÓN BD - Módulo {$modulo_id} guardado: " . ($modulo_guardado ? 'SÍ' : 'NO'), 'AppProfiles' );
+            flavor_log_debug( "VERIFICACIÓN BD - Módulos: " . implode(', ', $modulos_verificados), 'AppProfiles' );
+
+            if (!$modulo_guardado) {
+                flavor_log_error( "ERROR CRÍTICO: El módulo {$modulo_id} NO se guardó en la BD", 'AppProfiles' );
+                return false;
+            }
+
+            // Limpiar TODO el caché DESPUÉS de verificar
+            wp_cache_delete('flavor_chat_ia_settings', 'options');
+            wp_cache_delete('alloptions', 'options');
             wp_cache_flush();
+
+            // Forzar que WordPress recargue la opción
+            wp_load_alloptions(true);
 
             // Crear tablas del módulo automáticamente
             $this->crear_tablas_modulo($modulo_id);
+        } else {
+            flavor_log_debug( "Módulo ya estaba activo: {$modulo_id}", 'AppProfiles' );
         }
 
         return true;
@@ -770,10 +870,21 @@ class Flavor_App_Profiles {
             return false; // No se puede desactivar un módulo requerido
         }
 
-        $configuracion = get_option('flavor_chat_ia_settings', []);
-        $modulos_activos = $configuracion['active_modules'] ?? [];
+        global $wpdb;
 
-        flavor_log_debug( 'Módulos activos ANTES: ' . implode(', ', $modulos_activos), 'AppProfiles' );
+        // LEER DIRECTO DE BD para evitar cualquier caché
+        $config_raw = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
+                'flavor_chat_ia_settings'
+            )
+        );
+        $configuracion = $config_raw ? maybe_unserialize($config_raw) : [];
+        $modulos_activos = isset($configuracion['active_modules']) && is_array($configuracion['active_modules'])
+            ? $configuracion['active_modules']
+            : [];
+
+        flavor_log_debug( 'Módulos activos ANTES (directo BD): ' . implode(', ', $modulos_activos), 'AppProfiles' );
 
         $clave = array_search($modulo_id, $modulos_activos);
         if ($clave !== false) {
@@ -781,30 +892,44 @@ class Flavor_App_Profiles {
             unset($modulos_activos[$clave]);
             $configuracion['active_modules'] = array_values($modulos_activos);
 
-            // CRÍTICO: Remover hooks que puedan interferir
-            remove_all_actions('update_option_flavor_chat_ia_settings');
-
-            // Guardar directamente en BD
-            global $wpdb;
+            // Serializar configuración
             $value = maybe_serialize($configuracion);
-            $result = $wpdb->update(
-                $wpdb->options,
-                ['option_value' => $value],
-                ['option_name' => 'flavor_chat_ia_settings'],
-                ['%s'],
-                ['%s']
-            );
 
-            // Limpiar TODO el caché
+            // ESCRIBIR DIRECTO EN BD
+            $sql = $wpdb->prepare(
+                "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s",
+                $value,
+                'flavor_chat_ia_settings'
+            );
+            $resultado = $wpdb->query($sql);
+            flavor_log_debug( "UPDATE directo - SQL ejecutado, filas afectadas: {$resultado}", 'AppProfiles' );
+
+            // VERIFICAR que se guardó correctamente
+            $verificacion_raw = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
+                    'flavor_chat_ia_settings'
+                )
+            );
+            $verificacion = maybe_unserialize($verificacion_raw);
+            $modulos_verificados = $verificacion['active_modules'] ?? [];
+
+            $modulo_eliminado = !in_array($modulo_id, $modulos_verificados);
+            flavor_log_debug( "VERIFICACIÓN BD - Módulo {$modulo_id} eliminado: " . ($modulo_eliminado ? 'SÍ' : 'NO'), 'AppProfiles' );
+            flavor_log_debug( 'VERIFICACIÓN BD - Módulos restantes: ' . implode(', ', $modulos_verificados), 'AppProfiles' );
+
+            if (!$modulo_eliminado) {
+                flavor_log_error( "ERROR CRÍTICO: El módulo {$modulo_id} NO se eliminó de la BD", 'AppProfiles' );
+                return false;
+            }
+
+            // Limpiar TODO el caché DESPUÉS de verificar
+            wp_cache_delete('flavor_chat_ia_settings', 'options');
+            wp_cache_delete('alloptions', 'options');
             wp_cache_flush();
 
-            flavor_log_debug( 'Módulos activos DESPUÉS: ' . implode(', ', $configuracion['active_modules']), 'AppProfiles' );
-            flavor_log_debug( "update_option DIRECTO resultado: {$result}", 'AppProfiles' );
-
-            // Verificar que se guardó correctamente (leer directo de BD)
-            $verificacion_raw = $wpdb->get_var("SELECT option_value FROM {$wpdb->options} WHERE option_name = 'flavor_chat_ia_settings'");
-            $verificacion = maybe_unserialize($verificacion_raw);
-            flavor_log_debug( 'VERIFICACIÓN DIRECTA BD - Módulos: ' . implode(', ', $verificacion['active_modules'] ?? []), 'AppProfiles' );
+            // Forzar que WordPress recargue la opción
+            wp_load_alloptions(true);
         } else {
             flavor_log_debug( "'{$modulo_id}' NO encontrado en módulos activos", 'AppProfiles' );
         }

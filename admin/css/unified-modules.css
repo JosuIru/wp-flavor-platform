@@ -125,12 +125,16 @@
     position: relative;
 }
 
-.fum-search__input {
+.fum-search__input,
+.flavor-unified-modules .fum-search__input,
+.flavor-unified-modules input[type="text"].fum-search__input {
     width: 100%;
     padding: 10px 16px 10px 40px;
     border: 1px solid var(--fum-gray-200);
     border-radius: var(--fum-radius-sm);
     font-size: 14px;
+    line-height: normal;
+    min-height: auto;
     transition: border-color var(--fum-transition), box-shadow var(--fum-transition);
 }
 
@@ -242,8 +246,17 @@
     background: white;
     border: 1px solid var(--fum-gray-200);
     border-radius: var(--fum-radius);
-    overflow: hidden;
+    overflow: visible;
     transition: all var(--fum-transition);
+}
+
+/* Aplicar border-radius a los hijos para mantener esquinas redondeadas */
+.fum-card__header {
+    border-radius: var(--fum-radius) var(--fum-radius) 0 0;
+}
+
+.fum-card__footer {
+    border-radius: 0 0 var(--fum-radius) var(--fum-radius);
 }
 
 .fum-module-card:hover {
@@ -515,6 +528,91 @@
     font-size: 16px;
     width: 16px;
     height: 16px;
+}
+
+.fum-btn .dashicons.rotate-180 {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   Admin Menu Dropdown
+   ========================================================================== */
+
+.fum-admin-menu {
+    position: relative;
+    display: flex;
+    gap: 0;
+    flex: 1;
+}
+
+.fum-admin-menu > .fum-btn:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    flex: 1;
+}
+
+.fum-admin-menu__toggle {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
+    padding: 8px 8px !important;
+}
+
+.fum-admin-menu__toggle .dashicons {
+    transition: transform var(--fum-transition);
+}
+
+.fum-admin-menu__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: white;
+    border: 1px solid var(--fum-gray-200);
+    border-radius: var(--fum-radius-sm);
+    box-shadow: var(--fum-shadow-lg);
+    z-index: 9999;
+    overflow: hidden;
+}
+
+/* Asegurar que el contenedor del menu tiene z-index cuando está abierto */
+.fum-admin-menu {
+    z-index: 1;
+}
+
+.fum-admin-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: var(--fum-gray-700);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background var(--fum-transition), color var(--fum-transition);
+    border-bottom: 1px solid var(--fum-gray-100);
+}
+
+.fum-admin-menu__item:last-child {
+    border-bottom: none;
+}
+
+.fum-admin-menu__item:hover {
+    background: var(--fum-primary);
+    color: white;
+}
+
+.fum-admin-menu__item .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--fum-gray-400);
+    transition: color var(--fum-transition);
+}
+
+.fum-admin-menu__item:hover .dashicons {
+    color: white;
 }
 
 /* Card Stats (optional) */

@@ -1,0 +1,561 @@
+/**
+ * Estilos frontend para Colectivos y Asociaciones
+ * @package FlavorChatIA
+ */
+
+/* Listado de colectivos */
+.flavor-colectivos-listado {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.flavor-colectivos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.flavor-filtros {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-filtros-form {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.flavor-filtros-form select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #fff;
+}
+
+/* Grid de colectivos */
+.flavor-colectivos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-colectivo-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-colectivo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.flavor-colectivo-imagen {
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+}
+
+.flavor-colectivo-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-colectivo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+}
+
+.flavor-colectivo-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #9ca3af;
+}
+
+.flavor-badge-tipo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.flavor-colectivo-contenido {
+    padding: 1.25rem;
+}
+
+.flavor-colectivo-nombre {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+.flavor-colectivo-nombre a {
+    color: #1f2937;
+    text-decoration: none;
+}
+
+.flavor-colectivo-nombre a:hover {
+    color: #3b82f6;
+}
+
+.flavor-colectivo-descripcion {
+    margin: 0 0 1rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.flavor-colectivo-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.flavor-colectivo-stats .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+}
+
+/* Detalle de colectivo */
+.flavor-colectivo-detalle {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.flavor-colectivo-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.flavor-colectivo-breadcrumb a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.flavor-colectivo-header-detalle {
+    display: flex;
+    gap: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-colectivo-imagen-grande {
+    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.flavor-colectivo-imagen-grande img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-colectivo-info h1 {
+    margin: 0.5rem 0;
+    font-size: 1.75rem;
+}
+
+.flavor-colectivo-subtitulo {
+    margin: 0 0 1rem;
+    color: #6b7280;
+    font-size: 1.1rem;
+}
+
+.flavor-colectivo-meta-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.flavor-colectivo-meta-stats .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    color: #9ca3af;
+}
+
+.flavor-colectivo-acciones-principales {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Layout del contenido */
+.flavor-colectivo-contenido-detalle {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+}
+
+.flavor-colectivo-main section {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-colectivo-sidebar section {
+    margin-bottom: 1rem;
+}
+
+/* Proyectos */
+.flavor-proyectos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-proyecto-item {
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.flavor-proyecto-item h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+}
+
+.flavor-proyecto-item p {
+    margin: 0 0 0.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.flavor-proyecto-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+/* Asambleas */
+.flavor-asambleas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-asamblea-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.flavor-asamblea-fecha {
+    flex-shrink: 0;
+    text-align: center;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+}
+
+.flavor-asamblea-fecha .flavor-dia {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.flavor-asamblea-fecha .flavor-mes {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.flavor-asamblea-info h4 {
+    margin: 0 0 0.5rem;
+}
+
+.flavor-asamblea-hora,
+.flavor-asamblea-lugar {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Miembros */
+.flavor-miembros-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-miembro-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.flavor-miembro-item img {
+    border-radius: 50%;
+}
+
+.flavor-miembro-nombre {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.flavor-miembro-rol {
+    display: block;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.flavor-ver-todos {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #3b82f6;
+    font-size: 0.9rem;
+}
+
+/* Redes sociales */
+.flavor-redes-sociales {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.flavor-redes-sociales a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    color: #6b7280;
+    transition: background 0.2s, color 0.2s;
+}
+
+.flavor-redes-sociales a:hover {
+    background: #3b82f6;
+    color: #fff;
+}
+
+/* Crear colectivo */
+.flavor-crear-colectivo {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+/* Mis colectivos */
+.flavor-mis-colectivos {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.flavor-mi-colectivo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.flavor-mi-colectivo .flavor-colectivo-imagen {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+}
+
+.flavor-fecha-union {
+    margin: 0.25rem 0 0;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+/* Proyectos grid */
+.flavor-proyectos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-proyecto-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-proyecto-imagen {
+    height: 140px;
+    overflow: hidden;
+}
+
+.flavor-proyecto-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-proyecto-contenido {
+    padding: 1.25rem;
+}
+
+.flavor-proyecto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-proyecto-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.flavor-proyecto-descripcion {
+    margin: 0 0 1rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Asambleas grid */
+.flavor-asambleas-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-asamblea-card {
+    display: flex;
+    gap: 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-asamblea-fecha-grande {
+    flex-shrink: 0;
+    text-align: center;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    min-width: 80px;
+}
+
+.flavor-asamblea-fecha-grande .flavor-dia {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.flavor-asamblea-fecha-grande .flavor-mes {
+    font-size: 0.85rem;
+}
+
+.flavor-asamblea-contenido h3 {
+    margin: 0 0 0.75rem;
+}
+
+.flavor-asamblea-detalle {
+    margin: 0 0 0.25rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.flavor-orden-del-dia {
+    margin-top: 1rem;
+}
+
+.flavor-orden-del-dia summary {
+    cursor: pointer;
+    font-weight: 500;
+    color: #3b82f6;
+}
+
+/* Miembros grid */
+.flavor-miembros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.flavor-miembro-card {
+    text-align: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-miembro-card img {
+    border-radius: 50%;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-miembro-card h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-colectivo-header-detalle {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .flavor-colectivo-contenido-detalle {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-asamblea-card {
+        flex-direction: column;
+    }
+}

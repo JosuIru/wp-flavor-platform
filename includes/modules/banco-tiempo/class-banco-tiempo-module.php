@@ -84,6 +84,9 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('flavor_banco_tiempo_servicio_completado', [$this, 'on_servicio_completado'], 10, 2);
 
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
 
@@ -1466,6 +1469,107 @@ KNOWLEDGE;
                 'parent' => 'banco-tiempo',
             ],
         ];
+    }
+
+    // =========================================================================
+    // PÁGINAS DE ADMINISTRACIÓN
+    // =========================================================================
+
+    /**
+     * Registra las páginas de administración del módulo (ocultas del sidebar)
+     * Las páginas son accesibles vía URL directa: admin.php?page=banco-tiempo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Página principal (oculta)
+        add_submenu_page(
+            null,
+            __('Banco de Tiempo', 'flavor-chat-ia'),
+            __('Banco Tiempo', 'flavor-chat-ia'),
+            $capability,
+            'banco-tiempo',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Página: Servicios (oculta)
+        add_submenu_page(
+            null,
+            __('Servicios', 'flavor-chat-ia'),
+            __('Servicios', 'flavor-chat-ia'),
+            $capability,
+            'bt-servicios',
+            [$this, 'render_pagina_servicios']
+        );
+
+        // Página: Intercambios (oculta)
+        add_submenu_page(
+            null,
+            __('Intercambios', 'flavor-chat-ia'),
+            __('Intercambios', 'flavor-chat-ia'),
+            $capability,
+            'bt-intercambios',
+            [$this, 'render_pagina_intercambios']
+        );
+
+        // Página: Usuarios (oculta)
+        add_submenu_page(
+            null,
+            __('Usuarios', 'flavor-chat-ia'),
+            __('Usuarios', 'flavor-chat-ia'),
+            $capability,
+            'bt-usuarios',
+            [$this, 'render_pagina_usuarios']
+        );
+    }
+
+    /**
+     * Renderiza página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Banco de Tiempo', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista no encontrada.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de servicios
+     */
+    public function render_pagina_servicios() {
+        $views_path = dirname(__FILE__) . '/views/servicios.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Servicios', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de intercambios
+     */
+    public function render_pagina_intercambios() {
+        $views_path = dirname(__FILE__) . '/views/intercambios.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Intercambios', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de usuarios
+     */
+    public function render_pagina_usuarios() {
+        $views_path = dirname(__FILE__) . '/views/usuarios.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Usuarios', 'flavor-chat-ia') . '</h1></div>';
+        }
     }
 }
 

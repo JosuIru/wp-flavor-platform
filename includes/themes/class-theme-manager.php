@@ -2056,7 +2056,9 @@ class Flavor_Theme_Manager {
         $theme_id = sanitize_key($_POST['theme_id'] ?? '');
         $name = sanitize_text_field($_POST['name'] ?? '');
         $description = sanitize_text_field($_POST['description'] ?? '');
-        $variables = $_POST['variables'] ?? [];
+
+        // Validar y sanitizar variables CSS
+        $variables_raw = isset($_POST['variables']) && is_array($_POST['variables']) ? $_POST['variables'] : [];
 
         if (!$theme_id || !$name) {
             wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
@@ -2067,11 +2069,12 @@ class Flavor_Theme_Manager {
             $theme_id = 'custom_' . $theme_id . '_' . time();
         }
 
-        // Sanitizar variables CSS
+        // Sanitizar variables CSS - solo permitir variables --flavor-*
         $sanitized_variables = [];
-        foreach ($variables as $var_name => $value) {
-            if (strpos($var_name, '--flavor-') === 0) {
-                $sanitized_variables[$var_name] = sanitize_text_field($value);
+        foreach ($variables_raw as $var_name => $value) {
+            $var_name_clean = sanitize_key($var_name);
+            if (strpos($var_name_clean, '--flavor-') === 0) {
+                $sanitized_variables[$var_name_clean] = sanitize_text_field($value);
             }
         }
 
@@ -2163,26 +2166,41 @@ class Flavor_Theme_Manager {
             wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
-        $theme_data = $_POST['theme_data'] ?? '';
+        $theme_data_raw = isset($_POST['theme_data']) ? sanitize_textarea_field(wp_unslash($_POST['theme_data'])) : '';
 
-        if (!$theme_data) {
+        if (!$theme_data_raw) {
             wp_send_json_error(['message' => __('Datos de tema requeridos', 'flavor-chat-ia')]);
         }
 
-        $theme = json_decode(stripslashes($theme_data), true);
+        $theme = json_decode($theme_data_raw, true);
 
-        if (!$theme || !isset($theme['name']) || !isset($theme['variables'])) {
+        // Validar estructura del JSON
+        if (!is_array($theme) || !isset($theme['name']) || !isset($theme['variables'])) {
             wp_send_json_error(['message' => __('Formato de tema inválido', 'flavor-chat-ia')]);
+        }
+
+        // Validar que variables sea un array
+        if (!is_array($theme['variables'])) {
+            wp_send_json_error(['message' => __('Las variables deben ser un array', 'flavor-chat-ia')]);
         }
 
         // Generar ID único
         $theme_id = 'imported_' . sanitize_key($theme['name']) . '_' . time();
 
+        // Sanitizar variables - solo permitir variables CSS válidas
+        $sanitized_variables = [];
+        foreach ($theme['variables'] as $var_key => $var_value) {
+            $clean_key = sanitize_key($var_key);
+            if (!empty($clean_key)) {
+                $sanitized_variables[$clean_key] = sanitize_text_field($var_value);
+            }
+        }
+
         $custom_themes = get_option('flavor_custom_themes', []);
         $custom_themes[$theme_id] = [
             'name' => sanitize_text_field($theme['name']),
             'description' => sanitize_text_field($theme['description'] ?? ''),
-            'variables' => array_map('sanitize_text_field', $theme['variables']),
+            'variables' => $sanitized_variables,
             'imported_at' => current_time('mysql'),
         ];
 

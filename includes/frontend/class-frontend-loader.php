@@ -93,6 +93,9 @@ class Flavor_Frontend_Loader {
         // Cargar sistema de páginas dinámicas
         require_once $base_path . 'class-dynamic-pages.php';
 
+        // Cargar búsqueda avanzada social
+        require_once $base_path . 'class-social-search.php';
+
         // Cargar todos los controladores
         foreach ($this->module_map as $slug => $class) {
             $file = $controllers_path . 'class-' . $slug . '-controller.php';

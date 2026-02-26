@@ -77,8 +77,16 @@ $todos_los_grupos = get_posts([
     <?php endif; ?>
 
     <?php if (!$grupo_id): ?>
-        <div class="notice notice-warning">
-            <p><?php _e('No hay ningún grupo de consumo creado. Crea uno primero.', 'flavor-chat-ia'); ?></p>
+        <div class="gc-empty-state" style="text-align: center; padding: 60px 20px; background: #fff; border-radius: 8px; margin-top: 20px;">
+            <span class="dashicons dashicons-store" style="font-size: 64px; color: #c3c4c7; display: block; margin-bottom: 20px;"></span>
+            <h2 style="margin: 0 0 10px; color: #1d2327;"><?php _e('No hay grupos de consumo', 'flavor-chat-ia'); ?></h2>
+            <p style="color: #646970; margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                <?php _e('Para gestionar consumidores, primero necesitas crear un grupo de consumo donde añadirlos.', 'flavor-chat-ia'); ?>
+            </p>
+            <a href="<?php echo admin_url('post-new.php?post_type=gc_grupo'); ?>" class="button button-primary button-hero">
+                <span class="dashicons dashicons-plus-alt2" style="margin-top: 5px;"></span>
+                <?php _e('Crear primer grupo', 'flavor-chat-ia'); ?>
+            </a>
         </div>
     <?php else: ?>
 
@@ -155,7 +163,16 @@ $todos_los_grupos = get_posts([
         <tbody>
             <?php if (empty($consumidores)): ?>
                 <tr>
-                    <td colspan="7"><?php _e('No se encontraron consumidores.', 'flavor-chat-ia'); ?></td>
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        <span class="dashicons dashicons-groups" style="font-size: 48px; color: #c3c4c7; display: block; margin-bottom: 15px;"></span>
+                        <p style="color: #646970; margin-bottom: 15px;"><?php _e('No hay consumidores registrados en este grupo.', 'flavor-chat-ia'); ?></p>
+                        <button type="button" class="button button-primary gc-modal-trigger" data-modal="modal-nuevo-consumidor">
+                            <span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span> <?php _e('Añadir primer consumidor', 'flavor-chat-ia'); ?>
+                        </button>
+                        <button type="button" class="button gc-importar-usuarios-wp" style="margin-left: 10px;">
+                            <span class="dashicons dashicons-download" style="margin-top: 3px;"></span> <?php _e('Importar usuarios de WordPress', 'flavor-chat-ia'); ?>
+                        </button>
+                    </td>
                 </tr>
             <?php else: ?>
                 <?php foreach ($consumidores as $consumidor): ?>
@@ -176,11 +193,24 @@ $todos_los_grupos = get_posts([
                             </a>
                         </td>
                         <td class="column-rol">
-                            <select class="gc-cambiar-rol" data-consumidor-id="<?php echo esc_attr($consumidor->id); ?>">
-                                <option value="<?php echo esc_attr__('consumidor', 'flavor-chat-ia'); ?>" <?php selected($consumidor->rol, 'consumidor'); ?>><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('coordinador', 'flavor-chat-ia'); ?>" <?php selected($consumidor->rol, 'coordinador'); ?>><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('productor', 'flavor-chat-ia'); ?>" <?php selected($consumidor->rol, 'productor'); ?>><?php _e('Productor', 'flavor-chat-ia'); ?></option>
-                            </select>
+                            <?php
+                            // Parsear roles (pueden ser múltiples separados por coma)
+                            $roles_actuales = array_map('trim', explode(',', $consumidor->rol));
+                            ?>
+                            <div class="gc-roles-badges" data-consumidor-id="<?php echo esc_attr($consumidor->id); ?>">
+                                <label class="gc-rol-badge <?php echo in_array('consumidor', $roles_actuales) ? 'activo' : ''; ?>">
+                                    <input type="checkbox" value="consumidor" <?php checked(in_array('consumidor', $roles_actuales)); ?>>
+                                    <span><?php _e('Consumidor', 'flavor-chat-ia'); ?></span>
+                                </label>
+                                <label class="gc-rol-badge gc-rol-coordinador <?php echo in_array('coordinador', $roles_actuales) ? 'activo' : ''; ?>">
+                                    <input type="checkbox" value="coordinador" <?php checked(in_array('coordinador', $roles_actuales)); ?>>
+                                    <span><?php _e('Coordinador', 'flavor-chat-ia'); ?></span>
+                                </label>
+                                <label class="gc-rol-badge gc-rol-productor <?php echo in_array('productor', $roles_actuales) ? 'activo' : ''; ?>">
+                                    <input type="checkbox" value="productor" <?php checked(in_array('productor', $roles_actuales)); ?>>
+                                    <span><?php _e('Productor', 'flavor-chat-ia'); ?></span>
+                                </label>
+                            </div>
                         </td>
                         <td class="column-estado">
                             <span class="gc-estado-badge <?php echo esc_attr($consumidor_manager->obtener_clase_estado($consumidor->estado)); ?>">
@@ -194,11 +224,40 @@ $todos_los_grupos = get_posts([
                             <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($consumidor->fecha_alta))); ?>
                         </td>
                         <td class="column-acciones">
+                            <?php
+                            // Obtener teléfono del usuario
+                            $telefono_usuario = get_user_meta($consumidor->usuario_id, 'billing_phone', true);
+                            if (!$telefono_usuario) {
+                                $telefono_usuario = get_user_meta($consumidor->usuario_id, 'phone', true);
+                            }
+                            $telefono_limpio = preg_replace('/[^0-9+]/', '', $telefono_usuario);
+                            ?>
                             <div class="gc-acciones-dropdown">
                                 <button type="button" class="button gc-acciones-btn">
                                     <span class="dashicons dashicons-admin-generic"></span>
                                 </button>
                                 <div class="gc-acciones-menu">
+                                    <!-- Acciones de comunicación -->
+                                    <a href="mailto:<?php echo esc_attr($consumidor->user_email); ?>" class="gc-accion-comunicacion">
+                                        <span class="dashicons dashicons-email"></span> <?php _e('Enviar Email', 'flavor-chat-ia'); ?>
+                                    </a>
+                                    <?php if ($telefono_limpio): ?>
+                                        <a href="https://wa.me/<?php echo esc_attr(ltrim($telefono_limpio, '+')); ?>" target="_blank" class="gc-accion-comunicacion gc-accion-whatsapp">
+                                            <span class="dashicons dashicons-whatsapp"></span> <?php _e('WhatsApp', 'flavor-chat-ia'); ?>
+                                        </a>
+                                        <a href="tel:<?php echo esc_attr($telefono_limpio); ?>" class="gc-accion-comunicacion">
+                                            <span class="dashicons dashicons-phone"></span> <?php _e('Llamar', 'flavor-chat-ia'); ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="gc-accion-disabled" title="<?php _e('Sin teléfono registrado', 'flavor-chat-ia'); ?>">
+                                            <span class="dashicons dashicons-whatsapp"></span> <?php _e('WhatsApp', 'flavor-chat-ia'); ?>
+                                        </span>
+                                        <span class="gc-accion-disabled" title="<?php _e('Sin teléfono registrado', 'flavor-chat-ia'); ?>">
+                                            <span class="dashicons dashicons-phone"></span> <?php _e('Llamar', 'flavor-chat-ia'); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                    <hr>
+                                    <!-- Acciones de estado -->
                                     <?php if ($consumidor->estado === 'pendiente'): ?>
                                         <a href="#" class="gc-accion-estado" data-estado="activo">
                                             <span class="dashicons dashicons-yes"></span> <?php _e('Aprobar', 'flavor-chat-ia'); ?>
@@ -220,12 +279,24 @@ $todos_los_grupos = get_posts([
                                         </a>
                                     <?php endif; ?>
                                     <hr>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=gc-consumidores&ver=' . $consumidor->id)); ?>" class="gc-ver-detalles">
+                                    <!-- Ver detalles y pedidos -->
+                                    <a href="#" class="gc-ver-detalles" data-consumidor-id="<?php echo esc_attr($consumidor->id); ?>">
                                         <span class="dashicons dashicons-visibility"></span> <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
                                     </a>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos&usuario_id=' . $consumidor->usuario_id)); ?>">
                                         <span class="dashicons dashicons-cart"></span> <?php _e('Ver Pedidos', 'flavor-chat-ia'); ?>
                                     </a>
+                                    <?php
+                                    // Boton de crear factura si el modulo de facturas esta activo
+                                    $modulo_facturas_activo = class_exists('Flavor_Chat_Facturas_Module');
+                                    if ($modulo_facturas_activo):
+                                        $url_factura = admin_url('admin.php?page=flavor-panel&modulo=facturas&vista=facturas-nueva&cliente_id=' . $consumidor->usuario_id . '&cliente_tipo=consumidor');
+                                    ?>
+                                    <hr>
+                                    <a href="<?php echo esc_url($url_factura); ?>" class="gc-accion-factura">
+                                        <span class="dashicons dashicons-media-text"></span> <?php _e('Crear Factura', 'flavor-chat-ia'); ?>
+                                    </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </td>
@@ -324,6 +395,32 @@ $todos_los_grupos = get_posts([
     </div>
 </div>
 
+<!-- Modal: Importar Usuarios de WordPress -->
+<div id="modal-importar-usuarios" class="gc-modal" style="display:none;">
+    <div class="gc-modal-content" style="max-width: 600px;">
+        <div class="gc-modal-header">
+            <h2><?php _e('Importar Usuarios de WordPress', 'flavor-chat-ia'); ?></h2>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+        </div>
+        <div class="gc-modal-body">
+            <p style="margin-bottom: 15px; color: #646970;">
+                <?php _e('Selecciona los usuarios de WordPress que quieres añadir como consumidores del grupo.', 'flavor-chat-ia'); ?>
+            </p>
+            <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px; padding: 10px; background: #f0f0f1; border-radius: 4px;">
+                <input type="checkbox" id="gc-seleccionar-todos">
+                <strong><?php _e('Seleccionar todos', 'flavor-chat-ia'); ?></strong>
+            </label>
+            <div id="gc-lista-usuarios-wp" style="max-height: 350px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
+                <!-- Se carga vía AJAX -->
+            </div>
+        </div>
+        <div class="gc-modal-footer">
+            <button type="button" class="button gc-modal-cancel"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button button-primary gc-confirmar-importacion"><?php _e('Importar seleccionados', 'flavor-chat-ia'); ?></button>
+        </div>
+    </div>
+</div>
+
 <script>
 jQuery(document).ready(function($) {
     // Dropdown acciones
@@ -363,15 +460,37 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Cambiar rol
-    $('.gc-cambiar-rol').on('change', function() {
-        var consumidorId = $(this).data('consumidor-id');
-        var nuevoRol = $(this).val();
+    // Cambiar roles (múltiples)
+    $('.gc-roles-badges input[type="checkbox"]').on('change', function() {
+        var $container = $(this).closest('.gc-roles-badges');
+        var consumidorId = $container.data('consumidor-id');
+        var $label = $(this).closest('.gc-rol-badge');
+
+        // Toggle clase activo
+        if ($(this).is(':checked')) {
+            $label.addClass('activo');
+        } else {
+            $label.removeClass('activo');
+        }
+
+        // Recopilar todos los roles seleccionados
+        var rolesSeleccionados = [];
+        $container.find('input[type="checkbox"]:checked').each(function() {
+            rolesSeleccionados.push($(this).val());
+        });
+
+        // Si no hay ningún rol seleccionado, mantener al menos "consumidor"
+        if (rolesSeleccionados.length === 0) {
+            rolesSeleccionados = ['consumidor'];
+            $container.find('input[value="consumidor"]').prop('checked', true).closest('.gc-rol-badge').addClass('activo');
+        }
+
+        var rolesString = rolesSeleccionados.join(',');
 
         $.post(ajaxurl, {
             action: 'gc_cambiar_rol_consumidor',
             consumidor_id: consumidorId,
-            rol: nuevoRol,
+            rol: rolesString,
             nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
         }, function(response) {
             if (!response.success) {
@@ -408,6 +527,134 @@ jQuery(document).ready(function($) {
                 location.reload();
             } else {
                 alert(response.data.mensaje || response.data.error);
+            }
+        });
+    });
+
+    // Ver detalles de consumidor
+    $('.gc-ver-detalles').on('click', function(e) {
+        e.preventDefault();
+        var consumidorId = $(this).data('consumidor-id');
+        var $modal = $('#modal-detalles-consumidor');
+        var $contenido = $('#gc-detalles-contenido');
+
+        $contenido.html('<p style="text-align:center;padding:30px;"><span class="spinner is-active" style="float:none;"></span> <?php _e('Cargando...', 'flavor-chat-ia'); ?></p>');
+        $modal.fadeIn(200);
+
+        $.post(ajaxurl, {
+            action: 'gc_obtener_detalles_consumidor',
+            consumidor_id: consumidorId,
+            nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                var c = response.data.consumidor;
+                var html = '<div class="gc-detalles-grid">';
+                html += '<div class="gc-detalle-avatar">';
+                html += '<img src="' + c.avatar + '" alt="" style="width:80px;height:80px;border-radius:50%;">';
+                html += '</div>';
+                html += '<div class="gc-detalle-info">';
+                html += '<h3 style="margin:0 0 5px;">' + c.nombre + '</h3>';
+                html += '<p style="margin:0;color:#646970;"><a href="mailto:' + c.email + '">' + c.email + '</a></p>';
+                if (c.telefono) {
+                    html += '<p style="margin:5px 0 0;color:#646970;">' + c.telefono + '</p>';
+                }
+                html += '</div>';
+                html += '</div>';
+
+                html += '<table class="gc-detalles-tabla" style="width:100%;margin-top:20px;">';
+                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>';
+                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;"><span class="gc-estado-badge gc-estado-' + c.estado + '">' + c.estado_label + '</span></td></tr>';
+                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Rol', 'flavor-chat-ia'); ?></th>';
+                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.rol_label + '</td></tr>';
+                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Fecha de alta', 'flavor-chat-ia'); ?></th>';
+                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.fecha_alta + '</td></tr>';
+                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Saldo pendiente', 'flavor-chat-ia'); ?></th>';
+                html += '<td style="padding:8px 0;border-bottom:1px solid #eee;' + (c.saldo > 0 ? 'color:#d63638;font-weight:600;' : '') + '">' + c.saldo + ' €</td></tr>';
+                if (c.preferencias) {
+                    html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Preferencias', 'flavor-chat-ia'); ?></th>';
+                    html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.preferencias + '</td></tr>';
+                }
+                if (c.alergias) {
+                    html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Alergias', 'flavor-chat-ia'); ?></th>';
+                    html += '<td style="padding:8px 0;border-bottom:1px solid #eee;color:#d63638;">' + c.alergias + '</td></tr>';
+                }
+                html += '<tr><th style="text-align:left;padding:8px 0;"><?php _e('Total pedidos', 'flavor-chat-ia'); ?></th>';
+                html += '<td style="padding:8px 0;">' + c.total_pedidos + '</td></tr>';
+                html += '</table>';
+
+                $contenido.html(html);
+            } else {
+                $contenido.html('<p style="text-align:center;padding:30px;color:#d63638;">' + (response.data.error || 'Error') + '</p>');
+            }
+        });
+    });
+
+    // Importar usuarios de WordPress
+    $('.gc-importar-usuarios-wp').on('click', function() {
+        var $modal = $('#modal-importar-usuarios');
+        var $lista = $('#gc-lista-usuarios-wp');
+
+        $lista.html('<p style="text-align:center;padding:20px;"><?php _e('Cargando usuarios...', 'flavor-chat-ia'); ?></p>');
+        $modal.fadeIn(200);
+
+        // Cargar usuarios de WordPress
+        $.post(ajaxurl, {
+            action: 'gc_listar_usuarios_wp',
+            grupo_id: <?php echo $grupo_id ?: 0; ?>,
+            nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+        }, function(response) {
+            if (response.success && response.data.usuarios.length > 0) {
+                var html = '<div class="gc-usuarios-checkboxes">';
+                $.each(response.data.usuarios, function(i, usuario) {
+                    html += '<label class="gc-usuario-checkbox">';
+                    html += '<input type="checkbox" name="usuarios[]" value="' + usuario.id + '">';
+                    html += '<span class="gc-usuario-info">';
+                    html += '<strong>' + usuario.nombre + '</strong>';
+                    html += '<small>' + usuario.email + '</small>';
+                    html += '</span></label>';
+                });
+                html += '</div>';
+                $lista.html(html);
+            } else if (response.success && response.data.usuarios.length === 0) {
+                $lista.html('<p style="text-align:center;padding:20px;color:#646970;"><?php _e('Todos los usuarios ya son miembros del grupo.', 'flavor-chat-ia'); ?></p>');
+            } else {
+                $lista.html('<p style="text-align:center;padding:20px;color:#d63638;">' + (response.data.error || 'Error') + '</p>');
+            }
+        });
+    });
+
+    // Seleccionar todos los usuarios
+    $('#gc-seleccionar-todos').on('change', function() {
+        var checked = $(this).prop('checked');
+        $('#gc-lista-usuarios-wp input[type="checkbox"]').prop('checked', checked);
+    });
+
+    // Confirmar importación
+    $('.gc-confirmar-importacion').on('click', function() {
+        var usuarios = [];
+        $('#gc-lista-usuarios-wp input[type="checkbox"]:checked').each(function() {
+            usuarios.push($(this).val());
+        });
+
+        if (usuarios.length === 0) {
+            alert('<?php _e('Selecciona al menos un usuario', 'flavor-chat-ia'); ?>');
+            return;
+        }
+
+        $(this).prop('disabled', true).text('<?php _e('Importando...', 'flavor-chat-ia'); ?>');
+
+        $.post(ajaxurl, {
+            action: 'gc_importar_usuarios_wp',
+            grupo_id: <?php echo $grupo_id ?: 0; ?>,
+            usuarios: usuarios,
+            nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+        }, function(response) {
+            if (response.success) {
+                alert(response.data.mensaje);
+                location.reload();
+            } else {
+                alert(response.data.error || 'Error');
+                $('.gc-confirmar-importacion').prop('disabled', false).text('<?php _e('Importar seleccionados', 'flavor-chat-ia'); ?>');
             }
         });
     });
@@ -505,6 +752,57 @@ jQuery(document).ready(function($) {
 }
 .gc-accion-peligro { color: #d63638 !important; }
 
+/* Acciones de comunicación */
+.gc-accion-whatsapp { color: #25D366 !important; }
+.gc-accion-whatsapp:hover { background: #dcf8e6 !important; }
+.gc-accion-disabled {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    color: #a0a5aa;
+    cursor: not-allowed;
+}
+.dashicons-whatsapp:before { content: "\f110"; } /* Usando icono de smartphone como alternativa */
+
+/* Badges de roles múltiples */
+.gc-roles-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.gc-rol-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #f6f7f7;
+    color: #646970;
+    transition: all 0.2s ease;
+}
+.gc-rol-badge input[type="checkbox"] {
+    display: none;
+}
+.gc-rol-badge:hover {
+    border-color: #2271b1;
+}
+.gc-rol-badge.activo {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+}
+.gc-rol-badge.gc-rol-coordinador.activo {
+    background: #9b59b6;
+    border-color: #9b59b6;
+}
+.gc-rol-badge.gc-rol-productor.activo {
+    background: #27ae60;
+    border-color: #27ae60;
+}
+
 /* Modal */
 .gc-modal {
     position: fixed;
@@ -561,5 +859,43 @@ jQuery(document).ready(function($) {
 .gc-form-field select,
 .gc-form-field textarea {
     width: 100%;
+}
+
+/* Importar usuarios checkboxes */
+.gc-usuarios-checkboxes {
+    padding: 5px;
+}
+.gc-usuario-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.gc-usuario-checkbox:last-child {
+    border-bottom: none;
+}
+.gc-usuario-checkbox:hover {
+    background: #f8f9fa;
+}
+.gc-usuario-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+.gc-usuario-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.gc-usuario-info strong {
+    font-weight: 500;
+    color: #1d2327;
+}
+.gc-usuario-info small {
+    color: #646970;
+    font-size: 12px;
 }
 </style>

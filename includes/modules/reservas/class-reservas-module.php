@@ -16,6 +16,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Constructor
@@ -81,14 +82,58 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_reservas_recursos',
+                'context' => 'side',
+            ],
+        ];
+    }
+
+    /**
      * Inicializa el modulo
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-reservas-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Reservas_Frontend_Controller::get_instance();
+        }
     }
 
     /**
@@ -1045,7 +1090,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         }
 
         $identificador_usuario_actual = get_current_user_id();
-        $es_propietario   = ($reserva_encontrada->user_id && $reserva_encontrada->user_id == $identificador_usuario_actual);
+        $es_propietario   = ($reserva_encontrada->user_id && (int) $reserva_encontrada->user_id === $identificador_usuario_actual);
         $es_administrador = current_user_can('manage_options');
 
         if (!$es_propietario && !$es_administrador && $identificador_usuario_actual) {
@@ -1181,7 +1226,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         }
 
         $identificador_usuario_actual = get_current_user_id();
-        $es_propietario   = ($reserva_encontrada->user_id && $reserva_encontrada->user_id == $identificador_usuario_actual);
+        $es_propietario   = ($reserva_encontrada->user_id && (int) $reserva_encontrada->user_id === $identificador_usuario_actual);
         $es_administrador = current_user_can('manage_options');
 
         if (!$es_propietario && !$es_administrador && $identificador_usuario_actual) {
@@ -1481,5 +1526,101 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
                 'parent' => 'reservas',
             ],
         ];
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Dashboard - página oculta
+        add_submenu_page(
+            null,
+            __('Dashboard Reservas', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'reservas',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Listado de reservas - página oculta
+        add_submenu_page(
+            null,
+            __('Listado de Reservas', 'flavor-chat-ia'),
+            __('Reservas', 'flavor-chat-ia'),
+            $capability,
+            'reservas-listado',
+            [$this, 'render_pagina_reservas']
+        );
+
+        // Recursos - página oculta
+        add_submenu_page(
+            null,
+            __('Recursos Reservas', 'flavor-chat-ia'),
+            __('Recursos', 'flavor-chat-ia'),
+            $capability,
+            'reservas-recursos',
+            [$this, 'render_pagina_recursos']
+        );
+
+        // Calendario - página oculta
+        add_submenu_page(
+            null,
+            __('Calendario Reservas', 'flavor-chat-ia'),
+            __('Calendario', 'flavor-chat-ia'),
+            $capability,
+            'reservas-calendario',
+            [$this, 'render_pagina_calendario']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Reservas', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Panel de administración del módulo de reservas.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de reservas
+     */
+    public function render_pagina_reservas() {
+        $views_path = dirname(__FILE__) . '/views/reservas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Reservas', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de recursos
+     */
+    public function render_pagina_recursos() {
+        $views_path = dirname(__FILE__) . '/views/recursos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Recursos', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de calendario
+     */
+    public function render_pagina_calendario() {
+        $views_path = dirname(__FILE__) . '/views/calendario.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Calendario de Reservas', 'flavor-chat-ia') . '</h1></div>';
+        }
     }
 }

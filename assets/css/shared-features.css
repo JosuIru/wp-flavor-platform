@@ -1,0 +1,313 @@
+/**
+ * Estilos para Funcionalidades Compartidas
+ *
+ * @package FlavorChatIA
+ */
+
+/* Container principal */
+.flavor-entity-features {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    margin: 15px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* Botones genéricos */
+.flavor-feature-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.flavor-feature-btn:hover {
+    border-color: #2271b1;
+    color: #2271b1;
+}
+
+.flavor-feature-btn.active {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+}
+
+.flavor-feature-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.flavor-feature-btn .count {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Favoritos */
+.flavor-favorite:hover,
+.flavor-favorite.active {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.flavor-favorite.active {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.flavor-favorite .dashicons-heart {
+    color: inherit;
+}
+
+/* Seguir */
+.flavor-follow.active {
+    background: #27ae60;
+    border-color: #27ae60;
+}
+
+/* Bookmark */
+.flavor-bookmark:hover,
+.flavor-bookmark.active {
+    border-color: #f39c12;
+    color: #f39c12;
+}
+
+.flavor-bookmark.active {
+    background: #f39c12;
+    color: #fff;
+}
+
+/* Rating / Estrellas */
+.flavor-rating-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flavor-stars {
+    display: inline-flex;
+    gap: 2px;
+}
+
+.flavor-stars .star {
+    font-size: 20px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.15s, transform 0.15s;
+}
+
+.flavor-stars .star:hover,
+.flavor-stars .star.hover {
+    transform: scale(1.2);
+}
+
+.flavor-stars .star.filled,
+.flavor-stars .star:hover,
+.flavor-stars:hover .star {
+    color: #f1c40f;
+}
+
+.flavor-stars:hover .star:hover ~ .star {
+    color: #ddd;
+}
+
+.rating-info {
+    font-size: 13px;
+    color: #888;
+}
+
+/* Compartir */
+.flavor-share-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.flavor-share-buttons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.flavor-share-buttons a:hover {
+    transform: translateY(-2px);
+}
+
+.flavor-share-buttons .share-twitter:hover {
+    background: #1da1f2;
+    color: #fff;
+}
+
+.flavor-share-buttons .share-facebook:hover {
+    background: #4267b2;
+    color: #fff;
+}
+
+.flavor-share-buttons .share-whatsapp:hover {
+    background: #25d366;
+    color: #fff;
+}
+
+.flavor-share-buttons .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Vistas */
+.flavor-views {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: #888;
+}
+
+.flavor-views .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Reacciones */
+.flavor-reactions {
+    display: flex;
+    gap: 5px;
+}
+
+.flavor-reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background: #f5f5f5;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.flavor-reaction:hover,
+.flavor-reaction.selected {
+    background: #e8f4fc;
+}
+
+.flavor-reaction .emoji {
+    font-size: 16px;
+}
+
+.flavor-reaction .count {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Grid de contenido de red */
+.flavor-network-grid {
+    margin: 20px 0;
+}
+
+.flavor-network-item {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-network-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+}
+
+.flavor-network-item h4 {
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.flavor-network-item h4 a {
+    color: #333;
+    text-decoration: none;
+}
+
+.flavor-network-item h4 a:hover {
+    color: #2271b1;
+}
+
+.flavor-network-empty {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* Animaciones */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.flavor-feature-btn.animating {
+    animation: pulse 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-entity-features {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .flavor-network-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .flavor-entity-features {
+        border-color: #333;
+    }
+
+    .flavor-feature-btn {
+        background: #2d2d2d;
+        border-color: #444;
+        color: #ccc;
+    }
+
+    .flavor-feature-btn:hover {
+        border-color: #2271b1;
+    }
+
+    .flavor-stars .star {
+        color: #555;
+    }
+
+    .flavor-share-buttons a {
+        background: #333;
+        color: #ccc;
+    }
+
+    .flavor-network-item {
+        background: #2d2d2d;
+    }
+
+    .flavor-network-item h4 a {
+        color: #eee;
+    }
+}

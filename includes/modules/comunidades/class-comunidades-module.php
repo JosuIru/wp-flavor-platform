@@ -25,6 +25,16 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_comunidades_unirse', [$this, 'ajax_unirse']);
+        add_action('wp_ajax_nopriv_comunidades_unirse', [$this, 'ajax_unirse']);
+        add_action('wp_ajax_comunidades_salir', [$this, 'ajax_salir']);
+        add_action('wp_ajax_nopriv_comunidades_salir', [$this, 'ajax_salir']);
+        add_action('wp_ajax_comunidades_publicar', [$this, 'ajax_publicar']);
+        add_action('wp_ajax_nopriv_comunidades_publicar', [$this, 'ajax_publicar']);
+        add_action('wp_ajax_comunidades_invitar', [$this, 'ajax_invitar']);
+        add_action('wp_ajax_nopriv_comunidades_invitar', [$this, 'ajax_invitar']);
+
         $this->id = 'comunidades';
         $this->name = 'Comunidades'; // Translation loaded on init
         $this->description = 'Crea y gestiona comunidades tematicas con miembros, actividades y contenido compartido'; // Translation loaded on init

@@ -15,59 +15,55 @@ $zoom_inicial = $zoom_inicial ?? 13;
 $latitud_centro = $latitud_centro ?? 40.4168;
 $longitud_centro = $longitud_centro ?? -3.7038;
 
-// Datos de ejemplo de incidencias con coordenadas
-$incidencias_geolocalizadas = [
-    [
-        'id' => 1,
-        'titulo' => 'Farola fundida en C/ Mayor',
-        'categoria' => 'Alumbrado',
-        'estado' => 'en_proceso',
-        'ubicacion' => 'C/ Mayor, 45',
-        'latitud' => 40.4180,
-        'longitud' => -3.7040,
-        'votos' => 12,
-    ],
-    [
-        'id' => 2,
-        'titulo' => 'Bache grande en cruce',
-        'categoria' => 'Via Publica',
-        'estado' => 'pendiente',
-        'ubicacion' => 'Av. Libertad esquina C/ Sol',
-        'latitud' => 40.4160,
-        'longitud' => -3.7050,
-        'votos' => 28,
-    ],
-    [
-        'id' => 3,
-        'titulo' => 'Contenedor desbordado',
-        'categoria' => 'Limpieza',
-        'estado' => 'resuelto',
-        'ubicacion' => 'Plaza Central',
-        'latitud' => 40.4170,
-        'longitud' => -3.7020,
-        'votos' => 15,
-    ],
-    [
-        'id' => 4,
-        'titulo' => 'Grafiti en fachada historica',
-        'categoria' => 'Vandalismo',
-        'estado' => 'en_proceso',
-        'ubicacion' => 'C/ Antigua, 12',
-        'latitud' => 40.4175,
-        'longitud' => -3.7035,
-        'votos' => 34,
-    ],
-    [
-        'id' => 5,
-        'titulo' => 'Banco roto en parque',
-        'categoria' => 'Mobiliario',
-        'estado' => 'pendiente',
-        'ubicacion' => 'Parque Municipal',
-        'latitud' => 40.4155,
-        'longitud' => -3.7045,
-        'votos' => 8,
-    ],
-];
+// Obtener incidencias reales con coordenadas de la base de datos
+global $wpdb;
+$tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+$incidencias_geolocalizadas = [];
+
+$tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_incidencias)) === $tabla_incidencias;
+
+if ($tabla_existe) {
+    // Obtener incidencias que tienen coordenadas
+    $incidencias_db = $wpdb->get_results(
+        "SELECT id, titulo, tipo as categoria, estado, ubicacion, latitud, longitud, votos
+         FROM $tabla_incidencias
+         WHERE estado != 'eliminada'
+         AND latitud IS NOT NULL
+         AND longitud IS NOT NULL
+         ORDER BY created_at DESC
+         LIMIT 20"
+    );
+
+    // Normalizar estados
+    $estados_normalizados = [
+        'pending' => 'pendiente',
+        'in_progress' => 'en_proceso',
+        'resolved' => 'resuelto',
+        'closed' => 'resuelto',
+    ];
+
+    foreach ($incidencias_db as $inc) {
+        $estado = $estados_normalizados[$inc->estado] ?? $inc->estado;
+        $incidencias_geolocalizadas[] = [
+            'id' => intval($inc->id),
+            'titulo' => $inc->titulo,
+            'categoria' => ucfirst($inc->categoria ?? 'General'),
+            'estado' => $estado,
+            'ubicacion' => $inc->ubicacion ?? '',
+            'latitud' => floatval($inc->latitud),
+            'longitud' => floatval($inc->longitud),
+            'votos' => intval($inc->votos ?? 0),
+        ];
+    }
+
+    // Centrar mapa en la primera incidencia si existe
+    if (!empty($incidencias_geolocalizadas)) {
+        $latitud_centro = $incidencias_geolocalizadas[0]['latitud'];
+        $longitud_centro = $incidencias_geolocalizadas[0]['longitud'];
+    }
+}
+
+$tiene_incidencias = !empty($incidencias_geolocalizadas);
 
 // Configuración de categorías y colores para marcadores
 $categorias_colores = [
@@ -133,6 +129,7 @@ $estados_icono = [
             <!-- Panel de información de incidencias -->
             <div class="p-6 bg-white border-t border-gray-200">
                 <h3 class="text-lg font-bold text-gray-900 mb-4"><?php echo esc_html__('Incidencias Cercanas', 'flavor-chat-ia'); ?></h3>
+                <?php if ($tiene_incidencias): ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <?php foreach ($incidencias_geolocalizadas as $incidencia): ?>
                         <div class="flavor-incidencia-card p-4 rounded-lg border border-gray-200 hover:border-red-400 hover:shadow-md transition-all duration-200 cursor-pointer">
@@ -162,6 +159,12 @@ $estados_icono = [
                         </div>
                     <?php endforeach; ?>
                 </div>
+                <?php else: ?>
+                <div class="text-center py-8 text-gray-500">
+                    <div class="text-4xl mb-2">📍</div>
+                    <p><?php echo esc_html__('No hay incidencias geolocalizadas en este momento.', 'flavor-chat-ia'); ?></p>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
 

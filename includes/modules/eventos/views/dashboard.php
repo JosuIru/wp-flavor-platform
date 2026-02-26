@@ -5,6 +5,31 @@ if (!defined('ABSPATH')) exit;
 <div class="wrap flavor-eventos-dashboard">
     <h1 class="wp-heading-inline"><?php _e('Eventos - Dashboard', 'flavor-chat-ia'); ?></h1>
     <hr class="wp-header-end">
+
+    <!-- Accesos Rápidos -->
+    <div class="eventos-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('admin.php?page=eventos-listado'); ?>" class="eventos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-calendar" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Eventos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=eventos-calendario'); ?>" class="eventos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-calendar-alt" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Calendario', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=eventos-asistentes'); ?>" class="eventos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-groups" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Asistentes', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=eventos-entradas'); ?>" class="eventos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-tickets-alt" style="font-size: 24px; color: #dba617;"></span>
+            <span><?php echo esc_html__('Entradas', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=eventos-configuracion'); ?>" class="eventos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
+
     <div class="flavor-kpi-grid">
         <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-calendar"></span></div><div class="flavor-kpi-content"><h3><?php _e('Eventos Activos', 'flavor-chat-ia'); ?></h3><div class="flavor-kpi-value" id="eventos-activos">0</div></div></div>
         <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-tickets-alt"></span></div><div class="flavor-kpi-content"><h3><?php _e('Entradas Vendidas', 'flavor-chat-ia'); ?></h3><div class="flavor-kpi-value" id="entradas-vendidas">0</div></div></div>

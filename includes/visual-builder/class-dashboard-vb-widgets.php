@@ -3957,7 +3957,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($grupos) {
             if (empty($grupos)) {
-                $this->render_empty_state(__('No perteneces a ningún grupo', 'flavor-chat-ia'), home_url('/grupos-consumo/'), __('Ver grupos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No perteneces a ningún grupo', 'flavor-chat-ia'), home_url('/mi-portal/grupos-consumo/'), __('Ver grupos', 'flavor-chat-ia'));
                 return;
             }
             ?>

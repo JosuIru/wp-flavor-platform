@@ -84,6 +84,34 @@ $actividad_mensual = $wpdb->get_results(
 
     <hr class="wp-header-end">
 
+    <!-- Accesos Rápidos -->
+    <div class="bt-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('admin.php?page=bt-servicios'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-tools" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Servicios', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=bt-intercambios'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-randomize" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Intercambios', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=bt-usuarios'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-groups" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Usuarios', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=bt-categorias'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-category" style="font-size: 24px; color: #dba617;"></span>
+            <span><?php echo esc_html__('Categorías', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=bt-valoraciones'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-star-filled" style="font-size: 24px; color: #f59e0b;"></span>
+            <span><?php echo esc_html__('Valoraciones', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=bt-configuracion'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
+
     <!-- Estadísticas Principales -->
     <div class="banco-tiempo-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
 

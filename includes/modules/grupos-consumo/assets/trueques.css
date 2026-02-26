@@ -1,0 +1,781 @@
+/**
+ * Grupos de Consumo - Trueques Styles
+ *
+ * Sistema de intercambio entre socios del grupo
+ * Hereda de Flavor Design Settings (--flavor-*)
+ * Configurable desde: Panel Admin > Flavor > Diseño
+ *
+ * @package FlavorChatIA
+ */
+
+/* === Variables locales - Heredan de Design Settings === */
+:root {
+    --tr-primary: var(--flavor-primary, #4a7c59);
+    --tr-primary-hover: color-mix(in srgb, var(--flavor-primary, #4a7c59) 85%, black);
+    --tr-primary-light: color-mix(in srgb, var(--flavor-primary, #4a7c59) 15%, white);
+    --tr-secondary: var(--flavor-secondary, #8b5cf6);
+    --tr-success: var(--flavor-success, #22c55e);
+    --tr-warning: var(--flavor-warning, #f59e0b);
+    --tr-danger: var(--flavor-error, #ef4444);
+
+    --tr-bg: var(--flavor-bg, #ffffff);
+    --tr-bg-muted: color-mix(in srgb, var(--flavor-bg, #ffffff) 95%, var(--flavor-text, #1f2937));
+    --tr-text: var(--flavor-text, #1f2937);
+    --tr-text-muted: var(--flavor-text-muted, #6b7280);
+
+    --tr-border: color-mix(in srgb, var(--flavor-text, #1f2937) 15%, transparent);
+    --tr-radius: var(--flavor-card-radius, 12px);
+    --tr-radius-sm: var(--flavor-button-radius, 8px);
+    --tr-shadow: var(--flavor-card-shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+    --tr-gap: var(--flavor-grid-gap, 24px);
+    --tr-padding: var(--flavor-card-padding, 24px);
+}
+
+/* === Contenedor principal === */
+.trueques-container {
+    max-width: var(--flavor-container-max, 1280px);
+    margin: 0 auto;
+    padding: var(--tr-padding);
+    font-family: var(--flavor-font-body, inherit);
+}
+
+/* === Header con filtros === */
+.trueques-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--tr-gap);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.trueques-header h1 {
+    font-family: var(--flavor-font-headings, inherit);
+    font-size: var(--flavor-font-size-h2, 36px);
+    color: var(--tr-text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.trueques-header h1 .dashicons {
+    color: var(--tr-primary);
+}
+
+.trueques-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: var(--tr-padding);
+    background: var(--tr-bg);
+    border-radius: var(--tr-radius);
+    box-shadow: var(--tr-shadow);
+    margin-bottom: var(--tr-gap);
+}
+
+.trueques-filtro-grupo {
+    flex: 1;
+    min-width: 180px;
+}
+
+.trueques-filtro-grupo label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--tr-text-muted);
+    margin-bottom: 0.375rem;
+}
+
+.trueques-filtro-grupo input,
+.trueques-filtro-grupo select {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--tr-border);
+    border-radius: var(--tr-radius-sm);
+    font-size: 0.9375rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.trueques-filtro-grupo input:focus,
+.trueques-filtro-grupo select:focus {
+    outline: none;
+    border-color: var(--tr-primary);
+    box-shadow: 0 0 0 3px var(--tr-primary-light);
+}
+
+/* === Tabs de navegación === */
+.trueques-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--tr-border);
+    margin-bottom: var(--tr-gap);
+    overflow-x: auto;
+}
+
+.trueques-tab {
+    padding: 0.875rem 1.5rem;
+    font-weight: 500;
+    color: var(--tr-text-muted);
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.trueques-tab:hover {
+    color: var(--tr-text);
+}
+
+.trueques-tab.active {
+    color: var(--tr-primary);
+}
+
+.trueques-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--tr-primary);
+}
+
+.trueques-tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    margin-left: 0.5rem;
+    background: var(--tr-primary-light);
+    color: var(--tr-primary);
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* === Grid de trueques === */
+.trueques-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--tr-gap);
+}
+
+/* === Tarjeta de trueque === */
+.trueque-card {
+    background: var(--tr-bg);
+    border-radius: var(--tr-radius);
+    box-shadow: var(--tr-shadow);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trueque-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.trueque-card-imagen {
+    position: relative;
+    aspect-ratio: 4/3;
+    background: var(--tr-bg-muted);
+    overflow: hidden;
+}
+
+.trueque-card-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trueque-card-imagen .no-imagen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--tr-text-muted);
+    font-size: 3rem;
+}
+
+.trueque-card-tipo {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.trueque-card-tipo.ofrezco { background: color-mix(in srgb, var(--tr-success) 90%, black); color: white; }
+.trueque-card-tipo.busco { background: color-mix(in srgb, var(--tr-warning) 90%, black); color: white; }
+.trueque-card-tipo.intercambio { background: color-mix(in srgb, var(--tr-primary) 90%, black); color: white; }
+
+.trueque-card-body {
+    padding: var(--tr-padding);
+}
+
+.trueque-card-titulo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--tr-text);
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+}
+
+.trueque-card-descripcion {
+    font-size: 0.9375rem;
+    color: var(--tr-text-muted);
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.trueque-card-categoria {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    background: var(--tr-bg-muted);
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    color: var(--tr-text-muted);
+    margin-bottom: 1rem;
+}
+
+.trueque-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--tr-border);
+}
+
+.trueque-card-autor {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.trueque-autor-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--tr-primary-light);
+    color: var(--tr-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    overflow: hidden;
+}
+
+.trueque-autor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trueque-autor-info {
+    line-height: 1.3;
+}
+
+.trueque-autor-nombre {
+    font-weight: 500;
+    color: var(--tr-text);
+    font-size: 0.875rem;
+}
+
+.trueque-autor-grupo {
+    font-size: 0.75rem;
+    color: var(--tr-text-muted);
+}
+
+.trueque-card-fecha {
+    font-size: 0.8125rem;
+    color: var(--tr-text-muted);
+}
+
+/* === Detalle del trueque === */
+.trueque-detalle {
+    background: var(--tr-bg);
+    border-radius: var(--tr-radius);
+    box-shadow: var(--tr-shadow);
+    overflow: hidden;
+}
+
+.trueque-detalle-header {
+    display: flex;
+    gap: var(--tr-gap);
+    padding: var(--tr-padding);
+}
+
+.trueque-detalle-imagen {
+    flex: 0 0 400px;
+    aspect-ratio: 4/3;
+    border-radius: var(--tr-radius-sm);
+    overflow: hidden;
+    background: var(--tr-bg-muted);
+}
+
+.trueque-detalle-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trueque-detalle-info {
+    flex: 1;
+}
+
+.trueque-detalle-titulo {
+    font-family: var(--flavor-font-headings, inherit);
+    font-size: var(--flavor-font-size-h3, 28px);
+    color: var(--tr-text);
+    margin: 0 0 1rem;
+}
+
+.trueque-detalle-descripcion {
+    font-size: 1rem;
+    color: var(--tr-text);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.trueque-detalle-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.trueque-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--tr-bg-muted);
+    border-radius: var(--tr-radius-sm);
+    font-size: 0.9375rem;
+}
+
+.trueque-meta-item .dashicons {
+    color: var(--tr-primary);
+}
+
+/* === Propuestas de intercambio === */
+.trueque-propuestas {
+    padding: var(--tr-padding);
+    border-top: 1px solid var(--tr-border);
+}
+
+.trueque-propuestas h3 {
+    font-family: var(--flavor-font-headings, inherit);
+    color: var(--tr-text);
+    margin: 0 0 1rem;
+}
+
+.propuesta-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--tr-bg-muted);
+    border-radius: var(--tr-radius-sm);
+    margin-bottom: 0.75rem;
+}
+
+.propuesta-item:last-child {
+    margin-bottom: 0;
+}
+
+.propuesta-usuario {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex: 1;
+}
+
+.propuesta-contenido {
+    flex: 2;
+    font-size: 0.9375rem;
+    color: var(--tr-text);
+}
+
+.propuesta-estado {
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.propuesta-estado.pendiente { background: color-mix(in srgb, var(--tr-warning) 15%, white); color: var(--tr-warning); }
+.propuesta-estado.aceptada { background: color-mix(in srgb, var(--tr-success) 15%, white); color: var(--tr-success); }
+.propuesta-estado.rechazada { background: color-mix(in srgb, var(--tr-danger) 15%, white); color: var(--tr-danger); }
+
+.propuesta-acciones {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* === Formulario nuevo trueque === */
+.trueque-form {
+    background: var(--tr-bg);
+    border-radius: var(--tr-radius);
+    box-shadow: var(--tr-shadow);
+    padding: var(--tr-padding);
+}
+
+.trueque-form-titulo {
+    font-family: var(--flavor-font-headings, inherit);
+    font-size: var(--flavor-font-size-h3, 28px);
+    color: var(--tr-text);
+    margin: 0 0 1.5rem;
+}
+
+.trueque-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.trueque-form-label {
+    display: block;
+    font-weight: 500;
+    color: var(--tr-text);
+    margin-bottom: 0.5rem;
+}
+
+.trueque-form-label .required {
+    color: var(--tr-danger);
+}
+
+.trueque-form-input,
+.trueque-form-textarea,
+.trueque-form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--tr-border);
+    border-radius: var(--tr-radius-sm);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.trueque-form-input:focus,
+.trueque-form-textarea:focus,
+.trueque-form-select:focus {
+    outline: none;
+    border-color: var(--tr-primary);
+    box-shadow: 0 0 0 3px var(--tr-primary-light);
+}
+
+.trueque-form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.trueque-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.trueque-form-tipo-selector {
+    display: flex;
+    gap: 1rem;
+}
+
+.trueque-tipo-opcion {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid var(--tr-border);
+    border-radius: var(--tr-radius-sm);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.trueque-tipo-opcion:hover {
+    border-color: var(--tr-primary);
+}
+
+.trueque-tipo-opcion.selected {
+    border-color: var(--tr-primary);
+    background: var(--tr-primary-light);
+}
+
+.trueque-tipo-opcion input {
+    display: none;
+}
+
+.trueque-tipo-opcion .dashicons {
+    display: block;
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto 0.5rem;
+    color: var(--tr-primary);
+}
+
+.trueque-tipo-opcion span {
+    font-weight: 500;
+    color: var(--tr-text);
+}
+
+/* === Subida de imagen === */
+.trueque-imagen-upload {
+    border: 2px dashed var(--tr-border);
+    border-radius: var(--tr-radius-sm);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.trueque-imagen-upload:hover {
+    border-color: var(--tr-primary);
+    background: var(--tr-primary-light);
+}
+
+.trueque-imagen-upload .dashicons {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: var(--tr-text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.trueque-imagen-upload p {
+    margin: 0;
+    color: var(--tr-text-muted);
+}
+
+.trueque-imagen-preview {
+    position: relative;
+    display: inline-block;
+}
+
+.trueque-imagen-preview img {
+    max-width: 200px;
+    border-radius: var(--tr-radius-sm);
+}
+
+.trueque-imagen-preview .btn-remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--tr-danger);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* === Botones === */
+.tr-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: var(--flavor-button-py, 12px) var(--flavor-button-px, 24px);
+    border-radius: var(--flavor-button-radius, 8px);
+    font-size: var(--flavor-button-font-size, 16px);
+    font-weight: var(--flavor-button-weight, 600);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+}
+
+.tr-btn-primary {
+    background: var(--tr-primary);
+    color: white;
+}
+
+.tr-btn-primary:hover {
+    background: var(--tr-primary-hover);
+    color: white;
+}
+
+.tr-btn-success {
+    background: var(--tr-success);
+    color: white;
+}
+
+.tr-btn-success:hover {
+    background: color-mix(in srgb, var(--tr-success) 85%, black);
+    color: white;
+}
+
+.tr-btn-danger {
+    background: var(--tr-danger);
+    color: white;
+}
+
+.tr-btn-danger:hover {
+    background: color-mix(in srgb, var(--tr-danger) 85%, black);
+    color: white;
+}
+
+.tr-btn-outline {
+    background: transparent;
+    border: 2px solid var(--tr-border);
+    color: var(--tr-text);
+}
+
+.tr-btn-outline:hover {
+    border-color: var(--tr-primary);
+    color: var(--tr-primary);
+    background: var(--tr-primary-light);
+}
+
+.tr-btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.tr-btn-icon {
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+}
+
+/* === Estados vacíos === */
+.trueques-vacio {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--tr-bg-muted);
+    border-radius: var(--tr-radius);
+}
+
+.trueques-vacio .dashicons {
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    color: var(--tr-text-muted);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.trueques-vacio h3 {
+    color: var(--tr-text);
+    margin: 0 0 0.5rem;
+}
+
+.trueques-vacio p {
+    color: var(--tr-text-muted);
+    margin: 0 0 1.5rem;
+}
+
+/* === Loading === */
+.trueques-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+}
+
+.trueques-loading::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--tr-border);
+    border-top-color: var(--tr-primary);
+    border-radius: 50%;
+    animation: tr-spin 0.8s linear infinite;
+}
+
+@keyframes tr-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* === Notificaciones === */
+.trueque-notificacion {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--tr-radius-sm);
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.trueque-notificacion.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.trueque-notificacion.success {
+    background: color-mix(in srgb, var(--tr-success) 15%, white);
+    color: var(--tr-success);
+    border: 1px solid var(--tr-success);
+}
+
+.trueque-notificacion.error {
+    background: color-mix(in srgb, var(--tr-danger) 15%, white);
+    color: var(--tr-danger);
+    border: 1px solid var(--tr-danger);
+}
+
+.trueque-notificacion.warning {
+    background: color-mix(in srgb, var(--tr-warning) 15%, white);
+    color: var(--tr-warning);
+    border: 1px solid var(--tr-warning);
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    .trueques-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .trueques-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trueques-filtros {
+        flex-direction: column;
+    }
+
+    .trueques-filtro-grupo {
+        min-width: 100%;
+    }
+
+    .trueque-detalle-header {
+        flex-direction: column;
+    }
+
+    .trueque-detalle-imagen {
+        flex: none;
+        width: 100%;
+    }
+
+    .trueque-form-tipo-selector {
+        flex-direction: column;
+    }
+
+    .propuesta-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .propuesta-acciones {
+        width: 100%;
+        margin-top: 0.75rem;
+    }
+}

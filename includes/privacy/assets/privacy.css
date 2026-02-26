@@ -1,0 +1,771 @@
+/**
+ * Estilos del panel de privacidad RGPD
+ *
+ * @package Flavor_Chat_IA
+ */
+
+/* Variables */
+:root {
+    --flavor-primary: #2271b1;
+    --flavor-primary-dark: #135e96;
+    --flavor-success: #00a32a;
+    --flavor-warning: #dba617;
+    --flavor-danger: #dc3545;
+    --flavor-gray-100: #f6f7f7;
+    --flavor-gray-200: #e2e4e7;
+    --flavor-gray-300: #c3c4c7;
+    --flavor-gray-500: #787c82;
+    --flavor-gray-700: #3c434a;
+    --flavor-border-radius: 8px;
+    --flavor-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Panel principal */
+.flavor-privacy-panel {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.flavor-privacy-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.flavor-privacy-header h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: var(--flavor-gray-700);
+}
+
+.flavor-privacy-intro {
+    color: var(--flavor-gray-500);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Tabs */
+.flavor-privacy-tabs {
+    display: flex;
+    gap: 5px;
+    border-bottom: 2px solid var(--flavor-gray-200);
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.flavor-tab-btn {
+    background: transparent;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--flavor-gray-500);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.flavor-tab-btn:hover {
+    color: var(--flavor-primary);
+}
+
+.flavor-tab-btn.active {
+    color: var(--flavor-primary);
+}
+
+.flavor-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--flavor-primary);
+}
+
+.flavor-tab-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.flavor-tab-content {
+    display: none;
+}
+
+.flavor-tab-content.active {
+    display: block;
+}
+
+/* Cards */
+.flavor-privacy-card {
+    background: #fff;
+    border: 1px solid var(--flavor-gray-200);
+    border-radius: var(--flavor-border-radius);
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: var(--flavor-shadow);
+}
+
+.flavor-privacy-card h3 {
+    margin: 0 0 15px;
+    font-size: 18px;
+    color: var(--flavor-gray-700);
+}
+
+.flavor-card-description {
+    color: var(--flavor-gray-500);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.flavor-card-danger {
+    border-color: var(--flavor-danger);
+    border-left-width: 4px;
+}
+
+.flavor-card-actions {
+    background: var(--flavor-gray-100);
+}
+
+/* Info Grid */
+.flavor-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.flavor-info-item {
+    padding: 15px;
+    background: var(--flavor-gray-100);
+    border-radius: 6px;
+}
+
+.flavor-info-item .label {
+    display: block;
+    font-size: 12px;
+    color: var(--flavor-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.flavor-info-item .value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--flavor-gray-700);
+}
+
+/* Data Summary */
+.flavor-data-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.flavor-data-item {
+    background: var(--flavor-gray-100);
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.flavor-data-item .count {
+    display: block;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--flavor-primary);
+}
+
+.flavor-data-item .label {
+    font-size: 12px;
+    color: var(--flavor-gray-500);
+}
+
+/* Buttons */
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.flavor-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.flavor-btn-primary {
+    background: var(--flavor-primary);
+    color: #fff;
+}
+
+.flavor-btn-primary:hover {
+    background: var(--flavor-primary-dark);
+}
+
+.flavor-btn-secondary {
+    background: var(--flavor-gray-200);
+    color: var(--flavor-gray-700);
+}
+
+.flavor-btn-secondary:hover {
+    background: var(--flavor-gray-300);
+}
+
+.flavor-btn-danger {
+    background: var(--flavor-danger);
+    color: #fff;
+}
+
+.flavor-btn-danger:hover {
+    background: #c82333;
+}
+
+.flavor-btn-outline-danger {
+    background: transparent;
+    border: 2px solid var(--flavor-danger);
+    color: var(--flavor-danger);
+}
+
+.flavor-btn-outline-danger:hover {
+    background: var(--flavor-danger);
+    color: #fff;
+}
+
+.flavor-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.flavor-action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.flavor-action-note {
+    margin-top: 15px;
+    color: var(--flavor-gray-500);
+}
+
+/* Consents */
+.flavor-consents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.flavor-consent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px;
+    background: var(--flavor-gray-100);
+    border-radius: 6px;
+    gap: 20px;
+}
+
+.flavor-consent-item.obligatorio {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+}
+
+.flavor-consent-info h4 {
+    margin: 0 0 5px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flavor-consent-info p {
+    margin: 0;
+    color: var(--flavor-gray-500);
+    font-size: 13px;
+}
+
+.flavor-consent-date {
+    display: block;
+    font-size: 11px;
+    color: var(--flavor-gray-500);
+    margin-top: 8px;
+}
+
+.flavor-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.flavor-badge.obligatorio {
+    background: #ffc107;
+    color: #000;
+}
+
+/* Toggle Switch */
+.flavor-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.flavor-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.flavor-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--flavor-gray-300);
+    transition: 0.3s;
+    border-radius: 26px;
+}
+
+.flavor-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.flavor-switch input:checked + .flavor-slider {
+    background-color: var(--flavor-success);
+}
+
+.flavor-switch input:checked + .flavor-slider:before {
+    transform: translateX(24px);
+}
+
+.flavor-switch input:disabled + .flavor-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.flavor-consents-footer {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--flavor-gray-200);
+}
+
+/* Table */
+.flavor-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.flavor-table th,
+.flavor-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--flavor-gray-200);
+}
+
+.flavor-table th {
+    background: var(--flavor-gray-100);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--flavor-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flavor-table tr:hover {
+    background: var(--flavor-gray-100);
+}
+
+.flavor-request-type {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.flavor-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.flavor-status-badge.estado-pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.flavor-status-badge.estado-procesando {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.flavor-status-badge.estado-completado {
+    background: #d4edda;
+    color: #155724;
+}
+
+.flavor-status-badge.estado-rechazado {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.flavor-text-muted {
+    color: var(--flavor-gray-500);
+}
+
+/* Empty State */
+.flavor-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--flavor-gray-500);
+}
+
+.flavor-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.3;
+    margin-bottom: 10px;
+}
+
+/* Rights List */
+.flavor-rights-list {
+    display: grid;
+    gap: 15px;
+}
+
+.flavor-right-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: var(--flavor-gray-100);
+    border-radius: 6px;
+}
+
+.flavor-right-item .dashicons {
+    color: var(--flavor-primary);
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.flavor-right-item h4 {
+    margin: 0 0 5px;
+    font-size: 14px;
+}
+
+.flavor-right-item p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--flavor-gray-500);
+}
+
+/* Delete Form */
+.flavor-delete-form {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 6px;
+}
+
+.flavor-form-group {
+    margin-bottom: 15px;
+}
+
+.flavor-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.flavor-form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--flavor-gray-300);
+    border-radius: 6px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.flavor-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.flavor-checkbox input {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.flavor-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Notes */
+.flavor-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 12px;
+    background: #e7f5ff;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #004085;
+}
+
+.flavor-note .dashicons {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Notice */
+.flavor-notice {
+    padding: 20px;
+    border-radius: var(--flavor-border-radius);
+    text-align: center;
+}
+
+.flavor-notice-warning {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+}
+
+.flavor-notice p {
+    margin: 0 0 15px;
+}
+
+/* Loading */
+.flavor-loading {
+    text-align: center;
+    padding: 30px;
+    color: var(--flavor-gray-500);
+}
+
+.flavor-loading .dashicons {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modal */
+.flavor-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.flavor-modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: var(--flavor-border-radius);
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.flavor-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--flavor-gray-200);
+}
+
+.flavor-modal-header h3 {
+    margin: 0;
+}
+
+.flavor-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--flavor-gray-500);
+    padding: 0;
+    line-height: 1;
+}
+
+.flavor-modal-body {
+    padding: 20px;
+}
+
+.flavor-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 15px 20px;
+    border-top: 1px solid var(--flavor-gray-200);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-privacy-panel {
+        padding: 15px;
+    }
+
+    .flavor-privacy-tabs {
+        gap: 0;
+    }
+
+    .flavor-tab-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .flavor-tab-btn .dashicons {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+    }
+
+    .flavor-privacy-card {
+        padding: 15px;
+    }
+
+    .flavor-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-action-buttons {
+        flex-direction: column;
+    }
+
+    .flavor-btn {
+        justify-content: center;
+    }
+
+    .flavor-consent-item {
+        flex-direction: column;
+    }
+
+    .flavor-consent-toggle {
+        align-self: flex-start;
+    }
+
+    .flavor-table {
+        font-size: 13px;
+    }
+
+    .flavor-table th,
+    .flavor-table td {
+        padding: 8px 10px;
+    }
+}
+
+/* Consent Form (standalone) */
+.flavor-consent-form .flavor-consent-item {
+    display: block;
+    padding: 10px 0;
+    background: transparent;
+    border-bottom: 1px solid var(--flavor-gray-200);
+}
+
+.flavor-consent-form .flavor-consent-item:last-child {
+    border-bottom: none;
+}
+
+.flavor-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.flavor-checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--flavor-gray-300);
+    border-radius: 4px;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.flavor-consent-checkbox:checked + .flavor-checkbox-custom {
+    background: var(--flavor-primary);
+    border-color: var(--flavor-primary);
+}
+
+.flavor-consent-checkbox:checked + .flavor-checkbox-custom::after {
+    content: '\2713';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 14px;
+}
+
+.flavor-consent-checkbox {
+    position: absolute;
+    opacity: 0;
+}
+
+.flavor-checkbox-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.flavor-checkbox-text .required {
+    color: var(--flavor-danger);
+}
+
+.flavor-consent-note {
+    margin-top: 15px;
+    color: var(--flavor-gray-500);
+}

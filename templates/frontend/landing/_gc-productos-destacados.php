@@ -89,7 +89,7 @@ $productos = get_posts([
                                     <?php _e('Añadir', 'flavor-chat-ia'); ?>
                                 </button>
                             <?php else: ?>
-                                <a href="<?php echo esc_url(wp_login_url(home_url('/grupos-consumo/productos/'))); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm flavor-btn--full">
+                                <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/productos/'))); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm flavor-btn--full">
                                     <?php _e('Inicia sesión para pedir', 'flavor-chat-ia'); ?>
                                 </a>
                             <?php endif; ?>
@@ -99,7 +99,7 @@ $productos = get_posts([
             </div>
 
             <div class="flavor-section-footer">
-                <a href="<?php echo esc_url(home_url('/grupos-consumo/productos/')); ?>" class="flavor-btn flavor-btn--primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="flavor-btn flavor-btn--primary">
                     <?php _e('Ver todo el catálogo', 'flavor-chat-ia'); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </a>

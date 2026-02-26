@@ -23,6 +23,10 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_empresarial_contacto_form', [$this, 'ajax_contacto_form']);
+        add_action('wp_ajax_nopriv_empresarial_contacto_form', [$this, 'ajax_contacto_form']);
+
         // Mapear propiedades del módulo al formato base
         $this->id = $this->module_id;
         $this->name = $this->module_name;

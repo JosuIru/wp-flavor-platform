@@ -9,7 +9,33 @@ $total_parcelas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_parcelas");
 $parcelas_ocupadas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_parcelas WHERE estado = 'ocupada'");
 ?>
 <div class="wrap">
-    <h1><?php echo esc_html__('Dashboard - Huertos Urbanos', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Dashboard - Huertos Urbanos', 'flavor-chat-ia'); ?></h1>
+    <hr class="wp-header-end">
+
+    <!-- Accesos Rapidos -->
+    <div class="huertos-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('admin.php?page=huertos-parcelas'); ?>" class="huertos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-site-alt" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Parcelas', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=huertos-huertanos'); ?>" class="huertos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-groups" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Huertanos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=huertos-cosechas'); ?>" class="huertos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-carrot" style="font-size: 24px; color: #d63638;"></span>
+            <span><?php echo esc_html__('Cosechas', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=huertos-recursos'); ?>" class="huertos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-tools" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Recursos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=huertos-configuracion'); ?>" class="huertos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuracion', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
+
     <div class="flavor-stats-cards">
         <div class="flavor-stat-card">
             <h3><?php echo $total_huertos; ?></h3>

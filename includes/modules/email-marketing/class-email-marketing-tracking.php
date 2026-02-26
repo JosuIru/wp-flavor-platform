@@ -290,21 +290,32 @@ class Flavor_EM_Tracking {
         global $wpdb;
 
         $fecha_inicio = date('Y-m-d H:i:s', strtotime('-' . $periodo));
+        $tabla_suscriptores = $wpdb->prefix . 'flavor_em_suscriptores';
+
+        // Detectar columna de fecha en suscriptores
+        $col_fecha_suscriptor = null;
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_suscriptores)) {
+            $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla_suscriptores");
+            $col_fecha_suscriptor = in_array('creado_en', $columnas) ? 'creado_en' :
+                                   (in_array('fecha_registro', $columnas) ? 'fecha_registro' : null);
+        }
 
         // Totales
         $total_suscriptores = $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_em_suscriptores WHERE estado = 'activo'"
+            "SELECT COUNT(*) FROM {$tabla_suscriptores} WHERE estado = 'activo'"
         );
 
         $total_listas = $wpdb->get_var(
             "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_em_listas WHERE activa = 1"
         );
 
-        $nuevos_suscriptores = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_em_suscriptores
-             WHERE creado_en >= %s",
-            $fecha_inicio
-        ));
+        $nuevos_suscriptores = 0;
+        if ($col_fecha_suscriptor) {
+            $nuevos_suscriptores = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_suscriptores} WHERE $col_fecha_suscriptor >= %s",
+                $fecha_inicio
+            ));
+        }
 
         $bajas = $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_em_suscriptores
@@ -331,14 +342,17 @@ class Flavor_EM_Tracking {
         ));
 
         // Crecimiento diario
-        $crecimiento_diario = $wpdb->get_results($wpdb->prepare(
-            "SELECT DATE(creado_en) as fecha, COUNT(*) as total
-             FROM {$wpdb->prefix}flavor_em_suscriptores
-             WHERE creado_en >= %s
-             GROUP BY DATE(creado_en)
-             ORDER BY fecha ASC",
-            $fecha_inicio
-        ));
+        $crecimiento_diario = [];
+        if ($col_fecha_suscriptor) {
+            $crecimiento_diario = $wpdb->get_results($wpdb->prepare(
+                "SELECT DATE($col_fecha_suscriptor) as fecha, COUNT(*) as total
+                 FROM {$tabla_suscriptores}
+                 WHERE $col_fecha_suscriptor >= %s
+                 GROUP BY DATE($col_fecha_suscriptor)
+                 ORDER BY fecha ASC",
+                $fecha_inicio
+            ));
+        }
 
         // Tasas promedio
         $tasas_promedio = $wpdb->get_row($wpdb->prepare(

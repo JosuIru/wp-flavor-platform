@@ -93,6 +93,12 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
                 <span class="dashicons dashicons-admin-users"></span>
                 <?php esc_html_e('Miembros', 'flavor-chat-ia'); ?>
             </button>
+            <?php if ($es_miembro && !empty($chat_grupos_activo)): ?>
+            <button type="button" class="flavor-com-tab" data-tab="chat">
+                <span class="dashicons dashicons-format-chat"></span>
+                <?php esc_html_e('Chat', 'flavor-chat-ia'); ?>
+            </button>
+            <?php endif; ?>
             <?php if (!empty($comunidad->reglas)): ?>
             <button type="button" class="flavor-com-tab" data-tab="reglas">
                 <span class="dashicons dashicons-clipboard"></span>
@@ -158,6 +164,17 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
                 <div class="flavor-com-reglas-contenido">
                     <?php echo nl2br(esc_html($comunidad->reglas)); ?>
                 </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($es_miembro && !empty($chat_grupos_activo)): ?>
+        <div class="flavor-com-tab-content" id="tab-chat">
+            <div class="flavor-com-chat-container">
+                <?php
+                // Incluir el chat del grupo de la comunidad
+                echo do_shortcode('[flavor_chat_grupo id="' . esc_attr($grupo_chat_id) . '" embebido="1"]');
+                ?>
             </div>
         </div>
         <?php endif; ?>

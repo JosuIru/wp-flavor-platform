@@ -471,13 +471,23 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             'color' => $total_suscriptores > 0 ? 'green' : 'gray'
         ];
 
-        // Campañas enviadas este mes
+        // Campañas enviadas este mes (verificar si la columna existe)
         if (Flavor_Chat_Helpers::tabla_existe($tabla_campanias)) {
-            $primer_dia_mes = date('Y-m-01');
-            $campanias_mes = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'enviada' AND fecha_envio >= %s",
-                $primer_dia_mes
-            ));
+            $columnas_campanias = $wpdb->get_col("SHOW COLUMNS FROM $tabla_campanias");
+            $col_fecha_envio = in_array('fecha_inicio_envio', $columnas_campanias) ? 'fecha_inicio_envio' :
+                              (in_array('fecha_envio', $columnas_campanias) ? 'fecha_envio' : null);
+
+            if ($col_fecha_envio) {
+                $primer_dia_mes = date('Y-m-01');
+                $campanias_mes = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'enviada' AND $col_fecha_envio >= %s",
+                    $primer_dia_mes
+                ));
+            } else {
+                $campanias_mes = (int) $wpdb->get_var(
+                    "SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'enviada'"
+                );
+            }
             $estadisticas[] = [
                 'icon'  => 'dashicons-megaphone',
                 'valor' => $campanias_mes,
@@ -486,19 +496,25 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             ];
         }
 
-        // Nuevos suscriptores esta semana
-        $hace_una_semana = date('Y-m-d H:i:s', strtotime('-7 days'));
-        $nuevos_semana = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $tabla_suscriptores WHERE estado = 'activo' AND fecha_alta >= %s",
-            $hace_una_semana
-        ));
-        if ($nuevos_semana > 0) {
-            $estadisticas[] = [
-                'icon'  => 'dashicons-plus-alt',
-                'valor' => '+' . $nuevos_semana,
-                'label' => __('Nuevos esta semana', 'flavor-chat-ia'),
-                'color' => 'green'
-            ];
+        // Nuevos suscriptores esta semana (verificar si la columna existe)
+        $columnas_suscriptores = $wpdb->get_col("SHOW COLUMNS FROM $tabla_suscriptores");
+        $col_fecha = in_array('creado_en', $columnas_suscriptores) ? 'creado_en' :
+                    (in_array('fecha_registro', $columnas_suscriptores) ? 'fecha_registro' : null);
+
+        if ($col_fecha) {
+            $hace_una_semana = date('Y-m-d H:i:s', strtotime('-7 days'));
+            $nuevos_semana = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_suscriptores WHERE estado = 'activo' AND $col_fecha >= %s",
+                $hace_una_semana
+            ));
+            if ($nuevos_semana > 0) {
+                $estadisticas[] = [
+                    'icon'  => 'dashicons-plus-alt',
+                    'valor' => '+' . $nuevos_semana,
+                    'label' => __('Nuevos esta semana', 'flavor-chat-ia'),
+                    'color' => 'green'
+                ];
+            }
         }
 
         return $estadisticas;

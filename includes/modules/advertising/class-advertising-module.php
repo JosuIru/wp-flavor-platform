@@ -20,6 +20,16 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_advertising_obtener_stats', [$this, 'ajax_obtener_stats']);
+        add_action('wp_ajax_nopriv_advertising_obtener_stats', [$this, 'ajax_obtener_stats']);
+        add_action('wp_ajax_advertising_admin_aprobar', [$this, 'ajax_admin_aprobar']);
+        add_action('wp_ajax_nopriv_advertising_admin_aprobar', [$this, 'ajax_admin_aprobar']);
+        add_action('wp_ajax_advertising_admin_rechazar', [$this, 'ajax_admin_rechazar']);
+        add_action('wp_ajax_nopriv_advertising_admin_rechazar', [$this, 'ajax_admin_rechazar']);
+        add_action('wp_ajax_advertising_admin_procesar_pago', [$this, 'ajax_admin_procesar_pago']);
+        add_action('wp_ajax_nopriv_advertising_admin_procesar_pago', [$this, 'ajax_admin_procesar_pago']);
+
         $this->id = 'advertising';
         $this->name = 'Publicidad Ética'; // Translation loaded on init
         $this->description = 'Sistema de anuncios éticos con reparto de beneficios.'; // Translation loaded on init

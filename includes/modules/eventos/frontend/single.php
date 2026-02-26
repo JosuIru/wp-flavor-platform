@@ -26,24 +26,10 @@ while (have_posts()) :
 ?>
 
 <div class="flavor-container py-8">
-    <!-- Breadcrumbs -->
-    <nav class="flex mb-6 text-sm">
-        <ol class="inline-flex items-center space-x-2">
-            <li>
-                <a href="<?php echo home_url('/'); ?>" class="text-gray-600 hover:text-primary">
-                    <?php esc_html_e('Inicio', 'flavor-chat-ia'); ?>
-                </a>
-            </li>
-            <li><span class="mx-2">/</span></li>
-            <li>
-                <a href="<?php echo get_post_type_archive_link('evento'); ?>" class="text-gray-600 hover:text-primary">
-                    <?php esc_html_e('Eventos', 'flavor-chat-ia'); ?>
-                </a>
-            </li>
-            <li><span class="mx-2">/</span></li>
-            <li class="text-gray-900 font-medium"><?php the_title(); ?></li>
-        </ol>
-    </nav>
+    <?php
+    // Breadcrumbs centralizados
+    echo Flavor_Breadcrumbs::render(['archive_label' => __('Eventos', 'flavor-chat-ia')]);
+    ?>
 
     <div class="grid lg:grid-cols-3 gap-8">
         <!-- Contenido principal -->
@@ -154,24 +140,12 @@ while (have_posts()) :
                     </button>
                 <?php endif; ?>
 
-                <!-- Compartir -->
-                <div class="border-t pt-4">
-                    <h4 class="font-semibold mb-3">
-                        <?php esc_html_e('Compartir', 'flavor-chat-ia'); ?>
-                    </h4>
-                    <div class="flex gap-2">
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           class="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-center text-sm hover:bg-blue-700">
-                            Facebook
-                        </a>
-                        <button onclick="navigator.clipboard.writeText('<?php echo esc_js(get_permalink()); ?>'); alert('<?php esc_attr_e('Copiado', 'flavor-chat-ia'); ?>');"
-                                class="flex-1 px-3 py-2 bg-gray-600 text-white rounded text-sm hover:bg-gray-700">
-                            <?php esc_html_e('Copiar', 'flavor-chat-ia'); ?>
-                        </button>
-                    </div>
-                </div>
+                <?php
+                // Shared features: valoraciones, favoritos, compartir
+                if (function_exists('flavor_render_post_features')) {
+                    flavor_render_post_features(['ratings', 'favorites', 'share', 'views']);
+                }
+                ?>
             </div>
         </aside>
     </div>

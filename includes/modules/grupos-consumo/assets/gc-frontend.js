@@ -49,6 +49,43 @@
 
         // Botón añadir producto al pedido (shortcode simple)
         $(document).on('click', '.gc-anadir-pedido', anadirProductoPedido);
+
+        // === Eventos del Modal (delegados a document para máxima compatibilidad) ===
+        // Cerrar modal
+        $(document).on('click', '.gc-modal-close, .gc-modal-cancelar', function(e) {
+            e.preventDefault();
+            $(this).closest('.gc-modal-overlay').remove();
+        });
+
+        // Cerrar al hacer clic en el overlay
+        $(document).on('click', '.gc-modal-overlay', function(e) {
+            if (e.target === this) {
+                $(this).remove();
+            }
+        });
+
+        // Botón menos (-)
+        $(document).on('click', '.gc-btn-modal-menos', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const $control = $(this).closest('.gc-cantidad-control-modal');
+            const $input = $control.find('input[type="number"]');
+            const valorActual = parseInt($input.val()) || 1;
+            $input.val(Math.max(1, valorActual - 2));
+        });
+
+        // Botón más (+)
+        $(document).on('click', '.gc-btn-modal-mas', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const $control = $(this).closest('.gc-cantidad-control-modal');
+            const $input = $control.find('input[type="number"]');
+            const valorActual = parseInt($input.val()) || 1;
+            $input.val(Math.min(99, valorActual + 2));
+        });
+
+        // Enviar formulario del modal
+        $(document).on('submit', '.gc-form-anadir', enviarFormularioModal);
     }
 
     /**
@@ -64,6 +101,9 @@
             mostrarNotificacion('Error: No se encontró el producto', 'error');
             return;
         }
+
+        // Cerrar cualquier modal existente
+        $('.gc-modal-overlay').remove();
 
         // Mostrar modal para seleccionar cantidad
         const modalHtml = `
@@ -90,71 +130,49 @@
         `;
 
         $('body').append(modalHtml);
+    }
 
-        // Eventos del modal
-        $('#modal-anadir-producto').on('click', '.gc-modal-close, .gc-modal-cancelar', function() {
-            $('#modal-anadir-producto').remove();
-        });
+    /**
+     * Enviar formulario del modal
+     */
+    function enviarFormularioModal(e) {
+        e.preventDefault();
 
-        $('#modal-anadir-producto').on('click', function(e) {
-            if (e.target === this) {
-                $(this).remove();
-            }
-        });
+        const $form = $(this);
+        const productoId = $form.data('producto-id');
+        const cantidad = $form.find('input[name="cantidad"]').val();
+        const $submitBtn = $form.find('button[type="submit"]');
 
-        // Botones +/-
-        $('#modal-anadir-producto').on('click', '.gc-btn-modal-menos', function() {
-            const $input = $('#gc-cantidad');
-            const val = parseInt($input.val()) || 1;
-            $input.val(Math.max(1, val - 1));
-        });
+        const textoOriginal = $submitBtn.text();
+        $submitBtn.prop('disabled', true).text('Añadiendo...');
 
-        $('#modal-anadir-producto').on('click', '.gc-btn-modal-mas', function() {
-            const $input = $('#gc-cantidad');
-            const val = parseInt($input.val()) || 1;
-            $input.val(Math.min(99, val + 1));
-        });
+        $.ajax({
+            url: config.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'gc_agregar_lista',
+                nonce: config.nonce,
+                producto_id: productoId,
+                cantidad: cantidad
+            },
+            success: function(response) {
+                if (response.success) {
+                    mostrarNotificacion(response.data.message || '¡Producto añadido al pedido!', 'success');
+                    $form.closest('.gc-modal-overlay').remove();
 
-        // Enviar formulario
-        $('#modal-anadir-producto').on('submit', '.gc-form-anadir', function(e) {
-            e.preventDefault();
-
-            const $form = $(this);
-            const prodId = $form.data('producto-id');
-            const cantidad = $form.find('input[name="cantidad"]').val();
-            const $submitBtn = $form.find('button[type="submit"]');
-
-            const textoOriginal = $submitBtn.text();
-            $submitBtn.prop('disabled', true).text('Añadiendo...');
-
-            $.ajax({
-                url: config.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'gc_agregar_lista',
-                    nonce: config.nonce,
-                    producto_id: prodId,
-                    cantidad: cantidad
-                },
-                success: function(response) {
-                    if (response.success) {
-                        mostrarNotificacion(response.data.message || '¡Producto añadido al pedido!', 'success');
-                        $('#modal-anadir-producto').remove();
-
-                        // Actualizar visual del botón
-                        $(`.gc-anadir-pedido[data-producto-id="${prodId}"]`)
-                            .addClass('gc-en-pedido')
-                            .text('✓ En pedido');
-                    } else {
-                        mostrarNotificacion(response.data.message || 'Error al añadir el producto', 'error');
-                        $submitBtn.prop('disabled', false).text(textoOriginal);
-                    }
-                },
-                error: function() {
-                    mostrarNotificacion('Error de conexión. Intenta de nuevo.', 'error');
+                    // Actualizar visual del botón
+                    $(`.gc-anadir-pedido[data-producto-id="${productoId}"]`)
+                        .addClass('gc-en-pedido')
+                        .text('✓ En pedido');
+                } else {
+                    mostrarNotificacion(response.data.message || 'Error al añadir el producto', 'error');
                     $submitBtn.prop('disabled', false).text(textoOriginal);
                 }
-            });
+            },
+            error: function() {
+                mostrarNotificacion('Error de conexión. Intenta de nuevo.', 'error');
+                $submitBtn.prop('disabled', false).text(textoOriginal);
+            }
         });
     }
 

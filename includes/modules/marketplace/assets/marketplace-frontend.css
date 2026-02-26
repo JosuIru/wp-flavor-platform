@@ -1,0 +1,317 @@
+/**
+ * Marketplace Frontend Styles
+ *
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Contenedor principal
+   ========================================================================== */
+.marketplace-catalogo {
+    padding: 1rem 0;
+}
+
+/* ==========================================================================
+   Filtros
+   ========================================================================== */
+.marketplace-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.filtro-buscar {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+}
+
+.filtro-buscar input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.filtro-buscar .filtro-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.filtro-tipo,
+.filtro-categoria {
+    min-width: 150px;
+}
+
+.filtro-tipo select,
+.filtro-categoria select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: white;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   Grid de anuncios
+   ========================================================================== */
+.marketplace-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.marketplace-catalogo[data-columnas="2"] .marketplace-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.marketplace-catalogo[data-columnas="3"] .marketplace-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.marketplace-catalogo[data-columnas="4"] .marketplace-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 992px) {
+    .marketplace-catalogo[data-columnas="4"] .marketplace-grid,
+    .marketplace-catalogo[data-columnas="3"] .marketplace-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .marketplace-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .marketplace-filtros {
+        flex-direction: column;
+    }
+}
+
+/* ==========================================================================
+   Tarjeta de anuncio
+   ========================================================================== */
+.marketplace-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.marketplace-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.marketplace-card-imagen {
+    position: relative;
+    aspect-ratio: 4/3;
+    background: #f0f0f0;
+    overflow: hidden;
+}
+
+.marketplace-card-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.marketplace-card-imagen .sin-imagen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #ccc;
+}
+
+.marketplace-card-imagen .sin-imagen .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+/* Badge de tipo */
+.marketplace-card-tipo {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: white;
+}
+
+.marketplace-card-tipo.tipo-regalo {
+    background: #10b981;
+}
+
+.marketplace-card-tipo.tipo-venta {
+    background: #3b82f6;
+}
+
+.marketplace-card-tipo.tipo-cambio {
+    background: #f59e0b;
+}
+
+.marketplace-card-tipo.tipo-alquiler {
+    background: #8b5cf6;
+}
+
+/* Favorito */
+.marketplace-card-favorito {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s;
+}
+
+.marketplace-card-favorito:hover {
+    background: #f8f9fa;
+}
+
+.marketplace-card-favorito .dashicons {
+    color: #dc2626;
+    font-size: 18px;
+}
+
+.marketplace-card-favorito.activo .dashicons {
+    color: #dc2626;
+}
+
+/* Contenido de la tarjeta */
+.marketplace-card-contenido {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.marketplace-card-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
+}
+
+.marketplace-card-titulo a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.marketplace-card-titulo a:hover {
+    color: var(--flavor-primary, #3b82f6);
+}
+
+.marketplace-card-precio {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--flavor-primary, #3b82f6);
+    margin-bottom: 0.5rem;
+}
+
+.marketplace-card-precio.gratis {
+    color: #10b981;
+}
+
+.marketplace-card-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.marketplace-card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.marketplace-card-meta .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* Estado vendido */
+.marketplace-card.vendido {
+    opacity: 0.7;
+}
+
+.marketplace-card.vendido::after {
+    content: 'VENDIDO';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    background: #dc2626;
+    color: white;
+    padding: 0.5rem 2rem;
+    font-weight: bold;
+    font-size: 1.25rem;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   Mensaje sin anuncios
+   ========================================================================== */
+.marketplace-sin-anuncios {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* ==========================================================================
+   Loading state
+   ========================================================================== */
+.marketplace-loading {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.marketplace-loading::after {
+    content: '';
+    width: 32px;
+    height: 32px;
+    border: 3px solid #f0f0f0;
+    border-top-color: var(--flavor-primary, #3b82f6);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,593 @@
+/**
+ * CSS Frontend para Parkings Comunitarios
+ * @package FlavorChatIA
+ */
+
+:root {
+    --parking-verde: #22c55e;
+    --parking-naranja: #f59e0b;
+    --parking-rojo: #ef4444;
+    --parking-azul: #3b82f6;
+}
+
+/* Dashboard */
+.flavor-parkings-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* KPIs */
+.flavor-kpi-grid { display: grid; gap: 1rem; }
+.flavor-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.flavor-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+@media (max-width: 992px) { .flavor-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 576px) { .flavor-grid-4, .flavor-grid-3 { grid-template-columns: 1fr; } }
+
+.flavor-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-kpi-icon.verde { background: #dcfce7; color: var(--parking-verde); }
+.flavor-kpi-icon.azul { background: #dbeafe; color: var(--parking-azul); }
+.flavor-kpi-icon.naranja { background: #ffedd5; color: var(--parking-naranja); }
+.flavor-kpi-icon.morado { background: #ede9fe; color: #8b5cf6; }
+.flavor-kpi-icon.gris { background: #f3f4f6; color: #6b7280; }
+
+.flavor-kpi-icon .dashicons { font-size: 24px; width: 24px; height: 24px; }
+
+.flavor-kpi-content { display: flex; flex-direction: column; }
+.flavor-kpi-valor { font-size: 1.5rem; font-weight: 700; color: #111827; }
+.flavor-kpi-label { font-size: 0.875rem; color: #6b7280; }
+
+/* Paneles */
+.flavor-panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.flavor-panel-info { background: #f0f9ff; border-color: #bae6fd; }
+
+.flavor-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.flavor-panel-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flavor-panel-body { padding: 1.25rem; }
+
+/* Plaza Info Card */
+.flavor-plaza-info-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+.flavor-plaza-numero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--parking-azul);
+    color: #fff;
+    border-radius: 8px;
+}
+
+.flavor-plaza-numero .numero { font-size: 2rem; font-weight: 700; line-height: 1; }
+.flavor-plaza-numero .planta { font-size: 0.75rem; opacity: 0.8; }
+
+.flavor-plaza-detalles { flex: 1; }
+.flavor-plaza-detalles p { margin: 0 0 0.25rem; }
+.flavor-plaza-detalles p:first-child { font-weight: 600; color: #111827; }
+
+.flavor-plaza-acciones { flex-shrink: 0; }
+
+/* CTA Box */
+.flavor-cta-box {
+    text-align: center;
+    padding: 1rem;
+}
+
+.flavor-cta-box .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--parking-azul);
+    margin-bottom: 1rem;
+}
+
+.flavor-cta-box h4 { margin: 0 0 0.5rem; }
+.flavor-cta-box p { margin: 0 0 1rem; color: #6b7280; }
+.flavor-cta-buttons { display: flex; gap: 1rem; justify-content: center; }
+
+/* Reservas List */
+.flavor-reservas-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.flavor-reserva-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid var(--parking-azul);
+}
+
+.flavor-reserva-fecha {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 50px;
+}
+
+.flavor-reserva-fecha .dia { font-size: 1.5rem; font-weight: 700; color: #111827; line-height: 1; }
+.flavor-reserva-fecha .mes { font-size: 0.75rem; color: #6b7280; text-transform: uppercase; }
+
+.flavor-reserva-info { flex: 1; display: flex; flex-direction: column; gap: 0.25rem; }
+.flavor-reserva-plaza { font-weight: 600; color: #111827; }
+.flavor-reserva-parking { font-size: 0.875rem; color: #6b7280; }
+.flavor-reserva-horario { font-size: 0.75rem; color: #9ca3af; display: flex; align-items: center; gap: 0.25rem; }
+.flavor-reserva-horario .dashicons { font-size: 14px; width: 14px; height: 14px; }
+
+.flavor-reserva-estado { display: flex; align-items: center; gap: 0.5rem; }
+
+/* Acciones Grid */
+.flavor-acciones-grid { display: grid; gap: 1rem; }
+
+.flavor-accion-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #374151;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.flavor-accion-card:hover {
+    border-color: var(--parking-azul);
+    background: #f0f9ff;
+    color: var(--parking-azul);
+}
+
+.flavor-accion-card .dashicons { font-size: 28px; width: 28px; height: 28px; }
+
+/* Mapa */
+.flavor-parkings-mapa-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-mapa-container {
+    width: 100%;
+    min-height: 300px;
+    background: #f3f4f6;
+}
+
+.flavor-mapa-leyenda {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.flavor-leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.flavor-marker { width: 12px; height: 12px; border-radius: 50%; }
+.flavor-marker.verde { background: var(--parking-verde); }
+.flavor-marker.naranja { background: var(--parking-naranja); }
+.flavor-marker.rojo { background: var(--parking-rojo); }
+
+/* Parking Cards */
+.flavor-parkings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-parking-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 1.25rem;
+    transition: box-shadow 0.2s;
+}
+
+.flavor-parking-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+
+.flavor-parking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-parking-header h4 { margin: 0; font-size: 1rem; color: #111827; }
+
+.flavor-parking-direccion {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 0.75rem;
+}
+
+.flavor-parking-direccion .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: var(--parking-azul);
+}
+
+.flavor-parking-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.flavor-stat-valor { font-size: 1.25rem; font-weight: 700; color: #111827; }
+.flavor-stat-valor.verde { color: var(--parking-verde); }
+.flavor-stat-valor.azul { color: var(--parking-azul); }
+.flavor-stat-label { font-size: 0.75rem; color: #6b7280; }
+
+.flavor-parking-info {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.flavor-info-item .dashicons { font-size: 14px; width: 14px; height: 14px; }
+
+.flavor-parking-precios {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #f3f4f6;
+    border-radius: 6px;
+}
+
+.flavor-precio { font-weight: 600; color: #111827; font-size: 0.875rem; }
+
+.flavor-parking-actions { display: flex; gap: 0.5rem; }
+
+/* Plazas Grid */
+.flavor-plazas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.flavor-plaza-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.flavor-plaza-numero-badge {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--parking-azul);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.125rem;
+    border-radius: 8px;
+}
+
+.flavor-plaza-info { flex: 1; display: flex; flex-direction: column; gap: 0.25rem; }
+.flavor-plaza-parking { font-weight: 600; color: #111827; font-size: 0.875rem; }
+.flavor-plaza-planta { font-size: 0.75rem; color: #6b7280; }
+
+/* Mi Plaza Grande */
+.flavor-mi-plaza { padding: 1rem; }
+
+.flavor-plaza-grande {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
+    border-radius: 16px;
+}
+
+.flavor-plaza-numero-grande {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--parking-azul);
+    padding: 1.5rem 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-plaza-detalles-grande h3 { margin: 0 0 0.5rem; color: #111827; }
+.flavor-plaza-detalles-grande p { margin: 0 0 1rem; color: #6b7280; }
+
+.flavor-plaza-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Lista de Espera */
+.flavor-lista-espera { max-width: 500px; margin: 0 auto; }
+
+.flavor-lista-estado {
+    text-align: center;
+    padding: 2rem;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+}
+
+.flavor-posicion-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--parking-verde);
+    color: #fff;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.flavor-posicion-badge .numero { font-size: 3rem; font-weight: 700; line-height: 1; }
+.flavor-posicion-badge .texto { font-size: 0.75rem; opacity: 0.8; }
+
+.flavor-lista-estado p { margin: 0 0 1rem; color: #6b7280; }
+
+.flavor-lista-inscripcion {
+    padding: 2rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+.flavor-lista-inscripcion h3 { margin: 0 0 0.5rem; }
+.flavor-lista-inscripcion p { margin: 0 0 1.5rem; color: #6b7280; }
+
+.flavor-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.flavor-checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+/* Formulario Reserva */
+.flavor-parkings-reservar { max-width: 600px; margin: 0 auto; }
+
+.flavor-form { display: flex; flex-direction: column; gap: 1.25rem; }
+.flavor-form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.flavor-form-group label { font-weight: 600; color: #374151; font-size: 0.875rem; }
+.flavor-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.flavor-select, .flavor-input, .flavor-textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.flavor-select:focus, .flavor-input:focus, .flavor-textarea:focus {
+    outline: none;
+    border-color: var(--parking-azul);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.flavor-resumen-reserva {
+    padding: 1.25rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-resumen-reserva h4 { margin: 0 0 1rem; font-size: 0.875rem; color: #6b7280; }
+
+.flavor-resumen-linea {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.flavor-resumen-linea.total {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* Filtros */
+.flavor-filtros-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Tabla */
+.flavor-reservas-tabla { overflow-x: auto; }
+
+.flavor-tabla { width: 100%; border-collapse: collapse; }
+
+.flavor-tabla th, .flavor-tabla td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.flavor-tabla th {
+    background: #f9fafb;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+
+.flavor-tabla tbody tr:hover { background: #f9fafb; }
+
+/* Badges */
+.flavor-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.flavor-badge-success { background: #dcfce7; color: #16a34a; }
+.flavor-badge-warning { background: #fef3c7; color: #d97706; }
+.flavor-badge-danger, .flavor-badge-alto { background: #fee2e2; color: #dc2626; }
+.flavor-badge-info, .flavor-badge-bajo { background: #dbeafe; color: #2563eb; }
+.flavor-badge-medio { background: #ffedd5; color: #ea580c; }
+.flavor-badge-outline { background: transparent; border: 1px solid #d1d5db; color: #6b7280; }
+.flavor-badge-confirmada { background: #dcfce7; color: #16a34a; }
+.flavor-badge-pendiente { background: #fef3c7; color: #d97706; }
+.flavor-badge-cancelada { background: #f3f4f6; color: #6b7280; }
+.flavor-badge-completada { background: #dbeafe; color: #2563eb; }
+
+/* Botones */
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.flavor-btn-primary { background: var(--parking-azul); color: #fff; }
+.flavor-btn-primary:hover { background: #2563eb; }
+.flavor-btn-outline { background: #fff; border: 1px solid #d1d5db; color: #374151; }
+.flavor-btn-outline:hover { border-color: var(--parking-azul); color: var(--parking-azul); }
+.flavor-btn-danger { background: var(--parking-rojo); color: #fff; }
+.flavor-btn-danger:hover { background: #dc2626; }
+.flavor-btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+.flavor-btn-lg { padding: 0.875rem 1.75rem; font-size: 1rem; }
+.flavor-btn-block { width: 100%; }
+.flavor-btn .dashicons { font-size: 16px; width: 16px; height: 16px; }
+
+/* Estados */
+.flavor-empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: #6b7280;
+}
+
+.flavor-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.flavor-empty-state p { margin: 0; }
+
+.flavor-notice {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.flavor-notice-warning { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; }
+.flavor-notice-info { background: #dbeafe; border: 1px solid #93c5fd; color: #1e40af; }
+
+/* Toast */
+.flavor-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    background: #111827;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+}
+
+.flavor-toast.success { background: var(--parking-verde); }
+.flavor-toast.error { background: var(--parking-rojo); }

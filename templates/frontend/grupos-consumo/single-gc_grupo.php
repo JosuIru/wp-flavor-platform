@@ -927,7 +927,7 @@ if (!empty($grupo_normas)) {
                             </p>
 
                             <form id="gc-form-unirse" class="space-y-4 text-left">
-                                <?php wp_nonce_field('gc_frontend_nonce', 'nonce'); ?>
+                                <?php wp_nonce_field('gc_nonce', 'nonce'); ?>
                                 <input type="hidden" name="grupo_id" value="<?php echo esc_attr($grupo_id); ?>">
 
                                 <div>

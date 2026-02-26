@@ -22,6 +22,30 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
+
+    /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['recetas', 'multimedia'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type'  => 'table',
+                'table' => 'flavor_bares',
+            ],
+        ];
+    }
 
     /**
      * Constructor
@@ -98,6 +122,8 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 

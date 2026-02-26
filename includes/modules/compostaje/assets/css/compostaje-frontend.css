@@ -1,0 +1,1474 @@
+/**
+ * CSS Frontend para Compostaje Comunitario
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Variables
+   ========================================================================== */
+:root {
+    --compost-verde: #22c55e;
+    --compost-verde-light: #dcfce7;
+    --compost-marron: #a16207;
+    --compost-marron-light: #fef3c7;
+    --compost-especial: #8b5cf6;
+    --compost-especial-light: #ede9fe;
+    --compost-bg: #f0fdf4;
+    --compost-border: #bbf7d0;
+}
+
+/* ==========================================================================
+   Dashboard
+   ========================================================================== */
+.flavor-compostaje-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* KPIs */
+.flavor-kpi-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.flavor-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.flavor-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 992px) {
+    .flavor-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .flavor-grid-4,
+    .flavor-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.flavor-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.flavor-kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.flavor-kpi-icon.verde {
+    background: var(--compost-verde-light);
+    color: var(--compost-verde);
+}
+
+.flavor-kpi-icon.azul {
+    background: #dbeafe;
+    color: #3b82f6;
+}
+
+.flavor-kpi-icon.verde-claro {
+    background: #d1fae5;
+    color: #10b981;
+}
+
+.flavor-kpi-icon.naranja {
+    background: #ffedd5;
+    color: #f97316;
+}
+
+.flavor-kpi-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.flavor-kpi-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-kpi-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+}
+
+.flavor-kpi-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Nivel Card */
+.flavor-nivel-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--compost-verde-light) 0%, #f0fdf4 100%);
+    border-radius: 12px;
+}
+
+.flavor-nivel-icono {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.flavor-nivel-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-nivel-nombre {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--compost-verde);
+}
+
+.flavor-nivel-nivel {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.flavor-nivel-progreso {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.flavor-progress-bar {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.flavor-progress-fill {
+    height: 100%;
+    background: var(--compost-verde);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.flavor-progreso-texto {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-align: right;
+}
+
+/* Acciones Grid */
+.flavor-acciones-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.flavor-accion-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #374151;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.flavor-accion-card:hover {
+    border-color: var(--compost-verde);
+    background: var(--compost-verde-light);
+    color: var(--compost-verde);
+    transform: translateY(-2px);
+}
+
+.flavor-accion-card .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+/* ==========================================================================
+   Paneles
+   ========================================================================== */
+.flavor-panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.flavor-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.flavor-panel-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.flavor-panel-body {
+    padding: 1.25rem;
+}
+
+.flavor-link {
+    font-size: 0.875rem;
+    color: var(--compost-verde);
+    text-decoration: none;
+}
+
+.flavor-link:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Lista de Aportaciones
+   ========================================================================== */
+.flavor-lista-aportaciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-aportacion-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.flavor-aportacion-icono {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.flavor-aportacion-icono.categoria-verde {
+    background: var(--compost-verde-light);
+    color: var(--compost-verde);
+}
+
+.flavor-aportacion-icono.categoria-marron {
+    background: var(--compost-marron-light);
+    color: var(--compost-marron);
+}
+
+.flavor-aportacion-icono.categoria-especial {
+    background: var(--compost-especial-light);
+    color: var(--compost-especial);
+}
+
+.flavor-aportacion-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-aportacion-tipo {
+    font-weight: 600;
+    color: #111827;
+}
+
+.flavor-aportacion-meta {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.flavor-aportacion-datos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.flavor-aportacion-kg {
+    font-weight: 600;
+    color: #111827;
+}
+
+.flavor-aportacion-puntos {
+    font-size: 0.75rem;
+    color: var(--compost-verde);
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Lista de Turnos
+   ========================================================================== */
+.flavor-lista-turnos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-turno-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid var(--compost-verde);
+}
+
+.flavor-turno-card.inscrito {
+    background: var(--compost-verde-light);
+}
+
+.flavor-turno-fecha {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 50px;
+}
+
+.flavor-turno-dia {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1;
+}
+
+.flavor-turno-mes {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.flavor-turno-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.flavor-turno-tipo {
+    font-weight: 600;
+    color: #111827;
+}
+
+.flavor-turno-ubicacion,
+.flavor-turno-hora {
+    font-size: 0.875rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-turno-ubicacion .dashicons,
+.flavor-turno-hora .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-turno-estado {
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Turnos Grid (página de turnos)
+   ========================================================================== */
+.flavor-turnos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-compostaje-turnos .flavor-turno-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    border-left: none;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.flavor-turno-fecha-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: var(--compost-verde);
+    color: #fff;
+}
+
+.flavor-turno-fecha-block .flavor-turno-dia {
+    font-size: 2rem;
+    color: #fff;
+}
+
+.flavor-turno-fecha-block .flavor-turno-mes {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.flavor-turno-fecha-block .flavor-turno-anio {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.flavor-compostaje-turnos .flavor-turno-content {
+    padding: 1.25rem;
+}
+
+.flavor-compostaje-turnos .flavor-turno-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-turno-tipo-badge {
+    display: inline-flex;
+    padding: 0.25rem 0.75rem;
+    background: #e5e7eb;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.flavor-turno-tipo-badge.tipo-volteo {
+    background: #dbeafe;
+    color: #3b82f6;
+}
+
+.flavor-turno-tipo-badge.tipo-riego {
+    background: #d1fae5;
+    color: #10b981;
+}
+
+.flavor-turno-tipo-badge.tipo-tamizado {
+    background: #fef3c7;
+    color: #f59e0b;
+}
+
+.flavor-turno-tipo-badge.tipo-limpieza {
+    background: #fce7f3;
+    color: #ec4899;
+}
+
+.flavor-turno-puntos {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 600;
+    color: var(--compost-verde);
+}
+
+.flavor-turno-puntos .dashicons {
+    color: #fbbf24;
+}
+
+.flavor-compostaje-turnos .flavor-turno-ubicacion {
+    margin-bottom: 0.5rem;
+}
+
+.flavor-compostaje-turnos .flavor-turno-ubicacion h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.flavor-turno-detalles {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.flavor-turno-descripcion {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0.75rem 0;
+}
+
+.flavor-turno-actions {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ==========================================================================
+   Mapa
+   ========================================================================== */
+.flavor-compostaje-mapa-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-mapa-container {
+    width: 100%;
+    min-height: 300px;
+    background: #f3f4f6;
+}
+
+.flavor-mapa-leyenda {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.flavor-leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.flavor-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.flavor-marker.verde {
+    background: var(--compost-verde);
+}
+
+.flavor-marker.naranja {
+    background: #f97316;
+}
+
+.flavor-marker.azul {
+    background: #3b82f6;
+}
+
+/* ==========================================================================
+   Lista de Puntos
+   ========================================================================== */
+.flavor-puntos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-punto-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.flavor-punto-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-punto-imagen {
+    height: 150px;
+    overflow: hidden;
+}
+
+.flavor-punto-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-punto-content {
+    padding: 1.25rem;
+}
+
+.flavor-punto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-punto-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #111827;
+}
+
+.flavor-punto-direccion {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 0.75rem;
+}
+
+.flavor-punto-direccion .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: var(--compost-verde);
+}
+
+.flavor-punto-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.flavor-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.flavor-stat .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-punto-horario {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0 0 1rem;
+}
+
+.flavor-punto-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* ==========================================================================
+   Formulario de Registro
+   ========================================================================== */
+.flavor-compostaje-registrar {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.flavor-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.flavor-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.flavor-form-group label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.flavor-select,
+.flavor-input,
+.flavor-textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.flavor-select:focus,
+.flavor-input:focus,
+.flavor-textarea:focus {
+    outline: none;
+    border-color: var(--compost-verde);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.flavor-input-group {
+    display: flex;
+}
+
+.flavor-input-group .flavor-input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    flex: 1;
+}
+
+.flavor-input-addon {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.flavor-form-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* Radio Cards para categorías */
+.flavor-radio-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+@media (max-width: 576px) {
+    .flavor-radio-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+.flavor-radio-card {
+    cursor: pointer;
+}
+
+.flavor-radio-card input {
+    display: none;
+}
+
+.flavor-radio-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.flavor-radio-content .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.flavor-radio-content span {
+    font-weight: 600;
+}
+
+.flavor-radio-content small {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 400;
+}
+
+.flavor-radio-card input:checked + .flavor-radio-content.verde {
+    background: var(--compost-verde-light);
+    border-color: var(--compost-verde);
+    color: var(--compost-verde);
+}
+
+.flavor-radio-card input:checked + .flavor-radio-content.marron {
+    background: var(--compost-marron-light);
+    border-color: var(--compost-marron);
+    color: var(--compost-marron);
+}
+
+.flavor-radio-card input:checked + .flavor-radio-content.especial {
+    background: var(--compost-especial-light);
+    border-color: var(--compost-especial);
+    color: var(--compost-especial);
+}
+
+/* Preview de puntos */
+.flavor-puntos-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, var(--compost-verde-light) 0%, #f0fdf4 100%);
+    border-radius: 12px;
+    border: 1px solid var(--compost-verde);
+}
+
+.flavor-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--compost-verde);
+    font-weight: 600;
+}
+
+.flavor-preview-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--compost-verde);
+}
+
+/* ==========================================================================
+   Historial / Mis Aportaciones
+   ========================================================================== */
+.flavor-compostaje-historial {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.flavor-resumen-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.flavor-resumen-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem;
+    background: var(--compost-verde-light);
+    border-radius: 12px;
+}
+
+.flavor-resumen-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--compost-verde);
+}
+
+.flavor-resumen-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Tabla */
+.flavor-tabla-responsive {
+    overflow-x: auto;
+}
+
+.flavor-tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.flavor-tabla th,
+.flavor-tabla td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.flavor-tabla th {
+    background: #f9fafb;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+
+.flavor-tabla tbody tr:hover {
+    background: #f9fafb;
+}
+
+.flavor-tabla tbody tr.destacado {
+    background: var(--compost-verde-light);
+}
+
+.flavor-puntos {
+    color: var(--compost-verde);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Guía de Compostaje
+   ========================================================================== */
+.flavor-compostaje-guia {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.flavor-guia-seccion h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    color: #111827;
+}
+
+.flavor-guia-seccion h3 .dashicons {
+    color: var(--compost-verde);
+}
+
+.flavor-guia-seccion.no-compostar h3 .dashicons {
+    color: #ef4444;
+}
+
+.flavor-guia-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .flavor-guia-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.flavor-guia-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid;
+}
+
+.flavor-guia-card.verde {
+    background: var(--compost-verde-light);
+    border-color: var(--compost-verde);
+}
+
+.flavor-guia-card.marron {
+    background: var(--compost-marron-light);
+    border-color: var(--compost-marron);
+}
+
+.flavor-guia-card.especial {
+    background: var(--compost-especial-light);
+    border-color: var(--compost-especial);
+}
+
+.flavor-guia-card h4 {
+    margin: 0 0 0.5rem;
+}
+
+.flavor-guia-card.verde h4 {
+    color: var(--compost-verde);
+}
+
+.flavor-guia-card.marron h4 {
+    color: var(--compost-marron);
+}
+
+.flavor-guia-card.especial h4 {
+    color: var(--compost-especial);
+}
+
+.flavor-guia-card p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 1rem;
+}
+
+.flavor-guia-card ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.flavor-guia-card li {
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.flavor-guia-lista-no {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.flavor-guia-lista-no ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.flavor-guia-lista-no li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #dc2626;
+}
+
+.flavor-guia-lista-no li::before {
+    content: "✕";
+    font-weight: bold;
+}
+
+.flavor-consejos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.flavor-consejo {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f0fdf4;
+    border-radius: 8px;
+}
+
+.flavor-consejo .dashicons {
+    color: var(--compost-verde);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.flavor-consejo p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+/* ==========================================================================
+   Ranking
+   ========================================================================== */
+.flavor-compostaje-ranking {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.flavor-ranking-filtros {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.flavor-ranking-filtros .flavor-btn {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-ranking-filtros .flavor-btn.active {
+    background: var(--compost-verde);
+    border-color: var(--compost-verde);
+    color: #fff;
+}
+
+.flavor-ranking-podio {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1rem;
+    padding: 2rem 0;
+}
+
+.flavor-podio-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    min-width: 120px;
+}
+
+.flavor-podio-item.posicion-1 {
+    border-color: #fbbf24;
+    background: linear-gradient(180deg, #fffbeb 0%, #fff 100%);
+    transform: scale(1.1);
+}
+
+.flavor-podio-item.posicion-2 {
+    border-color: #9ca3af;
+    background: linear-gradient(180deg, #f9fafb 0%, #fff 100%);
+}
+
+.flavor-podio-item.posicion-3 {
+    border-color: #d97706;
+    background: linear-gradient(180deg, #fffbeb 0%, #fff 100%);
+}
+
+.flavor-podio-medalla {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.posicion-1 .flavor-podio-medalla {
+    background: #fbbf24;
+    color: #fff;
+}
+
+.posicion-2 .flavor-podio-medalla {
+    background: #9ca3af;
+    color: #fff;
+}
+
+.posicion-3 .flavor-podio-medalla {
+    background: #d97706;
+    color: #fff;
+}
+
+.flavor-podio-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.flavor-podio-nombre {
+    font-weight: 600;
+    color: #111827;
+    text-align: center;
+}
+
+.flavor-podio-stats {
+    text-align: center;
+}
+
+.flavor-podio-kg {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--compost-verde);
+}
+
+.flavor-ranking-lista {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.flavor-usuario-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flavor-usuario-mini img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.flavor-nivel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--compost-verde-light);
+    border-radius: 20px;
+    font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   Balance Mini Widget
+   ========================================================================== */
+.flavor-compostaje-balance-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--compost-verde-light);
+    border-radius: 20px;
+}
+
+.flavor-balance-nivel {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-nivel-icono {
+    font-size: 1.25rem;
+}
+
+.flavor-balance-nivel .flavor-nivel-nombre {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--compost-verde);
+}
+
+.flavor-balance-stats {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.flavor-balance-stats .flavor-stat {
+    font-size: 0.875rem;
+}
+
+.flavor-balance-stats .flavor-stat strong {
+    color: #111827;
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+.flavor-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.flavor-badge-success {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.flavor-badge-warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.flavor-badge-danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.flavor-badge-info {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.flavor-badge-verde {
+    background: var(--compost-verde-light);
+    color: var(--compost-verde);
+}
+
+.flavor-badge-marron {
+    background: var(--compost-marron-light);
+    color: var(--compost-marron);
+}
+
+.flavor-badge-especial {
+    background: var(--compost-especial-light);
+    color: var(--compost-especial);
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.flavor-btn-primary {
+    background: var(--compost-verde);
+    color: #fff;
+}
+
+.flavor-btn-primary:hover {
+    background: #16a34a;
+}
+
+.flavor-btn-outline {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.flavor-btn-outline:hover {
+    border-color: var(--compost-verde);
+    color: var(--compost-verde);
+}
+
+.flavor-btn-danger {
+    background: #ef4444;
+    color: #fff;
+}
+
+.flavor-btn-danger:hover {
+    background: #dc2626;
+}
+
+.flavor-btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.flavor-btn-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+}
+
+.flavor-btn-block {
+    width: 100%;
+}
+
+.flavor-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+.flavor-empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: #6b7280;
+}
+
+.flavor-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.flavor-empty-state p {
+    margin: 0 0 1rem;
+}
+
+/* ==========================================================================
+   Notices
+   ========================================================================== */
+.flavor-notice {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.flavor-notice-warning {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    color: #92400e;
+}
+
+.flavor-notice-inline {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Foto Preview
+   ========================================================================== */
+.flavor-input-file {
+    padding: 0.75rem;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    background: #f9fafb;
+    cursor: pointer;
+}
+
+.flavor-input-file:hover {
+    border-color: var(--compost-verde);
+}
+
+.flavor-foto-preview {
+    margin-top: 0.5rem;
+}
+
+.flavor-foto-preview img {
+    max-width: 200px;
+    border-radius: 8px;
+}
+
+/* ==========================================================================
+   Loading
+   ========================================================================== */
+.flavor-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.flavor-btn.loading::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================================================
+   Toast Notifications
+   ========================================================================== */
+.flavor-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    background: #111827;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+}
+
+.flavor-toast.success {
+    background: var(--compost-verde);
+}
+
+.flavor-toast.error {
+    background: #ef4444;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

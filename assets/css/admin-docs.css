@@ -1,0 +1,564 @@
+/**
+ * Página de Documentación - Estilos
+ *
+ * @package FlavorChatIA
+ * @since 3.2.0
+ */
+
+/* Contenedor principal */
+.flavor-docs-container {
+    max-width: 1400px;
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* Header */
+.flavor-docs-header {
+    margin-bottom: 20px;
+}
+
+.flavor-docs-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 23px;
+    font-weight: 400;
+    margin: 0 0 10px 0;
+}
+
+.flavor-docs-header h1 .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #2271b1;
+}
+
+.flavor-docs-header .description {
+    color: #646970;
+    margin: 0;
+}
+
+/* Sidebar de navegación */
+.flavor-docs-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    position: sticky;
+    top: 52px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+.flavor-docs-sidebar h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e4e7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flavor-docs-sidebar h3 .dashicons {
+    color: #2271b1;
+}
+
+.flavor-docs-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.flavor-docs-nav li {
+    margin-bottom: 2px;
+}
+
+.flavor-docs-nav a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #3c434a;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.flavor-docs-nav a:hover {
+    background: #f0f0f1;
+    color: #2271b1;
+}
+
+.flavor-docs-nav a.active {
+    background: #2271b1;
+    color: #fff;
+}
+
+.flavor-docs-nav a .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-docs-nav .section-divider {
+    margin: 15px 0;
+    padding-top: 15px;
+    border-top: 1px solid #e2e4e7;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #646970;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Contenido principal */
+.flavor-docs-content {
+    flex: 1;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 30px 40px;
+}
+
+/* Estilos para Markdown */
+.flavor-docs-content h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #2271b1;
+    color: #1d2327;
+}
+
+.flavor-docs-content h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 35px 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e4e7;
+    color: #1d2327;
+}
+
+.flavor-docs-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 30px 0 12px 0;
+    color: #1d2327;
+}
+
+.flavor-docs-content h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 25px 0 10px 0;
+    color: #3c434a;
+}
+
+.flavor-docs-content p {
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 0 0 15px 0;
+    color: #3c434a;
+}
+
+.flavor-docs-content ul,
+.flavor-docs-content ol {
+    margin: 0 0 20px 20px;
+    padding: 0;
+}
+
+.flavor-docs-content li {
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 8px;
+    color: #3c434a;
+}
+
+.flavor-docs-content a {
+    color: #2271b1;
+    text-decoration: none;
+}
+
+.flavor-docs-content a:hover {
+    text-decoration: underline;
+}
+
+/* Bloques de código */
+.flavor-docs-content pre {
+    background: #1e1e1e;
+    border: none;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 20px 0;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.flavor-docs-content pre code {
+    background: transparent;
+    padding: 0;
+    color: #d4d4d4;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+}
+
+.flavor-docs-content code {
+    background: #f0f0f1;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+    color: #c7254e;
+}
+
+/* Tablas */
+.flavor-docs-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+}
+
+.flavor-docs-content th,
+.flavor-docs-content td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #e2e4e7;
+}
+
+.flavor-docs-content th {
+    background: #f6f7f7;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.flavor-docs-content tr:nth-child(even) td {
+    background: #fafafa;
+}
+
+.flavor-docs-content tr:hover td {
+    background: #f0f6fc;
+}
+
+/* Blockquotes (notas) */
+.flavor-docs-content blockquote {
+    margin: 20px 0;
+    padding: 15px 20px;
+    border-left: 4px solid #2271b1;
+    background: #f0f6fc;
+    border-radius: 0 4px 4px 0;
+}
+
+.flavor-docs-content blockquote p {
+    margin: 0;
+    color: #1d2327;
+}
+
+/* Separadores horizontales */
+.flavor-docs-content hr {
+    border: none;
+    border-top: 1px solid #e2e4e7;
+    margin: 35px 0;
+}
+
+/* Diagramas ASCII */
+.flavor-docs-content pre.diagram {
+    background: #f9f9f9;
+    border: 1px solid #e2e4e7;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.flavor-docs-content pre.diagram code {
+    color: #3c434a;
+}
+
+/* Mensajes de estado */
+.flavor-docs-notice {
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin: 20px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.flavor-docs-notice .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.flavor-docs-notice.info {
+    background: #e7f3ff;
+    border-left: 4px solid #2271b1;
+}
+
+.flavor-docs-notice.info .dashicons {
+    color: #2271b1;
+}
+
+.flavor-docs-notice.warning {
+    background: #fff8e5;
+    border-left: 4px solid #dba617;
+}
+
+.flavor-docs-notice.warning .dashicons {
+    color: #dba617;
+}
+
+.flavor-docs-notice.success {
+    background: #e7f7e7;
+    border-left: 4px solid #00a32a;
+}
+
+.flavor-docs-notice.success .dashicons {
+    color: #00a32a;
+}
+
+/* Página no encontrada */
+.flavor-docs-not-found {
+    text-align: center;
+    padding: 60px 40px;
+}
+
+.flavor-docs-not-found .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #c3c4c7;
+    margin-bottom: 20px;
+}
+
+.flavor-docs-not-found h2 {
+    border: none;
+    margin: 0 0 10px 0;
+    color: #50575e;
+}
+
+.flavor-docs-not-found p {
+    color: #646970;
+}
+
+/* Barra de navegación del documento */
+.flavor-docs-nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    margin-top: 40px;
+    border-top: 1px solid #e2e4e7;
+}
+
+.flavor-docs-nav-bar a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #f0f0f1;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #3c434a;
+    font-size: 13px;
+    transition: all 0.15s ease;
+}
+
+.flavor-docs-nav-bar a:hover {
+    background: #2271b1;
+    color: #fff;
+}
+
+/* TOC (Tabla de contenidos) */
+.flavor-docs-toc {
+    background: #f6f7f7;
+    border: 1px solid #e2e4e7;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 25px 0;
+}
+
+.flavor-docs-toc h4 {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+}
+
+.flavor-docs-toc ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.flavor-docs-toc li {
+    margin-bottom: 5px;
+}
+
+.flavor-docs-toc a {
+    font-size: 13px;
+}
+
+/* Sección API */
+.flavor-docs-api-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #e2e4e7;
+}
+
+.flavor-docs-api-endpoint {
+    background: #f6f7f7;
+    border: 1px solid #e2e4e7;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.flavor-docs-api-endpoint .method {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-right: 10px;
+}
+
+.flavor-docs-api-endpoint .method.get { background: #e7f7e7; color: #00a32a; }
+.flavor-docs-api-endpoint .method.post { background: #e7f3ff; color: #2271b1; }
+.flavor-docs-api-endpoint .method.put { background: #fff3e7; color: #dba617; }
+.flavor-docs-api-endpoint .method.delete { background: #ffe7e7; color: #d63638; }
+
+.flavor-docs-api-endpoint .path {
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 14px;
+    color: #1d2327;
+}
+
+/* Búsqueda */
+.flavor-docs-search {
+    margin-bottom: 20px;
+}
+
+.flavor-docs-search input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.flavor-docs-search input:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .flavor-docs-sidebar {
+        width: 240px;
+    }
+}
+
+@media (max-width: 960px) {
+    .flavor-docs-container {
+        flex-direction: column;
+    }
+
+    .flavor-docs-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        max-height: none;
+    }
+
+    .flavor-docs-content {
+        padding: 20px;
+    }
+}
+
+/* Syntax highlighting con Prism */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #6a9955;
+}
+
+.token.punctuation {
+    color: #d4d4d4;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #b5cea8;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #ce9178;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+    color: #d4d4d4;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+    color: #569cd6;
+}
+
+.token.function,
+.token.class-name {
+    color: #dcdcaa;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+    color: #d16969;
+}
+
+/* Print styles */
+@media print {
+    .flavor-docs-sidebar {
+        display: none;
+    }
+
+    .flavor-docs-content {
+        border: none;
+        padding: 0;
+    }
+
+    .flavor-docs-container {
+        display: block;
+    }
+
+    .flavor-docs-content pre {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+    }
+
+    .flavor-docs-content pre code {
+        color: #333;
+    }
+}

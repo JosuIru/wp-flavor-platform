@@ -61,9 +61,13 @@ if (!defined('ABSPATH')) {
                 <?php endif; ?>
 
                 <div class="flavor-com-actividad-acciones">
-                    <button type="button" class="flavor-com-actividad-accion flavor-com-btn-like" data-actividad-id="<?php echo esc_attr($actividad->id ?? 0); ?>">
+                    <?php
+                    $liked_class = !empty($actividad->liked) ? ' liked' : '';
+                    $likes_count = isset($actividad->likes) ? intval($actividad->likes) : 0;
+                    ?>
+                    <button type="button" class="flavor-com-actividad-accion flavor-com-btn-like<?php echo esc_attr($liked_class); ?>" data-actividad-id="<?php echo esc_attr($actividad->id ?? 0); ?>" data-liked="<?php echo $actividad->liked ? '1' : '0'; ?>">
                         <span class="dashicons dashicons-heart"></span>
-                        <span class="count"><?php echo esc_html($actividad->likes ?? 0); ?></span>
+                        <span class="count"><?php echo esc_html($likes_count); ?></span>
                     </button>
                     <button type="button" class="flavor-com-actividad-accion flavor-com-btn-comentar">
                         <span class="dashicons dashicons-admin-comments"></span>

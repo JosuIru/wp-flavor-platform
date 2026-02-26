@@ -446,6 +446,57 @@ class Flavor_VBP_Editor {
                 'tablet'  => 768,
                 'desktop' => 1024,
             ),
+            // Configuración de IA para generación de contenido
+            'ai'             => array(
+                'enabled'    => $this->ai_esta_habilitado(),
+                'endpoints'  => array(
+                    'generate'    => rest_url( 'flavor-vbp/v1/ai/generate' ),
+                    'improve'     => rest_url( 'flavor-vbp/v1/ai/improve' ),
+                    'suggestions' => rest_url( 'flavor-vbp/v1/ai/suggestions' ),
+                    'translate'   => rest_url( 'flavor-vbp/v1/ai/translate' ),
+                    'options'     => rest_url( 'flavor-vbp/v1/ai/options' ),
+                ),
+                'strings'    => array(
+                    'generating'   => __( 'Generando...', 'flavor-chat-ia' ),
+                    'improving'    => __( 'Mejorando...', 'flavor-chat-ia' ),
+                    'generated'    => __( 'Contenido generado', 'flavor-chat-ia' ),
+                    'error'        => __( 'Error al generar', 'flavor-chat-ia' ),
+                    'apply'        => __( 'Aplicar', 'flavor-chat-ia' ),
+                    'regenerate'   => __( 'Regenerar', 'flavor-chat-ia' ),
+                    'generateNew'  => __( 'Generar nuevo', 'flavor-chat-ia' ),
+                    'improveText'  => __( 'Mejorar', 'flavor-chat-ia' ),
+                ),
+            ),
+            // Configuración de exportación de código
+            'codeExport'     => array(
+                'enabled'   => true,
+                'endpoints' => array(
+                    'export'  => rest_url( 'flavor-vbp/v1/export-code' ),
+                    'preview' => rest_url( 'flavor-vbp/v1/preview-code' ),
+                    'formats' => rest_url( 'flavor-vbp/v1/export-formats' ),
+                ),
+                'strings'   => array(
+                    'exporting'       => __( 'Exportando código...', 'flavor-chat-ia' ),
+                    'exportSuccess'   => __( 'Código exportado', 'flavor-chat-ia' ),
+                    'downloadReady'   => __( 'Descarga lista', 'flavor-chat-ia' ),
+                    'selectFramework' => __( 'Selecciona framework', 'flavor-chat-ia' ),
+                ),
+            ),
+            // Configuración de importación Figma
+            'figmaImport'    => array(
+                'enabled'   => $this->figma_esta_configurado(),
+                'endpoints' => array(
+                    'import'  => rest_url( 'flavor-vbp/v1/import-figma' ),
+                    'preview' => rest_url( 'flavor-vbp/v1/preview-figma' ),
+                    'status'  => rest_url( 'flavor-vbp/v1/figma-status' ),
+                ),
+                'strings'   => array(
+                    'importing'     => __( 'Importando desde Figma...', 'flavor-chat-ia' ),
+                    'importSuccess' => __( 'Diseño importado', 'flavor-chat-ia' ),
+                    'pasteUrl'      => __( 'Pega URL de Figma', 'flavor-chat-ia' ),
+                    'notConfigured' => __( 'Configura tu token de Figma en Ajustes', 'flavor-chat-ia' ),
+                ),
+            ),
         );
 
         wp_localize_script( 'vbp-store', 'VBP_Config', $datos_localizados );
@@ -510,6 +561,41 @@ class Flavor_VBP_Editor {
         }
 
         return $defaults;
+    }
+
+    /**
+     * Verifica si la generación de contenido con IA está disponible
+     *
+     * @return bool
+     */
+    private function ai_esta_habilitado() {
+        // Verificar si hay un proveedor de IA configurado
+        if ( class_exists( 'Flavor_Engine_Manager' ) ) {
+            $engine_manager = Flavor_Engine_Manager::get_instance();
+            return $engine_manager->tiene_proveedor_configurado();
+        }
+
+        // Fallback: verificar si hay API key configurada
+        $settings = get_option( 'flavor_chat_ia_settings', array() );
+        $providers = array( 'claude_api_key', 'openai_api_key', 'deepseek_api_key', 'mistral_api_key' );
+
+        foreach ( $providers as $provider_key ) {
+            if ( ! empty( $settings[ $provider_key ] ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Verifica si Figma está configurado
+     *
+     * @return bool
+     */
+    private function figma_esta_configurado() {
+        $settings = get_option( 'flavor_chat_ia_settings', array() );
+        return ! empty( $settings['figma_personal_token'] );
     }
 
     /**

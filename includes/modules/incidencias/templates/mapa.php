@@ -50,17 +50,35 @@ if (!empty($params)) {
 // Obtener tipos para filtros
 $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_incidencias WHERE tipo IS NOT NULL ORDER BY tipo");
 
+// Labels para estados (español e inglés)
 $estados_labels = [
+    // Estados en español
     'pendiente' => __('Pendiente', 'flavor-chat-ia'),
     'en_proceso' => __('En proceso', 'flavor-chat-ia'),
     'resuelta' => __('Resuelta', 'flavor-chat-ia'),
+    'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+    // Estados en inglés (para datos existentes)
+    'pending' => __('Pendiente', 'flavor-chat-ia'),
+    'in_progress' => __('En proceso', 'flavor-chat-ia'),
+    'resolved' => __('Resuelta', 'flavor-chat-ia'),
+    'closed' => __('Cerrada', 'flavor-chat-ia'),
 ];
 
 $estados_colors = [
+    // Estados en español
     'pendiente' => '#f59e0b',
     'en_proceso' => '#3b82f6',
     'resuelta' => '#10b981',
+    'cerrada' => '#6b7280',
+    // Estados en inglés
+    'pending' => '#f59e0b',
+    'in_progress' => '#3b82f6',
+    'resolved' => '#10b981',
+    'closed' => '#6b7280',
 ];
+
+// URL base para incidencias
+$incidencias_base_url = home_url('/mi-portal/incidencias/');
 
 // Preparar datos para JS
 $incidencias_json = [];
@@ -86,7 +104,7 @@ foreach ($incidencias as $incidencia) {
     <div class="mapa-header">
         <h2><?php esc_html_e('Mapa de Incidencias', 'flavor-chat-ia'); ?></h2>
         <?php if (is_user_logged_in()): ?>
-            <a href="<?php echo esc_url(add_query_arg('vista', 'reportar', get_permalink())); ?>" class="btn btn-primary">
+            <a href="<?php echo esc_url($incidencias_base_url . 'reportar/'); ?>" class="btn btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
                 <?php esc_html_e('Reportar incidencia', 'flavor-chat-ia'); ?>
             </a>
@@ -155,7 +173,7 @@ foreach ($incidencias as $incidencia) {
                 </div>
             <?php endforeach; ?>
             <?php if (count($incidencias) > 5): ?>
-                <a href="<?php echo esc_url(add_query_arg('vista', 'listado', get_permalink())); ?>" class="ver-todas">
+                <a href="<?php echo esc_url($incidencias_base_url); ?>" class="ver-todas">
                     <?php esc_html_e('Ver todas las incidencias', 'flavor-chat-ia'); ?> →
                 </a>
             <?php endif; ?>

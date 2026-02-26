@@ -292,3 +292,606 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================================
+   MODAL DE PERSONALIZACIÓN DEL DASHBOARD
+   ============================================================ */
+
+/* Overlay del Modal */
+.fl-modal-overlay,
+.fud-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.fl-modal-overlay.active,
+.fud-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Contenedor del Modal */
+.fl-modal__content,
+.fud-modal-content {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 680px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.95) translateY(20px);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.fl-modal-overlay.active .fl-modal__content,
+.fud-modal-overlay.active .fud-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+/* Header del Modal */
+.fl-modal__header,
+.fud-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #fff;
+}
+
+.fl-modal__header h2,
+.fud-modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fl-modal__close,
+.fud-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: all 0.2s;
+}
+
+.fl-modal__close:hover,
+.fud-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.fl-modal__close .dashicons,
+.fud-modal-close .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Body del Modal */
+.fl-modal__body,
+.fud-modal-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.fl-modal__help,
+.fud-modal-help {
+    margin: 0 0 20px;
+    padding: 12px 16px;
+    background: #f0f9ff;
+    border-left: 4px solid #3b82f6;
+    border-radius: 0 8px 8px 0;
+    color: #1e40af;
+    font-size: 14px;
+}
+
+/* Lista de Widgets */
+.fl-widgets-list,
+.fud-widgets-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Item de Widget */
+.fl-widget-item,
+.fud-widget-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    cursor: grab;
+}
+
+.fl-widget-item:hover,
+.fud-widget-item:hover {
+    background: #fff;
+    border-color: #c7d2fe;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+}
+
+.fl-widget-item.ui-sortable-helper,
+.fud-widget-item.ui-sortable-helper {
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    cursor: grabbing;
+    z-index: 100001;
+}
+
+.fl-widget-item.ui-sortable-placeholder,
+.fud-widget-item.ui-sortable-placeholder {
+    background: #e0e7ff;
+    border: 2px dashed #4f46e5;
+    visibility: visible !important;
+    height: 56px;
+}
+
+/* Handle de arrastrar */
+.fl-drag-handle,
+.fud-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: #9ca3af;
+    cursor: grab;
+    flex-shrink: 0;
+}
+
+.fl-drag-handle:hover,
+.fud-drag-handle:hover {
+    color: #4f46e5;
+}
+
+.fl-drag-handle .dashicons,
+.fud-drag-handle .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Toggle del Widget */
+.fl-widget-toggle,
+.fud-widget-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    cursor: pointer;
+    min-width: 0;
+}
+
+.fl-widget-toggle input[type="checkbox"],
+.fud-widget-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #4f46e5;
+    flex-shrink: 0;
+}
+
+/* Icono del Widget */
+.fl-widget-icon,
+.fud-widget-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.fl-widget-icon .dashicons,
+.fud-widget-icon .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Info del Widget */
+.fl-widget-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.fl-widget-name,
+.fud-widget-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fl-widget-category {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: capitalize;
+}
+
+/* Tamaño del Widget */
+.fl-widget-size,
+.fud-widget-size {
+    font-size: 11px;
+    padding: 4px 10px;
+    background: #e5e7eb;
+    color: #4b5563;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+/* Footer del Modal */
+.fl-modal__footer,
+.fud-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.fl-modal__footer .button,
+.fud-modal-footer .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.fl-modal__footer .button .dashicons,
+.fud-modal-footer .button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.fl-btn--primary,
+.fud-modal-footer .button-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.fl-btn--primary:hover,
+.fud-modal-footer .button-primary:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+
+#fud-reset-layout {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    color: #6b7280;
+}
+
+#fud-reset-layout:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+/* Estados de los widgets */
+.fl-widget-item[aria-selected="true"],
+.fud-widget-item[aria-selected="true"] {
+    background: #eef2ff;
+    border-color: #4f46e5;
+}
+
+.fl-widget-toggle input[type="checkbox"]:not(:checked) + .fl-widget-icon,
+.fud-widget-toggle input[type="checkbox"]:not(:checked) + .fud-widget-icon {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+.fl-widget-toggle input[type="checkbox"]:not(:checked) ~ .fl-widget-info .fl-widget-name,
+.fud-widget-toggle input[type="checkbox"]:not(:checked) ~ .fl-widget-info .fud-widget-name {
+    color: #9ca3af;
+    text-decoration: line-through;
+}
+
+/* Animación de carga */
+.fl-widgets-list.loading,
+.fud-widgets-list.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.fl-widgets-list.loading::after,
+.fud-widgets-list.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Scrollbar personalizado en el modal */
+.fl-modal__body::-webkit-scrollbar,
+.fud-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.fl-modal__body::-webkit-scrollbar-track,
+.fud-modal-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.fl-modal__body::-webkit-scrollbar-thumb,
+.fud-modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.fl-modal__body::-webkit-scrollbar-thumb:hover,
+.fud-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Responsive del Modal */
+@media (max-width: 600px) {
+    .fl-modal__content,
+    .fud-modal-content {
+        width: 95%;
+        max-height: 90vh;
+        margin: 20px;
+    }
+
+    .fl-modal__header,
+    .fud-modal-header {
+        padding: 16px 20px;
+    }
+
+    .fl-modal__body,
+    .fud-modal-body {
+        padding: 16px 20px;
+    }
+
+    .fl-widget-item,
+    .fud-widget-item {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+
+    .fl-widget-icon,
+    .fud-widget-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .fl-widget-size,
+    .fud-widget-size {
+        display: none;
+    }
+
+    .fl-modal__footer,
+    .fud-modal-footer {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .fl-modal__footer .button,
+    .fud-modal-footer .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Agrupación por categoría (separadores visuales) */
+.fl-widget-item[data-category="economia"] .fl-widget-icon { background-color: #10b981; }
+.fl-widget-item[data-category="gestion"] .fl-widget-icon { background-color: #3b82f6; }
+.fl-widget-item[data-category="comunicacion"] .fl-widget-icon { background-color: #8b5cf6; }
+.fl-widget-item[data-category="comunidad"] .fl-widget-icon { background-color: #f59e0b; }
+.fl-widget-item[data-category="red"] .fl-widget-icon { background-color: #06b6d4; }
+.fl-widget-item[data-category="sistema"] .fl-widget-icon { background-color: #6b7280; }
+.fl-widget-item[data-category="cuidados"] .fl-widget-icon { background-color: #ec4899; }
+.fl-widget-item[data-category="ecologia"] .fl-widget-icon { background-color: #22c55e; }
+.fl-widget-item[data-category="gobernanza"] .fl-widget-icon { background-color: #f97316; }
+.fl-widget-item[data-category="cultura"] .fl-widget-icon { background-color: #a855f7; }
+
+/* Transiciones suaves para reordenamiento */
+.fl-widgets-list .fl-widget-item,
+.fud-widgets-list .fud-widget-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+/* ============================================
+   View Toggle (Grid/List)
+   ============================================ */
+.fl-view-toggle,
+.fud-view-toggle {
+    display: inline-flex;
+    background: #f0f0f1;
+    border-radius: 6px;
+    padding: 3px;
+    gap: 2px;
+}
+
+.fl-view-btn,
+.fud-view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: #646970;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fl-view-btn:hover,
+.fud-view-btn:hover {
+    background: #fff;
+    color: #2271b1;
+}
+
+.fl-view-btn.active,
+.fud-view-btn.active {
+    background: #fff;
+    color: #2271b1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.fl-view-btn .dashicons,
+.fud-view-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.fl-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ============================================
+   Grid de Módulos - Modos de Vista
+   ============================================ */
+.fud-modules-grid,
+.fl-modules-grid,
+.modules-grid {
+    display: grid;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+/* Vista Grid (cuadrícula) */
+.fud-modules-grid.view-grid,
+.fl-modules-grid.view-grid,
+.modules-grid.view-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.view-grid .module-card,
+.view-grid .fud-module-card {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Vista List (lista) */
+.fud-modules-grid.view-list,
+.fl-modules-grid.view-list,
+.modules-grid.view-list {
+    grid-template-columns: 1fr;
+}
+
+.view-list .module-card,
+.view-list .fud-module-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+}
+
+.view-list .module-card .module-icon,
+.view-list .fud-module-card .module-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+}
+
+.view-list .module-card .module-info,
+.view-list .fud-module-card .module-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.view-list .module-card .module-actions,
+.view-list .fud-module-card .module-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.view-list .module-card .module-description,
+.view-list .fud-module-card .module-description {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .fl-view-toggle,
+    .fud-view-toggle {
+        display: none;
+    }
+
+    .fud-modules-grid,
+    .fl-modules-grid,
+    .modules-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

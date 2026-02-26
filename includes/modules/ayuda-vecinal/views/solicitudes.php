@@ -295,20 +295,55 @@ jQuery(document).ready(function($) {
 </script>
 
 <style>
-.flavor-solicitudes-management { margin: 20px; }
-.flavor-filters-bar { background: #fff; padding: 15px 20px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; display: flex; gap: 20px; flex-wrap: wrap; }
+/* Layout */
+.flavor-solicitudes-management { margin: 20px; max-width: 1400px; }
+
+/* Filtros */
+.flavor-filters-bar { background: #fff; padding: 15px 20px; margin: 20px 0; border: 1px solid #c3c4c7; border-radius: 8px; display: flex; gap: 20px; flex-wrap: wrap; box-shadow: 0 1px 1px rgba(0,0,0,.04); }
 .flavor-filter-group { display: flex; align-items: center; gap: 10px; }
-.flavor-filter-group label { font-weight: 600; margin: 0; }
-.flavor-search-input { padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; min-width: 250px; }
-.flavor-select { padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; }
-.flavor-card { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
-.flavor-estado-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.flavor-filter-group label { font-weight: 600; margin: 0; color: #1d2327; }
+.flavor-search-input { padding: 8px 12px; border: 1px solid #8c8f94; border-radius: 4px; min-width: 250px; font-size: 14px; }
+.flavor-search-input:focus { border-color: #2271b1; box-shadow: 0 0 0 1px #2271b1; outline: none; }
+.flavor-select { padding: 8px 12px; border: 1px solid #8c8f94; border-radius: 4px; font-size: 14px; }
+
+/* Cards */
+.flavor-card { background: #fff; border: 1px solid #c3c4c7; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 1px rgba(0,0,0,.04); }
+
+/* Badges */
+.flavor-estado-badge { padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 .flavor-estado-badge.pendiente { background: #fef3c7; color: #92400e; }
 .flavor-estado-badge.asignada { background: #dbeafe; color: #1e40af; }
 .flavor-estado-badge.en_proceso { background: #e0e7ff; color: #4338ca; }
 .flavor-estado-badge.completada { background: #d1fae5; color: #065f46; }
 .flavor-estado-badge.cancelada { background: #fee2e2; color: #991b1b; }
-.flavor-urgent-badge { padding: 2px 6px; background: #ef4444; color: #fff; font-size: 10px; border-radius: 4px; font-weight: 600; margin-left: 5px; }
-.flavor-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-@media (max-width: 782px) { .flavor-filters-bar { flex-direction: column; } .flavor-filter-group { width: 100%; } .flavor-search-input { width: 100%; } .flavor-form-row { grid-template-columns: 1fr; } }
+.flavor-urgent-badge { padding: 2px 8px; background: #ef4444; color: #fff; font-size: 10px; border-radius: 4px; font-weight: 600; margin-left: 5px; }
+
+/* Modal */
+.flavor-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; }
+.flavor-modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); }
+.flavor-modal-content { position: relative; background: #fff; border-radius: 8px; width: 90%; max-width: 600px; max-height: 85vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; }
+.flavor-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #dcdcde; background: #f6f7f7; }
+.flavor-modal-header h2 { margin: 0; font-size: 18px; font-weight: 600; color: #1d2327; }
+.flavor-modal-close { background: none; border: none; padding: 5px; cursor: pointer; color: #646970; transition: color 0.2s; }
+.flavor-modal-close:hover { color: #d63638; }
+.flavor-modal-close .dashicons { font-size: 20px; width: 20px; height: 20px; }
+.flavor-modal-body { padding: 24px; overflow-y: auto; flex: 1; }
+.flavor-modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #dcdcde; background: #f6f7f7; }
+
+/* Formularios */
+.flavor-form-group { margin-bottom: 20px; }
+.flavor-form-group > label { display: block; margin-bottom: 6px; font-weight: 600; color: #1d2327; font-size: 13px; }
+.flavor-form-group .widefat { width: 100%; padding: 8px 12px; border: 1px solid #8c8f94; border-radius: 4px; font-size: 14px; }
+.flavor-form-group .widefat:focus { border-color: #2271b1; box-shadow: 0 0 0 1px #2271b1; outline: none; }
+.flavor-form-group textarea.widefat { resize: vertical; min-height: 100px; }
+.flavor-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* Responsive */
+@media (max-width: 782px) {
+    .flavor-filters-bar { flex-direction: column; }
+    .flavor-filter-group { width: 100%; }
+    .flavor-search-input { width: 100%; min-width: auto; }
+    .flavor-form-row { grid-template-columns: 1fr; }
+    .flavor-modal-content { width: 95%; max-height: 90vh; }
+}
 </style>

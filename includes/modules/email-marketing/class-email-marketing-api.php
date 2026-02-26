@@ -25,38 +25,38 @@ class Flavor_Email_Marketing_API {
         register_rest_route(self::NAMESPACE, '/em/suscribir', [
             'methods' => 'POST',
             'callback' => [__CLASS__, 'suscribir'],
-            'permission_callback' => [$this, 'public_permission_check'],
+            'permission_callback' => [__CLASS__, 'public_permission_check'],
         ]);
 
         register_rest_route(self::NAMESPACE, '/em/confirmar', [
             'methods' => 'POST',
             'callback' => [__CLASS__, 'confirmar'],
-            'permission_callback' => [$this, 'public_permission_check'],
+            'permission_callback' => [__CLASS__, 'public_permission_check'],
         ]);
 
         register_rest_route(self::NAMESPACE, '/em/baja', [
             'methods' => 'POST',
             'callback' => [__CLASS__, 'darse_baja'],
-            'permission_callback' => [$this, 'public_permission_check'],
+            'permission_callback' => [__CLASS__, 'public_permission_check'],
         ]);
 
         register_rest_route(self::NAMESPACE, '/em/preferencias', [
             'methods' => 'GET',
             'callback' => [__CLASS__, 'get_preferencias'],
-            'permission_callback' => [$this, 'public_permission_check'],
+            'permission_callback' => [__CLASS__, 'public_permission_check'],
         ]);
 
         register_rest_route(self::NAMESPACE, '/em/preferencias', [
             'methods' => 'PUT',
             'callback' => [__CLASS__, 'actualizar_preferencias'],
-            'permission_callback' => [$this, 'public_permission_check'],
+            'permission_callback' => [__CLASS__, 'public_permission_check'],
         ]);
 
         // Listas (público)
         register_rest_route(self::NAMESPACE, '/em/listas', [
             'methods' => 'GET',
             'callback' => [__CLASS__, 'get_listas'],
-            'permission_callback' => [$this, 'public_permission_check'],
+            'permission_callback' => [__CLASS__, 'public_permission_check'],
         ]);
 
         // --- Rutas protegidas (admin) ---
@@ -842,7 +842,7 @@ class Flavor_Email_Marketing_API {
         ]);
     }
 
-    public function public_permission_check($request) {
+    public static function public_permission_check($request) {
         $method = strtoupper($request->get_method());
         $tipo = in_array($method, ['POST', 'PUT', 'DELETE'], true) ? 'post' : 'get';
         return Flavor_API_Rate_Limiter::check_rate_limit($tipo);

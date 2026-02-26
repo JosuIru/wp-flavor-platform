@@ -68,7 +68,7 @@ $recursos = $wpdb->get_results(
         <?php foreach ($recursos as $recurso) :
             $cat_data = $categorias_objetos[$recurso->categoria] ?? ['nombre' => 'Otro', 'icono' => '📦'];
             $propietario = get_userdata($recurso->post_author);
-            $es_propio = $recurso->post_author == $user_id;
+            $es_propio = (int) $recurso->post_author === $user_id;
         ?>
         <article class="es-recurso-card" data-categoria="<?php echo esc_attr($recurso->categoria); ?>">
             <div class="es-recurso-card__imagen">

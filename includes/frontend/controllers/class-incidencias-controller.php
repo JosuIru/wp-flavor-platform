@@ -274,10 +274,11 @@ class Flavor_Frontend_Incidencias_Controller extends Flavor_Frontend_Controller_
             return ['pendientes' => 0, 'en_proceso' => 0, 'resueltas' => 0, 'tiempo_medio' => '—'];
         }
 
+        // Incluir estados en español e inglés para compatibilidad
         return [
-            'pendientes' => intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'pendiente'")),
-            'en_proceso' => intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'en_proceso'")),
-            'resueltas' => intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'resuelto'")),
+            'pendientes' => intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado IN ('pendiente', 'pending')")),
+            'en_proceso' => intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado IN ('en_proceso', 'in_progress')")),
+            'resueltas' => intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado IN ('resuelta', 'resuelto', 'resolved')")),
             'tiempo_medio' => '—',
         ];
     }

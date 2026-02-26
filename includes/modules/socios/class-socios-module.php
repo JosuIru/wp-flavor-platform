@@ -16,6 +16,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Constructor
@@ -79,9 +80,34 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia']; // Foto de perfil, documentos
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type'  => 'table',
+                'table' => 'flavor_socios',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -104,6 +130,9 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             require_once $ruta_archivo_payments;
             Flavor_Socios_Payment_Manager::get_instance();
         }
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     // =========================================================
@@ -1920,4 +1949,99 @@ KNOWLEDGE;
         ];
     }
 
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Página principal (oculta)
+        add_submenu_page(
+            null,
+            __('Socios', 'flavor-chat-ia'),
+            __('Socios', 'flavor-chat-ia'),
+            $capability,
+            'socios',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Página: Listado Socios (oculta)
+        add_submenu_page(
+            null,
+            __('Listado Socios', 'flavor-chat-ia'),
+            __('Listado Socios', 'flavor-chat-ia'),
+            $capability,
+            'socios-listado',
+            [$this, 'render_pagina_socios']
+        );
+
+        // Página: Cuotas (oculta)
+        add_submenu_page(
+            null,
+            __('Cuotas', 'flavor-chat-ia'),
+            __('Cuotas', 'flavor-chat-ia'),
+            $capability,
+            'socios-cuotas',
+            [$this, 'render_pagina_cuotas']
+        );
+
+        // Página: Pagos (oculta)
+        add_submenu_page(
+            null,
+            __('Pagos', 'flavor-chat-ia'),
+            __('Pagos', 'flavor-chat-ia'),
+            $capability,
+            'socios-pagos',
+            [$this, 'render_pagina_pagos']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Socios', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Panel de administración del módulo de socios.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de socios
+     */
+    public function render_pagina_socios() {
+        $views_path = dirname(__FILE__) . '/views/socios.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Socios', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de cuotas
+     */
+    public function render_pagina_cuotas() {
+        $views_path = dirname(__FILE__) . '/views/cuotas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cuotas', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de pagos
+     */
+    public function render_pagina_pagos() {
+        $views_path = dirname(__FILE__) . '/views/pagar-cuota.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Pagos', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
 }

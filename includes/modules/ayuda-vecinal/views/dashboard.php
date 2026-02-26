@@ -17,6 +17,30 @@ if (!defined('ABSPATH')) {
     </h1>
     <hr class="wp-header-end">
 
+    <!-- Accesos Rapidos -->
+    <div class="ayuda-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('admin.php?page=ayuda-solicitudes'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-heart" style="font-size: 24px; color: #d63638;"></span>
+            <span><?php echo esc_html__('Solicitudes', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=ayuda-voluntarios'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-groups" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Voluntarios', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=ayuda-matches'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-randomize" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Matches', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=ayuda-estadisticas'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Estadisticas', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=ayuda-configuracion'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuracion', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
+
     <!-- KPIs principales -->
     <div class="flavor-kpi-grid">
         <div class="flavor-kpi-card">

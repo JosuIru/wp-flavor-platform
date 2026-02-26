@@ -429,16 +429,16 @@ class Flavor_GC_Dashboard_Tab {
             </div>
 
             <div class="gc-panel-actions">
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/grupos-consumo/productos/')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>">
                     <?php _e('Ver catálogo', 'flavor-chat-ia'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/grupos-consumo/mi-pedido/')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>">
                     <?php _e('Mi pedido', 'flavor-chat-ia'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/grupos-consumo/mis-pedidos/')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/')); ?>">
                     <?php _e('Mis pedidos', 'flavor-chat-ia'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/grupos-consumo/suscripciones/')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/suscripciones/')); ?>">
                     <?php _e('Suscripciones', 'flavor-chat-ia'); ?>
                 </a>
                 <a class="gc-btn gc-btn-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_resumen_usuario'), 'gc_exportar_resumen_usuario')); ?>">

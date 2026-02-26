@@ -45,6 +45,28 @@ $por_categoria = $wpdb->get_results("
         <?php echo esc_html__('Dashboard Multimedia', 'flavor-chat-ia'); ?>
     </h1>
 
+    <hr class="wp-header-end">
+
+    <!-- Accesos Rápidos -->
+    <div class="multimedia-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('admin.php?page=multimedia-galeria'); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-format-gallery" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Galería', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=multimedia-albumes'); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-images-alt" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Álbumes', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=multimedia-estadisticas'); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Estadísticas', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=multimedia-configuracion'); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
+
     <!-- Estadísticas principales -->
     <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
 

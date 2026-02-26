@@ -25,6 +25,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Versión del sistema de evaluación
      */
@@ -871,14 +873,449 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
         // Enqueue assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Panel Unificado Admin
+        $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registra rutas REST API
+     */
+    public function register_rest_routes(): void {
+        $namespace = 'flavor/v1';
+
+        // Evaluación actual
+        register_rest_route($namespace, '/sello-conciencia/evaluacion', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_evaluacion'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Resumen
+        register_rest_route($namespace, '/sello-conciencia/resumen', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_resumen'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Premisas
+        register_rest_route($namespace, '/sello-conciencia/premisas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_premisas'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Valoración de módulo
+        register_rest_route($namespace, '/sello-conciencia/modulo/(?P<modulo_id>[a-z_-]+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_valoracion_modulo'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    /**
+     * API: Obtener evaluación
+     */
+    public function api_get_evaluacion(\WP_REST_Request $request): \WP_REST_Response {
+        return new \WP_REST_Response($this->evaluar());
+    }
+
+    /**
+     * API: Obtener resumen
+     */
+    public function api_get_resumen(\WP_REST_Request $request): \WP_REST_Response {
+        return new \WP_REST_Response($this->get_resumen());
+    }
+
+    /**
+     * API: Obtener premisas
+     */
+    public function api_get_premisas(\WP_REST_Request $request): \WP_REST_Response {
+        return new \WP_REST_Response(['premisas' => self::PREMISAS]);
+    }
+
+    /**
+     * API: Obtener valoración de módulo
+     */
+    public function api_get_valoracion_modulo(\WP_REST_Request $request): \WP_REST_Response {
+        $modulo_id = $request->get_param('modulo_id');
+        $valoracion = $this->get_valoracion_modulo($modulo_id);
+
+        if (!$valoracion) {
+            return new \WP_REST_Response(['error' => 'Módulo no encontrado'], 404);
+        }
+
+        return new \WP_REST_Response($valoracion);
+    }
+
+    /**
+     * Configuración del admin para el panel unificado
+     */
+    public function get_admin_config(): array {
+        return [
+            'paginas' => [
+                [
+                    'slug' => 'sello-conciencia',
+                    'titulo' => __('Sello de Conciencia', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'sc-evaluacion',
+                    'titulo' => __('Evaluación', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_evaluacion'],
+                ],
+                [
+                    'slug' => 'sc-premisas',
+                    'titulo' => __('Premisas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_premisas'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Render: Dashboard admin
+     */
+    public function render_admin_dashboard(): void {
+        $evaluacion = $this->evaluar();
+        $resumen = $this->get_resumen();
+
+        // Estilos inline para el dashboard
+        $this->render_admin_styles();
+        ?>
+        <div class="wrap flavor-sello-dashboard">
+            <h1>
+                <span class="dashicons dashicons-awards" style="font-size: 30px; margin-right: 10px;"></span>
+                <?php esc_html_e('Sello de Conciencia', 'flavor-chat-ia'); ?>
+            </h1>
+
+            <div class="sello-header-grid">
+                <!-- Tarjeta principal de puntuación -->
+                <div class="sello-main-card" style="border-color: <?php echo esc_attr($resumen['color']); ?>">
+                    <div class="sello-score-circle" style="background: <?php echo esc_attr($resumen['color']); ?>20; border-color: <?php echo esc_attr($resumen['color']); ?>">
+                        <span class="dashicons <?php echo esc_attr($resumen['icono']); ?>" style="color: <?php echo esc_attr($resumen['color']); ?>"></span>
+                        <span class="score-value"><?php echo esc_html($resumen['puntuacion']); ?></span>
+                        <span class="score-max">/100</span>
+                    </div>
+                    <div class="sello-nivel">
+                        <h2 style="color: <?php echo esc_attr($resumen['color']); ?>"><?php echo esc_html($resumen['nivel']); ?></h2>
+                        <p><?php echo esc_html(self::NIVELES[$resumen['nivel_id']]['descripcion'] ?? ''); ?></p>
+                    </div>
+                </div>
+
+                <!-- Estadísticas rápidas -->
+                <div class="sello-stats-cards">
+                    <div class="sello-stat-card">
+                        <span class="dashicons dashicons-admin-plugins"></span>
+                        <div class="stat-content">
+                            <span class="stat-value"><?php echo esc_html($resumen['modulos_activos']); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Módulos evaluados', 'flavor-chat-ia'); ?></span>
+                        </div>
+                    </div>
+                    <div class="sello-stat-card">
+                        <span class="dashicons dashicons-heart"></span>
+                        <div class="stat-content">
+                            <span class="stat-value">5</span>
+                            <span class="stat-label"><?php esc_html_e('Premisas', 'flavor-chat-ia'); ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premisas con progreso -->
+            <div class="sello-section">
+                <h2><span class="dashicons dashicons-clipboard"></span> <?php esc_html_e('Evaluación por Premisa', 'flavor-chat-ia'); ?></h2>
+                <div class="sello-premisas-grid">
+                    <?php foreach (self::PREMISAS as $premisa_id => $premisa):
+                        $puntuacion_premisa = $evaluacion['puntuaciones_premisas'][$premisa_id] ?? 0;
+                    ?>
+                    <div class="sello-premisa-card">
+                        <div class="premisa-header">
+                            <span class="dashicons <?php echo esc_attr($premisa['icono']); ?>" style="color: <?php echo esc_attr($premisa['color']); ?>"></span>
+                            <h3><?php echo esc_html($premisa['nombre']); ?></h3>
+                            <span class="premisa-score" style="color: <?php echo esc_attr($premisa['color']); ?>"><?php echo esc_html($puntuacion_premisa); ?>%</span>
+                        </div>
+                        <div class="premisa-progress">
+                            <div class="progress-bar" style="width: <?php echo esc_attr($puntuacion_premisa); ?>%; background: <?php echo esc_attr($premisa['color']); ?>"></div>
+                        </div>
+                        <p class="premisa-desc"><?php echo esc_html($premisa['descripcion']); ?></p>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Módulos evaluados -->
+            <?php if (!empty($evaluacion['modulos_evaluados'])): ?>
+            <div class="sello-section">
+                <h2><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('Módulos Evaluados', 'flavor-chat-ia'); ?></h2>
+                <table class="wp-list-table widefat fixed striped sello-modulos-table">
+                    <thead>
+                        <tr>
+                            <th><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 100px; text-align: center;"><?php esc_html_e('Puntuación', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 120px;"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($evaluacion['modulos_evaluados'] as $modulo_id => $mod): ?>
+                        <tr>
+                            <td>
+                                <strong><?php echo esc_html($mod['nombre']); ?></strong>
+                                <?php if (!empty($mod['descripcion_contribucion'])): ?>
+                                <br><small style="color: #666;"><?php echo esc_html(wp_trim_words($mod['descripcion_contribucion'], 15)); ?></small>
+                                <?php endif; ?>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="sello-badge <?php echo $mod['puntuacion'] >= 80 ? 'badge-success' : ($mod['puntuacion'] >= 50 ? 'badge-warning' : 'badge-error'); ?>">
+                                    <?php echo esc_html($mod['puntuacion']); ?>
+                                </span>
+                            </td>
+                            <td><span class="sello-categoria"><?php echo esc_html(ucfirst($mod['categoria'] ?? '—')); ?></span></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php else: ?>
+            <div class="sello-section">
+                <div class="sello-empty-state">
+                    <span class="dashicons dashicons-info"></span>
+                    <p><?php esc_html_e('No hay módulos con valoración de conciencia activos.', 'flavor-chat-ia'); ?></p>
+                    <p><small><?php esc_html_e('Activa módulos que contribuyan a las premisas de economía consciente para ver la evaluación.', 'flavor-chat-ia'); ?></small></p>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Estilos CSS inline para el dashboard admin
+     */
+    private function render_admin_styles(): void {
+        ?>
+        <style>
+        .flavor-sello-dashboard { max-width: 1200px; }
+        .flavor-sello-dashboard h1 { display: flex; align-items: center; margin-bottom: 20px; }
+
+        .sello-header-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sello-main-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-left: 4px solid;
+            border-radius: 8px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .sello-score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sello-score-circle .dashicons { font-size: 28px; margin-bottom: 5px; }
+        .sello-score-circle .score-value { font-size: 32px; font-weight: 700; line-height: 1; }
+        .sello-score-circle .score-max { font-size: 14px; color: #666; }
+
+        .sello-nivel h2 { margin: 0 0 10px; font-size: 24px; }
+        .sello-nivel p { margin: 0; color: #666; font-size: 14px; line-height: 1.5; }
+
+        .sello-stats-cards { display: flex; flex-direction: column; gap: 15px; }
+
+        .sello-stat-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sello-stat-card .dashicons { font-size: 32px; color: #2271b1; }
+        .sello-stat-card .stat-value { display: block; font-size: 28px; font-weight: 700; color: #1d2327; }
+        .sello-stat-card .stat-label { display: block; font-size: 13px; color: #666; }
+
+        .sello-section {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .sello-section h2 {
+            margin: 0 0 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sello-premisas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .sello-premisa-card {
+            background: #f9f9f9;
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .premisa-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .premisa-header .dashicons { font-size: 24px; }
+        .premisa-header h3 { margin: 0; flex: 1; font-size: 15px; }
+        .premisa-score { font-size: 18px; font-weight: 700; }
+
+        .premisa-progress {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .premisa-progress .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .premisa-desc {
+            margin: 0;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .sello-modulos-table { margin-top: 10px; }
+        .sello-modulos-table td { vertical-align: middle; }
+
+        .sello-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sello-badge.badge-success { background: #d4edda; color: #155724; }
+        .sello-badge.badge-warning { background: #fff3cd; color: #856404; }
+        .sello-badge.badge-error { background: #f8d7da; color: #721c24; }
+
+        .sello-categoria {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .sello-empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .sello-empty-state .dashicons {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 782px) {
+            .sello-header-grid { grid-template-columns: 1fr; }
+            .sello-main-card { flex-direction: column; text-align: center; }
+            .sello-premisas-grid { grid-template-columns: 1fr; }
+        }
+        </style>
+        <?php
+    }
+
+    /**
+     * Render: Evaluación detallada
+     */
+    public function render_admin_evaluacion(): void {
+        $evaluacion = $this->evaluar();
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Evaluación de Módulos', 'flavor-chat-ia'); ?></h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Puntuación', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($evaluacion['modulos_evaluados'] as $id => $mod): ?>
+                    <tr>
+                        <td><?php echo esc_html($mod['nombre']); ?></td>
+                        <td><?php echo esc_html($mod['puntuacion']); ?>/100</td>
+                        <td><?php echo esc_html($mod['categoria'] ?? '—'); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Premisas
+     */
+    public function render_admin_premisas(): void {
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Las 5 Premisas Fundamentales', 'flavor-chat-ia'); ?></h1>
+            <div class="flavor-premisas-grid">
+                <?php foreach (self::PREMISAS as $premisa): ?>
+                <div class="flavor-premisa-card" style="border-left: 4px solid <?php echo esc_attr($premisa['color']); ?>">
+                    <h3><span class="dashicons <?php echo esc_attr($premisa['icono']); ?>"></span> <?php echo esc_html($premisa['nombre']); ?></h3>
+                    <p><?php echo esc_html($premisa['descripcion']); ?></p>
+                    <small><strong><?php esc_html_e('Principio:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($premisa['principio']); ?></small>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
     }
 
     /**
      * Registra shortcodes del módulo
      */
     public function register_shortcodes() {
+        // Shortcodes originales
         add_shortcode('sello_conciencia', [$this, 'shortcode_sello']);
         add_shortcode('premisas_conciencia', [$this, 'shortcode_premisas']);
+
+        // Aliases con prefijo flavor_sello_ (referenciados en dynamic-pages.php)
+        add_shortcode('flavor_sello_badge', [$this, 'shortcode_sello']);
+        add_shortcode('flavor_sello_premisas', [$this, 'shortcode_premisas']);
     }
 
     /**
@@ -922,16 +1359,22 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
             $valoracion = $this->get_valoracion_modulo($modulo_id);
 
             if ($valoracion) {
-                $evaluaciones[$modulo_id] = $valoracion;
-                $puntuacion_total += $valoracion['puntuacion'];
+                // Normalizar estructura de valoración (soporta formato antiguo y nuevo)
+                $valoracion_normalizada = $this->normalizar_valoracion($valoracion, $modulo_id);
+
+                $evaluaciones[$modulo_id] = $valoracion_normalizada;
+                $puntuacion_total += $valoracion_normalizada['puntuacion'];
 
                 // Calcular contribución a cada premisa
-                foreach ($valoracion['premisas'] as $premisa_id => $peso) {
-                    $contribucion = $valoracion['puntuacion'] * $peso;
+                foreach ($valoracion_normalizada['premisas'] as $premisa_id => $peso) {
+                    if (!isset($contribuciones_premisas[$premisa_id])) {
+                        continue; // Ignorar premisas no definidas
+                    }
+                    $contribucion = $valoracion_normalizada['puntuacion'] * $peso;
                     $contribuciones_premisas[$premisa_id]['puntuacion'] += $contribucion;
                     $contribuciones_premisas[$premisa_id]['modulos'][] = [
                         'modulo_id' => $modulo_id,
-                        'nombre' => $valoracion['nombre'],
+                        'nombre' => $valoracion_normalizada['nombre'],
                         'contribucion' => $contribucion,
                     ];
                 }
@@ -992,33 +1435,20 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
      * @return array IDs de módulos activos
      */
     public function get_modulos_activos(): array {
-        $modulos = [];
+        // Obtener módulos activos desde la configuración del plugin
+        $settings = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $settings['active_modules'] ?? [];
 
-        if (class_exists('Flavor_Chat_Module_Loader')) {
-            $loader = Flavor_Chat_Module_Loader::get_instance();
-            if (method_exists($loader, 'get_active_modules')) {
-                $activos = $loader->get_active_modules();
-                foreach ($activos as $modulo) {
-                    $id = is_object($modulo) ? $modulo->get_id() : $modulo;
-                    // Excluir este módulo de la evaluación
-                    if ($id !== 'sello_conciencia') {
-                        $modulos[] = $id;
-                    }
-                }
+        // Filtrar este módulo y normalizar IDs
+        $modulos = [];
+        foreach ($modulos_activos as $modulo_id) {
+            $id_normalizado = str_replace('-', '_', $modulo_id);
+            if ($id_normalizado !== 'sello_conciencia') {
+                $modulos[] = $id_normalizado;
             }
         }
 
-        if (empty($modulos)) {
-            $modulos = get_option('flavor_active_modules', []);
-            $modulos = array_filter($modulos, function($id) {
-                return $id !== 'sello_conciencia';
-            });
-        }
-
-        // Normalizar IDs (guiones a guiones bajos)
-        return array_map(function($id) {
-            return str_replace('-', '_', $id);
-        }, $modulos);
+        return $modulos;
     }
 
     /**
@@ -1059,13 +1489,67 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
             'nombre' => ucfirst(str_replace('_', ' ', $modulo_id)),
             'puntuacion' => 50,
             'premisas' => [
-                'abundancia_organizable' => 0.25,
-                'interdependencia_radical' => 0.25,
-                'conciencia_fundamental' => 0.25,
-                'valor_intrinseco' => 0.25,
+                'conciencia_fundamental' => 0.20,
+                'abundancia_organizable' => 0.20,
+                'interdependencia_radical' => 0.20,
+                'madurez_ciclica' => 0.20,
+                'valor_intrinseco' => 0.20,
             ],
             'descripcion_contribucion' => __('Módulo sin valoración específica.', 'flavor-chat-ia'),
             'categoria' => 'otros',
+        ];
+    }
+
+    /**
+     * Normaliza una valoración de módulo a formato estándar
+     *
+     * Soporta tanto el formato antiguo (MODULOS_VALORACION) como el nuevo
+     * formato devuelto por get_consciousness_valuation().
+     *
+     * @param array $valoracion Valoración original
+     * @param string $modulo_id ID del módulo
+     * @return array Valoración normalizada
+     */
+    private function normalizar_valoracion(array $valoracion, string $modulo_id): array {
+        // Determinar la puntuación (soporta 'puntuacion' y 'puntuacion_total')
+        $puntuacion = $valoracion['puntuacion'] ?? $valoracion['puntuacion_total'] ?? 50;
+
+        // Determinar el nombre
+        $nombre = $valoracion['nombre'] ?? ucfirst(str_replace('_', ' ', $modulo_id));
+
+        // Normalizar premisas
+        $premisas_normalizadas = [];
+        if (isset($valoracion['premisas']) && is_array($valoracion['premisas'])) {
+            foreach ($valoracion['premisas'] as $premisa_id => $premisa_data) {
+                if (is_array($premisa_data)) {
+                    // Formato nuevo: array con 'puntuacion' y 'descripcion'
+                    // Convertir puntuación (0-20) a peso (0-1)
+                    $premisa_puntuacion = $premisa_data['puntuacion'] ?? 0;
+                    $premisas_normalizadas[$premisa_id] = $premisa_puntuacion / 100;
+                } else {
+                    // Formato antiguo: valor numérico directo (peso)
+                    $premisas_normalizadas[$premisa_id] = (float) $premisa_data;
+                }
+            }
+        }
+
+        // Si no hay premisas, usar valores por defecto (5 premisas = 0.20 cada una)
+        if (empty($premisas_normalizadas)) {
+            $premisas_normalizadas = [
+                'conciencia_fundamental' => 0.20,
+                'abundancia_organizable' => 0.20,
+                'interdependencia_radical' => 0.20,
+                'madurez_ciclica' => 0.20,
+                'valor_intrinseco' => 0.20,
+            ];
+        }
+
+        return [
+            'nombre' => $nombre,
+            'puntuacion' => (int) $puntuacion,
+            'premisas' => $premisas_normalizadas,
+            'descripcion_contribucion' => $valoracion['descripcion_contribucion'] ?? '',
+            'categoria' => $valoracion['categoria'] ?? 'otros',
         ];
     }
 
@@ -1376,6 +1860,32 @@ KNOWLEDGE;
             [
                 'pregunta' => '¿Puedo mejorar mi nivel de conciencia?',
                 'respuesta' => 'Sí, activando módulos que contribuyan más a las premisas de conciencia, como Banco de Tiempo, Grupos de Consumo, Espacios Comunes o Red de Cuidados.',
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [
+            [
+                'name' => 'sello_conciencia_evaluar',
+                'description' => 'Evalúa el nivel de conciencia de la aplicación según los módulos activos',
+                'input_schema' => [
+                    'type' => 'object',
+                    'properties' => [],
+                    'required' => [],
+                ],
+            ],
+            [
+                'name' => 'sello_conciencia_premisas',
+                'description' => 'Muestra las 5 premisas fundamentales de una economía consciente',
+                'input_schema' => [
+                    'type' => 'object',
+                    'properties' => [],
+                    'required' => [],
+                ],
             ],
         ];
     }

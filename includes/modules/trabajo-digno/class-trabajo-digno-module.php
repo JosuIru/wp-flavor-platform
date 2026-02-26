@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Tipos de oferta laboral
      */
@@ -141,6 +143,14 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Inicialización del módulo
+     * Se ejecuta cuando el módulo está activo
+     */
+    public function init() {
+        $this->setup_module();
+    }
+
+    /**
      * Obtiene la valoración de conciencia del módulo
      *
      * @return array
@@ -186,12 +196,429 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
      * Configura el módulo
      */
     protected function setup_module() {
+        // Registrar CPT y taxonomías en el hook 'init' de WordPress
+        add_action('init', [$this, 'register_all_cpts'], 5);
+
+        $this->register_ajax_handlers();
+
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Dashboard widget
+        add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+
+        // Panel Unificado Admin
+        $this->registrar_en_panel_unificado();
+
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs() {
+        $tab_file = dirname(__FILE__) . '/class-trabajo-digno-dashboard-tab.php';
+        if (file_exists($tab_file)) {
+            require_once $tab_file;
+            if (class_exists('Flavor_Trabajo_Digno_Dashboard_Tab')) {
+                Flavor_Trabajo_Digno_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Registra el widget de dashboard
+     */
+    public function register_dashboard_widget($registry) {
+        $settings = $this->get_settings();
+        if (empty($settings['mostrar_en_dashboard'])) {
+            return;
+        }
+
+        $widget_path = dirname(__FILE__) . '/class-trabajo-digno-widget.php';
+        if (!class_exists('Flavor_Trabajo_Digno_Widget') && file_exists($widget_path)) {
+            require_once $widget_path;
+        }
+
+        if (class_exists('Flavor_Trabajo_Digno_Widget')) {
+            $registry->register(new Flavor_Trabajo_Digno_Widget($this));
+        }
+    }
+
+    /**
+     * Registra todos los CPTs y taxonomías
+     */
+    public function register_all_cpts() {
         $this->register_cpt_oferta();
         $this->register_cpt_perfil();
         $this->register_cpt_formacion();
         $this->register_cpt_emprendimiento();
         $this->register_taxonomies();
-        $this->register_ajax_handlers();
+    }
+
+    /**
+     * Registra rutas REST API
+     */
+    public function register_rest_routes(): void {
+        $namespace = 'flavor/v1';
+
+        // Listar ofertas
+        register_rest_route($namespace, '/trabajo-digno/ofertas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_ofertas'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Obtener oferta
+        register_rest_route($namespace, '/trabajo-digno/ofertas/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_oferta'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Listar formaciones
+        register_rest_route($namespace, '/trabajo-digno/formacion', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_formaciones'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Listar emprendimientos
+        register_rest_route($namespace, '/trabajo-digno/emprendimientos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_emprendimientos'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Mi perfil
+        register_rest_route($namespace, '/trabajo-digno/mi-perfil', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_mi_perfil'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+
+        // Mis postulaciones
+        register_rest_route($namespace, '/trabajo-digno/mis-postulaciones', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_mis_postulaciones'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+    }
+
+    /**
+     * Verifica si el usuario está logueado
+     */
+    public function check_user_logged_in(): bool {
+        return is_user_logged_in();
+    }
+
+    /**
+     * API: Obtener ofertas
+     */
+    public function api_get_ofertas(\WP_REST_Request $request): \WP_REST_Response {
+        $args = [
+            'post_type' => 'td_oferta',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+            'paged' => $request->get_param('page') ?: 1,
+        ];
+
+        if ($tipo = $request->get_param('tipo')) {
+            $args['meta_query'][] = ['key' => '_td_tipo', 'value' => $tipo];
+        }
+        if ($sector = $request->get_param('sector')) {
+            $args['tax_query'] = [['taxonomy' => 'td_sector', 'field' => 'slug', 'terms' => $sector]];
+        }
+
+        $query = new \WP_Query($args);
+        $ofertas = [];
+
+        foreach ($query->posts as $post) {
+            $tipo = get_post_meta($post->ID, '_td_tipo', true);
+            $ofertas[] = [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'tipo' => self::TIPOS_OFERTA[$tipo]['nombre'] ?? $tipo,
+                'jornada' => self::JORNADAS[get_post_meta($post->ID, '_td_jornada', true)] ?? '',
+                'ubicacion' => get_post_meta($post->ID, '_td_ubicacion', true),
+                'indice_dignidad' => $this->calcular_indice_dignidad($post->ID),
+            ];
+        }
+
+        return new \WP_REST_Response(['ofertas' => $ofertas, 'total' => $query->found_posts]);
+    }
+
+    /**
+     * API: Obtener oferta
+     */
+    public function api_get_oferta(\WP_REST_Request $request): \WP_REST_Response {
+        $oferta_id = $request->get_param('id');
+        $oferta = get_post($oferta_id);
+
+        if (!$oferta || $oferta->post_type !== 'td_oferta') {
+            return new \WP_REST_Response(['error' => 'Oferta no encontrada'], 404);
+        }
+
+        $tipo = get_post_meta($oferta_id, '_td_tipo', true);
+        $criterios = get_post_meta($oferta_id, '_td_criterios_dignidad', true) ?: [];
+
+        return new \WP_REST_Response([
+            'id' => $oferta->ID,
+            'titulo' => $oferta->post_title,
+            'descripcion' => $oferta->post_content,
+            'tipo' => self::TIPOS_OFERTA[$tipo] ?? [],
+            'jornada' => get_post_meta($oferta_id, '_td_jornada', true),
+            'ubicacion' => get_post_meta($oferta_id, '_td_ubicacion', true),
+            'salario' => get_post_meta($oferta_id, '_td_salario', true),
+            'criterios_dignidad' => $criterios,
+            'indice_dignidad' => $this->calcular_indice_dignidad($oferta_id),
+        ]);
+    }
+
+    /**
+     * API: Obtener formaciones
+     */
+    public function api_get_formaciones(\WP_REST_Request $request): \WP_REST_Response {
+        $query = new \WP_Query([
+            'post_type' => 'td_formacion',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+        ]);
+
+        $formaciones = [];
+        foreach ($query->posts as $post) {
+            $inscritos = get_post_meta($post->ID, '_td_inscritos', true) ?: [];
+            $formaciones[] = [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'plazas' => get_post_meta($post->ID, '_td_plazas', true),
+                'inscritos' => count($inscritos),
+                'imagen' => get_the_post_thumbnail_url($post->ID, 'medium'),
+            ];
+        }
+
+        return new \WP_REST_Response(['formaciones' => $formaciones, 'total' => $query->found_posts]);
+    }
+
+    /**
+     * API: Obtener emprendimientos
+     */
+    public function api_get_emprendimientos(\WP_REST_Request $request): \WP_REST_Response {
+        $query = new \WP_Query([
+            'post_type' => 'td_emprendimiento',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+        ]);
+
+        $emprendimientos = [];
+        foreach ($query->posts as $post) {
+            $emprendimientos[] = [
+                'id' => $post->ID,
+                'nombre' => $post->post_title,
+                'tipo_organizacion' => get_post_meta($post->ID, '_td_tipo_organizacion', true),
+                'imagen' => get_the_post_thumbnail_url($post->ID, 'medium'),
+            ];
+        }
+
+        return new \WP_REST_Response(['emprendimientos' => $emprendimientos, 'total' => $query->found_posts]);
+    }
+
+    /**
+     * API: Obtener mi perfil
+     */
+    public function api_get_mi_perfil(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+        $perfil = get_posts([
+            'post_type' => 'td_perfil',
+            'author' => $user_id,
+            'posts_per_page' => 1,
+        ]);
+
+        if (empty($perfil)) {
+            return new \WP_REST_Response(['perfil' => null, 'message' => 'No tienes perfil profesional']);
+        }
+
+        $perfil = $perfil[0];
+        return new \WP_REST_Response([
+            'id' => $perfil->ID,
+            'titulo' => $perfil->post_title,
+            'descripcion' => $perfil->post_content,
+            'experiencia' => get_post_meta($perfil->ID, '_td_experiencia', true),
+            'formacion' => get_post_meta($perfil->ID, '_td_formacion', true),
+            'disponibilidad' => get_post_meta($perfil->ID, '_td_disponibilidad', true),
+        ]);
+    }
+
+    /**
+     * API: Obtener mis postulaciones
+     */
+    public function api_get_mis_postulaciones(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+        $ofertas = get_posts([
+            'post_type' => 'td_oferta',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'meta_query' => [['key' => '_td_postulaciones', 'compare' => 'EXISTS']],
+        ]);
+
+        $mis_postulaciones = [];
+        foreach ($ofertas as $oferta) {
+            $postulaciones = get_post_meta($oferta->ID, '_td_postulaciones', true) ?: [];
+            foreach ($postulaciones as $p) {
+                if ($p['user_id'] == $user_id) {
+                    $mis_postulaciones[] = [
+                        'oferta_id' => $oferta->ID,
+                        'oferta_titulo' => $oferta->post_title,
+                        'fecha' => $p['fecha'],
+                        'estado' => $p['estado'],
+                    ];
+                    break;
+                }
+            }
+        }
+
+        return new \WP_REST_Response(['postulaciones' => $mis_postulaciones]);
+    }
+
+    /**
+     * Configuración del admin para el panel unificado
+     */
+    public function get_admin_config(): array {
+        return [
+            'paginas' => [
+                [
+                    'slug' => 'trabajo-digno',
+                    'titulo' => __('Trabajo Digno', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'td-ofertas',
+                    'titulo' => __('Ofertas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_ofertas'],
+                ],
+                [
+                    'slug' => 'td-formacion',
+                    'titulo' => __('Formación', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_formacion'],
+                ],
+                [
+                    'slug' => 'td-emprendimientos',
+                    'titulo' => __('Emprendimientos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_emprendimientos'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Render: Dashboard admin
+     */
+    public function render_admin_dashboard(): void {
+        $stats = $this->get_estadisticas();
+        ?>
+        <div class="wrap flavor-admin-trabajo">
+            <h1><?php esc_html_e('Trabajo Digno', 'flavor-chat-ia'); ?></h1>
+            <div class="flavor-stats-grid">
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-businessman"></span>
+                    <h3><?php echo esc_html($stats['ofertas_activas']); ?></h3>
+                    <p><?php esc_html_e('Ofertas activas', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-welcome-learn-more"></span>
+                    <h3><?php echo esc_html($stats['formaciones_disponibles']); ?></h3>
+                    <p><?php esc_html_e('Formaciones', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-store"></span>
+                    <h3><?php echo esc_html($stats['emprendimientos_locales']); ?></h3>
+                    <p><?php esc_html_e('Emprendimientos', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Listado de ofertas
+     */
+    public function render_admin_ofertas(): void {
+        $ofertas = get_posts(['post_type' => 'td_oferta', 'posts_per_page' => 50, 'post_status' => 'any']);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Ofertas de Trabajo', 'flavor-chat-ia'); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=td_oferta'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            </h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Dignidad', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($ofertas as $oferta): $tipo = get_post_meta($oferta->ID, '_td_tipo', true); ?>
+                    <tr>
+                        <td><a href="<?php echo get_edit_post_link($oferta->ID); ?>"><?php echo esc_html($oferta->post_title); ?></a></td>
+                        <td><?php echo esc_html(self::TIPOS_OFERTA[$tipo]['nombre'] ?? $tipo); ?></td>
+                        <td><?php echo esc_html($this->calcular_indice_dignidad($oferta->ID)); ?>%</td>
+                        <td><?php echo esc_html($oferta->post_status); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Listado de formación
+     */
+    public function render_admin_formacion(): void {
+        $formaciones = get_posts(['post_type' => 'td_formacion', 'posts_per_page' => 50, 'post_status' => 'any']);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Formación', 'flavor-chat-ia'); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=td_formacion'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            </h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Plazas', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Inscritos', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($formaciones as $form): $inscritos = get_post_meta($form->ID, '_td_inscritos', true) ?: []; ?>
+                    <tr>
+                        <td><a href="<?php echo get_edit_post_link($form->ID); ?>"><?php echo esc_html($form->post_title); ?></a></td>
+                        <td><?php echo esc_html(get_post_meta($form->ID, '_td_plazas', true) ?: '∞'); ?></td>
+                        <td><?php echo count($inscritos); ?></td>
+                        <td><?php echo esc_html($form->post_status); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Listado de emprendimientos
+     */
+    public function render_admin_emprendimientos(): void {
+        $emprendimientos = get_posts(['post_type' => 'td_emprendimiento', 'posts_per_page' => 50, 'post_status' => 'any']);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Emprendimientos', 'flavor-chat-ia'); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=td_emprendimiento'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            </h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Sector', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($emprendimientos as $emp): $sectores = wp_get_object_terms($emp->ID, 'td_sector', ['fields' => 'names']); ?>
+                    <tr>
+                        <td><a href="<?php echo get_edit_post_link($emp->ID); ?>"><?php echo esc_html($emp->post_title); ?></a></td>
+                        <td><?php echo esc_html(get_post_meta($emp->ID, '_td_tipo_organizacion', true)); ?></td>
+                        <td><?php echo esc_html(implode(', ', $sectores)); ?></td>
+                        <td><?php echo esc_html($emp->post_status); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
     }
 
     /**
@@ -886,6 +1313,23 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
                 'pregunta' => __('¿Puedo registrar mi emprendimiento?', 'flavor-chat-ia'),
                 'respuesta' => __('Sí, en la sección de Emprendimientos puedes registrar tu proyecto o empresa local.', 'flavor-chat-ia'),
             ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        return [
+            'success' => false,
+            'message' => __('Acción no implementada', 'flavor-chat-ia'),
         ];
     }
 }

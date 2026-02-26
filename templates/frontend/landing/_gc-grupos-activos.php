@@ -98,7 +98,7 @@ if (!function_exists('gc_contar_miembros')) {
                             <a href="<?php echo get_permalink($grupo->ID); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm">
                                 <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
                             </a>
-                            <a href="<?php echo esc_url(home_url('/grupos-consumo/unirme/?grupo=' . $grupo->ID)); ?>" class="flavor-btn flavor-btn--primary flavor-btn--sm">
+                            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/unirme/?grupo=' . $grupo->ID)); ?>" class="flavor-btn flavor-btn--primary flavor-btn--sm">
                                 <?php _e('Unirme', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
@@ -107,7 +107,7 @@ if (!function_exists('gc_contar_miembros')) {
             </div>
 
             <div class="flavor-section-footer">
-                <a href="<?php echo esc_url(home_url('/grupos-consumo/')); ?>" class="flavor-btn flavor-btn--outline">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="flavor-btn flavor-btn--outline">
                     <?php _e('Ver todos los grupos', 'flavor-chat-ia'); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </a>

@@ -64,19 +64,20 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
 
     <!-- Filtros -->
     <div class="cc-filtros" style="margin-bottom: 2rem;">
+        <?php $urgencia_filtro = isset($_GET['urgencia']) ? sanitize_key($_GET['urgencia']) : ''; ?>
         <form class="cc-filtros__form" method="get">
             <select name="urgencia" onchange="this.form.submit()">
                 <option value=""><?php esc_html_e('Todas las urgencias', 'flavor-chat-ia'); ?></option>
-                <option value="urgente" <?php selected(($_GET['urgencia'] ?? ''), 'urgente'); ?>>
+                <option value="urgente" <?php selected($urgencia_filtro, 'urgente'); ?>>
                     <?php esc_html_e('Urgente', 'flavor-chat-ia'); ?>
                 </option>
-                <option value="alta" <?php selected(($_GET['urgencia'] ?? ''), 'alta'); ?>>
+                <option value="alta" <?php selected($urgencia_filtro, 'alta'); ?>>
                     <?php esc_html_e('Alta', 'flavor-chat-ia'); ?>
                 </option>
-                <option value="normal" <?php selected(($_GET['urgencia'] ?? ''), 'normal'); ?>>
+                <option value="normal" <?php selected($urgencia_filtro, 'normal'); ?>>
                     <?php esc_html_e('Normal', 'flavor-chat-ia'); ?>
                 </option>
-                <option value="baja" <?php selected(($_GET['urgencia'] ?? ''), 'baja'); ?>>
+                <option value="baja" <?php selected($urgencia_filtro, 'baja'); ?>>
                     <?php esc_html_e('Baja', 'flavor-chat-ia'); ?>
                 </option>
             </select>

@@ -42,12 +42,11 @@ $entregas = $wpdb->get_results($wpdb->prepare(
 
 // Mensaje de éxito/error
 $mensaje = '';
-if (isset($_GET['payment'])) {
-    if ($_GET['payment'] === 'success') {
-        $mensaje = '<div class="gc-notice gc-notice-success"><span class="dashicons dashicons-yes"></span> ' . esc_html__('Pago realizado correctamente.', 'flavor-chat-ia') . '</div>';
-    } elseif ($_GET['payment'] === 'cancelled') {
-        $mensaje = '<div class="gc-notice gc-notice-warning"><span class="dashicons dashicons-info"></span> ' . esc_html__('El pago fue cancelado.', 'flavor-chat-ia') . '</div>';
-    }
+$payment_status = isset($_GET['payment']) ? sanitize_key($_GET['payment']) : '';
+if ($payment_status === 'success') {
+    $mensaje = '<div class="gc-notice gc-notice-success"><span class="dashicons dashicons-yes"></span> ' . esc_html__('Pago realizado correctamente.', 'flavor-chat-ia') . '</div>';
+} elseif ($payment_status === 'cancelled') {
+    $mensaje = '<div class="gc-notice gc-notice-warning"><span class="dashicons dashicons-info"></span> ' . esc_html__('El pago fue cancelado.', 'flavor-chat-ia') . '</div>';
 }
 ?>
 

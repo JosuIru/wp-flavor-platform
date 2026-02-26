@@ -1,0 +1,594 @@
+/**
+ * Estilos del Dashboard de Analytics Social
+ *
+ * @package Flavor_Chat_IA
+ * @since 1.6.0
+ */
+
+/* Reset y base */
+.flavor-analytics-wrap {
+    max-width: 1600px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.flavor-analytics-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 23px;
+    font-weight: 400;
+    color: #1d2327;
+}
+
+.flavor-analytics-title .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #2271b1;
+}
+
+/* Toolbar */
+.flavor-analytics-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 15px 20px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+}
+
+.periodo-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.periodo-selector label {
+    font-weight: 500;
+    color: #50575e;
+}
+
+.periodo-select {
+    min-width: 180px;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.toolbar-actions .button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.toolbar-actions .button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* KPIs Grid */
+.flavor-analytics-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2271b1 0%, #135e96 100%);
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.kpi-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.kpi-icon.icon-new {
+    background: linear-gradient(135deg, #00a32a 0%, #007017 100%);
+}
+
+.kpi-icon.icon-posts {
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+}
+
+.kpi-icon.icon-engagement {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.kpi-icon.icon-likes {
+    background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+}
+
+.kpi-icon.icon-comments {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.kpi-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1d2327;
+    line-height: 1.2;
+}
+
+.kpi-label {
+    font-size: 13px;
+    color: #646970;
+}
+
+.kpi-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.kpi-trend .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.kpi-trend.positive {
+    color: #00a32a;
+}
+
+.kpi-trend.negative {
+    color: #d63638;
+}
+
+/* Secciones */
+.flavor-analytics-section {
+    margin-bottom: 25px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.section-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f6f7f7;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.section-content {
+    padding: 20px;
+}
+
+.chart-container {
+    position: relative;
+    height: 350px;
+    width: 100%;
+}
+
+/* Grid de paneles */
+.flavor-analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.analytics-panel {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.analytics-panel.panel-wide {
+    grid-column: 1 / -1;
+}
+
+.panel-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f6f7f7;
+}
+
+.panel-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.panel-header .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #2271b1;
+}
+
+.panel-content {
+    padding: 15px 20px;
+}
+
+/* Trending Hashtags */
+.trending-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.trending-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.trending-item:last-child {
+    border-bottom: none;
+}
+
+.trending-rank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #f0f0f1;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #646970;
+}
+
+.trending-item:nth-child(-n+3) .trending-rank {
+    background: linear-gradient(135deg, #2271b1 0%, #135e96 100%);
+    color: #fff;
+}
+
+.trending-tag {
+    flex: 1;
+    font-weight: 500;
+    color: #2271b1;
+}
+
+.trending-count {
+    font-size: 12px;
+    color: #646970;
+}
+
+/* Top Users */
+.top-users-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-item:last-child {
+    border-bottom: none;
+}
+
+.user-rank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #f0f0f1;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #646970;
+}
+
+.user-item:nth-child(-n+3) .user-rank {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: #fff;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #1d2327;
+}
+
+.user-stats {
+    font-size: 12px;
+    color: #646970;
+}
+
+/* Top Posts Table */
+.top-posts-table {
+    margin: 0;
+}
+
+.top-posts-table th,
+.top-posts-table td {
+    padding: 12px 10px;
+}
+
+.top-posts-table th.num,
+.top-posts-table td.num {
+    text-align: center;
+    width: 80px;
+}
+
+.author-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.post-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.content-cell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #646970;
+}
+
+.engagement-score {
+    font-weight: 600;
+    color: #2271b1;
+}
+
+/* Comunidades y Estados */
+.comunidades-summary,
+.estados-summary {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.summary-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f6f7f7;
+    border-radius: 8px;
+    flex: 1;
+}
+
+.summary-stat .stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2271b1;
+}
+
+.summary-stat .stat-label {
+    font-size: 12px;
+    color: #646970;
+    margin-top: 4px;
+}
+
+.comunidades-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.comunidad-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.comunidad-item:last-child {
+    border-bottom: none;
+}
+
+.comunidad-nombre {
+    font-weight: 500;
+    color: #1d2327;
+}
+
+.comunidad-miembros {
+    font-size: 12px;
+    color: #646970;
+}
+
+.panel-content h4 {
+    margin: 15px 0 10px;
+    font-size: 13px;
+    color: #50575e;
+}
+
+/* Estados sin datos */
+.no-data {
+    text-align: center;
+    color: #646970;
+    padding: 30px;
+    font-style: italic;
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid #f0f0f1;
+    border-top-color: #2271b1;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media screen and (max-width: 1200px) {
+    .flavor-analytics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .flavor-analytics-wrap {
+        padding: 0 10px;
+    }
+
+    .flavor-analytics-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-actions {
+        justify-content: flex-end;
+    }
+
+    .flavor-analytics-kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .kpi-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .flavor-analytics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-panel.panel-wide {
+        grid-column: auto;
+    }
+
+    .comunidades-summary,
+    .estados-summary {
+        flex-wrap: wrap;
+    }
+
+    .summary-stat {
+        min-width: 80px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .flavor-analytics-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-card {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .top-posts-table th.num:nth-child(n+4),
+    .top-posts-table td.num:nth-child(n+4) {
+        display: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .flavor-analytics-toolbar .toolbar-actions,
+    .periodo-selector {
+        display: none;
+    }
+
+    .kpi-card,
+    .analytics-panel {
+        break-inside: avoid;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+}

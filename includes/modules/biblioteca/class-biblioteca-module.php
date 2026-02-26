@@ -15,6 +15,19 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Provider;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_integration_content_type() {
+        return [
+            'id' => 'biblioteca',
+            'label' => __('Biblioteca', 'flavor-chat-ia'),
+            'icon' => 'dashicons-book',
+            'table' => 'flavor_biblioteca_libros',
+        ];
+    }
 
     /**
      * Constructor
@@ -72,6 +85,9 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        // Registrar como proveedor de integración
+        $this->register_as_integration_provider();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
@@ -100,6 +116,20 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         add_action('flavor_biblioteca_procesar_reservas', [$this, 'procesar_reservas_expiradas']);
         if (!wp_next_scheduled('flavor_biblioteca_procesar_reservas')) {
             wp_schedule_event(time(), 'hourly', 'flavor_biblioteca_procesar_reservas');
+        }
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-biblioteca-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Biblioteca_Frontend_Controller::get_instance();
         }
     }
 

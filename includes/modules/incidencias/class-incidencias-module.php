@@ -16,6 +16,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Versión de las tablas
@@ -26,6 +27,22 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_incidencias_reportar_incidencia', [$this, 'ajax_reportar_incidencia']);
+        add_action('wp_ajax_nopriv_incidencias_reportar_incidencia', [$this, 'ajax_reportar_incidencia']);
+        add_action('wp_ajax_incidencias_listar_incidencias', [$this, 'ajax_listar_incidencias']);
+        add_action('wp_ajax_nopriv_incidencias_listar_incidencias', [$this, 'ajax_listar_incidencias']);
+        add_action('wp_ajax_incidencias_detalle_incidencia', [$this, 'ajax_detalle_incidencia']);
+        add_action('wp_ajax_nopriv_incidencias_detalle_incidencia', [$this, 'ajax_detalle_incidencia']);
+        add_action('wp_ajax_incidencias_votar_incidencia', [$this, 'ajax_votar_incidencia']);
+        add_action('wp_ajax_nopriv_incidencias_votar_incidencia', [$this, 'ajax_votar_incidencia']);
+        add_action('wp_ajax_incidencias_comentar_incidencia', [$this, 'ajax_comentar_incidencia']);
+        add_action('wp_ajax_nopriv_incidencias_comentar_incidencia', [$this, 'ajax_comentar_incidencia']);
+        add_action('wp_ajax_incidencias_asignar_responsable', [$this, 'ajax_asignar_responsable']);
+        add_action('wp_ajax_nopriv_incidencias_asignar_responsable', [$this, 'ajax_asignar_responsable']);
+        add_action('wp_ajax_incidencias_eliminar_incidencia', [$this, 'ajax_eliminar_incidencia']);
+        add_action('wp_ajax_nopriv_incidencias_eliminar_incidencia', [$this, 'ajax_eliminar_incidencia']);
+
         $this->id = 'incidencias';
         $this->name = 'Incidencias Urbanas'; // Translation loaded on init
         $this->description = 'Reportar y gestionar incidencias del barrio: baches, alumbrado, limpieza, etc.'; // Translation loaded on init
@@ -44,6 +61,9 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         add_action('incidencia_status_changed', [$this, 'notify_status_changed'], 10, 3);
         add_action('incidencia_comment_added', [$this, 'notify_new_comment'], 10, 3);
         add_action('incidencia_resolved', [$this, 'notify_ticket_resolved'], 10, 2);
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -244,9 +264,35 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia']; // Solo fotos/videos de la incidencia
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type'      => 'table',
+                'table'     => 'flavor_incidencias',
+                'context'   => 'side',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -258,6 +304,9 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         // Cargar funcionalidades del Sello de Conciencia (+13 pts)
         $this->cargar_funcionalidades_conciencia();
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
 
         // AJAX handlers públicos
         add_action('wp_ajax_incidencias_reportar', [$this, 'ajax_reportar_incidencia']);
@@ -305,6 +354,17 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             if (class_exists('Flavor_Incidencias_Conciencia_Features')) {
                 Flavor_Incidencias_Conciencia_Features::get_instance();
             }
+        }
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-incidencias-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Incidencias_Frontend_Controller::get_instance();
         }
     }
 
@@ -1410,6 +1470,9 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         // Enviar notificación al admin
         $this->notificar_nueva_incidencia($incidencia_id);
 
+        // Hook para sistema de reputación
+        do_action('flavor_incidencia_reportada', $usuario_id, $incidencia_id);
+
         wp_send_json_success([
             'incidencia_id' => $incidencia_id,
             'numero_incidencia' => $numero_incidencia,
@@ -2282,17 +2345,19 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     public function shortcode_listado($atributos) {
         $atributos = shortcode_atts([
             'titulo' => __('Incidencias', 'flavor-chat-ia'),
-            'limite' => 12,
+            'limite' => 20,
             'categoria' => '',
             'estado' => '',
             'mostrar_filtros' => 'true',
             'paginacion' => 'true',
         ], $atributos);
 
-        $configuracion = $this->get_settings();
+        // Extraer variables para el template
+        $limit = intval($atributos['limite']);
+        $mostrar_filtros = $atributos['mostrar_filtros'] === 'true' || $atributos['mostrar_filtros'] === true;
 
         ob_start();
-        include dirname(__FILE__) . '/templates/listado-incidencias.php';
+        include dirname(__FILE__) . '/templates/listado.php';
         return ob_get_clean();
     }
 
@@ -2465,6 +2530,15 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             'callback' => [$this, 'api_mapa'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
+
+        // Cargar también la clase API móvil (namespace flavor-chat-ia/v1)
+        $api_file = dirname(__FILE__) . '/class-incidencias-api.php';
+        if (file_exists($api_file)) {
+            require_once $api_file;
+            if (class_exists('Flavor_Incidencias_API')) {
+                Flavor_Incidencias_API::get_instance();
+            }
+        }
     }
 
     /**
@@ -3220,4 +3294,95 @@ KNOWLEDGE;
         ];
     }
 
+    /**
+     * Registrar páginas de administración
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (sin menú visible en el sidebar)
+        add_submenu_page(
+            null,
+            __('Incidencias - Dashboard', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'incidencias',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        add_submenu_page(
+            null,
+            __('Incidencias - Tickets', 'flavor-chat-ia'),
+            __('Tickets', 'flavor-chat-ia'),
+            $capability,
+            'incidencias-tickets',
+            [$this, 'render_pagina_tickets']
+        );
+
+        add_submenu_page(
+            null,
+            __('Incidencias - Categorías', 'flavor-chat-ia'),
+            __('Categorías', 'flavor-chat-ia'),
+            $capability,
+            'incidencias-categorias',
+            [$this, 'render_pagina_categorias']
+        );
+
+        add_submenu_page(
+            null,
+            __('Incidencias - Estadísticas', 'flavor-chat-ia'),
+            __('Estadísticas', 'flavor-chat-ia'),
+            $capability,
+            'incidencias-estadisticas',
+            [$this, 'render_pagina_estadisticas']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Incidencias', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de tickets
+     */
+    public function render_pagina_tickets() {
+        $views_path = dirname(__FILE__) . '/views/tickets.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Tickets', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de categorías
+     */
+    public function render_pagina_categorias() {
+        $views_path = dirname(__FILE__) . '/views/categorias.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Categorías', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de estadísticas
+     */
+    public function render_pagina_estadisticas() {
+        $views_path = dirname(__FILE__) . '/views/estadisticas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Estadísticas de Incidencias', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
 }

@@ -115,7 +115,7 @@ class Flavor_Sello_Conciencia_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver detalles', 'flavor-chat-ia'),
-                    'url' => admin_url('admin.php?page=flavor-sello-conciencia'),
+                    'url' => $this->get_context_url('/mi-portal/sello-conciencia/', 'sello-conciencia'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],

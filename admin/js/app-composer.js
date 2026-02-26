@@ -43,6 +43,12 @@ const flavorComposerFactory = () => ({
             console.log('[App Composer] perfilSeleccionado inicializado:', this.perfilSeleccionado);
             this.moduleCategoryMap = this.buildModuleCategoryMap();
             this.landingTags = flavorComposerData.landingTags || {};
+
+            // Restaurar paso activo desde localStorage
+            const pasoGuardado = localStorage.getItem('flavor_composer_paso');
+            if (pasoGuardado && ['plantillas', 'modulos'].includes(pasoGuardado)) {
+                this.pasoActual = pasoGuardado;
+            }
         },
 
         /**
@@ -50,6 +56,8 @@ const flavorComposerFactory = () => ({
          */
         irAPaso(paso) {
             this.pasoActual = paso;
+            // Guardar en localStorage para persistir al recargar
+            localStorage.setItem('flavor_composer_paso', paso);
         },
 
         /**
@@ -475,15 +483,106 @@ document.addEventListener('alpine:init', () => {
 });
 
 window.flavorComposer = flavorComposerFactory;
+
+/**
+ * Combina flavorComposer y flavorTemplateOrchestrator en un solo estado Alpine.
+ * Usa composición directa para evitar problemas con getters y métodos duplicados.
+ */
 window.flavorComposerState = () => {
-    const composer = window.flavorComposer ? flavorComposer() : {};
-    const orchestrator = window.flavorTemplateOrchestrator ? flavorTemplateOrchestrator() : {};
-    return Object.defineProperties(
-        {},
-        Object.assign(
-            {},
-            Object.getOwnPropertyDescriptors(composer),
-            Object.getOwnPropertyDescriptors(orchestrator)
-        )
-    );
+    // Obtener instancias base
+    const composerBase = window.flavorComposer ? window.flavorComposer() : {};
+    const orchestratorBase = window.flavorTemplateOrchestrator ? window.flavorTemplateOrchestrator() : {};
+
+    // Crear objeto combinado con todas las propiedades
+    const combined = {};
+
+    // Copiar propiedades del composer (primero)
+    Object.keys(composerBase).forEach(key => {
+        if (typeof composerBase[key] !== 'function') {
+            combined[key] = composerBase[key];
+        }
+    });
+
+    // Copiar propiedades del orchestrator (pueden sobrescribir)
+    Object.keys(orchestratorBase).forEach(key => {
+        if (typeof orchestratorBase[key] !== 'function') {
+            combined[key] = orchestratorBase[key];
+        }
+    });
+
+    // Copiar métodos del composer
+    Object.keys(composerBase).forEach(key => {
+        if (typeof composerBase[key] === 'function') {
+            // Renombrar init del composer para evitar conflicto
+            if (key === 'init') {
+                combined._composerInit = composerBase[key];
+            } else if (key === 'mostrarNotificacion') {
+                combined._composerNotificacion = composerBase[key];
+            } else {
+                combined[key] = composerBase[key];
+            }
+        }
+    });
+
+    // Copiar métodos del orchestrator
+    Object.keys(orchestratorBase).forEach(key => {
+        if (typeof orchestratorBase[key] === 'function') {
+            // Renombrar init del orchestrator para evitar conflicto
+            if (key === 'init') {
+                combined._orchestratorInit = orchestratorBase[key];
+            } else if (key === 'mostrarNotificacion') {
+                // Usar mostrarNotificacion del orchestrator como principal
+                combined.mostrarNotificacion = orchestratorBase[key];
+            } else {
+                combined[key] = orchestratorBase[key];
+            }
+        }
+    });
+
+    // Crear init combinado que llame a ambos
+    combined.init = function() {
+        if (this._composerInit) {
+            this._composerInit.call(this);
+        }
+        if (this._orchestratorInit) {
+            this._orchestratorInit.call(this);
+        }
+    };
+
+    // Definir getters computados manualmente para el orchestrator
+    Object.defineProperty(combined, 'porcentajeProgreso', {
+        get: function() {
+            const totalPasos = this.pasosInstalacion ? this.pasosInstalacion.length : 0;
+            if (!totalPasos) return 0;
+
+            if (this.hayError) {
+                const completados = this.pasosInstalacion.filter(paso => paso.estado === 'completado').length;
+                return Math.round((completados / totalPasos) * 100);
+            }
+
+            const completados = this.pasosInstalacion.filter(paso =>
+                paso.estado === 'completado' || paso.estado === 'omitido'
+            ).length;
+
+            return Math.round((completados / totalPasos) * 100);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(combined, 'tituloProgreso', {
+        get: function() {
+            if (this.hayError) {
+                return this.datosOrquestador?.i18n?.tituloError || 'Error en la instalación';
+            }
+            if (this.instalacionCompletada) {
+                return this.datosOrquestador?.i18n?.tituloCompletado || 'Instalación completada';
+            }
+            return this.datosOrquestador?.i18n?.tituloInstalando || 'Instalando plantilla...';
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    return combined;
 };

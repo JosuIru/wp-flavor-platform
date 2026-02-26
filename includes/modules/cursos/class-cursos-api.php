@@ -471,6 +471,9 @@ class Flavor_Cursos_API {
             ]
         );
 
+        // Hook para lección completada
+        do_action('flavor_leccion_completada', $usuario_id, $leccion_id, $leccion->curso_id);
+
         // Si completó el 100%, marcar inscripción como completada
         if ($progreso >= 100) {
             $wpdb->update(
@@ -484,6 +487,9 @@ class Flavor_Cursos_API {
                     'alumno_id' => $usuario_id,
                 ]
             );
+
+            // Hook para curso completado
+            do_action('flavor_curso_completado', $usuario_id, $leccion->curso_id);
         }
 
         return new WP_REST_Response([

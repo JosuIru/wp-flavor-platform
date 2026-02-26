@@ -259,7 +259,7 @@ class Flavor_Newsletter_Manager {
 
     public function rastrear_apertura() {
         $identificador_campana = intval($_GET['c'] ?? 0);
-        $direccion_email = base64_decode(sanitize_text_field($_GET['e'] ?? ''));
+        $direccion_email = $this->decodificar_email_seguro($_GET['e'] ?? '');
 
         if ($identificador_campana && $direccion_email) {
             global $wpdb;
@@ -285,7 +285,7 @@ class Flavor_Newsletter_Manager {
 
     public function rastrear_click() {
         $identificador_campana = intval($_GET['c'] ?? 0);
-        $direccion_email = base64_decode(sanitize_text_field($_GET['e'] ?? ''));
+        $direccion_email = $this->decodificar_email_seguro($_GET['e'] ?? '');
         $url_destino = esc_url_raw(urldecode($_GET['u'] ?? ''));
 
         if ($identificador_campana && $direccion_email && $url_destino) {
@@ -302,7 +302,7 @@ class Flavor_Newsletter_Manager {
     }
 
     public function procesar_baja_suscripcion() {
-        $direccion_email = base64_decode(sanitize_text_field($_GET['e'] ?? $_POST['e'] ?? ''));
+        $direccion_email = $this->decodificar_email_seguro($_GET['e'] ?? $_POST['e'] ?? '');
         if (empty($direccion_email) || !is_email($direccion_email)) {
             wp_die(__('Enlace de baja no valido.', 'flavor-chat-ia'));
         }
@@ -393,5 +393,34 @@ class Flavor_Newsletter_Manager {
             }
         }
         return '0.0.0.0';
+    }
+
+    /**
+     * Decodifica un email desde base64 de forma segura
+     *
+     * @param string $encoded Email codificado en base64
+     * @return string Email decodificado y sanitizado, o vacío si es inválido
+     */
+    private function decodificar_email_seguro($encoded) {
+        if (empty($encoded)) {
+            return '';
+        }
+
+        // Limpiar caracteres de URL encoding y espacios
+        $encoded = str_replace([' ', '%20'], ['+', '+'], $encoded);
+
+        // Validar que solo contiene caracteres base64 válidos
+        if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $encoded)) {
+            return '';
+        }
+
+        $decoded = base64_decode($encoded, true);
+        if ($decoded === false) {
+            return '';
+        }
+
+        // Sanitizar y validar como email
+        $email = sanitize_email($decoded);
+        return is_email($email) ? $email : '';
     }
 }

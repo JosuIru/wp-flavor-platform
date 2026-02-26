@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Biodiversidad_Local_Widget extends Flavor_Dashboard_Widget_Base {
 
-    private $module;
+    protected $module;
 
     public function __construct($module) {
         $this->module = $module;
@@ -59,7 +59,7 @@ class Flavor_Biodiversidad_Local_Widget extends Flavor_Dashboard_Widget_Base {
                     _n('%d avistamiento registrado', '%d avistamientos registrados', $stats['mis_avistamientos'], 'flavor-chat-ia'),
                     $stats['mis_avistamientos']
                 ),
-                'url' => ->get_context_url('/mi-portal/biodiversidad/', 'flavor-biodiversidad'),
+                'url' => $this->get_context_url('/mi-portal/biodiversidad/', 'flavor-biodiversidad'),
             ];
         }
 

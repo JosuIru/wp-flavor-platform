@@ -531,9 +531,9 @@ class Flavor_Landing_Shortcodes {
             'color_primario' => '#84cc16',
             'imagen' => '',
             'cta_texto' => __('Ver Grupos', 'flavor-chat-ia'),
-            'cta_url' => home_url('/grupos-consumo/'),
+            'cta_url' => home_url('/mi-portal/grupos-consumo/'),
             'cta_secundario_texto' => __('Ver Productos', 'flavor-chat-ia'),
-            'cta_secundario_url' => home_url('/grupos-consumo/productos/'),
+            'cta_secundario_url' => home_url('/mi-portal/grupos-consumo/productos/'),
         ];
     }
 
@@ -579,9 +579,9 @@ class Flavor_Landing_Shortcodes {
             'titulo' => __('¿Listo para consumir local?', 'flavor-chat-ia'),
             'descripcion' => __('Únete a un grupo de consumo y empieza a disfrutar de productos frescos, de temporada y de productores cercanos', 'flavor-chat-ia'),
             'boton_texto' => __('Unirme a un grupo', 'flavor-chat-ia'),
-            'boton_url' => home_url('/grupos-consumo/unirme/'),
+            'boton_url' => home_url('/mi-portal/grupos-consumo/unirme/'),
             'boton_secundario_texto' => __('Ver catálogo', 'flavor-chat-ia'),
-            'boton_secundario_url' => home_url('/grupos-consumo/productos/'),
+            'boton_secundario_url' => home_url('/mi-portal/grupos-consumo/productos/'),
             'color_primario' => '#84cc16',
         ];
     }

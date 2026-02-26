@@ -1,0 +1,523 @@
+/**
+ * Cursos - Panel Instructor Styles
+ *
+ * Hereda de Flavor Design Settings (--flavor-*)
+ * Configurable desde: Panel Admin > Flavor > Diseño
+ *
+ * @package FlavorChatIA
+ */
+
+/* === Variables locales - Heredan de Design Settings === */
+:root {
+    --ci-primary: var(--flavor-primary, #4f46e5);
+    --ci-primary-hover: color-mix(in srgb, var(--flavor-primary, #4f46e5) 85%, black);
+    --ci-primary-light: color-mix(in srgb, var(--flavor-primary, #4f46e5) 15%, white);
+    --ci-secondary: var(--flavor-secondary, #8b5cf6);
+    --ci-success: var(--flavor-success, #22c55e);
+    --ci-warning: var(--flavor-warning, #f59e0b);
+    --ci-danger: var(--flavor-error, #ef4444);
+
+    --ci-bg: var(--flavor-bg, #ffffff);
+    --ci-bg-muted: color-mix(in srgb, var(--flavor-bg, #ffffff) 95%, var(--flavor-text, #1f2937));
+    --ci-text: var(--flavor-text, #1f2937);
+    --ci-text-muted: var(--flavor-text-muted, #6b7280);
+
+    --ci-border: color-mix(in srgb, var(--flavor-text, #1f2937) 15%, transparent);
+    --ci-radius: var(--flavor-card-radius, 12px);
+    --ci-radius-sm: var(--flavor-button-radius, 8px);
+    --ci-shadow: var(--flavor-card-shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+    --ci-gap: var(--flavor-grid-gap, 24px);
+    --ci-padding: var(--flavor-card-padding, 24px);
+}
+
+/* === Contenedor principal === */
+.cursos-instructor-container {
+    max-width: var(--flavor-container-max, 1280px);
+    margin: 0 auto;
+    padding: var(--ci-padding);
+    font-family: var(--flavor-font-body, inherit);
+}
+
+/* === Header del panel === */
+.ci-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--ci-gap);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.ci-header h1 {
+    font-family: var(--flavor-font-headings, inherit);
+    font-size: var(--flavor-font-size-h2, 36px);
+    color: var(--ci-text);
+    margin: 0;
+}
+
+.ci-header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* === Estadisticas del instructor === */
+.ci-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--ci-gap);
+    margin-bottom: var(--ci-gap);
+}
+
+.ci-stat-card {
+    background: var(--ci-bg);
+    border-radius: var(--ci-radius);
+    padding: var(--ci-padding);
+    box-shadow: var(--ci-shadow);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ci-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.ci-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+}
+
+.ci-stat-icon.cursos { background: var(--ci-primary-light); color: var(--ci-primary); }
+.ci-stat-icon.alumnos { background: color-mix(in srgb, var(--ci-secondary) 15%, white); color: var(--ci-secondary); }
+.ci-stat-icon.ingresos { background: color-mix(in srgb, var(--ci-success) 15%, white); color: var(--ci-success); }
+.ci-stat-icon.valoracion { background: color-mix(in srgb, var(--ci-warning) 15%, white); color: var(--ci-warning); }
+
+.ci-stat-valor {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ci-text);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.ci-stat-label {
+    font-size: 0.875rem;
+    color: var(--ci-text-muted);
+}
+
+/* === Lista de cursos === */
+.ci-cursos-section {
+    background: var(--ci-bg);
+    border-radius: var(--ci-radius);
+    box-shadow: var(--ci-shadow);
+    overflow: hidden;
+}
+
+.ci-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--ci-padding);
+    border-bottom: 1px solid var(--ci-border);
+}
+
+.ci-section-header h2 {
+    font-family: var(--flavor-font-headings, inherit);
+    font-size: var(--flavor-font-size-h3, 28px);
+    color: var(--ci-text);
+    margin: 0;
+}
+
+.ci-cursos-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ci-curso-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem var(--ci-padding);
+    border-bottom: 1px solid var(--ci-border);
+    transition: background 0.15s;
+}
+
+.ci-curso-item:last-child {
+    border-bottom: none;
+}
+
+.ci-curso-item:hover {
+    background: var(--ci-bg-muted);
+}
+
+.ci-curso-thumbnail {
+    width: 80px;
+    height: 60px;
+    border-radius: var(--ci-radius-sm);
+    object-fit: cover;
+    background: var(--ci-bg-muted);
+}
+
+.ci-curso-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ci-curso-titulo {
+    font-weight: 600;
+    color: var(--ci-text);
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ci-curso-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--ci-text-muted);
+}
+
+.ci-curso-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.ci-curso-estado.publicado { background: color-mix(in srgb, var(--ci-success) 15%, white); color: var(--ci-success); }
+.ci-curso-estado.borrador { background: var(--ci-bg-muted); color: var(--ci-text-muted); }
+.ci-curso-estado.revision { background: color-mix(in srgb, var(--ci-warning) 15%, white); color: var(--ci-warning); }
+
+.ci-curso-acciones {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* === Botones === */
+.ci-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: var(--flavor-button-py, 12px) var(--flavor-button-px, 24px);
+    border-radius: var(--flavor-button-radius, 8px);
+    font-size: var(--flavor-button-font-size, 16px);
+    font-weight: var(--flavor-button-weight, 600);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+}
+
+.ci-btn-primary {
+    background: var(--ci-primary);
+    color: white;
+}
+
+.ci-btn-primary:hover {
+    background: var(--ci-primary-hover);
+    color: white;
+}
+
+.ci-btn-outline {
+    background: transparent;
+    border: 2px solid var(--ci-border);
+    color: var(--ci-text);
+}
+
+.ci-btn-outline:hover {
+    border-color: var(--ci-primary);
+    color: var(--ci-primary);
+    background: var(--ci-primary-light);
+}
+
+.ci-btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.ci-btn-icon {
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+}
+
+/* === Editor de contenido === */
+.ci-editor-section {
+    background: var(--ci-bg);
+    border-radius: var(--ci-radius);
+    box-shadow: var(--ci-shadow);
+    margin-top: var(--ci-gap);
+}
+
+.ci-editor-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--ci-border);
+}
+
+.ci-editor-tab {
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: var(--ci-text-muted);
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.ci-editor-tab:hover {
+    color: var(--ci-text);
+}
+
+.ci-editor-tab.active {
+    color: var(--ci-primary);
+}
+
+.ci-editor-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--ci-primary);
+}
+
+.ci-editor-content {
+    padding: var(--ci-padding);
+}
+
+/* === Formularios === */
+.ci-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.ci-form-label {
+    display: block;
+    font-weight: 500;
+    color: var(--ci-text);
+    margin-bottom: 0.5rem;
+}
+
+.ci-form-label .required {
+    color: var(--ci-danger);
+}
+
+.ci-form-input,
+.ci-form-textarea,
+.ci-form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--ci-border);
+    border-radius: var(--ci-radius-sm);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ci-form-input:focus,
+.ci-form-textarea:focus,
+.ci-form-select:focus {
+    outline: none;
+    border-color: var(--ci-primary);
+    box-shadow: 0 0 0 3px var(--ci-primary-light);
+}
+
+.ci-form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.ci-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* === Modulos del curso === */
+.ci-modulos-lista {
+    border: 1px solid var(--ci-border);
+    border-radius: var(--ci-radius);
+    overflow: hidden;
+}
+
+.ci-modulo-item {
+    border-bottom: 1px solid var(--ci-border);
+}
+
+.ci-modulo-item:last-child {
+    border-bottom: none;
+}
+
+.ci-modulo-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--ci-bg-muted);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.ci-modulo-header:hover {
+    background: color-mix(in srgb, var(--ci-bg-muted) 80%, var(--ci-primary) 5%);
+}
+
+.ci-modulo-drag {
+    color: var(--ci-text-muted);
+    cursor: grab;
+}
+
+.ci-modulo-titulo {
+    flex: 1;
+    font-weight: 600;
+    color: var(--ci-text);
+}
+
+.ci-modulo-lecciones {
+    font-size: 0.875rem;
+    color: var(--ci-text-muted);
+}
+
+.ci-lecciones-lista {
+    padding: 0.5rem 1rem 0.5rem 3rem;
+}
+
+.ci-leccion-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed var(--ci-border);
+}
+
+.ci-leccion-item:last-child {
+    border-bottom: none;
+}
+
+.ci-leccion-tipo {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.ci-leccion-tipo.video { background: color-mix(in srgb, var(--ci-danger) 15%, white); color: var(--ci-danger); }
+.ci-leccion-tipo.texto { background: color-mix(in srgb, var(--ci-primary) 15%, white); color: var(--ci-primary); }
+.ci-leccion-tipo.quiz { background: color-mix(in srgb, var(--ci-warning) 15%, white); color: var(--ci-warning); }
+
+.ci-leccion-titulo {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--ci-text);
+}
+
+/* === Alumnos === */
+.ci-alumnos-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ci-alumnos-table th,
+.ci-alumnos-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--ci-border);
+}
+
+.ci-alumnos-table th {
+    background: var(--ci-bg-muted);
+    font-weight: 600;
+    color: var(--ci-text);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ci-alumnos-table tr:hover {
+    background: var(--ci-bg-muted);
+}
+
+.ci-alumno-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ci-primary-light);
+    color: var(--ci-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.ci-progreso-bar {
+    height: 8px;
+    background: var(--ci-bg-muted);
+    border-radius: 4px;
+    overflow: hidden;
+    width: 120px;
+}
+
+.ci-progreso-bar-fill {
+    height: 100%;
+    background: var(--ci-primary);
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    .ci-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ci-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ci-curso-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ci-curso-thumbnail {
+        width: 100%;
+        height: 120px;
+    }
+
+    .ci-curso-acciones {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .ci-editor-tabs {
+        overflow-x: auto;
+    }
+
+    .ci-alumnos-table {
+        font-size: 0.875rem;
+    }
+
+    .ci-alumnos-table th,
+    .ci-alumnos-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}

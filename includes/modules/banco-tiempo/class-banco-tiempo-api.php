@@ -694,6 +694,14 @@ class Flavor_Banco_Tiempo_API {
         // Hook para otros procesos
         do_action('flavor_banco_tiempo_transaccion_completada', $transaccion_id, $horas_reales);
 
+        // Hooks para sistema de reputación - puntos para quien dio el servicio
+        do_action('flavor_servicio_completado', $transaccion->usuario_solicitante_id, $transaccion_id, $horas_reales);
+
+        // Si hay valoración positiva, puntos extra para quien lo recibió
+        if ($valoracion >= 4) {
+            do_action('flavor_servicio_valorado', $transaccion->usuario_solicitante_id, $transaccion_id, $valoracion);
+        }
+
         return new WP_REST_Response([
             'success' => true,
             'mensaje' => __('Servicio publicado con éxito', 'flavor-chat-ia'),

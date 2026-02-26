@@ -160,6 +160,19 @@ class Flavor_Chat_Settings {
 
             $sanitized['max_tokens_per_message'] = absint($input['max_tokens_per_message'] ?? 1000);
 
+            // Figma Personal Token (para Visual Builder Pro)
+            $figma_token_value = $input['figma_personal_token'] ?? '';
+            $sanitized_figma = sanitize_text_field($figma_token_value);
+            if (empty($sanitized_figma) && !empty($existing['figma_personal_token'])) {
+                $sanitized['figma_personal_token'] = $existing['figma_personal_token'];
+            } else if (!empty($sanitized_figma)) {
+                $sanitized['figma_personal_token'] = $encryption
+                    ? $encryption->encrypt($sanitized_figma)
+                    : $sanitized_figma;
+            } else {
+                $sanitized['figma_personal_token'] = '';
+            }
+
             // Configuración por contexto (frontend/backend)
             $valid_providers_with_default = ['default', 'claude', 'openai', 'deepseek', 'mistral'];
 
@@ -989,6 +1002,75 @@ class Flavor_Chat_Settings {
                         $modelSelect.val('');
                     }
                 }
+            });
+        });
+        </script>
+
+        <!-- Figma Integration -->
+        <hr style="margin: 30px 0;">
+        <h2><?php esc_html_e('Integración Figma', 'flavor-chat-ia'); ?></h2>
+        <p class="description"><?php esc_html_e('Conecta con Figma para importar diseños directamente al Visual Builder Pro.', 'flavor-chat-ia'); ?></p>
+
+        <div style="border: 1px solid #a855f7; padding: 15px; margin: 20px 0; border-radius: 4px; background: #faf5ff;">
+            <h3 style="margin-top: 0;">
+                <span style="display:inline-block;width:20px;height:20px;background:#a855f7;border-radius:4px;text-align:center;line-height:20px;color:white;font-size:12px;margin-right:6px;">F</span>
+                Figma
+            </h3>
+            <table class="form-table" style="margin-top:0;">
+                <tr>
+                    <th><?php esc_html_e('Personal Access Token', 'flavor-chat-ia'); ?></th>
+                    <td>
+                        <input type="password" name="flavor_chat_ia_settings[figma_personal_token]"
+                               id="figma_personal_token"
+                               value="<?php echo esc_attr($settings['figma_personal_token'] ?? ''); ?>"
+                               class="regular-text">
+                        <button type="button" class="button" id="verify-figma-token" style="margin-left:8px;">
+                            <?php esc_html_e('Verificar conexión', 'flavor-chat-ia'); ?>
+                        </button>
+                        <span id="figma-token-status" style="margin-left:10px;"></span>
+                        <p class="description">
+                            <?php
+                            printf(
+                                esc_html__('Obtén tu token en %s → Settings → Personal Access Tokens', 'flavor-chat-ia'),
+                                '<a href="https://www.figma.com/settings" target="_blank">figma.com/settings</a>'
+                            );
+                            ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <script>
+        jQuery(function($) {
+            $('#verify-figma-token').on('click', function() {
+                var $btn = $(this);
+                var $status = $('#figma-token-status');
+                var token = $('#figma_personal_token').val();
+
+                if (!token) {
+                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Ingresa un token primero', 'flavor-chat-ia')); ?></span>');
+                    return;
+                }
+
+                $btn.prop('disabled', true);
+                $status.html('<span style="color:#6b7280;">⏳ <?php echo esc_js(__('Verificando...', 'flavor-chat-ia')); ?></span>');
+
+                $.post(ajaxurl, {
+                    action: 'flavor_vbp_verify_figma_token',
+                    nonce: '<?php echo wp_create_nonce('flavor_vbp_figma'); ?>',
+                    token: token
+                }, function(response) {
+                    $btn.prop('disabled', false);
+                    if (response.success) {
+                        $status.html('<span style="color:#16a34a;">✓ <?php echo esc_js(__('Conectado como', 'flavor-chat-ia')); ?> ' + response.data.user.handle + '</span>');
+                    } else {
+                        $status.html('<span style="color:#dc2626;">❌ ' + (response.data.message || '<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>') + '</span>');
+                    }
+                }).fail(function() {
+                    $btn.prop('disabled', false);
+                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Error de red', 'flavor-chat-ia')); ?></span>');
+                });
             });
         });
         </script>

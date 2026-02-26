@@ -19,7 +19,7 @@ class Flavor_Circulos_Cuidados_Widget extends Flavor_Dashboard_Widget_Base {
      *
      * @var Flavor_Chat_Circulos_Cuidados_Module
      */
-    private $module;
+    protected $module;
 
     /**
      * Constructor

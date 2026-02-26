@@ -208,10 +208,24 @@ class Flavor_App_Profile_Admin {
         $tipos_organizacion = $this->gestor_perfiles->obtener_tipos_organizacion();
         $impactos_sociales = $this->gestor_perfiles->obtener_impactos_sociales();
         $landing_tags = $this->obtener_tags_landings();
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+
+        // CRÍTICO: Limpiar caché y leer directo de BD para evitar datos desactualizados
+        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete('alloptions', 'options');
+
+        // Leer directamente de la BD para evitar cualquier caché persistente
+        global $wpdb;
+        $configuracion_raw = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
+                'flavor_chat_ia_settings'
+            )
+        );
+        $configuracion = $configuracion_raw ? maybe_unserialize($configuracion_raw) : [];
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
-        // Debug: verificar qué perfiles están activos
+        // Debug: verificar qué datos se cargan
+        flavor_log_debug( 'Compositor: Módulos activos cargados de BD: ' . implode(', ', $modulos_activos), 'AppProfile' );
         flavor_log_debug( 'Perfiles activos: ' . implode(', ', $perfiles_activos), 'AppProfile' );
 
         $loader = Flavor_Chat_Module_Loader::get_instance();
@@ -982,7 +996,7 @@ class Flavor_App_Profile_Admin {
                 'description' => __('Pedidos colectivos de productos locales y ecológicos', 'flavor-chat-ia'),
                 'icon' => 'dashicons-carrot',
                 'color' => '#84cc16',
-                'url' => home_url('/grupos-consumo/'),
+                'url' => home_url('/mi-portal/grupos-consumo/'),
             ],
             'banco-tiempo' => [
                 'name' => __('Banco de Tiempo', 'flavor-chat-ia'),

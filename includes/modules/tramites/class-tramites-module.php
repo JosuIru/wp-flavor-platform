@@ -17,6 +17,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /** @var string Version del modulo */
     const VERSION = '2.0.0';
@@ -34,6 +35,16 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_tramites_get_tipo_tramite', [$this, 'ajax_get_tipo_tramite']);
+        add_action('wp_ajax_nopriv_tramites_get_tipo_tramite', [$this, 'ajax_get_tipo_tramite']);
+        add_action('wp_ajax_tramites_crear_expediente', [$this, 'ajax_crear_expediente']);
+        add_action('wp_ajax_nopriv_tramites_crear_expediente', [$this, 'ajax_crear_expediente']);
+        add_action('wp_ajax_tramites_listar_expedientes', [$this, 'ajax_listar_expedientes']);
+        add_action('wp_ajax_nopriv_tramites_listar_expedientes', [$this, 'ajax_listar_expedientes']);
+        add_action('wp_ajax_tramites_consultar_estado', [$this, 'ajax_consultar_estado']);
+        add_action('wp_ajax_nopriv_tramites_consultar_estado', [$this, 'ajax_consultar_estado']);
+
         global $wpdb;
 
         $this->id = 'tramites';
@@ -229,9 +240,36 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia', 'biblioteca'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_tramites',
+                'context' => 'side',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
@@ -1171,6 +1209,15 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             'callback' => [$this, 'rest_get_estados'],
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
+
+        // Cargar también la clase API móvil (namespace flavor-chat-ia/v1)
+        $api_file = dirname(__FILE__) . '/class-tramites-api.php';
+        if (file_exists($api_file)) {
+            require_once $api_file;
+            if (class_exists('Flavor_Tramites_API')) {
+                Flavor_Tramites_API::get_instance();
+            }
+        }
     }
 
     /**

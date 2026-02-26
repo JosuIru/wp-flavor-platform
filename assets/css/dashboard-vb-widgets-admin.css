@@ -1,0 +1,104 @@
+/**
+ * Dashboard VB Widgets - Admin Styles
+ *
+ * Estilos específicos para el panel de widgets del Visual Builder
+ * cuando se usa en el editor de posts de WordPress.
+ *
+ * @package FlavorChatIA
+ * @since 3.1.0
+ */
+
+/* Panel de widgets en el editor */
+.fvb-widget-panel-admin {
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.fvb-widget-panel-admin .fvb-widget-item {
+    margin-bottom: 8px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: move;
+    transition: all 0.2s ease;
+}
+
+.fvb-widget-panel-admin .fvb-widget-item:hover {
+    background: #f0f0f0;
+    border-color: #0073aa;
+}
+
+.fvb-widget-panel-admin .fvb-widget-item.is-selected {
+    background: #e8f4f8;
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+.fvb-widget-panel-admin .fvb-widget-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    background: #0073aa;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.fvb-widget-panel-admin .fvb-widget-title {
+    font-weight: 500;
+    font-size: 13px;
+    color: #1e1e1e;
+}
+
+.fvb-widget-panel-admin .fvb-widget-description {
+    font-size: 12px;
+    color: #757575;
+    margin-top: 4px;
+}
+
+/* Inspector de widgets */
+.fvb-widget-inspector {
+    padding: 16px;
+}
+
+.fvb-widget-inspector .components-panel__body-title {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.fvb-widget-inspector .components-base-control {
+    margin-bottom: 16px;
+}
+
+/* Previsualización de widget */
+.fvb-widget-preview {
+    padding: 16px;
+    background: #f9f9f9;
+    border: 1px dashed #ddd;
+    border-radius: 4px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #757575;
+}
+
+.fvb-widget-preview.is-loading {
+    position: relative;
+}
+
+.fvb-widget-preview.is-loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

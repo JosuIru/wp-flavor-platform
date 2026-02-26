@@ -55,26 +55,42 @@ $incidencias = $wpdb->get_results($wpdb->prepare($query, $params));
 $estados_disponibles = ['pendiente', 'en_proceso', 'resuelta', 'cerrada'];
 $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_incidencias WHERE tipo IS NOT NULL ORDER BY tipo");
 
+// Labels para estados (español e inglés)
 $estados_labels = [
+    // Estados en español
     'pendiente' => __('Pendiente', 'flavor-chat-ia'),
     'en_proceso' => __('En proceso', 'flavor-chat-ia'),
     'resuelta' => __('Resuelta', 'flavor-chat-ia'),
     'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+    // Estados en inglés (para datos existentes)
+    'pending' => __('Pendiente', 'flavor-chat-ia'),
+    'in_progress' => __('En proceso', 'flavor-chat-ia'),
+    'resolved' => __('Resuelta', 'flavor-chat-ia'),
+    'closed' => __('Cerrada', 'flavor-chat-ia'),
 ];
 
 $estados_colors = [
+    // Estados en español
     'pendiente' => '#f59e0b',
     'en_proceso' => '#3b82f6',
     'resuelta' => '#10b981',
     'cerrada' => '#6b7280',
+    // Estados en inglés
+    'pending' => '#f59e0b',
+    'in_progress' => '#3b82f6',
+    'resolved' => '#10b981',
+    'closed' => '#6b7280',
 ];
+
+// URL base para los detalles de incidencias
+$incidencias_base_url = home_url('/mi-portal/incidencias/');
 ?>
 
 <div class="incidencias-listado-wrapper">
     <div class="incidencias-header">
         <h2><?php esc_html_e('Incidencias de la Comunidad', 'flavor-chat-ia'); ?></h2>
         <?php if (is_user_logged_in()): ?>
-            <a href="<?php echo esc_url(add_query_arg('vista', 'reportar', get_permalink())); ?>" class="btn btn-primary">
+            <a href="<?php echo esc_url($incidencias_base_url . 'reportar/'); ?>" class="btn btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
                 <?php esc_html_e('Reportar incidencia', 'flavor-chat-ia'); ?>
             </a>
@@ -82,6 +98,8 @@ $estados_colors = [
     </div>
 
     <!-- Filtros -->
+    <?php $mostrar_filtros = isset($mostrar_filtros) ? $mostrar_filtros : true; ?>
+    <?php if ($mostrar_filtros): ?>
     <form class="incidencias-filtros" method="get">
         <div class="filtro-grupo">
             <select name="estado">
@@ -111,6 +129,7 @@ $estados_colors = [
         </div>
         <button type="submit" class="btn btn-outline"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
     </form>
+    <?php endif; ?>
 
     <!-- Listado -->
     <?php if ($incidencias): ?>
@@ -140,7 +159,7 @@ $estados_colors = [
                         </span>
                     </div>
                     <div class="incidencia-footer">
-                        <a href="<?php echo esc_url(add_query_arg('incidencia_id', $incidencia->id, get_permalink())); ?>" class="btn btn-sm btn-outline">
+                        <a href="<?php echo esc_url($incidencias_base_url . $incidencia->id . '/'); ?>" class="btn btn-sm btn-outline">
                             <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
                         </a>
                     </div>

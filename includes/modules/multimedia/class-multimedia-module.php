@@ -16,6 +16,130 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Provider;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_integration_content_type() {
+        return [
+            'id' => 'multimedia',
+            'label' => __('Multimedia', 'flavor-chat-ia'),
+            'icon' => 'dashicons-format-gallery',
+            'table' => 'flavor_multimedia',
+        ];
+    }
+
+    /**
+     * Obtener items de multimedia disponibles para vincular
+     * Sobrescribe el método del trait para usar tabla personalizada
+     *
+     * @return array
+     */
+    protected function get_available_items_for_integration() {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_multimedia';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return [];
+        }
+
+        $items = $wpdb->get_results(
+            "SELECT id, titulo, tipo, url_archivo
+             FROM {$tabla}
+             WHERE estado = 'activo'
+             ORDER BY fecha_subida DESC
+             LIMIT 100"
+        );
+
+        return $items ?: [];
+    }
+
+    /**
+     * Renderizar caja de integración para multimedia
+     * Sobrescribe el método del trait para usar tabla personalizada
+     *
+     * @param int    $object_id   ID del objeto
+     * @param string $object_type Tipo de objeto
+     * @param array  $context     Contexto adicional
+     */
+    public function render_integration_box($object_id, $object_type, $context = []) {
+        $content_type = $this->get_integration_content_type();
+        $meta_key = '_flavor_rel_' . $content_type['id'];
+
+        // Obtener IDs relacionados
+        $related_ids = get_metadata($object_type === 'user' ? 'user' : 'post', $object_id, $meta_key, true);
+        if (!is_array($related_ids)) {
+            $related_ids = [];
+        }
+
+        // Obtener items disponibles
+        $available_items = $this->get_available_items_for_integration();
+
+        ?>
+        <div class="flavor-integration-box" data-type="<?php echo esc_attr($content_type['id']); ?>">
+            <h4>
+                <span class="dashicons <?php echo esc_attr($content_type['icon']); ?>"></span>
+                <?php echo esc_html($content_type['label']); ?>
+            </h4>
+
+            <div class="flavor-integration-items" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 4px;">
+                <?php if (!empty($related_ids)):
+                    global $wpdb;
+                    $tabla = $wpdb->prefix . 'flavor_multimedia';
+                    foreach ($related_ids as $item_id):
+                        $item = $wpdb->get_row($wpdb->prepare(
+                            "SELECT id, titulo, tipo, url_archivo FROM {$tabla} WHERE id = %d",
+                            $item_id
+                        ));
+                        if (!$item) continue;
+                ?>
+                <div class="flavor-integration-item" style="display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #eee;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <?php if ($item->tipo === 'imagen' && $item->url_archivo): ?>
+                            <img src="<?php echo esc_url($item->url_archivo); ?>" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" />
+                        <?php else: ?>
+                            <span class="dashicons dashicons-<?php echo $item->tipo === 'video' ? 'video-alt3' : 'format-audio'; ?>" style="font-size: 24px;"></span>
+                        <?php endif; ?>
+                        <span><?php echo esc_html($item->titulo); ?></span>
+                    </div>
+                    <button type="button" class="button-link flavor-remove-integration" data-id="<?php echo esc_attr($item_id); ?>">
+                        <span class="dashicons dashicons-no-alt"></span>
+                    </button>
+                    <input type="hidden" name="<?php echo esc_attr($meta_key); ?>[]" value="<?php echo esc_attr($item_id); ?>" />
+                </div>
+                <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="flavor-no-items" style="color: #666; font-style: italic; margin: 0;">
+                        <?php _e('Sin multimedia vinculado', 'flavor-chat-ia'); ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div style="display: flex; gap: 5px;">
+                <select class="flavor-integration-selector widefat" style="flex: 1;">
+                    <option value=""><?php _e('Seleccionar multimedia...', 'flavor-chat-ia'); ?></option>
+                    <?php foreach ($available_items as $item):
+                        if (in_array($item->id, $related_ids)) continue;
+                        $icono = $item->tipo === 'imagen' ? '📷' : ($item->tipo === 'video' ? '🎬' : '🎵');
+                    ?>
+                    <option value="<?php echo esc_attr($item->id); ?>"><?php echo esc_html($icono . ' ' . $item->titulo); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" class="button flavor-add-integration">
+                    <span class="dashicons dashicons-plus-alt" style="vertical-align: middle;"></span>
+                </button>
+            </div>
+
+            <p style="margin-top: 10px;">
+                <a href="<?php echo admin_url('admin.php?page=multimedia'); ?>" class="button button-small" target="_blank">
+                    <span class="dashicons dashicons-upload" style="vertical-align: middle;"></span>
+                    <?php _e('Subir Multimedia', 'flavor-chat-ia'); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
 
     /**
      * Constructor
@@ -26,6 +150,23 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Galería de fotos, videos y contenidos audiovisuales de la comunidad.'; // Translation loaded on init
 
         parent::__construct();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_multimedia_subir_archivo', [$this, 'ajax_subir_archivo']);
+        add_action('wp_ajax_nopriv_multimedia_subir_archivo', [$this, 'ajax_subir_archivo']);
+        add_action('wp_ajax_multimedia_eliminar_archivo', [$this, 'ajax_eliminar_archivo']);
+        add_action('wp_ajax_nopriv_multimedia_eliminar_archivo', [$this, 'ajax_eliminar_archivo']);
+        add_action('wp_ajax_multimedia_editar_archivo', [$this, 'ajax_editar_archivo']);
+        add_action('wp_ajax_nopriv_multimedia_editar_archivo', [$this, 'ajax_editar_archivo']);
+        add_action('wp_ajax_multimedia_reportar_archivo', [$this, 'ajax_reportar_archivo']);
+        add_action('wp_ajax_nopriv_multimedia_reportar_archivo', [$this, 'ajax_reportar_archivo']);
+        add_action('wp_ajax_multimedia_galeria_publica', [$this, 'ajax_galeria_publica']);
+        add_action('wp_ajax_nopriv_multimedia_galeria_publica', [$this, 'ajax_galeria_publica']);
+        add_action('wp_ajax_multimedia_detalle_archivo', [$this, 'ajax_detalle_archivo']);
+        add_action('wp_ajax_nopriv_multimedia_detalle_archivo', [$this, 'ajax_detalle_archivo']);
+
     }
 
     /**
@@ -86,9 +227,139 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define los tabs que este módulo inyecta en otros módulos
+     *
+     * Cuando multimedia está activo, puede mostrar un tab de "Galería"
+     * en los dashboards de grupos de consumo, eventos, comunidades, etc.
+     *
+     * @return array Configuración de tabs por módulo destino
+     */
+    public function get_tab_integrations() {
+        return [
+            // Tab de galería para Grupos de Consumo
+            'grupos_consumo' => [
+                'id'       => 'galeria-grupo',
+                'label'    => __('Galería', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="grupo_consumo" entidad_id="{entity_id}"]',
+                'priority' => 110,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('grupo_consumo', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de galería para Eventos
+            'eventos' => [
+                'id'       => 'galeria-evento',
+                'label'    => __('Fotos', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="evento" entidad_id="{entity_id}"]',
+                'priority' => 110,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('evento', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de galería para Comunidades
+            'comunidades' => [
+                'id'       => 'galeria-comunidad',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="comunidad" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('comunidad', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de galería para Cursos
+            'cursos' => [
+                'id'       => 'recursos-curso',
+                'label'    => __('Recursos', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="curso" entidad_id="{entity_id}"]',
+                'priority' => 110,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('curso', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de galería para Colectivos
+            'colectivos' => [
+                'id'       => 'galeria-colectivo',
+                'label'    => __('Galería', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="colectivo" entidad_id="{entity_id}"]',
+                'priority' => 110,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('colectivo', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab para Huertos Urbanos
+            'huertos_urbanos' => [
+                'id'       => 'fotos-huerto',
+                'label'    => __('Fotos', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="huerto" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('huerto', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab para Banco de Tiempo
+            'banco_tiempo' => [
+                'id'       => 'galeria-servicio',
+                'label'    => __('Galería', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="servicio_bt" entidad_id="{entity_id}"]',
+                'priority' => 110,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('servicio_bt', $contexto['entity_id']);
+                },
+            ],
+        ];
+    }
+
+    /**
+     * Cuenta archivos multimedia asociados a una entidad
+     *
+     * @param string $tipo_entidad Tipo de entidad
+     * @param int    $entidad_id   ID de la entidad
+     * @return int Número de archivos
+     */
+    public function contar_multimedia_entidad($tipo_entidad, $entidad_id) {
+        global $wpdb;
+
+        if (!$entidad_id) {
+            return 0;
+        }
+
+        $tabla = $wpdb->prefix . 'flavor_multimedia';
+
+        // Verificar si la tabla existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return 0;
+        }
+
+        $total = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla}
+             WHERE entidad_tipo = %s AND entidad_id = %d AND estado = 'activo'",
+            $tipo_entidad,
+            $entidad_id
+        ));
+
+        return intval($total);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        // Registrar como proveedor de integración
+        $this->register_as_integration_provider();
+
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en panel de administración unificado
         $this->registrar_en_panel_unificado();
@@ -150,6 +421,8 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         add_shortcode('flavor_subir_multimedia', [$this, 'shortcode_subir']);
         add_shortcode('flavor_mi_galeria', [$this, 'shortcode_mi_galeria']);
         add_shortcode('flavor_carousel', [$this, 'shortcode_carousel']);
+        // Shortcode de integración para tabs de otros módulos
+        add_shortcode('flavor_multimedia_galeria', [$this, 'shortcode_galeria_integrada']);
     }
 
     public function maybe_create_tables() {
@@ -749,7 +1022,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
 
             // Gamificación al autor
             $settings = $this->get_settings();
-            if ($archivo->usuario_id != $usuario_id) {
+            if ((int) $archivo->usuario_id !== $usuario_id) {
                 do_action('flavor_gamificacion_agregar_puntos', $archivo->usuario_id, $settings['puntos_recibir_like'], 'recibir_like_mm');
             }
         }
@@ -856,7 +1129,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         ));
 
         // Notificar al autor
-        if ($archivo->usuario_id != $usuario_id) {
+        if ((int) $archivo->usuario_id !== $usuario_id) {
             do_action('flavor_notificacion_enviar', $archivo->usuario_id, 'mm_nuevo_comentario', [
                 'archivo_id' => $archivo_id,
                 'comentario_por' => wp_get_current_user()->display_name,
@@ -1166,7 +1439,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
             wp_send_json_error(__('Archivo no encontrado', 'flavor-chat-ia'));
         }
 
-        if ($archivo->usuario_id != $usuario_id && !current_user_can('manage_options')) {
+        if ((int) $archivo->usuario_id !== $usuario_id && !current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permiso para eliminar este archivo', 'flavor-chat-ia'));
         }
 
@@ -1224,7 +1497,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
             wp_send_json_error(__('Archivo no encontrado', 'flavor-chat-ia'));
         }
 
-        if ($archivo->usuario_id != $usuario_id && !current_user_can('manage_options')) {
+        if ((int) $archivo->usuario_id !== $usuario_id && !current_user_can('manage_options')) {
             wp_send_json_error(__('No tienes permiso', 'flavor-chat-ia'));
         }
 
@@ -1344,7 +1617,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
             $album_id
         ));
 
-        if (!$album || ($album->usuario_id != $usuario_id && !current_user_can('manage_options'))) {
+        if (!$album || ((int) $album->usuario_id !== $usuario_id && !current_user_can('manage_options'))) {
             wp_send_json_error(__('No tienes permiso', 'flavor-chat-ia'));
         }
 
@@ -1381,7 +1654,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
             $album_id
         ));
 
-        if (!$album || ($album->usuario_id != $usuario_id && !current_user_can('manage_options'))) {
+        if (!$album || ((int) $album->usuario_id !== $usuario_id && !current_user_can('manage_options'))) {
             wp_send_json_error(__('No tienes permiso', 'flavor-chat-ia'));
         }
 
@@ -1412,7 +1685,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
             $archivo_id
         ));
 
-        if (!$archivo || ($archivo->usuario_id != $usuario_id && !current_user_can('manage_options'))) {
+        if (!$archivo || ((int) $archivo->usuario_id !== $usuario_id && !current_user_can('manage_options'))) {
             wp_send_json_error(__('No tienes permiso', 'flavor-chat-ia'));
         }
 
@@ -1895,6 +2168,102 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
             <button class="mm-carousel-next"><?php echo esc_html__('&rsaquo;', 'flavor-chat-ia'); ?></button>
             <div class="mm-carousel-dots"></div>
         </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Galería integrada para tabs de otros módulos
+     *
+     * Muestra multimedia asociada a una entidad específica (grupo, evento, etc.)
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML
+     */
+    public function shortcode_galeria_integrada($atts) {
+        $atts = shortcode_atts([
+            'entidad'      => '',           // Tipo de entidad (grupo_consumo, evento, comunidad, etc.)
+            'entidad_id'   => 0,            // ID de la entidad
+            'limite'       => 12,
+            'columnas'     => 4,
+            'permite_subir' => 'true',
+            'mostrar_filtros' => 'true',
+        ], $atts);
+
+        $entidad_tipo = sanitize_key($atts['entidad']);
+        $entidad_id = absint($atts['entidad_id']);
+
+        if (!$entidad_tipo || !$entidad_id) {
+            return '<p class="mm-aviso">' . __('Configuración de galería incompleta.', 'flavor-chat-ia') . '</p>';
+        }
+
+        // Verificar si el usuario puede subir
+        $puede_subir = is_user_logged_in() && $atts['permite_subir'] === 'true';
+
+        ob_start();
+        $this->enqueue_frontend_assets();
+        ?>
+        <div class="flavor-mm-galeria-integrada"
+             data-entidad="<?php echo esc_attr($entidad_tipo); ?>"
+             data-entidad-id="<?php echo esc_attr($entidad_id); ?>"
+             data-limite="<?php echo esc_attr($atts['limite']); ?>"
+             data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
+
+            <?php if ($puede_subir): ?>
+            <div class="mm-acciones-header">
+                <button type="button" class="mm-btn-subir-rapido" data-entidad="<?php echo esc_attr($entidad_tipo); ?>" data-entidad-id="<?php echo esc_attr($entidad_id); ?>">
+                    <span class="dashicons dashicons-plus-alt2"></span>
+                    <?php _e('Subir foto/video', 'flavor-chat-ia'); ?>
+                </button>
+            </div>
+            <?php endif; ?>
+
+            <?php if ($atts['mostrar_filtros'] === 'true'): ?>
+            <div class="mm-filtros mm-filtros-compactos">
+                <div class="mm-filtros-tipo">
+                    <button class="mm-filtro-btn active" data-tipo=""><?php _e('Todos', 'flavor-chat-ia'); ?></button>
+                    <button class="mm-filtro-btn" data-tipo="imagen"><?php _e('Fotos', 'flavor-chat-ia'); ?></button>
+                    <button class="mm-filtro-btn" data-tipo="video"><?php _e('Videos', 'flavor-chat-ia'); ?></button>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="mm-grid mm-cols-<?php echo esc_attr($atts['columnas']); ?>">
+                <div class="mm-loading"><?php _e('Cargando galería...', 'flavor-chat-ia'); ?></div>
+            </div>
+
+            <div class="mm-paginacion"></div>
+        </div>
+
+        <!-- Modal de subida rápida -->
+        <?php if ($puede_subir): ?>
+        <div class="mm-modal-subir" style="display: none;">
+            <div class="mm-modal-overlay"></div>
+            <div class="mm-modal-content">
+                <button class="mm-modal-cerrar">&times;</button>
+                <h3><?php _e('Subir multimedia', 'flavor-chat-ia'); ?></h3>
+                <form class="mm-form-subir-rapido" enctype="multipart/form-data">
+                    <?php wp_nonce_field('flavor_mm_nonce', 'mm_nonce'); ?>
+                    <input type="hidden" name="entidad_tipo" value="<?php echo esc_attr($entidad_tipo); ?>">
+                    <input type="hidden" name="entidad_id" value="<?php echo esc_attr($entidad_id); ?>">
+
+                    <div class="mm-dropzone-mini">
+                        <span class="dashicons dashicons-cloud-upload"></span>
+                        <p><?php _e('Arrastra archivos o haz clic', 'flavor-chat-ia'); ?></p>
+                        <input type="file" name="archivo" accept="image/*,video/*" multiple>
+                    </div>
+
+                    <div class="mm-preview-archivos"></div>
+
+                    <div class="mm-form-campo">
+                        <input type="text" name="descripcion" placeholder="<?php esc_attr_e('Descripción (opcional)', 'flavor-chat-ia'); ?>">
+                    </div>
+
+                    <button type="submit" class="mm-btn-enviar"><?php _e('Subir', 'flavor-chat-ia'); ?></button>
+                </form>
+            </div>
+        </div>
+        <?php endif; ?>
         <?php
         return ob_get_clean();
     }
@@ -2892,5 +3261,118 @@ KNOWLEDGE;
                 'parent' => 'multimedia',
             ],
         ];
+    }
+
+    /**
+     * Registrar páginas de administración
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (sin menú visible en el sidebar)
+        add_submenu_page(
+            null,
+            __('Multimedia - Dashboard', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'multimedia',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        add_submenu_page(
+            null,
+            __('Multimedia - Galería', 'flavor-chat-ia'),
+            __('Galería', 'flavor-chat-ia'),
+            $capability,
+            'multimedia-galeria',
+            [$this, 'render_pagina_galeria']
+        );
+
+        add_submenu_page(
+            null,
+            __('Multimedia - Álbumes', 'flavor-chat-ia'),
+            __('Álbumes', 'flavor-chat-ia'),
+            $capability,
+            'multimedia-albumes',
+            [$this, 'render_pagina_albumes']
+        );
+
+        add_submenu_page(
+            null,
+            __('Multimedia - Categorías', 'flavor-chat-ia'),
+            __('Categorías', 'flavor-chat-ia'),
+            $capability,
+            'multimedia-categorias',
+            [$this, 'render_pagina_categorias']
+        );
+
+        add_submenu_page(
+            null,
+            __('Multimedia - Moderación', 'flavor-chat-ia'),
+            __('Moderación', 'flavor-chat-ia'),
+            $capability,
+            'multimedia-moderacion',
+            [$this, 'render_pagina_moderacion']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Multimedia', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de galería
+     */
+    public function render_pagina_galeria() {
+        $views_path = dirname(__FILE__) . '/views/galeria.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Galería Multimedia', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de álbumes
+     */
+    public function render_pagina_albumes() {
+        $views_path = dirname(__FILE__) . '/views/albumes.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Álbumes', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de categorías
+     */
+    public function render_pagina_categorias() {
+        $views_path = dirname(__FILE__) . '/views/categorias.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Categorías', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de moderación
+     */
+    public function render_pagina_moderacion() {
+        $views_path = dirname(__FILE__) . '/views/moderacion.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Moderación de Contenido', 'flavor-chat-ia') . '</h1></div>';
+        }
     }
 }

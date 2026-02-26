@@ -18,6 +18,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Versión del módulo
@@ -59,6 +60,9 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $this->tabla_actividades = $wpdb->prefix . 'flavor_huertos_actividades';
 
         parent::__construct();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -109,6 +113,30 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Tipos de contenido que este módulo acepta como integraciones
+     *
+     * @return array Lista de IDs de tipos de contenido aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['recetas', 'multimedia'];
+    }
+
+    /**
+     * Targets donde se pueden vincular integraciones
+     *
+     * @return array Configuración de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type' => 'custom_table',
+                'table' => 'flavor_huertos',
+                'module_id' => $this->id,
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
@@ -119,6 +147,9 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+
+        // Registrar como consumidor de integraciones
+        $this->register_as_integration_consumer();
 
         // Registrar AJAX handlers
         $this->registrar_ajax_handlers();
@@ -3016,5 +3047,49 @@ KNOWLEDGE;
                 'parent' => 'huertos-urbanos',
             ],
         ];
+    }
+
+    /**
+     * Registrar páginas de administración
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (sin menú visible en el sidebar)
+        add_submenu_page(null, __('Dashboard Huertos Urbanos', 'flavor-chat-ia'), __('Dashboard', 'flavor-chat-ia'), $capability, 'huertos-urbanos', [$this, 'render_pagina_dashboard']);
+        add_submenu_page(null, __('Parcelas', 'flavor-chat-ia'), __('Parcelas', 'flavor-chat-ia'), $capability, 'hu-parcelas', [$this, 'render_pagina_parcelas']);
+        add_submenu_page(null, __('Huertanos', 'flavor-chat-ia'), __('Huertanos', 'flavor-chat-ia'), $capability, 'hu-huertanos', [$this, 'render_pagina_huertanos']);
+        add_submenu_page(null, __('Cosechas', 'flavor-chat-ia'), __('Cosechas', 'flavor-chat-ia'), $capability, 'hu-cosechas', [$this, 'render_pagina_cosechas']);
+        add_submenu_page(null, __('Recursos', 'flavor-chat-ia'), __('Recursos', 'flavor-chat-ia'), $capability, 'hu-recursos', [$this, 'render_pagina_recursos']);
+    }
+
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Dashboard Huertos Urbanos', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_parcelas() {
+        $views_path = dirname(__FILE__) . '/views/parcelas.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Parcelas', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_huertanos() {
+        $views_path = dirname(__FILE__) . '/views/huertanos.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Huertanos', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_cosechas() {
+        $views_path = dirname(__FILE__) . '/views/cosechas.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cosechas', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_recursos() {
+        $views_path = dirname(__FILE__) . '/views/recursos.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Recursos', 'flavor-chat-ia') . '</h1></div>'; }
     }
 }

@@ -33,6 +33,10 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_trading_ia_reset_paper_trading', [$this, 'ajax_reset_paper_trading']);
+        add_action('wp_ajax_nopriv_trading_ia_reset_paper_trading', [$this, 'ajax_reset_paper_trading']);
+
         $this->id = 'trading_ia';
         $this->name = 'Trading IA'; // Translation loaded on init
         $this->description = 'Bot de trading simulado con IA para criptomonedas Solana. Paper trading con indicadores tecnicos, gestion de riesgo y reglas dinamicas.'; // Translation loaded on init

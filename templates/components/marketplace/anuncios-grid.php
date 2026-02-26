@@ -8,87 +8,89 @@ if (!defined('ABSPATH')) exit;
 $titulo_anuncios = $titulo_anuncios ?? 'Anuncios Recientes';
 $mostrar_filtros = $mostrar_filtros ?? true;
 $cantidad_columnas = $cantidad_columnas ?? 'lg:grid-cols-3';
+$limite_anuncios = $limite_anuncios ?? 12;
 
-$anuncios_ejemplo = $anuncios_ejemplo ?? [
-    [
-        'titulo'          => 'Microondas de acero inoxidable',
-        'descripcion'     => 'Microondas Samsung en excelente estado, sin defectos. Incluye manual de uso.',
-        'precio'          => '65',
-        'tipo_anuncio'    => 'venta',
-        'imagen_fondo'    => 'from-blue-400 to-blue-600',
-        'usuario_nombre'  => 'Maria G.',
-        'usuario_avatar'  => '👩',
-        'ubicacion'       => 'Barrio Centro',
-        'fechaPublicacion' => '2 horas',
-        'condicion'       => 'Muy bueno',
-        'intercambio_por' => null,
-    ],
-    [
-        'titulo'          => 'Curso de Programacion - Regalo',
-        'descripcion'     => 'Tengo un acceso completo a curso de Python que no utilizare. Te lo regalo si lo aprovechas.',
-        'precio'          => 'Gratis',
-        'tipo_anuncio'    => 'regalo',
-        'imagen_fondo'    => 'from-purple-400 to-purple-600',
-        'usuario_nombre'  => 'Juan P.',
-        'usuario_avatar'  => '👨',
-        'ubicacion'       => 'Zona Norte',
-        'fechaPublicacion' => '1 dia',
-        'condicion'       => 'Acceso digital',
-        'intercambio_por' => null,
-    ],
-    [
-        'titulo'          => 'Intercambio: Libros por Discos',
-        'descripcion'     => 'Tengo novelas de ciencia ficcion que quiero cambiar por discos de vinilo o rock clasico.',
-        'precio'          => 'Intercambio',
-        'tipo_anuncio'    => 'intercambio',
-        'imagen_fondo'    => 'from-orange-400 to-orange-600',
-        'usuario_nombre'  => 'Sofia M.',
-        'usuario_avatar'  => '👩',
-        'ubicacion'       => 'Zona Sur',
-        'fechaPublicacion' => '3 horas',
-        'condicion'       => 'Como nuevo',
-        'intercambio_por' => 'Discos de vinilo',
-    ],
-    [
-        'titulo'          => 'Bicicleta de ruta Decathlon',
-        'descripcion'     => 'Bicicleta de ruta en perfecto estado. Poco uso, se vende por falta de tiempo.',
-        'precio'          => '320',
-        'tipo_anuncio'    => 'venta',
-        'imagen_fondo'    => 'from-red-400 to-red-600',
-        'usuario_nombre'  => 'Carlos L.',
-        'usuario_avatar'  => '👨',
-        'ubicacion'       => 'Barrio Este',
-        'fechaPublicacion' => '5 horas',
-        'condicion'       => 'Excelente',
-        'intercambio_por' => null,
-    ],
-    [
-        'titulo'          => 'Libros de texto - Regalo',
-        'descripcion'     => 'Libros de bachillerato, los regalo si alguien los necesita para estudiar este ano.',
-        'precio'          => 'Gratis',
-        'tipo_anuncio'    => 'regalo',
-        'imagen_fondo'    => 'from-green-400 to-green-600',
-        'usuario_nombre'  => 'Isabel R.',
-        'usuario_avatar'  => '👩',
-        'ubicacion'       => 'Barrio Oeste',
-        'fechaPublicacion' => '1 dia',
-        'condicion'       => 'Buen estado',
-        'intercambio_por' => null,
-    ],
-    [
-        'titulo'          => 'Cambio: Movil por Tablet',
-        'descripcion'     => 'Cambio mi telefono Android por una tablet o laptop. El movil esta nuevo sin usar.',
-        'precio'          => 'Intercambio',
-        'tipo_anuncio'    => 'intercambio',
-        'imagen_fondo'    => 'from-yellow-400 to-yellow-600',
-        'usuario_nombre'  => 'David T.',
-        'usuario_avatar'  => '👨',
-        'ubicacion'       => 'Zona Centro',
-        'fechaPublicacion' => '2 horas',
-        'condicion'       => 'Nuevo',
-        'intercambio_por' => 'Tablet o laptop',
-    ],
-];
+// Cargar anuncios reales de la base de datos
+if (!isset($anuncios_marketplace) || empty($anuncios_marketplace)) {
+    $args_anuncios = [
+        'post_type' => 'marketplace_item',
+        'post_status' => 'publish',
+        'posts_per_page' => intval($limite_anuncios),
+        'orderby' => 'date',
+        'order' => 'DESC',
+    ];
+
+    // Aplicar filtro de categoría si existe
+    if (!empty($_GET['categoria'])) {
+        $args_anuncios['tax_query'] = [[
+            'taxonomy' => 'marketplace_categoria',
+            'field' => 'slug',
+            'terms' => sanitize_text_field($_GET['categoria']),
+        ]];
+    }
+
+    // Aplicar filtro de tipo si existe
+    if (!empty($_GET['tipo'])) {
+        $args_anuncios['tax_query'][] = [
+            'taxonomy' => 'marketplace_tipo',
+            'field' => 'slug',
+            'terms' => sanitize_text_field($_GET['tipo']),
+        ];
+    }
+
+    $posts_anuncios = get_posts($args_anuncios);
+    $anuncios_marketplace = [];
+
+    foreach ($posts_anuncios as $post_anuncio) {
+        $autor_anuncio = get_userdata($post_anuncio->post_author);
+        $precio_anuncio = get_post_meta($post_anuncio->ID, '_marketplace_precio', true);
+        $ubicacion_anuncio = get_post_meta($post_anuncio->ID, '_marketplace_ubicacion', true);
+        $condicion_anuncio = get_post_meta($post_anuncio->ID, '_marketplace_condicion', true);
+        $intercambio_por = get_post_meta($post_anuncio->ID, '_marketplace_intercambio_por', true);
+        $imagen_anuncio = get_the_post_thumbnail_url($post_anuncio->ID, 'medium');
+
+        // Obtener tipo desde taxonomía
+        $tipos_terminos = wp_get_post_terms($post_anuncio->ID, 'marketplace_tipo', ['fields' => 'slugs']);
+        $tipo_anuncio = !empty($tipos_terminos) && !is_wp_error($tipos_terminos) ? $tipos_terminos[0] : 'venta';
+
+        // Determinar precio según tipo
+        $precio_mostrar = $precio_anuncio;
+        if ($tipo_anuncio === 'regalo') {
+            $precio_mostrar = 'Gratis';
+        } elseif ($tipo_anuncio === 'intercambio' || $tipo_anuncio === 'cambio') {
+            $precio_mostrar = 'Intercambio';
+        }
+
+        // Colores de fondo según tipo
+        $colores_tipo = [
+            'venta' => 'from-green-400 to-green-600',
+            'regalo' => 'from-blue-400 to-blue-600',
+            'intercambio' => 'from-orange-400 to-orange-600',
+            'cambio' => 'from-orange-400 to-orange-600',
+            'alquiler' => 'from-purple-400 to-purple-600',
+        ];
+
+        $anuncios_marketplace[] = [
+            'id'              => $post_anuncio->ID,
+            'titulo'          => $post_anuncio->post_title,
+            'descripcion'     => wp_trim_words($post_anuncio->post_content, 20, '...'),
+            'precio'          => $precio_mostrar,
+            'tipo_anuncio'    => $tipo_anuncio,
+            'imagen'          => $imagen_anuncio,
+            'imagen_fondo'    => $colores_tipo[$tipo_anuncio] ?? 'from-gray-400 to-gray-600',
+            'usuario_nombre'  => $autor_anuncio ? $autor_anuncio->display_name : __('Usuario', 'flavor-chat-ia'),
+            'usuario_avatar'  => '👤',
+            'ubicacion'       => $ubicacion_anuncio ?: __('Sin ubicación', 'flavor-chat-ia'),
+            'fechaPublicacion' => human_time_diff(get_the_time('U', $post_anuncio), current_time('timestamp')),
+            'condicion'       => $condicion_anuncio ?: __('No especificada', 'flavor-chat-ia'),
+            'intercambio_por' => $intercambio_por,
+            'url'             => get_permalink($post_anuncio->ID),
+        ];
+    }
+}
+
+// Variable para saber si hay anuncios
+$hay_anuncios = !empty($anuncios_marketplace);
 
 $opciones_filtro = $opciones_filtro ?? [
     'todos'        => 'Todos los anuncios',
@@ -167,17 +169,28 @@ function obtener_etiqueta_tipo_anuncio($tipo_anuncio_variable) {
 
         <!-- Grid de anuncios -->
         <div class="grid grid-cols-1 md:grid-cols-2 <?php echo esc_attr($cantidad_columnas); ?> gap-6">
-            <?php foreach ($anuncios_ejemplo as $anuncio_item) : ?>
+            <?php if (!$hay_anuncios): ?>
+                <!-- Se mostrará el estado vacío al final -->
+            <?php endif; ?>
+            <?php foreach ($anuncios_marketplace as $anuncio_item) : ?>
                 <div class="flavor-anuncio-card bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col h-full">
 
                     <!-- Imagen del anuncio -->
                     <div class="relative h-56 bg-gradient-to-br <?php echo esc_attr($anuncio_item['imagen_fondo']); ?> overflow-hidden">
-                        <!-- Icono placeholder -->
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <svg class="w-20 h-20 text-white/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
+                        <?php if (!empty($anuncio_item['imagen'])): ?>
+                            <a href="<?php echo esc_url($anuncio_item['url'] ?? '#'); ?>">
+                                <img src="<?php echo esc_url($anuncio_item['imagen']); ?>"
+                                     alt="<?php echo esc_attr($anuncio_item['titulo']); ?>"
+                                     class="absolute inset-0 w-full h-full object-cover">
+                            </a>
+                        <?php else: ?>
+                            <!-- Icono placeholder -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <svg class="w-20 h-20 text-white/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                        <?php endif; ?>
 
                         <!-- Badge de tipo de anuncio -->
                         <div class="absolute top-3 left-3 px-3 py-1 rounded-lg font-semibold text-xs <?php echo esc_attr(obtener_clase_tipo_anuncio($anuncio_item['tipo_anuncio'])); ?> backdrop-blur shadow-sm">
@@ -252,22 +265,30 @@ function obtener_etiqueta_tipo_anuncio($tipo_anuncio_variable) {
                                 </div>
                                 <span class="text-sm font-medium text-gray-700"><?php echo esc_html($anuncio_item['usuario_nombre']); ?></span>
                             </div>
-                            <button class="flavor-btn-contactar text-green-600 hover:text-green-700 font-semibold text-sm transition-colors">
+                            <a href="<?php echo esc_url($anuncio_item['url'] ?? get_permalink($anuncio_item['id'] ?? 0)); ?>" class="flavor-btn-contactar text-green-600 hover:text-green-700 font-semibold text-sm transition-colors">
                                 <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
 
-        <!-- Sin resultados -->
+        <!-- Sin resultados (solo se muestra si no hay anuncios) -->
+        <?php if (!$hay_anuncios): ?>
         <div class="mt-12 p-12 text-center rounded-2xl bg-gray-50 border border-gray-200">
             <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 015.646 5.646 9 9 0 0120.354 15.354z"/>
             </svg>
             <h3 class="text-lg font-semibold text-gray-600 mb-2"><?php echo esc_html__('No hay anuncios', 'flavor-chat-ia'); ?></h3>
-            <p class="text-gray-500"><?php echo esc_html__('Intenta cambiar los filtros o vuelve mas tarde', 'flavor-chat-ia'); ?></p>
+            <p class="text-gray-500"><?php echo esc_html__('Se el primero en publicar un anuncio', 'flavor-chat-ia'); ?></p>
+            <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/publicar/')); ?>" class="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <?php echo esc_html__('Publicar Anuncio', 'flavor-chat-ia'); ?>
+            </a>
         </div>
+        <?php endif; ?>
     </div>
 </section>

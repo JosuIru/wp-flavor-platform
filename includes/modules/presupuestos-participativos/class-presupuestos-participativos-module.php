@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Constructor
@@ -25,6 +26,31 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $this->description = 'Democracia participativa: los vecinos deciden en qué invertir el presupuesto del barrio.'; // Translation loaded on init
 
         parent::__construct();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_presupuestos_participativos_proponer_proyecto', [$this, 'ajax_proponer_proyecto']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_proponer_proyecto', [$this, 'ajax_proponer_proyecto']);
+        add_action('wp_ajax_presupuestos_participativos_votar_proyecto', [$this, 'ajax_votar_proyecto']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_votar_proyecto', [$this, 'ajax_votar_proyecto']);
+        add_action('wp_ajax_presupuestos_participativos_quitar_voto', [$this, 'ajax_quitar_voto']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_quitar_voto', [$this, 'ajax_quitar_voto']);
+        add_action('wp_ajax_presupuestos_participativos_editar_propuesta', [$this, 'ajax_editar_propuesta']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_editar_propuesta', [$this, 'ajax_editar_propuesta']);
+        add_action('wp_ajax_presupuestos_participativos_eliminar_propuesta', [$this, 'ajax_eliminar_propuesta']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_eliminar_propuesta', [$this, 'ajax_eliminar_propuesta']);
+        add_action('wp_ajax_presupuestos_participativos_subir_imagen', [$this, 'ajax_subir_imagen']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_subir_imagen', [$this, 'ajax_subir_imagen']);
+        add_action('wp_ajax_presupuestos_participativos_comentar_proyecto', [$this, 'ajax_comentar_proyecto']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_comentar_proyecto', [$this, 'ajax_comentar_proyecto']);
+        add_action('wp_ajax_presupuestos_participativos_reportar_proyecto', [$this, 'ajax_reportar_proyecto']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_reportar_proyecto', [$this, 'ajax_reportar_proyecto']);
+        add_action('wp_ajax_presupuestos_participativos_cargar_proyectos', [$this, 'ajax_cargar_proyectos']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_cargar_proyectos', [$this, 'ajax_cargar_proyectos']);
+        add_action('wp_ajax_presupuestos_participativos_obtener_proyecto', [$this, 'ajax_obtener_proyecto']);
+        add_action('wp_ajax_nopriv_presupuestos_participativos_obtener_proyecto', [$this, 'ajax_obtener_proyecto']);
+
     }
 
     /**
@@ -83,9 +109,35 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_presupuestos_proyectos',
+                'context' => 'side',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -104,6 +156,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         add_shortcode('presupuestos_votar', [$this, 'shortcode_interfaz_votacion']);
         add_shortcode('presupuestos_resultados', [$this, 'shortcode_resultados']);
         add_shortcode('presupuestos_mi_proyecto', [$this, 'shortcode_mis_propuestas']);
+        add_shortcode('presupuesto_estado_actual', [$this, 'shortcode_estado_actual']);
     }
 
     /**
@@ -465,6 +518,111 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         ob_start();
         include dirname(__FILE__) . '/views/mis-propuestas.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Estado actual del presupuesto participativo
+     * Muestra resumen del ciclo activo con estadísticas
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del widget de estado
+     */
+    public function shortcode_estado_actual($atts) {
+        $atributos = shortcode_atts([
+            'mostrar_grafico' => 'yes',
+        ], $atts);
+
+        global $wpdb;
+        $tabla_ciclos = $wpdb->prefix . 'flavor_pp_ciclos';
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+        $tabla_votos = $wpdb->prefix . 'flavor_pp_votos';
+
+        // Obtener ciclo activo
+        $ciclo_activo = $wpdb->get_row(
+            "SELECT * FROM $tabla_ciclos WHERE estado = 'activo' ORDER BY fecha_inicio DESC LIMIT 1"
+        );
+
+        // Estadísticas generales
+        $total_proyectos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos WHERE estado != 'borrador'");
+        $total_votos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_votos");
+        $presupuesto_total = $this->settings['presupuesto_anual'] ?? 0;
+        $presupuesto_asignado = $wpdb->get_var(
+            "SELECT COALESCE(SUM(presupuesto), 0) FROM $tabla_proyectos WHERE estado = 'aprobado'"
+        );
+
+        // Proyectos por categoría
+        $proyectos_por_categoria = $wpdb->get_results(
+            "SELECT categoria, COUNT(*) as total FROM $tabla_proyectos
+             WHERE estado != 'borrador' GROUP BY categoria"
+        );
+
+        $categorias = $this->settings['categorias'] ?? [
+            'social' => __('Social', 'flavor-chat-ia'),
+            'infraestructura' => __('Infraestructura', 'flavor-chat-ia'),
+            'cultura' => __('Cultura', 'flavor-chat-ia'),
+            'medioambiente' => __('Medio Ambiente', 'flavor-chat-ia'),
+        ];
+
+        ob_start();
+        ?>
+        <div class="flavor-pp-estado-actual">
+            <?php if ($ciclo_activo): ?>
+                <div class="flavor-pp-ciclo-info">
+                    <h4><?php echo esc_html($ciclo_activo->nombre); ?></h4>
+                    <p class="flavor-pp-fase">
+                        <span class="dashicons dashicons-calendar-alt"></span>
+                        <?php echo esc_html(ucfirst($ciclo_activo->fase_actual ?? __('En curso', 'flavor-chat-ia'))); ?>
+                    </p>
+                </div>
+            <?php else: ?>
+                <p class="flavor-pp-no-ciclo"><?php _e('No hay ciclo activo actualmente.', 'flavor-chat-ia'); ?></p>
+            <?php endif; ?>
+
+            <div class="flavor-kpi-grid flavor-grid-2">
+                <div class="flavor-kpi-card">
+                    <div class="flavor-kpi-icono"><span class="dashicons dashicons-portfolio"></span></div>
+                    <div class="flavor-kpi-contenido">
+                        <span class="flavor-kpi-valor"><?php echo absint($total_proyectos); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Proyectos', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+                <div class="flavor-kpi-card">
+                    <div class="flavor-kpi-icono"><span class="dashicons dashicons-thumbs-up"></span></div>
+                    <div class="flavor-kpi-contenido">
+                        <span class="flavor-kpi-valor"><?php echo absint($total_votos); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Votos', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <?php if ($presupuesto_total > 0): ?>
+                <div class="flavor-pp-presupuesto-barra">
+                    <div class="flavor-pp-barra-header">
+                        <span><?php _e('Presupuesto asignado', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo number_format($presupuesto_asignado, 0, ',', '.'); ?>€ / <?php echo number_format($presupuesto_total, 0, ',', '.'); ?>€</span>
+                    </div>
+                    <div class="flavor-pp-barra-contenedor">
+                        <div class="flavor-pp-barra-progreso" style="width: <?php echo min(100, ($presupuesto_asignado / $presupuesto_total) * 100); ?>%"></div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($proyectos_por_categoria)): ?>
+                <div class="flavor-pp-categorias-resumen">
+                    <h5><?php _e('Por categoría', 'flavor-chat-ia'); ?></h5>
+                    <ul>
+                        <?php foreach ($proyectos_por_categoria as $item): ?>
+                            <li>
+                                <span class="flavor-pp-cat-nombre"><?php echo esc_html($categorias[$item->categoria] ?? $item->categoria); ?></span>
+                                <span class="flavor-pp-cat-count"><?php echo absint($item->total); ?></span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
         return ob_get_clean();
     }
 
@@ -1087,6 +1245,19 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
             'callback' => [$this, 'api_obtener_config'],
             'permission_callback' => '__return_true',
         ]);
+
+        // Seguimiento de un proyecto
+        register_rest_route($namespace, '/presupuestos/(?P<id>\d+)/seguimiento', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_seguimiento_proyecto'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'type' => 'integer',
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -1268,6 +1439,18 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
             'total_proyectos' => count($proyectos_formateados),
             'proyectos' => $proyectos_formateados,
         ], 200);
+    }
+
+    /**
+     * API: Obtener seguimiento de un proyecto
+     */
+    public function api_seguimiento_proyecto($request) {
+        $resultado = $this->action_seguimiento_proyecto([
+            'proyecto_id' => $request->get_param('id'),
+        ]);
+
+        $code = $resultado['success'] ? 200 : 404;
+        return new WP_REST_Response($resultado, $code);
     }
 
     /**
@@ -2315,6 +2498,175 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
     }
 
     /**
+     * Acción: Obtener seguimiento de un proyecto
+     */
+    private function action_seguimiento_proyecto($params) {
+        $proyecto_id = absint($params['proyecto_id'] ?? 0);
+
+        if (!$proyecto_id) {
+            return [
+                'success' => false,
+                'error' => __('ID de proyecto no válido.', 'flavor-chat-ia'),
+            ];
+        }
+
+        global $wpdb;
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+        $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+
+        $proyecto = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_proyectos WHERE id = %d",
+            $proyecto_id
+        ));
+
+        if (!$proyecto) {
+            return [
+                'success' => false,
+                'error' => __('Proyecto no encontrado.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $edicion = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_ediciones WHERE id = %d",
+            $proyecto->edicion_id
+        ));
+
+        $proponente = $proyecto->proponente_id ? get_user_by('ID', $proyecto->proponente_id) : null;
+        $categorias = $this->settings['categorias'] ?? [];
+        $estado_actual = $proyecto->estado;
+
+        $timeline = [];
+        $timeline[] = [
+            'key' => 'registro',
+            'label' => __('Propuesta registrada', 'flavor-chat-ia'),
+            'fecha' => $this->format_timeline_date($proyecto->fecha_creacion),
+            'estado' => 'done',
+            'detalle' => sprintf(
+                __('Propuesta por %s', 'flavor-chat-ia'),
+                $proponente ? $proponente->display_name : __('Anónimo', 'flavor-chat-ia')
+            ),
+        ];
+
+        $timeline[] = [
+            'key' => 'validacion',
+            'label' => __('Evaluación técnica', 'flavor-chat-ia'),
+            'fecha' => $this->format_timeline_date($proyecto->fecha_validacion),
+            'estado' => $this->get_timeline_status($estado_actual, 'validacion'),
+            'detalle' => $this->get_timeline_status($estado_actual, 'validacion') === 'done'
+                ? __('Proyecto validado por el equipo técnico.', 'flavor-chat-ia')
+                : __('Proyecto en evaluación técnica.', 'flavor-chat-ia'),
+        ];
+
+        $timeline[] = [
+            'key' => 'votacion',
+            'label' => __('Votación ciudadana', 'flavor-chat-ia'),
+            'fecha' => $this->format_timeline_date($edicion->fecha_inicio_votacion ?? $proyecto->fecha_inicio_ejecucion),
+            'estado' => $this->get_timeline_status($estado_actual, 'votacion', $edicion->fase ?? null),
+            'detalle' => $this->get_timeline_status($estado_actual, 'votacion', $edicion->fase ?? null) === 'done'
+                ? __('Proyecto votado y elegido por la comunidad.', 'flavor-chat-ia')
+                : __('Votación abierta o programada.', 'flavor-chat-ia'),
+        ];
+
+        $timeline[] = [
+            'key' => 'implementacion',
+            'label' => __('Implementación', 'flavor-chat-ia'),
+            'fecha' => $this->format_timeline_date($proyecto->fecha_inicio_ejecucion),
+            'estado' => $this->get_timeline_status($estado_actual, 'implementacion', null, $proyecto->porcentaje_ejecucion),
+            'detalle' => $this->get_timeline_status($estado_actual, 'implementacion', null, $proyecto->porcentaje_ejecucion) === 'done'
+                ? __('Proyecto en ejecución o completado.', 'flavor-chat-ia')
+                : __('Proyecto aún no ha iniciado la ejecución.', 'flavor-chat-ia'),
+        ];
+
+        $timeline[] = [
+            'key' => 'cierre',
+            'label' => __('Seguimiento y cierre', 'flavor-chat-ia'),
+            'fecha' => $this->format_timeline_date($proyecto->fecha_fin_ejecucion ?? $proyecto->fecha_actualizacion),
+            'estado' => $estado_actual === 'ejecutado' ? 'done' : 'pending',
+            'detalle' => $estado_actual === 'ejecutado'
+                ? __('Proyecto completado y documentado.', 'flavor-chat-ia')
+                : __('Seguimiento del avance en curso.', 'flavor-chat-ia'),
+        ];
+
+        return [
+            'success' => true,
+            'proyecto' => [
+                'id' => $proyecto->id,
+                'titulo' => $proyecto->titulo,
+                'descripcion' => $proyecto->descripcion,
+                'categoria' => $proyecto->categoria,
+                'categoria_label' => $categorias[$proyecto->categoria] ?? ucfirst($proyecto->categoria),
+                'ubicacion' => $proyecto->ubicacion,
+                'presupuesto' => floatval($proyecto->presupuesto_solicitado),
+                'presupuesto_aprobado' => $proyecto->presupuesto_aprobado ? floatval($proyecto->presupuesto_aprobado) : null,
+                'proponente' => $proponente ? $proponente->display_name : null,
+                'estado' => $estado_actual,
+                'votos_recibidos' => intval($proyecto->votos_recibidos),
+                'ranking' => intval($proyecto->ranking),
+                'porcentaje_ejecucion' => intval($proyecto->porcentaje_ejecucion),
+                'imagenes' => $proyecto->imagenes ? explode(',', $proyecto->imagenes) : [],
+            ],
+            'edicion' => $edicion ? [
+                'anio' => $edicion->anio,
+                'fase' => $edicion->fase,
+                'presupuesto_total' => floatval($edicion->presupuesto_total),
+                'fecha_inicio_votacion' => $this->format_timeline_date($edicion->fecha_inicio_votacion),
+                'fecha_fin_votacion' => $this->format_timeline_date($edicion->fecha_fin_votacion),
+            ] : null,
+            'timeline' => $timeline,
+        ];
+    }
+
+    /**
+     * Formatea fechas para el timeline
+     */
+    private function format_timeline_date($fecha) {
+        if (empty($fecha)) {
+            return null;
+        }
+
+        $timestamp = strtotime($fecha);
+        if (!$timestamp) {
+            return null;
+        }
+
+        return date_i18n('c', $timestamp);
+    }
+
+    /**
+     * Determina el estado de un paso del timeline
+     */
+    private function get_timeline_status($estado_proyecto, $paso, $fase_edicion = null, $porcentaje = 0) {
+        switch ($paso) {
+            case 'validacion':
+                if ($estado_proyecto === 'pendiente_validacion') {
+                    return 'active';
+                }
+                if (in_array($estado_proyecto, ['validado','en_votacion','seleccionado','en_ejecucion','ejecutado'], true)) {
+                    return 'done';
+                }
+                return 'pending';
+            case 'votacion':
+                if (in_array($estado_proyecto, ['en_votacion','seleccionado','en_ejecucion','ejecutado'], true)) {
+                    return 'done';
+                }
+                if ($fase_edicion === 'votacion' || $estado_proyecto === 'en_votacion') {
+                    return 'active';
+                }
+                return 'pending';
+            case 'implementacion':
+                if ($estado_proyecto === 'ejecutado') {
+                    return 'done';
+                }
+                if ($estado_proyecto === 'en_ejecucion' || $porcentaje > 0) {
+                    return 'active';
+                }
+                return $fase_edicion === 'implementacion' ? 'active' : 'pending';
+        }
+
+        return 'pending';
+    }
+
+    /**
      * Actualiza contadores de votos
      */
     private function actualizar_contadores_votos($edicion_id) {
@@ -2599,4 +2951,47 @@ KNOWLEDGE;
         ];
     }
 
+    /**
+     * Registrar páginas de administración
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (sin menú visible en el sidebar)
+        add_submenu_page(null, __('Presupuestos', 'flavor-chat-ia'), __('Presupuestos', 'flavor-chat-ia'), $capability, 'presupuestos-participativos', [$this, 'render_pagina_dashboard']);
+        add_submenu_page(null, __('Proyectos', 'flavor-chat-ia'), __('Proyectos', 'flavor-chat-ia'), $capability, 'pp-proyectos', [$this, 'render_pagina_proyectos']);
+        add_submenu_page(null, __('Presupuesto', 'flavor-chat-ia'), __('Presupuesto', 'flavor-chat-ia'), $capability, 'pp-presupuesto', [$this, 'render_pagina_presupuesto']);
+        add_submenu_page(null, __('Votos', 'flavor-chat-ia'), __('Votos', 'flavor-chat-ia'), $capability, 'pp-votos', [$this, 'render_pagina_votos']);
+        add_submenu_page(null, __('Resultados', 'flavor-chat-ia'), __('Resultados', 'flavor-chat-ia'), $capability, 'pp-resultados', [$this, 'render_pagina_resultados']);
+    }
+
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Dashboard Presupuestos Participativos', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_proyectos() {
+        $views_path = dirname(__FILE__) . '/views/proyectos.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Proyectos', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_presupuesto() {
+        $views_path = dirname(__FILE__) . '/views/presupuesto.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Presupuesto', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_votos() {
+        $views_path = dirname(__FILE__) . '/views/votos.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Votos', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_resultados() {
+        $views_path = dirname(__FILE__) . '/views/resultados.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Resultados', 'flavor-chat-ia') . '</h1></div>'; }
+    }
 }

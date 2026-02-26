@@ -88,7 +88,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <template x-if="selectedElement.type === 'heading'">
                     <div class="vbp-inspector-section">
                         <div class="vbp-field-group">
-                            <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
+                            <label class="vbp-field-label">
+                                <?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?>
+                                <template x-if="typeof VBP_Config !== 'undefined' && VBP_Config.ai && VBP_Config.ai.enabled">
+                                    <button type="button" @click="$dispatch('vbp-ai-assist', { field: 'heading_text', content: selectedElement.data.text, element: selectedElement, type: 'hero_title' })" class="vbp-ai-field-btn" title="<?php esc_attr_e( 'Generar con IA', 'flavor-chat-ia' ); ?>">
+                                        ✨
+                                    </button>
+                                </template>
+                            </label>
                             <textarea x-model="selectedElement.data.text" @input="updateElementData('text', $event.target.value)" class="vbp-field-textarea" rows="3"></textarea>
                         </div>
                         <div class="vbp-field-group">
@@ -143,6 +150,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <button type="button" @click="clearFormat()" class="vbp-richtext-btn" data-tooltip="<?php esc_attr_e( 'Limpiar formato', 'flavor-chat-ia' ); ?>">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                     </button>
+                                    <template x-if="typeof VBP_Config !== 'undefined' && VBP_Config.ai && VBP_Config.ai.enabled">
+                                        <span class="vbp-ai-toolbar-group" style="display:contents;">
+                                            <span class="vbp-richtext-separator"></span>
+                                            <button type="button" @click="$dispatch('vbp-ai-assist', { field: 'text', content: content, element: $store.vbp.selectedElement })" class="vbp-richtext-btn vbp-ai-btn" data-tooltip="<?php esc_attr_e( 'IA: Generar o mejorar texto', 'flavor-chat-ia' ); ?>">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                            </button>
+                                        </span>
+                                    </template>
                                 </div>
 
                                 <!-- Toolbar flotante (aparece al seleccionar texto) -->
@@ -211,7 +226,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <template x-if="selectedElement.type === 'button'">
                     <div class="vbp-inspector-section">
                         <div class="vbp-field-group">
-                            <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
+                            <label class="vbp-field-label">
+                                <?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?>
+                                <template x-if="typeof VBP_Config !== 'undefined' && VBP_Config.ai && VBP_Config.ai.enabled">
+                                    <button type="button" @click="$dispatch('vbp-ai-assist', { field: 'button_text', content: selectedElement.data.text, element: selectedElement, type: 'cta_button' })" class="vbp-ai-field-btn" title="<?php esc_attr_e( 'Generar con IA', 'flavor-chat-ia' ); ?>">
+                                        ✨
+                                    </button>
+                                </template>
+                            </label>
                             <input type="text" x-model="selectedElement.data.text" @input="updateElementData('text', $event.target.value)" class="vbp-field-input">
                         </div>
                         <div class="vbp-field-group" x-data="vbpLinkAutocomplete()">
@@ -279,11 +301,25 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <template x-if="selectedElement.type === 'hero'">
                     <div class="vbp-inspector-section">
                         <div class="vbp-field-group">
-                            <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                            <label class="vbp-field-label">
+                                <?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?>
+                                <template x-if="typeof VBP_Config !== 'undefined' && VBP_Config.ai && VBP_Config.ai.enabled">
+                                    <button type="button" @click="$dispatch('vbp-ai-assist', { field: 'hero_titulo', content: selectedElement.data.titulo, element: selectedElement, type: 'hero_title' })" class="vbp-ai-field-btn" title="<?php esc_attr_e( 'Generar con IA', 'flavor-chat-ia' ); ?>">
+                                        ✨
+                                    </button>
+                                </template>
+                            </label>
                             <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input">
                         </div>
                         <div class="vbp-field-group" x-data="vbpToolbarEditor()" x-init="content = selectedElement.data.subtitulo || ''; field = 'hero_subtitulo'" @richtext-change.window="if ($event.detail.field === 'hero_subtitulo') updateElementData('subtitulo', $event.detail.content)">
-                            <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
+                            <label class="vbp-field-label">
+                                <?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?>
+                                <template x-if="typeof VBP_Config !== 'undefined' && VBP_Config.ai && VBP_Config.ai.enabled">
+                                    <button type="button" @click="$dispatch('vbp-ai-assist', { field: 'hero_subtitulo', content: selectedElement.data.subtitulo, element: selectedElement, type: 'hero_subtitle' })" class="vbp-ai-field-btn" title="<?php esc_attr_e( 'Generar con IA', 'flavor-chat-ia' ); ?>">
+                                        ✨
+                                    </button>
+                                </template>
+                            </label>
                             <div class="vbp-richtext-wrapper compact">
                                 <div class="vbp-richtext-toolbar">
                                     <button type="button" @click="toggleBold()" class="vbp-richtext-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg></button>
@@ -341,7 +377,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <template x-if="selectedElement.type === 'cta'">
                     <div class="vbp-inspector-section">
                         <div class="vbp-field-group">
-                            <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                            <label class="vbp-field-label">
+                                <?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?>
+                                <template x-if="typeof VBP_Config !== 'undefined' && VBP_Config.ai && VBP_Config.ai.enabled">
+                                    <button type="button" @click="$dispatch('vbp-ai-assist', { field: 'cta_titulo', content: selectedElement.data.titulo, element: selectedElement, type: 'cta_title' })" class="vbp-ai-field-btn" title="<?php esc_attr_e( 'Generar con IA', 'flavor-chat-ia' ); ?>">
+                                        ✨
+                                    </button>
+                                </template>
+                            </label>
                             <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input">
                         </div>
                         <div class="vbp-field-group" x-data="vbpToolbarEditor()" x-init="content = selectedElement.data.subtitulo || ''; field = 'cta_subtitulo'" @richtext-change.window="if ($event.detail.field === 'cta_subtitulo') updateElementData('subtitulo', $event.detail.content)">

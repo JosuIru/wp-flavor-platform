@@ -7,12 +7,9 @@
  * @version 4.1.0
  */
 
-(function() {
-    'use strict';
-
-    // Verificar que Alpine está disponible
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('unifiedModulesState', () => ({
+// Definir la función global INMEDIATAMENTE para que Alpine la encuentre
+window.unifiedModulesState = function() {
+    return {
             // Estado de filtros
             searchQuery: '',
             activeCategory: 'all',
@@ -33,6 +30,18 @@
 
             // Inicialización
             init() {
+                // Restaurar categoría activa desde localStorage
+                const savedCategory = localStorage.getItem('fum_active_category');
+                if (savedCategory) {
+                    this.activeCategory = savedCategory;
+                }
+
+                // Restaurar filtros desde localStorage
+                const savedStatus = localStorage.getItem('fum_filter_status');
+                if (savedStatus) {
+                    this.filterStatus = savedStatus;
+                }
+
                 this.updateVisibleCount();
             },
 
@@ -72,11 +81,15 @@
             // Establecer categoría activa
             setCategory(category) {
                 this.activeCategory = category;
+                // Guardar en localStorage para persistir al recargar
+                localStorage.setItem('fum_active_category', category);
                 this.updateVisibleCount();
             },
 
             // Actualizar filtros
             filterModules() {
+                // Guardar filtros en localStorage
+                localStorage.setItem('fum_filter_status', this.filterStatus);
                 this.updateVisibleCount();
             },
 
@@ -309,20 +322,44 @@
                     });
                 }
             },
-        }));
+        };
+};
+
+// También registrar con Alpine.data para compatibilidad
+document.addEventListener('alpine:init', function() {
+    if (typeof Alpine !== 'undefined' && !window._unifiedModulesRegistered) {
+        window._unifiedModulesRegistered = true;
+        Alpine.data('unifiedModulesState', window.unifiedModulesState);
+    }
+});
+
+// Siempre conectar los toggles con vanilla JS como respaldo
+(function() {
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            // SIEMPRE conectar los toggles con vanilla JS como respaldo
+            initVanillaToggleHandlers();
+        }, 500);
     });
 
-    // Fallback si Alpine no está cargado (ejecutar filtrado con JS vanilla)
-    document.addEventListener('DOMContentLoaded', function() {
-        // Si después de 1 segundo Alpine no ha procesado, usar fallback
-        setTimeout(function() {
-            const unifiedModules = document.querySelector('.flavor-unified-modules');
-            if (unifiedModules && !unifiedModules.__x) {
-                console.log('Alpine not detected, using vanilla JS fallback');
-                initVanillaFallback();
-            }
-        }, 1000);
-    });
+    // Función separada para conectar solo los toggles
+    function initVanillaToggleHandlers() {
+        document.querySelectorAll('.fum-toggle input').forEach(toggle => {
+            // Evitar duplicar listeners
+            if (toggle.dataset.vanillaHandlerAttached) return;
+            toggle.dataset.vanillaHandlerAttached = 'true';
+
+            toggle.addEventListener('change', function() {
+                const card = this.closest('.fum-module-card');
+                const moduleId = card?.dataset.moduleId;
+                if (moduleId) {
+                    toggleModuleVanilla(moduleId, this.checked);
+                }
+            });
+        });
+    }
 
     function initVanillaFallback() {
         const searchInput = document.querySelector('.fum-search__input');
@@ -432,8 +469,23 @@
                         card.classList.toggle('is-active', activate);
                         card.classList.toggle('is-inactive', !activate);
                     }
+                } else {
+                    console.error('Server error:', response.data?.message);
+                    // Revertir el toggle
+                    const toggle = document.querySelector(`.fum-module-card[data-module-id="${moduleId}"] .fum-toggle input`);
+                    if (toggle) {
+                        toggle.checked = !activate;
+                    }
                 }
             },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                // Revertir el toggle
+                const toggle = document.querySelector(`.fum-module-card[data-module-id="${moduleId}"] .fum-toggle input`);
+                if (toggle) {
+                    toggle.checked = !activate;
+                }
+            }
         });
     }
 })();

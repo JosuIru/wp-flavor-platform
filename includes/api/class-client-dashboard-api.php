@@ -263,6 +263,48 @@ class Flavor_Client_Dashboard_API {
                 ],
             ],
         ]);
+
+        // GET /wp-json/flavor/v1/client/network-stats
+        // Estadisticas globales de la red/plataforma
+        register_rest_route(self::API_NAMESPACE, '/client/network-stats', [
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'get_network_stats'],
+            'permission_callback' => [$this, 'check_user_authenticated'],
+            'args'                => [
+                'period' => [
+                    'description' => __('Periodo de estadisticas: week, month, year, all', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'default'     => 'month',
+                    'enum'        => ['week', 'month', 'year', 'all'],
+                ],
+            ],
+        ]);
+
+        // GET /wp-json/flavor/v1/client/activity-map
+        // Mapa de actividad de la plataforma
+        register_rest_route(self::API_NAMESPACE, '/client/activity-map', [
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'get_activity_map'],
+            'permission_callback' => [$this, 'check_user_authenticated'],
+            'args'                => [
+                'period' => [
+                    'description' => __('Periodo de actividad: week, month, year', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'default'     => 'month',
+                    'enum'        => ['week', 'month', 'year'],
+                ],
+                'module' => [
+                    'description' => __('Filtrar por modulo especifico', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'default'     => '',
+                ],
+            ],
+        ]);
+
+        // =====================================================================
+        // NOTA: Los endpoints /admin/* están definidos en admin/class-dashboard.php
+        // No duplicar aquí para evitar conflictos de formato de datos.
+        // =====================================================================
     }
 
     // =========================================================================
@@ -290,6 +332,34 @@ class Flavor_Client_Dashboard_API {
         return true;
     }
 
+    /**
+     * Verifica que el usuario tiene permisos de administracion
+     *
+     * @param WP_REST_Request $request Peticion REST.
+     * @return bool|WP_Error True si es admin, WP_Error si no.
+     */
+    public function check_admin_permissions($request) {
+        $id_usuario_actual = get_current_user_id();
+
+        if (!$id_usuario_actual) {
+            return new WP_Error(
+                'rest_not_logged_in',
+                __('Debes iniciar sesion para acceder a este recurso.', 'flavor-chat-ia'),
+                ['status' => 401]
+            );
+        }
+
+        if (!current_user_can('manage_options')) {
+            return new WP_Error(
+                'rest_forbidden',
+                __('No tienes permisos para acceder a este recurso.', 'flavor-chat-ia'),
+                ['status' => 403]
+            );
+        }
+
+        return true;
+    }
+
     // =========================================================================
     // ENDPOINT: GET /client/dashboard
     // =========================================================================
@@ -310,7 +380,7 @@ class Flavor_Client_Dashboard_API {
         $clave_cache     = self::CACHE_PREFIX . 'dashboard_' . $id_usuario_actual;
         $datos_cacheados = $this->get_cached_data($clave_cache);
 
-        if ($datos_cacheados !== false && !defined('WP_DEBUG') || !WP_DEBUG) {
+        if ($datos_cacheados !== false && (!defined('WP_DEBUG') || !WP_DEBUG)) {
             return rest_ensure_response($datos_cacheados);
         }
 
@@ -705,6 +775,644 @@ class Flavor_Client_Dashboard_API {
             'preferences' => $preferencias_actualizadas,
             'message'     => __('Preferencias guardadas correctamente.', 'flavor-chat-ia'),
         ]);
+    }
+
+    // =========================================================================
+    // ENDPOINT: GET /client/network-stats
+    // =========================================================================
+
+    /**
+     * Obtiene estadisticas globales de la red/plataforma
+     *
+     * @param WP_REST_Request $request Peticion REST.
+     * @return WP_REST_Response Respuesta con estadisticas de red.
+     */
+    public function get_network_stats(WP_REST_Request $request) {
+        $periodo = $request->get_param('period');
+
+        // Cache key
+        $clave_cache     = self::CACHE_PREFIX . 'network_stats_' . $periodo;
+        $datos_cacheados = $this->get_cached_data($clave_cache);
+
+        if ($datos_cacheados !== false && (!defined('WP_DEBUG') || !WP_DEBUG)) {
+            return rest_ensure_response($datos_cacheados);
+        }
+
+        $rango_fechas = $this->get_period_date_range($periodo);
+
+        // Estadisticas de usuarios
+        $estadisticas_usuarios = $this->get_network_user_stats($rango_fechas);
+
+        // Estadisticas de modulos activos
+        $estadisticas_modulos = $this->get_network_module_stats($rango_fechas);
+
+        // Actividad general de la red
+        $estadisticas_actividad = $this->get_network_activity_stats($rango_fechas);
+
+        // Top contribuyentes
+        $top_contribuyentes = $this->get_top_contributors($rango_fechas, 5);
+
+        // Modulos mas activos
+        $modulos_mas_activos = $this->get_most_active_modules($rango_fechas, 5);
+
+        $datos_red = [
+            'period'      => $periodo,
+            'date_range'  => $rango_fechas,
+            'users'       => $estadisticas_usuarios,
+            'modules'     => $estadisticas_modulos,
+            'activity'    => $estadisticas_actividad,
+            'top_contributors' => $top_contribuyentes,
+            'most_active_modules' => $modulos_mas_activos,
+            'meta'        => [
+                'generated_at' => current_time('c'),
+                'cache_ttl'    => self::CACHE_DURATION,
+            ],
+        ];
+
+        // Permitir filtrado por plugins externos
+        $datos_red = apply_filters('flavor_network_stats_data', $datos_red, $periodo);
+
+        $this->set_cached_data($clave_cache, $datos_red);
+
+        return rest_ensure_response($datos_red);
+    }
+
+    // =========================================================================
+    // ENDPOINT: GET /client/activity-map
+    // =========================================================================
+
+    /**
+     * Obtiene datos para el mapa de actividad de la plataforma
+     *
+     * @param WP_REST_Request $request Peticion REST.
+     * @return WP_REST_Response Respuesta con datos del mapa.
+     */
+    public function get_activity_map(WP_REST_Request $request) {
+        $periodo = $request->get_param('period');
+        $modulo_filtro = $request->get_param('module');
+
+        // Cache key
+        $clave_cache     = self::CACHE_PREFIX . 'activity_map_' . $periodo . '_' . $modulo_filtro;
+        $datos_cacheados = $this->get_cached_data($clave_cache);
+
+        if ($datos_cacheados !== false && (!defined('WP_DEBUG') || !WP_DEBUG)) {
+            return rest_ensure_response($datos_cacheados);
+        }
+
+        $rango_fechas = $this->get_period_date_range($periodo);
+
+        // Actividad por dia (heatmap temporal)
+        $actividad_por_dia = $this->get_activity_by_day($rango_fechas, $modulo_filtro);
+
+        // Actividad por hora del dia
+        $actividad_por_hora = $this->get_activity_by_hour($rango_fechas, $modulo_filtro);
+
+        // Actividad por tipo de accion
+        $actividad_por_tipo = $this->get_activity_by_type($rango_fechas, $modulo_filtro);
+
+        // Distribucion por modulo
+        $distribucion_modulos = $this->get_activity_distribution_by_module($rango_fechas);
+
+        // Tendencia de actividad
+        $tendencia_actividad = $this->get_activity_trend($rango_fechas, $modulo_filtro);
+
+        $datos_mapa = [
+            'period'       => $periodo,
+            'date_range'   => $rango_fechas,
+            'module_filter' => $modulo_filtro,
+            'by_day'       => $actividad_por_dia,
+            'by_hour'      => $actividad_por_hora,
+            'by_type'      => $actividad_por_tipo,
+            'by_module'    => $distribucion_modulos,
+            'trend'        => $tendencia_actividad,
+            'meta'         => [
+                'generated_at' => current_time('c'),
+                'cache_ttl'    => self::CACHE_DURATION,
+            ],
+        ];
+
+        // Permitir filtrado por plugins externos
+        $datos_mapa = apply_filters('flavor_activity_map_data', $datos_mapa, $periodo, $modulo_filtro);
+
+        $this->set_cached_data($clave_cache, $datos_mapa);
+
+        return rest_ensure_response($datos_mapa);
+    }
+
+    // =========================================================================
+    // METODOS AUXILIARES: ESTADISTICAS DE RED
+    // =========================================================================
+
+    /**
+     * Obtiene estadisticas de usuarios de la red
+     *
+     * @param array $rango_fechas Rango de fechas.
+     * @return array Estadisticas de usuarios.
+     */
+    private function get_network_user_stats($rango_fechas) {
+        global $wpdb;
+
+        // Total de usuarios
+        $total_usuarios = (int) $wpdb->get_var("SELECT COUNT(ID) FROM {$wpdb->users}");
+
+        // Usuarios nuevos en el periodo
+        $usuarios_nuevos = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(ID) FROM {$wpdb->users}
+            WHERE user_registered BETWEEN %s AND %s",
+            $rango_fechas['start'],
+            $rango_fechas['end']
+        ));
+
+        // Usuarios activos (con actividad en el periodo)
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+        $usuarios_activos = 0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            $usuarios_activos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_actividad}
+                WHERE fecha BETWEEN %s AND %s",
+                $rango_fechas['start'],
+                $rango_fechas['end']
+            ));
+        }
+
+        return [
+            'total'       => $total_usuarios,
+            'new'         => $usuarios_nuevos,
+            'active'      => $usuarios_activos,
+            'active_rate' => $total_usuarios > 0 ? round(($usuarios_activos / $total_usuarios) * 100, 1) : 0,
+        ];
+    }
+
+    /**
+     * Obtiene estadisticas de modulos de la red
+     *
+     * @param array $rango_fechas Rango de fechas.
+     * @return array Estadisticas de modulos.
+     */
+    private function get_network_module_stats($rango_fechas) {
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $configuracion['active_modules'] ?? [];
+
+        $total_modulos_disponibles = 0;
+        if (class_exists('Flavor_Module_Loader')) {
+            $cargador_modulos = Flavor_Module_Loader::get_instance();
+            $total_modulos_disponibles = count($cargador_modulos->get_available_modules());
+        }
+
+        return [
+            'total_available' => $total_modulos_disponibles,
+            'active'          => count($modulos_activos),
+            'active_list'     => $modulos_activos,
+        ];
+    }
+
+    /**
+     * Obtiene estadisticas de actividad general de la red
+     *
+     * @param array $rango_fechas Rango de fechas.
+     * @return array Estadisticas de actividad.
+     */
+    private function get_network_activity_stats($rango_fechas) {
+        global $wpdb;
+
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            return [
+                'total_actions' => 0,
+                'avg_per_day'   => 0,
+                'peak_day'      => null,
+            ];
+        }
+
+        // Total de acciones
+        $total_acciones = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_actividad}
+            WHERE fecha BETWEEN %s AND %s",
+            $rango_fechas['start'],
+            $rango_fechas['end']
+        ));
+
+        // Dias en el periodo
+        $dias_en_periodo = max(1, ceil((strtotime($rango_fechas['end']) - strtotime($rango_fechas['start'])) / 86400));
+
+        // Promedio por dia
+        $promedio_por_dia = round($total_acciones / $dias_en_periodo, 1);
+
+        // Dia pico
+        $dia_pico_resultado = $wpdb->get_row($wpdb->prepare(
+            "SELECT DATE(fecha) as dia, COUNT(*) as total
+            FROM {$tabla_actividad}
+            WHERE fecha BETWEEN %s AND %s
+            GROUP BY DATE(fecha)
+            ORDER BY total DESC
+            LIMIT 1",
+            $rango_fechas['start'],
+            $rango_fechas['end']
+        ));
+
+        $dia_pico = null;
+        if ($dia_pico_resultado) {
+            $dia_pico = [
+                'date'  => $dia_pico_resultado->dia,
+                'count' => (int) $dia_pico_resultado->total,
+            ];
+        }
+
+        return [
+            'total_actions' => $total_acciones,
+            'avg_per_day'   => $promedio_por_dia,
+            'peak_day'      => $dia_pico,
+        ];
+    }
+
+    /**
+     * Obtiene los top contribuyentes de la red
+     *
+     * @param array $rango_fechas Rango de fechas.
+     * @param int   $limite       Limite de resultados.
+     * @return array Top contribuyentes.
+     */
+    private function get_top_contributors($rango_fechas, $limite = 5) {
+        global $wpdb;
+
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            return [];
+        }
+
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT usuario_id, COUNT(*) as total_acciones
+            FROM {$tabla_actividad}
+            WHERE fecha BETWEEN %s AND %s
+            AND usuario_id > 0
+            GROUP BY usuario_id
+            ORDER BY total_acciones DESC
+            LIMIT %d",
+            $rango_fechas['start'],
+            $rango_fechas['end'],
+            $limite
+        ));
+
+        $contribuyentes = [];
+        foreach ($resultados as $resultado) {
+            $usuario = get_userdata($resultado->usuario_id);
+            if ($usuario) {
+                $contribuyentes[] = [
+                    'user_id'      => $resultado->usuario_id,
+                    'display_name' => $usuario->display_name,
+                    'avatar_url'   => get_avatar_url($resultado->usuario_id, ['size' => 48]),
+                    'total_actions' => (int) $resultado->total_acciones,
+                ];
+            }
+        }
+
+        return $contribuyentes;
+    }
+
+    /**
+     * Obtiene los modulos mas activos
+     *
+     * @param array $rango_fechas Rango de fechas.
+     * @param int   $limite       Limite de resultados.
+     * @return array Modulos mas activos.
+     */
+    private function get_most_active_modules($rango_fechas, $limite = 5) {
+        global $wpdb;
+
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            return [];
+        }
+
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT modulo_id, COUNT(*) as total_acciones
+            FROM {$tabla_actividad}
+            WHERE fecha BETWEEN %s AND %s
+            AND modulo_id IS NOT NULL
+            AND modulo_id != ''
+            GROUP BY modulo_id
+            ORDER BY total_acciones DESC
+            LIMIT %d",
+            $rango_fechas['start'],
+            $rango_fechas['end'],
+            $limite
+        ));
+
+        $modulos_activos = [];
+        foreach ($resultados as $resultado) {
+            $modulos_activos[] = [
+                'module_id'     => $resultado->modulo_id,
+                'module_name'   => $this->get_module_display_name($resultado->modulo_id),
+                'total_actions' => (int) $resultado->total_acciones,
+            ];
+        }
+
+        return $modulos_activos;
+    }
+
+    /**
+     * Obtiene el nombre para mostrar de un modulo
+     *
+     * @param string $id_modulo ID del modulo.
+     * @return string Nombre del modulo.
+     */
+    private function get_module_display_name($id_modulo) {
+        if (class_exists('Flavor_Module_Loader')) {
+            $cargador_modulos = Flavor_Module_Loader::get_instance();
+            $modulos_disponibles = $cargador_modulos->get_available_modules();
+
+            if (isset($modulos_disponibles[$id_modulo]['name'])) {
+                return $modulos_disponibles[$id_modulo]['name'];
+            }
+        }
+
+        // Fallback: formatear el ID como nombre
+        return ucwords(str_replace(['-', '_'], ' ', $id_modulo));
+    }
+
+    // =========================================================================
+    // METODOS AUXILIARES: MAPA DE ACTIVIDAD
+    // =========================================================================
+
+    /**
+     * Obtiene actividad agrupada por dia
+     *
+     * @param array  $rango_fechas  Rango de fechas.
+     * @param string $modulo_filtro Filtro de modulo.
+     * @return array Actividad por dia.
+     */
+    private function get_activity_by_day($rango_fechas, $modulo_filtro = '') {
+        global $wpdb;
+
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            return [];
+        }
+
+        $clausula_where = 'fecha BETWEEN %s AND %s';
+        $parametros = [$rango_fechas['start'], $rango_fechas['end']];
+
+        if (!empty($modulo_filtro)) {
+            $clausula_where .= ' AND modulo_id = %s';
+            $parametros[] = $modulo_filtro;
+        }
+
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT DATE(fecha) as dia, COUNT(*) as total
+            FROM {$tabla_actividad}
+            WHERE {$clausula_where}
+            GROUP BY DATE(fecha)
+            ORDER BY dia ASC",
+            $parametros
+        ));
+
+        $actividad_por_dia = [];
+        foreach ($resultados as $resultado) {
+            $actividad_por_dia[] = [
+                'date'  => $resultado->dia,
+                'count' => (int) $resultado->total,
+            ];
+        }
+
+        return $actividad_por_dia;
+    }
+
+    /**
+     * Obtiene actividad agrupada por hora del dia
+     *
+     * @param array  $rango_fechas  Rango de fechas.
+     * @param string $modulo_filtro Filtro de modulo.
+     * @return array Actividad por hora.
+     */
+    private function get_activity_by_hour($rango_fechas, $modulo_filtro = '') {
+        global $wpdb;
+
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            return [];
+        }
+
+        $clausula_where = 'fecha BETWEEN %s AND %s';
+        $parametros = [$rango_fechas['start'], $rango_fechas['end']];
+
+        if (!empty($modulo_filtro)) {
+            $clausula_where .= ' AND modulo_id = %s';
+            $parametros[] = $modulo_filtro;
+        }
+
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT HOUR(fecha) as hora, COUNT(*) as total
+            FROM {$tabla_actividad}
+            WHERE {$clausula_where}
+            GROUP BY HOUR(fecha)
+            ORDER BY hora ASC",
+            $parametros
+        ));
+
+        // Inicializar todas las horas con 0
+        $actividad_por_hora = [];
+        for ($hora = 0; $hora < 24; $hora++) {
+            $actividad_por_hora[$hora] = 0;
+        }
+
+        foreach ($resultados as $resultado) {
+            $actividad_por_hora[(int) $resultado->hora] = (int) $resultado->total;
+        }
+
+        return $actividad_por_hora;
+    }
+
+    /**
+     * Obtiene actividad agrupada por tipo de accion
+     *
+     * @param array  $rango_fechas  Rango de fechas.
+     * @param string $modulo_filtro Filtro de modulo.
+     * @return array Actividad por tipo.
+     */
+    private function get_activity_by_type($rango_fechas, $modulo_filtro = '') {
+        global $wpdb;
+
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            return [];
+        }
+
+        $clausula_where = 'fecha BETWEEN %s AND %s';
+        $parametros = [$rango_fechas['start'], $rango_fechas['end']];
+
+        if (!empty($modulo_filtro)) {
+            $clausula_where .= ' AND modulo_id = %s';
+            $parametros[] = $modulo_filtro;
+        }
+
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT tipo, COUNT(*) as total
+            FROM {$tabla_actividad}
+            WHERE {$clausula_where}
+            GROUP BY tipo
+            ORDER BY total DESC",
+            $parametros
+        ));
+
+        $actividad_por_tipo = [];
+        foreach ($resultados as $resultado) {
+            $actividad_por_tipo[] = [
+                'type'  => $resultado->tipo,
+                'label' => $this->get_activity_type_label($resultado->tipo),
+                'count' => (int) $resultado->total,
+            ];
+        }
+
+        return $actividad_por_tipo;
+    }
+
+    /**
+     * Obtiene la etiqueta de un tipo de actividad
+     *
+     * @param string $tipo Tipo de actividad.
+     * @return string Etiqueta.
+     */
+    private function get_activity_type_label($tipo) {
+        $etiquetas = [
+            'info'        => __('Informacion', 'flavor-chat-ia'),
+            'exito'       => __('Exito', 'flavor-chat-ia'),
+            'advertencia' => __('Advertencia', 'flavor-chat-ia'),
+            'error'       => __('Error', 'flavor-chat-ia'),
+            'crear'       => __('Creacion', 'flavor-chat-ia'),
+            'editar'      => __('Edicion', 'flavor-chat-ia'),
+            'eliminar'    => __('Eliminacion', 'flavor-chat-ia'),
+            'login'       => __('Inicio de sesion', 'flavor-chat-ia'),
+            'registro'    => __('Registro', 'flavor-chat-ia'),
+        ];
+
+        return $etiquetas[$tipo] ?? ucfirst($tipo);
+    }
+
+    /**
+     * Obtiene distribucion de actividad por modulo
+     *
+     * @param array $rango_fechas Rango de fechas.
+     * @return array Distribucion por modulo.
+     */
+    private function get_activity_distribution_by_module($rango_fechas) {
+        global $wpdb;
+
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            return [];
+        }
+
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT modulo_id, COUNT(*) as total
+            FROM {$tabla_actividad}
+            WHERE fecha BETWEEN %s AND %s
+            AND modulo_id IS NOT NULL
+            AND modulo_id != ''
+            GROUP BY modulo_id
+            ORDER BY total DESC",
+            $rango_fechas['start'],
+            $rango_fechas['end']
+        ));
+
+        $total_general = array_sum(array_column($resultados, 'total'));
+
+        $distribucion = [];
+        foreach ($resultados as $resultado) {
+            $porcentaje = $total_general > 0 ? round(($resultado->total / $total_general) * 100, 1) : 0;
+            $distribucion[] = [
+                'module_id'   => $resultado->modulo_id,
+                'module_name' => $this->get_module_display_name($resultado->modulo_id),
+                'count'       => (int) $resultado->total,
+                'percentage'  => $porcentaje,
+            ];
+        }
+
+        return $distribucion;
+    }
+
+    /**
+     * Obtiene la tendencia de actividad
+     *
+     * @param array  $rango_fechas  Rango de fechas.
+     * @param string $modulo_filtro Filtro de modulo.
+     * @return array Datos de tendencia.
+     */
+    private function get_activity_trend($rango_fechas, $modulo_filtro = '') {
+        global $wpdb;
+
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_actividad)) {
+            return [
+                'current'  => 0,
+                'previous' => 0,
+                'change'   => 0,
+                'trend'    => 'stable',
+            ];
+        }
+
+        // Periodo actual
+        $clausula_where_actual = 'fecha BETWEEN %s AND %s';
+        $parametros_actual = [$rango_fechas['start'], $rango_fechas['end']];
+
+        if (!empty($modulo_filtro)) {
+            $clausula_where_actual .= ' AND modulo_id = %s';
+            $parametros_actual[] = $modulo_filtro;
+        }
+
+        $total_actual = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_actividad} WHERE {$clausula_where_actual}",
+            $parametros_actual
+        ));
+
+        // Periodo anterior
+        $duracion = strtotime($rango_fechas['end']) - strtotime($rango_fechas['start']);
+        $fecha_fin_anterior = date('Y-m-d 23:59:59', strtotime($rango_fechas['start']) - 1);
+        $fecha_inicio_anterior = date('Y-m-d 00:00:00', strtotime($fecha_fin_anterior) - $duracion);
+
+        $clausula_where_anterior = 'fecha BETWEEN %s AND %s';
+        $parametros_anterior = [$fecha_inicio_anterior, $fecha_fin_anterior];
+
+        if (!empty($modulo_filtro)) {
+            $clausula_where_anterior .= ' AND modulo_id = %s';
+            $parametros_anterior[] = $modulo_filtro;
+        }
+
+        $total_anterior = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_actividad} WHERE {$clausula_where_anterior}",
+            $parametros_anterior
+        ));
+
+        // Calcular cambio porcentual
+        $cambio_porcentual = 0;
+        if ($total_anterior > 0) {
+            $cambio_porcentual = round((($total_actual - $total_anterior) / $total_anterior) * 100, 1);
+        } elseif ($total_actual > 0) {
+            $cambio_porcentual = 100;
+        }
+
+        // Determinar tendencia
+        $tendencia = 'stable';
+        if ($cambio_porcentual > 5) {
+            $tendencia = 'up';
+        } elseif ($cambio_porcentual < -5) {
+            $tendencia = 'down';
+        }
+
+        return [
+            'current'  => $total_actual,
+            'previous' => $total_anterior,
+            'change'   => $cambio_porcentual,
+            'trend'    => $tendencia,
+        ];
     }
 
     // =========================================================================
@@ -1493,6 +2201,222 @@ class Flavor_Client_Dashboard_API {
                 $cache->delete($clave, 'client_dashboard');
             }
         }
+    }
+
+    // =========================================================================
+    // ENDPOINTS DE ADMIN
+    // =========================================================================
+
+    /**
+     * Obtiene estadisticas generales para el dashboard de admin
+     *
+     * @param WP_REST_Request $request Peticion REST.
+     * @return WP_REST_Response Respuesta con estadisticas.
+     */
+    public function get_admin_dashboard_stats(WP_REST_Request $request) {
+        global $wpdb;
+
+        // Estadisticas de usuarios
+        $total_usuarios = count_users();
+        $usuarios_hoy = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->users}
+            WHERE DATE(user_registered) = CURDATE()"
+        );
+        $usuarios_semana = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->users}
+            WHERE user_registered >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+        );
+
+        // Estadisticas de contenido
+        $total_posts = wp_count_posts('post');
+        $total_paginas = wp_count_posts('page');
+
+        // Modulos activos
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $configuracion['active_modules'] ?? [];
+
+        // Actividad reciente (ultimas 24 horas)
+        $actividad_24h = 0;
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_actividad}'") === $tabla_actividad) {
+            $actividad_24h = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_actividad}
+                WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)"
+            );
+        }
+
+        $datos_respuesta = [
+            'success' => true,
+            'data'    => [
+                'usuarios' => [
+                    'total'   => $total_usuarios['total_users'] ?? 0,
+                    'hoy'     => (int) $usuarios_hoy,
+                    'semana'  => (int) $usuarios_semana,
+                    'roles'   => $total_usuarios['avail_roles'] ?? [],
+                ],
+                'contenido' => [
+                    'posts'   => $total_posts->publish ?? 0,
+                    'paginas' => $total_paginas->publish ?? 0,
+                ],
+                'modulos' => [
+                    'activos' => count($modulos_activos),
+                    'lista'   => $modulos_activos,
+                ],
+                'actividad' => [
+                    'ultimas_24h' => $actividad_24h,
+                ],
+                'timestamp' => current_time('mysql'),
+            ],
+        ];
+
+        return rest_ensure_response($datos_respuesta);
+    }
+
+    /**
+     * Obtiene datos para los graficos del dashboard de admin
+     *
+     * @param WP_REST_Request $request Peticion REST.
+     * @return WP_REST_Response Respuesta con datos de graficos.
+     */
+    public function get_admin_dashboard_charts(WP_REST_Request $request) {
+        global $wpdb;
+
+        $periodo = $request->get_param('period') ?? 'month';
+
+        // Normalizar periodo (soportar ambos formatos: week/weekly, month/monthly, etc.)
+        $periodos_normalizados = [
+            'weekly'  => 'week',
+            'monthly' => 'month',
+            'hourly'  => 'hour',
+        ];
+        $periodo_normalizado = $periodos_normalizados[$periodo] ?? $periodo;
+
+        // Determinar rango de fechas
+        switch ($periodo_normalizado) {
+            case 'week':
+                $dias = 7;
+                $formato_fecha = '%Y-%m-%d';
+                break;
+            case 'year':
+                $dias = 365;
+                $formato_fecha = '%Y-%m';
+                break;
+            case 'hour':
+                $dias = 1;
+                $formato_fecha = '%H:00';
+                break;
+            default: // month
+                $dias = 30;
+                $formato_fecha = '%Y-%m-%d';
+                break;
+        }
+
+        $fecha_inicio = date('Y-m-d', strtotime("-{$dias} days"));
+
+        // Usuarios nuevos por periodo
+        $usuarios_por_fecha = $wpdb->get_results($wpdb->prepare(
+            "SELECT DATE_FORMAT(user_registered, %s) as fecha, COUNT(*) as total
+            FROM {$wpdb->users}
+            WHERE user_registered >= %s
+            GROUP BY fecha
+            ORDER BY fecha ASC",
+            $formato_fecha,
+            $fecha_inicio
+        ), ARRAY_A);
+
+        // Actividad por modulo (si existe la tabla)
+        $actividad_por_modulo = [];
+        $tabla_actividad = $wpdb->prefix . 'flavor_activity_log';
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_actividad}'") === $tabla_actividad) {
+            $actividad_por_modulo = $wpdb->get_results($wpdb->prepare(
+                "SELECT module as modulo, COUNT(*) as total
+                FROM {$tabla_actividad}
+                WHERE created_at >= %s
+                GROUP BY module
+                ORDER BY total DESC
+                LIMIT 10",
+                $fecha_inicio
+            ), ARRAY_A);
+        }
+
+        // Distribucion de roles
+        $usuarios = count_users();
+        $roles = [];
+        if (!empty($usuarios['avail_roles'])) {
+            foreach ($usuarios['avail_roles'] as $rol => $cantidad) {
+                if ($cantidad > 0) {
+                    $roles[] = [
+                        'rol'    => $rol,
+                        'nombre' => translate_user_role(ucfirst($rol)),
+                        'total'  => $cantidad,
+                    ];
+                }
+            }
+        }
+
+        $datos_respuesta = [
+            'success' => true,
+            'data'    => [
+                'usuarios_nuevos' => [
+                    'labels' => array_column($usuarios_por_fecha, 'fecha'),
+                    'datos'  => array_map('intval', array_column($usuarios_por_fecha, 'total')),
+                ],
+                'actividad_modulos' => [
+                    'labels' => array_column($actividad_por_modulo, 'modulo'),
+                    'datos'  => array_map('intval', array_column($actividad_por_modulo, 'total')),
+                ],
+                'roles' => [
+                    'labels' => array_column($roles, 'nombre'),
+                    'datos'  => array_map('intval', array_column($roles, 'total')),
+                ],
+                'periodo'   => $periodo,
+                'timestamp' => current_time('mysql'),
+            ],
+        ];
+
+        return rest_ensure_response($datos_respuesta);
+    }
+
+    /**
+     * Sincroniza con la red de nodos
+     *
+     * @param WP_REST_Request $request Peticion REST.
+     * @return WP_REST_Response Respuesta de sincronizacion.
+     */
+    public function sync_network(WP_REST_Request $request) {
+        // Verificar si existe el Network Manager
+        if (!class_exists('Flavor_Network_Manager')) {
+            return rest_ensure_response([
+                'success' => false,
+                'message' => __('El gestor de red no esta disponible.', 'flavor-chat-ia'),
+            ]);
+        }
+
+        $network_manager = Flavor_Network_Manager::get_instance();
+
+        // Intentar sincronizar
+        $resultado = null;
+        if (method_exists($network_manager, 'sync_with_network')) {
+            $resultado = $network_manager->sync_with_network();
+        } elseif (method_exists($network_manager, 'sincronizar_red')) {
+            $resultado = $network_manager->sincronizar_red();
+        }
+
+        if ($resultado === null) {
+            return rest_ensure_response([
+                'success' => true,
+                'message' => __('Red sincronizada correctamente.', 'flavor-chat-ia'),
+                'timestamp' => current_time('mysql'),
+            ]);
+        }
+
+        return rest_ensure_response([
+            'success' => $resultado ? true : false,
+            'message' => $resultado
+                ? __('Red sincronizada correctamente.', 'flavor-chat-ia')
+                : __('Error al sincronizar la red.', 'flavor-chat-ia'),
+            'timestamp' => current_time('mysql'),
+        ]);
     }
 }
 

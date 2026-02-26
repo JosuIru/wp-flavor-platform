@@ -1,0 +1,366 @@
+/**
+ * Estilos del modulo Campanias
+ */
+
+.flavor-campanias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.flavor-campania-card {
+    background: var(--flavor-surface, #fff);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-campania-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.flavor-campania-card.destacada {
+    border: 2px solid var(--flavor-primary, #dc2626);
+}
+
+.flavor-campania-imagen {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+}
+
+.flavor-campania-content {
+    padding: 1.25rem;
+}
+
+.flavor-campania-tipo {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    background: var(--flavor-primary-light, #fef2f2);
+    color: var(--flavor-primary, #dc2626);
+    margin-bottom: 0.75rem;
+}
+
+.flavor-campania-titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+    color: var(--flavor-text, #1f2937);
+}
+
+.flavor-campania-descripcion {
+    font-size: 0.9rem;
+    color: var(--flavor-text-secondary, #6b7280);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.flavor-campania-stats {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--flavor-border, #e5e7eb);
+}
+
+.flavor-campania-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--flavor-text-secondary, #6b7280);
+}
+
+.flavor-campania-stat .dashicons {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Barra de progreso de firmas */
+.flavor-firmas-progress {
+    margin: 1rem 0;
+}
+
+.flavor-firmas-bar {
+    height: 8px;
+    background: var(--flavor-border, #e5e7eb);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.flavor-firmas-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #dc2626, #f87171);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.flavor-firmas-count {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.flavor-firmas-actual {
+    font-weight: 700;
+    color: var(--flavor-primary, #dc2626);
+}
+
+/* Detalle de campania */
+.flavor-campania-detalle {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.flavor-campania-header {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.flavor-campania-header .flavor-campania-tipo {
+    font-size: 0.85rem;
+}
+
+.flavor-campania-header .flavor-campania-titulo {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.flavor-campania-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    color: var(--flavor-text-secondary, #6b7280);
+    font-size: 0.9rem;
+}
+
+.flavor-campania-body {
+    background: var(--flavor-surface, #fff);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.flavor-campania-descripcion-full {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--flavor-text, #1f2937);
+}
+
+/* Acciones de campania */
+.flavor-campania-acciones-lista {
+    margin-top: 2rem;
+}
+
+.flavor-accion-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--flavor-background, #f9fafb);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.flavor-accion-fecha {
+    text-align: center;
+    min-width: 60px;
+    padding: 0.5rem;
+    background: var(--flavor-primary, #dc2626);
+    color: white;
+    border-radius: 8px;
+}
+
+.flavor-accion-fecha .dia {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.flavor-accion-fecha .mes {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.flavor-accion-info h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+}
+
+.flavor-accion-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--flavor-text-secondary, #6b7280);
+}
+
+/* Formulario de firma */
+.flavor-firma-form {
+    background: var(--flavor-surface, #fff);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-top: 2rem;
+}
+
+.flavor-firma-form h3 {
+    margin: 0 0 1.5rem;
+    text-align: center;
+}
+
+.flavor-form-group {
+    margin-bottom: 1rem;
+}
+
+.flavor-form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.flavor-form-group input,
+.flavor-form-group textarea,
+.flavor-form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--flavor-border, #e5e7eb);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.flavor-form-group input:focus,
+.flavor-form-group textarea:focus,
+.flavor-form-group select:focus {
+    outline: none;
+    border-color: var(--flavor-primary, #dc2626);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.flavor-btn-primary {
+    background: var(--flavor-primary, #dc2626);
+    color: white;
+}
+
+.flavor-btn-primary:hover {
+    background: var(--flavor-primary-dark, #b91c1c);
+}
+
+.flavor-btn-secondary {
+    background: var(--flavor-border, #e5e7eb);
+    color: var(--flavor-text, #1f2937);
+}
+
+.flavor-btn-secondary:hover {
+    background: var(--flavor-text-secondary, #d1d5db);
+}
+
+.flavor-btn-block {
+    width: 100%;
+}
+
+/* Participantes */
+.flavor-participantes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.flavor-participante-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--flavor-primary-light, #fef2f2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--flavor-primary, #dc2626);
+    font-size: 0.9rem;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Calendario de acciones */
+.flavor-calendario-acciones {
+    background: var(--flavor-surface, #fff);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Estados */
+.flavor-estado {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.flavor-estado-activa {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.flavor-estado-planificada {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.flavor-estado-completada {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.flavor-estado-cancelada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-campanias-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-campania-header .flavor-campania-titulo {
+        font-size: 1.5rem;
+    }
+
+    .flavor-campania-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

@@ -87,7 +87,7 @@ class Flavor_GC_Ajax_Handlers {
      * @param string $accion Accion del nonce
      * @return bool
      */
-    private function verificar_seguridad($accion = 'gc_frontend_nonce') {
+    private function verificar_seguridad($accion = 'gc_nonce') {
         if (!check_ajax_referer($accion, 'nonce', false)) {
             wp_send_json_error([
                 'message' => __('Error de seguridad. Recarga la pagina e intentalo de nuevo.', 'flavor-chat-ia'),
@@ -570,7 +570,7 @@ class Flavor_GC_Ajax_Handlers {
      * Handler: Cargar mas productos (paginacion AJAX)
      */
     public function handle_cargar_mas_productos() {
-        check_ajax_referer('gc_frontend_nonce', 'nonce', false);
+        check_ajax_referer('gc_nonce', 'nonce', false);
 
         $pagina = absint($_POST['pagina'] ?? 1);
         $por_pagina = absint($_POST['por_pagina'] ?? 12);

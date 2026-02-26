@@ -255,6 +255,20 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         if (!wp_next_scheduled('carpooling_generar_viajes_recurrentes')) {
             wp_schedule_event(time(), 'daily', 'carpooling_generar_viajes_recurrentes');
         }
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-carpooling-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Carpooling_Frontend_Controller::get_instance();
+        }
     }
 
     /**

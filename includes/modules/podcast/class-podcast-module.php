@@ -882,7 +882,29 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         $atributos = shortcode_atts([
             'placeholder' => __('Buscar podcasts y episodios...', 'flavor-chat-ia'),
             'mostrar_filtros' => true,
+            'limite' => 12,
         ], $atts);
+
+        $termino_busqueda = sanitize_text_field($_GET['podcast_buscar'] ?? '');
+        $categoria_filtro = sanitize_text_field($_GET['podcast_categoria'] ?? '');
+        $tipo_filtro = sanitize_text_field($_GET['podcast_tipo'] ?? '');
+
+        $series_encontradas = [];
+        $episodios_encontrados = [];
+
+        if (!empty($termino_busqueda)) {
+            $limite_individual = intval($atributos['limite']);
+
+            if ($tipo_filtro !== 'episodios') {
+                $series_encontradas = $this->buscar_series($termino_busqueda, $categoria_filtro, $limite_individual);
+            }
+
+            if ($tipo_filtro !== 'series') {
+                $episodios_encontrados = $this->buscar_episodios($termino_busqueda, $categoria_filtro, $limite_individual);
+            }
+        }
+
+        $total_resultados = count($series_encontradas) + count($episodios_encontrados);
 
         ob_start();
         ?>
@@ -892,28 +914,116 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                     <span class="dashicons dashicons-search"></span>
                     <input type="search" name="podcast_buscar" class="buscador-input"
                            placeholder="<?php echo esc_attr($atributos['placeholder']); ?>"
-                           value="<?php echo esc_attr($_GET['podcast_buscar'] ?? ''); ?>">
+                           value="<?php echo esc_attr($termino_busqueda); ?>">
                 </div>
                 <?php if ($atributos['mostrar_filtros']): ?>
                 <div class="buscador-filtros">
                     <select name="podcast_categoria">
                         <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
                         <?php foreach ($this->categorias_disponibles as $slug => $nombre): ?>
-                            <option value="<?php echo esc_attr($slug); ?>" <?php selected($_GET['podcast_categoria'] ?? '', $slug); ?>>
+                            <option value="<?php echo esc_attr($slug); ?>" <?php selected($categoria_filtro, $slug); ?>>
                                 <?php echo esc_html($nombre); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                     <select name="podcast_tipo">
                         <option value=""><?php _e('Series y episodios', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('series', 'flavor-chat-ia'); ?>" <?php selected($_GET['podcast_tipo'] ?? '', 'series'); ?>><?php _e('Solo series', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('episodios', 'flavor-chat-ia'); ?>" <?php selected($_GET['podcast_tipo'] ?? '', 'episodios'); ?>><?php _e('Solo episodios', 'flavor-chat-ia'); ?></option>
+                        <option value="series" <?php selected($tipo_filtro, 'series'); ?>><?php _e('Solo series', 'flavor-chat-ia'); ?></option>
+                        <option value="episodios" <?php selected($tipo_filtro, 'episodios'); ?>><?php _e('Solo episodios', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
                 <?php endif; ?>
                 <button type="submit" class="buscador-btn"><?php _e('Buscar', 'flavor-chat-ia'); ?></button>
             </form>
-            <div class="buscador-resultados"></div>
+
+            <?php if (!empty($termino_busqueda)): ?>
+            <div class="buscador-resultados">
+                <p class="resultados-count">
+                    <?php printf(
+                        _n('%d resultado para "%s"', '%d resultados para "%s"', $total_resultados, 'flavor-chat-ia'),
+                        $total_resultados,
+                        esc_html($termino_busqueda)
+                    ); ?>
+                </p>
+
+                <?php if (!empty($series_encontradas)): ?>
+                <div class="resultados-seccion">
+                    <h3><?php _e('Series', 'flavor-chat-ia'); ?></h3>
+                    <div class="podcast-grid podcast-grid-series">
+                        <?php foreach ($series_encontradas as $serie): ?>
+                        <div class="podcast-card podcast-serie-card">
+                            <?php if (!empty($serie->imagen_url)): ?>
+                            <div class="podcast-card-imagen">
+                                <img src="<?php echo esc_url($serie->imagen_url); ?>" alt="<?php echo esc_attr($serie->titulo); ?>">
+                            </div>
+                            <?php endif; ?>
+                            <div class="podcast-card-content">
+                                <h4 class="podcast-card-titulo">
+                                    <a href="<?php echo esc_url(add_query_arg(['serie' => $serie->id], get_permalink())); ?>">
+                                        <?php echo esc_html($serie->titulo); ?>
+                                    </a>
+                                </h4>
+                                <p class="podcast-card-descripcion">
+                                    <?php echo esc_html(wp_trim_words($serie->descripcion, 20)); ?>
+                                </p>
+                                <div class="podcast-card-meta">
+                                    <span class="podcast-suscriptores">
+                                        <span class="dashicons dashicons-groups"></span>
+                                        <?php echo number_format_i18n($serie->suscriptores ?? 0); ?>
+                                    </span>
+                                    <?php if (!empty($serie->categoria)): ?>
+                                    <span class="podcast-categoria"><?php echo esc_html($serie->categoria); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!empty($episodios_encontrados)): ?>
+                <div class="resultados-seccion">
+                    <h3><?php _e('Episodios', 'flavor-chat-ia'); ?></h3>
+                    <div class="podcast-grid podcast-grid-episodios">
+                        <?php foreach ($episodios_encontrados as $episodio): ?>
+                        <div class="podcast-card podcast-episodio-card">
+                            <div class="podcast-card-content">
+                                <span class="podcast-serie-nombre"><?php echo esc_html($episodio->serie_titulo ?? ''); ?></span>
+                                <h4 class="podcast-card-titulo">
+                                    <a href="<?php echo esc_url(add_query_arg(['episodio' => $episodio->id], get_permalink())); ?>">
+                                        <?php echo esc_html($episodio->titulo); ?>
+                                    </a>
+                                </h4>
+                                <p class="podcast-card-descripcion">
+                                    <?php echo esc_html(wp_trim_words($episodio->descripcion, 15)); ?>
+                                </p>
+                                <div class="podcast-card-meta">
+                                    <span class="podcast-duracion">
+                                        <span class="dashicons dashicons-clock"></span>
+                                        <?php echo esc_html($this->formatear_duracion($episodio->duracion ?? 0)); ?>
+                                    </span>
+                                    <span class="podcast-reproducciones">
+                                        <span class="dashicons dashicons-controls-play"></span>
+                                        <?php echo number_format_i18n($episodio->reproducciones ?? 0); ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($total_resultados === 0): ?>
+                <div class="sin-resultados">
+                    <span class="dashicons dashicons-search"></span>
+                    <p><?php _e('No se encontraron resultados para tu búsqueda.', 'flavor-chat-ia'); ?></p>
+                    <p class="sugerencia"><?php _e('Intenta con otros términos o revisa los filtros.', 'flavor-chat-ia'); ?></p>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
         </div>
         <?php
         return ob_get_clean();

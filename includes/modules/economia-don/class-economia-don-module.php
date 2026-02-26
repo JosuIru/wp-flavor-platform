@@ -21,6 +21,9 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Integration_Consumer;
+
     /**
      * Categorías de dones
      */
@@ -108,9 +111,36 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_economia_don_ofertas',
+                'context' => 'side',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         // Custom Post Types
         add_action('init', [$this, 'registrar_post_types']);
         add_action('init', [$this, 'registrar_taxonomias']);
@@ -133,16 +163,519 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         // Assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+
+        // API REST
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Panel Unificado
+        $this->registrar_en_panel_unificado();
+
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs() {
+        $tab_file = dirname(__FILE__) . '/class-economia-don-dashboard-tab.php';
+        if (file_exists($tab_file)) {
+            require_once $tab_file;
+            if (class_exists('Flavor_Economia_Don_Dashboard_Tab')) {
+                Flavor_Economia_Don_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Registrar rutas REST API
+     */
+    public function register_rest_routes() {
+        $namespace = 'flavor/v1';
+
+        // Listar dones disponibles
+        register_rest_route($namespace, '/economia-don/dones', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_listar_dones'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'categoria' => ['type' => 'string'],
+                'limite' => ['type' => 'integer', 'default' => 20],
+            ],
+        ]);
+
+        // Obtener don por ID
+        register_rest_route($namespace, '/economia-don/dones/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_obtener_don'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Publicar nuevo don
+        register_rest_route($namespace, '/economia-don/dones', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_publicar_don'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        // Solicitar un don
+        register_rest_route($namespace, '/economia-don/dones/(?P<id>\d+)/solicitar', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_solicitar_don'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        // Confirmar entrega
+        register_rest_route($namespace, '/economia-don/dones/(?P<id>\d+)/entregar', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_confirmar_entrega'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        // Mis dones
+        register_rest_route($namespace, '/economia-don/mis-dones', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_mis_dones'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        // Muro de gratitud
+        register_rest_route($namespace, '/economia-don/gratitudes', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_muro_gratitud'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    /**
+     * API: Listar dones disponibles
+     */
+    public function api_listar_dones($request) {
+        $categoria = $request->get_param('categoria');
+        $limite = $request->get_param('limite') ?: 20;
+
+        $args = [
+            'post_type' => 'ed_don',
+            'post_status' => 'publish',
+            'posts_per_page' => $limite,
+            'meta_query' => [
+                ['key' => '_ed_estado', 'value' => 'disponible'],
+            ],
+        ];
+
+        if ($categoria && isset(self::CATEGORIAS_DON[$categoria])) {
+            $args['meta_query'][] = ['key' => '_ed_categoria', 'value' => $categoria];
+        }
+
+        $dones = get_posts($args);
+        $resultado = [];
+
+        foreach ($dones as $don) {
+            $cat_key = get_post_meta($don->ID, '_ed_categoria', true);
+            $anonimo = get_post_meta($don->ID, '_ed_anonimo', true);
+            $resultado[] = [
+                'id' => $don->ID,
+                'titulo' => $don->post_title,
+                'descripcion' => wp_trim_words($don->post_content, 30),
+                'categoria' => $cat_key,
+                'categoria_nombre' => self::CATEGORIAS_DON[$cat_key]['nombre'] ?? $cat_key,
+                'ubicacion' => get_post_meta($don->ID, '_ed_ubicacion', true),
+                'disponibilidad' => get_post_meta($don->ID, '_ed_disponibilidad', true),
+                'autor' => $anonimo ? __('Anónimo', 'flavor-chat-ia') : get_the_author_meta('display_name', $don->post_author),
+                'imagen' => get_the_post_thumbnail_url($don->ID, 'medium'),
+                'fecha' => get_the_date('Y-m-d', $don),
+            ];
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'total' => count($resultado),
+            'dones' => $resultado,
+            'categorias' => array_keys(self::CATEGORIAS_DON),
+        ], 200);
+    }
+
+    /**
+     * API: Obtener don por ID
+     */
+    public function api_obtener_don($request) {
+        $id = $request->get_param('id');
+        $don = get_post($id);
+
+        if (!$don || $don->post_type !== 'ed_don') {
+            return new \WP_REST_Response(['success' => false, 'error' => 'Don no encontrado'], 404);
+        }
+
+        $cat_key = get_post_meta($don->ID, '_ed_categoria', true);
+        $anonimo = get_post_meta($don->ID, '_ed_anonimo', true);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'don' => [
+                'id' => $don->ID,
+                'titulo' => $don->post_title,
+                'contenido' => $don->post_content,
+                'categoria' => $cat_key,
+                'categoria_nombre' => self::CATEGORIAS_DON[$cat_key]['nombre'] ?? $cat_key,
+                'estado' => get_post_meta($don->ID, '_ed_estado', true),
+                'ubicacion' => get_post_meta($don->ID, '_ed_ubicacion', true),
+                'disponibilidad' => get_post_meta($don->ID, '_ed_disponibilidad', true),
+                'condiciones' => get_post_meta($don->ID, '_ed_condiciones', true),
+                'autor' => $anonimo ? __('Anónimo', 'flavor-chat-ia') : get_the_author_meta('display_name', $don->post_author),
+                'imagen' => get_the_post_thumbnail_url($don->ID, 'large'),
+            ],
+        ], 200);
+    }
+
+    /**
+     * API: Publicar nuevo don
+     */
+    public function api_publicar_don($request) {
+        $titulo = sanitize_text_field($request->get_param('titulo'));
+        $descripcion = sanitize_textarea_field($request->get_param('descripcion'));
+        $categoria = sanitize_text_field($request->get_param('categoria') ?: 'objetos');
+        $ubicacion = sanitize_text_field($request->get_param('ubicacion'));
+        $disponibilidad = sanitize_text_field($request->get_param('disponibilidad'));
+        $anonimo = $request->get_param('anonimo');
+
+        if (empty($titulo)) {
+            return new \WP_REST_Response(['success' => false, 'error' => 'Título requerido'], 400);
+        }
+
+        $don_id = wp_insert_post([
+            'post_type' => 'ed_don',
+            'post_title' => $titulo,
+            'post_content' => $descripcion,
+            'post_status' => 'publish',
+            'post_author' => get_current_user_id(),
+        ]);
+
+        if (is_wp_error($don_id)) {
+            return new \WP_REST_Response(['success' => false, 'error' => $don_id->get_error_message()], 500);
+        }
+
+        update_post_meta($don_id, '_ed_categoria', $categoria);
+        update_post_meta($don_id, '_ed_estado', 'disponible');
+        update_post_meta($don_id, '_ed_ubicacion', $ubicacion);
+        update_post_meta($don_id, '_ed_disponibilidad', $disponibilidad);
+        update_post_meta($don_id, '_ed_anonimo', $anonimo ? '1' : '0');
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'mensaje' => __('¡Don publicado! Gracias por tu generosidad.', 'flavor-chat-ia'),
+            'id' => $don_id,
+        ], 201);
+    }
+
+    /**
+     * API: Solicitar un don
+     */
+    public function api_solicitar_don($request) {
+        $don_id = $request->get_param('id');
+        $mensaje = sanitize_textarea_field($request->get_param('mensaje'));
+        $user_id = get_current_user_id();
+
+        $estado = get_post_meta($don_id, '_ed_estado', true);
+        if ($estado !== 'disponible') {
+            return new \WP_REST_Response(['success' => false, 'error' => 'Este don ya no está disponible'], 400);
+        }
+
+        $solicitud_id = wp_insert_post([
+            'post_type' => 'ed_solicitud',
+            'post_title' => sprintf(__('Solicitud de %s', 'flavor-chat-ia'), get_userdata($user_id)->display_name),
+            'post_status' => 'publish',
+            'post_author' => $user_id,
+        ]);
+
+        update_post_meta($solicitud_id, '_ed_don_id', $don_id);
+        update_post_meta($solicitud_id, '_ed_mensaje', $mensaje);
+        update_post_meta($solicitud_id, '_ed_estado', 'pendiente');
+        update_post_meta($don_id, '_ed_estado', 'reservado');
+        update_post_meta($don_id, '_ed_receptor_id', $user_id);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'mensaje' => __('¡Solicitud enviada! El donante se pondrá en contacto.', 'flavor-chat-ia'),
+        ], 200);
+    }
+
+    /**
+     * API: Confirmar entrega
+     */
+    public function api_confirmar_entrega($request) {
+        $don_id = $request->get_param('id');
+        $user_id = get_current_user_id();
+
+        $donante_id = get_post_field('post_author', $don_id);
+        if ($donante_id != $user_id && !current_user_can('manage_options')) {
+            return new \WP_REST_Response(['success' => false, 'error' => 'No tienes permiso'], 403);
+        }
+
+        update_post_meta($don_id, '_ed_estado', 'entregado');
+        update_post_meta($don_id, '_ed_fecha_entrega', current_time('mysql'));
+
+        $dones_dados = absint(get_user_meta($user_id, '_ed_dones_dados', true));
+        update_user_meta($user_id, '_ed_dones_dados', $dones_dados + 1);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'mensaje' => __('¡Entrega confirmada! Gracias por tu generosidad.', 'flavor-chat-ia'),
+        ], 200);
+    }
+
+    /**
+     * API: Mis dones
+     */
+    public function api_mis_dones($request) {
+        $user_id = get_current_user_id();
+        $estadisticas = $this->get_estadisticas_usuario($user_id);
+
+        $dones = get_posts([
+            'post_type' => 'ed_don',
+            'author' => $user_id,
+            'posts_per_page' => 20,
+            'post_status' => 'publish',
+        ]);
+
+        $mis_dones = array_map(function($don) {
+            return [
+                'id' => $don->ID,
+                'titulo' => $don->post_title,
+                'estado' => get_post_meta($don->ID, '_ed_estado', true),
+                'categoria' => get_post_meta($don->ID, '_ed_categoria', true),
+            ];
+        }, $dones);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'estadisticas' => $estadisticas,
+            'dones' => $mis_dones,
+        ], 200);
+    }
+
+    /**
+     * API: Muro de gratitud
+     */
+    public function api_muro_gratitud($request) {
+        $limite = $request->get_param('limite') ?: 20;
+
+        $gratitudes = get_posts([
+            'post_type' => 'ed_gratitud',
+            'post_status' => 'publish',
+            'posts_per_page' => $limite,
+        ]);
+
+        $resultado = array_map(function($gratitud) {
+            $don_id = get_post_meta($gratitud->ID, '_ed_don_id', true);
+            return [
+                'id' => $gratitud->ID,
+                'titulo' => $gratitud->post_title,
+                'mensaje' => $gratitud->post_content,
+                'autor' => get_the_author_meta('display_name', $gratitud->post_author),
+                'don_titulo' => $don_id ? get_the_title($don_id) : '',
+                'fecha' => get_the_date('Y-m-d', $gratitud),
+            ];
+        }, $gratitudes);
+
+        return new \WP_REST_Response(['success' => true, 'gratitudes' => $resultado], 200);
+    }
+
+    /**
+     * Configuración para el Panel Unificado de Gestión
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'economia-don',
+            'label' => __('Economía del Don', 'flavor-chat-ia'),
+            'icon' => 'dashicons-heart',
+            'capability' => 'manage_options',
+            'categoria' => 'economia',
+            'paginas' => [
+                [
+                    'slug' => 'economia-don-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'economia-don-listado',
+                    'titulo' => __('Dones', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                ],
+                [
+                    'slug' => 'economia-don-solicitudes',
+                    'titulo' => __('Solicitudes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_solicitudes'],
+                    'badge' => [$this, 'contar_solicitudes_pendientes'],
+                ],
+                [
+                    'slug' => 'economia-don-gratitudes',
+                    'titulo' => __('Gratitudes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_gratitudes'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_estadisticas_dashboard'],
+        ];
+    }
+
+    /**
+     * Cuenta solicitudes pendientes
+     */
+    public function contar_solicitudes_pendientes() {
+        global $wpdb;
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'ed_solicitud'
+               AND p.post_status = 'publish'
+               AND pm.meta_key = '_ed_estado'
+               AND pm.meta_value = 'pendiente'"
+        );
+    }
+
+    /**
+     * Estadísticas para dashboard unificado
+     */
+    public function get_estadisticas_dashboard() {
+        global $wpdb;
+        $resultado = [];
+
+        $dones_disponibles = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'ed_don' AND p.post_status = 'publish'
+               AND pm.meta_key = '_ed_estado' AND pm.meta_value = 'disponible'"
+        );
+
+        $resultado[] = [
+            'icon' => 'dashicons-heart',
+            'valor' => $dones_disponibles,
+            'label' => __('Dones disponibles', 'flavor-chat-ia'),
+            'color' => 'green',
+            'enlace' => admin_url('admin.php?page=economia-don-listado'),
+        ];
+
+        $gratitudes = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'ed_gratitud' AND post_status = 'publish'"
+        );
+
+        $resultado[] = [
+            'icon' => 'dashicons-smiley',
+            'valor' => $gratitudes,
+            'label' => __('Gratitudes', 'flavor-chat-ia'),
+            'color' => 'blue',
+            'enlace' => admin_url('admin.php?page=economia-don-gratitudes'),
+        ];
+
+        return $resultado;
+    }
+
+    /**
+     * Renderiza dashboard admin
+     */
+    public function render_admin_dashboard() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Economía del Don', 'flavor-chat-ia'));
+
+        global $wpdb;
+        $disponibles = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id WHERE p.post_type = 'ed_don' AND p.post_status = 'publish' AND pm.meta_key = '_ed_estado' AND pm.meta_value = 'disponible'");
+        $entregados = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id WHERE p.post_type = 'ed_don' AND pm.meta_key = '_ed_estado' AND pm.meta_value IN ('entregado', 'recibido')");
+        $gratitudes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'ed_gratitud' AND post_status = 'publish'");
+
+        echo '<div class="flavor-stats-grid">';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-heart"></span><div class="stat-content"><span class="stat-number">' . esc_html($disponibles) . '</span><span class="stat-label">' . esc_html__('Disponibles', 'flavor-chat-ia') . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-yes"></span><div class="stat-content"><span class="stat-number">' . esc_html($entregados) . '</span><span class="stat-label">' . esc_html__('Entregados', 'flavor-chat-ia') . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-smiley"></span><div class="stat-content"><span class="stat-number">' . esc_html($gratitudes) . '</span><span class="stat-label">' . esc_html__('Gratitudes', 'flavor-chat-ia') . '</span></div></div>';
+        echo '</div></div>';
+    }
+
+    /**
+     * Renderiza listado de dones
+     */
+    public function render_admin_listado() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Dones', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Don', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=ed_don'), 'class' => 'button-primary'],
+        ]);
+
+        $dones = get_posts(['post_type' => 'ed_don', 'posts_per_page' => 50, 'post_status' => ['publish', 'draft']]);
+
+        if (empty($dones)) {
+            echo '<p>' . esc_html__('No hay dones publicados.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<table class="widefat striped"><thead><tr><th>ID</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th></tr></thead><tbody>';
+            foreach ($dones as $don) {
+                $cat_key = get_post_meta($don->ID, '_ed_categoria', true);
+                $estado = get_post_meta($don->ID, '_ed_estado', true) ?: 'disponible';
+                echo '<tr><td>' . esc_html($don->ID) . '</td><td>' . esc_html($don->post_title) . '</td><td>' . esc_html(self::CATEGORIAS_DON[$cat_key]['nombre'] ?? $cat_key) . '</td><td>' . esc_html(self::ESTADOS_DON[$estado]['nombre'] ?? $estado) . '</td><td><a href="' . esc_url(get_edit_post_link($don->ID)) . '" class="button button-small">' . esc_html__('Editar', 'flavor-chat-ia') . '</a></td></tr>';
+            }
+            echo '</tbody></table>';
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza solicitudes
+     */
+    public function render_admin_solicitudes() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Solicitudes de Dones', 'flavor-chat-ia'));
+
+        $solicitudes = get_posts(['post_type' => 'ed_solicitud', 'posts_per_page' => 50]);
+
+        if (empty($solicitudes)) {
+            echo '<p>' . esc_html__('No hay solicitudes.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<table class="widefat striped"><thead><tr><th>ID</th><th>' . esc_html__('Solicitante', 'flavor-chat-ia') . '</th><th>' . esc_html__('Don', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th></tr></thead><tbody>';
+            foreach ($solicitudes as $sol) {
+                $don_id = get_post_meta($sol->ID, '_ed_don_id', true);
+                $estado = get_post_meta($sol->ID, '_ed_estado', true);
+                echo '<tr><td>' . esc_html($sol->ID) . '</td><td>' . esc_html(get_the_author_meta('display_name', $sol->post_author)) . '</td><td>' . esc_html($don_id ? get_the_title($don_id) : '-') . '</td><td>' . esc_html(ucfirst($estado)) . '</td></tr>';
+            }
+            echo '</tbody></table>';
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza gratitudes
+     */
+    public function render_admin_gratitudes() {
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Muro de Gratitud', 'flavor-chat-ia'));
+
+        $gratitudes = get_posts(['post_type' => 'ed_gratitud', 'posts_per_page' => 50, 'post_status' => 'publish']);
+
+        if (empty($gratitudes)) {
+            echo '<p>' . esc_html__('No hay gratitudes publicadas.', 'flavor-chat-ia') . '</p>';
+        } else {
+            echo '<div class="flavor-gratitudes-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">';
+            foreach ($gratitudes as $g) {
+                echo '<div style="background:#f9f9f9;padding:16px;border-radius:8px;border-left:4px solid #e74c3c;">';
+                echo '<strong>' . esc_html($g->post_title) . '</strong>';
+                echo '<p>' . esc_html(wp_trim_words($g->post_content, 30)) . '</p>';
+                echo '<small>' . esc_html(get_the_author_meta('display_name', $g->post_author)) . ' - ' . esc_html(get_the_date('d/m/Y', $g)) . '</small>';
+                echo '</div>';
+            }
+            echo '</div>';
+        }
+        echo '</div>';
     }
 
     /**
      * Registra shortcodes del módulo
      */
     public function register_shortcodes() {
+        // Shortcodes principales
         add_shortcode('economia_don', [$this, 'shortcode_listado']);
         add_shortcode('mis_dones', [$this, 'shortcode_mis_dones']);
         add_shortcode('ofrecer_don', [$this, 'shortcode_ofrecer']);
         add_shortcode('muro_gratitud', [$this, 'shortcode_muro_gratitud']);
+
+        // Aliases con prefijo flavor_ para compatibilidad con dynamic-pages
+        add_shortcode('flavor_don_listado', [$this, 'shortcode_listado']);
+        add_shortcode('flavor_don_mis_dones', [$this, 'shortcode_mis_dones']);
+        add_shortcode('flavor_don_ofrecer', [$this, 'shortcode_ofrecer']);
+        add_shortcode('flavor_don_muro_gratitud', [$this, 'shortcode_muro_gratitud']);
     }
 
     /**
@@ -743,5 +1276,39 @@ La Economía del Don es un sistema donde se ofrece y se recibe sin esperar nada 
 - Todos tenemos algo que ofrecer
 - Recibir también es un acto generoso
 KNOWLEDGE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_actions() {
+        return [
+            'listar_dones' => [
+                'description' => 'Ver dones disponibles en la comunidad',
+                'params' => ['categoria'],
+            ],
+            'mis_dones' => [
+                'description' => 'Ver mis dones ofrecidos y recibidos',
+                'params' => [],
+            ],
+            'ofrecer_don' => [
+                'description' => 'Ofrecer un don a la comunidad',
+                'params' => ['tipo', 'descripcion'],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [];
     }
 }

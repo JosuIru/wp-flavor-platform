@@ -89,8 +89,9 @@ class Flavor_GC_Membership {
         // Crear tabla de solicitudes si no existe
         add_action('init', [$this, 'crear_tabla_solicitudes'], 5);
 
-        // Registrar shortcode
+        // Registrar shortcodes
         add_shortcode('gc_formulario_union', [$this, 'shortcode_formulario_union']);
+        add_shortcode('gc_grupos_lista', [$this, 'shortcode_grupos_lista']);
 
         // AJAX handlers (publico y privado)
         add_action('wp_ajax_gc_solicitar_union', [$this, 'ajax_solicitar_union']);
@@ -966,16 +967,19 @@ class Flavor_GC_Membership {
         }
 
         if (!$grupo_id) {
-            return '<div class="gc-aviso gc-aviso-warning"><p>' .
-                   __('No hay grupos de consumo disponibles en este momento.', 'flavor-chat-ia') .
-                   '</p></div>';
+            // Si no hay grupo_id, usar el grupo virtual del sitio (ID 1)
+            $grupo_id = 1;
         }
 
         $grupo = get_post($grupo_id);
-        if (!$grupo || $grupo->post_type !== 'gc_grupo') {
-            return '<div class="gc-aviso gc-aviso-error"><p>' .
-                   __('Grupo de consumo no encontrado.', 'flavor-chat-ia') .
-                   '</p></div>';
+
+        // Si no existe el post, crear grupo virtual para el sitio actual
+        if (!$grupo || !in_array($grupo->post_type, ['gc_grupo', 'gc_grupo_virtual'], true)) {
+            $grupo = new stdClass();
+            $grupo->ID = $grupo_id;
+            $grupo->post_title = sprintf(__('Grupo de Consumo de %s', 'flavor-chat-ia'), get_bloginfo('name'));
+            $grupo->post_excerpt = '';
+            $grupo->post_type = 'gc_grupo_virtual';
         }
 
         // Verificar si el usuario esta logueado
@@ -1651,5 +1655,451 @@ class Flavor_GC_Membership {
      */
     public function obtener_badge_solicitudes() {
         return $this->contar_solicitudes_pendientes();
+    }
+
+    /**
+     * Shortcode para mostrar lista de grupos de consumo disponibles
+     * Si se pasa ?grupo=ID en la URL, muestra el formulario de unión
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del listado o formulario
+     */
+    public function shortcode_grupos_lista($atts) {
+        $atts = shortcode_atts([
+            'mostrar_red' => true,  // Mostrar grupos de la red de nodos
+            'grupo' => 0,           // ID del grupo para mostrar formulario directamente
+        ], $atts);
+
+        // Convertir string a boolean
+        if (is_string($atts['mostrar_red'])) {
+            $atts['mostrar_red'] = filter_var($atts['mostrar_red'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        // Verificar si se pide formulario de un grupo específico
+        $grupo_id_url = isset($_GET['grupo']) ? absint($_GET['grupo']) : 0;
+        $grupo_id = $grupo_id_url ?: absint($atts['grupo']);
+
+        // Si hay un grupo_id, mostrar formulario de unión
+        if ($grupo_id) {
+            return $this->shortcode_formulario_union(['grupo_id' => $grupo_id]);
+        }
+
+        $usuario_id = get_current_user_id();
+        $grupos_locales = $this->obtener_grupos_disponibles();
+        $membresias_usuario = $this->obtener_membresias_usuario($usuario_id);
+        $solicitudes_pendientes = $this->obtener_solicitudes_usuario($usuario_id);
+
+        ob_start();
+        ?>
+        <div class="gc-grupos-lista">
+            <div class="gc-grupos-header">
+                <h3><?php esc_html_e('Grupos de Consumo Disponibles', 'flavor-chat-ia'); ?></h3>
+                <p class="gc-grupos-descripcion">
+                    <?php esc_html_e('Únete a un grupo de consumo para acceder a productos locales y ecológicos a precios justos.', 'flavor-chat-ia'); ?>
+                </p>
+            </div>
+
+            <?php if (empty($grupos_locales)): ?>
+                <div class="gc-grupos-vacio">
+                    <span class="dashicons dashicons-info"></span>
+                    <p><?php esc_html_e('No hay grupos de consumo disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="gc-grupos-grid">
+                    <?php foreach ($grupos_locales as $grupo):
+                        $grupo_id = $grupo->ID;
+                        $es_grupo_virtual = (isset($grupo->post_type) && $grupo->post_type === 'gc_grupo_virtual');
+                        $es_miembro = isset($membresias_usuario[$grupo_id]);
+                        $tiene_solicitud_pendiente = isset($solicitudes_pendientes[$grupo_id]);
+
+                        // Imagen: para grupos virtuales usar logo del sitio o imagen por defecto
+                        if ($es_grupo_virtual) {
+                            $custom_logo_id = get_theme_mod('custom_logo');
+                            $imagen_url = $custom_logo_id ? wp_get_attachment_image_url($custom_logo_id, 'medium') : '';
+                        } else {
+                            $imagen_url = get_the_post_thumbnail_url($grupo_id, 'medium');
+                        }
+                        if (!$imagen_url) {
+                            $imagen_url = FLAVOR_CHAT_IA_URL . 'assets/images/default-grupo.png';
+                        }
+
+                        $descripcion = $es_grupo_virtual
+                            ? $grupo->post_excerpt
+                            : (get_post_meta($grupo_id, '_gc_descripcion', true) ?: $grupo->post_excerpt);
+                        $descripcion = $descripcion ?: __('Grupo de consumo local', 'flavor-chat-ia');
+
+                        $ubicacion = $es_grupo_virtual ? '' : get_post_meta($grupo_id, '_gc_ubicacion', true);
+                        $total_miembros = $this->contar_miembros_grupo($grupo_id);
+                    ?>
+                        <div class="gc-grupo-card <?php echo $es_miembro ? 'es-miembro' : ''; ?>">
+                            <div class="gc-grupo-imagen">
+                                <img src="<?php echo esc_url($imagen_url); ?>" alt="<?php echo esc_attr($grupo->post_title); ?>">
+                                <?php if ($es_miembro): ?>
+                                    <span class="gc-badge-miembro"><?php esc_html_e('Eres miembro', 'flavor-chat-ia'); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="gc-grupo-contenido">
+                                <h4 class="gc-grupo-nombre"><?php echo esc_html($grupo->post_title); ?></h4>
+                                <?php if ($ubicacion): ?>
+                                    <p class="gc-grupo-ubicacion">
+                                        <span class="dashicons dashicons-location"></span>
+                                        <?php echo esc_html($ubicacion); ?>
+                                    </p>
+                                <?php endif; ?>
+                                <p class="gc-grupo-descripcion"><?php echo esc_html(wp_trim_words($descripcion, 20)); ?></p>
+                                <div class="gc-grupo-stats">
+                                    <span class="gc-grupo-miembros">
+                                        <span class="dashicons dashicons-groups"></span>
+                                        <?php printf(esc_html__('%d miembros', 'flavor-chat-ia'), $total_miembros); ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="gc-grupo-acciones">
+                                <?php if ($es_miembro): ?>
+                                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="gc-btn gc-btn-primary">
+                                        <?php esc_html_e('Ir al grupo', 'flavor-chat-ia'); ?>
+                                    </a>
+                                <?php elseif ($tiene_solicitud_pendiente): ?>
+                                    <button class="gc-btn gc-btn-disabled" disabled>
+                                        <span class="dashicons dashicons-clock"></span>
+                                        <?php esc_html_e('Solicitud pendiente', 'flavor-chat-ia'); ?>
+                                    </button>
+                                <?php elseif ($usuario_id): ?>
+                                    <a href="<?php echo esc_url(add_query_arg('grupo', $grupo_id, home_url('/mi-portal/grupos-consumo/unirme/'))); ?>"
+                                       class="gc-btn gc-btn-primary gc-btn-unirse"
+                                       data-grupo-id="<?php echo esc_attr($grupo_id); ?>">
+                                        <span class="dashicons dashicons-plus-alt"></span>
+                                        <?php esc_html_e('Solicitar unión', 'flavor-chat-ia'); ?>
+                                    </a>
+                                <?php else: ?>
+                                    <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-secondary">
+                                        <?php esc_html_e('Inicia sesión para unirte', 'flavor-chat-ia'); ?>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($atts['mostrar_red']): ?>
+                <div class="gc-red-nodos">
+                    <div class="gc-red-nodos-header">
+                        <h4>
+                            <span class="dashicons dashicons-networking"></span>
+                            <?php esc_html_e('Buscar en la Red de Nodos', 'flavor-chat-ia'); ?>
+                        </h4>
+                        <p><?php esc_html_e('Explora grupos de consumo, bancos de tiempo y comunidades de otros nodos de la red.', 'flavor-chat-ia'); ?></p>
+                    </div>
+                    <?php
+                    // Mostrar contenido de la red usando el shortcode de comunidades
+                    echo do_shortcode('[flavor_red_comunidades tipos="grupos_consumo,banco_tiempo,comunidades" limite="6" columnas="3" busqueda="true"]');
+                    ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .gc-grupos-lista {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .gc-grupos-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .gc-grupos-header h3 {
+            margin: 0 0 10px;
+            font-size: 1.5em;
+            color: var(--gc-gray-900);
+            font-family: var(--gc-font-headings);
+        }
+        .gc-grupos-descripcion {
+            color: var(--gc-gray-500);
+            margin: 0;
+        }
+        .gc-grupos-vacio {
+            text-align: center;
+            padding: 40px;
+            background: var(--gc-gray-100);
+            border-radius: var(--gc-border-radius);
+        }
+        .gc-grupos-vacio .dashicons {
+            font-size: 48px;
+            width: 48px;
+            height: 48px;
+            color: var(--gc-gray-500);
+            margin-bottom: 15px;
+        }
+        .gc-grupos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .gc-grupo-card {
+            background: #fff;
+            border: 1px solid var(--gc-gray-300);
+            border-radius: var(--gc-border-radius);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .gc-grupo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--gc-shadow-lg);
+        }
+        .gc-grupo-card.es-miembro {
+            border-color: var(--gc-success);
+        }
+        .gc-grupo-imagen {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+        .gc-grupo-imagen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gc-badge-miembro {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--gc-success);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        .gc-grupo-contenido {
+            padding: 16px;
+        }
+        .gc-grupo-nombre {
+            margin: 0 0 8px;
+            font-size: 1.2em;
+            color: var(--gc-gray-900);
+            font-family: var(--gc-font-headings);
+        }
+        .gc-grupo-ubicacion {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--gc-gray-500);
+            font-size: 0.9em;
+            margin: 0 0 8px;
+        }
+        .gc-grupo-ubicacion .dashicons {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+        }
+        .gc-grupo-descripcion {
+            color: var(--gc-gray-500);
+            font-size: 0.9em;
+            margin: 0 0 12px;
+            line-height: 1.5;
+        }
+        .gc-grupo-stats {
+            display: flex;
+            gap: 16px;
+        }
+        .gc-grupo-miembros {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85em;
+            color: var(--gc-gray-500);
+        }
+        .gc-grupo-miembros .dashicons {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+        }
+        .gc-grupo-acciones {
+            padding: 12px 16px;
+            border-top: 1px solid var(--gc-gray-200);
+        }
+        .gc-grupos-lista .gc-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--gc-button-radius);
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .gc-grupos-lista .gc-btn-primary {
+            background: var(--gc-primary);
+            color: #fff;
+        }
+        .gc-grupos-lista .gc-btn-primary:hover {
+            background: var(--gc-primary-dark);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: var(--gc-shadow);
+        }
+        .gc-grupos-lista .gc-btn-secondary {
+            background: var(--gc-gray-100);
+            color: var(--gc-gray-700);
+        }
+        .gc-grupos-lista .gc-btn-secondary:hover {
+            background: var(--gc-gray-200);
+        }
+        .gc-grupos-lista .gc-btn-disabled {
+            background: var(--gc-gray-100);
+            color: var(--gc-gray-500);
+            cursor: not-allowed;
+        }
+        .gc-grupos-lista .gc-btn .dashicons {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+        }
+        .gc-red-nodos {
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--gc-gray-100) 0%, var(--gc-gray-200) 100%);
+            border-radius: var(--gc-border-radius);
+            border: 1px solid var(--gc-gray-300);
+        }
+        .gc-red-nodos-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .gc-red-nodos-header h4 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 12px;
+            font-size: 1.3em;
+            color: var(--gc-gray-900);
+            font-family: var(--gc-font-headings);
+        }
+        .gc-red-nodos-header h4 .dashicons {
+            color: var(--gc-primary);
+        }
+        .gc-red-nodos-header p {
+            color: var(--gc-gray-500);
+            margin: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gc-grupos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtener grupos de consumo disponibles
+     * Si el CPT gc_grupo no existe, crea un grupo virtual basado en la configuración del sitio
+     *
+     * @return array Lista de grupos (WP_Post objects o stdClass para grupo virtual)
+     */
+    private function obtener_grupos_disponibles() {
+        // Verificar si el CPT existe
+        if (post_type_exists('gc_grupo')) {
+            $args = [
+                'post_type' => 'gc_grupo',
+                'post_status' => 'publish',
+                'posts_per_page' => -1,
+                'orderby' => 'title',
+                'order' => 'ASC',
+            ];
+
+            $grupos = get_posts($args);
+
+            if (!empty($grupos)) {
+                return $grupos;
+            }
+        }
+
+        // Si no hay CPT o no hay grupos, crear un grupo virtual para este sitio
+        $grupo_virtual = new stdClass();
+        $grupo_virtual->ID = 1; // ID virtual
+        $grupo_virtual->post_title = sprintf(__('Grupo de Consumo de %s', 'flavor-chat-ia'), get_bloginfo('name'));
+        $grupo_virtual->post_excerpt = __('Únete a nuestro grupo de consumo local para acceder a productos frescos y ecológicos directamente de productores cercanos.', 'flavor-chat-ia');
+        $grupo_virtual->post_type = 'gc_grupo_virtual';
+
+        return [$grupo_virtual];
+    }
+
+    /**
+     * Obtener membresias activas de un usuario
+     *
+     * @param int $usuario_id ID del usuario
+     * @return array Array indexado por grupo_id
+     */
+    private function obtener_membresias_usuario($usuario_id) {
+        if (!$usuario_id) {
+            return [];
+        }
+
+        global $wpdb;
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT grupo_id, rol, estado FROM {$this->tabla_consumidores}
+             WHERE usuario_id = %d AND estado = 'activo'",
+            $usuario_id
+        ), OBJECT_K);
+
+        $membresias = [];
+        foreach ($resultados as $row) {
+            $membresias[$row->grupo_id] = $row;
+        }
+
+        return $membresias;
+    }
+
+    /**
+     * Obtener solicitudes pendientes de un usuario
+     *
+     * @param int $usuario_id ID del usuario
+     * @return array Array indexado por grupo_id
+     */
+    private function obtener_solicitudes_usuario($usuario_id) {
+        if (!$usuario_id) {
+            return [];
+        }
+
+        global $wpdb;
+        $resultados = $wpdb->get_results($wpdb->prepare(
+            "SELECT grupo_id, estado, fecha_solicitud FROM {$this->tabla_solicitudes}
+             WHERE usuario_id = %d AND estado = 'pendiente'",
+            $usuario_id
+        ));
+
+        $solicitudes = [];
+        foreach ($resultados as $row) {
+            $solicitudes[$row->grupo_id] = $row;
+        }
+
+        return $solicitudes;
+    }
+
+    /**
+     * Contar miembros activos de un grupo
+     *
+     * @param int $grupo_id ID del grupo
+     * @return int Total de miembros
+     */
+    private function contar_miembros_grupo($grupo_id) {
+        global $wpdb;
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$this->tabla_consumidores}
+             WHERE grupo_id = %d AND estado = 'activo'",
+            $grupo_id
+        ));
     }
 }

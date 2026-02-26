@@ -41,59 +41,74 @@ $stats = [
 ];
 
 foreach ($incidencias as $incidencia) {
-    if (isset($stats[$incidencia->estado])) {
-        $stats[$incidencia->estado]++;
-    } elseif ($incidencia->estado === 'pendiente') {
+    $estado = $incidencia->estado;
+    // Pendientes (español e inglés)
+    if (in_array($estado, ['pendiente', 'pending'])) {
         $stats['pendientes']++;
-    } elseif ($incidencia->estado === 'en_proceso') {
+    // En proceso (español e inglés)
+    } elseif (in_array($estado, ['en_proceso', 'in_progress'])) {
         $stats['en_proceso']++;
-    } elseif (in_array($incidencia->estado, ['resuelta', 'cerrada'])) {
+    // Resueltas/Cerradas (español e inglés)
+    } elseif (in_array($estado, ['resuelta', 'cerrada', 'resolved', 'closed'])) {
         $stats['resueltas']++;
     }
 }
 
 $estados_labels = [
+    // Estados en español
     'pendiente' => __('Pendiente', 'flavor-chat-ia'),
     'en_proceso' => __('En proceso', 'flavor-chat-ia'),
     'resuelta' => __('Resuelta', 'flavor-chat-ia'),
     'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+    // Estados en inglés (para datos existentes)
+    'pending' => __('Pendiente', 'flavor-chat-ia'),
+    'in_progress' => __('En proceso', 'flavor-chat-ia'),
+    'resolved' => __('Resuelta', 'flavor-chat-ia'),
+    'closed' => __('Cerrada', 'flavor-chat-ia'),
 ];
 
 $estados_colors = [
+    // Estados en español
     'pendiente' => '#f59e0b',
     'en_proceso' => '#3b82f6',
     'resuelta' => '#10b981',
     'cerrada' => '#6b7280',
+    // Estados en inglés (para datos existentes)
+    'pending' => '#f59e0b',
+    'in_progress' => '#3b82f6',
+    'resolved' => '#10b981',
+    'closed' => '#6b7280',
 ];
 ?>
 
 <div class="mis-incidencias-wrapper">
     <div class="incidencias-header">
         <h2><?php esc_html_e('Mis Incidencias', 'flavor-chat-ia'); ?></h2>
-        <a href="<?php echo esc_url(add_query_arg('vista', 'reportar', get_permalink())); ?>" class="btn btn-primary">
+        <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/nueva/')); ?>" class="btn btn-primary">
             <span class="dashicons dashicons-plus-alt2"></span>
             <?php esc_html_e('Nueva incidencia', 'flavor-chat-ia'); ?>
         </a>
     </div>
 
     <!-- Resumen -->
+    <?php $base_url = home_url('/mi-portal/incidencias/'); ?>
     <div class="incidencias-stats">
-        <div class="stat-card">
+        <a href="<?php echo esc_url($base_url); ?>" class="stat-card" title="<?php esc_attr_e('Ver todas las incidencias', 'flavor-chat-ia'); ?>">
             <span class="stat-value"><?php echo esc_html($stats['total']); ?></span>
             <span class="stat-label"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></span>
-        </div>
-        <div class="stat-card warning">
+        </a>
+        <a href="<?php echo esc_url(add_query_arg('estado', 'pendiente', $base_url)); ?>" class="stat-card warning" title="<?php esc_attr_e('Ver incidencias pendientes', 'flavor-chat-ia'); ?>">
             <span class="stat-value"><?php echo esc_html($stats['pendientes']); ?></span>
             <span class="stat-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
-        </div>
-        <div class="stat-card info">
+        </a>
+        <a href="<?php echo esc_url(add_query_arg('estado', 'en_proceso', $base_url)); ?>" class="stat-card info" title="<?php esc_attr_e('Ver incidencias en proceso', 'flavor-chat-ia'); ?>">
             <span class="stat-value"><?php echo esc_html($stats['en_proceso']); ?></span>
             <span class="stat-label"><?php esc_html_e('En proceso', 'flavor-chat-ia'); ?></span>
-        </div>
-        <div class="stat-card success">
+        </a>
+        <a href="<?php echo esc_url(add_query_arg('estado', 'resuelta', $base_url)); ?>" class="stat-card success" title="<?php esc_attr_e('Ver incidencias resueltas', 'flavor-chat-ia'); ?>">
             <span class="stat-value"><?php echo esc_html($stats['resueltas']); ?></span>
             <span class="stat-label"><?php esc_html_e('Resueltas', 'flavor-chat-ia'); ?></span>
-        </div>
+        </a>
     </div>
 
     <!-- Listado -->
@@ -126,7 +141,7 @@ $estados_colors = [
                         </div>
                     </div>
                     <div class="incidencia-actions">
-                        <a href="<?php echo esc_url(add_query_arg('incidencia_id', $incidencia->id, get_permalink())); ?>" class="btn btn-sm btn-outline">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/' . $incidencia->id . '/')); ?>" class="btn btn-sm btn-outline">
                             <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -138,7 +153,7 @@ $estados_colors = [
             <span class="dashicons dashicons-flag"></span>
             <h3><?php esc_html_e('No has reportado incidencias', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Cuando reportes una incidencia, aparecerá aquí para que puedas seguir su estado.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(add_query_arg('vista', 'reportar', get_permalink())); ?>" class="btn btn-primary">
+            <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/nueva/')); ?>" class="btn btn-primary">
                 <?php esc_html_e('Reportar incidencia', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -152,12 +167,16 @@ $estados_colors = [
 .incidencias-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
 .incidencias-header h2 { margin: 0; font-size: 1.5rem; color: #1f2937; }
 .incidencias-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-.stat-card { background: white; border-radius: 10px; padding: 1.25rem; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+.stat-card { background: white; border-radius: 10px; padding: 1.25rem; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-decoration: none; display: block; cursor: pointer; transition: all 0.2s ease; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .stat-card .stat-value { display: block; font-size: 1.75rem; font-weight: 700; color: #1f2937; }
 .stat-card .stat-label { font-size: 0.8rem; color: #6b7280; }
 .stat-card.warning { border-top: 3px solid #f59e0b; }
+.stat-card.warning:hover { background: #fffbeb; }
 .stat-card.info { border-top: 3px solid #3b82f6; }
+.stat-card.info:hover { background: #eff6ff; }
 .stat-card.success { border-top: 3px solid #10b981; }
+.stat-card.success:hover { background: #ecfdf5; }
 .incidencias-lista { display: flex; flex-direction: column; gap: 0.75rem; }
 .incidencia-item { display: flex; align-items: stretch; background: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); overflow: hidden; }
 .incidencia-estado-indicator { width: 5px; flex-shrink: 0; }

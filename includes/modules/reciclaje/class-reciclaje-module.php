@@ -17,11 +17,16 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
     use Flavor_Module_Admin_UI_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_reciclaje_calendario_recogidas', [$this, 'ajax_calendario_recogidas']);
+        add_action('wp_ajax_nopriv_reciclaje_calendario_recogidas', [$this, 'ajax_calendario_recogidas']);
+
         $this->id = 'reciclaje';
         $this->name = 'Reciclaje Comunitario'; // Translation loaded on init
         $this->description = 'Sistema de gestión de reciclaje, puntos limpios y economía circular en la comunidad.'; // Translation loaded on init
@@ -71,9 +76,36 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_puntos_reciclaje',
+                'context' => 'side',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'register_post_types']);

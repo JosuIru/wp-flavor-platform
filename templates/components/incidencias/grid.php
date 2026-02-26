@@ -13,84 +13,84 @@ $descripcion_grid = $descripcion_grid ?? 'Consulta el estado de las incidencias 
 $columnas = $columnas ?? 3;
 $mostrar_filtros = $mostrar_filtros ?? true;
 
-// Datos de ejemplo de incidencias
-$incidencias_lista = [
-    [
-        'id' => 1,
-        'titulo' => 'Farola fundida en C/ Mayor',
-        'categoria' => 'Alumbrado',
-        'estado' => 'en_proceso',
-        'ubicacion' => 'C/ Mayor, 45',
-        'fecha' => 'Hace 2 dias',
-        'votos' => 12,
-        'comentarios' => 3,
-        'imagen' => 'https://via.placeholder.com/400x250?text=Alumbrado',
-        'porcentaje_resolucion' => 45,
-    ],
-    [
-        'id' => 2,
-        'titulo' => 'Bache grande en cruce',
-        'categoria' => 'Via Publica',
-        'estado' => 'pendiente',
-        'ubicacion' => 'Av. Libertad esquina C/ Sol',
-        'fecha' => 'Hace 3 dias',
-        'votos' => 28,
-        'comentarios' => 8,
-        'imagen' => 'https://via.placeholder.com/400x250?text=Vía+Pública',
-        'porcentaje_resolucion' => 15,
-    ],
-    [
-        'id' => 3,
-        'titulo' => 'Contenedor desbordado',
-        'categoria' => 'Limpieza',
-        'estado' => 'resuelto',
-        'ubicacion' => 'Plaza Central',
-        'fecha' => 'Hace 5 dias',
-        'votos' => 15,
-        'comentarios' => 2,
-        'imagen' => 'https://via.placeholder.com/400x250?text=Limpieza',
-        'porcentaje_resolucion' => 100,
-    ],
-    [
-        'id' => 4,
-        'titulo' => 'Grafiti en fachada historica',
-        'categoria' => 'Vandalismo',
-        'estado' => 'en_proceso',
-        'ubicacion' => 'C/ Antigua, 12',
-        'fecha' => 'Hace 1 semana',
-        'votos' => 34,
-        'comentarios' => 11,
-        'imagen' => 'https://via.placeholder.com/400x250?text=Vandalismo',
-        'porcentaje_resolucion' => 60,
-    ],
-    [
-        'id' => 5,
-        'titulo' => 'Banco roto en parque',
-        'categoria' => 'Mobiliario',
-        'estado' => 'pendiente',
-        'ubicacion' => 'Parque Municipal',
-        'fecha' => 'Hace 1 semana',
-        'votos' => 8,
-        'comentarios' => 1,
-        'imagen' => 'https://via.placeholder.com/400x250?text=Mobiliario',
-        'porcentaje_resolucion' => 20,
-    ],
-    [
-        'id' => 6,
-        'titulo' => 'Semaforo averiado',
-        'categoria' => 'Trafico',
-        'estado' => 'resuelto',
-        'ubicacion' => 'Av. Principal, 100',
-        'fecha' => 'Hace 2 semanas',
-        'votos' => 45,
-        'comentarios' => 15,
-        'imagen' => 'https://via.placeholder.com/400x250?text=Tráfico',
-        'porcentaje_resolucion' => 100,
-    ],
-];
+// Función auxiliar para generar SVG placeholder (inline para evitar dependencias)
+if (!function_exists('flavor_incidencias_placeholder_svg')) {
+    function flavor_incidencias_placeholder_svg($texto, $ancho = 400, $alto = 250) {
+        $texto = htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
+        $font_size = min($ancho / 10, 24);
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' . $ancho . '" height="' . $alto . '" viewBox="0 0 ' . $ancho . ' ' . $alto . '">';
+        $svg .= '<rect fill="#e2e8f0" width="' . $ancho . '" height="' . $alto . '"/>';
+        $svg .= '<text fill="#64748b" font-family="system-ui, sans-serif" font-size="' . $font_size . '" font-weight="500" ';
+        $svg .= 'x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">' . $texto . '</text>';
+        $svg .= '</svg>';
+        return 'data:image/svg+xml;base64,' . base64_encode($svg);
+    }
+}
 
-// Configuración de estados
+// Obtener incidencias reales de la base de datos
+global $wpdb;
+$tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+$incidencias_lista = [];
+
+// Verificar si existe la tabla
+$tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_incidencias)) === $tabla_incidencias;
+
+if ($tabla_existe) {
+    // Consultar incidencias públicas (no eliminadas)
+    $incidencias_db = $wpdb->get_results(
+        "SELECT * FROM $tabla_incidencias
+         WHERE estado != 'eliminada'
+         ORDER BY created_at DESC
+         LIMIT 12"
+    );
+
+    // Normalizar estados para el porcentaje de resolución
+    $porcentajes_estado = [
+        'pendiente' => 10,
+        'pending' => 10,
+        'en_proceso' => 50,
+        'in_progress' => 50,
+        'resuelta' => 100,
+        'resolved' => 100,
+        'cerrada' => 100,
+        'closed' => 100,
+    ];
+
+    foreach ($incidencias_db as $incidencia) {
+        // Obtener imagen o generar placeholder
+        $imagen = '';
+        if (!empty($incidencia->imagen)) {
+            $imagen = $incidencia->imagen;
+        } elseif (!empty($incidencia->tipo)) {
+            $imagen = flavor_incidencias_placeholder_svg(ucfirst($incidencia->tipo), 400, 250);
+        } else {
+            $imagen = flavor_incidencias_placeholder_svg('Incidencia', 400, 250);
+        }
+
+        // Calcular tiempo transcurrido
+        $fecha_legible = human_time_diff(strtotime($incidencia->created_at), current_time('timestamp'));
+
+        $incidencias_lista[] = [
+            'id' => $incidencia->id,
+            'titulo' => $incidencia->titulo,
+            'categoria' => ucfirst($incidencia->tipo ?? 'General'),
+            'estado' => $incidencia->estado,
+            'ubicacion' => $incidencia->ubicacion ?? '',
+            'fecha' => sprintf(__('Hace %s', 'flavor-chat-ia'), $fecha_legible),
+            'votos' => intval($incidencia->votos ?? 0),
+            'comentarios' => intval($incidencia->comentarios ?? 0),
+            'imagen' => $imagen,
+            'porcentaje_resolucion' => $porcentajes_estado[$incidencia->estado] ?? 25,
+        ];
+    }
+}
+
+// Si no hay incidencias, mostrar mensaje vacío
+$tiene_incidencias = !empty($incidencias_lista);
+
+// Configuración de estados (español e inglés)
 $estados_config = [
+    // Estados en español
     'pendiente' => [
         'texto' => 'Pendiente',
         'color' => 'yellow',
@@ -112,35 +112,87 @@ $estados_config = [
         'bg_clase' => 'bg-green-100',
         'text_clase' => 'text-green-700',
     ],
-];
-
-// Estadísticas generales
-$estadisticas_generales = [
-    [
-        'numero' => '156',
-        'etiqueta' => 'Total',
-        'color' => 'gray',
-        'icono' => '📊',
-    ],
-    [
-        'numero' => '42',
-        'etiqueta' => 'Pendientes',
-        'color' => 'yellow',
-        'icono' => '⏳',
-    ],
-    [
-        'numero' => '38',
-        'etiqueta' => 'En Proceso',
-        'color' => 'blue',
-        'icono' => '🔧',
-    ],
-    [
-        'numero' => '76',
-        'etiqueta' => 'Resueltas',
+    'resuelta' => [
+        'texto' => 'Resuelta',
         'color' => 'green',
         'icono' => '✅',
+        'bg_clase' => 'bg-green-100',
+        'text_clase' => 'text-green-700',
+    ],
+    'cerrada' => [
+        'texto' => 'Cerrada',
+        'color' => 'gray',
+        'icono' => '📋',
+        'bg_clase' => 'bg-gray-100',
+        'text_clase' => 'text-gray-700',
+    ],
+    // Estados en inglés (para datos existentes en BD)
+    'pending' => [
+        'texto' => 'Pendiente',
+        'color' => 'yellow',
+        'icono' => '⏳',
+        'bg_clase' => 'bg-yellow-100',
+        'text_clase' => 'text-yellow-700',
+    ],
+    'in_progress' => [
+        'texto' => 'En Proceso',
+        'color' => 'blue',
+        'icono' => '🔧',
+        'bg_clase' => 'bg-blue-100',
+        'text_clase' => 'text-blue-700',
+    ],
+    'resolved' => [
+        'texto' => 'Resuelta',
+        'color' => 'green',
+        'icono' => '✅',
+        'bg_clase' => 'bg-green-100',
+        'text_clase' => 'text-green-700',
+    ],
+    'closed' => [
+        'texto' => 'Cerrada',
+        'color' => 'gray',
+        'icono' => '📋',
+        'bg_clase' => 'bg-gray-100',
+        'text_clase' => 'text-gray-700',
     ],
 ];
+
+// Estadísticas generales desde la base de datos
+$estadisticas_generales = [];
+
+if ($tabla_existe) {
+    $total = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado != 'eliminada'");
+    $pendientes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado IN ('pendiente', 'pending')");
+    $en_proceso = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado IN ('en_proceso', 'in_progress')");
+    $resueltas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado IN ('resuelta', 'resolved', 'cerrada', 'closed')");
+
+    $estadisticas_generales = [
+        [
+            'numero' => $total ?: '0',
+            'etiqueta' => __('Total', 'flavor-chat-ia'),
+            'color' => 'gray',
+            'icono' => '📊',
+        ],
+        [
+            'numero' => $pendientes ?: '0',
+            'etiqueta' => __('Pendientes', 'flavor-chat-ia'),
+            'color' => 'yellow',
+            'icono' => '⏳',
+        ],
+        [
+            'numero' => $en_proceso ?: '0',
+            'etiqueta' => __('En Proceso', 'flavor-chat-ia'),
+            'color' => 'blue',
+            'icono' => '🔧',
+        ],
+        [
+            'numero' => $resueltas ?: '0',
+            'etiqueta' => __('Resueltas', 'flavor-chat-ia'),
+            'color' => 'green',
+            'icono' => '✅',
+        ],
+    ];
+}
 
 // Validar número de columnas
 $columnas_validas = [1, 2, 3, 4];
@@ -168,6 +220,7 @@ $grid_clase = match($columnas) {
         </div>
 
         <!-- Estadísticas -->
+        <?php if (!empty($estadisticas_generales)): ?>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             <?php foreach ($estadisticas_generales as $stat): ?>
                 <div class="flavor-stat-card bg-white rounded-xl p-5 shadow-md border-l-4 border-<?php echo esc_attr($stat['color']); ?>-500 text-center hover:shadow-lg transition-shadow">
@@ -177,6 +230,7 @@ $grid_clase = match($columnas) {
                 </div>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
 
         <!-- Filtros -->
         <?php if ($mostrar_filtros): ?>
@@ -197,6 +251,7 @@ $grid_clase = match($columnas) {
         <?php endif; ?>
 
         <!-- Grid de Incidencias -->
+        <?php if ($tiene_incidencias): ?>
         <div class="flavor-incidencias-grid grid <?php echo esc_attr($grid_clase); ?> gap-6 mb-10">
             <?php foreach ($incidencias_lista as $incidencia):
                 $estado_info = $estados_config[$incidencia['estado']] ?? $estados_config['pendiente'];
@@ -204,7 +259,12 @@ $grid_clase = match($columnas) {
                 <article class="flavor-incidencia-card group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-red-300 flex flex-col h-full">
                     <!-- Imagen -->
                     <div class="flavor-imagen-contenedor relative overflow-hidden h-48 bg-gradient-to-br from-gray-200 to-gray-300">
-                        <img src="<?php echo esc_url($incidencia['imagen']); ?>" alt="<?php echo esc_attr($incidencia['titulo']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        <?php
+                        // Data URIs (svg base64) no pueden usar esc_url(), usar esc_attr()
+                        $imagen_src = $incidencia['imagen'];
+                        $imagen_escaped = (strpos($imagen_src, 'data:') === 0) ? esc_attr($imagen_src) : esc_url($imagen_src);
+                        ?>
+                        <img src="<?php echo $imagen_escaped; ?>" alt="<?php echo esc_attr($incidencia['titulo']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
 
                         <!-- Badge de estado -->
                         <div class="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold <?php echo esc_attr($estado_info['bg_clase']); ?> <?php echo esc_attr($estado_info['text_clase']); ?> shadow-md">
@@ -275,6 +335,14 @@ $grid_clase = match($columnas) {
                 </article>
             <?php endforeach; ?>
         </div>
+        <?php else: ?>
+        <!-- Estado vacío -->
+        <div class="text-center py-16 bg-white rounded-2xl shadow-md mb-10">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2"><?php echo esc_html__('No hay incidencias reportadas', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-600 mb-6"><?php echo esc_html__('Sé el primero en reportar una incidencia en tu zona.', 'flavor-chat-ia'); ?></p>
+        </div>
+        <?php endif; ?>
 
         <!-- Call to Action -->
         <div class="text-center space-y-6">

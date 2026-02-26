@@ -1,0 +1,3 @@
+host,source_page,element,label,href,resolved_url,http_status,result,note
+http://localhost:10028,http://localhost:10028/mi-portal/,PAGE,,,,ERR,ERROR,"HTTPConnectionPool(host='localhost', port=10028): Max retries exceeded with url: /mi-portal/ (Caused by NewConnectionError('<urllib3.connect"
+http://localhost:10003,http://localhost:10003/mi-portal/,PAGE,,,,ERR,ERROR,"HTTPConnectionPool(host='localhost', port=10003): Max retries exceeded with url: /mi-portal/ (Caused by NewConnectionError('<urllib3.connect"

@@ -18,6 +18,7 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Constructor
@@ -61,9 +62,35 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type'      => 'post',
+                'post_type' => 'marketplace_item',
+                'context'   => 'side',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en el panel de administración unificado
         $this->registrar_en_panel_unificado();
@@ -88,14 +115,135 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         // AJAX para frontend
         add_action('wp_ajax_marketplace_crear_anuncio', [$this, 'ajax_crear_anuncio']);
         add_action('wp_ajax_nopriv_marketplace_crear_anuncio', [$this, 'ajax_crear_anuncio']);
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-marketplace-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Marketplace_Frontend_Controller::get_instance();
+        }
     }
 
     /**
      * Registra shortcodes del módulo
+     *
+     * Nota: Los shortcodes principales (marketplace_catalogo, marketplace_listado,
+     * marketplace_mis_anuncios, etc.) se registran en el Frontend Controller.
+     * Aquí solo se registra marketplace_formulario con implementación local.
      */
     public function register_shortcodes() {
-        add_shortcode('marketplace_listado', [$this, 'shortcode_listado']);
+        // marketplace_listado se registra en el Frontend Controller
         add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario']);
+    }
+
+    /**
+     * Shortcode para formulario de publicar anuncio
+     */
+    public function shortcode_formulario($atts) {
+        if (!is_user_logged_in()) {
+            return '<div class="marketplace-login-required"><p>' .
+                   esc_html__('Debes iniciar sesión para publicar un anuncio.', 'flavor-chat-ia') .
+                   '</p><a href="' . esc_url(wp_login_url(get_permalink())) . '" class="btn-login">' .
+                   esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
+        }
+
+        ob_start();
+        $this->render_formulario_anuncio();
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el formulario de publicar anuncio
+     */
+    private function render_formulario_anuncio() {
+        $categorias = get_terms([
+            'taxonomy' => 'marketplace_categoria',
+            'hide_empty' => false,
+        ]);
+
+        $tipos = [
+            'regalo' => __('Regalo', 'flavor-chat-ia'),
+            'venta' => __('Venta', 'flavor-chat-ia'),
+            'cambio' => __('Cambio', 'flavor-chat-ia'),
+            'alquiler' => __('Alquiler', 'flavor-chat-ia'),
+        ];
+        ?>
+        <div class="marketplace-formulario">
+            <h2><?php esc_html_e('Publicar Anuncio', 'flavor-chat-ia'); ?></h2>
+
+            <form id="marketplace-form-anuncio" class="marketplace-form">
+                <?php wp_nonce_field('marketplace_crear_anuncio', 'marketplace_nonce'); ?>
+
+                <div class="form-group">
+                    <label for="anuncio-titulo"><?php esc_html_e('Título', 'flavor-chat-ia'); ?> *</label>
+                    <input type="text" id="anuncio-titulo" name="titulo" required maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="anuncio-descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?> *</label>
+                    <textarea id="anuncio-descripcion" name="descripcion" rows="5" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="anuncio-tipo"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?> *</label>
+                        <select id="anuncio-tipo" name="tipo" required>
+                            <option value=""><?php esc_html_e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($tipos as $value => $label): ?>
+                                <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="anuncio-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <select id="anuncio-categoria" name="categoria">
+                            <option value=""><?php esc_html_e('Sin categoría', 'flavor-chat-ia'); ?></option>
+                            <?php if (!is_wp_error($categorias)): ?>
+                                <?php foreach ($categorias as $cat): ?>
+                                    <option value="<?php echo esc_attr($cat->term_id); ?>"><?php echo esc_html($cat->name); ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="grupo-precio">
+                    <label for="anuncio-precio"><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></label>
+                    <input type="number" id="anuncio-precio" name="precio" min="0" step="0.01" placeholder="0.00">
+                    <small><?php esc_html_e('Dejar en 0 para regalo o negociable', 'flavor-chat-ia'); ?></small>
+                </div>
+
+                <div class="form-group">
+                    <label><?php esc_html_e('Imágenes', 'flavor-chat-ia'); ?></label>
+                    <div class="marketplace-upload-area" id="upload-area">
+                        <input type="file" id="anuncio-imagenes" name="imagenes[]" multiple accept="image/*" style="display:none;">
+                        <button type="button" class="btn-upload" onclick="document.getElementById('anuncio-imagenes').click();">
+                            <span class="dashicons dashicons-upload"></span>
+                            <?php esc_html_e('Subir imágenes', 'flavor-chat-ia'); ?>
+                        </button>
+                        <div id="preview-imagenes" class="preview-grid"></div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary btn-publicar">
+                        <?php esc_html_e('Publicar Anuncio', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <?php
     }
 
     /**
@@ -808,36 +956,6 @@ KNOWLEDGE;
     }
 
     /**
-     * Shortcode para el formulario de crear anuncio
-     */
-    public function shortcode_formulario() {
-        if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para publicar un anuncio.', 'flavor-chat-ia') . '</p>';
-        }
-
-        ob_start();
-        // Aquí iría el formulario HTML
-        echo '<form id="marketplace-form" class="marketplace-form">';
-        echo '<!-- Formulario de publicación -->';
-        echo '</form>';
-        return ob_get_clean();
-    }
-
-    /**
-     * Handler AJAX para crear anuncio desde frontend
-     */
-    public function ajax_crear_anuncio() {
-        check_ajax_referer('marketplace_crear', 'nonce');
-
-        if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
-        }
-
-        // Lógica para crear anuncio...
-        wp_send_json_success(['mensaje' => __('Anuncio creado correctamente.', 'flavor-chat-ia')]);
-    }
-
-    /**
      * Componentes web del módulo
      */
     public function get_web_components() {
@@ -1050,5 +1168,122 @@ KNOWLEDGE;
                 'parent' => 'marketplace',
             ],
         ];
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Dashboard - página oculta
+        add_submenu_page(
+            null,
+            __('Dashboard Marketplace', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'marketplace',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Productos - página oculta
+        add_submenu_page(
+            null,
+            __('Productos Marketplace', 'flavor-chat-ia'),
+            __('Productos', 'flavor-chat-ia'),
+            $capability,
+            'marketplace-productos',
+            [$this, 'render_pagina_productos']
+        );
+
+        // Ventas - página oculta
+        add_submenu_page(
+            null,
+            __('Ventas Marketplace', 'flavor-chat-ia'),
+            __('Ventas', 'flavor-chat-ia'),
+            $capability,
+            'marketplace-ventas',
+            [$this, 'render_pagina_ventas']
+        );
+
+        // Vendedores - página oculta
+        add_submenu_page(
+            null,
+            __('Vendedores Marketplace', 'flavor-chat-ia'),
+            __('Vendedores', 'flavor-chat-ia'),
+            $capability,
+            'marketplace-vendedores',
+            [$this, 'render_pagina_vendedores']
+        );
+
+        // Categorías - página oculta
+        add_submenu_page(
+            null,
+            __('Categorías Marketplace', 'flavor-chat-ia'),
+            __('Categorías', 'flavor-chat-ia'),
+            $capability,
+            'marketplace-categorias',
+            [$this, 'render_pagina_categorias']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Marketplace', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de productos
+     */
+    public function render_pagina_productos() {
+        $views_path = dirname(__FILE__) . '/views/productos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Productos', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de ventas
+     */
+    public function render_pagina_ventas() {
+        $views_path = dirname(__FILE__) . '/views/ventas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Ventas', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de vendedores
+     */
+    public function render_pagina_vendedores() {
+        $views_path = dirname(__FILE__) . '/views/vendedores.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Vendedores', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de categorías
+     */
+    public function render_pagina_categorias() {
+        $views_path = dirname(__FILE__) . '/views/categorias.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Categorías', 'flavor-chat-ia') . '</h1></div>';
+        }
     }
 }

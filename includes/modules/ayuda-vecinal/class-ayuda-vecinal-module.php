@@ -16,6 +16,7 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Constructor
@@ -26,6 +27,59 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Red de ayuda mutua entre vecinos - ofrece y solicita ayuda en tu comunidad.'; // Translation loaded on init
 
         parent::__construct();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
+        // Admin styles
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+
+        // AJAX handlers para gestión de voluntarios
+        add_action('wp_ajax_ayuda_vecinal_listar_voluntarios', [$this, 'ajax_listar_voluntarios']);
+        add_action('wp_ajax_ayuda_vecinal_listar_usuarios', [$this, 'ajax_listar_usuarios']);
+        add_action('wp_ajax_ayuda_vecinal_guardar_voluntario', [$this, 'ajax_guardar_voluntario']);
+
+        // AJAX handler para dashboard
+        add_action('wp_ajax_ayuda_vecinal_get_dashboard_data', [$this, 'ajax_get_dashboard_data']);
+
+        // AJAX handlers para solicitudes
+        add_action('wp_ajax_ayuda_vecinal_listar_solicitudes', [$this, 'ajax_listar_solicitudes']);
+        add_action('wp_ajax_ayuda_vecinal_guardar_solicitud', [$this, 'ajax_guardar_solicitud']);
+    }
+
+    /**
+     * Encolar assets del admin
+     *
+     * @param string $hook Hook de la página actual
+     */
+    public function enqueue_admin_assets($hook) {
+        // Solo cargar en páginas de ayuda-vecinal
+        $paginas_ayuda = ['toplevel_page_ayuda-vecinal', 'ayuda-vecinal_page_ayuda-solicitudes', 'ayuda-vecinal_page_ayuda-voluntarios', 'ayuda-vecinal_page_ayuda-matches', 'ayuda-vecinal_page_ayuda-estadisticas'];
+
+        if (!in_array($hook, $paginas_ayuda)) {
+            return;
+        }
+
+        $assets_url = FLAVOR_CHAT_IA_URL . 'includes/modules/ayuda-vecinal/assets/';
+        $version = FLAVOR_CHAT_IA_VERSION;
+
+        // CSS del admin
+        wp_enqueue_style(
+            'ayuda-vecinal-admin',
+            $assets_url . 'css/ayuda-vecinal.css',
+            [],
+            $version
+        );
+
+        // Estilos comunes del plugin si existen
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'admin/css/admin-common.css')) {
+            wp_enqueue_style(
+                'flavor-admin-common',
+                FLAVOR_CHAT_IA_URL . 'admin/css/admin-common.css',
+                [],
+                $version
+            );
+        }
     }
 
     /**
@@ -82,15 +136,56 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_ayuda_vecinal',
+                'context' => 'side',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
+
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-ayuda-vecinal-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Ayuda_Vecinal_Frontend_Controller::get_instance();
+        }
     }
 
     /**
@@ -1961,5 +2056,494 @@ KNOWLEDGE;
                 'parent' => 'ayuda-vecinal',
             ],
         ];
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     * Las páginas son accesibles vía URL directa pero no aparecen en el menú
+     * Se acceden desde el Dashboard Unificado
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (null como parent = no aparecen en menú)
+        add_submenu_page(null, __('Ayuda Vecinal - Dashboard', 'flavor-chat-ia'), __('Dashboard', 'flavor-chat-ia'), $capability, 'ayuda-vecinal', [$this, 'render_pagina_dashboard']);
+        add_submenu_page(null, __('Ayuda Vecinal - Solicitudes', 'flavor-chat-ia'), __('Solicitudes', 'flavor-chat-ia'), $capability, 'ayuda-solicitudes', [$this, 'render_pagina_solicitudes']);
+        add_submenu_page(null, __('Ayuda Vecinal - Voluntarios', 'flavor-chat-ia'), __('Voluntarios', 'flavor-chat-ia'), $capability, 'ayuda-voluntarios', [$this, 'render_pagina_voluntarios']);
+        add_submenu_page(null, __('Ayuda Vecinal - Matches', 'flavor-chat-ia'), __('Matches', 'flavor-chat-ia'), $capability, 'ayuda-matches', [$this, 'render_pagina_matches']);
+        add_submenu_page(null, __('Ayuda Vecinal - Estadísticas', 'flavor-chat-ia'), __('Estadísticas', 'flavor-chat-ia'), $capability, 'ayuda-estadisticas', [$this, 'render_pagina_estadisticas']);
+    }
+
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Dashboard Ayuda Vecinal', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_solicitudes() {
+        $views_path = dirname(__FILE__) . '/views/solicitudes.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Solicitudes', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_voluntarios() {
+        $views_path = dirname(__FILE__) . '/views/voluntarios.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Voluntarios', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_matches() {
+        $views_path = dirname(__FILE__) . '/views/matches.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Matches de Ayuda', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_estadisticas() {
+        $views_path = dirname(__FILE__) . '/views/estadisticas.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Estadísticas de Ayuda', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    /**
+     * AJAX: Obtener datos del dashboard
+     */
+    public function ajax_get_dashboard_data() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_ayuda_respuestas';
+        $tabla_valoraciones = $wpdb->prefix . 'flavor_ayuda_valoraciones';
+
+        // KPIs
+        $solicitudes_activas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado IN ('pendiente', 'en_proceso')") ?: 0;
+        $voluntarios_activos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_ofertas WHERE activa = 1") ?: 0;
+        $ayudas_completadas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_respuestas WHERE estado = 'aceptada'") ?: 0;
+        $horas_voluntariado = $wpdb->get_var("SELECT COALESCE(SUM(duracion_horas), 0) FROM $tabla_solicitudes WHERE estado = 'completada'") ?: 0;
+
+        // Solicitudes por categoría
+        $categorias_raw = $wpdb->get_results("SELECT categoria, COUNT(*) as total FROM $tabla_solicitudes GROUP BY categoria ORDER BY total DESC LIMIT 6");
+        $categorias = [
+            'labels' => [],
+            'values' => [],
+        ];
+        if ($categorias_raw) {
+            foreach ($categorias_raw as $cat) {
+                $categorias['labels'][] = ucfirst($cat->categoria ?: __('Sin categoría', 'flavor-chat-ia'));
+                $categorias['values'][] = (int) $cat->total;
+            }
+        } else {
+            // Datos de ejemplo
+            $categorias = [
+                'labels' => [__('Compras', 'flavor-chat-ia'), __('Transporte', 'flavor-chat-ia'), __('Compañía', 'flavor-chat-ia'), __('Tecnología', 'flavor-chat-ia'), __('Trámites', 'flavor-chat-ia')],
+                'values' => [15, 12, 10, 8, 5],
+            ];
+        }
+
+        // Tendencia últimos 6 meses
+        $tendencia = [
+            'labels' => [],
+            'solicitudes' => [],
+            'ayudas' => [],
+        ];
+        for ($i = 5; $i >= 0; $i--) {
+            $mes = date('Y-m', strtotime("-$i months"));
+            $mes_label = date_i18n('M', strtotime("-$i months"));
+            $tendencia['labels'][] = $mes_label;
+
+            $count_sol = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_solicitudes WHERE DATE_FORMAT(fecha_solicitud, '%%Y-%%m') = %s",
+                $mes
+            )) ?: 0;
+            $tendencia['solicitudes'][] = (int) $count_sol;
+
+            $count_ayudas = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_respuestas WHERE estado = 'aceptada' AND DATE_FORMAT(fecha_respuesta, '%%Y-%%m') = %s",
+                $mes
+            )) ?: 0;
+            $tendencia['ayudas'][] = (int) $count_ayudas;
+        }
+
+        // Si no hay datos, usar ejemplo
+        if (array_sum($tendencia['solicitudes']) === 0) {
+            $tendencia = [
+                'labels' => ['Sep', 'Oct', 'Nov', 'Dic', 'Ene', 'Feb'],
+                'solicitudes' => [12, 19, 15, 22, 18, 25],
+                'ayudas' => [10, 15, 12, 18, 14, 20],
+            ];
+        }
+
+        // Solicitudes urgentes
+        $urgentes = $wpdb->get_results(
+            "SELECT s.*, u.display_name as solicitante_nombre
+             FROM $tabla_solicitudes s
+             LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
+             WHERE s.estado = 'pendiente' AND s.urgencia = 'alta'
+             ORDER BY s.fecha_solicitud DESC
+             LIMIT 5"
+        ) ?: [];
+
+        $urgentes_data = [];
+        foreach ($urgentes as $u) {
+            $urgentes_data[] = [
+                'id' => $u->id,
+                'titulo' => $u->titulo,
+                'categoria' => $u->categoria,
+                'solicitante' => $u->solicitante_nombre ?: __('Anónimo', 'flavor-chat-ia'),
+                'fecha' => human_time_diff(strtotime($u->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+            ];
+        }
+
+        // Voluntarios destacados
+        $destacados = $wpdb->get_results(
+            "SELECT o.*, u.display_name as nombre,
+                    (SELECT AVG(puntuacion) FROM $tabla_valoraciones WHERE valorado_id = o.usuario_id) as valoracion,
+                    (SELECT COUNT(*) FROM $tabla_respuestas WHERE ayudante_id = o.usuario_id AND estado = 'aceptada') as ayudas
+             FROM $tabla_ofertas o
+             LEFT JOIN {$wpdb->users} u ON o.usuario_id = u.ID
+             WHERE o.activa = 1
+             ORDER BY ayudas DESC
+             LIMIT 5"
+        ) ?: [];
+
+        $destacados_data = [];
+        foreach ($destacados as $d) {
+            $destacados_data[] = [
+                'id' => $d->id,
+                'nombre' => $d->nombre ?: __('Voluntario', 'flavor-chat-ia'),
+                'categoria' => $d->categoria,
+                'valoracion' => $d->valoracion ? round($d->valoracion, 1) : null,
+                'ayudas' => (int) $d->ayudas,
+            ];
+        }
+
+        // Actividad reciente
+        $actividad = $wpdb->get_results(
+            "SELECT 'solicitud' as tipo, s.titulo, s.fecha_solicitud as fecha, u.display_name as usuario
+             FROM $tabla_solicitudes s
+             LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
+             ORDER BY s.fecha_solicitud DESC
+             LIMIT 10"
+        ) ?: [];
+
+        $actividad_data = [];
+        foreach ($actividad as $a) {
+            $actividad_data[] = [
+                'tipo' => $a->tipo,
+                'titulo' => $a->titulo,
+                'usuario' => $a->usuario ?: __('Usuario', 'flavor-chat-ia'),
+                'fecha' => human_time_diff(strtotime($a->fecha), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+            ];
+        }
+
+        wp_send_json_success([
+            'kpis' => [
+                'solicitudes_activas' => (int) $solicitudes_activas,
+                'voluntarios_activos' => (int) $voluntarios_activos,
+                'ayudas_completadas' => (int) $ayudas_completadas,
+                'horas_voluntariado' => (int) $horas_voluntariado,
+            ],
+            'categorias' => $categorias,
+            'tendencia' => $tendencia,
+            'urgentes' => $urgentes_data,
+            'destacados' => $destacados_data,
+            'actividad' => $actividad_data,
+        ]);
+    }
+
+    /**
+     * AJAX: Listar voluntarios (ofertas de ayuda)
+     */
+    public function ajax_listar_voluntarios() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+        $tabla_valoraciones = $wpdb->prefix . 'flavor_ayuda_valoraciones';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_ayuda_respuestas';
+
+        // Filtros
+        $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+        $disponibilidad = isset($_POST['disponibilidad']) ? sanitize_text_field($_POST['disponibilidad']) : '';
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
+
+        $where = ['1=1'];
+        $prepare_values = [];
+
+        if (!empty($search)) {
+            $where[] = "(u.display_name LIKE %s OR o.habilidades LIKE %s)";
+            $prepare_values[] = '%' . $wpdb->esc_like($search) . '%';
+            $prepare_values[] = '%' . $wpdb->esc_like($search) . '%';
+        }
+
+        if (!empty($categoria)) {
+            $where[] = "o.categoria = %s";
+            $prepare_values[] = $categoria;
+        }
+
+        // Estado basado en disponibilidad
+        if ($disponibilidad === 'disponible') {
+            $where[] = "o.activa = 1";
+        } elseif ($disponibilidad === 'inactivo') {
+            $where[] = "o.activa = 0";
+        }
+
+        $sql = "SELECT o.*, u.display_name as nombre, u.user_email as email,
+                       (SELECT AVG(puntuacion) FROM $tabla_valoraciones WHERE valorado_id = o.usuario_id) as valoracion,
+                       (SELECT COUNT(*) FROM $tabla_respuestas WHERE ayudante_id = o.usuario_id AND estado = 'aceptada') as ayudas_completadas,
+                       (SELECT COUNT(*) FROM $tabla_respuestas WHERE ayudante_id = o.usuario_id AND estado = 'pendiente') as ayudas_activas
+                FROM $tabla_ofertas o
+                LEFT JOIN {$wpdb->users} u ON o.usuario_id = u.ID
+                WHERE " . implode(' AND ', $where) . "
+                ORDER BY o.fecha_creacion DESC";
+
+        if (!empty($prepare_values)) {
+            $voluntarios = $wpdb->get_results($wpdb->prepare($sql, ...$prepare_values));
+        } else {
+            $voluntarios = $wpdb->get_results($sql);
+        }
+
+        // Formatear datos
+        $resultado = [];
+        foreach ($voluntarios as $vol) {
+            $nombre = $vol->nombre ?: __('Usuario', 'flavor-chat-ia');
+            $iniciales = '';
+            $palabras = explode(' ', $nombre);
+            foreach (array_slice($palabras, 0, 2) as $palabra) {
+                $iniciales .= mb_substr($palabra, 0, 1);
+            }
+
+            $estado = $vol->activa ? 'disponible' : 'inactivo';
+
+            $resultado[] = [
+                'id' => $vol->id,
+                'usuario_id' => $vol->usuario_id,
+                'nombre' => $nombre,
+                'iniciales' => strtoupper($iniciales),
+                'email' => $vol->email,
+                'categorias' => $vol->categoria ? json_encode([$vol->categoria]) : '[]',
+                'habilidades' => $vol->habilidades,
+                'estado' => $estado,
+                'valoracion' => $vol->valoracion ? round($vol->valoracion, 1) : null,
+                'ayudas_completadas' => (int) $vol->ayudas_completadas,
+                'ayudas_activas' => (int) $vol->ayudas_activas,
+            ];
+        }
+
+        wp_send_json_success($resultado);
+    }
+
+    /**
+     * AJAX: Listar usuarios disponibles para ser voluntarios
+     */
+    public function ajax_listar_usuarios() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $usuarios = get_users([
+            'orderby' => 'display_name',
+            'order' => 'ASC',
+            'number' => 100,
+        ]);
+
+        $resultado = [];
+        foreach ($usuarios as $usuario) {
+            $resultado[] = [
+                'id' => $usuario->ID,
+                'nombre' => $usuario->display_name ?: $usuario->user_login,
+                'email' => $usuario->user_email,
+            ];
+        }
+
+        wp_send_json_success($resultado);
+    }
+
+    /**
+     * AJAX: Guardar voluntario (crear/actualizar oferta)
+     */
+    public function ajax_guardar_voluntario() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+
+        $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        $usuario_id = isset($_POST['usuario_id']) ? intval($_POST['usuario_id']) : 0;
+        $categorias = isset($_POST['categorias']) ? (array) $_POST['categorias'] : [];
+        $habilidades = isset($_POST['habilidades']) ? sanitize_textarea_field($_POST['habilidades']) : '';
+        $dias_disponibles = isset($_POST['dias_disponibles']) ? (array) $_POST['dias_disponibles'] : [];
+        $max_ayudas = isset($_POST['max_ayudas_simultaneas']) ? intval($_POST['max_ayudas_simultaneas']) : 3;
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : 'disponible';
+
+        if (empty($usuario_id)) {
+            wp_send_json_error(['message' => __('Usuario requerido', 'flavor-chat-ia')]);
+        }
+
+        $categoria = !empty($categorias) ? sanitize_text_field($categorias[0]) : '';
+        $disponibilidad = json_encode([
+            'dias' => array_map('intval', $dias_disponibles),
+            'max_ayudas' => $max_ayudas,
+        ]);
+
+        $datos = [
+            'usuario_id' => $usuario_id,
+            'categoria' => $categoria,
+            'titulo' => __('Oferta de ayuda', 'flavor-chat-ia'),
+            'descripcion' => $habilidades,
+            'habilidades' => $habilidades,
+            'disponibilidad' => $disponibilidad,
+            'activa' => $estado === 'disponible' ? 1 : 0,
+        ];
+
+        if ($id > 0) {
+            // Actualizar
+            $wpdb->update($tabla_ofertas, $datos, ['id' => $id]);
+            $oferta_id = $id;
+        } else {
+            // Crear
+            $wpdb->insert($tabla_ofertas, $datos);
+            $oferta_id = $wpdb->insert_id;
+        }
+
+        if ($oferta_id) {
+            wp_send_json_success([
+                'id' => $oferta_id,
+                'message' => __('Voluntario guardado correctamente', 'flavor-chat-ia'),
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Error al guardar', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Listar solicitudes de ayuda
+     */
+    public function ajax_listar_solicitudes() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+
+        // Filtros
+        $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : '';
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
+
+        $where = ['1=1'];
+        $prepare_values = [];
+
+        if (!empty($search)) {
+            $where[] = "(s.titulo LIKE %s OR s.descripcion LIKE %s)";
+            $prepare_values[] = '%' . $wpdb->esc_like($search) . '%';
+            $prepare_values[] = '%' . $wpdb->esc_like($search) . '%';
+        }
+
+        if (!empty($estado)) {
+            $where[] = "s.estado = %s";
+            $prepare_values[] = $estado;
+        }
+
+        if (!empty($categoria)) {
+            $where[] = "s.categoria = %s";
+            $prepare_values[] = $categoria;
+        }
+
+        $sql = "SELECT s.*, u.display_name as solicitante_nombre
+                FROM $tabla_solicitudes s
+                LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
+                WHERE " . implode(' AND ', $where) . "
+                ORDER BY s.fecha_solicitud DESC
+                LIMIT 100";
+
+        if (!empty($prepare_values)) {
+            $solicitudes = $wpdb->get_results($wpdb->prepare($sql, ...$prepare_values));
+        } else {
+            $solicitudes = $wpdb->get_results($sql);
+        }
+
+        $resultado = [];
+        foreach ($solicitudes as $sol) {
+            $resultado[] = [
+                'id' => $sol->id,
+                'titulo' => $sol->titulo,
+                'descripcion' => $sol->descripcion,
+                'categoria' => $sol->categoria,
+                'estado' => $sol->estado,
+                'urgencia' => $sol->urgencia ?? 'normal',
+                'solicitante_id' => $sol->usuario_id,
+                'solicitante_nombre' => $sol->solicitante_nombre ?: __('Anónimo', 'flavor-chat-ia'),
+                'fecha_solicitud' => $sol->fecha_solicitud,
+                'fecha_necesaria' => $sol->fecha_necesaria ?? '',
+                'fecha_formateada' => human_time_diff(strtotime($sol->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+            ];
+        }
+
+        wp_send_json_success($resultado);
+    }
+
+    /**
+     * AJAX: Guardar solicitud de ayuda
+     */
+    public function ajax_guardar_solicitud() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+
+        $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        $titulo = isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '';
+        $descripcion = isset($_POST['descripcion']) ? sanitize_textarea_field($_POST['descripcion']) : '';
+        $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : '';
+        $fecha_necesaria = isset($_POST['fecha_necesaria']) ? sanitize_text_field($_POST['fecha_necesaria']) : '';
+        $solicitante_id = isset($_POST['solicitante_id']) ? intval($_POST['solicitante_id']) : 0;
+        $urgente = isset($_POST['urgente']) && $_POST['urgente'] === '1';
+        $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : 'pendiente';
+        $voluntario_id = isset($_POST['voluntario_id']) ? intval($_POST['voluntario_id']) : 0;
+
+        if (empty($titulo) || empty($descripcion) || empty($categoria)) {
+            wp_send_json_error(['message' => __('Campos requeridos incompletos', 'flavor-chat-ia')]);
+        }
+
+        $datos = [
+            'titulo' => $titulo,
+            'descripcion' => $descripcion,
+            'categoria' => $categoria,
+            'fecha_necesaria' => $fecha_necesaria ?: null,
+            'usuario_id' => $solicitante_id,
+            'urgencia' => $urgente ? 'alta' : 'normal',
+            'estado' => $estado,
+        ];
+
+        if ($id > 0) {
+            // Actualizar
+            $wpdb->update($tabla_solicitudes, $datos, ['id' => $id]);
+            $solicitud_id = $id;
+        } else {
+            // Crear
+            $datos['fecha_solicitud'] = current_time('mysql');
+            $wpdb->insert($tabla_solicitudes, $datos);
+            $solicitud_id = $wpdb->insert_id;
+        }
+
+        if ($solicitud_id) {
+            wp_send_json_success([
+                'id' => $solicitud_id,
+                'message' => __('Solicitud guardada correctamente', 'flavor-chat-ia'),
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Error al guardar', 'flavor-chat-ia')]);
+        }
     }
 }

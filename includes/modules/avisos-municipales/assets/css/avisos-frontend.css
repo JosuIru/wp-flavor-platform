@@ -1,0 +1,956 @@
+/**
+ * CSS Frontend para Avisos Municipales
+ * @package FlavorChatIA
+ */
+
+/* Variables */
+:root {
+    --aviso-urgente: #dc2626;
+    --aviso-alta: #f97316;
+    --aviso-media: #eab308;
+    --aviso-baja: #22c55e;
+    --aviso-bg: #fef2f2;
+}
+
+/* ==========================================================================
+   Dashboard
+   ========================================================================== */
+.flavor-avisos-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* KPIs */
+.flavor-kpi-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.flavor-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 992px) {
+    .flavor-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .flavor-grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.flavor-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-kpi-icon.rojo { background: #fee2e2; color: #dc2626; }
+.flavor-kpi-icon.azul { background: #dbeafe; color: #3b82f6; }
+.flavor-kpi-icon.verde { background: #dcfce7; color: #22c55e; }
+.flavor-kpi-icon.morado { background: #ede9fe; color: #8b5cf6; }
+
+.flavor-kpi-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.flavor-kpi-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-kpi-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.flavor-kpi-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Paneles
+   ========================================================================== */
+.flavor-panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.flavor-panel-urgente {
+    border-color: var(--aviso-urgente);
+}
+
+.flavor-panel-urgente .flavor-panel-header {
+    background: #fef2f2;
+}
+
+.flavor-panel-urgente .flavor-panel-header h3 {
+    color: var(--aviso-urgente);
+}
+
+.flavor-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.flavor-panel-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flavor-panel-body {
+    padding: 1.25rem;
+}
+
+.flavor-link {
+    font-size: 0.875rem;
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.flavor-link:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Tarjetas de Aviso
+   ========================================================================== */
+.flavor-avisos-urgentes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-aviso-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-aviso-card.urgente {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.flavor-aviso-prioridad {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+}
+
+.flavor-aviso-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.flavor-aviso-content h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: #111827;
+}
+
+.flavor-aviso-content p {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.flavor-aviso-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.flavor-aviso-fecha {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-aviso-fecha .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-aviso-categoria {
+    padding: 0.125rem 0.5rem;
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+.flavor-aviso-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* ==========================================================================
+   Lista de Avisos (rows)
+   ========================================================================== */
+.flavor-avisos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.flavor-aviso-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.flavor-aviso-row:hover {
+    background: #f3f4f6;
+}
+
+.flavor-aviso-row.no-leido {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-aviso-indicator {
+    width: 4px;
+    height: 40px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.flavor-aviso-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.flavor-aviso-titulo {
+    font-weight: 600;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flavor-badge-nuevo {
+    display: inline-flex;
+    padding: 0.125rem 0.375rem;
+    background: #3b82f6;
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 600;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.flavor-aviso-resumen {
+    font-size: 0.875rem;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flavor-aviso-fecha-col {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   Grid de Avisos
+   ========================================================================== */
+.flavor-avisos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-aviso-card-full {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.flavor-aviso-card-full:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-aviso-card-full.no-leido {
+    border-color: #3b82f6;
+}
+
+.flavor-aviso-header {
+    padding: 1rem 1.25rem;
+    border-left: 4px solid;
+    background: #f9fafb;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.flavor-aviso-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.flavor-aviso-card-full .flavor-aviso-titulo {
+    padding: 1rem 1.25rem 0;
+    margin: 0;
+    font-size: 1.125rem;
+}
+
+.flavor-aviso-extracto {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.flavor-aviso-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.flavor-aviso-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.flavor-aviso-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-aviso-stats .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* ==========================================================================
+   Detalle de Aviso
+   ========================================================================== */
+.flavor-aviso-detalle {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.flavor-aviso-detalle-header {
+    padding: 2rem;
+    border-left: 4px solid;
+    background: #f9fafb;
+}
+
+.flavor-aviso-detalle-header h1 {
+    margin: 1rem 0 0.75rem;
+    font-size: 1.75rem;
+    color: #111827;
+}
+
+.flavor-aviso-meta-row {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.flavor-aviso-meta-row span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-aviso-detalle-body {
+    padding: 2rem;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #374151;
+}
+
+.flavor-aviso-detalle-body p {
+    margin: 0 0 1rem;
+}
+
+.flavor-aviso-detalle-body ul,
+.flavor-aviso-detalle-body ol {
+    margin: 0 0 1rem;
+    padding-left: 1.5rem;
+}
+
+.flavor-aviso-confirmacion {
+    padding: 1.5rem 2rem;
+    background: #f3f4f6;
+    border-top: 1px solid #e5e7eb;
+}
+
+.flavor-confirmacion-estado.confirmado {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.flavor-confirmacion-box {
+    text-align: center;
+}
+
+.flavor-confirmacion-box p {
+    margin: 0 0 1rem;
+    color: #6b7280;
+}
+
+.flavor-aviso-detalle-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.flavor-share-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.flavor-btn-share {
+    background: #f3f4f6 !important;
+    border: none !important;
+}
+
+.flavor-btn-share:hover {
+    background: #e5e7eb !important;
+}
+
+/* ==========================================================================
+   Avisos Urgentes Widget
+   ========================================================================== */
+.flavor-avisos-urgentes {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.flavor-urgentes-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--aviso-urgente);
+    color: #fff;
+    font-weight: 600;
+}
+
+.flavor-urgentes-list {
+    padding: 0.5rem 0;
+}
+
+.flavor-urgente-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+}
+
+.flavor-urgente-item:not(:last-child) {
+    border-bottom: 1px solid #fecaca;
+}
+
+.flavor-urgente-item a {
+    color: #991b1b;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.flavor-urgente-item a:hover {
+    text-decoration: underline;
+}
+
+.flavor-urgente-fecha {
+    font-size: 0.75rem;
+    color: #b91c1c;
+}
+
+/* ==========================================================================
+   Banner de Avisos
+   ========================================================================== */
+.flavor-avisos-banner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--aviso-urgente);
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.flavor-banner-icon .dashicons {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.flavor-banner-content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.flavor-banner-marquee {
+    display: flex;
+    gap: 1.5rem;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.flavor-banner-marquee a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.flavor-banner-marquee a:hover {
+    text-decoration: underline;
+}
+
+.flavor-banner-separator {
+    opacity: 0.5;
+}
+
+.flavor-banner-close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0.25rem;
+    opacity: 0.7;
+}
+
+.flavor-banner-close:hover {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   Categorías
+   ========================================================================== */
+.flavor-avisos-categorias {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.flavor-categoria-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #374151;
+    transition: all 0.2s;
+}
+
+.flavor-categoria-card:hover {
+    border-color: var(--cat-color);
+    background: color-mix(in srgb, var(--cat-color) 10%, white);
+}
+
+.flavor-categoria-card .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--cat-color);
+}
+
+/* ==========================================================================
+   Suscripciones
+   ========================================================================== */
+.flavor-avisos-suscripciones {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.flavor-avisos-suscripciones h3 {
+    margin: 0 0 0.5rem;
+}
+
+.flavor-text-muted {
+    color: #6b7280;
+    margin: 0 0 1.5rem;
+}
+
+.flavor-form-section {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-form-section h4 {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.flavor-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.flavor-checkbox-card {
+    cursor: pointer;
+}
+
+.flavor-checkbox-card input {
+    display: none;
+}
+
+.flavor-checkbox-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.flavor-checkbox-card input:checked + .flavor-checkbox-content {
+    background: #dbeafe;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+}
+
+.flavor-radio-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.flavor-radio-card {
+    flex: 1;
+    cursor: pointer;
+}
+
+.flavor-radio-card input {
+    display: none;
+}
+
+.flavor-radio-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.flavor-radio-card input:checked + .flavor-radio-content {
+    background: #dbeafe;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+}
+
+.flavor-suscripciones-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.flavor-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    background: #f3f4f6;
+    border-radius: 20px;
+    font-size: 0.875rem;
+}
+
+.flavor-tag .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* ==========================================================================
+   Buscador
+   ========================================================================== */
+.flavor-avisos-buscador {
+    margin-bottom: 1.5rem;
+}
+
+.flavor-search-input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.flavor-search-input-group .flavor-input {
+    flex: 1;
+}
+
+/* ==========================================================================
+   Filtros
+   ========================================================================== */
+.flavor-filtros-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.flavor-select {
+    padding: 0.625rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: #fff;
+    min-width: 180px;
+}
+
+.flavor-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ==========================================================================
+   Paginación
+   ========================================================================== */
+.flavor-paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.flavor-paginacion .flavor-btn.active {
+    background: #3b82f6;
+    color: #fff;
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+.flavor-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.flavor-badge-outline {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    color: #6b7280;
+}
+
+.flavor-badge-nuevo {
+    background: #3b82f6;
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.flavor-btn-primary {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.flavor-btn-primary:hover {
+    background: #2563eb;
+}
+
+.flavor-btn-outline {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.flavor-btn-outline:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.flavor-btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.flavor-btn-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+}
+
+.flavor-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* ==========================================================================
+   Estados Vacíos
+   ========================================================================== */
+.flavor-empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: #6b7280;
+}
+
+.flavor-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.flavor-empty-state p {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Notices
+   ========================================================================== */
+.flavor-notice {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.flavor-notice-warning {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    color: #92400e;
+}
+
+/* ==========================================================================
+   Inputs
+   ========================================================================== */
+.flavor-input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.flavor-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ==========================================================================
+   Toast
+   ========================================================================== */
+.flavor-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    background: #111827;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+}
+
+.flavor-toast.success { background: #22c55e; }
+.flavor-toast.error { background: #ef4444; }
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}

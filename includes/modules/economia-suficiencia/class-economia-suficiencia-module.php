@@ -176,18 +176,187 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      * Inicializa el módulo
      */
     public function init(): void {
-        $this->register_post_types();
+        // Registrar post types en el hook 'init' de WordPress
+        add_action('init', [$this, 'register_post_types'], 5);
+
         $this->register_ajax_handlers();
         $this->register_shortcodes();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs(): void {
+        $tab_file = dirname(__FILE__) . '/class-economia-suficiencia-dashboard-tab.php';
+        if (file_exists($tab_file)) {
+            require_once $tab_file;
+            if (class_exists('Flavor_Economia_Suficiencia_Dashboard_Tab')) {
+                Flavor_Economia_Suficiencia_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Registra rutas REST API
+     */
+    public function register_rest_routes(): void {
+        $namespace = 'flavor/v1';
+
+        // Obtener reflexiones del usuario
+        register_rest_route($namespace, '/economia-suficiencia/reflexiones', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_reflexiones'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        // Obtener compromisos del usuario
+        register_rest_route($namespace, '/economia-suficiencia/compromisos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_compromisos'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        // Obtener estadísticas de la comunidad
+        register_rest_route($namespace, '/economia-suficiencia/comunidad', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_estadisticas_comunidad'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Biblioteca de recursos
+        register_rest_route($namespace, '/economia-suficiencia/biblioteca', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_biblioteca'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    /**
+     * API: Obtener reflexiones del usuario
+     */
+    public function api_get_reflexiones(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+
+        $reflexiones = get_posts([
+            'post_type' => 'es_reflexion',
+            'author' => $user_id,
+            'posts_per_page' => 20,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ]);
+
+        $data = array_map(function($post) {
+            return [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'contenido' => $post->post_content,
+                'fecha' => $post->post_date,
+            ];
+        }, $reflexiones);
+
+        return new \WP_REST_Response($data, 200);
+    }
+
+    /**
+     * API: Obtener compromisos del usuario
+     */
+    public function api_get_compromisos(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+
+        $compromisos = get_posts([
+            'post_type' => 'es_compromiso',
+            'author' => $user_id,
+            'posts_per_page' => 20,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ]);
+
+        $data = array_map(function($post) {
+            return [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'descripcion' => $post->post_content,
+                'estado' => get_post_meta($post->ID, '_es_estado', true) ?: 'activo',
+                'progreso' => (int) get_post_meta($post->ID, '_es_progreso', true),
+                'fecha_inicio' => $post->post_date,
+            ];
+        }, $compromisos);
+
+        return new \WP_REST_Response($data, 200);
+    }
+
+    /**
+     * API: Obtener estadísticas de la comunidad
+     */
+    public function api_get_estadisticas_comunidad(\WP_REST_Request $request): \WP_REST_Response {
+        global $wpdb;
+
+        $total_reflexiones = wp_count_posts('es_reflexion')->publish ?? 0;
+        $total_compromisos = wp_count_posts('es_compromiso')->publish ?? 0;
+        $total_recursos = wp_count_posts('es_recurso')->publish ?? 0;
+        $total_participantes = $wpdb->get_var("SELECT COUNT(DISTINCT post_author) FROM {$wpdb->posts} WHERE post_type IN ('es_reflexion', 'es_compromiso') AND post_status = 'publish'");
+
+        return new \WP_REST_Response([
+            'reflexiones' => (int) $total_reflexiones,
+            'compromisos' => (int) $total_compromisos,
+            'recursos_compartidos' => (int) $total_recursos,
+            'participantes' => (int) $total_participantes,
+        ], 200);
+    }
+
+    /**
+     * API: Obtener biblioteca de recursos
+     */
+    public function api_get_biblioteca(\WP_REST_Request $request): \WP_REST_Response {
+        $categoria = $request->get_param('categoria');
+        $limite = $request->get_param('limite') ?: 20;
+
+        $args = [
+            'post_type' => 'es_recurso',
+            'posts_per_page' => $limite,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ];
+
+        if ($categoria) {
+            $args['meta_query'] = [
+                [
+                    'key' => '_es_categoria',
+                    'value' => $categoria,
+                ],
+            ];
+        }
+
+        $recursos = get_posts($args);
+
+        $data = array_map(function($post) {
+            return [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'descripcion' => $post->post_excerpt ?: wp_trim_words($post->post_content, 30),
+                'categoria' => get_post_meta($post->ID, '_es_categoria', true),
+                'tipo' => get_post_meta($post->ID, '_es_tipo', true),
+                'autor' => get_the_author_meta('display_name', $post->post_author),
+                'fecha' => $post->post_date,
+            ];
+        }, $recursos);
+
+        return new \WP_REST_Response($data, 200);
     }
 
     /**
      * Registra los tipos de post personalizados
      */
-    private function register_post_types(): void {
+    public function register_post_types(): void {
         // Reflexiones personales
         register_post_type('es_reflexion', [
             'labels' => [
@@ -257,11 +426,19 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      * Registra los shortcodes
      */
     public function register_shortcodes(): void {
+        // Shortcodes principales
         add_shortcode('suficiencia_intro', [$this, 'shortcode_intro']);
         add_shortcode('suficiencia_evaluacion', [$this, 'shortcode_evaluacion']);
         add_shortcode('suficiencia_compromisos', [$this, 'shortcode_compromisos']);
         add_shortcode('suficiencia_biblioteca', [$this, 'shortcode_biblioteca']);
         add_shortcode('suficiencia_mi_camino', [$this, 'shortcode_mi_camino']);
+
+        // Aliases con prefijo flavor_ para compatibilidad con dynamic-pages.php
+        add_shortcode('flavor_suficiencia_intro', [$this, 'shortcode_intro']);
+        add_shortcode('flavor_suficiencia_evaluacion', [$this, 'shortcode_evaluacion']);
+        add_shortcode('flavor_suficiencia_compromisos', [$this, 'shortcode_compromisos']);
+        add_shortcode('flavor_suficiencia_biblioteca', [$this, 'shortcode_biblioteca']);
+        add_shortcode('flavor_suficiencia_mi_camino', [$this, 'shortcode_mi_camino']);
     }
 
     /**
@@ -307,12 +484,35 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         if (!$post) {
             return false;
         }
-        return has_shortcode($post->post_content, 'suficiencia_intro')
-            || has_shortcode($post->post_content, 'suficiencia_evaluacion')
-            || has_shortcode($post->post_content, 'suficiencia_compromisos')
-            || has_shortcode($post->post_content, 'suficiencia_biblioteca')
-            || has_shortcode($post->post_content, 'suficiencia_mi_camino')
-            || strpos($_SERVER['REQUEST_URI'], '/economia-suficiencia') !== false;
+
+        $post_content = $post->post_content ?? '';
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+
+        // Shortcodes originales
+        $shortcodes_principales = [
+            'suficiencia_intro',
+            'suficiencia_evaluacion',
+            'suficiencia_compromisos',
+            'suficiencia_biblioteca',
+            'suficiencia_mi_camino',
+        ];
+
+        // Verificar shortcodes principales
+        foreach ($shortcodes_principales as $shortcode) {
+            if (has_shortcode($post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        // Verificar aliases con prefijo flavor_
+        foreach ($shortcodes_principales as $shortcode) {
+            if (has_shortcode($post_content, 'flavor_' . $shortcode)) {
+                return true;
+            }
+        }
+
+        // Verificar por URL
+        return strpos($request_uri, '/economia-suficiencia') !== false;
     }
 
     /**
@@ -423,7 +623,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que el compromiso existe y pertenece al usuario
         $compromiso = get_post($compromiso_id);
-        if (!$compromiso || $compromiso->post_author != $user_id) {
+        if (!$compromiso || (int) $compromiso->post_author !== $user_id) {
             wp_send_json_error(['message' => __('Compromiso no encontrado', 'flavor-chat-ia')]);
         }
 
@@ -798,5 +998,46 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 'Inspira la reflexión sobre qué es "suficiente" para vivir bien.',
             'categoria' => 'economia_consciente',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_actions() {
+        return [
+            'mis_compromisos' => [
+                'description' => 'Ver mis compromisos de suficiencia',
+                'params' => [],
+            ],
+            'registrar_practica' => [
+                'description' => 'Registrar una práctica de suficiencia',
+                'params' => ['tipo', 'descripcion'],
+            ],
+            'ver_nivel' => [
+                'description' => 'Ver mi nivel de suficiencia',
+                'params' => [],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_knowledge_base() {
+        return __('La Economía de Suficiencia promueve un modelo basado en "suficiente" vs "máximo", enfocándose en necesidades reales y bienestar colectivo.', 'flavor-chat-ia');
     }
 }

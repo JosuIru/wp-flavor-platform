@@ -288,14 +288,112 @@ trait Flavor_Dashboard_Widget_Trait {
      */
     protected function get_dashboard_widget_footer(): array {
         $module_id = $this->get_id();
+        $admin_slug = $this->get_module_admin_slug();
+
+        // Si el slug comienza con '_frontend_:', es una URL de frontend
+        if (strpos($admin_slug, '_frontend_:') === 0) {
+            $ruta_frontend = substr($admin_slug, strlen('_frontend_:'));
+            return [
+                [
+                    'label' => __('Ver más', 'flavor-chat-ia'),
+                    'url'   => home_url($ruta_frontend),
+                    'icon'  => 'dashicons-external',
+                ],
+            ];
+        }
 
         return [
             [
-                'label' => __('Ver mas', 'flavor-chat-ia'),
-                'url'   => admin_url('admin.php?page=flavor-' . str_replace('_', '-', $module_id)),
-                'icon'  => 'dashicons-arrow-right-alt2',
+                'label' => __('Administrar', 'flavor-chat-ia'),
+                'url'   => admin_url('admin.php?page=' . $admin_slug),
+                'icon'  => 'dashicons-admin-generic',
             ],
         ];
+    }
+
+    /**
+     * Obtiene el slug de la página de admin del módulo
+     *
+     * Soporta el prefijo especial '_frontend_:' para módulos que no tienen
+     * página de admin y deben apuntar al portal del usuario.
+     *
+     * @return string
+     */
+    protected function get_module_admin_slug(): string {
+        $module_id = $this->get_id();
+        $module_slug = str_replace('_', '-', $module_id);
+
+        // Mapeo de módulos con páginas de admin específicas
+        $admin_pages_mapping = [
+            // Módulos con dashboards de admin completos
+            'banco_tiempo'               => 'banco-tiempo',
+            'comunidades'                => 'comunidades',
+            'colectivos'                 => 'colectivos',
+            'eventos'                    => 'eventos',
+            'cursos'                     => 'cursos',
+            'marketplace'                => 'marketplace',
+            'talleres'                   => 'talleres',
+            'reservas'                   => 'reservas',
+            'socios'                     => 'socios',
+            'incidencias'                => 'incidencias',
+            'foros'                      => 'foros',
+            'podcast'                    => 'podcast',
+            'multimedia'                 => 'multimedia',
+            'red_social'                 => 'red-social',
+            'ayuda_vecinal'              => 'ayuda-vecinal',
+            'espacios_comunes'           => 'espacios-comunes',
+            'huertos_urbanos'            => 'huertos-urbanos',
+            'participacion'              => 'participacion',
+            'presupuestos_participativos' => 'presupuestos-participativos',
+            'grupos_consumo'             => 'grupos-consumo',
+
+            // Módulos con formatos específicos de admin
+            'carpooling'                 => 'flavor-carpooling-viajes',
+            'parkings'                   => 'flavor-parkings-reservas',
+            'bicicletas_compartidas'     => 'flavor-bicicletas-prestamos',
+            'compostaje'                 => 'flavor-compostaje-composteras',
+            'reciclaje'                  => 'flavor-reciclaje-puntos',
+            'biblioteca'                 => 'flavor-chat-biblioteca',
+            'radio'                      => 'flavor-radio',
+            'email_marketing'            => 'flavor-email-marketing',
+            'newsletter'                 => 'flavor-newsletter',
+            'advertising'                => 'flavor-advertising-dashboard',
+            'empresarial'                => 'flavor-empresarial-empresas',
+            'tramites'                   => 'flavor-tramites-solicitudes',
+            'sello_conciencia'           => 'sello-conciencia',
+
+            // Módulos con frontend como destino principal (sin admin dedicado)
+            'economia_don'               => '_frontend_:/mi-portal/economia-don/',
+            'economia_suficiencia'       => '_frontend_:/mi-portal/economia-suficiencia/',
+            'saberes_ancestrales'        => '_frontend_:/mi-portal/saberes-ancestrales/',
+            'justicia_restaurativa'      => '_frontend_:/mi-portal/justicia-restaurativa/',
+            'huella_ecologica'           => '_frontend_:/mi-portal/huella-ecologica/',
+            'circulos_cuidados'          => '_frontend_:/mi-portal/circulos-cuidados/',
+            'biodiversidad_local'        => '_frontend_:/mi-portal/biodiversidad-local/',
+            'trabajo_digno'              => '_frontend_:/mi-portal/trabajo-digno/',
+            'avisos_municipales'         => '_frontend_:/mi-portal/avisos-municipales/',
+            'bares'                      => '_frontend_:/mi-portal/bares/',
+            'chat_grupos'                => '_frontend_:/mi-portal/chat-grupos/',
+            'chat_interno'               => '_frontend_:/mi-portal/chat-interno/',
+            'fichaje_empleados'          => '_frontend_:/mi-portal/fichaje/',
+            'facturas'                   => '_frontend_:/mi-portal/facturas/',
+            'clientes'                   => '_frontend_:/mi-portal/clientes/',
+            'woocommerce'                => '_frontend_:/mi-portal/tienda/',
+            'transparencia'              => '_frontend_:/mi-portal/transparencia/',
+            'campanias'                  => '_frontend_:/mi-portal/campanias/',
+            'documentacion_legal'        => '_frontend_:/mi-portal/documentacion-legal/',
+            'seguimiento_denuncias'      => '_frontend_:/mi-portal/seguimiento-denuncias/',
+            'mapa_actores'               => '_frontend_:/mi-portal/mapa-actores/',
+            'recetas'                    => '_frontend_:/mi-portal/recetas/',
+        ];
+
+        // Usar el mapeo si existe, sino usar el formato por defecto (frontend)
+        if (isset($admin_pages_mapping[$module_id])) {
+            return $admin_pages_mapping[$module_id];
+        }
+
+        // Fallback: apuntar al portal del usuario en frontend
+        return '_frontend_:/mi-portal/' . $module_slug . '/';
     }
 
     /**

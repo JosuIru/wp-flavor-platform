@@ -742,9 +742,9 @@ class Flavor_Unified_Dashboard {
             'empty_state' => sprintf(__('No hay datos de %s', 'flavor-chat-ia'), $modulo->get_name()),
             'footer'      => [
                 [
-                    'label' => __('Ver mas', 'flavor-chat-ia'),
+                    'label' => __('Administrar', 'flavor-chat-ia'),
                     'url'   => $module_url,
-                    'icon'  => 'dashicons-arrow-right-alt2',
+                    'icon'  => 'dashicons-admin-generic',
                 ],
             ],
         ];
@@ -761,19 +761,35 @@ class Flavor_Unified_Dashboard {
         // Convertir ID a slug de URL (guiones en lugar de guiones bajos)
         $url_slug = str_replace('_', '-', $modulo_id);
 
-        // Si estamos en admin, intentar usar el compositor con el modulo
+        // Si estamos en admin, usar el mapeo de paginas de admin
         if (is_admin()) {
-            // Verificar si el modulo tiene dashboard propio registrado
-            global $submenu;
-            $tiene_dashboard_propio = false;
+            // Mapeo de modulo_id a slug de pagina de admin
+            $admin_pages_mapping = [
+                'banco_tiempo'      => 'banco-tiempo',
+                'comunidades'       => 'comunidades',
+                'colectivos'        => 'colectivos',
+                'eventos'           => 'eventos',
+                'cursos'            => 'cursos',
+                'marketplace'       => 'marketplace',
+                'talleres'          => 'talleres',
+                'reservas'          => 'reservas',
+                'socios'            => 'socios',
+                'incidencias'       => 'incidencias',
+                'foros'             => 'foros',
+                'podcast'           => 'podcast',
+                'multimedia'        => 'multimedia',
+                'red_social'        => 'red-social',
+                'ayuda_vecinal'     => 'ayuda-vecinal',
+                'espacios_comunes'  => 'espacios-comunes',
+                'huertos_urbanos'   => 'huertos-urbanos',
+                'participacion'     => 'participacion',
+                'presupuestos_participativos' => 'presupuestos-participativos',
+                'grupos_consumo'    => 'grupos-consumo',
+            ];
 
-            if (!empty($submenu['flavor-chat-ia'])) {
-                foreach ($submenu['flavor-chat-ia'] as $item) {
-                    if (isset($item[2]) && strpos($item[2], $modulo_id) !== false) {
-                        $tiene_dashboard_propio = true;
-                        return admin_url('admin.php?page=' . $item[2]);
-                    }
-                }
+            // Usar el mapeo si existe
+            if (isset($admin_pages_mapping[$modulo_id])) {
+                return admin_url('admin.php?page=' . $admin_pages_mapping[$modulo_id]);
             }
 
             // Fallback: ir al compositor con el modulo seleccionado

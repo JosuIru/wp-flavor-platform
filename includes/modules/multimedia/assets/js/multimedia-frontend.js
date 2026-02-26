@@ -585,9 +585,13 @@
         if (!dropzone.length) return;
 
         // Click para seleccionar
-        dropzone.on('click', function() {
+        dropzone.on('click', function(e) {
+            // Evitar recursión si el click viene del fileInput
+            if ($(e.target).is(fileInput)) {
+                return;
+            }
             if (!$(this).find('.mm-preview').is(':visible')) {
-                fileInput.click();
+                fileInput.trigger('click');
             }
         });
 
@@ -703,7 +707,10 @@
             url: this.resturl + 'mis-albumes',
             type: 'GET',
             beforeSend: function(xhr) {
-                xhr.setRequestHeader('X-WP-Nonce', wpApiSettings?.nonce || '');
+                var nonce = FlavorMultimedia.nonce || (typeof wpApiSettings !== 'undefined' ? wpApiSettings.nonce : '');
+                if (nonce) {
+                    xhr.setRequestHeader('X-WP-Nonce', nonce);
+                }
             },
             success: function(response) {
                 if (response.success && response.albumes) {
@@ -932,7 +939,10 @@
                 limite: 20,
             },
             beforeSend: function(xhr) {
-                xhr.setRequestHeader('X-WP-Nonce', wpApiSettings?.nonce || '');
+                var nonce = FlavorMultimedia.nonce || (typeof wpApiSettings !== 'undefined' ? wpApiSettings.nonce : '');
+                if (nonce) {
+                    xhr.setRequestHeader('X-WP-Nonce', nonce);
+                }
             },
             success: function(response) {
                 if (response.success && response.archivos.length) {
@@ -975,7 +985,10 @@
             url: this.resturl + 'mis-albumes',
             type: 'GET',
             beforeSend: function(xhr) {
-                xhr.setRequestHeader('X-WP-Nonce', wpApiSettings?.nonce || '');
+                var nonce = FlavorMultimedia.nonce || (typeof wpApiSettings !== 'undefined' ? wpApiSettings.nonce : '');
+                if (nonce) {
+                    xhr.setRequestHeader('X-WP-Nonce', nonce);
+                }
             },
             success: function(response) {
                 if (response.success && response.albumes.length) {
@@ -994,7 +1007,10 @@
             url: this.resturl + 'mis-albumes',
             type: 'GET',
             beforeSend: function(xhr) {
-                xhr.setRequestHeader('X-WP-Nonce', wpApiSettings?.nonce || '');
+                var nonce = FlavorMultimedia.nonce || (typeof wpApiSettings !== 'undefined' ? wpApiSettings.nonce : '');
+                if (nonce) {
+                    xhr.setRequestHeader('X-WP-Nonce', nonce);
+                }
             },
             success: function(response) {
                 if (response.success && response.albumes) {

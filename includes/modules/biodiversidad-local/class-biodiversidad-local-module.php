@@ -16,6 +16,9 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Integration_Consumer;
+
     /**
      * Categorías de especies
      */
@@ -98,6 +101,15 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Inicialización del módulo
+     * Se ejecuta cuando el módulo está activo
+     */
+    public function init() {
+        // El módulo utiliza funcionalidad heredada de la clase base
+        // Hooks adicionales pueden añadirse aquí
+    }
+
+    /**
      * Obtiene la valoración de conciencia del módulo
      *
      * @return array
@@ -140,14 +152,422 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia', 'recetas', 'biblioteca'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_especies',
+                'context' => 'normal',
+            ],
+        ];
+    }
+
+    /**
      * Configura el módulo
      */
     protected function setup_module() {
+        $this->register_as_integration_consumer();
+
+        // Registrar CPT en el hook 'init' de WordPress
+        add_action('init', [$this, 'register_all_cpts'], 5);
+
+        $this->register_ajax_handlers();
+
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Dashboard widget
+        add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+
+        // Panel Unificado Admin
+        $this->registrar_en_panel_unificado();
+
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs() {
+        $tab_file = dirname(__FILE__) . '/class-biodiversidad-local-dashboard-tab.php';
+        if (file_exists($tab_file)) {
+            require_once $tab_file;
+            if (class_exists('Flavor_Biodiversidad_Local_Dashboard_Tab')) {
+                Flavor_Biodiversidad_Local_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Registra el widget de dashboard
+     */
+    public function register_dashboard_widget($registry) {
+        $settings = $this->get_settings();
+        if (empty($settings['mostrar_en_dashboard'])) {
+            return;
+        }
+
+        $widget_path = dirname(__FILE__) . '/class-biodiversidad-local-widget.php';
+        if (!class_exists('Flavor_Biodiversidad_Local_Widget') && file_exists($widget_path)) {
+            require_once $widget_path;
+        }
+
+        if (class_exists('Flavor_Biodiversidad_Local_Widget')) {
+            $registry->register(new Flavor_Biodiversidad_Local_Widget($this));
+        }
+    }
+
+    /**
+     * Registra todos los CPTs y taxonomías
+     */
+    public function register_all_cpts() {
         $this->register_cpt_especie();
         $this->register_cpt_avistamiento();
         $this->register_cpt_proyecto_conservacion();
         $this->register_taxonomies();
-        $this->register_ajax_handlers();
+    }
+
+    /**
+     * Registra rutas REST API
+     */
+    public function register_rest_routes(): void {
+        $namespace = 'flavor/v1';
+
+        // Listar especies
+        register_rest_route($namespace, '/biodiversidad/especies', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_especies'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Obtener especie
+        register_rest_route($namespace, '/biodiversidad/especies/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_especie'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Listar avistamientos
+        register_rest_route($namespace, '/biodiversidad/avistamientos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_avistamientos'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Mis avistamientos
+        register_rest_route($namespace, '/biodiversidad/mis-avistamientos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_mis_avistamientos'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+
+        // Listar proyectos
+        register_rest_route($namespace, '/biodiversidad/proyectos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_proyectos'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    /**
+     * Verifica si el usuario está logueado
+     */
+    public function check_user_logged_in(): bool {
+        return is_user_logged_in();
+    }
+
+    /**
+     * API: Obtener especies
+     */
+    public function api_get_especies(\WP_REST_Request $request): \WP_REST_Response {
+        $args = [
+            'post_type' => 'bl_especie',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+            'paged' => $request->get_param('page') ?: 1,
+        ];
+
+        if ($categoria = $request->get_param('categoria')) {
+            $args['tax_query'] = [['taxonomy' => 'bl_categoria', 'field' => 'slug', 'terms' => $categoria]];
+        }
+
+        $query = new \WP_Query($args);
+        $especies = [];
+
+        foreach ($query->posts as $post) {
+            $especies[] = [
+                'id' => $post->ID,
+                'nombre' => $post->post_title,
+                'nombre_cientifico' => get_post_meta($post->ID, '_bl_nombre_cientifico', true),
+                'estado_conservacion' => get_post_meta($post->ID, '_bl_estado_conservacion', true),
+                'imagen' => get_the_post_thumbnail_url($post->ID, 'medium'),
+            ];
+        }
+
+        return new \WP_REST_Response([
+            'especies' => $especies,
+            'total' => $query->found_posts,
+        ]);
+    }
+
+    /**
+     * API: Obtener especie individual
+     */
+    public function api_get_especie(\WP_REST_Request $request): \WP_REST_Response {
+        $especie_id = $request->get_param('id');
+        $especie = get_post($especie_id);
+
+        if (!$especie || $especie->post_type !== 'bl_especie') {
+            return new \WP_REST_Response(['error' => 'Especie no encontrada'], 404);
+        }
+
+        return new \WP_REST_Response([
+            'id' => $especie->ID,
+            'nombre' => $especie->post_title,
+            'descripcion' => $especie->post_content,
+            'nombre_cientifico' => get_post_meta($especie->ID, '_bl_nombre_cientifico', true),
+            'estado_conservacion' => get_post_meta($especie->ID, '_bl_estado_conservacion', true),
+            'imagen' => get_the_post_thumbnail_url($especie->ID, 'large'),
+        ]);
+    }
+
+    /**
+     * API: Obtener avistamientos
+     */
+    public function api_get_avistamientos(\WP_REST_Request $request): \WP_REST_Response {
+        $args = [
+            'post_type' => 'bl_avistamiento',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+            'paged' => $request->get_param('page') ?: 1,
+        ];
+
+        $query = new \WP_Query($args);
+        $avistamientos = [];
+
+        foreach ($query->posts as $post) {
+            $avistamientos[] = [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'especie_id' => get_post_meta($post->ID, '_bl_especie_id', true),
+                'latitud' => get_post_meta($post->ID, '_bl_latitud', true),
+                'longitud' => get_post_meta($post->ID, '_bl_longitud', true),
+                'fecha' => get_post_meta($post->ID, '_bl_fecha', true),
+            ];
+        }
+
+        return new \WP_REST_Response([
+            'avistamientos' => $avistamientos,
+            'total' => $query->found_posts,
+        ]);
+    }
+
+    /**
+     * API: Obtener mis avistamientos
+     */
+    public function api_get_mis_avistamientos(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+
+        $query = new \WP_Query([
+            'post_type' => 'bl_avistamiento',
+            'post_status' => ['publish', 'pending'],
+            'author' => $user_id,
+            'posts_per_page' => -1,
+        ]);
+
+        $avistamientos = [];
+        foreach ($query->posts as $post) {
+            $avistamientos[] = [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'estado' => $post->post_status,
+                'fecha' => get_post_meta($post->ID, '_bl_fecha', true),
+            ];
+        }
+
+        return new \WP_REST_Response(['avistamientos' => $avistamientos]);
+    }
+
+    /**
+     * API: Obtener proyectos
+     */
+    public function api_get_proyectos(\WP_REST_Request $request): \WP_REST_Response {
+        $query = new \WP_Query([
+            'post_type' => 'bl_proyecto',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+        ]);
+
+        $proyectos = [];
+        foreach ($query->posts as $post) {
+            $participantes = get_post_meta($post->ID, '_bl_participantes', true) ?: [];
+            $proyectos[] = [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'tipo' => get_post_meta($post->ID, '_bl_tipo', true),
+                'participantes' => count($participantes),
+            ];
+        }
+
+        return new \WP_REST_Response(['proyectos' => $proyectos, 'total' => $query->found_posts]);
+    }
+
+    /**
+     * Configuración del admin para el panel unificado
+     */
+    public function get_admin_config(): array {
+        return [
+            'paginas' => [
+                [
+                    'slug' => 'biodiversidad',
+                    'titulo' => __('Biodiversidad', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'biodiversidad-especies',
+                    'titulo' => __('Especies', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_especies'],
+                ],
+                [
+                    'slug' => 'biodiversidad-avistamientos',
+                    'titulo' => __('Avistamientos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_avistamientos'],
+                ],
+                [
+                    'slug' => 'biodiversidad-proyectos',
+                    'titulo' => __('Proyectos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_proyectos'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Render: Dashboard admin
+     */
+    public function render_admin_dashboard(): void {
+        $stats = $this->get_estadisticas();
+        ?>
+        <div class="wrap flavor-admin-biodiversidad">
+            <h1><?php esc_html_e('Biodiversidad Local', 'flavor-chat-ia'); ?></h1>
+            <div class="flavor-stats-grid">
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-admin-site-alt3"></span>
+                    <h3><?php echo esc_html($stats['especies_catalogadas']); ?></h3>
+                    <p><?php esc_html_e('Especies catalogadas', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-visibility"></span>
+                    <h3><?php echo esc_html($stats['avistamientos_total']); ?></h3>
+                    <p><?php esc_html_e('Avistamientos', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-clock"></span>
+                    <h3><?php echo esc_html($stats['avistamientos_pendientes']); ?></h3>
+                    <p><?php esc_html_e('Pendientes validar', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-groups"></span>
+                    <h3><?php echo esc_html($stats['proyectos_activos']); ?></h3>
+                    <p><?php esc_html_e('Proyectos activos', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Listado de especies
+     */
+    public function render_admin_especies(): void {
+        $especies = get_posts(['post_type' => 'bl_especie', 'posts_per_page' => 50, 'post_status' => ['publish', 'pending']]);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Especies', 'flavor-chat-ia'); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=bl_especie'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            </h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Nombre científico', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado conservación', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($especies as $especie): $estado = get_post_meta($especie->ID, '_bl_estado_conservacion', true); ?>
+                    <tr>
+                        <td><a href="<?php echo get_edit_post_link($especie->ID); ?>"><?php echo esc_html($especie->post_title); ?></a></td>
+                        <td><?php echo esc_html(get_post_meta($especie->ID, '_bl_nombre_cientifico', true)); ?></td>
+                        <td><?php echo esc_html(self::ESTADOS_CONSERVACION[$estado]['nombre'] ?? $estado); ?></td>
+                        <td><?php echo esc_html($especie->post_status); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Listado de avistamientos
+     */
+    public function render_admin_avistamientos(): void {
+        $avistamientos = get_posts(['post_type' => 'bl_avistamiento', 'posts_per_page' => 50, 'post_status' => ['publish', 'pending']]);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Avistamientos', 'flavor-chat-ia'); ?></h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($avistamientos as $avist): ?>
+                    <tr>
+                        <td><a href="<?php echo get_edit_post_link($avist->ID); ?>"><?php echo esc_html($avist->post_title); ?></a></td>
+                        <td><?php echo esc_html(get_post_meta($avist->ID, '_bl_fecha', true)); ?></td>
+                        <td><?php echo esc_html(get_the_author_meta('display_name', $avist->post_author)); ?></td>
+                        <td><?php echo esc_html($avist->post_status); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Listado de proyectos
+     */
+    public function render_admin_proyectos(): void {
+        $proyectos = get_posts(['post_type' => 'bl_proyecto', 'posts_per_page' => 50, 'post_status' => ['publish', 'pending']]);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Proyectos de Conservación', 'flavor-chat-ia'); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=bl_proyecto'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            </h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($proyectos as $proy): $tipo = get_post_meta($proy->ID, '_bl_tipo', true); $participantes = get_post_meta($proy->ID, '_bl_participantes', true) ?: []; ?>
+                    <tr>
+                        <td><a href="<?php echo get_edit_post_link($proy->ID); ?>"><?php echo esc_html($proy->post_title); ?></a></td>
+                        <td><?php echo esc_html(self::TIPOS_PROYECTO[$tipo]['nombre'] ?? $tipo); ?></td>
+                        <td><?php echo count($participantes); ?></td>
+                        <td><?php echo esc_html($proy->post_status); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
     }
 
     /**
@@ -807,6 +1227,23 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
                 'pregunta' => __('¿Cómo puedo participar en proyectos de conservación?', 'flavor-chat-ia'),
                 'respuesta' => __('Explora los proyectos activos en Biodiversidad > Proyectos y únete a los que te interesen.', 'flavor-chat-ia'),
             ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        return [
+            'success' => false,
+            'message' => __('Acción no implementada', 'flavor-chat-ia'),
         ];
     }
 }

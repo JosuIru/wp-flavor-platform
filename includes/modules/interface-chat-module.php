@@ -143,6 +143,57 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
     protected $description = '';
 
     /**
+     * ID del módulo (alias para compatibilidad)
+     */
+    protected $module_id = '';
+
+    /**
+     * Nombre del módulo (alias para compatibilidad)
+     */
+    protected $module_name = '';
+
+    /**
+     * Descripción del módulo (alias para compatibilidad)
+     */
+    protected $module_description = '';
+
+    /**
+     * Icono del módulo (dashicon class)
+     */
+    protected $module_icon = 'dashicons-admin-plugins';
+
+    /**
+     * Color del módulo (hex)
+     */
+    protected $module_color = '#3b82f6';
+
+    /**
+     * Icono del módulo (alias sin prefijo)
+     */
+    protected $icon = 'dashicons-admin-plugins';
+
+    /**
+     * Color del módulo (alias sin prefijo)
+     */
+    protected $color = '#3b82f6';
+
+    /**
+     * Categoría del módulo (para agrupación)
+     */
+    protected $category = 'general';
+
+    /**
+     * Visibilidad del módulo (alias para compatibilidad con $default_visibility)
+     * Opciones: 'public', 'private', 'members_only', 'registered'
+     */
+    protected $visibility = 'public';
+
+    /**
+     * Versión del módulo
+     */
+    protected $version = '1.0.0';
+
+    /**
      * Configuración del módulo
      */
     protected $settings = [];

@@ -1,0 +1,981 @@
+/**
+ * Estilos frontend para Bicicletas Compartidas
+ * @package FlavorChatIA
+ */
+
+/* ==========================================================================
+   Variables
+   ========================================================================== */
+:root {
+    --bici-urbana: #3b82f6;
+    --bici-montana: #22c55e;
+    --bici-electrica: #8b5cf6;
+    --bici-infantil: #f59e0b;
+    --bici-carga: #6366f1;
+}
+
+/* ==========================================================================
+   Dashboard
+   ========================================================================== */
+.flavor-bicicletas-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* KPIs */
+.flavor-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.flavor-kpi-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.flavor-kpi-icono {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+}
+
+.flavor-kpi-icono::before {
+    font-size: 24px;
+}
+
+.flavor-kpi-contenido {
+    display: flex;
+    flex-direction: column;
+}
+
+.flavor-kpi-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.flavor-kpi-etiqueta {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* Préstamo Activo */
+.flavor-panel-destacado {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.flavor-panel-destacado .flavor-panel-titulo {
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.flavor-prestamo-activo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.flavor-bici-codigo {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.flavor-bici-detalles {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.9;
+}
+
+.flavor-prestamo-tiempo {
+    text-align: center;
+    flex: 1;
+}
+
+.flavor-tiempo-transcurrido {
+    font-size: 2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.flavor-prestamo-acciones {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.flavor-panel-destacado .flavor-btn-primary {
+    background: #fff;
+    color: #3b82f6;
+}
+
+.flavor-panel-destacado .flavor-btn-outline {
+    border-color: rgba(255,255,255,0.5);
+    color: #fff;
+}
+
+/* Acciones Rápidas */
+.flavor-acciones-rapidas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.flavor-accion-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: #1e293b;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-accion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.flavor-accion-card .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #3b82f6;
+}
+
+/* Historial */
+.flavor-historial-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flavor-historial-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+.flavor-historial-item:hover {
+    background: #f1f5f9;
+}
+
+.flavor-historial-item.activo {
+    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1));
+    border-left: 3px solid #3b82f6;
+}
+
+.flavor-historial-icono {
+    width: 40px;
+    height: 40px;
+    background: #e0f2fe;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0284c7;
+}
+
+.flavor-historial-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.flavor-historial-info strong {
+    display: block;
+    color: #1e293b;
+}
+
+.flavor-historial-tipo {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.flavor-historial-datos {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* ==========================================================================
+   Mapa
+   ========================================================================== */
+.flavor-bicicletas-mapa-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+#flavor-mapa-estaciones {
+    width: 100%;
+    min-height: 400px;
+}
+
+/* ==========================================================================
+   Estaciones Grid
+   ========================================================================== */
+.flavor-estaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.flavor-estacion-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-estacion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.flavor-estacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-estacion-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #1e293b;
+}
+
+.flavor-estacion-direccion,
+.flavor-estacion-horario {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0.5rem 0;
+}
+
+.flavor-estacion-direccion .dashicons,
+.flavor-estacion-horario .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-estacion-barra {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.flavor-barra-progreso {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #84cc16);
+    border-radius: 3px;
+    transition: width 0.3s;
+}
+
+/* ==========================================================================
+   Bicicletas Grid
+   ========================================================================== */
+.flavor-bicicletas-disponibles {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.flavor-filtros {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.flavor-select {
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") right 0.5rem center/1.5em no-repeat;
+    font-size: 0.95rem;
+    color: #1e293b;
+    cursor: pointer;
+    appearance: none;
+}
+
+.flavor-bicicletas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
+}
+
+.flavor-bicicleta-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-bicicleta-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.flavor-bici-imagen {
+    aspect-ratio: 4/3;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+
+.flavor-bici-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-bici-info {
+    padding: 1rem;
+}
+
+.flavor-bici-info .flavor-bici-codigo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.flavor-bici-modelo {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-bici-ubicacion {
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    font-size: 0.85rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flavor-bici-acciones {
+    padding: 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* ==========================================================================
+   Detalle Bicicleta
+   ========================================================================== */
+.flavor-bicicleta-detalle {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.flavor-detalle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .flavor-detalle-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.flavor-detalle-imagen {
+    aspect-ratio: 4/3;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flavor-detalle-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-placeholder-imagen {
+    color: #cbd5e1;
+}
+
+.flavor-placeholder-imagen .dashicons {
+    font-size: 80px;
+    width: 80px;
+    height: 80px;
+}
+
+.flavor-detalle-info {
+    padding: 2rem;
+}
+
+.flavor-detalle-info h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.75rem;
+    color: #1e293b;
+}
+
+.flavor-modelo {
+    font-size: 1.1rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+.flavor-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.flavor-detalles-lista {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.flavor-detalles-lista dt {
+    font-weight: 500;
+    color: #64748b;
+}
+
+.flavor-detalles-lista dd {
+    margin: 0;
+    color: #1e293b;
+}
+
+.flavor-ubicacion-actual {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.flavor-ubicacion-actual h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+/* ==========================================================================
+   Mis Préstamos
+   ========================================================================== */
+.flavor-mis-prestamos {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-prestamos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.flavor-prestamo-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.flavor-prestamo-card.activo {
+    border-left: 4px solid #22c55e;
+}
+
+.flavor-prestamo-card.finalizado {
+    border-left: 4px solid #3b82f6;
+}
+
+.flavor-prestamo-card.cancelado {
+    border-left: 4px solid #ef4444;
+    opacity: 0.7;
+}
+
+.flavor-prestamo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-prestamo-header .flavor-bici-info strong {
+    display: block;
+    font-size: 1.1rem;
+}
+
+.flavor-prestamo-header .flavor-bici-info span {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.flavor-prestamo-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.flavor-prestamo-detalles .flavor-detalle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.flavor-prestamo-acciones {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* ==========================================================================
+   Préstamo Activo Banner
+   ========================================================================== */
+.flavor-prestamo-activo-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.flavor-prestamo-activo-banner .flavor-prestamo-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.flavor-prestamo-activo-banner .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.flavor-prestamo-activo-banner .flavor-btn-primary {
+    background: #fff;
+    color: #3b82f6;
+}
+
+/* ==========================================================================
+   Estadísticas
+   ========================================================================== */
+.flavor-estadisticas-bicicletas {
+    padding: 1rem 0;
+}
+
+.flavor-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.flavor-stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.flavor-stat-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 12px;
+    color: #fff;
+    margin-bottom: 0.75rem;
+}
+
+.flavor-stat-icono::before {
+    font-size: 24px;
+}
+
+.flavor-stat-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    display: block;
+}
+
+.flavor-stat-etiqueta {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* ==========================================================================
+   Badges por tipo
+   ========================================================================== */
+.flavor-badge-urbana {
+    background: var(--bici-urbana);
+    color: #fff;
+}
+
+.flavor-badge-montana {
+    background: var(--bici-montana);
+    color: #fff;
+}
+
+.flavor-badge-electrica {
+    background: var(--bici-electrica);
+    color: #fff;
+}
+
+.flavor-badge-infantil {
+    background: var(--bici-infantil);
+    color: #fff;
+}
+
+.flavor-badge-carga {
+    background: var(--bici-carga);
+    color: #fff;
+}
+
+.flavor-badge-disponible {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.flavor-badge-en_uso {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.flavor-badge-reservada {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.flavor-badge-mantenimiento {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.flavor-badge-activo {
+    background: #22c55e;
+    color: #fff;
+}
+
+.flavor-badge-finalizado {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.flavor-badge-cancelado {
+    background: #ef4444;
+    color: #fff;
+}
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+.flavor-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+}
+
+.flavor-modal-contenido {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.flavor-modal-cerrar {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+    line-height: 1;
+}
+
+.flavor-modal h3 {
+    margin: 0 0 1.5rem;
+    font-size: 1.25rem;
+    color: #1e293b;
+}
+
+/* Valoración Estrellas */
+.flavor-valoracion-estrellas {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+.flavor-valoracion-estrellas input {
+    display: none;
+}
+
+.flavor-valoracion-estrellas label {
+    font-size: 1.5rem;
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.flavor-valoracion-estrellas label:hover,
+.flavor-valoracion-estrellas label:hover ~ label,
+.flavor-valoracion-estrellas input:checked ~ label {
+    color: #fbbf24;
+}
+
+/* ==========================================================================
+   Form Groups
+   ========================================================================== */
+.flavor-form-grupo {
+    margin-bottom: 1.25rem;
+}
+
+.flavor-form-grupo label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.flavor-form-grupo input[type="text"],
+.flavor-form-grupo input[type="number"],
+.flavor-form-grupo select,
+.flavor-form-grupo textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.flavor-form-grupo input:focus,
+.flavor-form-grupo select:focus,
+.flavor-form-grupo textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+.flavor-form-acciones {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.flavor-btn-sm {
+    padding: 0.4rem 0.875rem;
+    font-size: 0.875rem;
+}
+
+.flavor-btn-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1.05rem;
+}
+
+.flavor-btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #fff;
+}
+
+.flavor-btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    transform: translateY(-1px);
+}
+
+.flavor-btn-outline {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+.flavor-btn-outline:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.flavor-btn-success {
+    background: #22c55e;
+    color: #fff;
+}
+
+.flavor-btn-ubicacion {
+    margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   Utils
+   ========================================================================== */
+.flavor-panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.flavor-panel-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    color: #1e293b;
+}
+
+.flavor-vacio {
+    text-align: center;
+    color: #64748b;
+    padding: 2rem;
+}
+
+.flavor-aviso {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    color: #92400e;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.flavor-error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.flavor-badge {
+    display: inline-flex;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.flavor-badge-outline {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+}
+
+.flavor-badge-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.flavor-badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 640px) {
+    .flavor-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flavor-prestamo-activo {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .flavor-prestamo-acciones {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .flavor-estaciones-grid,
+    .flavor-bicicletas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flavor-historial-item {
+        flex-wrap: wrap;
+    }
+
+    .flavor-historial-datos {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}

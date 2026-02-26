@@ -22,6 +22,9 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+    use Flavor_Module_Integration_Consumer;
+
     /**
      * Tipos de círculos de cuidado
      */
@@ -96,9 +99,35 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia', 'recetas', 'biblioteca'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_circulos_cuidados',
+                'context' => 'normal',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
         // Custom Post Types
         add_action('init', [$this, 'registrar_post_types']);
         add_action('init', [$this, 'registrar_taxonomias']);
@@ -131,15 +160,279 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
         // Assets
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Panel Unificado Admin
+        $this->registrar_en_panel_unificado();
+
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs() {
+        $tab_file = dirname(__FILE__) . '/class-circulos-cuidados-dashboard-tab.php';
+        if (file_exists($tab_file)) {
+            require_once $tab_file;
+            if (class_exists('Flavor_Circulos_Cuidados_Dashboard_Tab')) {
+                Flavor_Circulos_Cuidados_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Registra rutas REST API
+     */
+    public function register_rest_routes(): void {
+        $namespace = 'flavor/v1';
+
+        // Listar círculos
+        register_rest_route($namespace, '/circulos-cuidados', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_circulos'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Obtener círculo
+        register_rest_route($namespace, '/circulos-cuidados/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_circulo'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Necesidades abiertas
+        register_rest_route($namespace, '/circulos-cuidados/necesidades', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_necesidades'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Mis cuidados
+        register_rest_route($namespace, '/circulos-cuidados/mis-cuidados', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_mis_cuidados'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+    }
+
+    /**
+     * Verifica si el usuario está logueado
+     */
+    public function check_user_logged_in(): bool {
+        return is_user_logged_in();
+    }
+
+    /**
+     * API: Obtener círculos
+     */
+    public function api_get_circulos(\WP_REST_Request $request): \WP_REST_Response {
+        $args = [
+            'post_type' => 'cc_circulo',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+        ];
+
+        if ($tipo = $request->get_param('tipo')) {
+            $args['meta_query'] = [['key' => '_cc_tipo', 'value' => $tipo]];
+        }
+
+        $query = new \WP_Query($args);
+        $circulos = [];
+
+        foreach ($query->posts as $post) {
+            $miembros = get_post_meta($post->ID, '_cc_miembros', true) ?: [];
+            $circulos[] = [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'tipo' => get_post_meta($post->ID, '_cc_tipo', true),
+                'zona' => get_post_meta($post->ID, '_cc_zona', true),
+                'miembros' => count($miembros),
+            ];
+        }
+
+        return new \WP_REST_Response(['circulos' => $circulos, 'total' => $query->found_posts]);
+    }
+
+    /**
+     * API: Obtener círculo
+     */
+    public function api_get_circulo(\WP_REST_Request $request): \WP_REST_Response {
+        $circulo_id = $request->get_param('id');
+        $circulo = get_post($circulo_id);
+
+        if (!$circulo || $circulo->post_type !== 'cc_circulo') {
+            return new \WP_REST_Response(['error' => 'Círculo no encontrado'], 404);
+        }
+
+        $miembros = get_post_meta($circulo_id, '_cc_miembros', true) ?: [];
+
+        return new \WP_REST_Response([
+            'id' => $circulo->ID,
+            'titulo' => $circulo->post_title,
+            'descripcion' => $circulo->post_content,
+            'tipo' => get_post_meta($circulo_id, '_cc_tipo', true),
+            'zona' => get_post_meta($circulo_id, '_cc_zona', true),
+            'miembros' => count($miembros),
+            'max_miembros' => get_post_meta($circulo_id, '_cc_max_miembros', true),
+        ]);
+    }
+
+    /**
+     * API: Obtener necesidades
+     */
+    public function api_get_necesidades(\WP_REST_Request $request): \WP_REST_Response {
+        $args = [
+            'post_type' => 'cc_necesidad',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+            'meta_query' => [['key' => '_cc_estado', 'value' => ['abierta', 'en_proceso'], 'compare' => 'IN']],
+        ];
+
+        $query = new \WP_Query($args);
+        $necesidades = [];
+
+        foreach ($query->posts as $post) {
+            $necesidades[] = [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'urgencia' => get_post_meta($post->ID, '_cc_urgencia', true),
+                'estado' => get_post_meta($post->ID, '_cc_estado', true),
+                'horas_necesarias' => get_post_meta($post->ID, '_cc_horas_necesarias', true),
+            ];
+        }
+
+        return new \WP_REST_Response(['necesidades' => $necesidades, 'total' => $query->found_posts]);
+    }
+
+    /**
+     * API: Mis cuidados
+     */
+    public function api_get_mis_cuidados(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+        $stats = $this->get_estadisticas_usuario($user_id);
+
+        return new \WP_REST_Response($stats);
+    }
+
+    /**
+     * Configuración del admin para el panel unificado
+     */
+    public function get_admin_config(): array {
+        return [
+            'paginas' => [
+                [
+                    'slug' => 'circulos-cuidados',
+                    'titulo' => __('Círculos de Cuidados', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'cc-circulos',
+                    'titulo' => __('Círculos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_circulos'],
+                ],
+                [
+                    'slug' => 'cc-necesidades',
+                    'titulo' => __('Necesidades', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_necesidades'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Render: Dashboard admin
+     */
+    public function render_admin_dashboard(): void {
+        $circulos = wp_count_posts('cc_circulo');
+        $necesidades = wp_count_posts('cc_necesidad');
+        ?>
+        <div class="wrap flavor-admin-circulos">
+            <h1><?php esc_html_e('Círculos de Cuidados', 'flavor-chat-ia'); ?></h1>
+            <div class="flavor-stats-grid">
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-heart"></span>
+                    <h3><?php echo esc_html($circulos->publish ?? 0); ?></h3>
+                    <p><?php esc_html_e('Círculos activos', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-stat-card">
+                    <span class="dashicons dashicons-sos"></span>
+                    <h3><?php echo esc_html($necesidades->publish ?? 0); ?></h3>
+                    <p><?php esc_html_e('Necesidades abiertas', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Listado de círculos
+     */
+    public function render_admin_circulos(): void {
+        $circulos = get_posts(['post_type' => 'cc_circulo', 'posts_per_page' => 50, 'post_status' => 'any']);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Círculos', 'flavor-chat-ia'); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=cc_circulo'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            </h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Zona', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($circulos as $circulo): $tipo = get_post_meta($circulo->ID, '_cc_tipo', true); $miembros = get_post_meta($circulo->ID, '_cc_miembros', true) ?: []; ?>
+                    <tr>
+                        <td><a href="<?php echo get_edit_post_link($circulo->ID); ?>"><?php echo esc_html($circulo->post_title); ?></a></td>
+                        <td><?php echo esc_html(self::TIPOS_CIRCULO[$tipo]['nombre'] ?? $tipo); ?></td>
+                        <td><?php echo esc_html(get_post_meta($circulo->ID, '_cc_zona', true)); ?></td>
+                        <td><?php echo count($miembros); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render: Listado de necesidades
+     */
+    public function render_admin_necesidades(): void {
+        $necesidades = get_posts(['post_type' => 'cc_necesidad', 'posts_per_page' => 50, 'post_status' => 'any']);
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Necesidades de Cuidado', 'flavor-chat-ia'); ?></h1>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ($necesidades as $nec): ?>
+                    <tr>
+                        <td><a href="<?php echo get_edit_post_link($nec->ID); ?>"><?php echo esc_html($nec->post_title); ?></a></td>
+                        <td><?php echo esc_html(get_post_meta($nec->ID, '_cc_urgencia', true)); ?></td>
+                        <td><?php echo esc_html(get_post_meta($nec->ID, '_cc_estado', true)); ?></td>
+                        <td><?php echo esc_html(get_post_meta($nec->ID, '_cc_horas_necesarias', true)); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
     }
 
     /**
      * Registra shortcodes del módulo
      */
     public function register_shortcodes() {
+        // Shortcodes originales
         add_shortcode('circulos_cuidados', [$this, 'shortcode_listado']);
         add_shortcode('mis_cuidados', [$this, 'shortcode_mis_cuidados']);
         add_shortcode('necesidades_cuidados', [$this, 'shortcode_necesidades']);
+
+        // Aliases con prefijo flavor_
+        add_shortcode('flavor_circulos_listado', [$this, 'shortcode_listado']);
+        add_shortcode('flavor_circulos_mis_cuidados', [$this, 'shortcode_mis_cuidados']);
+        add_shortcode('flavor_circulos_necesidades', [$this, 'shortcode_necesidades']);
     }
 
     /**
@@ -409,7 +702,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             $user = get_userdata($user_id);
             if (!$user) continue;
 
-            $es_coordinador = ($user_id == $coordinador);
+            $es_coordinador = ((int) $user_id === (int) $coordinador);
             $rol = $es_coordinador ? __('Coordinador', 'flavor-chat-ia') : __('Miembro', 'flavor-chat-ia');
 
             echo '<li>';
@@ -614,7 +907,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             $miembros = get_post_meta($circulo_id, '_cc_miembros', true) ?: [];
 
             foreach ($miembros as $miembro_id) {
-                if ($miembro_id == $user_id) continue;
+                if ((int) $miembro_id === $user_id) continue;
 
                 $nc->send(
                     $miembro_id,
@@ -859,5 +1152,22 @@ Los Círculos de Cuidados son redes de apoyo mutuo para situaciones vitales.
 - La ayuda se da sin esperar retorno inmediato
 - Se respeta la dignidad de quien cuida y quien es cuidado
 KNOWLEDGE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        return [
+            'success' => false,
+            'message' => __('Acción no implementada', 'flavor-chat-ia'),
+        ];
     }
 }

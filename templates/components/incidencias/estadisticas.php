@@ -13,144 +13,160 @@ $descripcion_estadisticas = $descripcion_estadisticas ?? 'Métricas y tendencias
 $mostrar_graficos = $mostrar_graficos ?? true;
 $mostrar_tendencias = $mostrar_tendencias ?? true;
 
+// Obtener datos reales de la base de datos
+global $wpdb;
+$tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+$tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_incidencias)) === $tabla_incidencias;
+
+// Valores por defecto
+$total = 0;
+$resueltas = 0;
+$pendientes = 0;
+$en_proceso = 0;
+$incidencias_por_categoria = [];
+
+if ($tabla_existe) {
+    $total = intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado != 'eliminada'"));
+    $resueltas = intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado IN ('resuelta', 'resolved', 'cerrada', 'closed')"));
+    $pendientes = intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado IN ('pendiente', 'pending')"));
+    $en_proceso = intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado IN ('en_proceso', 'in_progress')"));
+
+    // Obtener incidencias por categoría/tipo
+    $categorias_db = $wpdb->get_results(
+        "SELECT tipo as categoria,
+                COUNT(*) as cantidad,
+                SUM(CASE WHEN estado IN ('resuelta', 'resolved', 'cerrada', 'closed') THEN 1 ELSE 0 END) as resueltas
+         FROM $tabla_incidencias
+         WHERE estado != 'eliminada' AND tipo IS NOT NULL AND tipo != ''
+         GROUP BY tipo
+         ORDER BY cantidad DESC
+         LIMIT 6"
+    );
+
+    $colores_categorias = ['#FF5722', '#FFC107', '#4CAF50', '#F44336', '#2196F3', '#9C27B0'];
+    $indice_color = 0;
+
+    foreach ($categorias_db as $cat) {
+        $porcentaje = $total > 0 ? ($cat->cantidad / $total) * 100 : 0;
+        $incidencias_por_categoria[] = [
+            'categoria' => ucfirst($cat->categoria),
+            'cantidad' => intval($cat->cantidad),
+            'porcentaje' => round($porcentaje, 1),
+            'resueltas' => intval($cat->resueltas),
+            'color' => $colores_categorias[$indice_color % count($colores_categorias)],
+        ];
+        $indice_color++;
+    }
+}
+
+// Calcular porcentajes
+$porcentaje_resueltas = $total > 0 ? round(($resueltas / $total) * 100, 1) : 0;
+$porcentaje_pendientes = $total > 0 ? round(($pendientes / $total) * 100, 1) : 0;
+$porcentaje_en_proceso = $total > 0 ? round(($en_proceso / $total) * 100, 1) : 0;
+
 // Datos de métricas principales
 $metricas_principales = [
     [
         'id' => 'total',
-        'titulo' => 'Total Incidencias',
-        'valor' => '156',
-        'unidad' => 'reportes',
-        'cambio_porcentaje' => 12,
-        'cambio_tipo' => 'aumento',
+        'titulo' => __('Total Incidencias', 'flavor-chat-ia'),
+        'valor' => $total,
+        'unidad' => __('reportes', 'flavor-chat-ia'),
         'icono' => '📊',
         'color' => 'gray',
         'tendencia' => 'up',
     ],
     [
         'id' => 'resueltas',
-        'titulo' => 'Incidencias Resueltas',
-        'valor' => '76',
-        'unidad' => 'completadas',
-        'cambio_porcentaje' => 8,
-        'cambio_tipo' => 'aumento',
+        'titulo' => __('Incidencias Resueltas', 'flavor-chat-ia'),
+        'valor' => $resueltas,
+        'unidad' => __('completadas', 'flavor-chat-ia'),
         'icono' => '✅',
         'color' => 'green',
         'tendencia' => 'up',
-        'porcentaje_total' => 48.7,
+        'porcentaje_total' => $porcentaje_resueltas,
     ],
     [
         'id' => 'pendientes',
-        'titulo' => 'Incidencias Pendientes',
-        'valor' => '42',
-        'unidad' => 'sin resolver',
-        'cambio_porcentaje' => 3,
-        'cambio_tipo' => 'reduccion',
+        'titulo' => __('Incidencias Pendientes', 'flavor-chat-ia'),
+        'valor' => $pendientes,
+        'unidad' => __('sin resolver', 'flavor-chat-ia'),
         'icono' => '⏳',
         'color' => 'yellow',
         'tendencia' => 'down',
-        'porcentaje_total' => 26.9,
+        'porcentaje_total' => $porcentaje_pendientes,
     ],
     [
         'id' => 'en_proceso',
-        'titulo' => 'En Proceso',
-        'valor' => '38',
-        'unidad' => 'en curso',
-        'cambio_porcentaje' => 5,
-        'cambio_tipo' => 'aumento',
+        'titulo' => __('En Proceso', 'flavor-chat-ia'),
+        'valor' => $en_proceso,
+        'unidad' => __('en curso', 'flavor-chat-ia'),
         'icono' => '🔧',
         'color' => 'blue',
         'tendencia' => 'up',
-        'porcentaje_total' => 24.4,
+        'porcentaje_total' => $porcentaje_en_proceso,
     ],
 ];
 
-// Tiempo promedio de resolución
+// Métricas temporales (simplificadas sin datos históricos)
 $metricas_temporales = [
     [
-        'titulo' => 'Tiempo Promedio Resolución',
-        'valor' => '2.5h',
-        'subtitulo' => 'horas',
-        'comparativa' => 'vs 3.2h hace 30 días',
-        'icono' => '⏱️',
+        'titulo' => __('Tasa de Resolución', 'flavor-chat-ia'),
+        'valor' => $porcentaje_resueltas . '%',
+        'subtitulo' => '',
+        'comparativa' => sprintf(__('%d de %d incidencias', 'flavor-chat-ia'), $resueltas, $total),
+        'icono' => '📈',
         'color' => 'purple',
-        'mejora' => true,
-        'porcentaje_mejora' => 21.9,
+        'mejora' => $porcentaje_resueltas >= 50,
+        'porcentaje_mejora' => $porcentaje_resueltas,
     ],
     [
-        'titulo' => 'Tiempo Respuesta Inicial',
-        'valor' => '24',
-        'subtitulo' => 'minutos',
-        'comparativa' => 'vs 35 min hace 30 días',
+        'titulo' => __('En Gestión', 'flavor-chat-ia'),
+        'valor' => $en_proceso,
+        'subtitulo' => __('incidencias', 'flavor-chat-ia'),
+        'comparativa' => __('Actualmente en proceso', 'flavor-chat-ia'),
         'icono' => '⚡',
         'color' => 'orange',
         'mejora' => true,
-        'porcentaje_mejora' => 31.4,
+        'porcentaje_mejora' => $porcentaje_en_proceso,
     ],
     [
-        'titulo' => 'Satisfacción Ciudadana',
-        'valor' => '4.2',
-        'subtitulo' => 'de 5 estrellas',
-        'comparativa' => 'basado en 89 valoraciones',
-        'icono' => '⭐',
+        'titulo' => __('Pendientes', 'flavor-chat-ia'),
+        'valor' => $pendientes,
+        'subtitulo' => __('incidencias', 'flavor-chat-ia'),
+        'comparativa' => __('Esperando atención', 'flavor-chat-ia'),
+        'icono' => '⏳',
         'color' => 'amber',
-        'mejora' => true,
-        'porcentaje_mejora' => 5.1,
+        'mejora' => $pendientes == 0,
+        'porcentaje_mejora' => 100 - $porcentaje_pendientes,
     ],
 ];
 
-// Datos por categoría
-$incidencias_por_categoria = [
-    [
-        'categoria' => 'Via Publica',
-        'cantidad' => 38,
-        'porcentaje' => 24.4,
-        'resueltas' => 18,
-        'color' => '#FF5722',
-    ],
-    [
-        'categoria' => 'Alumbrado',
-        'cantidad' => 31,
-        'porcentaje' => 19.9,
-        'resueltas' => 22,
-        'color' => '#FFC107',
-    ],
-    [
-        'categoria' => 'Limpieza',
-        'cantidad' => 28,
-        'porcentaje' => 17.9,
-        'resueltas' => 25,
-        'color' => '#4CAF50',
-    ],
-    [
-        'categoria' => 'Vandalismo',
-        'cantidad' => 24,
-        'porcentaje' => 15.4,
-        'resueltas' => 8,
-        'color' => '#F44336',
-    ],
-    [
-        'categoria' => 'Mobiliario',
-        'cantidad' => 18,
-        'porcentaje' => 11.5,
-        'resueltas' => 3,
-        'color' => '#2196F3',
-    ],
-    [
-        'categoria' => 'Trafico',
-        'cantidad' => 17,
-        'porcentaje' => 10.9,
-        'resueltas' => 17,
-        'color' => '#9C27B0',
-    ],
-];
+// Tendencias - obtener de la DB si hay datos
+$tendencias_ultimas_semanas = [];
+if ($tabla_existe) {
+    for ($i = 3; $i >= 0; $i--) {
+        $fecha_inicio = date('Y-m-d', strtotime("-$i weeks monday"));
+        $fecha_fin = date('Y-m-d', strtotime("-$i weeks sunday"));
 
-// Tendencias últimas semanas
-$tendencias_ultimas_semanas = [
-    ['semana' => 'Semana 1', 'reportadas' => 18, 'resueltas' => 12],
-    ['semana' => 'Semana 2', 'reportadas' => 22, 'resueltas' => 15],
-    ['semana' => 'Semana 3', 'reportadas' => 26, 'resueltas' => 19],
-    ['semana' => 'Semana 4', 'reportadas' => 24, 'resueltas' => 20],
-];
+        $reportadas = intval($wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_incidencias WHERE DATE(created_at) BETWEEN %s AND %s",
+            $fecha_inicio, $fecha_fin
+        )));
+
+        $resueltas_semana = intval($wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_incidencias
+             WHERE estado IN ('resuelta', 'resolved', 'cerrada', 'closed')
+             AND DATE(created_at) BETWEEN %s AND %s",
+            $fecha_inicio, $fecha_fin
+        )));
+
+        $tendencias_ultimas_semanas[] = [
+            'semana' => sprintf(__('Semana %d', 'flavor-chat-ia'), 4 - $i),
+            'reportadas' => $reportadas,
+            'resueltas' => $resueltas_semana,
+        ];
+    }
+}
 ?>
 
 <section class="flavor-component py-16 bg-white">
@@ -248,6 +264,7 @@ $tendencias_ultimas_semanas = [
         </div>
 
         <!-- Incidencias por Categoría -->
+        <?php if (!empty($incidencias_por_categoria)): ?>
         <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-12">
             <h3 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Incidencias por Categoría', 'flavor-chat-ia'); ?></h3>
 
@@ -272,15 +289,16 @@ $tendencias_ultimas_semanas = [
                         <div class="flex items-center gap-2 mt-2 text-xs text-gray-600">
                             <span><?php echo esc_html__('Resueltas:', 'flavor-chat-ia'); ?></span>
                             <span class="font-semibold text-green-600"><?php echo esc_html($categoria['resueltas']); ?>/<?php echo esc_html($categoria['cantidad']); ?></span>
-                            <span class="text-gray-500">(<?php echo number_format(($categoria['resueltas'] / $categoria['cantidad']) * 100, 0); ?>%)</span>
+                            <span class="text-gray-500">(<?php echo $categoria['cantidad'] > 0 ? number_format(($categoria['resueltas'] / $categoria['cantidad']) * 100, 0) : 0; ?>%)</span>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- Tendencias de Últimas Semanas -->
-        <?php if ($mostrar_tendencias): ?>
+        <?php if ($mostrar_tendencias && !empty($tendencias_ultimas_semanas)): ?>
             <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-12">
                 <h3 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Últimas 4 Semanas', 'flavor-chat-ia'); ?></h3>
 
@@ -296,7 +314,7 @@ $tendencias_ultimas_semanas = [
                         </thead>
                         <tbody>
                             <?php foreach ($tendencias_ultimas_semanas as $semana):
-                                $tasa_resolucion = ($semana['resueltas'] / $semana['reportadas']) * 100;
+                                $tasa_resolucion = $semana['reportadas'] > 0 ? ($semana['resueltas'] / $semana['reportadas']) * 100 : 0;
                             ?>
                                 <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                     <td class="py-3 px-4 text-gray-900 font-medium"><?php echo esc_html($semana['semana']); ?></td>

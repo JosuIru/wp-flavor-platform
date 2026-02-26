@@ -39,9 +39,17 @@ $historial = $historial ?? [];
                     <div class="flex flex-wrap items-center gap-2 mb-4">
                         <?php
                         $estado_config = [
-                            'pendiente' => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icono' => '🔴', 'label' => 'Pendiente'],
-                            'en_proceso' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'icono' => '🟡', 'label' => 'En proceso'],
-                            'resuelto' => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icono' => '🟢', 'label' => 'Resuelta'],
+                            // Estados en español
+                            'pendiente' => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icono' => '🔴', 'label' => __('Pendiente', 'flavor-chat-ia')],
+                            'en_proceso' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'icono' => '🟡', 'label' => __('En proceso', 'flavor-chat-ia')],
+                            'resuelta' => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icono' => '🟢', 'label' => __('Resuelta', 'flavor-chat-ia')],
+                            'resuelto' => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icono' => '🟢', 'label' => __('Resuelta', 'flavor-chat-ia')],
+                            'cerrada' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-700', 'icono' => '⚪', 'label' => __('Cerrada', 'flavor-chat-ia')],
+                            // Estados en inglés (para datos existentes)
+                            'pending' => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icono' => '🔴', 'label' => __('Pendiente', 'flavor-chat-ia')],
+                            'in_progress' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'icono' => '🟡', 'label' => __('En proceso', 'flavor-chat-ia')],
+                            'resolved' => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icono' => '🟢', 'label' => __('Resuelta', 'flavor-chat-ia')],
+                            'closed' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-700', 'icono' => '⚪', 'label' => __('Cerrada', 'flavor-chat-ia')],
                         ];
                         $estado = $incidencia['estado'] ?? 'pendiente';
                         $config = $estado_config[$estado] ?? $estado_config['pendiente'];

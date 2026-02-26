@@ -5,6 +5,7 @@
  * Registra shortcodes automáticamente para cada módulo activo
  *
  * @package FlavorChatIA
+ * @version 1.1.0
  */
 
 if (!defined('ABSPATH')) {
@@ -310,6 +311,136 @@ class Flavor_Module_Shortcodes {
         $this->register_fallback_shortcode('flavor_newsletter_darse_baja', 'email-marketing', 'darse-baja');
         $this->register_fallback_shortcode('flavor_newsletter_formulario', 'email-marketing', 'formulario-suscripcion');
         $this->register_fallback_shortcode('flavor_newsletter_preferencias', 'email-marketing', 'preferencias');
+
+        // === ALIASES SIN PREFIJO (usado en dynamic-pages) ===
+        // Banco Tiempo
+        $this->register_fallback_shortcode('banco_tiempo_mi_saldo', 'banco-tiempo', 'mi-saldo');
+        $this->register_fallback_shortcode('banco_tiempo_mis_intercambios', 'banco-tiempo', 'intercambios');
+        $this->register_fallback_shortcode('banco_tiempo_ofrecer', 'banco-tiempo', 'ofrecer');
+        $this->register_fallback_shortcode('banco_tiempo_ranking', 'banco-tiempo', 'ranking-comunidad');
+        $this->register_fallback_shortcode('banco_tiempo_servicios', 'banco-tiempo', 'servicios');
+
+        // Carpooling
+        $this->register_fallback_shortcode('carpooling_buscar', 'carpooling', 'buscar');
+        $this->register_fallback_shortcode('carpooling_busqueda_rapida', 'carpooling', 'busqueda-rapida');
+        $this->register_fallback_shortcode('carpooling_mis_reservas', 'carpooling', 'mis-reservas');
+        $this->register_fallback_shortcode('carpooling_mis_viajes', 'carpooling', 'mis-viajes');
+        $this->register_fallback_shortcode('carpooling_proximo_viaje', 'carpooling', 'proximo-viaje');
+        $this->register_fallback_shortcode('carpooling_publicar', 'carpooling', 'publicar');
+
+        // Avisos
+        $this->register_fallback_shortcode('avisos_urgentes', 'avisos-municipales', 'urgentes');
+        $this->register_fallback_shortcode('avisos_activos', 'avisos-municipales', 'activos');
+        $this->register_fallback_shortcode('historial_avisos', 'avisos-municipales', 'historial');
+        $this->register_fallback_shortcode('suscribirse_avisos', 'avisos-municipales', 'suscribirse');
+
+        // Ayuda Vecinal
+        $this->register_fallback_shortcode('ayuda_vecinal_cercana', 'ayuda-vecinal', 'cercana');
+
+        // Bicicletas
+        $this->register_fallback_shortcode('bicicletas_estaciones_cercanas', 'bicicletas-compartidas', 'estaciones');
+        $this->register_fallback_shortcode('bicicletas_prestamo_actual', 'bicicletas-compartidas', 'prestamo-actual');
+
+        // Chat
+        $this->register_fallback_shortcode('chat_grupos_sin_leer', 'chat-grupos', 'sin-leer');
+        $this->register_fallback_shortcode('chat_mensajes_sin_leer', 'chat-interno', 'sin-leer');
+
+        // Colectivos
+        $this->register_fallback_shortcode('colectivos_mi_actividad', 'colectivos', 'mi-actividad');
+
+        // Compostaje
+        $this->register_fallback_shortcode('compostaje_cercana', 'compostaje', 'cercana');
+        $this->register_fallback_shortcode('compostaje_mi_balance', 'compostaje', 'mi-balance');
+
+        // Cursos
+        $this->register_fallback_shortcode('cursos_mi_progreso', 'cursos', 'mi-progreso');
+        $this->register_fallback_shortcode('cursos_mis_inscripciones', 'cursos', 'mis-inscripciones');
+
+        // Eventos
+        $this->register_fallback_shortcode('eventos_proximo', 'eventos', 'proximo');
+
+        // Fichaje
+        $this->register_fallback_shortcode('fichaje_boton', 'fichaje-empleados', 'boton');
+
+        // Grupos Consumo
+        $this->register_fallback_shortcode('gc_calendario', 'grupos-consumo', 'calendario');
+        $this->register_fallback_shortcode('gc_grupos_lista', 'grupos-consumo', 'grupos-lista');
+        $this->register_fallback_shortcode('gc_historial', 'grupos-consumo', 'historial');
+        $this->register_fallback_shortcode('gc_panel', 'grupos-consumo', 'panel');
+        $this->register_fallback_shortcode('gc_suscripciones', 'grupos-consumo', 'suscripciones');
+
+        // Huertos
+        $this->register_fallback_shortcode('huertos_calendario', 'huertos-urbanos', 'calendario');
+
+        // Incidencias
+        $this->register_fallback_shortcode('incidencias_mis_reportes', 'incidencias', 'mis-reportes');
+        $this->register_fallback_shortcode('incidencias_resumen_estado', 'incidencias', 'resumen-estado');
+
+        // Marketplace
+        $this->register_fallback_shortcode('marketplace_mis_anuncios', 'marketplace', 'mis-anuncios');
+        $this->register_fallback_shortcode('marketplace_mis_stats', 'marketplace', 'mis-stats');
+
+        // Parking
+        $this->register_fallback_shortcode('parking_ocupacion_actual', 'parkings', 'ocupacion-actual');
+        $this->register_fallback_shortcode('parking_reserva_activa', 'parkings', 'reserva-activa');
+
+        // Podcast
+        $this->register_fallback_shortcode('podcast_lista_episodios', 'podcast', 'lista-episodios');
+        $this->register_fallback_shortcode('podcast_player', 'podcast', 'player');
+        $this->register_fallback_shortcode('podcast_series', 'podcast', 'series');
+        $this->register_fallback_shortcode('podcast_suscribirse', 'podcast', 'suscribirse');
+        $this->register_fallback_shortcode('podcast_ultimo_episodio', 'podcast', 'ultimo-episodio');
+
+        // Presupuestos participativos
+        $this->register_fallback_shortcode('presupuesto_estado_actual', 'presupuestos-participativos', 'estado-actual');
+
+        // Radio
+        $this->register_fallback_shortcode('radio_en_directo', 'radio', 'en-directo');
+
+        // Reciclaje
+        $this->register_fallback_shortcode('reciclaje_calendario', 'reciclaje', 'calendario');
+        $this->register_fallback_shortcode('reciclaje_mi_impacto', 'reciclaje', 'mi-impacto');
+        $this->register_fallback_shortcode('reciclaje_punto_cercano', 'reciclaje', 'punto-cercano');
+
+        // Red Social
+        $this->register_fallback_shortcode('rs_mi_actividad', 'red-social', 'mi-actividad');
+        $this->register_fallback_shortcode('rs_notificaciones', 'red-social', 'notificaciones');
+
+        // Reservas
+        $this->register_fallback_shortcode('reservas_calendario_mini', 'reservas', 'calendario-mini');
+        $this->register_fallback_shortcode('reservas_proxima', 'reservas', 'proxima');
+
+        // Socios
+        $this->register_fallback_shortcode('socios_mi_carnet', 'socios', 'mi-carnet');
+
+        // Talleres
+        $this->register_fallback_shortcode('talleres_proximo', 'talleres', 'proximo');
+
+        // Trading
+        $this->register_fallback_shortcode('trading_balance', 'trading-ia', 'balance');
+
+        // Tramites
+        $this->register_fallback_shortcode('catalogo_tramites', 'tramites', 'catalogo');
+        $this->register_fallback_shortcode('iniciar_tramite', 'tramites', 'iniciar');
+        $this->register_fallback_shortcode('mis_expedientes', 'tramites', 'mis-expedientes');
+        $this->register_fallback_shortcode('tramites_pendientes', 'tramites', 'pendientes');
+
+        // Transparencia
+        $this->register_fallback_shortcode('transparencia_actas', 'transparencia', 'actas');
+        $this->register_fallback_shortcode('transparencia_indicadores', 'transparencia', 'indicadores');
+        $this->register_fallback_shortcode('transparencia_portal', 'transparencia', 'portal');
+        $this->register_fallback_shortcode('transparencia_presupuesto_actual', 'transparencia', 'presupuesto-actual');
+        $this->register_fallback_shortcode('transparencia_presupuesto_resumen', 'transparencia', 'presupuesto-resumen');
+        $this->register_fallback_shortcode('transparencia_ultimos_gastos', 'transparencia', 'ultimos-gastos');
+
+        // Espacios
+        $this->register_fallback_shortcode('espacios_calendario_mini', 'espacios-comunes', 'calendario-mini');
+        $this->register_fallback_shortcode('espacios_proxima_reserva', 'espacios-comunes', 'proxima-reserva');
+        $this->register_fallback_shortcode('espacios_reservar', 'espacios-comunes', 'reservar');
+
+        // Otros
+        $this->register_fallback_shortcode('votaciones_activas', 'participacion', 'votaciones-activas');
+        $this->register_fallback_shortcode('mis_propuestas_resumen', 'participacion', 'mis-propuestas-resumen');
     }
 
     /**
@@ -744,7 +875,24 @@ class Flavor_Module_Shortcodes {
         }
 
         $loader = Flavor_Chat_Module_Loader::get_instance();
-        $instance = $loader->get_module($atts['module']);
+        $module_name = $atts['module'];
+        $instance = $loader->get_module($module_name);
+
+        // Si no encuentra el módulo, intentar variaciones (singular/plural)
+        if (!$instance) {
+            $variaciones = [
+                $module_name . 's',           // foro -> foros
+                rtrim($module_name, 's'),     // foros -> foro
+                $module_name . 'es',          // taller -> talleres
+                preg_replace('/es$/', '', $module_name), // talleres -> taller
+            ];
+            foreach ($variaciones as $var) {
+                $instance = $loader->get_module($var);
+                if ($instance) {
+                    break;
+                }
+            }
+        }
 
         if (!$instance) {
             return '<div class="flavor-error">' . sprintf(__('Error: Módulo "%s" no encontrado', 'flavor-chat-ia'), $atts['module']) . '</div>';
@@ -1336,115 +1484,126 @@ class Flavor_Module_Shortcodes {
 
     /**
      * Obtiene datos de ejemplo para un módulo
+     *
+     * NOTA: Datos de demostración eliminados (2026-02-23)
+     * Los shortcodes ahora muestran "Sin contenido" en lugar de datos falsos.
+     * Para habilitar modo demo, activar la opción 'flavor_demo_mode'.
+     *
+     * @see docs/DATOS-DEMO-HARDCODEADOS.md
      */
     private function get_sample_data($modulo_id) {
+        // Modo demo desactivado por defecto - devolver array vacío
+        if (!get_option('flavor_demo_mode', false)) {
+            return [];
+        }
+
         // Normalizar ID de módulo
         $modulo_normalizado = str_replace('-', '_', $modulo_id);
 
         switch ($modulo_normalizado) {
             case 'eventos':
                 return [
-                    ['id'=>1, 'titulo'=>'Conferencia de Tecnología', 'tipo'=>'conferencia', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+3 days')), 'ubicacion'=>'Centro de Convenciones', 'precio'=>15.00, 'aforo_maximo'=>100, 'inscritos_count'=>45, 'estado'=>'publicado', 'descripcion'=>'Últimas tendencias en tecnología', 'icon'=>'dashicons-calendar-alt'],
-                    ['id'=>2, 'titulo'=>'Taller de Cerámica', 'tipo'=>'taller', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+5 days')), 'ubicacion'=>'Sala de Artes', 'precio'=>25.00, 'aforo_maximo'=>20, 'inscritos_count'=>18, 'estado'=>'publicado', 'descripcion'=>'Técnicas de cerámica artesanal', 'icon'=>'dashicons-art'],
-                    ['id'=>3, 'titulo'=>'Charla: Alimentación Saludable', 'tipo'=>'charla', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+7 days')), 'ubicacion'=>'Biblioteca', 'precio'=>0, 'aforo_maximo'=>50, 'inscritos_count'=>12, 'estado'=>'publicado', 'descripcion'=>'Consejos para una dieta equilibrada', 'icon'=>'dashicons-heart'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Conferencia de Tecnología', 'tipo'=>'conferencia', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+3 days')), 'ubicacion'=>'Centro de Convenciones', 'precio'=>15.00, 'aforo_maximo'=>100, 'inscritos_count'=>45, 'estado'=>'publicado', 'descripcion'=>'Últimas tendencias en tecnología', 'icon'=>'dashicons-calendar-alt'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Taller de Cerámica', 'tipo'=>'taller', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+5 days')), 'ubicacion'=>'Sala de Artes', 'precio'=>25.00, 'aforo_maximo'=>20, 'inscritos_count'=>18, 'estado'=>'publicado', 'descripcion'=>'Técnicas de cerámica artesanal', 'icon'=>'dashicons-art'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Charla: Alimentación Saludable', 'tipo'=>'charla', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+7 days')), 'ubicacion'=>'Biblioteca', 'precio'=>0, 'aforo_maximo'=>50, 'inscritos_count'=>12, 'estado'=>'publicado', 'descripcion'=>'Consejos para una dieta equilibrada', 'icon'=>'dashicons-heart'],
                 ];
 
             case 'talleres':
                 return [
-                    ['id'=>1, 'titulo'=>'Taller de Fotografía', 'tipo'=>'Arte', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+5 days')), 'plazas_disponibles'=>15, 'precio'=>30.00, 'descripcion'=>'Aprende técnicas de fotografía digital', 'icon'=>'dashicons-camera'],
-                    ['id'=>2, 'titulo'=>'Cocina Mediterránea', 'tipo'=>'Gastronomía', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+10 days')), 'plazas_disponibles'=>12, 'precio'=>40.00, 'descripcion'=>'Recetas tradicionales del Mediterráneo', 'icon'=>'dashicons-carrot'],
-                    ['id'=>3, 'titulo'=>'Yoga para Principiantes', 'tipo'=>'Bienestar', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+7 days')), 'plazas_disponibles'=>20, 'precio'=>15.00, 'descripcion'=>'Inicia tu práctica de yoga', 'icon'=>'dashicons-universal-access'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Taller de Fotografía', 'tipo'=>'Arte', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+5 days')), 'plazas_disponibles'=>15, 'precio'=>30.00, 'descripcion'=>'Aprende técnicas de fotografía digital', 'icon'=>'dashicons-camera'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Cocina Mediterránea', 'tipo'=>'Gastronomía', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+10 days')), 'plazas_disponibles'=>12, 'precio'=>40.00, 'descripcion'=>'Recetas tradicionales del Mediterráneo', 'icon'=>'dashicons-carrot'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Yoga para Principiantes', 'tipo'=>'Bienestar', 'fecha_inicio'=>date('Y-m-d H:i:s', strtotime('+7 days')), 'plazas_disponibles'=>20, 'precio'=>15.00, 'descripcion'=>'Inicia tu práctica de yoga', 'icon'=>'dashicons-universal-access'],
                 ];
 
             case 'grupos_consumo':
                 return [
-                    ['id'=>1, 'titulo'=>'Grupo Ecológico Norte', 'descripcion'=>'Productos ecológicos y de proximidad de agricultores locales', 'miembros'=>25, 'icon'=>'dashicons-carrot'],
-                    ['id'=>2, 'titulo'=>'Cooperativa Sur', 'descripcion'=>'Compra conjunta de productos frescos y de temporada', 'miembros'=>40, 'icon'=>'dashicons-store'],
-                    ['id'=>3, 'titulo'=>'Huerta Compartida', 'descripcion'=>'Verduras de nuestro propio huerto comunitario', 'miembros'=>18, 'icon'=>'dashicons-palmtree'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Grupo Ecológico Norte', 'descripcion'=>'Productos ecológicos y de proximidad de agricultores locales', 'miembros'=>25, 'icon'=>'dashicons-carrot'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Cooperativa Sur', 'descripcion'=>'Compra conjunta de productos frescos y de temporada', 'miembros'=>40, 'icon'=>'dashicons-store'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Huerta Compartida', 'descripcion'=>'Verduras de nuestro propio huerto comunitario', 'miembros'=>18, 'icon'=>'dashicons-palmtree'],
                 ];
 
             case 'bicicletas_compartidas':
                 return [
-                    ['id'=>1, 'titulo'=>'Estación Centro', 'descripcion'=>'Plaza Mayor, 12 bicicletas disponibles', 'disponibles'=>12, 'tipo'=>'estacion', 'icon'=>'dashicons-location'],
-                    ['id'=>2, 'titulo'=>'Estación Parque', 'descripcion'=>'Entrada principal del parque, 8 bicicletas', 'disponibles'=>8, 'tipo'=>'estacion', 'icon'=>'dashicons-location'],
-                    ['id'=>3, 'titulo'=>'Estación Universidad', 'descripcion'=>'Campus principal, 15 bicicletas', 'disponibles'=>15, 'tipo'=>'estacion', 'icon'=>'dashicons-location'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Estación Centro', 'descripcion'=>'Plaza Mayor, 12 bicicletas disponibles', 'disponibles'=>12, 'tipo'=>'estacion', 'icon'=>'dashicons-location'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Estación Parque', 'descripcion'=>'Entrada principal del parque, 8 bicicletas', 'disponibles'=>8, 'tipo'=>'estacion', 'icon'=>'dashicons-location'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Estación Universidad', 'descripcion'=>'Campus principal, 15 bicicletas', 'disponibles'=>15, 'tipo'=>'estacion', 'icon'=>'dashicons-location'],
                 ];
 
             case 'carpooling':
                 return [
-                    ['id'=>1, 'titulo'=>'Madrid → Barcelona', 'descripcion'=>'Salida a las 8:00, 3 plazas libres', 'fecha_inicio'=>date('Y-m-d', strtotime('+2 days')), 'precio'=>25.00, 'plazas'=>3, 'icon'=>'dashicons-car'],
-                    ['id'=>2, 'titulo'=>'Valencia → Alicante', 'descripcion'=>'Salida a las 10:00, 2 plazas libres', 'fecha_inicio'=>date('Y-m-d', strtotime('+1 day')), 'precio'=>12.00, 'plazas'=>2, 'icon'=>'dashicons-car'],
-                    ['id'=>3, 'titulo'=>'Sevilla → Córdoba', 'descripcion'=>'Salida a las 9:30, 4 plazas libres', 'fecha_inicio'=>date('Y-m-d', strtotime('+3 days')), 'precio'=>15.00, 'plazas'=>4, 'icon'=>'dashicons-car'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Madrid → Barcelona', 'descripcion'=>'Salida a las 8:00, 3 plazas libres', 'fecha_inicio'=>date('Y-m-d', strtotime('+2 days')), 'precio'=>25.00, 'plazas'=>3, 'icon'=>'dashicons-car'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Valencia → Alicante', 'descripcion'=>'Salida a las 10:00, 2 plazas libres', 'fecha_inicio'=>date('Y-m-d', strtotime('+1 day')), 'precio'=>12.00, 'plazas'=>2, 'icon'=>'dashicons-car'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Sevilla → Córdoba', 'descripcion'=>'Salida a las 9:30, 4 plazas libres', 'fecha_inicio'=>date('Y-m-d', strtotime('+3 days')), 'precio'=>15.00, 'plazas'=>4, 'icon'=>'dashicons-car'],
                 ];
 
             case 'biblioteca':
                 return [
-                    ['id'=>1, 'titulo'=>'El Quijote', 'descripcion'=>'Miguel de Cervantes - Clásico de la literatura española', 'tipo'=>'Novela', 'disponible'=>true, 'icon'=>'dashicons-book'],
-                    ['id'=>2, 'titulo'=>'1984', 'descripcion'=>'George Orwell - Distopía y control social', 'tipo'=>'Novela', 'disponible'=>true, 'icon'=>'dashicons-book'],
-                    ['id'=>3, 'titulo'=>'Cien años de soledad', 'descripcion'=>'Gabriel García Márquez - Realismo mágico', 'tipo'=>'Novela', 'disponible'=>false, 'icon'=>'dashicons-book'],
+                    ['id'=>1, 'titulo'=>'[DEMO] El Quijote', 'descripcion'=>'Miguel de Cervantes - Clásico de la literatura española', 'tipo'=>'Novela', 'disponible'=>true, 'icon'=>'dashicons-book'],
+                    ['id'=>2, 'titulo'=>'[DEMO] 1984', 'descripcion'=>'George Orwell - Distopía y control social', 'tipo'=>'Novela', 'disponible'=>true, 'icon'=>'dashicons-book'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Cien años de soledad', 'descripcion'=>'Gabriel García Márquez - Realismo mágico', 'tipo'=>'Novela', 'disponible'=>false, 'icon'=>'dashicons-book'],
                 ];
 
             case 'marketplace':
                 return [
-                    ['id'=>1, 'titulo'=>'Bicicleta de montaña', 'descripcion'=>'Bicicleta en buen estado, poco uso', 'precio'=>150.00, 'tipo'=>'venta', 'icon'=>'dashicons-products'],
-                    ['id'=>2, 'titulo'=>'Colección de libros', 'descripcion'=>'50 libros variados de segunda mano', 'precio'=>45.00, 'tipo'=>'venta', 'icon'=>'dashicons-book-alt'],
-                    ['id'=>3, 'titulo'=>'Mueble de jardín', 'descripcion'=>'Mesa con 4 sillas de exterior', 'precio'=>80.00, 'tipo'=>'venta', 'icon'=>'dashicons-admin-home'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Bicicleta de montaña', 'descripcion'=>'Bicicleta en buen estado, poco uso', 'precio'=>150.00, 'tipo'=>'venta', 'icon'=>'dashicons-products'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Colección de libros', 'descripcion'=>'50 libros variados de segunda mano', 'precio'=>45.00, 'tipo'=>'venta', 'icon'=>'dashicons-book-alt'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Mueble de jardín', 'descripcion'=>'Mesa con 4 sillas de exterior', 'precio'=>80.00, 'tipo'=>'venta', 'icon'=>'dashicons-admin-home'],
                 ];
 
             case 'incidencias':
                 return [
-                    ['id'=>1, 'titulo'=>'Farola sin funcionar', 'descripcion'=>'Calle Mayor esquina Plaza', 'tipo'=>'alumbrado', 'estado'=>'pendiente', 'icon'=>'dashicons-warning'],
-                    ['id'=>2, 'titulo'=>'Bache en calzada', 'descripcion'=>'Avenida Principal km 2', 'tipo'=>'via_publica', 'estado'=>'en_proceso', 'icon'=>'dashicons-warning'],
-                    ['id'=>3, 'titulo'=>'Contenedor roto', 'descripcion'=>'Junto al parque infantil', 'tipo'=>'limpieza', 'estado'=>'resuelto', 'icon'=>'dashicons-yes-alt'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Farola sin funcionar', 'descripcion'=>'Calle Mayor esquina Plaza', 'tipo'=>'alumbrado', 'estado'=>'pendiente', 'icon'=>'dashicons-warning'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Bache en calzada', 'descripcion'=>'Avenida Principal km 2', 'tipo'=>'via_publica', 'estado'=>'en_proceso', 'icon'=>'dashicons-warning'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Contenedor roto', 'descripcion'=>'Junto al parque infantil', 'tipo'=>'limpieza', 'estado'=>'resuelto', 'icon'=>'dashicons-yes-alt'],
                 ];
 
             case 'comunidades':
                 return [
-                    ['id'=>1, 'titulo'=>'Comunidad Vecinal Centro', 'descripcion'=>'Vecinos del barrio centro unidos por un mejor barrio', 'miembros'=>156, 'tipo'=>'vecinal', 'icon'=>'dashicons-groups'],
-                    ['id'=>2, 'titulo'=>'Club de Lectura', 'descripcion'=>'Amantes de la lectura compartiendo recomendaciones', 'miembros'=>45, 'tipo'=>'cultural', 'icon'=>'dashicons-book'],
-                    ['id'=>3, 'titulo'=>'Runners del Parque', 'descripcion'=>'Grupo de running para todos los niveles', 'miembros'=>89, 'tipo'=>'deportivo', 'icon'=>'dashicons-heart'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Comunidad Vecinal Centro', 'descripcion'=>'Vecinos del barrio centro unidos por un mejor barrio', 'miembros'=>156, 'tipo'=>'vecinal', 'icon'=>'dashicons-groups'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Club de Lectura', 'descripcion'=>'Amantes de la lectura compartiendo recomendaciones', 'miembros'=>45, 'tipo'=>'cultural', 'icon'=>'dashicons-book'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Runners del Parque', 'descripcion'=>'Grupo de running para todos los niveles', 'miembros'=>89, 'tipo'=>'deportivo', 'icon'=>'dashicons-heart'],
                 ];
 
             case 'espacios_comunes':
                 return [
-                    ['id'=>1, 'titulo'=>'Sala de Reuniones A', 'descripcion'=>'Capacidad 20 personas, proyector incluido', 'tipo'=>'sala', 'disponible'=>true, 'icon'=>'dashicons-building'],
-                    ['id'=>2, 'titulo'=>'Salón de Actos', 'descripcion'=>'Capacidad 100 personas, escenario y sonido', 'tipo'=>'auditorio', 'disponible'=>true, 'icon'=>'dashicons-megaphone'],
-                    ['id'=>3, 'titulo'=>'Terraza Comunitaria', 'descripcion'=>'Espacio exterior para eventos', 'tipo'=>'exterior', 'disponible'=>false, 'icon'=>'dashicons-palmtree'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Sala de Reuniones A', 'descripcion'=>'Capacidad 20 personas, proyector incluido', 'tipo'=>'sala', 'disponible'=>true, 'icon'=>'dashicons-building'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Salón de Actos', 'descripcion'=>'Capacidad 100 personas, escenario y sonido', 'tipo'=>'auditorio', 'disponible'=>true, 'icon'=>'dashicons-megaphone'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Terraza Comunitaria', 'descripcion'=>'Espacio exterior para eventos', 'tipo'=>'exterior', 'disponible'=>false, 'icon'=>'dashicons-palmtree'],
                 ];
 
             case 'huertos_urbanos':
                 return [
-                    ['id'=>1, 'titulo'=>'Parcela A-12', 'descripcion'=>'25m² disponible para cultivo', 'tipo'=>'parcela', 'disponible'=>true, 'precio'=>15.00, 'icon'=>'dashicons-carrot'],
-                    ['id'=>2, 'titulo'=>'Parcela B-05', 'descripcion'=>'30m² con sistema de riego', 'tipo'=>'parcela', 'disponible'=>false, 'precio'=>20.00, 'icon'=>'dashicons-carrot'],
-                    ['id'=>3, 'titulo'=>'Zona Comunitaria', 'descripcion'=>'Espacio compartido para principiantes', 'tipo'=>'comunitaria', 'disponible'=>true, 'precio'=>5.00, 'icon'=>'dashicons-groups'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Parcela A-12', 'descripcion'=>'25m² disponible para cultivo', 'tipo'=>'parcela', 'disponible'=>true, 'precio'=>15.00, 'icon'=>'dashicons-carrot'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Parcela B-05', 'descripcion'=>'30m² con sistema de riego', 'tipo'=>'parcela', 'disponible'=>false, 'precio'=>20.00, 'icon'=>'dashicons-carrot'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Zona Comunitaria', 'descripcion'=>'Espacio compartido para principiantes', 'tipo'=>'comunitaria', 'disponible'=>true, 'precio'=>5.00, 'icon'=>'dashicons-groups'],
                 ];
 
             case 'podcast':
                 return [
-                    ['id'=>1, 'titulo'=>'Episodio 45: Sostenibilidad urbana', 'descripcion'=>'Hablamos sobre cómo hacer ciudades más verdes', 'fecha'=>date('Y-m-d', strtotime('-3 days')), 'duracion'=>'45:00', 'icon'=>'dashicons-microphone'],
-                    ['id'=>2, 'titulo'=>'Episodio 44: Economía circular', 'descripcion'=>'Cómo reducir, reutilizar y reciclar', 'fecha'=>date('Y-m-d', strtotime('-10 days')), 'duracion'=>'38:00', 'icon'=>'dashicons-microphone'],
-                    ['id'=>3, 'titulo'=>'Episodio 43: Movilidad compartida', 'descripcion'=>'El futuro del transporte en las ciudades', 'fecha'=>date('Y-m-d', strtotime('-17 days')), 'duracion'=>'52:00', 'icon'=>'dashicons-microphone'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Episodio 45: Sostenibilidad urbana', 'descripcion'=>'Hablamos sobre cómo hacer ciudades más verdes', 'fecha'=>date('Y-m-d', strtotime('-3 days')), 'duracion'=>'45:00', 'icon'=>'dashicons-microphone'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Episodio 44: Economía circular', 'descripcion'=>'Cómo reducir, reutilizar y reciclar', 'fecha'=>date('Y-m-d', strtotime('-10 days')), 'duracion'=>'38:00', 'icon'=>'dashicons-microphone'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Episodio 43: Movilidad compartida', 'descripcion'=>'El futuro del transporte en las ciudades', 'fecha'=>date('Y-m-d', strtotime('-17 days')), 'duracion'=>'52:00', 'icon'=>'dashicons-microphone'],
                 ];
 
             case 'banco_tiempo':
                 return [
-                    ['id'=>1, 'titulo'=>'Clases de guitarra', 'descripcion'=>'Ofrezco clases de guitarra para principiantes', 'tipo'=>'oferta', 'tiempo'=>'2h', 'icon'=>'dashicons-format-audio'],
-                    ['id'=>2, 'titulo'=>'Ayuda con mudanza', 'descripcion'=>'Necesito ayuda para mover muebles', 'tipo'=>'demanda', 'tiempo'=>'3h', 'icon'=>'dashicons-hammer'],
-                    ['id'=>3, 'titulo'=>'Reparación de ordenadores', 'descripcion'=>'Ofrezco mantenimiento básico de PCs', 'tipo'=>'oferta', 'tiempo'=>'1h', 'icon'=>'dashicons-laptop'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Clases de guitarra', 'descripcion'=>'Ofrezco clases de guitarra para principiantes', 'tipo'=>'oferta', 'tiempo'=>'2h', 'icon'=>'dashicons-format-audio'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Ayuda con mudanza', 'descripcion'=>'Necesito ayuda para mover muebles', 'tipo'=>'demanda', 'tiempo'=>'3h', 'icon'=>'dashicons-hammer'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Reparación de ordenadores', 'descripcion'=>'Ofrezco mantenimiento básico de PCs', 'tipo'=>'oferta', 'tiempo'=>'1h', 'icon'=>'dashicons-laptop'],
                 ];
 
             case 'cursos':
                 return [
-                    ['id'=>1, 'titulo'=>'Introducción a Python', 'descripcion'=>'Aprende programación desde cero', 'tipo'=>'online', 'fecha_inicio'=>date('Y-m-d', strtotime('+7 days')), 'precio'=>50.00, 'icon'=>'dashicons-laptop'],
-                    ['id'=>2, 'titulo'=>'Marketing Digital', 'descripcion'=>'Estrategias de marketing en redes sociales', 'tipo'=>'presencial', 'fecha_inicio'=>date('Y-m-d', strtotime('+14 days')), 'precio'=>75.00, 'icon'=>'dashicons-share'],
-                    ['id'=>3, 'titulo'=>'Inglés Conversacional', 'descripcion'=>'Mejora tu fluidez hablando', 'tipo'=>'hibrido', 'fecha_inicio'=>date('Y-m-d', strtotime('+5 days')), 'precio'=>40.00, 'icon'=>'dashicons-translation'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Introducción a Python', 'descripcion'=>'Aprende programación desde cero', 'tipo'=>'online', 'fecha_inicio'=>date('Y-m-d', strtotime('+7 days')), 'precio'=>50.00, 'icon'=>'dashicons-laptop'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Marketing Digital', 'descripcion'=>'Estrategias de marketing en redes sociales', 'tipo'=>'presencial', 'fecha_inicio'=>date('Y-m-d', strtotime('+14 days')), 'precio'=>75.00, 'icon'=>'dashicons-share'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Inglés Conversacional', 'descripcion'=>'Mejora tu fluidez hablando', 'tipo'=>'hibrido', 'fecha_inicio'=>date('Y-m-d', strtotime('+5 days')), 'precio'=>40.00, 'icon'=>'dashicons-translation'],
                 ];
 
             case 'parkings':
                 return [
-                    ['id'=>1, 'titulo'=>'Parking Centro', 'descripcion'=>'Plaza Mayor - 50 plazas disponibles', 'plazas_libres'=>50, 'precio'=>2.50, 'icon'=>'dashicons-location-alt'],
-                    ['id'=>2, 'titulo'=>'Parking Estación', 'descripcion'=>'Junto a la estación de tren', 'plazas_libres'=>25, 'precio'=>1.80, 'icon'=>'dashicons-location-alt'],
-                    ['id'=>3, 'titulo'=>'Parking Hospital', 'descripcion'=>'Acceso 24 horas', 'plazas_libres'=>120, 'precio'=>2.00, 'icon'=>'dashicons-location-alt'],
+                    ['id'=>1, 'titulo'=>'[DEMO] Parking Centro', 'descripcion'=>'Plaza Mayor - 50 plazas disponibles', 'plazas_libres'=>50, 'precio'=>2.50, 'icon'=>'dashicons-location-alt'],
+                    ['id'=>2, 'titulo'=>'[DEMO] Parking Estación', 'descripcion'=>'Junto a la estación de tren', 'plazas_libres'=>25, 'precio'=>1.80, 'icon'=>'dashicons-location-alt'],
+                    ['id'=>3, 'titulo'=>'[DEMO] Parking Hospital', 'descripcion'=>'Acceso 24 horas', 'plazas_libres'=>120, 'precio'=>2.00, 'icon'=>'dashicons-location-alt'],
                 ];
 
             default:

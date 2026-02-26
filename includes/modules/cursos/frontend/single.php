@@ -25,24 +25,10 @@ while (have_posts()) :
 ?>
 
 <div class="flavor-container py-8">
-    <!-- Breadcrumbs -->
-    <nav class="flex mb-6 text-sm">
-        <ol class="inline-flex items-center space-x-2">
-            <li>
-                <a href="<?php echo home_url('/'); ?>" class="text-gray-600 hover:text-primary">
-                    <?php esc_html_e('Inicio', 'flavor-chat-ia'); ?>
-                </a>
-            </li>
-            <li><span class="mx-2">/</span></li>
-            <li>
-                <a href="<?php echo get_post_type_archive_link('curso'); ?>" class="text-gray-600 hover:text-primary">
-                    <?php esc_html_e('Cursos', 'flavor-chat-ia'); ?>
-                </a>
-            </li>
-            <li><span class="mx-2">/</span></li>
-            <li class="text-gray-900 font-medium"><?php the_title(); ?></li>
-        </ol>
-    </nav>
+    <?php
+    // Breadcrumbs centralizados
+    echo Flavor_Breadcrumbs::render(['archive_label' => __('Cursos', 'flavor-chat-ia')]);
+    ?>
 
     <div class="grid lg:grid-cols-3 gap-8">
         <!-- Contenido principal -->
@@ -153,6 +139,13 @@ while (have_posts()) :
                         <?php esc_html_e('Plazas agotadas', 'flavor-chat-ia'); ?>
                     </button>
                 <?php endif; ?>
+
+                <?php
+                // Shared features: valoraciones, favoritos, compartir
+                if (function_exists('flavor_render_post_features')) {
+                    flavor_render_post_features(['ratings', 'favorites', 'share', 'views']);
+                }
+                ?>
             </div>
         </aside>
     </div>

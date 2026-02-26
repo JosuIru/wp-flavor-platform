@@ -185,10 +185,16 @@
          */
         loadCharts: function() {
             this.fetchChartData().then(data => {
-                if (data.success) {
-                    this.renderUsersChart(data.data.usuarios_por_semana);
-                    this.renderModulesChart(data.data.actividad_por_modulo);
-                    this.renderRolesChart(data.data.distribucion_roles);
+                if (data.success && data.data) {
+                    if (data.data.usuarios_por_semana) {
+                        this.renderUsersChart(data.data.usuarios_por_semana);
+                    }
+                    if (data.data.actividad_por_modulo) {
+                        this.renderModulesChart(data.data.actividad_por_modulo);
+                    }
+                    if (data.data.distribucion_roles) {
+                        this.renderRolesChart(data.data.distribucion_roles);
+                    }
                 }
             }).catch(error => {
                 console.error('Error cargando graficos:', error);
@@ -213,7 +219,7 @@
          */
         renderUsersChart: function(data) {
             const ctx = document.getElementById('flavor-chart-users');
-            if (!ctx) return;
+            if (!ctx || !data) return;
 
             // Destruir grafico existente si hay
             if (this.charts.users) {
@@ -291,7 +297,7 @@
          */
         renderModulesChart: function(data) {
             const ctx = document.getElementById('flavor-chart-modules');
-            if (!ctx) return;
+            if (!ctx || !data) return;
 
             if (this.charts.modules) {
                 this.charts.modules.destroy();
@@ -364,7 +370,7 @@
          */
         renderRolesChart: function(data) {
             const ctx = document.getElementById('flavor-chart-roles');
-            if (!ctx) return;
+            if (!ctx || !data) return;
 
             if (this.charts.roles) {
                 this.charts.roles.destroy();

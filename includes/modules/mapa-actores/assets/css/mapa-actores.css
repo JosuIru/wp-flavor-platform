@@ -1,0 +1,128 @@
+/**
+ * Estilos del modulo Mapa de Actores
+ */
+
+.flavor-actores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.flavor-actor-card {
+    background: var(--flavor-surface, #fff);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+}
+
+.flavor-actor-card:hover {
+    transform: translateY(-2px);
+}
+
+.flavor-actor-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.flavor-actor-logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    background: var(--flavor-background, #f3f4f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.flavor-actor-nombre {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+}
+
+.flavor-actor-tipo {
+    font-size: 0.8rem;
+    color: var(--flavor-text-secondary, #6b7280);
+}
+
+.flavor-actor-posicion {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.flavor-posicion-aliado { background: #dcfce7; color: #166534; }
+.flavor-posicion-neutro { background: #f3f4f6; color: #374151; }
+.flavor-posicion-opositor { background: #fee2e2; color: #991b1b; }
+.flavor-posicion-desconocido { background: #e5e7eb; color: #6b7280; }
+
+.flavor-actor-influencia {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.flavor-influencia-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--flavor-border, #d1d5db);
+}
+
+.flavor-influencia-dot.activo {
+    background: var(--flavor-primary, #3b82f6);
+}
+
+/* Grafo de relaciones */
+.flavor-grafo-container {
+    width: 100%;
+    height: 600px;
+    background: var(--flavor-background, #f9fafb);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Detalle de actor */
+.flavor-actor-detalle {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.flavor-actor-relaciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.flavor-relacion-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--flavor-background, #f9fafb);
+    border-radius: 8px;
+}
+
+.flavor-relacion-tipo {
+    font-size: 0.75rem;
+    color: var(--flavor-text-secondary, #6b7280);
+}
+
+/* Interacciones */
+.flavor-interaccion-item {
+    padding: 1rem;
+    border-left: 3px solid var(--resultado-color, #6b7280);
+    background: var(--flavor-background, #f9fafb);
+    margin-bottom: 1rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.flavor-interaccion-positivo { --resultado-color: #10b981; }
+.flavor-interaccion-neutro { --resultado-color: #6b7280; }
+.flavor-interaccion-negativo { --resultado-color: #ef4444; }

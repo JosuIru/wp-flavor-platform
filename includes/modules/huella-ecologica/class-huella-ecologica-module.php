@@ -17,6 +17,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Categorías de huella ecológica
      */
@@ -183,18 +185,184 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
      * Inicializa el módulo
      */
     public function init(): void {
-        $this->register_post_types();
+        // Registrar post types en el hook 'init' de WordPress, no directamente
+        add_action('init', [$this, 'register_post_types'], 5);
+
         $this->register_ajax_handlers();
         $this->register_shortcodes();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
+        // Panel Unificado Admin
+        $this->registrar_en_panel_unificado();
+
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs(): void {
+        $tab_file = dirname(__FILE__) . '/class-huella-ecologica-dashboard-tab.php';
+        if (file_exists($tab_file)) {
+            require_once $tab_file;
+            if (class_exists('Flavor_Huella_Ecologica_Dashboard_Tab')) {
+                Flavor_Huella_Ecologica_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Registra rutas REST API
+     */
+    public function register_rest_routes(): void {
+        $namespace = 'flavor/v1';
+
+        // Estadísticas del usuario
+        register_rest_route($namespace, '/huella-ecologica/estadisticas', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_estadisticas'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+
+        // Estadísticas de la comunidad
+        register_rest_route($namespace, '/huella-ecologica/comunidad', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_estadisticas_comunidad'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Proyectos de compensación
+        register_rest_route($namespace, '/huella-ecologica/proyectos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_proyectos'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Logros del usuario
+        register_rest_route($namespace, '/huella-ecologica/logros', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_logros'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+
+        // Calculadora
+        register_rest_route($namespace, '/huella-ecologica/calcular', [
+            'methods' => 'POST',
+            'callback' => [$this, 'api_calcular_huella'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    /**
+     * Verifica si el usuario está logueado
+     */
+    public function check_user_logged_in(): bool {
+        return is_user_logged_in();
+    }
+
+    /**
+     * API: Obtener estadísticas del usuario
+     */
+    public function api_get_estadisticas(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+        $periodo = $request->get_param('periodo') ?: 'mes';
+
+        return new \WP_REST_Response($this->get_estadisticas_usuario($user_id, $periodo));
+    }
+
+    /**
+     * API: Obtener estadísticas de la comunidad
+     */
+    public function api_get_estadisticas_comunidad(\WP_REST_Request $request): \WP_REST_Response {
+        return new \WP_REST_Response($this->get_estadisticas_comunidad());
+    }
+
+    /**
+     * API: Obtener proyectos
+     */
+    public function api_get_proyectos(\WP_REST_Request $request): \WP_REST_Response {
+        $args = [
+            'post_type' => 'he_proyecto',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+            'meta_query' => [['key' => '_he_estado', 'value' => ['aprobado', 'en_curso'], 'compare' => 'IN']],
+        ];
+
+        $query = new \WP_Query($args);
+        $proyectos = [];
+
+        foreach ($query->posts as $post) {
+            $participantes = get_post_meta($post->ID, '_he_participantes', true) ?: [];
+            $proyectos[] = [
+                'id' => $post->ID,
+                'titulo' => $post->post_title,
+                'descripcion' => wp_trim_words($post->post_content, 30),
+                'meta_co2' => get_post_meta($post->ID, '_he_meta_co2', true),
+                'co2_actual' => get_post_meta($post->ID, '_he_co2_actual', true),
+                'participantes' => count($participantes),
+                'estado' => get_post_meta($post->ID, '_he_estado', true),
+            ];
+        }
+
+        return new \WP_REST_Response(['proyectos' => $proyectos, 'total' => $query->found_posts]);
+    }
+
+    /**
+     * API: Obtener logros
+     */
+    public function api_get_logros(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+        return new \WP_REST_Response(['logros' => $this->get_logros_usuario($user_id)]);
+    }
+
+    /**
+     * API: Calcular huella
+     */
+    public function api_calcular_huella(\WP_REST_Request $request): \WP_REST_Response {
+        $datos = $request->get_json_params();
+        $huella_total = 0;
+        $desglose = [];
+
+        if (!empty($datos['km_coche'])) {
+            $co2_coche = floatval($datos['km_coche']) * 0.21;
+            $huella_total += $co2_coche;
+            $desglose['transporte_coche'] = $co2_coche;
+        }
+        if (!empty($datos['km_avion'])) {
+            $co2_avion = floatval($datos['km_avion']) * 0.255;
+            $huella_total += $co2_avion;
+            $desglose['transporte_avion'] = $co2_avion;
+        }
+        if (!empty($datos['kwh_mes'])) {
+            $co2_energia = floatval($datos['kwh_mes']) * 0.38 / 30;
+            $huella_total += $co2_energia;
+            $desglose['energia'] = $co2_energia;
+        }
+        if (!empty($datos['tipo_dieta'])) {
+            $co2_dieta = ['omnivora' => 7.2, 'flexitariana' => 4.7, 'vegetariana' => 3.8, 'vegana' => 2.9];
+            $dieta_co2 = $co2_dieta[$datos['tipo_dieta']] ?? 5.0;
+            $huella_total += $dieta_co2;
+            $desglose['alimentacion'] = $dieta_co2;
+        }
+
+        return new \WP_REST_Response([
+            'huella_diaria' => round($huella_total, 2),
+            'huella_mensual' => round($huella_total * 30, 2),
+            'huella_anual' => round($huella_total * 365, 2),
+            'desglose' => $desglose,
+        ]);
     }
 
     /**
      * Registra los tipos de post personalizados
      */
-    private function register_post_types(): void {
+    public function register_post_types(): void {
         // Registros de huella individual
         register_post_type('he_registro', [
             'labels' => [
@@ -263,11 +431,19 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
      * Registra los shortcodes
      */
     public function register_shortcodes(): void {
+        // Shortcodes originales (legacy)
         add_shortcode('huella_ecologica_calculadora', [$this, 'shortcode_calculadora']);
         add_shortcode('huella_ecologica_mis_registros', [$this, 'shortcode_mis_registros']);
         add_shortcode('huella_ecologica_comunidad', [$this, 'shortcode_comunidad']);
         add_shortcode('huella_ecologica_proyectos', [$this, 'shortcode_proyectos']);
         add_shortcode('huella_ecologica_logros', [$this, 'shortcode_logros']);
+
+        // Shortcodes con prefijo flavor_ (nuevos)
+        add_shortcode('flavor_huella_calculadora', [$this, 'shortcode_calculadora']);
+        add_shortcode('flavor_huella_mis_registros', [$this, 'shortcode_mis_registros']);
+        add_shortcode('flavor_huella_logros', [$this, 'shortcode_logros']);
+        add_shortcode('flavor_huella_comunidad', [$this, 'shortcode_comunidad']);
+        add_shortcode('flavor_huella_proyectos', [$this, 'shortcode_proyectos']);
     }
 
     /**
@@ -319,6 +495,11 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
             || has_shortcode($post->post_content, 'huella_ecologica_comunidad')
             || has_shortcode($post->post_content, 'huella_ecologica_proyectos')
             || has_shortcode($post->post_content, 'huella_ecologica_logros')
+            || has_shortcode($post->post_content, 'flavor_huella_calculadora')
+            || has_shortcode($post->post_content, 'flavor_huella_mis_registros')
+            || has_shortcode($post->post_content, 'flavor_huella_logros')
+            || has_shortcode($post->post_content, 'flavor_huella_comunidad')
+            || has_shortcode($post->post_content, 'flavor_huella_proyectos')
             || strpos($_SERVER['REQUEST_URI'], '/huella-ecologica') !== false;
     }
 
@@ -989,5 +1170,46 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
                 'de la naturaleza más allá del uso humano.',
             'categoria' => 'ecologia',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_actions() {
+        return [
+            'calcular_huella' => [
+                'description' => 'Calcular mi huella ecológica',
+                'params' => ['categoria'],
+            ],
+            'registrar_accion' => [
+                'description' => 'Registrar acción reductora de huella',
+                'params' => ['tipo', 'descripcion'],
+            ],
+            'ver_estadisticas' => [
+                'description' => 'Ver estadísticas de mi huella',
+                'params' => [],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute_action($action_name, $params) {
+        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_tool_definitions() {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_knowledge_base() {
+        return __('La Huella Ecológica mide el impacto ambiental personal y comunitario, permitiendo calcular, registrar y compensar emisiones de CO2.', 'flavor-chat-ia');
     }
 }

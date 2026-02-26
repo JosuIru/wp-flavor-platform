@@ -21,25 +21,27 @@ $anuncios_pendientes = $total_anuncios->pending;
 $tipos_stats = [];
 $tipos = get_terms(['taxonomy' => 'marketplace_tipo', 'hide_empty' => false]);
 
-foreach ($tipos as $tipo) {
-    $count = wp_count_term_posts($tipo->term_id, 'marketplace_tipo');
-    $tipos_stats[] = [
-        'nombre' => $tipo->name,
-        'total' => $count
-    ];
+if (!is_wp_error($tipos)) {
+    foreach ($tipos as $tipo) {
+        $tipos_stats[] = [
+            'nombre' => $tipo->name,
+            'total' => $tipo->count
+        ];
+    }
 }
 
 // Anuncios por categoría
 $categorias = get_terms(['taxonomy' => 'marketplace_categoria', 'hide_empty' => false]);
 $categorias_stats = [];
 
-foreach ($categorias as $cat) {
-    $count = wp_count_term_posts($cat->term_id, 'marketplace_categoria');
-    if ($count > 0) {
-        $categorias_stats[] = [
-            'nombre' => $cat->name,
-            'total' => $count
-        ];
+if (!is_wp_error($categorias)) {
+    foreach ($categorias as $cat) {
+        if ($cat->count > 0) {
+            $categorias_stats[] = [
+                'nombre' => $cat->name,
+                'total' => $cat->count
+            ];
+        }
     }
 }
 
@@ -79,11 +81,35 @@ $anuncios_mensuales = $wpdb->get_results(
 
 <div class="wrap">
     <h1 class="wp-heading-inline">
-        <span class="dashicons dashicons-megaphone"></span>
+        <span class="dashicons dashicons-store"></span>
         <?php echo esc_html__('Dashboard - Marketplace', 'flavor-chat-ia'); ?>
     </h1>
 
     <hr class="wp-header-end">
+
+    <!-- Accesos Rapidos -->
+    <div class="marketplace-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('edit.php?post_type=marketplace_item'); ?>" class="marketplace-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-archive" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Productos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=marketplace-ventas'); ?>" class="marketplace-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-chart-line" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Ventas', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=marketplace-vendedores'); ?>" class="marketplace-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-groups" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Vendedores', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('edit-tags.php?taxonomy=marketplace_categoria&post_type=marketplace_item'); ?>" class="marketplace-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-category" style="font-size: 24px; color: #dba617;"></span>
+            <span><?php echo esc_html__('Categorias', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=marketplace-configuracion'); ?>" class="marketplace-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuracion', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
 
     <!-- Estadísticas Principales -->
     <div class="marketplace-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
@@ -269,6 +295,10 @@ $anuncios_mensuales = $wpdb->get_results(
     display: flex;
     align-items: center;
     gap: 8px;
+}
+.marketplace-quick-link:hover {
+    border-color: #2271b1;
+    background: #f6f7f7;
 }
 </style>
 

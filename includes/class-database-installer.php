@@ -31,10 +31,13 @@ class Flavor_Database_Installer {
         // Insertar datos de ejemplo
         self::insert_sample_data($prefix);
 
+        // Insertar badges predeterminados
+        self::insert_default_badges($prefix);
+
         // Añadir campos WhatsApp a tabla de mensajes
         self::upgrade_whatsapp_fields();
 
-        update_option('flavor_db_version', '1.7.0');
+        update_option('flavor_db_version', '1.8.0');
     }
 
     /**
@@ -1315,6 +1318,93 @@ class Flavor_Database_Installer {
         ) $charset_collate;";
 
         // =====================================================
+        // TABLAS PARA SISTEMA DE REPUTACIÓN Y GAMIFICACIÓN
+        // =====================================================
+
+        // Reputación de usuarios
+        $tables[] = "CREATE TABLE {$prefix}social_reputacion (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            puntos_totales int(11) DEFAULT 0,
+            nivel varchar(50) DEFAULT 'nuevo',
+            puntos_semana int(11) DEFAULT 0,
+            puntos_mes int(11) DEFAULT 0,
+            racha_dias int(11) DEFAULT 0,
+            ultima_actividad datetime DEFAULT NULL,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_id (usuario_id),
+            KEY nivel (nivel),
+            KEY puntos_totales (puntos_totales)
+        ) $charset_collate;";
+
+        // Badges/Insignias disponibles
+        $tables[] = "CREATE TABLE {$prefix}social_badges (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text,
+            icono varchar(255) DEFAULT NULL,
+            color varchar(20) DEFAULT '#3b82f6',
+            categoria enum('participacion','creacion','comunidad','especial','temporal') DEFAULT 'participacion',
+            puntos_requeridos int(11) DEFAULT 0,
+            condicion_especial text DEFAULT NULL,
+            es_unico tinyint(1) DEFAULT 0,
+            activo tinyint(1) DEFAULT 1,
+            orden int(11) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY categoria (categoria),
+            KEY activo (activo)
+        ) $charset_collate;";
+
+        // Badges obtenidos por usuarios
+        $tables[] = "CREATE TABLE {$prefix}social_usuario_badges (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            badge_id bigint(20) UNSIGNED NOT NULL,
+            fecha_obtenido datetime DEFAULT CURRENT_TIMESTAMP,
+            destacado tinyint(1) DEFAULT 0,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_badge (usuario_id, badge_id),
+            KEY badge_id (badge_id),
+            KEY fecha_obtenido (fecha_obtenido)
+        ) $charset_collate;";
+
+        // Historial de puntos (para auditoría y desglose)
+        $tables[] = "CREATE TABLE {$prefix}social_historial_puntos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            puntos int(11) NOT NULL,
+            tipo_accion varchar(50) NOT NULL,
+            descripcion varchar(255) DEFAULT NULL,
+            referencia_id bigint(20) UNSIGNED DEFAULT NULL,
+            referencia_tipo varchar(50) DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY tipo_accion (tipo_accion),
+            KEY fecha_creacion (fecha_creacion)
+        ) $charset_collate;";
+
+        // Engagement entre usuarios (para algoritmo de feed)
+        $tables[] = "CREATE TABLE {$prefix}social_engagement (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            autor_id bigint(20) UNSIGNED NOT NULL,
+            tipo_interaccion enum('like','comentario','compartido','guardado','clic','tiempo_lectura') NOT NULL,
+            contenido_id bigint(20) UNSIGNED DEFAULT NULL,
+            peso decimal(5,2) DEFAULT 1.00,
+            fecha_interaccion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_autor (usuario_id, autor_id),
+            KEY autor_id (autor_id),
+            KEY fecha_interaccion (fecha_interaccion),
+            KEY tipo_interaccion (tipo_interaccion)
+        ) $charset_collate;";
+
+        // =====================================================
         // TABLAS PARA SISTEMA DE ENCUESTAS/FORMULARIOS
         // =====================================================
 
@@ -1400,6 +1490,93 @@ class Flavor_Database_Installer {
             KEY idx_usuario (usuario_id),
             KEY idx_sesion (sesion_id),
             KEY idx_completada (completada)
+        ) $charset_collate;";
+
+        // ==========================================
+        // SISTEMA DE REPUTACIÓN
+        // ==========================================
+
+        // Reputación de usuarios
+        $tables[] = "CREATE TABLE {$prefix}social_reputacion (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            puntos_totales int(11) DEFAULT 0,
+            nivel varchar(50) DEFAULT 'nuevo',
+            puntos_semana int(11) DEFAULT 0,
+            puntos_mes int(11) DEFAULT 0,
+            racha_dias int(11) DEFAULT 0,
+            ultima_actividad datetime DEFAULT NULL,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_id (usuario_id),
+            KEY nivel (nivel),
+            KEY puntos_totales (puntos_totales)
+        ) $charset_collate;";
+
+        // Badges/Insignias disponibles
+        $tables[] = "CREATE TABLE {$prefix}social_badges (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text,
+            icono varchar(255) DEFAULT NULL,
+            color varchar(20) DEFAULT '#3b82f6',
+            categoria enum('participacion','creacion','comunidad','especial','temporal') DEFAULT 'participacion',
+            puntos_requeridos int(11) DEFAULT 0,
+            condicion_especial text DEFAULT NULL,
+            es_unico tinyint(1) DEFAULT 0,
+            activo tinyint(1) DEFAULT 1,
+            orden int(11) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY categoria (categoria),
+            KEY activo (activo)
+        ) $charset_collate;";
+
+        // Badges obtenidos por usuarios
+        $tables[] = "CREATE TABLE {$prefix}social_usuario_badges (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            badge_id bigint(20) UNSIGNED NOT NULL,
+            fecha_obtenido datetime DEFAULT CURRENT_TIMESTAMP,
+            destacado tinyint(1) DEFAULT 0,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_badge (usuario_id, badge_id),
+            KEY badge_id (badge_id),
+            KEY fecha_obtenido (fecha_obtenido)
+        ) $charset_collate;";
+
+        // Historial de puntos ganados
+        $tables[] = "CREATE TABLE {$prefix}social_historial_puntos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            puntos int(11) NOT NULL,
+            tipo_accion varchar(50) NOT NULL,
+            descripcion varchar(255) DEFAULT NULL,
+            referencia_id bigint(20) UNSIGNED DEFAULT NULL,
+            referencia_tipo varchar(50) DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY tipo_accion (tipo_accion),
+            KEY fecha_creacion (fecha_creacion)
+        ) $charset_collate;";
+
+        // Engagement entre usuarios (para feed inteligente)
+        $tables[] = "CREATE TABLE {$prefix}social_engagement (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            autor_id bigint(20) UNSIGNED NOT NULL,
+            tipo_interaccion enum('like','comentario','compartido','guardado','clic','tiempo_lectura') NOT NULL,
+            contenido_id bigint(20) UNSIGNED DEFAULT NULL,
+            peso decimal(5,2) DEFAULT 1.00,
+            fecha_interaccion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_autor (usuario_id, autor_id),
+            KEY autor_id (autor_id),
+            KEY fecha_interaccion (fecha_interaccion),
+            KEY tipo_interaccion (tipo_interaccion)
         ) $charset_collate;";
 
         return $tables;
@@ -1625,6 +1802,8 @@ class Flavor_Database_Installer {
             'foros', 'foros_hilos', 'foros_respuestas',
             // Tablas de red social
             'social_seguimientos',
+            // Tablas de reputación y gamificación
+            'social_reputacion', 'social_badges', 'social_usuario_badges', 'social_historial_puntos', 'social_engagement',
             // Tablas de integraciones y red
             'interactions', 'interaction_counts', 'network_nodes', 'network_shared_content', 'module_integrations',
             // Tablas de privacidad RGPD
@@ -2030,6 +2209,162 @@ class Flavor_Database_Installer {
 <!-- wp:paragraph -->
 <p>' . __('Todo el contenido de este sitio, incluyendo textos, gráficos, logos e imágenes, es propiedad del sitio o sus licenciantes y está protegido por las leyes de propiedad intelectual.', 'flavor-chat-ia') . '</p>
 <!-- /wp:paragraph -->';
+    }
+
+    /**
+     * Inserta badges predeterminados del sistema de reputación
+     *
+     * @param string $prefix Prefijo de tablas
+     */
+    private static function insert_default_badges($prefix) {
+        global $wpdb;
+
+        $tabla_badges = $prefix . 'social_badges';
+
+        // Verificar si la tabla existe
+        $tabla_existe = $wpdb->get_var(
+            $wpdb->prepare("SHOW TABLES LIKE %s", $tabla_badges)
+        );
+
+        if (!$tabla_existe) {
+            return;
+        }
+
+        // Verificar si ya hay badges
+        $badges_existentes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_badges");
+        if ($badges_existentes > 0) {
+            return;
+        }
+
+        $badges_predeterminados = [
+            [
+                'nombre' => 'Primeros Pasos',
+                'slug' => 'primeros-pasos',
+                'descripcion' => 'Completaste tu perfil y publicaste tu primer contenido',
+                'icono' => '🎯',
+                'color' => '#3b82f6',
+                'categoria' => 'participacion',
+                'puntos_requeridos' => 25,
+                'condicion_especial' => null,
+                'es_unico' => 1,
+                'orden' => 1
+            ],
+            [
+                'nombre' => 'Comunicador',
+                'slug' => 'comunicador',
+                'descripcion' => 'Has comentado en más de 50 publicaciones',
+                'icono' => '💬',
+                'color' => '#8b5cf6',
+                'categoria' => 'participacion',
+                'puntos_requeridos' => 0,
+                'condicion_especial' => json_encode(['tipo' => 'comentarios_count', 'valor' => 50]),
+                'es_unico' => 1,
+                'orden' => 2
+            ],
+            [
+                'nombre' => 'Creador Activo',
+                'slug' => 'creador-activo',
+                'descripcion' => 'Has creado más de 20 publicaciones',
+                'icono' => '✍️',
+                'color' => '#f59e0b',
+                'categoria' => 'creacion',
+                'puntos_requeridos' => 0,
+                'condicion_especial' => json_encode(['tipo' => 'publicaciones_count', 'valor' => 20]),
+                'es_unico' => 1,
+                'orden' => 3
+            ],
+            [
+                'nombre' => 'Influencer',
+                'slug' => 'influencer',
+                'descripcion' => 'Has conseguido más de 100 seguidores',
+                'icono' => '⭐',
+                'color' => '#ec4899',
+                'categoria' => 'comunidad',
+                'puntos_requeridos' => 0,
+                'condicion_especial' => json_encode(['tipo' => 'seguidores_count', 'valor' => 100]),
+                'es_unico' => 1,
+                'orden' => 4
+            ],
+            [
+                'nombre' => 'Constante',
+                'slug' => 'constante',
+                'descripcion' => 'Has mantenido una racha de 7 días de actividad',
+                'icono' => '🔥',
+                'color' => '#ef4444',
+                'categoria' => 'participacion',
+                'puntos_requeridos' => 0,
+                'condicion_especial' => json_encode(['tipo' => 'racha_dias', 'valor' => 7]),
+                'es_unico' => 1,
+                'orden' => 5
+            ],
+            [
+                'nombre' => 'Maratonista',
+                'slug' => 'maratonista',
+                'descripcion' => 'Has mantenido una racha de 30 días de actividad',
+                'icono' => '🏃',
+                'color' => '#10b981',
+                'categoria' => 'participacion',
+                'puntos_requeridos' => 0,
+                'condicion_especial' => json_encode(['tipo' => 'racha_dias', 'valor' => 30]),
+                'es_unico' => 1,
+                'orden' => 6
+            ],
+            [
+                'nombre' => 'Centenario',
+                'slug' => 'centenario',
+                'descripcion' => 'Has alcanzado 100 puntos de reputación',
+                'icono' => '💯',
+                'color' => '#6366f1',
+                'categoria' => 'participacion',
+                'puntos_requeridos' => 100,
+                'condicion_especial' => null,
+                'es_unico' => 1,
+                'orden' => 7
+            ],
+            [
+                'nombre' => 'Veterano',
+                'slug' => 'veterano',
+                'descripcion' => 'Has alcanzado 1000 puntos de reputación',
+                'icono' => '🏆',
+                'color' => '#f97316',
+                'categoria' => 'especial',
+                'puntos_requeridos' => 1000,
+                'condicion_especial' => null,
+                'es_unico' => 1,
+                'orden' => 8
+            ],
+            [
+                'nombre' => 'Colaborador',
+                'slug' => 'colaborador',
+                'descripcion' => 'Has ayudado a otros usuarios con más de 10 respuestas valoradas',
+                'icono' => '🤝',
+                'color' => '#14b8a6',
+                'categoria' => 'comunidad',
+                'puntos_requeridos' => 0,
+                'condicion_especial' => json_encode(['tipo' => 'respuestas_valoradas', 'valor' => 10]),
+                'es_unico' => 1,
+                'orden' => 9
+            ],
+            [
+                'nombre' => 'Embajador',
+                'slug' => 'embajador',
+                'descripcion' => 'Has invitado a más de 5 usuarios que se registraron',
+                'icono' => '🌟',
+                'color' => '#a855f7',
+                'categoria' => 'especial',
+                'puntos_requeridos' => 0,
+                'condicion_especial' => json_encode(['tipo' => 'invitaciones_exitosas', 'valor' => 5]),
+                'es_unico' => 1,
+                'orden' => 10
+            ]
+        ];
+
+        foreach ($badges_predeterminados as $badge) {
+            $wpdb->insert($tabla_badges, array_merge($badge, [
+                'activo' => 1,
+                'fecha_creacion' => current_time('mysql')
+            ]));
+        }
     }
 
     /**

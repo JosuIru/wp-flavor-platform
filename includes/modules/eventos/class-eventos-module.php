@@ -136,6 +136,9 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
+        // AJAX para dashboard de admin
+        add_action('wp_ajax_eventos_get_dashboard_data', [$this, 'ajax_get_dashboard_data']);
+
         // Registrar páginas de administración
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
 
@@ -980,9 +983,14 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $wpdb->query(
             $wpdb->prepare("UPDATE $tabla_ev SET inscritos_count = inscritos_count + %d WHERE id = %d", $num_plazas, $evento_id)
         );
+
+        // Hook para sistema de reputación
+        $inscripcion_id = $wpdb->insert_id;
+        do_action('flavor_evento_inscripcion', $usuario_id, $evento_id);
+
         return [
             'success' => true,
-            'data'    => ['inscripcion_id' => $wpdb->insert_id, 'estado' => $estado_inscripcion],
+            'data'    => ['inscripcion_id' => $inscripcion_id, 'estado' => $estado_inscripcion],
             'message' => __('number', 'flavor-chat-ia'),
         ];
     }
@@ -1516,6 +1524,88 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                 'parent' => 'eventos',
             ],
         ];
+    }
+
+    // =========================================================================
+    // =========================================================================
+    // AJAX DASHBOARD
+    // =========================================================================
+
+    /**
+     * AJAX: Obtener datos del dashboard de eventos
+     */
+    public function ajax_get_dashboard_data() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Sin permisos']);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+
+        // KPIs
+        $eventos_activos = 0;
+        $entradas_vendidas = 0;
+        $asistentes_totales = 0;
+        $ingresos_totales = 0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            $eventos_activos = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_eventos} WHERE estado = 'publicado' AND fecha_inicio >= NOW()"
+            );
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+            $entradas_vendidas = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_inscripciones} WHERE estado = 'confirmada'"
+            );
+
+            $asistentes_totales = (int) $wpdb->get_var(
+                "SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_inscripciones} WHERE estado = 'confirmada'"
+            );
+
+            $ingresos_totales = (float) $wpdb->get_var(
+                "SELECT COALESCE(SUM(precio_pagado), 0) FROM {$tabla_inscripciones} WHERE estado = 'confirmada'"
+            );
+        }
+
+        // Datos para gráfico de categorías
+        $categorias_data = ['labels' => [], 'values' => []];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            $categorias = $wpdb->get_results(
+                "SELECT tipo, COUNT(*) as total FROM {$tabla_eventos}
+                 WHERE estado = 'publicado' GROUP BY tipo ORDER BY total DESC LIMIT 5"
+            );
+            foreach ($categorias as $cat) {
+                $categorias_data['labels'][] = ucfirst($cat->tipo);
+                $categorias_data['values'][] = (int) $cat->total;
+            }
+        }
+
+        // Datos para gráfico de asistencia mensual
+        $asistencia_data = ['labels' => [], 'values' => []];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
+            for ($i = 5; $i >= 0; $i--) {
+                $mes = date('Y-m', strtotime("-{$i} months"));
+                $asistencia_data['labels'][] = date_i18n('M', strtotime($mes . '-01'));
+                $asistencia_data['values'][] = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$tabla_inscripciones}
+                     WHERE estado = 'confirmada' AND DATE_FORMAT(fecha_inscripcion, '%%Y-%%m') = %s",
+                    $mes
+                ));
+            }
+        }
+
+        wp_send_json_success([
+            'kpis' => [
+                'eventos_activos'    => $eventos_activos,
+                'entradas_vendidas'  => $entradas_vendidas,
+                'asistentes_totales' => $asistentes_totales,
+                'ingresos_totales'   => number_format($ingresos_totales, 2),
+            ],
+            'categorias' => $categorias_data,
+            'asistencia' => $asistencia_data,
+        ]);
     }
 
     // =========================================================================

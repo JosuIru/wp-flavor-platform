@@ -159,6 +159,90 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         add_shortcode('ranking_compostaje', [$this, 'shortcode_ranking_compostaje']);
         add_shortcode('estadisticas_compostaje', [$this, 'shortcode_estadisticas_compostaje']);
         add_shortcode('turnos_compostaje', [$this, 'shortcode_turnos_compostaje']);
+
+        // Shortcodes adicionales para widgets
+        add_shortcode('compostaje_cercana', [$this, 'shortcode_cercana']);
+        add_shortcode('compostaje_mi_balance', [$this, 'shortcode_mi_balance']);
+        add_shortcode('flavor_compostaje_mi_balance', [$this, 'shortcode_mi_balance']);
+    }
+
+    /**
+     * Shortcode: Compostera más cercana
+     */
+    public function shortcode_cercana($atts) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_composteras';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return '';
+        }
+
+        // Obtener primera compostera activa (sin geolocalización por ahora)
+        $compostera = $wpdb->get_row(
+            "SELECT * FROM {$tabla} WHERE estado = 'activa' ORDER BY nombre ASC LIMIT 1"
+        );
+
+        if (!$compostera) {
+            return '<div class="flavor-widget flavor-widget--empty">
+                <span class="dashicons dashicons-location-alt"></span>
+                <p>' . esc_html__('No hay composteras disponibles', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-widget flavor-compostaje-cercana">
+            <div class="flavor-compostaje-cercana__icon">
+                <span class="dashicons dashicons-location-alt"></span>
+            </div>
+            <div class="flavor-compostaje-cercana__info">
+                <span class="flavor-compostaje-cercana__nombre"><?php echo esc_html($compostera->nombre); ?></span>
+                <span class="flavor-compostaje-cercana__direccion"><?php echo esc_html($compostera->direccion); ?></span>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mi balance de compostaje
+     */
+    public function shortcode_mi_balance($atts) {
+        if (!is_user_logged_in()) {
+            return '';
+        }
+
+        global $wpdb;
+        $tabla_aportaciones = $wpdb->prefix . 'flavor_compostaje_aportaciones';
+        $user_id = get_current_user_id();
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_aportaciones)) {
+            return '';
+        }
+
+        $totales = $wpdb->get_row($wpdb->prepare(
+            "SELECT COUNT(*) as total_aportaciones, COALESCE(SUM(peso_kg), 0) as total_kg
+             FROM {$tabla_aportaciones}
+             WHERE usuario_id = %d",
+            $user_id
+        ));
+
+        ob_start();
+        ?>
+        <div class="flavor-widget flavor-compostaje-balance">
+            <div class="flavor-compostaje-balance__stats">
+                <div class="flavor-stat">
+                    <span class="flavor-stat__valor"><?php echo number_format_i18n($totales->total_kg, 1); ?></span>
+                    <span class="flavor-stat__label"><?php esc_html_e('kg compostados', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="flavor-stat">
+                    <span class="flavor-stat__valor"><?php echo number_format_i18n($totales->total_aportaciones); ?></span>
+                    <span class="flavor-stat__label"><?php esc_html_e('aportaciones', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
     /**

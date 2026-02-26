@@ -17,12 +17,12 @@ get_header();
                 <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark font-medium"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></button>
             </form>
             <?php
-            $query = new WP_Query(array('post_type' => 'marketplace', 'posts_per_page' => 12, 'paged' => get_query_var('paged') ?: 1));
+            $query = new WP_Query(array('post_type' => 'marketplace_item', 'posts_per_page' => 12, 'paged' => get_query_var('paged') ?: 1));
             if ($query->have_posts()) :
                 echo '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">';
                 while ($query->have_posts()) : $query->the_post();
-                    $precio = get_post_meta(get_the_ID(), '_precio', true);
-                    $condicion = get_post_meta(get_the_ID(), '_condicion', true);
+                    $precio = get_post_meta(get_the_ID(), '_marketplace_precio', true);
+                    $condicion = get_post_meta(get_the_ID(), '_marketplace_condicion', true);
                     echo '<article class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden group">';
                     if (has_post_thumbnail()) : echo '<div class="aspect-square overflow-hidden"><a href="' . get_permalink() . '">';
                         the_post_thumbnail('medium_large', array('class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform'));

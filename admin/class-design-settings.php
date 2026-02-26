@@ -495,6 +495,49 @@ class Flavor_Design_Settings {
                     <?php _e('Importar Configuración', 'flavor-chat-ia'); ?>
                 </button>
             </div>
+
+            <!-- Exportar Design Tokens -->
+            <div class="flavor-export-tokens-wrapper" style="margin-top:30px;">
+                <h2><?php _e('Exportar Design Tokens', 'flavor-chat-ia'); ?></h2>
+                <p class="description"><?php _e('Exporta tus tokens de diseño en diferentes formatos para usarlos en otros proyectos.', 'flavor-chat-ia'); ?></p>
+
+                <div class="flavor-export-tokens-controls" style="display:flex;gap:16px;align-items:flex-start;margin-top:16px;">
+                    <div style="flex:0 0 auto;">
+                        <label for="flavor-token-format" style="display:block;margin-bottom:6px;font-weight:500;">
+                            <?php _e('Formato:', 'flavor-chat-ia'); ?>
+                        </label>
+                        <select id="flavor-token-format" class="flavor-category-select" style="min-width:200px;">
+                            <option value="w3c"><?php _e('W3C Design Tokens (JSON)', 'flavor-chat-ia'); ?></option>
+                            <option value="css"><?php _e('CSS Custom Properties', 'flavor-chat-ia'); ?></option>
+                            <option value="js"><?php _e('JavaScript/TypeScript', 'flavor-chat-ia'); ?></option>
+                            <option value="tailwind"><?php _e('Tailwind Config', 'flavor-chat-ia'); ?></option>
+                        </select>
+                    </div>
+                    <div style="flex:0 0 auto;padding-top:24px;">
+                        <button type="button" class="button" id="flavor-preview-tokens">
+                            <span class="dashicons dashicons-visibility" style="margin-top:3px;"></span>
+                            <?php _e('Vista Previa', 'flavor-chat-ia'); ?>
+                        </button>
+                        <button type="button" class="button button-primary" id="flavor-download-tokens">
+                            <span class="dashicons dashicons-download" style="margin-top:3px;"></span>
+                            <?php _e('Descargar', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="flavor-tokens-preview" class="flavor-tokens-preview" style="display:none;margin-top:20px;">
+                    <div class="flavor-tokens-preview-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <span class="flavor-tokens-filename" style="font-family:monospace;font-size:13px;color:#6b7280;"></span>
+                        <button type="button" class="button button-small" id="flavor-copy-tokens">
+                            <span class="dashicons dashicons-clipboard" style="font-size:14px;width:14px;height:14px;margin-top:2px;"></span>
+                            <?php _e('Copiar', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                    <pre class="flavor-tokens-code" style="background:#1e1e2e;color:#cdd6f4;padding:16px;border-radius:8px;overflow-x:auto;max-height:400px;font-size:12px;line-height:1.5;"><code></code></pre>
+                </div>
+
+                <div id="flavor-tokens-feedback" class="flavor-theme-feedback" style="display:none;margin-top:12px;"></div>
+            </div>
         </div>
 
         <script>
@@ -767,6 +810,107 @@ class Flavor_Design_Settings {
                 document.addEventListener('DOMContentLoaded', cargarTemas);
             } else {
                 cargarTemas();
+            }
+
+            // ─── Exportar Design Tokens ───
+            var tokenFormatSelect = document.getElementById('flavor-token-format');
+            var previewTokensBtn = document.getElementById('flavor-preview-tokens');
+            var downloadTokensBtn = document.getElementById('flavor-download-tokens');
+            var copyTokensBtn = document.getElementById('flavor-copy-tokens');
+            var tokensPreview = document.getElementById('flavor-tokens-preview');
+            var tokensCode = tokensPreview ? tokensPreview.querySelector('code') : null;
+            var tokensFilename = tokensPreview ? tokensPreview.querySelector('.flavor-tokens-filename') : null;
+            var tokensFeedback = document.getElementById('flavor-tokens-feedback');
+
+            var tokenFilenames = {
+                'w3c': 'design-tokens.json',
+                'css': 'design-tokens.css',
+                'js': 'design-tokens.js',
+                'tailwind': 'tailwind.config.js'
+            };
+
+            function mostrarTokensFeedback(mensaje, tipo) {
+                tokensFeedback.textContent = mensaje;
+                tokensFeedback.className = 'flavor-theme-feedback flavor-theme-feedback--' + tipo;
+                tokensFeedback.style.display = 'block';
+                setTimeout(function() { tokensFeedback.style.display = 'none'; }, 3000);
+            }
+
+            function obtenerTokens(formato, callback) {
+                var formData = new FormData();
+                formData.append('action', 'flavor_export_tokens_' + formato);
+                formData.append('nonce', nonce);
+
+                fetch(ajaxUrl, { method: 'POST', body: formData })
+                    .then(function(r) { return r.json(); })
+                    .then(function(respuesta) {
+                        if (respuesta.success) {
+                            callback(respuesta.data.content, respuesta.data.filename);
+                        } else {
+                            mostrarTokensFeedback(respuesta.data.message || 'Error', 'error');
+                        }
+                    })
+                    .catch(function() {
+                        mostrarTokensFeedback('Error de conexión', 'error');
+                    });
+            }
+
+            if (previewTokensBtn) {
+                previewTokensBtn.addEventListener('click', function() {
+                    var formato = tokenFormatSelect.value;
+                    previewTokensBtn.disabled = true;
+
+                    obtenerTokens(formato, function(contenido, filename) {
+                        previewTokensBtn.disabled = false;
+                        tokensCode.textContent = contenido;
+                        tokensFilename.textContent = filename || tokenFilenames[formato];
+                        tokensPreview.style.display = 'block';
+                    });
+
+                    setTimeout(function() { previewTokensBtn.disabled = false; }, 5000);
+                });
+            }
+
+            if (downloadTokensBtn) {
+                downloadTokensBtn.addEventListener('click', function() {
+                    var formato = tokenFormatSelect.value;
+                    downloadTokensBtn.disabled = true;
+
+                    obtenerTokens(formato, function(contenido, filename) {
+                        downloadTokensBtn.disabled = false;
+                        var blob = new Blob([contenido], { type: 'text/plain' });
+                        var url = URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename || tokenFilenames[formato];
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        mostrarTokensFeedback('<?php echo esc_js(__('Archivo descargado', 'flavor-chat-ia')); ?>', 'success');
+                    });
+
+                    setTimeout(function() { downloadTokensBtn.disabled = false; }, 5000);
+                });
+            }
+
+            if (copyTokensBtn) {
+                copyTokensBtn.addEventListener('click', function() {
+                    var texto = tokensCode.textContent;
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(texto).then(function() {
+                            mostrarTokensFeedback('<?php echo esc_js(__('Código copiado al portapapeles', 'flavor-chat-ia')); ?>', 'success');
+                        });
+                    } else {
+                        var textarea = document.createElement('textarea');
+                        textarea.value = texto;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        mostrarTokensFeedback('<?php echo esc_js(__('Código copiado al portapapeles', 'flavor-chat-ia')); ?>', 'success');
+                    }
+                });
             }
 
             // ─── Importar plantillas web ───
@@ -1102,6 +1246,47 @@ class Flavor_Design_Settings {
                     grid-template-columns: repeat(2, 1fr);
                 }
             }
+
+            /* Export Tokens Section */
+            .flavor-export-tokens-wrapper {
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 24px;
+            }
+            .flavor-export-tokens-wrapper h2 {
+                margin-top: 0;
+                margin-bottom: 4px;
+            }
+            .flavor-export-tokens-wrapper > .description {
+                margin-bottom: 0;
+                color: #666;
+            }
+            .flavor-tokens-preview {
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .flavor-tokens-preview-header {
+                background: #f9fafb;
+                padding: 8px 12px;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .flavor-tokens-code {
+                margin: 0;
+                border-radius: 0 0 8px 8px;
+            }
+            .flavor-tokens-code::-webkit-scrollbar {
+                height: 8px;
+                width: 8px;
+            }
+            .flavor-tokens-code::-webkit-scrollbar-track {
+                background: #313244;
+            }
+            .flavor-tokens-code::-webkit-scrollbar-thumb {
+                background: #585b70;
+                border-radius: 4px;
+            }
         ');
     }
 
@@ -1285,15 +1470,10 @@ class Flavor_Design_Settings {
 
     /**
      * Output CSS personalizado en el frontend
+     * Siempre genera las variables CSS (usa defaults si no hay ajustes guardados)
      */
     public function output_custom_css() {
-        // Solo emitir CSS si el usuario ha guardado ajustes explícitamente.
-        // Si la opción está vacía, el Theme Manager es la fuente autoritativa.
-        $ajustes_guardados = get_option(self::OPTION_NAME, []);
-        if (empty($ajustes_guardados)) {
-            return;
-        }
-
+        // Obtener settings (con defaults si no hay guardados)
         $settings = $this->get_settings();
 
         // Cargar Google Fonts si están seleccionadas

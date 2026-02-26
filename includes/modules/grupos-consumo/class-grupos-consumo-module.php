@@ -14,11 +14,17 @@ if (!defined('ABSPATH')) {
 /**
  * Módulo de Grupos de Consumo
  * Permite organizar pedidos colectivos de productores locales
+ *
+ * INTEGRACIONES:
+ * - Este modulo es CONSUMER de contenido
+ * - Productos y Productores pueden tener recetas, multimedia, videos vinculados
  */
 class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
+    use Flavor_Module_Dashboard_Tabs_Trait;
 
     /**
      * Constructor
@@ -29,6 +35,9 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Gestión de pedidos colectivos, productores locales y distribución comunitaria.'; // Translation loaded on init
 
         parent::__construct();
+
+        // Registrar como consumidor de integraciones
+        $this->register_as_integration_consumer();
 
         // Cargar clases auxiliares
         $this->cargar_clases_auxiliares();
@@ -44,11 +53,331 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
         // Registrar widget de dashboard
         add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_grupos_consumo_agregar_a_lista', [$this, 'ajax_agregar_a_lista']);
+        add_action('wp_ajax_nopriv_grupos_consumo_agregar_a_lista', [$this, 'ajax_agregar_a_lista']);
+        add_action('wp_ajax_grupos_consumo_quitar_de_lista', [$this, 'ajax_quitar_de_lista']);
+        add_action('wp_ajax_nopriv_grupos_consumo_quitar_de_lista', [$this, 'ajax_quitar_de_lista']);
+        add_action('wp_ajax_grupos_consumo_convertir_lista_en_pedido', [$this, 'ajax_convertir_lista_en_pedido']);
+        add_action('wp_ajax_nopriv_grupos_consumo_convertir_lista_en_pedido', [$this, 'ajax_convertir_lista_en_pedido']);
+        add_action('wp_ajax_grupos_consumo_solicitar_union', [$this, 'ajax_solicitar_union']);
+        add_action('wp_ajax_nopriv_grupos_consumo_solicitar_union', [$this, 'ajax_solicitar_union']);
+
 
         // Registrar handlers AJAX para gestión de pedidos
         add_action('wp_ajax_gc_cambiar_estado_pedido', [$this, 'ajax_cambiar_estado_pedido']);
         add_action('wp_ajax_gc_marcar_pedidos_completados', [$this, 'ajax_marcar_pedidos_completados']);
+
+        // Registrar handlers AJAX para lista de compra (frontend)
+        add_action('wp_ajax_gc_agregar_lista', [$this, 'ajax_agregar_a_lista']);
+        add_action('wp_ajax_gc_quitar_lista', [$this, 'ajax_quitar_de_lista']);
+        add_action('wp_ajax_gc_convertir_pedido', [$this, 'ajax_convertir_lista_en_pedido']);
+
+        // Registrar handlers AJAX para gestión de consumidores
+        add_action('wp_ajax_gc_alta_consumidor', [$this, 'ajax_alta_consumidor']);
+        add_action('wp_ajax_gc_cambiar_estado_consumidor', [$this, 'ajax_cambiar_estado_consumidor']);
+        add_action('wp_ajax_gc_cambiar_rol_consumidor', [$this, 'ajax_cambiar_rol_consumidor']);
+        add_action('wp_ajax_gc_importar_usuarios_wp', [$this, 'ajax_importar_usuarios_wp']);
+        add_action('wp_ajax_gc_listar_usuarios_wp', [$this, 'ajax_listar_usuarios_wp']);
+        add_action('wp_ajax_gc_obtener_detalles_consumidor', [$this, 'ajax_obtener_detalles_consumidor']);
+
+        // Cargar scripts y estilos del frontend
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+
+        // Ciclos recurrentes - Programar cron y registrar handler
+        add_action('init', [$this, 'programar_cron_ciclos_recurrentes']);
+        add_action('gc_verificar_ciclos_recurrentes', [$this, 'verificar_ciclos_recurrentes']);
     }
+
+    /**
+     * Encolar assets del frontend
+     */
+    public function enqueue_frontend_assets() {
+        // Solo cargar si estamos en una página relacionada con grupos de consumo
+        if (!$this->should_load_frontend_assets()) {
+            return;
+        }
+
+        $assets_url = FLAVOR_CHAT_IA_URL . 'includes/modules/grupos-consumo/assets/';
+        $assets_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/grupos-consumo/assets/';
+        $version = FLAVOR_CHAT_IA_VERSION;
+
+        // CSS del frontend
+        if (file_exists($assets_path . 'gc-frontend.css')) {
+            wp_enqueue_style(
+                'gc-frontend',
+                $assets_url . 'gc-frontend.css',
+                [],
+                $version
+            );
+        }
+
+        // JavaScript del frontend
+        if (file_exists($assets_path . 'gc-frontend.js')) {
+            wp_enqueue_script(
+                'gc-frontend',
+                $assets_url . 'gc-frontend.js',
+                ['jquery'],
+                $version,
+                true
+            );
+
+            // Configuración para el script
+            wp_localize_script('gc-frontend', 'gcFrontend', [
+                'ajaxUrl'    => admin_url('admin-ajax.php'),
+                'restUrl'    => rest_url('flavor/v1/grupos-consumo/'),
+                'nonce'      => wp_create_nonce('gc_nonce'),
+                'restNonce'  => wp_create_nonce('wp_rest'),
+                'isLoggedIn' => is_user_logged_in(),
+                'loginUrl'   => wp_login_url(home_url($_SERVER['REQUEST_URI'] ?? '')),
+                'i18n'       => [
+                    'agregado'         => __('Producto agregado a la lista', 'flavor-chat-ia'),
+                    'eliminado'        => __('Producto eliminado de la lista', 'flavor-chat-ia'),
+                    'error'            => __('Ha ocurrido un error', 'flavor-chat-ia'),
+                    'confirmarEliminar' => __('¿Eliminar este producto?', 'flavor-chat-ia'),
+                    'pedidoCreado'     => __('Pedido creado correctamente', 'flavor-chat-ia'),
+                    'cargando'         => __('Cargando...', 'flavor-chat-ia'),
+                    'sinProductos'     => __('Tu lista está vacía', 'flavor-chat-ia'),
+                ],
+            ]);
+        }
+    }
+
+    /**
+     * Verificar si debemos cargar los assets del frontend
+     */
+    private function should_load_frontend_assets() {
+        // Siempre cargar en páginas del módulo
+        if (is_singular(['gc_producto', 'gc_productor', 'gc_grupo'])) {
+            return true;
+        }
+
+        // Cargar en páginas con shortcodes del módulo
+        global $post;
+        if ($post && is_a($post, 'WP_Post')) {
+            $shortcodes_gc = ['gc_productos', 'gc_catalogo', 'gc_pedido', 'gc_carrito', 'grupos_consumo'];
+            foreach ($shortcodes_gc as $shortcode) {
+                if (has_shortcode($post->post_content, $shortcode)) {
+                    return true;
+                }
+            }
+        }
+
+        // Cargar en páginas del portal (mi-portal)
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        if (strpos($request_uri, '/mi-portal/') !== false || strpos($request_uri, '/grupos-consumo') !== false) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Tipos de contenido que este modulo acepta de otros modulos
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['recetas', 'multimedia', 'podcast', 'biblioteca'];
+    }
+
+    /**
+     * Entidades donde mostrar las integraciones
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type'      => 'post',
+                'post_type' => 'gc_producto',
+                'context'   => 'side',
+                'label'     => __('Contenido del Producto', 'flavor-chat-ia'),
+            ],
+            [
+                'type'      => 'post',
+                'post_type' => 'gc_productor',
+                'context'   => 'normal',
+                'label'     => __('Contenido del Productor', 'flavor-chat-ia'),
+            ],
+        ];
+    }
+
+    // =========================================================================
+    // TABS DEL DASHBOARD (SISTEMA FLEXIBLE)
+    // =========================================================================
+
+    /**
+     * Define los tabs del dashboard para Mi Portal
+     *
+     * Este método usa el sistema flexible de tabs que permite:
+     * - Definir contenido como shortcode, template o callable
+     * - Añadir badges con contadores
+     * - Filtrar por capabilities
+     *
+     * @return array Configuración de tabs
+     */
+    protected function define_dashboard_tabs() {
+        $usuario_id = get_current_user_id();
+
+        return [
+            'catalogo' => [
+                'label'    => __('Catálogo', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-products',
+                'content'  => '[gc_productos vista="catalogo" limit="12"]',
+                'priority' => 10,
+            ],
+            'pedidos' => [
+                'label'    => __('Mis Pedidos', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-cart',
+                'content'  => '[gc_mis_pedidos]',
+                'priority' => 20,
+                'cap'      => 'read',
+                'badge'    => [$this, 'contar_pedidos_pendientes'],
+            ],
+            'productores' => [
+                'label'    => __('Productores', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-groups',
+                'content'  => '[gc_productores vista="grid" limit="12"]',
+                'priority' => 30,
+            ],
+            'ciclos' => [
+                'label'    => __('Ciclos', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-calendar-alt',
+                'content'  => '[gc_ciclos vista="listado"]',
+                'priority' => 40,
+            ],
+        ];
+    }
+
+    // =========================================================================
+    // AJAX: LISTA DE COMPRA (FRONTEND)
+    // =========================================================================
+
+    /**
+     * AJAX: Agregar producto a la lista de compra
+     */
+    public function ajax_agregar_a_lista() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-chat-ia')]);
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión para añadir productos.', 'flavor-chat-ia')]);
+        }
+
+        $producto_id = absint($_POST['producto_id'] ?? 0);
+        $cantidad = max(1, min(99, absint($_POST['cantidad'] ?? 1)));
+
+        if (!$producto_id) {
+            wp_send_json_error(['message' => __('Producto no válido.', 'flavor-chat-ia')]);
+        }
+
+        // Verificar que el producto existe
+        $producto = get_post($producto_id);
+        if (!$producto || $producto->post_type !== 'gc_producto') {
+            wp_send_json_error(['message' => __('Producto no encontrado.', 'flavor-chat-ia')]);
+        }
+
+        // Obtener lista actual del usuario
+        $user_id = get_current_user_id();
+        $lista = get_user_meta($user_id, 'gc_lista_compra', true);
+        if (!is_array($lista)) {
+            $lista = [];
+        }
+
+        // Agregar o actualizar cantidad
+        $lista[$producto_id] = $cantidad;
+
+        // Guardar
+        update_user_meta($user_id, 'gc_lista_compra', $lista);
+
+        wp_send_json_success([
+            'message' => sprintf(__('%s añadido al pedido.', 'flavor-chat-ia'), $producto->post_title),
+            'lista_count' => count($lista),
+        ]);
+    }
+
+    /**
+     * AJAX: Quitar producto de la lista de compra
+     */
+    public function ajax_quitar_de_lista() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-chat-ia')]);
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+        }
+
+        $producto_id = absint($_POST['producto_id'] ?? 0);
+
+        if (!$producto_id) {
+            wp_send_json_error(['message' => __('Producto no válido.', 'flavor-chat-ia')]);
+        }
+
+        $user_id = get_current_user_id();
+        $lista = get_user_meta($user_id, 'gc_lista_compra', true);
+        if (!is_array($lista)) {
+            $lista = [];
+        }
+
+        // Quitar producto
+        unset($lista[$producto_id]);
+
+        // Guardar
+        update_user_meta($user_id, 'gc_lista_compra', $lista);
+
+        wp_send_json_success([
+            'message' => __('Producto eliminado de la lista.', 'flavor-chat-ia'),
+            'lista_count' => count($lista),
+        ]);
+    }
+
+    /**
+     * AJAX: Convertir lista de compra en pedido
+     */
+    public function ajax_convertir_lista_en_pedido() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_nonce')) {
+            wp_send_json_error(['message' => __('Sesión expirada. Recarga la página.', 'flavor-chat-ia')]);
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+        }
+
+        $user_id = get_current_user_id();
+        $lista = get_user_meta($user_id, 'gc_lista_compra', true);
+
+        if (!is_array($lista) || empty($lista)) {
+            wp_send_json_error(['message' => __('Tu lista de compra está vacía.', 'flavor-chat-ia')]);
+        }
+
+        // Convertir la lista en formato de productos para el pedido
+        $productos = [];
+        foreach ($lista as $producto_id => $cantidad) {
+            $productos[] = [
+                'producto_id' => $producto_id,
+                'cantidad'    => $cantidad,
+            ];
+        }
+
+        // Usar la función existente de hacer pedido
+        $resultado = $this->action_hacer_pedido(['productos' => $productos]);
+
+        if ($resultado['success']) {
+            // Limpiar la lista de compra
+            delete_user_meta($user_id, 'gc_lista_compra');
+
+            wp_send_json_success([
+                'message' => $resultado['mensaje'] ?? __('Pedido realizado correctamente.', 'flavor-chat-ia'),
+            ]);
+        } else {
+            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al crear el pedido.', 'flavor-chat-ia')]);
+        }
+    }
+
+    // =========================================================================
+    // AJAX: GESTIÓN DE PEDIDOS (ADMIN)
+    // =========================================================================
 
     /**
      * AJAX: Cambiar estado de un pedido individual
@@ -134,6 +463,356 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * AJAX: Alta de nuevo consumidor
+     */
+    public function ajax_alta_consumidor() {
+        if (!wp_verify_nonce($_POST['gc_admin_nonce'] ?? '', 'gc_admin_nonce')) {
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
+        }
+
+        if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $grupo_id = absint($_POST['grupo_id'] ?? 0);
+        $usuario_id = absint($_POST['usuario_id'] ?? 0);
+        $rol = sanitize_text_field($_POST['rol'] ?? 'consumidor');
+        $preferencias = sanitize_textarea_field($_POST['preferencias'] ?? '');
+        $alergias = sanitize_textarea_field($_POST['alergias'] ?? '');
+
+        if (!$grupo_id || !$usuario_id) {
+            wp_send_json_error(['error' => __('Datos requeridos faltantes', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+
+        // Verificar si ya existe
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_consumidores} WHERE grupo_id = %d AND usuario_id = %d",
+            $grupo_id,
+            $usuario_id
+        ));
+
+        if ($existe) {
+            wp_send_json_error(['error' => __('Este usuario ya es miembro del grupo', 'flavor-chat-ia')]);
+        }
+
+        $resultado = $wpdb->insert(
+            $tabla_consumidores,
+            [
+                'grupo_id' => $grupo_id,
+                'usuario_id' => $usuario_id,
+                'rol' => $rol,
+                'estado' => 'activo',
+                'preferencias_alimentarias' => $preferencias,
+                'alergias' => $alergias,
+                'fecha_alta' => current_time('mysql'),
+            ],
+            ['%d', '%d', '%s', '%s', '%s', '%s', '%s']
+        );
+
+        if ($resultado) {
+            wp_send_json_success(['mensaje' => __('Consumidor añadido correctamente', 'flavor-chat-ia')]);
+        } else {
+            wp_send_json_error(['error' => __('Error al añadir consumidor', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Cambiar estado de consumidor
+     */
+    public function ajax_cambiar_estado_consumidor() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
+        }
+
+        if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $consumidor_id = absint($_POST['consumidor_id'] ?? 0);
+        $nuevo_estado = sanitize_text_field($_POST['estado'] ?? '');
+
+        $estados_validos = ['pendiente', 'activo', 'suspendido', 'baja'];
+
+        if (!$consumidor_id || !in_array($nuevo_estado, $estados_validos)) {
+            wp_send_json_error(['error' => __('Datos inválidos', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+
+        $resultado = $wpdb->update(
+            $tabla_consumidores,
+            ['estado' => $nuevo_estado],
+            ['id' => $consumidor_id],
+            ['%s'],
+            ['%d']
+        );
+
+        if ($resultado !== false) {
+            wp_send_json_success(['estado' => $nuevo_estado]);
+        } else {
+            wp_send_json_error(['error' => __('Error al actualizar estado', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Cambiar rol de consumidor (soporta múltiples roles separados por coma)
+     */
+    public function ajax_cambiar_rol_consumidor() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
+        }
+
+        if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $consumidor_id = absint($_POST['consumidor_id'] ?? 0);
+        $roles_input = sanitize_text_field($_POST['rol'] ?? '');
+
+        if (!$consumidor_id || empty($roles_input)) {
+            wp_send_json_error(['error' => __('Datos inválidos', 'flavor-chat-ia')]);
+        }
+
+        // Validar cada rol
+        $roles_validos = ['consumidor', 'coordinador', 'productor'];
+        $roles_solicitados = array_map('trim', explode(',', $roles_input));
+        $roles_finales = [];
+
+        foreach ($roles_solicitados as $rol) {
+            if (in_array($rol, $roles_validos)) {
+                $roles_finales[] = $rol;
+            }
+        }
+
+        // Si no hay roles válidos, usar "consumidor" por defecto
+        if (empty($roles_finales)) {
+            $roles_finales = ['consumidor'];
+        }
+
+        $roles_string = implode(',', $roles_finales);
+
+        global $wpdb;
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+
+        $resultado = $wpdb->update(
+            $tabla_consumidores,
+            ['rol' => $roles_string],
+            ['id' => $consumidor_id],
+            ['%s'],
+            ['%d']
+        );
+
+        if ($resultado !== false) {
+            wp_send_json_success(['rol' => $roles_string, 'roles' => $roles_finales]);
+        } else {
+            wp_send_json_error(['error' => __('Error al actualizar rol', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Importar usuarios de WordPress como consumidores
+     */
+    public function ajax_importar_usuarios_wp() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
+        }
+
+        if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $grupo_id = absint($_POST['grupo_id'] ?? 0);
+        $usuarios_ids = isset($_POST['usuarios']) ? array_map('absint', $_POST['usuarios']) : [];
+
+        if (!$grupo_id) {
+            wp_send_json_error(['error' => __('Grupo no especificado', 'flavor-chat-ia')]);
+        }
+
+        if (empty($usuarios_ids)) {
+            wp_send_json_error(['error' => __('No se seleccionaron usuarios', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+
+        $importados = 0;
+        $omitidos = 0;
+
+        foreach ($usuarios_ids as $usuario_id) {
+            // Verificar si ya existe
+            $existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$tabla_consumidores} WHERE grupo_id = %d AND usuario_id = %d",
+                $grupo_id,
+                $usuario_id
+            ));
+
+            if ($existe) {
+                $omitidos++;
+                continue;
+            }
+
+            $resultado = $wpdb->insert(
+                $tabla_consumidores,
+                [
+                    'grupo_id' => $grupo_id,
+                    'usuario_id' => $usuario_id,
+                    'rol' => 'consumidor',
+                    'estado' => 'activo',
+                    'fecha_alta' => current_time('mysql'),
+                ],
+                ['%d', '%d', '%s', '%s', '%s']
+            );
+
+            if ($resultado) {
+                $importados++;
+            }
+        }
+
+        wp_send_json_success([
+            'mensaje' => sprintf(
+                __('%d usuarios importados, %d ya existían en el grupo', 'flavor-chat-ia'),
+                $importados,
+                $omitidos
+            ),
+            'importados' => $importados,
+            'omitidos' => $omitidos,
+        ]);
+    }
+
+    /**
+     * AJAX: Listar usuarios de WordPress para importar
+     */
+    public function ajax_listar_usuarios_wp() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
+        }
+
+        if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $grupo_id = absint($_POST['grupo_id'] ?? 0);
+
+        global $wpdb;
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+
+        // Obtener IDs de usuarios ya en el grupo
+        $usuarios_existentes = [];
+        if ($grupo_id) {
+            $usuarios_existentes = $wpdb->get_col($wpdb->prepare(
+                "SELECT usuario_id FROM {$tabla_consumidores} WHERE grupo_id = %d",
+                $grupo_id
+            ));
+        }
+
+        // Obtener todos los usuarios de WordPress
+        $args_usuarios = [
+            'exclude' => $usuarios_existentes,
+            'orderby' => 'display_name',
+            'order' => 'ASC',
+            'number' => 100,
+        ];
+
+        $usuarios_wp = get_users($args_usuarios);
+
+        $lista_usuarios = [];
+        foreach ($usuarios_wp as $usuario) {
+            $lista_usuarios[] = [
+                'id' => $usuario->ID,
+                'nombre' => $usuario->display_name,
+                'email' => $usuario->user_email,
+            ];
+        }
+
+        wp_send_json_success(['usuarios' => $lista_usuarios]);
+    }
+
+    /**
+     * AJAX: Obtener detalles de un consumidor
+     */
+    public function ajax_obtener_detalles_consumidor() {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'gc_admin_nonce')) {
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')]);
+        }
+
+        if (!current_user_can('gc_gestionar_consumidores') && !current_user_can('manage_options')) {
+            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+        }
+
+        $consumidor_id = absint($_POST['consumidor_id'] ?? 0);
+
+        if (!$consumidor_id) {
+            wp_send_json_error(['error' => __('ID de consumidor no especificado', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+        // Obtener datos del consumidor
+        $consumidor = $wpdb->get_row($wpdb->prepare(
+            "SELECT c.*, u.display_name, u.user_email
+             FROM {$tabla_consumidores} c
+             LEFT JOIN {$wpdb->users} u ON c.usuario_id = u.ID
+             WHERE c.id = %d",
+            $consumidor_id
+        ));
+
+        if (!$consumidor) {
+            wp_send_json_error(['error' => __('Consumidor no encontrado', 'flavor-chat-ia')]);
+        }
+
+        // Obtener total de pedidos
+        $total_pedidos = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
+            $consumidor->usuario_id
+        ));
+
+        // Obtener teléfono del usuario (meta)
+        $telefono = get_user_meta($consumidor->usuario_id, 'billing_phone', true);
+        if (!$telefono) {
+            $telefono = get_user_meta($consumidor->usuario_id, 'phone', true);
+        }
+
+        // Labels para estados y roles
+        $estados_labels = [
+            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
+            'activo' => __('Activo', 'flavor-chat-ia'),
+            'suspendido' => __('Suspendido', 'flavor-chat-ia'),
+            'baja' => __('Baja', 'flavor-chat-ia'),
+        ];
+
+        $roles_labels = [
+            'consumidor' => __('Consumidor', 'flavor-chat-ia'),
+            'coordinador' => __('Coordinador', 'flavor-chat-ia'),
+            'productor' => __('Productor', 'flavor-chat-ia'),
+        ];
+
+        $datos = [
+            'id' => $consumidor->id,
+            'nombre' => $consumidor->display_name,
+            'email' => $consumidor->user_email,
+            'telefono' => $telefono,
+            'avatar' => get_avatar_url($consumidor->usuario_id, ['size' => 160]),
+            'estado' => $consumidor->estado,
+            'estado_label' => $estados_labels[$consumidor->estado] ?? $consumidor->estado,
+            'rol' => $consumidor->rol,
+            'rol_label' => $roles_labels[$consumidor->rol] ?? $consumidor->rol,
+            'fecha_alta' => date_i18n(get_option('date_format'), strtotime($consumidor->fecha_alta)),
+            'saldo' => number_format($consumidor->saldo_pendiente ?? 0, 2),
+            'preferencias' => esc_html($consumidor->preferencias_alimentarias ?? ''),
+            'alergias' => esc_html($consumidor->alergias ?? ''),
+            'total_pedidos' => intval($total_pedidos),
+        ];
+
+        wp_send_json_success(['consumidor' => $datos]);
+    }
+
+    /**
      * Inicializar sistema de notificaciones
      */
     private function init_notifications() {
@@ -162,7 +841,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             [
                 'module_id' => $this->id,
                 'type' => 'success',
-                'link' => home_url("/grupos-consumo/mis-pedidos?order={$order_id}"),
+                'link' => home_url("/mi-portal/grupos-consumo/mis-pedidos?order={$order_id}"),
                 'metadata' => [
                     'order_id' => $order_id,
                     'action' => 'order_created'
@@ -188,7 +867,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             [
                 'module_id' => $this->id,
                 'type' => 'success',
-                'link' => home_url("/grupos-consumo/mis-pedidos?order={$order_id}"),
+                'link' => home_url("/mi-portal/grupos-consumo/mis-pedidos?order={$order_id}"),
                 'metadata' => [
                     'order_id' => $order_id,
                     'action' => 'order_confirmed'
@@ -214,7 +893,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             [
                 'module_id' => $this->id,
                 'type' => 'info',
-                'link' => home_url("/grupos-consumo/mis-pedidos?order={$order_id}"),
+                'link' => home_url("/mi-portal/grupos-consumo/mis-pedidos?order={$order_id}"),
                 'metadata' => [
                     'order_id' => $order_id,
                     'action' => 'order_ready'
@@ -240,7 +919,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             [
                 'module_id' => $this->id,
                 'type' => 'warning',
-                'link' => home_url("/grupos-consumo/mis-pedidos?order={$order_id}"),
+                'link' => home_url("/mi-portal/grupos-consumo/mis-pedidos?order={$order_id}"),
                 'metadata' => [
                     'order_id' => $order_id,
                     'action' => 'pickup_reminder'
@@ -281,7 +960,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
                 'options' => [
                     'module_id' => $this->id,
                     'type' => 'info',
-                    'link' => home_url("/grupos-consumo/productos?product={$product_id}"),
+                    'link' => home_url("/mi-portal/grupos-consumo/productos?product={$product_id}"),
                     'metadata' => [
                         'product_id' => $product_id,
                         'action' => 'new_product'
@@ -323,6 +1002,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             'class-gc-notification-channels.php',
             'class-gc-export.php',
             'class-gc-conciencia-features.php', // v4.2.0: Sello de Conciencia
+            'class-gc-facturas-integration.php', // Integracion con modulo de Facturas
         ];
 
         foreach ($clases as $clase) {
@@ -492,6 +1172,11 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         add_shortcode('gc_productores_cercanos', [$this, 'shortcode_productores_cercanos']);
         add_shortcode('gc_panel', [$this, 'shortcode_panel']);
         add_shortcode('gc_nav', [$this, 'shortcode_nav']);
+
+        // Aliases para compatibilidad con tabs del dashboard
+        add_shortcode('gc_mis_pedidos', [$this, 'shortcode_historial']);
+        add_shortcode('gc_productores', [$this, 'shortcode_productores_cercanos']);
+        add_shortcode('gc_ciclos', [$this, 'shortcode_ciclo_actual']);
     }
 
     /**
@@ -647,23 +1332,23 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $links = [
             [
                 'label' => __('Ver catálogo', 'flavor-chat-ia'),
-                'url' => home_url('/grupos-consumo/productos/'),
+                'url' => home_url('/mi-portal/grupos-consumo/productos/'),
             ],
             [
                 'label' => __('Mi cesta', 'flavor-chat-ia'),
-                'url' => home_url('/grupos-consumo/mi-cesta/'),
+                'url' => home_url('/mi-portal/grupos-consumo/mi-cesta/'),
             ],
             [
                 'label' => __('Mi pedido', 'flavor-chat-ia'),
-                'url' => home_url('/grupos-consumo/mi-pedido/'),
+                'url' => home_url('/mi-portal/grupos-consumo/mi-pedido/'),
             ],
             [
                 'label' => __('Mis pedidos', 'flavor-chat-ia'),
-                'url' => home_url('/grupos-consumo/mis-pedidos/'),
+                'url' => home_url('/mi-portal/grupos-consumo/mis-pedidos/'),
             ],
             [
                 'label' => __('Suscripciones', 'flavor-chat-ia'),
-                'url' => home_url('/grupos-consumo/suscripciones/'),
+                'url' => home_url('/mi-portal/grupos-consumo/suscripciones/'),
             ],
         ];
 
@@ -1643,6 +2328,13 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $lugar_entrega = get_post_meta($post->ID, '_gc_lugar_entrega', true);
         $hora_entrega = get_post_meta($post->ID, '_gc_hora_entrega', true);
         $notas = get_post_meta($post->ID, '_gc_notas', true);
+
+        // Campos de recurrencia
+        $es_recurrente = get_post_meta($post->ID, '_gc_es_recurrente', true);
+        $tipo_recurrencia = get_post_meta($post->ID, '_gc_tipo_recurrencia', true) ?: 'semanal';
+        $recurrencia_fin = get_post_meta($post->ID, '_gc_recurrencia_fin', true);
+        $ciclo_padre_id = get_post_meta($post->ID, '_gc_ciclo_padre', true);
+        $auto_publicar = get_post_meta($post->ID, '_gc_auto_publicar', true);
         ?>
         <table class="form-table">
             <tr>
@@ -1678,6 +2370,89 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
                 </td>
             </tr>
         </table>
+
+        <!-- Sección de Recurrencia -->
+        <h3 style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd;">
+            <span class="dashicons dashicons-update" style="color: #2271b1;"></span>
+            <?php _e('Configuración de Recurrencia', 'flavor-chat-ia'); ?>
+        </h3>
+
+        <?php if ($ciclo_padre_id): ?>
+            <div class="notice notice-info inline" style="margin: 10px 0;">
+                <p>
+                    <span class="dashicons dashicons-info"></span>
+                    <?php
+                    $ciclo_padre = get_post($ciclo_padre_id);
+                    printf(
+                        __('Este ciclo fue generado automáticamente a partir del ciclo plantilla: %s', 'flavor-chat-ia'),
+                        '<a href="' . get_edit_post_link($ciclo_padre_id) . '">' . esc_html($ciclo_padre->post_title) . '</a>'
+                    );
+                    ?>
+                </p>
+            </div>
+        <?php endif; ?>
+
+        <table class="form-table">
+            <tr>
+                <th><label for="gc_es_recurrente"><?php _e('Ciclo Recurrente', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="gc_es_recurrente" name="gc_es_recurrente"
+                               value="1" <?php checked($es_recurrente, '1'); ?> />
+                        <?php _e('Generar automáticamente el siguiente ciclo al cerrar este', 'flavor-chat-ia'); ?>
+                    </label>
+                    <p class="description">
+                        <?php _e('Al activar esta opción, cuando el ciclo actual se cierre, se creará automáticamente uno nuevo con las mismas características.', 'flavor-chat-ia'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr class="gc-recurrencia-campo" style="<?php echo $es_recurrente ? '' : 'display:none;'; ?>">
+                <th><label for="gc_tipo_recurrencia"><?php _e('Frecuencia', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <select id="gc_tipo_recurrencia" name="gc_tipo_recurrencia">
+                        <option value="semanal" <?php selected($tipo_recurrencia, 'semanal'); ?>><?php _e('Semanal (cada 7 días)', 'flavor-chat-ia'); ?></option>
+                        <option value="quincenal" <?php selected($tipo_recurrencia, 'quincenal'); ?>><?php _e('Quincenal (cada 14 días)', 'flavor-chat-ia'); ?></option>
+                        <option value="mensual" <?php selected($tipo_recurrencia, 'mensual'); ?>><?php _e('Mensual (cada 30 días)', 'flavor-chat-ia'); ?></option>
+                        <option value="bimensual" <?php selected($tipo_recurrencia, 'bimensual'); ?>><?php _e('Bimensual (cada 60 días)', 'flavor-chat-ia'); ?></option>
+                    </select>
+                    <p class="description">
+                        <?php _e('Define cada cuánto tiempo se creará un nuevo ciclo.', 'flavor-chat-ia'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr class="gc-recurrencia-campo" style="<?php echo $es_recurrente ? '' : 'display:none;'; ?>">
+                <th><label for="gc_auto_publicar"><?php _e('Auto-publicar', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="gc_auto_publicar" name="gc_auto_publicar"
+                               value="1" <?php checked($auto_publicar, '1'); ?> />
+                        <?php _e('Publicar automáticamente el nuevo ciclo (si no, quedará como borrador)', 'flavor-chat-ia'); ?>
+                    </label>
+                </td>
+            </tr>
+            <tr class="gc-recurrencia-campo" style="<?php echo $es_recurrente ? '' : 'display:none;'; ?>">
+                <th><label for="gc_recurrencia_fin"><?php _e('Fecha Fin Recurrencia', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <input type="date" id="gc_recurrencia_fin" name="gc_recurrencia_fin"
+                           value="<?php echo esc_attr($recurrencia_fin); ?>" />
+                    <p class="description">
+                        <?php _e('Opcional. Si se define, la recurrencia se detendrá en esta fecha.', 'flavor-chat-ia'); ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <script>
+        jQuery(document).ready(function($) {
+            $('#gc_es_recurrente').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('.gc-recurrencia-campo').show();
+                } else {
+                    $('.gc-recurrencia-campo').hide();
+                }
+            });
+        });
+        </script>
         <?php
     }
 
@@ -1840,6 +2615,8 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             '_gc_lugar_entrega' => 'sanitize_text_field',
             '_gc_hora_entrega' => 'sanitize_text_field',
             '_gc_notas' => 'sanitize_textarea_field',
+            '_gc_tipo_recurrencia' => 'sanitize_text_field',
+            '_gc_recurrencia_fin' => 'sanitize_text_field',
         ];
 
         foreach ($campos_a_guardar as $campo => $funcion_sanitizar) {
@@ -1847,6 +2624,167 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             if (isset($_POST[$campo_form])) {
                 update_post_meta($post_id, $campo, $funcion_sanitizar($_POST[$campo_form]));
             }
+        }
+
+        // Campos checkbox
+        $es_recurrente = isset($_POST['gc_es_recurrente']) ? '1' : '0';
+        update_post_meta($post_id, '_gc_es_recurrente', $es_recurrente);
+
+        $auto_publicar = isset($_POST['gc_auto_publicar']) ? '1' : '0';
+        update_post_meta($post_id, '_gc_auto_publicar', $auto_publicar);
+    }
+
+    /**
+     * Genera el siguiente ciclo recurrente
+     *
+     * @param int $ciclo_id ID del ciclo plantilla
+     * @return int|false ID del nuevo ciclo o false si falla
+     */
+    public function generar_siguiente_ciclo($ciclo_id) {
+        $ciclo_actual = get_post($ciclo_id);
+        if (!$ciclo_actual || $ciclo_actual->post_type !== 'gc_ciclo') {
+            return false;
+        }
+
+        // Verificar que es recurrente
+        $es_recurrente = get_post_meta($ciclo_id, '_gc_es_recurrente', true);
+        if ($es_recurrente !== '1') {
+            return false;
+        }
+
+        // Verificar fecha fin de recurrencia
+        $recurrencia_fin = get_post_meta($ciclo_id, '_gc_recurrencia_fin', true);
+        if (!empty($recurrencia_fin) && strtotime($recurrencia_fin) < time()) {
+            return false;
+        }
+
+        // Obtener datos del ciclo actual
+        $fecha_inicio = get_post_meta($ciclo_id, '_gc_fecha_inicio', true);
+        $fecha_cierre = get_post_meta($ciclo_id, '_gc_fecha_cierre', true);
+        $fecha_entrega = get_post_meta($ciclo_id, '_gc_fecha_entrega', true);
+        $lugar_entrega = get_post_meta($ciclo_id, '_gc_lugar_entrega', true);
+        $hora_entrega = get_post_meta($ciclo_id, '_gc_hora_entrega', true);
+        $notas = get_post_meta($ciclo_id, '_gc_notas', true);
+        $tipo_recurrencia = get_post_meta($ciclo_id, '_gc_tipo_recurrencia', true) ?: 'semanal';
+        $auto_publicar = get_post_meta($ciclo_id, '_gc_auto_publicar', true);
+
+        // Calcular días de desplazamiento según tipo de recurrencia
+        $dias_desplazamiento = [
+            'semanal' => 7,
+            'quincenal' => 14,
+            'mensual' => 30,
+            'bimensual' => 60,
+        ];
+        $dias = $dias_desplazamiento[$tipo_recurrencia] ?? 7;
+
+        // Calcular nuevas fechas
+        $nueva_fecha_inicio = date('Y-m-d\TH:i', strtotime($fecha_inicio . ' +' . $dias . ' days'));
+        $nueva_fecha_cierre = date('Y-m-d\TH:i', strtotime($fecha_cierre . ' +' . $dias . ' days'));
+        $nueva_fecha_entrega = date('Y-m-d', strtotime($fecha_entrega . ' +' . $dias . ' days'));
+
+        // Verificar que la nueva fecha no supere el fin de recurrencia
+        if (!empty($recurrencia_fin) && strtotime($nueva_fecha_inicio) > strtotime($recurrencia_fin)) {
+            return false;
+        }
+
+        // Generar título del nuevo ciclo
+        $numero_ciclo = 1;
+        $titulo_base = preg_replace('/\s*#\d+$/', '', $ciclo_actual->post_title);
+        $titulo_base = preg_replace('/\s*\(\d+\)$/', '', $titulo_base);
+        $titulo_base = trim($titulo_base);
+
+        // Buscar el número más alto de ciclos con este título base
+        $ciclos_similares = get_posts([
+            'post_type' => 'gc_ciclo',
+            'posts_per_page' => -1,
+            'post_status' => 'any',
+            'meta_query' => [
+                [
+                    'key' => '_gc_ciclo_padre',
+                    'value' => $ciclo_id,
+                ],
+            ],
+        ]);
+        $numero_ciclo = count($ciclos_similares) + 2;
+
+        $nuevo_titulo = $titulo_base . ' #' . $numero_ciclo;
+
+        // Crear el nuevo ciclo
+        $nuevo_ciclo_id = wp_insert_post([
+            'post_type' => 'gc_ciclo',
+            'post_title' => $nuevo_titulo,
+            'post_status' => $auto_publicar === '1' ? 'publish' : 'draft',
+            'post_author' => $ciclo_actual->post_author,
+        ]);
+
+        if (is_wp_error($nuevo_ciclo_id)) {
+            return false;
+        }
+
+        // Guardar meta del nuevo ciclo
+        update_post_meta($nuevo_ciclo_id, '_gc_fecha_inicio', $nueva_fecha_inicio);
+        update_post_meta($nuevo_ciclo_id, '_gc_fecha_cierre', $nueva_fecha_cierre);
+        update_post_meta($nuevo_ciclo_id, '_gc_fecha_entrega', $nueva_fecha_entrega);
+        update_post_meta($nuevo_ciclo_id, '_gc_lugar_entrega', $lugar_entrega);
+        update_post_meta($nuevo_ciclo_id, '_gc_hora_entrega', $hora_entrega);
+        update_post_meta($nuevo_ciclo_id, '_gc_notas', $notas);
+        update_post_meta($nuevo_ciclo_id, '_gc_es_recurrente', '1');
+        update_post_meta($nuevo_ciclo_id, '_gc_tipo_recurrencia', $tipo_recurrencia);
+        update_post_meta($nuevo_ciclo_id, '_gc_recurrencia_fin', $recurrencia_fin);
+        update_post_meta($nuevo_ciclo_id, '_gc_auto_publicar', $auto_publicar);
+        update_post_meta($nuevo_ciclo_id, '_gc_ciclo_padre', $ciclo_id);
+        update_post_meta($nuevo_ciclo_id, '_gc_estado', 'pendiente');
+
+        // Disparar action para que otros sistemas se enteren
+        do_action('gc_ciclo_recurrente_creado', $nuevo_ciclo_id, $ciclo_id);
+
+        return $nuevo_ciclo_id;
+    }
+
+    /**
+     * Verifica y genera ciclos recurrentes pendientes
+     * Se ejecuta via WP-Cron
+     */
+    public function verificar_ciclos_recurrentes() {
+        // Buscar ciclos recurrentes que han cerrado
+        $ciclos_cerrados = get_posts([
+            'post_type' => 'gc_ciclo',
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+            'meta_query' => [
+                'relation' => 'AND',
+                [
+                    'key' => '_gc_es_recurrente',
+                    'value' => '1',
+                ],
+                [
+                    'key' => '_gc_fecha_cierre',
+                    'value' => current_time('Y-m-d\TH:i'),
+                    'compare' => '<',
+                    'type' => 'DATETIME',
+                ],
+                [
+                    'key' => '_gc_siguiente_generado',
+                    'compare' => 'NOT EXISTS',
+                ],
+            ],
+        ]);
+
+        foreach ($ciclos_cerrados as $ciclo) {
+            $nuevo_ciclo_id = $this->generar_siguiente_ciclo($ciclo->ID);
+            if ($nuevo_ciclo_id) {
+                // Marcar que ya se generó el siguiente
+                update_post_meta($ciclo->ID, '_gc_siguiente_generado', $nuevo_ciclo_id);
+            }
+        }
+    }
+
+    /**
+     * Programa el cron de ciclos recurrentes
+     */
+    public function programar_cron_ciclos_recurrentes() {
+        if (!wp_next_scheduled('gc_verificar_ciclos_recurrentes')) {
+            wp_schedule_event(time(), 'hourly', 'gc_verificar_ciclos_recurrentes');
         }
     }
 
@@ -2325,7 +3263,7 @@ KNOWLEDGE;
 
                         var formData = new FormData();
                         formData.append('action', 'gc_agregar_lista');
-                        formData.append('nonce', '<?php echo wp_create_nonce("gc_frontend_nonce"); ?>');
+                        formData.append('nonce', '<?php echo wp_create_nonce("gc_nonce"); ?>');
                         formData.append('producto_id', productoId);
                         formData.append('cantidad', cantidad);
 
@@ -2453,7 +3391,7 @@ KNOWLEDGE;
      * AJAX: Solicitar unión a un grupo de consumo
      */
     public function ajax_solicitar_union() {
-        check_ajax_referer('gc_frontend_nonce', 'nonce');
+        check_ajax_referer('gc_nonce', 'nonce');
 
         $grupo_id = absint($_POST['grupo_id'] ?? 0);
 
@@ -3130,7 +4068,7 @@ KNOWLEDGE;
                 </div>
                 <div class="gc-carrito-footer">
                     <span class="gc-carrito-total"><?php printf(__('Total: %s €', 'flavor-chat-ia'), number_format($total, 2)); ?></span>
-                    <a href="<?php echo esc_url(home_url('/grupos-consumo/mi-cesta/')); ?>" class="gc-btn gc-btn-primary gc-ver-lista"><?php _e('Ver Lista', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-cesta/')); ?>" class="gc-btn gc-btn-primary gc-ver-lista"><?php _e('Ver Lista', 'flavor-chat-ia'); ?></a>
                 </div>
             <?php else: ?>
                 <p class="gc-carrito-vacio"><?php _e('Tu lista está vacía', 'flavor-chat-ia'); ?></p>
@@ -3403,7 +4341,7 @@ KNOWLEDGE;
                 <div class="gc-sin-suscripcion">
                     <span class="dashicons dashicons-heart"></span>
                     <p><?php _e('No tienes ninguna suscripción activa.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/grupos-consumo/suscripciones/')); ?>" class="gc-btn gc-btn-primary"><?php _e('Ver Cestas Disponibles', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/suscripciones/')); ?>" class="gc-btn gc-btn-primary"><?php _e('Ver Cestas Disponibles', 'flavor-chat-ia'); ?></a>
                 </div>
             <?php else: ?>
                 <?php foreach ($suscripciones as $suscripcion): ?>
@@ -3436,111 +4374,90 @@ KNOWLEDGE;
     /**
      * Registra las paginas de administracion del modulo
      *
-     * Utiliza capabilities granulares del sistema de permisos
+     * Utiliza capabilities granulares del sistema de permisos.
+     * NOTA: Todas las páginas son OCULTAS (no aparecen en el sidebar de WordPress)
+     * pero siguen siendo accesibles via URL directa: admin.php?page=slug
      */
     public function registrar_paginas_admin() {
-        // Capability base para acceder al menu (coordinadores y gestores)
-        $capability_base = 'gc_ver_estadisticas';
+        // Capability base para acceder al menú (administradores)
+        $capability_base = 'manage_options';
 
-        // Menu principal de Grupos de Consumo
-        add_menu_page(
-            __('Grupos de Consumo', 'flavor-chat-ia'),
-            __('Grupos Consumo', 'flavor-chat-ia'),
-            $capability_base,
-            'grupos-consumo',
-            [$this, 'render_pagina_dashboard'],
-            'dashicons-groups',
-            56
-        );
-
-        // Submenu: Dashboard (mismo que principal)
+        // Pagina principal de Grupos de Consumo (OCULTA - sin menu visible)
         add_submenu_page(
-            'grupos-consumo',
-            __('Dashboard', 'flavor-chat-ia'),
+            null, // null = página oculta, no aparece en sidebar
+            __('Grupos de Consumo', 'flavor-chat-ia'),
             __('Dashboard', 'flavor-chat-ia'),
             $capability_base,
             'grupos-consumo',
             [$this, 'render_pagina_dashboard']
         );
 
-        // Submenu: Consumidores - requiere gc_gestionar_miembros
+        // Pagina: Consumidores (OCULTA)
         add_submenu_page(
-            'grupos-consumo',
+            null,
             __('Consumidores', 'flavor-chat-ia'),
             __('Consumidores', 'flavor-chat-ia'),
-            'gc_gestionar_miembros',
+            $capability_base,
             'gc-consumidores',
             [$this, 'render_pagina_consumidores']
         );
 
-        // Submenu: Solicitudes (con badge de pendientes) - requiere gc_aprobar_solicitudes
-        $solicitudes_pendientes = 0;
-        if (class_exists('Flavor_GC_Membership')) {
-            $membership_manager = Flavor_GC_Membership::get_instance();
-            $solicitudes_pendientes = $membership_manager->contar_solicitudes_pendientes();
-        }
-        $titulo_solicitudes = __('Solicitudes', 'flavor-chat-ia');
-        if ($solicitudes_pendientes > 0) {
-            $titulo_solicitudes .= sprintf(
-                ' <span class="awaiting-mod gc-solicitudes-badge">%d</span>',
-                $solicitudes_pendientes
-            );
-        }
+        // Pagina: Solicitudes (OCULTA)
         add_submenu_page(
-            'grupos-consumo',
-            __('Solicitudes de Union', 'flavor-chat-ia'),
-            $titulo_solicitudes,
-            'gc_aprobar_solicitudes',
+            null,
+            __('Solicitudes de Unión', 'flavor-chat-ia'),
+            __('Solicitudes', 'flavor-chat-ia'),
+            $capability_base,
             'gc-solicitudes',
             [$this, 'render_pagina_solicitudes']
         );
 
-        // Submenu: Suscripciones - requiere gc_gestionar_suscripciones
+        // Pagina: Suscripciones (OCULTA)
         add_submenu_page(
-            'grupos-consumo',
+            null,
             __('Suscripciones', 'flavor-chat-ia'),
             __('Suscripciones', 'flavor-chat-ia'),
-            'gc_gestionar_suscripciones',
+            $capability_base,
             'gc-suscripciones',
             [$this, 'render_pagina_suscripciones']
         );
 
-        // Submenu: Pedidos - requiere gc_gestionar_pedidos
+        // Pagina: Pedidos (OCULTA)
         add_submenu_page(
-            'grupos-consumo',
+            null,
             __('Pedidos', 'flavor-chat-ia'),
             __('Pedidos', 'flavor-chat-ia'),
-            'gc_gestionar_pedidos',
+            $capability_base,
             'gc-pedidos',
             [$this, 'render_pagina_pedidos']
         );
 
-        // Submenu: Consolidado - requiere gc_gestionar_pedidos
+        // Pagina: Consolidado (OCULTA)
         add_submenu_page(
-            'grupos-consumo',
+            null,
             __('Consolidado', 'flavor-chat-ia'),
             __('Consolidado', 'flavor-chat-ia'),
-            'gc_gestionar_pedidos',
+            $capability_base,
             'gc-consolidado',
             [$this, 'render_pagina_consolidado']
         );
 
-        // Submenu: Reportes - requiere gc_exportar_datos
+        // Pagina: Reportes (OCULTA)
         add_submenu_page(
-            'grupos-consumo',
+            null,
             __('Reportes', 'flavor-chat-ia'),
             __('Reportes', 'flavor-chat-ia'),
-            'gc_exportar_datos',
+            $capability_base,
             'gc-reportes',
             [$this, 'render_pagina_reportes']
         );
 
-        // Submenu: Configuracion - requiere gc_configurar_grupo
+        // Pagina: Configuración (OCULTA)
         add_submenu_page(
-            'grupos-consumo',
-            __('Configuracion', 'flavor-chat-ia'),
-            __('Configuracion', 'flavor-chat-ia'),
-            'gc_configurar_grupo',
+            null,
+            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability_base,
             'gc-configuracion',
             [$this, 'render_pagina_configuracion']
         );
@@ -3644,7 +4561,7 @@ KNOWLEDGE;
             wp_localize_script('gc-frontend', 'gcFrontend', [
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'restUrl' => rest_url('flavor-chat-ia/v1/gc/'),
-                'nonce' => wp_create_nonce('gc_frontend_nonce'),
+                'nonce' => wp_create_nonce('gc_nonce'),
                 'restNonce' => wp_create_nonce('wp_rest'),
                 'isLoggedIn' => is_user_logged_in(),
                 'i18n' => [
@@ -3783,7 +4700,7 @@ KNOWLEDGE;
                                     <?php _e('Ver grupo', 'flavor-chat-ia'); ?>
                                 </a>
                                 <?php if ($acepta): ?>
-                                    <a href="<?php echo esc_url(home_url('/grupos-consumo/unirme/?grupo=' . $grupo_id)); ?>" class="gc-btn gc-btn-primary gc-btn-sm">
+                                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/unirme/?grupo=' . $grupo_id)); ?>" class="gc-btn gc-btn-primary gc-btn-sm">
                                         <?php _e('Unirme', 'flavor-chat-ia'); ?>
                                     </a>
                                 <?php endif; ?>
@@ -3862,7 +4779,7 @@ KNOWLEDGE;
             if ($consumidor && $consumidor->estado === 'activo') {
                 return '<div class="gc-aviso gc-aviso-info"><p>' .
                     __('Ya eres miembro de este grupo de consumo.', 'flavor-chat-ia') .
-                    '</p><a href="' . esc_url(home_url('/grupos-consumo/productos/')) . '" class="gc-btn gc-btn-primary">' .
+                    '</p><a href="' . esc_url(home_url('/mi-portal/grupos-consumo/productos/')) . '" class="gc-btn gc-btn-primary">' .
                     __('Ver productos', 'flavor-chat-ia') . '</a></div>';
             }
         }

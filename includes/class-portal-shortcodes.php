@@ -330,9 +330,9 @@ class Flavor_Portal_Shortcodes {
 
     /**
      * Renderiza barra de notificaciones
+     * Integrado con Flavor_Notification_Center
      */
     private function render_notifications_bar() {
-        // TODO: Integrar con sistema real de notificaciones
         $notifications = $this->get_user_notifications();
 
         if (empty($notifications)) {
@@ -620,11 +620,70 @@ class Flavor_Portal_Shortcodes {
      * Renderiza próximas acciones
      */
     private function render_upcoming_actions() {
-        // TODO: Implementar lógica real
+        $user_id = get_current_user_id();
+        $acciones = [];
+
+        // Obtener eventos próximos si el módulo existe
+        if (class_exists('Flavor_Chat_Eventos_Module')) {
+            $eventos_module = Flavor_Chat_Eventos_Module::get_instance();
+            if (method_exists($eventos_module, 'get_proximos_eventos_usuario')) {
+                $eventos = $eventos_module->get_proximos_eventos_usuario($user_id, 3);
+                foreach ($eventos as $evento) {
+                    $acciones[] = [
+                        'tipo'   => 'evento',
+                        'icono'  => '📅',
+                        'titulo' => $evento['titulo'] ?? $evento['nombre'] ?? __('Evento', 'flavor-chat-ia'),
+                        'fecha'  => $evento['fecha_inicio'] ?? '',
+                        'url'    => $evento['url'] ?? '',
+                    ];
+                }
+            }
+        }
+
+        // Obtener reservas próximas si el módulo existe
+        if (class_exists('Flavor_Chat_Reservas_Module')) {
+            $reservas_module = Flavor_Chat_Reservas_Module::get_instance();
+            if (method_exists($reservas_module, 'get_proximas_reservas_usuario')) {
+                $reservas = $reservas_module->get_proximas_reservas_usuario($user_id, 3);
+                foreach ($reservas as $reserva) {
+                    $acciones[] = [
+                        'tipo'   => 'reserva',
+                        'icono'  => '🏠',
+                        'titulo' => $reserva['nombre_espacio'] ?? __('Reserva', 'flavor-chat-ia'),
+                        'fecha'  => $reserva['fecha'] ?? '',
+                        'url'    => $reserva['url'] ?? '',
+                    ];
+                }
+            }
+        }
+
+        // Ordenar por fecha
+        usort($acciones, function($a, $b) {
+            return strtotime($a['fecha'] ?? 0) - strtotime($b['fecha'] ?? 0);
+        });
+
         ob_start();
         ?>
         <div class="flavor-upcoming-actions">
-            <p class="flavor-no-content"><?php _e('No tienes acciones pendientes', 'flavor-chat-ia'); ?></p>
+            <?php if (empty($acciones)): ?>
+                <p class="flavor-no-content"><?php _e('No tienes acciones pendientes', 'flavor-chat-ia'); ?></p>
+            <?php else: ?>
+                <?php foreach (array_slice($acciones, 0, 5) as $accion): ?>
+                    <div class="flavor-action-item">
+                        <span class="flavor-action-icon"><?php echo esc_html($accion['icono']); ?></span>
+                        <div class="flavor-action-content">
+                            <?php if (!empty($accion['url'])): ?>
+                                <a href="<?php echo esc_url($accion['url']); ?>"><?php echo esc_html($accion['titulo']); ?></a>
+                            <?php else: ?>
+                                <span><?php echo esc_html($accion['titulo']); ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($accion['fecha'])): ?>
+                                <span class="flavor-action-date"><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($accion['fecha']))); ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
         <?php
         return ob_get_clean();

@@ -1,0 +1,930 @@
+/**
+ * Estilos del módulo de Estados/Stories
+ *
+ * @package Flavor_Chat_IA
+ * @subpackage Modules/Chat_Estados
+ * @since 1.5.0
+ */
+
+/* ========================================
+   Variables CSS
+   ======================================== */
+:root {
+    --estados-primary: #25D366;
+    --estados-secondary: #128C7E;
+    --estados-dark: #075E54;
+    --estados-light: #DCF8C6;
+    --estados-bg: #111B21;
+    --estados-bg-light: #202C33;
+    --estados-text: #E9EDEF;
+    --estados-text-muted: #8696A0;
+    --estados-border: #2A3942;
+    --estados-ring-unseen: #25D366;
+    --estados-ring-seen: #8696A0;
+    --estados-gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --estados-gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --estados-gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --estados-gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    --estados-gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+/* ========================================
+   Container principal
+   ======================================== */
+.flavor-estados-container {
+    background: var(--estados-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 100%;
+    color: var(--estados-text);
+}
+
+.flavor-estados-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--estados-border);
+}
+
+.flavor-estados-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--estados-text);
+}
+
+/* ========================================
+   Lista horizontal de estados (estilo WhatsApp)
+   ======================================== */
+.estados-lista-horizontal {
+    display: flex;
+    gap: 16px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--estados-border) transparent;
+}
+
+.estados-lista-horizontal::-webkit-scrollbar {
+    height: 4px;
+}
+
+.estados-lista-horizontal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.estados-lista-horizontal::-webkit-scrollbar-thumb {
+    background: var(--estados-border);
+    border-radius: 2px;
+}
+
+/* ========================================
+   Item de estado (círculo con avatar)
+   ======================================== */
+.estado-item {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    width: 72px;
+}
+
+.estado-avatar-wrapper {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.estado-ring {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    padding: 3px;
+}
+
+.estado-ring.sin-ver {
+    background: conic-gradient(
+        var(--estados-ring-unseen) 0deg,
+        var(--estados-ring-unseen) 360deg
+    );
+}
+
+.estado-ring.visto {
+    background: var(--estados-ring-seen);
+}
+
+.estado-ring.multiple {
+    background: conic-gradient(
+        var(--estados-ring-unseen) 0deg,
+        var(--estados-ring-unseen) calc(var(--progreso) * 3.6deg),
+        var(--estados-ring-seen) calc(var(--progreso) * 3.6deg),
+        var(--estados-ring-seen) 360deg
+    );
+}
+
+/* Ring segmentado para múltiples estados */
+.estado-ring.segmentado {
+    background: transparent;
+    overflow: hidden;
+}
+
+.estado-ring.segmentado::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--estados-ring-unseen);
+    border-right-color: var(--estados-ring-unseen);
+    border-bottom-color: var(--estados-ring-seen);
+    border-left-color: var(--estados-ring-seen);
+}
+
+.estado-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--estados-bg-light);
+    position: relative;
+    z-index: 1;
+    border: 3px solid var(--estados-bg);
+}
+
+.estado-nombre {
+    font-size: 12px;
+    color: var(--estados-text-muted);
+    text-align: center;
+    max-width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Mi estado - botón de añadir */
+.estado-item.mi-estado .estado-avatar-wrapper::after {
+    content: '+';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 22px;
+    height: 22px;
+    background: var(--estados-primary);
+    border: 2px solid var(--estados-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    z-index: 2;
+}
+
+.estado-item.mi-estado.tiene-estados .estado-avatar-wrapper::after {
+    content: '';
+    background: transparent;
+    border: none;
+}
+
+/* ========================================
+   Visor de estados (pantalla completa)
+   ======================================== */
+.estados-viewer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.estados-viewer-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.estados-viewer {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    height: 100vh;
+    max-height: 750px;
+    background: var(--estados-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Barra de progreso superior */
+.estados-progress-bar {
+    display: flex;
+    gap: 4px;
+    padding: 8px 12px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.progress-segment {
+    flex: 1;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-segment .progress-fill {
+    height: 100%;
+    background: white;
+    width: 0;
+    transition: width 0.1s linear;
+}
+
+.progress-segment.completed .progress-fill {
+    width: 100%;
+}
+
+.progress-segment.active .progress-fill {
+    animation: progressAnimation var(--duration, 5s) linear forwards;
+}
+
+@keyframes progressAnimation {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+/* Header del visor */
+.estados-viewer-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 60px 16px 16px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+}
+
+.viewer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.viewer-info {
+    flex: 1;
+}
+
+.viewer-nombre {
+    font-weight: 600;
+    font-size: 15px;
+    color: white;
+}
+
+.viewer-tiempo {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.viewer-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 8px;
+    line-height: 1;
+}
+
+.viewer-options {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+/* Contenido del estado */
+.estados-viewer-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.estado-content-texto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 80px 24px;
+    text-align: center;
+}
+
+.estado-texto-inner {
+    font-size: 24px;
+    line-height: 1.4;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.estado-content-imagen,
+.estado-content-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: black;
+}
+
+/* Navegación táctil */
+.estado-nav-area {
+    position: absolute;
+    top: 80px;
+    bottom: 80px;
+    width: 30%;
+    z-index: 4;
+    cursor: pointer;
+}
+
+.estado-nav-area.prev {
+    left: 0;
+}
+
+.estado-nav-area.next {
+    right: 0;
+}
+
+/* Footer del visor - responder/reaccionar */
+.estados-viewer-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+}
+
+.estado-responder-input {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 8px 16px;
+}
+
+.estado-responder-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 15px;
+    outline: none;
+}
+
+.estado-responder-input input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.estado-responder-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.estado-reacciones {
+    display: flex;
+    gap: 8px;
+}
+
+.estado-reaccion-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.estado-reaccion-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   Visor de visualizaciones (quién ha visto)
+   ======================================== */
+.visualizaciones-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--estados-bg);
+    border-radius: 20px 20px 0 0;
+    max-height: 60%;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 20;
+}
+
+.visualizaciones-panel.active {
+    transform: translateY(0);
+}
+
+.visualizaciones-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--estados-border);
+}
+
+.visualizaciones-header h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+}
+
+.visualizaciones-header .count {
+    background: var(--estados-primary);
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.visualizaciones-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.visualizacion-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+}
+
+.visualizacion-item img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.visualizacion-info {
+    flex: 1;
+}
+
+.visualizacion-nombre {
+    font-weight: 500;
+    color: var(--estados-text);
+}
+
+.visualizacion-hora {
+    font-size: 13px;
+    color: var(--estados-text-muted);
+}
+
+/* ========================================
+   Crear estado
+   ======================================== */
+.crear-estado-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--estados-bg);
+    z-index: 100001;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.crear-estado-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.crear-estado-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--estados-border);
+}
+
+.crear-estado-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--estados-text);
+}
+
+.crear-estado-close,
+.crear-estado-publicar {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.crear-estado-close {
+    color: var(--estados-text-muted);
+}
+
+.crear-estado-publicar {
+    background: var(--estados-primary);
+    color: white;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+}
+
+.crear-estado-publicar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Tipos de estado */
+.crear-estado-tipos {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--estados-border);
+}
+
+.tipo-estado-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+    background: var(--estados-bg-light);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--estados-text-muted);
+}
+
+.tipo-estado-btn:hover {
+    background: var(--estados-border);
+}
+
+.tipo-estado-btn.active {
+    border-color: var(--estados-primary);
+    color: var(--estados-primary);
+}
+
+.tipo-estado-btn .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.tipo-estado-btn span {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Editor de estado texto */
+.crear-estado-editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 24px;
+    transition: background 0.3s;
+}
+
+.crear-estado-editor textarea {
+    width: 100%;
+    max-width: 100%;
+    min-height: 200px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    resize: none;
+    outline: none;
+    line-height: 1.4;
+}
+
+.crear-estado-editor textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Selector de colores */
+.crear-estado-colores {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.color-option {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.color-option.active {
+    border-color: white;
+}
+
+/* Preview de media */
+.crear-estado-preview {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: black;
+}
+
+.crear-estado-preview img,
+.crear-estado-preview video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.crear-estado-preview .remove-media {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Upload área */
+.crear-estado-upload {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 40px;
+    cursor: pointer;
+}
+
+.crear-estado-upload .upload-icon {
+    font-size: 64px;
+    color: var(--estados-text-muted);
+}
+
+.crear-estado-upload p {
+    color: var(--estados-text-muted);
+    text-align: center;
+}
+
+.crear-estado-upload input[type="file"] {
+    display: none;
+}
+
+/* Privacidad selector */
+.crear-estado-privacidad {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--estados-border);
+}
+
+.privacidad-icon {
+    font-size: 20px;
+    color: var(--estados-text-muted);
+}
+
+.privacidad-select {
+    flex: 1;
+    background: var(--estados-bg-light);
+    border: none;
+    color: var(--estados-text);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* ========================================
+   Lista de estados (vista alternativa)
+   ======================================== */
+.estados-lista-vertical {
+    padding: 8px 0;
+}
+
+.estado-item-vertical {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.estado-item-vertical:hover {
+    background: var(--estados-bg-light);
+}
+
+.estado-item-vertical .estado-avatar-wrapper {
+    width: 50px;
+    height: 50px;
+}
+
+.estado-item-vertical .estado-avatar {
+    width: 44px;
+    height: 44px;
+}
+
+.estado-item-vertical .estado-info {
+    flex: 1;
+}
+
+.estado-item-vertical .estado-nombre {
+    font-weight: 500;
+    color: var(--estados-text);
+    margin-bottom: 4px;
+    font-size: 15px;
+    text-align: left;
+    max-width: none;
+}
+
+.estado-item-vertical .estado-tiempo {
+    font-size: 13px;
+    color: var(--estados-text-muted);
+}
+
+.estado-item-vertical .estado-contador {
+    font-size: 13px;
+    color: var(--estados-primary);
+    font-weight: 600;
+}
+
+/* ========================================
+   Estados de grupo
+   ======================================== */
+.estado-grupo-badge {
+    position: absolute;
+    bottom: -2px;
+    left: -2px;
+    background: var(--estados-secondary);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 2px solid var(--estados-bg);
+    z-index: 3;
+}
+
+.estados-seccion-titulo {
+    padding: 12px 20px 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--estados-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ========================================
+   Notificación toast
+   ======================================== */
+.estados-toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--estados-bg-light);
+    color: var(--estados-text);
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    z-index: 100002;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.estados-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.estados-toast.success {
+    background: var(--estados-primary);
+    color: white;
+}
+
+.estados-toast.error {
+    background: #E53935;
+    color: white;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 768px) {
+    .estados-viewer {
+        max-width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .crear-estado-overlay {
+        padding: 0;
+    }
+
+    .estado-texto-inner {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .estado-item {
+        width: 64px;
+    }
+
+    .estado-avatar-wrapper {
+        width: 52px;
+        height: 52px;
+    }
+
+    .estado-avatar {
+        width: 46px;
+        height: 46px;
+    }
+
+    .estados-lista-horizontal {
+        gap: 12px;
+        padding: 12px 16px;
+    }
+}
+
+/* ========================================
+   Temas claros
+   ======================================== */
+.flavor-estados-container.tema-claro {
+    --estados-bg: #FFFFFF;
+    --estados-bg-light: #F7F8FA;
+    --estados-text: #1A1A1A;
+    --estados-text-muted: #667781;
+    --estados-border: #E9EDEF;
+}

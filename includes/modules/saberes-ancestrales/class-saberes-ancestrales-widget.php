@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Flavor_Saberes_Ancestrales_Widget extends Flavor_Dashboard_Widget_Base {
 
-    private $module;
+    protected $module;
 
     public function __construct($module) {
         $this->module = $module;
@@ -51,7 +51,7 @@ class Flavor_Saberes_Ancestrales_Widget extends Flavor_Dashboard_Widget_Base {
                     _n('%d taller próximo', '%d talleres próximos', $stats['talleres_proximos'], 'flavor-chat-ia'),
                     $stats['talleres_proximos']
                 ),
-                'url' => ->get_context_url('/mi-portal/saberes-ancestrales/talleres/', 'flavor-saberes-ancestrales'),
+                'url' => $this->get_context_url('/mi-portal/saberes-ancestrales/talleres/', 'flavor-saberes-ancestrales'),
             ];
         }
 
@@ -62,7 +62,7 @@ class Flavor_Saberes_Ancestrales_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver catálogo', 'flavor-chat-ia'),
-                    'url' => ->get_context_url('/mi-portal/saberes-ancestrales/', 'flavor-saberes-ancestrales'),
+                    'url' => $this->get_context_url('/mi-portal/saberes-ancestrales/', 'flavor-saberes-ancestrales'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],

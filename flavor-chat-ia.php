@@ -240,7 +240,14 @@ final class Flavor_Chat_IA {
             // Panel de Gestión Unificado (para módulos)
             require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/trait-module-admin-pages.php';
             require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-unified-admin-panel.php';
+
+            // Panel de Estado de Módulos (gaps/TODOs)
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-module-gap-admin.php';
+            Flavor_Module_Gap_Admin::get_instance();
         }
+
+        // API de Estado de Módulos (disponible para REST)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-gap-status-api.php';
 
         // Core
         require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-chat-session.php';
@@ -263,6 +270,23 @@ final class Flavor_Chat_IA {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-frontend-actions.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-admin-ui.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-dashboard-widget.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-module-integrations.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/trait-whatsapp-features.php';
+        // Trait de páginas admin (debe cargarse siempre porque los módulos lo usan)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/trait-module-admin-pages.php';
+
+        // Cargador de Dashboard Tabs para módulos (tabs del dashboard de cliente)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-dashboard-tabs-loader.php';
+
+        // Sistema de Integraciones Dinámicas entre Módulos
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-integration-registry.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/config-integrations.php';
+
+        // Funcionalidades Compartidas entre Módulos
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-shared-features.php';
+
+        // Puente entre Integraciones y Red de Nodos
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/class-network-content-bridge.php';
 
         // Sistema de Control de Acceso a Módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-module-access-control.php';
@@ -282,10 +306,30 @@ final class Flavor_Chat_IA {
 
         // API REST para Dashboard de Cliente (estadisticas, actividad, widgets)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-client-dashboard-api.php';
+        Flavor_Client_Dashboard_API::get_instance();
 
         // Sistema de Red de Comunidades (Network)
         // NOTA: Las clases de Network se cargan desde el addon flavor-network-communities
         // El addon debe estar activo para usar el sistema de Network
+
+        // Sistema de Privacidad y RGPD
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/privacy/class-privacy-manager.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/privacy/class-data-exporter.php';
+        Flavor_Privacy_Manager::get_instance();
+
+        // Sistema de Moderación de Contenido
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/moderation/class-moderation-manager.php';
+        Flavor_Moderation_Manager::get_instance();
+
+        // Sistema de Reputación y Gamificación
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-reputation-manager.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-reputation-api.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-reputation-integrations.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/class-reputation-shortcodes.php';
+        Flavor_Reputation_Manager::get_instance();
+        Flavor_Reputation_API::get_instance();
+        Flavor_Reputation_Integrations::get_instance();
+        Flavor_Reputation_Shortcodes::get_instance();
 
         // Sistema Template Orchestrator (activación automatizada de plantillas)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/interface-template-component.php';
@@ -324,6 +368,12 @@ final class Flavor_Chat_IA {
 
         // Sistema de Páginas Dinámicas (una sola página para todos los módulos)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-dynamic-pages.php';
+
+        // Mi Red Social - Interfaz unificada de módulos sociales (carga temprana para AJAX handlers)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-mi-red-social.php';
+
+        // Personalización de la página de Login de WordPress
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-login-customizer.php';
 
         // Sistema de CRUD Dinámico (formularios y listados automáticos para módulos)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-dynamic-crud.php';
@@ -414,6 +464,7 @@ final class Flavor_Chat_IA {
 
         // Page Creator V3 - Sistema modular de páginas
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-page-creator-v3.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-module-gap-admin.php';
 
         // Menú Adaptativo
         require_once FLAVOR_CHAT_IA_PATH . 'includes/class-adaptive-menu.php';
@@ -441,6 +492,10 @@ final class Flavor_Chat_IA {
         if (is_admin()) {
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-pages-admin.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-pages-admin-v2.php';
+
+            // Página de documentación en admin
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-documentation-page.php';
+            Flavor_Documentation_Page::get_instance();
         }
 
         // Sistema de Layouts Predefinidos (menús y footers)
@@ -463,6 +518,9 @@ final class Flavor_Chat_IA {
         // Integración de Theme Customizer con Design Settings
         if (is_admin()) {
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-design-integration.php';
+
+            // Personalización del Admin de WordPress con estilos del plugin
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-admin-customizer.php';
         }
 
         if (is_admin()) {
@@ -479,6 +537,8 @@ final class Flavor_Chat_IA {
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-chat-analytics.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-profile-admin.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-unified-modules-view.php';
+            // Inicializar para registrar hooks AJAX (necesario para peticiones AJAX)
+            Flavor_Unified_Modules_View::get_instance();
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-layout-admin.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-activity-log-page.php';
             require_once FLAVOR_CHAT_IA_PATH . 'admin/class-health-check.php';
@@ -503,6 +563,24 @@ final class Flavor_Chat_IA {
 
             // Administración de visibilidad de módulos
             require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-module-visibility-admin.php';
+
+            // Analytics de la Red Social
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-social-analytics-admin.php';
+
+            // Personalización del Admin de WordPress con estilos del plugin
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-admin-customizer.php';
+
+            // Admin Shell - Navegación elegante que reemplaza el sidebar de WordPress
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-admin-shell.php';
+        }
+
+        // Dashboard Admin: cargar también para REST API (endpoints /admin/*)
+        // Detectar peticiones REST por URL ya que REST_REQUEST no está definido aún
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $es_peticion_rest_admin = strpos($request_uri, '/wp-json/flavor/v1/admin/') !== false;
+        if (!is_admin() && $es_peticion_rest_admin) {
+            require_once FLAVOR_CHAT_IA_PATH . 'admin/class-dashboard.php';
+            // No instanciar aquí - se hace via rest_api_init hook
         }
     }
 
@@ -518,11 +596,17 @@ final class Flavor_Chat_IA {
         add_action('plugins_loaded', [$this, 'init'], 5);
         add_action('plugins_loaded', [$this, 'load_modules'], 10);
 
+        // Cargar Dashboard para REST API (necesario para endpoints /admin/*)
+        add_action('rest_api_init', [$this, 'load_dashboard_for_rest'], 1);
+
         // AJAX temprano
         add_action('plugins_loaded', [$this, 'early_ajax_hooks'], 5);
 
         // Declarar compatibilidad HPOS de WooCommerce
         add_action('before_woocommerce_init', [$this, 'declare_hpos_compatibility']);
+
+        // Añadir schedules personalizados para crons
+        add_filter('cron_schedules', [$this, 'add_cron_schedules']);
 
         // Internacionalización - Cargar en 'init' según recomendación de WordPress 6.7+
         // Esto evita el notice "_load_textdomain_just_in_time" que aparece cuando
@@ -546,6 +630,66 @@ final class Flavor_Chat_IA {
 
         // Crear páginas legales si no existen (para instalaciones existentes)
         add_action('admin_init', [$this, 'maybe_install_legal_pages']);
+
+        // Corregir URLs de placeholder incompletas en la base de datos
+        add_action('admin_init', [$this, 'maybe_fix_placeholder_urls']);
+
+        // Cargar estilos comunes de admin (modales, etc.)
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_common_styles']);
+    }
+
+    /**
+     * Carga estilos comunes para páginas de administración
+     *
+     * @param string $hook Hook de la página actual
+     */
+    public function enqueue_admin_common_styles($hook) {
+        // Solo cargar en páginas del plugin
+        $paginas_plugin = [
+            'toplevel_page_flavor-settings',
+            'flavor_page_',
+            'admin_page_',
+        ];
+
+        $es_pagina_plugin = false;
+        foreach ($paginas_plugin as $prefijo) {
+            if (strpos($hook, $prefijo) === 0) {
+                $es_pagina_plugin = true;
+                break;
+            }
+        }
+
+        // También cargar si la página tiene parámetros de módulos del plugin
+        if (isset($_GET['page'])) {
+            $paginas_modulos = [
+                'marketplace', 'multimedia', 'ayuda-', 'banco-tiempo', 'grupos-consumo',
+                'comunidades', 'eventos', 'cursos', 'talleres', 'reservas', 'foros',
+                'podcast', 'incidencias', 'socios', 'colectivos', 'participacion',
+                'presupuestos', 'espacios-comunes', 'huertos', 'carpooling', 'biblioteca',
+                'circulos-cuidados', 'avisos-municipales', 'biodiversidad', 'red-social',
+                'chat-interno', 'chat-grupos', 'facturas', 'fichaje', 'reciclaje',
+                'compostaje', 'economia-don', 'economia-suficiencia', 'trabajo-digno',
+                'saberes-ancestrales', 'justicia-restaurativa', 'sello-conciencia',
+                'bicicletas-compartidas', 'parkings', 'bares', 'tramites', 'woocommerce'
+            ];
+
+            $pagina_actual = sanitize_text_field($_GET['page']);
+            foreach ($paginas_modulos as $modulo) {
+                if (strpos($pagina_actual, $modulo) !== false) {
+                    $es_pagina_plugin = true;
+                    break;
+                }
+            }
+        }
+
+        if ($es_pagina_plugin) {
+            wp_enqueue_style(
+                'flavor-admin-modals',
+                FLAVOR_CHAT_IA_URL . 'assets/css/admin-modals.css',
+                [],
+                FLAVOR_CHAT_IA_VERSION
+            );
+        }
     }
 
     /**
@@ -558,6 +702,75 @@ final class Flavor_Chat_IA {
                 update_option('flavor_legal_pages_installed', '1');
             }
         }
+    }
+
+    /**
+     * Corrige URLs de placeholder en la base de datos convirtiéndolas a SVG data URIs
+     *
+     * Busca URLs del tipo "400x250?text=..." o "via.placeholder.com/..." y las
+     * convierte a SVG data URIs locales que no requieren conexión externa.
+     */
+    public function maybe_fix_placeholder_urls() {
+        // Versión 2: Convertir a SVG
+        if (get_option('flavor_placeholder_urls_fixed') === '2') {
+            return;
+        }
+
+        global $wpdb;
+
+        // Tablas y columnas que pueden contener URLs de imágenes
+        $tablas_columnas = [
+            $wpdb->prefix . 'flavor_incidencias' => ['imagen'],
+            $wpdb->prefix . 'flavor_incidencias_categorias' => ['imagen', 'imagen_url'],
+            $wpdb->prefix . 'flavor_eventos' => ['imagen'],
+            $wpdb->prefix . 'flavor_espacios' => ['imagen'],
+            $wpdb->prefix . 'flavor_cursos' => ['imagen'],
+            $wpdb->prefix . 'flavor_talleres' => ['imagen'],
+            $wpdb->prefix . 'flavor_marketplace' => ['imagen'],
+            $wpdb->prefix . 'flavor_podcast_episodios' => ['imagen'],
+        ];
+
+        foreach ($tablas_columnas as $tabla => $columnas) {
+            // Verificar si la tabla existe
+            $tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla));
+            if (!$tabla_existe) {
+                continue;
+            }
+
+            foreach ($columnas as $columna) {
+                // Verificar si la columna existe
+                $columna_existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+                    DB_NAME,
+                    $tabla,
+                    $columna
+                ));
+
+                if (!$columna_existe) {
+                    continue;
+                }
+
+                // Obtener registros con URLs de placeholder
+                $registros = $wpdb->get_results(
+                    "SELECT id, {$columna} as url FROM {$tabla} WHERE {$columna} LIKE '%placeholder%' OR {$columna} REGEXP '^[0-9]+x[0-9]+\\\\?text='"
+                );
+
+                foreach ($registros as $registro) {
+                    $url_original = $registro->url;
+                    $url_corregida = Flavor_Chat_Helpers::fix_placeholder_url($url_original);
+
+                    if ($url_corregida !== $url_original) {
+                        $wpdb->update(
+                            $tabla,
+                            [$columna => $url_corregida],
+                            ['id' => $registro->id]
+                        );
+                    }
+                }
+            }
+        }
+
+        update_option('flavor_placeholder_urls_fixed', '2');
     }
 
     /**
@@ -635,6 +848,11 @@ final class Flavor_Chat_IA {
             Flavor_Module_Visibility_Admin::get_instance();
         }
 
+        // Inicializar Analytics de la Red Social (solo admin)
+        if (is_admin() && class_exists('Flavor_Social_Analytics_Admin')) {
+            Flavor_Social_Analytics_Admin::get_instance();
+        }
+
         // Inicializar gestor de motores IA (multi-proveedor)
         if (class_exists('Flavor_Engine_Manager')) {
             Flavor_Engine_Manager::get_instance();
@@ -662,6 +880,7 @@ final class Flavor_Chat_IA {
         }
 
         // Inicializar Dashboard Principal
+        // Nota: Para REST API se inicializa via hook rest_api_init en load_dashboard_for_rest()
         if (is_admin() && class_exists('Flavor_Dashboard')) {
             Flavor_Dashboard::get_instance();
         }
@@ -748,6 +967,10 @@ final class Flavor_Chat_IA {
             Flavor_Pages_Admin::get_instance();
         }
 
+        if (is_admin() && class_exists('Flavor_Module_Gap_Admin')) {
+            Flavor_Module_Gap_Admin::get_instance();
+        }
+
         // Inicializar integración WPML
         if (class_exists('Flavor_WPML_Integration')) {
             Flavor_WPML_Integration::get_instance();
@@ -784,6 +1007,11 @@ final class Flavor_Chat_IA {
         // Inicializar Sistema de Páginas Dinámicas (una sola página para todos los módulos)
         if (class_exists('Flavor_Dynamic_Pages')) {
             Flavor_Dynamic_Pages::get_instance();
+        }
+
+        // Personalización de Login de WordPress (aplica estilos del plugin)
+        if (class_exists('Flavor_Login_Customizer')) {
+            Flavor_Login_Customizer::get_instance();
         }
 
         // Inicializar Sistema de CRUD Dinámico (formularios y listados automáticos)
@@ -1188,6 +1416,19 @@ final class Flavor_Chat_IA {
             Flavor_Database_Installer::install_legal_pages();
         }
 
+        // Insertar badges predeterminados para sistema de reputación
+        if (class_exists('Flavor_Reputation_Manager')) {
+            Flavor_Reputation_Manager::insertar_badges_predeterminados();
+        }
+
+        // Programar crons de reputación (reset semanal y mensual de puntos)
+        if (!wp_next_scheduled('flavor_reset_puntos_semanales')) {
+            wp_schedule_event(strtotime('next monday'), 'weekly', 'flavor_reset_puntos_semanales');
+        }
+        if (!wp_next_scheduled('flavor_reset_puntos_mensuales')) {
+            wp_schedule_event(strtotime('first day of next month'), 'monthly', 'flavor_reset_puntos_mensuales');
+        }
+
         // Reconstruir caché de metadatos de módulos para optimizar rendimiento
         if (class_exists('Flavor_Chat_Module_Loader')) {
             $loader = Flavor_Chat_Module_Loader::get_instance();
@@ -1215,6 +1456,32 @@ final class Flavor_Chat_IA {
         if (($starter_theme->exists() || $this->starter_theme_is_bundled()) && get_stylesheet() !== 'flavor-starter') {
             update_option('flavor_show_starter_theme_notice', 1);
         }
+    }
+
+    /**
+     * Añade schedules personalizados para crons
+     *
+     * @param array $schedules Schedules existentes
+     * @return array Schedules modificados
+     */
+    public function add_cron_schedules($schedules) {
+        // Weekly (si no existe)
+        if (!isset($schedules['weekly'])) {
+            $schedules['weekly'] = [
+                'interval' => 604800, // 7 días
+                'display'  => __('Una vez a la semana', 'flavor-chat-ia'),
+            ];
+        }
+
+        // Monthly
+        if (!isset($schedules['monthly'])) {
+            $schedules['monthly'] = [
+                'interval' => 2635200, // 30.5 días aproximadamente
+                'display'  => __('Una vez al mes', 'flavor-chat-ia'),
+            ];
+        }
+
+        return $schedules;
     }
 
     /**
@@ -1436,6 +1703,18 @@ final class Flavor_Chat_IA {
      * Desactivación del plugin
      */
     public function deactivate() {
+        // Limpiar crons de reputación
+        $crons_reputacion = [
+            'flavor_reset_puntos_semanales',
+            'flavor_reset_puntos_mensuales',
+        ];
+        foreach ($crons_reputacion as $cron_hook) {
+            $timestamp = wp_next_scheduled($cron_hook);
+            if ($timestamp) {
+                wp_unschedule_event($timestamp, $cron_hook);
+            }
+        }
+
         // Desprogramar limpieza cron del registro de actividad
         if (class_exists('Flavor_Activity_Log')) {
             Flavor_Activity_Log::desactivar_cron();
@@ -1558,14 +1837,6 @@ final class Flavor_Chat_IA {
             Flavor_Deep_Link_Manager::create_tables();
         }
 
-        // Sistema de Publicidad Ética - MOVIDO A ADDON (v3.0+)
-        // if (class_exists('Flavor_Advertising_System')) {
-        //     $advertising = Flavor_Advertising_System::get_instance();
-        //     if (method_exists($advertising, 'create_tables')) {
-        //         $advertising->create_tables();
-        //     }
-        // }
-
         // Activar rewrite rules para Deep Links
         if (class_exists('Flavor_Deep_Link_Handler')) {
             Flavor_Deep_Link_Handler::activate();
@@ -1616,6 +1887,29 @@ final class Flavor_Chat_IA {
 
         // Añadir más instalaciones de módulos aquí según se vayan creando
         do_action('flavor_chat_ia_install_modules');
+    }
+
+    /**
+     * Carga el Dashboard Admin para peticiones REST API
+     *
+     * Los endpoints /admin/* del dashboard necesitan estar disponibles
+     * también para peticiones REST (no solo en contexto is_admin()).
+     *
+     * @return void
+     */
+    public function load_dashboard_for_rest() {
+        // Cargar archivo si no existe la clase
+        if (!class_exists('Flavor_Dashboard')) {
+            $dashboard_file = FLAVOR_CHAT_IA_PATH . 'admin/class-dashboard.php';
+            if (file_exists($dashboard_file)) {
+                require_once $dashboard_file;
+            }
+        }
+
+        // Instanciar la clase (se necesita para que se registren los endpoints REST)
+        if (class_exists('Flavor_Dashboard')) {
+            Flavor_Dashboard::get_instance();
+        }
     }
 
     /**

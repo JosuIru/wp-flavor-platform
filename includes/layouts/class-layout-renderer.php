@@ -877,9 +877,12 @@ class Flavor_Layout_Renderer {
             $current_user = wp_get_current_user();
             $settings = get_option('flavor_chat_ia_settings', []);
             $active_modules = $settings['active_modules'] ?? [];
+
+            // Obtener enlaces del menú de usuario
+            $menu_links = $this->get_user_menu_links($current_user, $active_modules);
             ?>
             <div class="flavor-user-menu">
-                <button class="flavor-user-menu__toggle">
+                <button class="flavor-user-menu__toggle" aria-expanded="false" aria-haspopup="true">
                     <?php echo get_avatar($current_user->ID, 32, '', '', ['class' => 'flavor-user-menu__avatar']); ?>
                 </button>
                 <div class="flavor-user-menu__dropdown">
@@ -888,57 +891,268 @@ class Flavor_Layout_Renderer {
                         <span class="flavor-user-menu__email"><?php echo esc_html($current_user->user_email); ?></span>
                     </div>
                     <ul class="flavor-user-menu__links">
-                        <?php if (class_exists('WooCommerce')): ?>
-                        <li><a href="<?php echo esc_url(wc_get_account_endpoint_url('dashboard')); ?>"><?php esc_html_e('Mi cuenta', 'flavor-chat-ia'); ?></a></li>
-                        <li><a href="<?php echo esc_url(wc_get_account_endpoint_url('orders')); ?>"><?php esc_html_e('Mis pedidos', 'flavor-chat-ia'); ?></a></li>
-                        <?php endif; ?>
-                        <?php
-                        $mi_cuenta = get_page_by_path('mi-cuenta');
-                        if (!class_exists('WooCommerce') && $mi_cuenta):
-                        ?>
-                        <li><a href="<?php echo esc_url(get_permalink($mi_cuenta->ID)); ?>"><?php esc_html_e('Mi cuenta', 'flavor-chat-ia'); ?></a></li>
-                        <?php endif; ?>
-                        <?php
-                        $module_links = [
-                            'grupos_consumo' => ['slug' => 'grupos-consumo', 'label' => __('Grupos de Consumo', 'flavor-chat-ia')],
-                            'eventos' => ['slug' => 'eventos', 'label' => __('Eventos', 'flavor-chat-ia')],
-                            'socios' => ['slug' => 'socios', 'label' => __('Socios', 'flavor-chat-ia')],
-                            'marketplace' => ['slug' => 'marketplace', 'label' => __('Marketplace', 'flavor-chat-ia')],
-                            'banco_tiempo' => ['slug' => 'banco-tiempo', 'label' => __('Banco de Tiempo', 'flavor-chat-ia')],
-                            'ayuda_vecinal' => ['slug' => 'ayuda-vecinal', 'label' => __('Ayuda Vecinal', 'flavor-chat-ia')],
-                            'comunidades' => ['slug' => 'comunidades', 'label' => __('Comunidades', 'flavor-chat-ia')],
-                            'incidencias' => ['slug' => 'incidencias', 'label' => __('Incidencias', 'flavor-chat-ia')],
-                        ];
-
-                        foreach ($module_links as $module_id => $link) {
-                            if (!in_array($module_id, $active_modules, true)) {
-                                continue;
-                            }
-                            $page = get_page_by_path($link['slug']);
-                            if (!$page) {
-                                continue;
-                            }
-                            ?>
-                            <li><a href="<?php echo esc_url(get_permalink($page->ID)); ?>"><?php echo esc_html($link['label']); ?></a></li>
-                            <?php
-                        }
-                        ?>
-                        <?php if (current_user_can('manage_options')): ?>
-                        <li><a href="<?php echo esc_url(admin_url()); ?>"><?php esc_html_e('Administración', 'flavor-chat-ia'); ?></a></li>
-                        <?php endif; ?>
-                        <li><a href="<?php echo esc_url(wp_logout_url(home_url())); ?>"><?php esc_html_e('Cerrar sesión', 'flavor-chat-ia'); ?></a></li>
+                        <?php foreach ($menu_links as $link): ?>
+                        <li<?php echo !empty($link['separator']) ? ' class="flavor-user-menu__separator"' : ''; ?>>
+                            <a href="<?php echo esc_url($link['url']); ?>"<?php echo !empty($link['icon']) ? ' class="has-icon"' : ''; ?>>
+                                <?php if (!empty($link['icon'])): ?>
+                                <span class="dashicons <?php echo esc_attr($link['icon']); ?>"></span>
+                                <?php endif; ?>
+                                <?php echo esc_html($link['label']); ?>
+                                <?php if (!empty($link['badge'])): ?>
+                                <span class="flavor-user-menu__badge"><?php echo esc_html($link['badge']); ?></span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                        <?php endforeach; ?>
                     </ul>
                 </div>
             </div>
             <?php
         } else {
             ?>
-            <a href="<?php echo esc_url(wp_login_url()); ?>" class="flavor-login-link">
+            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-login-link">
                 <span class="dashicons dashicons-admin-users"></span>
                 <span class="flavor-login-link__text"><?php esc_html_e('Acceder', 'flavor-chat-ia'); ?></span>
             </a>
             <?php
         }
+    }
+
+    /**
+     * Obtener enlaces del menú de usuario
+     *
+     * @param WP_User $user           Usuario actual
+     * @param array   $active_modules Módulos activos
+     * @return array Enlaces del menú
+     */
+    private function get_user_menu_links($user, $active_modules) {
+        $links = [];
+
+        // Mi Portal (siempre visible)
+        $links[] = [
+            'url'   => home_url('/mi-portal/'),
+            'label' => __('Mi Portal', 'flavor-chat-ia'),
+            'icon'  => 'dashicons-dashboard',
+        ];
+
+        // Mi Red Social (si hay módulos sociales activos)
+        $modulos_sociales = ['red_social', 'comunidades', 'foros', 'chat_interno'];
+        $tiene_social = !empty(array_intersect($modulos_sociales, $active_modules));
+        if ($tiene_social) {
+            $links[] = [
+                'url'   => home_url('/mi-portal/mi-red/'),
+                'label' => __('Mi Red Social', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-share',
+            ];
+        }
+
+        // Mis Mensajes (si chat está activo)
+        if (in_array('chat_interno', $active_modules, true) || in_array('chat_grupos', $active_modules, true)) {
+            $mensajes_no_leidos = $this->contar_mensajes_no_leidos($user->ID);
+            $links[] = [
+                'url'   => home_url('/mi-portal/mensajes/'),
+                'label' => __('Mis Mensajes', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-email',
+                'badge' => $mensajes_no_leidos > 0 ? $mensajes_no_leidos : null,
+            ];
+        }
+
+        // Notificaciones
+        $notificaciones_no_leidas = $this->contar_notificaciones_no_leidas($user->ID);
+        $links[] = [
+            'url'   => home_url('/mi-portal/notificaciones/'),
+            'label' => __('Notificaciones', 'flavor-chat-ia'),
+            'icon'  => 'dashicons-bell',
+            'badge' => $notificaciones_no_leidas > 0 ? $notificaciones_no_leidas : null,
+        ];
+
+        // Separador
+        $links[] = [
+            'url'       => '#',
+            'label'     => '',
+            'separator' => true,
+        ];
+
+        // Enlaces de módulos activos (máximo 4)
+        $module_links = $this->get_active_module_links($active_modules);
+        $module_count = 0;
+        foreach ($module_links as $module_link) {
+            if ($module_count >= 4) break;
+            $links[] = $module_link;
+            $module_count++;
+        }
+
+        // WooCommerce - Pedidos
+        if (class_exists('WooCommerce') && in_array('woocommerce', $active_modules, true)) {
+            $links[] = [
+                'url'   => wc_get_account_endpoint_url('orders'),
+                'label' => __('Mis Pedidos', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-cart',
+            ];
+        }
+
+        // Separador antes de opciones de cuenta
+        $links[] = [
+            'url'       => '#',
+            'label'     => '',
+            'separator' => true,
+        ];
+
+        // Mi Perfil
+        $links[] = [
+            'url'   => home_url('/mi-portal/perfil/'),
+            'label' => __('Mi Perfil', 'flavor-chat-ia'),
+            'icon'  => 'dashicons-admin-users',
+        ];
+
+        // Configuración
+        $links[] = [
+            'url'   => home_url('/mi-portal/configuracion/'),
+            'label' => __('Configuración', 'flavor-chat-ia'),
+            'icon'  => 'dashicons-admin-generic',
+        ];
+
+        // Administración (solo para admins)
+        if (current_user_can('manage_options')) {
+            $links[] = [
+                'url'   => admin_url(),
+                'label' => __('Administración', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-wordpress',
+            ];
+        }
+
+        // Cerrar sesión
+        $links[] = [
+            'url'   => wp_logout_url(home_url()),
+            'label' => __('Cerrar sesión', 'flavor-chat-ia'),
+            'icon'  => 'dashicons-exit',
+        ];
+
+        return apply_filters('flavor_user_menu_links', $links, $user, $active_modules);
+    }
+
+    /**
+     * Obtener enlaces de módulos activos
+     *
+     * @param array $active_modules Módulos activos
+     * @return array
+     */
+    private function get_active_module_links($active_modules) {
+        $links = [];
+
+        $module_config = [
+            'grupos_consumo' => [
+                'url'   => '/mi-portal/grupos-consumo/',
+                'label' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-groups',
+            ],
+            'banco_tiempo' => [
+                'url'   => '/mi-portal/banco-tiempo/',
+                'label' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-clock',
+            ],
+            'marketplace' => [
+                'url'   => '/mi-portal/marketplace/',
+                'label' => __('Marketplace', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-store',
+            ],
+            'eventos' => [
+                'url'   => '/mi-portal/eventos/',
+                'label' => __('Mis Eventos', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-calendar-alt',
+            ],
+            'reservas' => [
+                'url'   => '/mi-portal/reservas/',
+                'label' => __('Mis Reservas', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-calendar',
+            ],
+            'ayuda_vecinal' => [
+                'url'   => '/mi-portal/ayuda-vecinal/',
+                'label' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-heart',
+            ],
+            'cursos' => [
+                'url'   => '/mi-portal/cursos/',
+                'label' => __('Mis Cursos', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-welcome-learn-more',
+            ],
+            'tramites' => [
+                'url'   => '/mi-portal/tramites/',
+                'label' => __('Mis Trámites', 'flavor-chat-ia'),
+                'icon'  => 'dashicons-clipboard',
+            ],
+        ];
+
+        foreach ($module_config as $module_id => $config) {
+            if (in_array($module_id, $active_modules, true)) {
+                $links[] = [
+                    'url'   => home_url($config['url']),
+                    'label' => $config['label'],
+                    'icon'  => $config['icon'],
+                ];
+            }
+        }
+
+        return $links;
+    }
+
+    /**
+     * Contar mensajes no leídos
+     *
+     * @param int $user_id ID del usuario
+     * @return int
+     */
+    private function contar_mensajes_no_leidos($user_id) {
+        global $wpdb;
+
+        // La tabla flavor_chat_interno_mensajes usa arquitectura de conversaciones
+        // con participantes, no tiene columna destinatario_id directa.
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_interno_mensajes';
+        $tabla_participantes = $wpdb->prefix . 'flavor_chat_interno_participantes';
+
+        // Verificar que existan ambas tablas
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_mensajes) &&
+            Flavor_Chat_Helpers::tabla_existe($tabla_participantes)) {
+            // Contar mensajes no leídos en todas las conversaciones donde participa el usuario
+            $total_no_leidos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(no_leidos), 0) FROM (
+                    SELECT COUNT(*) as no_leidos
+                    FROM {$tabla_mensajes} m
+                    INNER JOIN {$tabla_participantes} p ON m.conversacion_id = p.conversacion_id
+                    WHERE p.usuario_id = %d
+                    AND m.remitente_id != %d
+                    AND m.id > p.ultimo_mensaje_leido
+                    AND m.eliminado = 0
+                    GROUP BY m.conversacion_id
+                ) as subquery",
+                $user_id,
+                $user_id
+            ));
+            return $total_no_leidos;
+        }
+
+        // No usar fallback a tabla genérica - el módulo chat interno tiene su propia estructura
+        return 0;
+    }
+
+    /**
+     * Contar notificaciones no leídas
+     *
+     * @param int $user_id ID del usuario
+     * @return int
+     */
+    private function contar_notificaciones_no_leidas($user_id) {
+        global $wpdb;
+
+        $tabla = $wpdb->prefix . 'flavor_notificaciones';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla} WHERE usuario_id = %d AND leida = 0",
+            $user_id
+        ));
     }
 
     /**

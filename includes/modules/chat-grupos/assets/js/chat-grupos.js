@@ -994,4 +994,376 @@
     // Exponer globalmente
     window.FlavorChatGrupos = FlavorChatGrupos;
 
+    /**
+     * Chat Embebido - Versión compacta para integrar en otras páginas
+     */
+    const FlavorChatGruposEmbebido = {
+        instancias: {},
+        config: null,
+
+        init: function(grupoId) {
+            const self = this;
+            const container = $(`.cg-embebido[data-grupo-id="${grupoId}"]`);
+
+            if (!container.length) return;
+
+            this.config = window.flavorChatGruposConfig || {};
+
+            // Guardar instancia
+            this.instancias[grupoId] = {
+                container: container,
+                grupoId: grupoId,
+                ultimoMensajeId: 0,
+                pollingInterval: null
+            };
+
+            // Cargar mensajes iniciales
+            this.cargarMensajes(grupoId);
+
+            // Iniciar polling
+            this.iniciarPolling(grupoId);
+
+            // Eventos
+            this.bindEventos(grupoId);
+        },
+
+        cargarMensajes: function(grupoId, callback) {
+            const self = this;
+            const inst = this.instancias[grupoId];
+            if (!inst) return;
+
+            $.ajax({
+                url: this.config.ajaxUrl || ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_chat_grupos_messages',
+                    nonce: this.config.nonce,
+                    grupo_id: grupoId,
+                    desde_id: inst.ultimoMensajeId
+                },
+                success: function(response) {
+                    if (response.success && response.mensajes) {
+                        self.renderizarMensajes(grupoId, response.mensajes);
+                        if (response.mensajes.length > 0) {
+                            inst.ultimoMensajeId = response.mensajes[response.mensajes.length - 1].id;
+                        }
+                    }
+                    if (typeof callback === 'function') callback();
+                },
+                error: function() {
+                    inst.container.find('.cg-embebido-mensajes .cg-loading').text('Error al cargar mensajes');
+                }
+            });
+        },
+
+        renderizarMensajes: function(grupoId, mensajes) {
+            const inst = this.instancias[grupoId];
+            if (!inst) return;
+
+            const contenedor = inst.container.find('.cg-embebido-mensajes');
+            const usuarioActual = parseInt(inst.container.data('user-id'));
+
+            // Quitar loading
+            contenedor.find('.cg-loading').remove();
+
+            if (mensajes.length === 0 && contenedor.find('.cg-emb-mensaje').length === 0) {
+                contenedor.html('<div class="cg-emb-vacio"><p>No hay mensajes aún. ¡Sé el primero en escribir!</p></div>');
+                return;
+            }
+
+            contenedor.find('.cg-emb-vacio').remove();
+
+            mensajes.forEach(function(msg) {
+                // Evitar duplicados
+                if (contenedor.find(`.cg-emb-mensaje[data-id="${msg.id}"]`).length) return;
+
+                const esPropio = parseInt(msg.usuario_id) === usuarioActual;
+                const hora = new Date(msg.fecha).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+
+                const html = `
+                    <div class="cg-emb-mensaje ${esPropio ? 'propio' : ''}" data-id="${msg.id}">
+                        <div class="cg-emb-mensaje-avatar">
+                            <img src="${msg.avatar || ''}" alt="">
+                        </div>
+                        <div class="cg-emb-mensaje-contenido">
+                            <div class="cg-emb-mensaje-autor">${escapeHtml(msg.autor || '')}</div>
+                            <div class="cg-emb-mensaje-texto">${escapeHtml(msg.contenido || '')}</div>
+                            <div class="cg-emb-mensaje-hora">${hora}</div>
+                        </div>
+                    </div>
+                `;
+                contenedor.append(html);
+            });
+
+            // Scroll al final
+            contenedor.scrollTop(contenedor[0].scrollHeight);
+        },
+
+        enviarMensaje: function(grupoId, contenido) {
+            const self = this;
+            const inst = this.instancias[grupoId];
+            if (!inst || !contenido.trim()) return;
+
+            const textarea = inst.container.find('.cg-emb-mensaje-input');
+            textarea.prop('disabled', true);
+
+            $.ajax({
+                url: this.config.ajaxUrl || ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_chat_grupos_send',
+                    nonce: this.config.nonce,
+                    grupo_id: grupoId,
+                    contenido: contenido
+                },
+                success: function(response) {
+                    if (response.success) {
+                        textarea.val('');
+                        self.cargarMensajes(grupoId);
+                    } else {
+                        alert(response.error || 'Error al enviar mensaje');
+                    }
+                },
+                complete: function() {
+                    textarea.prop('disabled', false).focus();
+                }
+            });
+        },
+
+        iniciarPolling: function(grupoId) {
+            const self = this;
+            const inst = this.instancias[grupoId];
+            if (!inst) return;
+
+            // Polling cada 5 segundos
+            inst.pollingInterval = setInterval(function() {
+                self.cargarMensajes(grupoId);
+            }, 5000);
+
+            // Detener polling cuando el contenedor no es visible
+            $(window).on('beforeunload', function() {
+                clearInterval(inst.pollingInterval);
+            });
+        },
+
+        bindEventos: function(grupoId) {
+            const self = this;
+            const inst = this.instancias[grupoId];
+            if (!inst) return;
+
+            const container = inst.container;
+
+            // Enviar mensaje
+            container.find('.cg-btn-enviar-emb').on('click', function() {
+                const contenido = container.find('.cg-emb-mensaje-input').val();
+                self.enviarMensaje(grupoId, contenido);
+            });
+
+            // Enter para enviar
+            container.find('.cg-emb-mensaje-input').on('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const contenido = $(this).val();
+                    self.enviarMensaje(grupoId, contenido);
+                }
+            });
+
+            // Auto-resize textarea
+            container.find('.cg-emb-mensaje-input').on('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+        }
+    };
+
+    // Utilidad para escapar HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Método para iniciar embebido desde el objeto principal
+    FlavorChatGrupos.initEmbebido = function(grupoId) {
+        FlavorChatGruposEmbebido.init(grupoId);
+    };
+
+    /**
+     * Inicializar chat integrado (para tabs de otros módulos)
+     */
+    FlavorChatGrupos.initIntegrado = function(grupoId) {
+        const container = $(`.flavor-chat-integrado[data-grupo-id="${grupoId}"]`);
+        if (!container.length) return;
+
+        const instancia = {
+            container: container,
+            grupoId: grupoId,
+            ultimoMensajeId: 0,
+            pollingInterval: null
+        };
+
+        // Cargar mensajes
+        this.cargarMensajesIntegrado(instancia);
+
+        // Polling cada 5 segundos
+        instancia.pollingInterval = setInterval(() => {
+            this.cargarMensajesIntegrado(instancia);
+        }, 5000);
+
+        // Eventos
+        this.bindEventosIntegrado(instancia);
+    };
+
+    FlavorChatGrupos.cargarMensajesIntegrado = function(instancia) {
+        const self = this;
+
+        $.ajax({
+            url: this.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'flavor_chat_grupos_messages',
+                nonce: this.nonce,
+                grupo_id: instancia.grupoId,
+                desde_id: instancia.ultimoMensajeId
+            },
+            success: function(response) {
+                if (response.success && response.mensajes) {
+                    self.renderizarMensajesIntegrado(instancia, response.mensajes);
+                    if (response.mensajes.length > 0) {
+                        instancia.ultimoMensajeId = response.mensajes[response.mensajes.length - 1].id;
+                    }
+                }
+                instancia.container.find('.chat-cargando').hide();
+            },
+            error: function() {
+                instancia.container.find('.chat-cargando').html('<span class="error">Error al cargar mensajes</span>');
+            }
+        });
+    };
+
+    FlavorChatGrupos.renderizarMensajesIntegrado = function(instancia, mensajes) {
+        const contenedor = instancia.container.find('.chat-mensajes');
+        const scrollAtBottom = contenedor.scrollTop() + contenedor.innerHeight() >= contenedor[0].scrollHeight - 50;
+
+        mensajes.forEach(msg => {
+            if (contenedor.find(`[data-mensaje-id="${msg.id}"]`).length) return;
+
+            const esMio = msg.usuario_id == this.userId;
+            const fechaFormateada = this.formatearFecha(msg.fecha_creacion);
+            const avatarUrl = msg.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.usuario_nombre)}&background=random`;
+
+            const html = `
+                <div class="mensaje ${esMio ? 'mensaje-mio' : 'mensaje-otro'}" data-mensaje-id="${msg.id}">
+                    ${!esMio ? `<img src="${escapeHtml(avatarUrl)}" alt="" class="mensaje-avatar">` : ''}
+                    <div class="mensaje-contenido">
+                        ${!esMio ? `<span class="mensaje-autor">${escapeHtml(msg.usuario_nombre)}</span>` : ''}
+                        <div class="mensaje-texto">${this.formatearMensaje(msg.mensaje)}</div>
+                        <span class="mensaje-hora">${fechaFormateada}</span>
+                    </div>
+                </div>
+            `;
+            contenedor.append(html);
+        });
+
+        // Scroll al final si estaba al final
+        if (scrollAtBottom && mensajes.length > 0) {
+            contenedor.scrollTop(contenedor[0].scrollHeight);
+        }
+    };
+
+    FlavorChatGrupos.bindEventosIntegrado = function(instancia) {
+        const self = this;
+        const container = instancia.container;
+
+        // Enviar mensaje
+        container.find('.btn-enviar').on('click', function() {
+            self.enviarMensajeIntegrado(instancia);
+        });
+
+        // Enter para enviar
+        container.find('.chat-input').on('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                self.enviarMensajeIntegrado(instancia);
+            }
+        });
+
+        // Auto-resize textarea
+        container.find('.chat-input').on('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Adjuntar archivo
+        container.find('.btn-adjuntar').on('click', function() {
+            container.find('.chat-file-input').click();
+        });
+
+        // Limpiar cuando se cierre el tab
+        $(window).on('beforeunload', function() {
+            if (instancia.pollingInterval) {
+                clearInterval(instancia.pollingInterval);
+            }
+        });
+    };
+
+    FlavorChatGrupos.enviarMensajeIntegrado = function(instancia) {
+        const textarea = instancia.container.find('.chat-input');
+        const contenido = textarea.val().trim();
+        if (!contenido) return;
+
+        const self = this;
+        textarea.prop('disabled', true);
+
+        $.ajax({
+            url: this.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'flavor_chat_grupos_send',
+                nonce: this.nonce,
+                grupo_id: instancia.grupoId,
+                contenido: contenido
+            },
+            success: function(response) {
+                if (response.success) {
+                    textarea.val('');
+                    self.cargarMensajesIntegrado(instancia);
+                } else {
+                    alert(response.error || self.strings.error || 'Error al enviar mensaje');
+                }
+            },
+            error: function() {
+                alert(self.strings.error || 'Error al enviar mensaje');
+            },
+            complete: function() {
+                textarea.prop('disabled', false).focus();
+            }
+        });
+    };
+
+    FlavorChatGrupos.formatearFecha = function(fechaStr) {
+        const fecha = new Date(fechaStr);
+        const ahora = new Date();
+        const diffMs = ahora - fecha;
+        const diffMins = Math.floor(diffMs / 60000);
+
+        if (diffMins < 1) return this.strings.ahora || 'ahora';
+        if (diffMins < 60) return `${diffMins}m`;
+        if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h`;
+        if (diffMins < 2880) return this.strings.ayer || 'ayer';
+        return fecha.toLocaleDateString();
+    };
+
+    FlavorChatGrupos.formatearMensaje = function(texto) {
+        // Escapar HTML y convertir enlaces
+        texto = escapeHtml(texto);
+        texto = texto.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+        texto = texto.replace(/\n/g, '<br>');
+        return texto;
+    };
+
+    // Exponer globalmente
+    window.FlavorChatGrupos = FlavorChatGrupos;
+    window.FlavorChatGruposEmbebido = FlavorChatGruposEmbebido;
+
 })(jQuery);

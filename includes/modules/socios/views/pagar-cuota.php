@@ -36,18 +36,18 @@ if (!defined('ABSPATH')) {
         </div>
     <?php else: ?>
         <!-- Mensaje de resultado si hay -->
-        <?php if (isset($_GET['socios_pago'])): ?>
-            <?php if ($_GET['socios_pago'] === 'exitoso'): ?>
-                <div class="flavor-soc-mensaje flavor-soc-mensaje-success">
-                    <span class="dashicons dashicons-yes-alt"></span>
-                    <p><?php esc_html_e('¡Pago realizado con éxito! Gracias por tu cuota.', 'flavor-chat-ia'); ?></p>
-                </div>
-            <?php elseif ($_GET['socios_pago'] === 'cancelado'): ?>
-                <div class="flavor-soc-mensaje flavor-soc-mensaje-warning">
-                    <span class="dashicons dashicons-warning"></span>
-                    <p><?php esc_html_e('El pago ha sido cancelado. Puedes intentarlo de nuevo.', 'flavor-chat-ia'); ?></p>
-                </div>
-            <?php endif; ?>
+        <?php
+        $resultado_pago = isset($_GET['socios_pago']) ? sanitize_key($_GET['socios_pago']) : '';
+        if ($resultado_pago === 'exitoso'): ?>
+            <div class="flavor-soc-mensaje flavor-soc-mensaje-success">
+                <span class="dashicons dashicons-yes-alt"></span>
+                <p><?php esc_html_e('¡Pago realizado con éxito! Gracias por tu cuota.', 'flavor-chat-ia'); ?></p>
+            </div>
+        <?php elseif ($resultado_pago === 'cancelado'): ?>
+            <div class="flavor-soc-mensaje flavor-soc-mensaje-warning">
+                <span class="dashicons dashicons-warning"></span>
+                <p><?php esc_html_e('El pago ha sido cancelado. Puedes intentarlo de nuevo.', 'flavor-chat-ia'); ?></p>
+            </div>
         <?php endif; ?>
 
         <!-- Info del socio -->

@@ -5,6 +5,7 @@
  * Sistema completo de foros comunitarios con categorias, hilos y respuestas.
  *
  * @package FlavorChatIA
+ * @version 1.0.1
  */
 
 if (!defined('ABSPATH')) {

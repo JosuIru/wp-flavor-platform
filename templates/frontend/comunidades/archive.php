@@ -8,6 +8,9 @@ if (!defined('ABSPATH')) exit;
 $comunidades = $comunidades ?? [];
 $estadisticas = $estadisticas ?? [];
 $categorias = $categorias ?? [];
+
+// Sanitizar parámetro de filtro
+$tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
 ?>
 
 <div class="flavor-frontend flavor-comunidades-archive">
@@ -49,7 +52,7 @@ $categorias = $categorias ?? [];
 
     <!-- Filtros rápidos por tipo -->
     <div class="flex flex-wrap gap-2 mb-6">
-        <a href="?tipo=" class="px-4 py-2 rounded-full text-sm font-medium <?php echo empty($_GET['tipo']) ? 'bg-rose-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition-colors">
+        <a href="?tipo=" class="px-4 py-2 rounded-full text-sm font-medium <?php echo empty($tipo_filtro) ? 'bg-rose-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition-colors">
             <?php echo esc_html__('Todas', 'flavor-chat-ia'); ?>
         </a>
         <?php
@@ -63,7 +66,7 @@ $categorias = $categorias ?? [];
         foreach ($tipos_comunidad as $tipo_slug => $tipo_nombre):
         ?>
         <a href="?tipo=<?php echo esc_attr($tipo_slug); ?>"
-           class="px-4 py-2 rounded-full text-sm font-medium <?php echo ($_GET['tipo'] ?? '') === $tipo_slug ? 'bg-rose-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition-colors">
+           class="px-4 py-2 rounded-full text-sm font-medium <?php echo $tipo_filtro === $tipo_slug ? 'bg-rose-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition-colors">
             <?php echo esc_html($tipo_nombre); ?>
         </a>
         <?php endforeach; ?>

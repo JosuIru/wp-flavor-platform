@@ -55,6 +55,32 @@ $stats_plataforma = [
         <?php echo esc_html__('Dashboard de Podcasts', 'flavor-chat-ia'); ?>
     </h1>
 
+    <hr class="wp-header-end">
+
+    <!-- Accesos Rápidos -->
+    <div class="podcast-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+        <a href="<?php echo admin_url('admin.php?page=podcast-series'); ?>" class="podcast-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-playlist-audio" style="font-size: 24px; color: #2271b1;"></span>
+            <span><?php echo esc_html__('Series', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=podcast-episodios'); ?>" class="podcast-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-microphone" style="font-size: 24px; color: #00a32a;"></span>
+            <span><?php echo esc_html__('Episodios', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=podcast-suscriptores'); ?>" class="podcast-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-groups" style="font-size: 24px; color: #8c52ff;"></span>
+            <span><?php echo esc_html__('Suscriptores', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=podcast-estadisticas'); ?>" class="podcast-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #dba617;"></span>
+            <span><?php echo esc_html__('Estadísticas', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo admin_url('admin.php?page=podcast-configuracion'); ?>" class="podcast-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
+            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
+
     <!-- Estadísticas principales -->
     <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
 

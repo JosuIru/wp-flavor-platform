@@ -1,0 +1,48 @@
+type,severity,source,target,status,evidence
+defined_dashboard_route,ALTO,includes/class-portal-shortcodes.php,/ayuda-vecinal/solicitar/,NOT_FOUND,200 Ayuda vecinal - sitio prueba
+defined_dashboard_route,ALTO,includes/class-portal-shortcodes.php,/banco-tiempo/ofrecer/,NOT_FOUND,200 Banco tiempo - sitio prueba
+defined_dashboard_route,ALTO,includes/class-portal-shortcodes.php,/eventos/crear/,NOT_FOUND,200 Eventos - sitio prueba
+defined_dashboard_route,ALTO,includes/class-portal-shortcodes.php,/grupos-consumo/productos/,NOT_FOUND,200 Grupos consumo - sitio prueba
+defined_dashboard_route,ALTO,includes/class-portal-shortcodes.php,/incidencias/crear/,NOT_FOUND,200 Incidencias - sitio prueba
+defined_dashboard_route,ALTO,includes/class-portal-shortcodes.php,/servicios/,NOT_FOUND,404 Page not found &#8211; sitio prueba
+defined_dashboard_route,ALTO,includes/class-portal-shortcodes.php,/talleres/crear/,NOT_FOUND,200 Talleres - sitio prueba
+template_anchor_placeholder,ALTO,includes/templates/components/biblioteca/generos-nav.php,"href=""#"" / anchor sin destino",18 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,templates/frontend/bicicletas-compartidas/archive.php,"href=""#"" / anchor sin destino",6 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,templates/frontend/compostaje/single.php,"href=""#"" / anchor sin destino",6 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,templates/frontend/clientes/archive.php,"href=""#"" / anchor sin destino",6 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,templates/frontend/empresarial/archive.php,"href=""#"" / anchor sin destino",6 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,templates/frontend/multimedia/single.php,"href=""#"" / anchor sin destino",5 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,templates/frontend/socios/archive.php,"href=""#"" / anchor sin destino",5 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,templates/frontend/bicicletas-compartidas/single.php,"href=""#"" / anchor sin destino",5 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,templates/frontend/red-social/single.php,"href=""#"" / anchor sin destino",5 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,ALTO,includes/templates/components/talleres/talleres-grid.php,"href=""#"" / anchor sin destino",5 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/empresarial/single.php,"href=""#"" / anchor sin destino",4 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/colectivos/single.php,"href=""#"" / anchor sin destino",3 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/bicicletas/single.php,"href=""#"" / anchor sin destino",3 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/radio/single.php,"href=""#"" / anchor sin destino",3 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/biblioteca/single.php,"href=""#"" / anchor sin destino",3 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/clientes/single.php,"href=""#"" / anchor sin destino",3 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/bicicletas-compartidas/hero.php,"href=""#"" / anchor sin destino",3 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/landings/empresarial-equipo.php,"href=""#"" / anchor sin destino",3 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/ayuda-vecinal/single.php,"href=""#"" / anchor sin destino",2 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/huertos-urbanos/single.php,"href=""#"" / anchor sin destino",2 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/espacios-comunes/single.php,"href=""#"" / anchor sin destino",2 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/cursos/single.php,"href=""#"" / anchor sin destino",2 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/reciclaje/single.php,"href=""#"" / anchor sin destino",2 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/landings/ofimatica-hero.php,"href=""#"" / anchor sin destino",2 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/landings/saas-hero.php,"href=""#"" / anchor sin destino",2 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/landings/agencia-hero.php,"href=""#"" / anchor sin destino",2 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/bicicletas-compartidas/filters.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/huertos-urbanos/search.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/espacios-comunes/search.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/cursos/search.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/clientes/filters.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,templates/frontend/empresarial/filters.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/carpooling/como-funciona.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/carpooling/hero.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/ayuda-vecinal/hero.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/bicicletas-compartidas/tipos-bicicletas.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/landings/agencia-portfolio.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/landings/grupos-consumo-hero.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/landings/empresarial-servicios.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv
+template_anchor_placeholder,MEDIO,includes/templates/components/landings/saas-features.php,"href=""#"" / anchor sin destino",1 occurrences,reports/auditoria_web_client_anchor_links_2026-02-16.csv

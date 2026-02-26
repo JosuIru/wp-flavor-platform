@@ -355,6 +355,9 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
      * Los widgets pueden sobrescribir este método para usar una URL personalizada.
      * Por defecto intenta usar 'flavor-{widget_id}' como slug de página.
      *
+     * Soporta el prefijo especial '_frontend_:' para módulos que no tienen
+     * página de admin y deben apuntar al portal del usuario.
+     *
      * @return string URL de admin del módulo
      * @since 4.2.0
      */
@@ -364,6 +367,12 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
         if (empty($admin_page_slug)) {
             // Fallback a la URL de frontend si no hay página de admin
             return home_url('/mi-portal/' . $this->widget_id . '/');
+        }
+
+        // Si el slug comienza con '_frontend_:', es una URL de frontend
+        if (strpos($admin_page_slug, '_frontend_:') === 0) {
+            $ruta_frontend = substr($admin_page_slug, strlen('_frontend_:'));
+            return home_url($ruta_frontend);
         }
 
         return admin_url('admin.php?page=' . $admin_page_slug);
@@ -401,34 +410,76 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
      */
     protected function get_admin_pages_mapping(): array {
         $mapeo = [
-            // Módulos con páginas de admin específicas
-            'carpooling'        => 'flavor-carpooling-viajes',
-            'parkings'          => 'flavor-parkings-reservas',
-            'bicicletas'        => 'flavor-bicicletas-prestamos',
-            'compostaje'        => 'flavor-compostaje-composteras',
-            'reciclaje'         => 'flavor-reciclaje-puntos',
-            'incidencias'       => 'flavor-incidencias-tickets',
-            'eventos'           => 'flavor-eventos',
-            'cursos'            => 'flavor-chat-cursos',
-            'talleres'          => 'flavor-chat-talleres',
-            'biblioteca'        => 'flavor-chat-biblioteca',
-            'multimedia'        => 'flavor-multimedia',
-            'radio'             => 'flavor-radio',
-            'podcast'           => 'flavor-chat-podcast',
-            'foros'             => 'flavor-foros-dashboard',
-            'red-social'        => 'flavor-red-social-dashboard',
-            'email-marketing'   => 'flavor-email-marketing',
-            'newsletter'        => 'flavor-newsletter',
-            'advertising'       => 'flavor-advertising-dashboard',
-            'empresarial'       => 'flavor-empresarial-empresas',
+            // ═══════════════════════════════════════════════════════════════
+            // Módulos con dashboards de admin completos
+            // ═══════════════════════════════════════════════════════════════
+            'banco-tiempo'      => 'banco-tiempo',
+            'comunidades'       => 'comunidades',
+            'colectivos'        => 'colectivos',
+            'eventos'           => 'eventos',
+            'cursos'            => 'cursos',
+            'marketplace'       => 'marketplace',
+            'talleres'          => 'talleres',
+            'reservas'          => 'reservas',
+            'socios'            => 'socios',
+            'incidencias'       => 'incidencias',
+            'foros'             => 'foros',
+            'podcast'           => 'podcast',
+            'multimedia'        => 'multimedia',
+            'red-social'        => 'red-social',
+            'ayuda-vecinal'     => 'ayuda-vecinal',
+            'espacios-comunes'  => 'espacios-comunes',
+            'huertos-urbanos'   => 'huertos-urbanos',
+            'participacion'     => 'participacion',
+            'presupuestos-participativos' => 'presupuestos-participativos',
             'grupos-consumo'    => 'grupos-consumo',
-            'socios'            => 'flavor-socios',
-            'tramites'          => 'flavor-tramites-solicitudes',
-            'ayuda-vecinal'     => 'flavor-ayuda-vecinal',
-            'sello-conciencia'  => 'flavor-sello-conciencia',
-            'network'           => 'flavor-network',
-            'banco-tiempo'      => 'flavor-bt-settings',
-            'economia-circular' => 'flavor-ec-settings',
+
+            // ═══════════════════════════════════════════════════════════════
+            // Módulos con formatos específicos de admin
+            // ═══════════════════════════════════════════════════════════════
+            'carpooling'            => 'flavor-carpooling-viajes',
+            'parkings'              => 'flavor-parkings-reservas',
+            'bicicletas'            => 'flavor-bicicletas-prestamos',
+            'bicicletas-compartidas' => 'flavor-bicicletas-prestamos',
+            'compostaje'            => 'flavor-compostaje-composteras',
+            'reciclaje'             => 'flavor-reciclaje-puntos',
+            'biblioteca'            => 'flavor-chat-biblioteca',
+            'radio'                 => 'flavor-radio',
+            'email-marketing'       => 'flavor-email-marketing',
+            'newsletter'            => 'flavor-newsletter',
+            'advertising'           => 'flavor-advertising-dashboard',
+            'empresarial'           => 'flavor-empresarial-empresas',
+            'tramites'              => 'flavor-tramites-solicitudes',
+            'sello-conciencia'      => 'sello-conciencia',
+            'network'               => 'flavor-network',
+            'economia-circular'     => 'flavor-ec-settings',
+
+            // ═══════════════════════════════════════════════════════════════
+            // Módulos con frontend como destino principal (sin admin dedicado)
+            // Apuntan al portal del usuario en frontend
+            // ═══════════════════════════════════════════════════════════════
+            'economia-don'          => '_frontend_:/mi-portal/economia-don/',
+            'economia-suficiencia'  => '_frontend_:/mi-portal/economia-suficiencia/',
+            'saberes-ancestrales'   => '_frontend_:/mi-portal/saberes-ancestrales/',
+            'justicia-restaurativa' => '_frontend_:/mi-portal/justicia-restaurativa/',
+            'huella-ecologica'      => '_frontend_:/mi-portal/huella-ecologica/',
+            'circulos-cuidados'     => '_frontend_:/mi-portal/circulos-cuidados/',
+            'biodiversidad-local'   => '_frontend_:/mi-portal/biodiversidad-local/',
+            'trabajo-digno'         => '_frontend_:/mi-portal/trabajo-digno/',
+            'avisos-municipales'    => '_frontend_:/mi-portal/avisos-municipales/',
+            'bares'                 => '_frontend_:/mi-portal/bares/',
+            'chat-grupos'           => '_frontend_:/mi-portal/chat-grupos/',
+            'chat-interno'          => '_frontend_:/mi-portal/chat-interno/',
+            'fichaje-empleados'     => '_frontend_:/mi-portal/fichaje/',
+            'facturas'              => '_frontend_:/mi-portal/facturas/',
+            'clientes'              => '_frontend_:/mi-portal/clientes/',
+            'woocommerce'           => '_frontend_:/mi-portal/tienda/',
+            'transparencia'         => '_frontend_:/mi-portal/transparencia/',
+            'campanias'             => '_frontend_:/mi-portal/campanias/',
+            'documentacion-legal'   => '_frontend_:/mi-portal/documentacion-legal/',
+            'seguimiento-denuncias' => '_frontend_:/mi-portal/seguimiento-denuncias/',
+            'mapa-actores'          => '_frontend_:/mi-portal/mapa-actores/',
+            'recetas'               => '_frontend_:/mi-portal/recetas/',
         ];
 
         /**
@@ -446,17 +497,36 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
      * Método helper para que los widgets generen URLs que apunten
      * a la ubicación correcta según el contexto actual.
      *
+     * Si el módulo está mapeado a frontend (prefijo '_frontend_:'), siempre
+     * devuelve la URL de frontend incluso en contexto admin.
+     *
      * @param string $ruta_frontend Ruta del frontend (ej: '/mi-portal/modulo/accion/')
      * @param string $pagina_admin  Slug de página admin (ej: 'flavor-modulo-accion')
      * @return string URL completa según el contexto
      * @since 4.2.0
      */
     protected function get_context_url(string $ruta_frontend, string $pagina_admin = ''): string {
+        // Consultar el mapeo para obtener el slug correcto
+        $mapeo = $this->get_admin_pages_mapping();
+
+        // Convertir slug de admin a formato de widget_id para buscar en mapeo
+        // Por ejemplo: 'flavor-economia-don' -> 'economia-don'
+        $widget_id_from_slug = preg_replace('/^flavor-/', '', $pagina_admin);
+
+        // Verificar si hay un mapeo específico para este módulo
+        $slug_mapeado = $mapeo[$widget_id_from_slug] ?? $pagina_admin;
+
+        // Si el mapeo indica frontend, usar URL de frontend
+        if (strpos($slug_mapeado, '_frontend_:') === 0) {
+            $ruta_mapeada = substr($slug_mapeado, strlen('_frontend_:'));
+            return home_url($ruta_mapeada);
+        }
+
         // Detectar contexto
         if (is_admin() && !wp_doing_ajax()) {
-            // En admin: usar URL de admin si se proporciona, sino fallback a frontend
-            if (!empty($pagina_admin)) {
-                return admin_url('admin.php?page=' . $pagina_admin);
+            // En admin: usar slug mapeado
+            if (!empty($slug_mapeado)) {
+                return admin_url('admin.php?page=' . $slug_mapeado);
             }
         }
 

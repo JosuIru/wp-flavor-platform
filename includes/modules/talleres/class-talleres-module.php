@@ -16,11 +16,18 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_talleres_proponer_taller', [$this, 'ajax_proponer_taller']);
+        add_action('wp_ajax_nopriv_talleres_proponer_taller', [$this, 'ajax_proponer_taller']);
+        add_action('wp_ajax_talleres_admin_guardar_taller', [$this, 'ajax_admin_guardar_taller']);
+        add_action('wp_ajax_nopriv_talleres_admin_guardar_taller', [$this, 'ajax_admin_guardar_taller']);
+
         $this->id = 'talleres';
         $this->name = 'Talleres Prácticos'; // Translation loaded on init
         $this->description = 'Talleres prácticos y workshops organizados por y para la comunidad.'; // Translation loaded on init
@@ -87,6 +94,30 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Tipos de contenido que este módulo acepta como integraciones
+     *
+     * @return array Lista de IDs de tipos de contenido aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['recetas', 'multimedia', 'biblioteca'];
+    }
+
+    /**
+     * Targets donde se pueden vincular integraciones
+     *
+     * @return array Configuración de targets
+     */
+    protected function get_integration_targets() {
+        return [
+            [
+                'type' => 'custom_table',
+                'table' => 'flavor_talleres',
+                'module_id' => $this->id,
+            ],
+        ];
+    }
+
+    /**
      * Obtiene los settings del módulo (guardados o por defecto)
      */
     public function get_settings() {
@@ -104,6 +135,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
+        // Registrar como consumidor de integraciones
+        $this->register_as_integration_consumer();
+
         // AJAX handlers publicos
         add_action('wp_ajax_talleres_inscribirse', [$this, 'ajax_inscribirse']);
         add_action('wp_ajax_talleres_cancelar_inscripcion', [$this, 'ajax_cancelar_inscripcion']);
@@ -119,6 +153,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         // AJAX Admin
         add_action('wp_ajax_talleres_admin_guardar', [$this, 'ajax_admin_guardar_taller']);
         add_action('wp_ajax_talleres_admin_cambiar_estado', [$this, 'ajax_admin_cambiar_estado']);
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
         add_action('wp_ajax_talleres_admin_exportar', [$this, 'ajax_admin_exportar']);
 
         // WP Cron para recordatorios
@@ -135,6 +172,20 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestion
         $this->registrar_en_panel_unificado();
+
+        // Cargar Frontend Controller
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el controlador frontend
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-talleres-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Talleres_Frontend_Controller::get_instance();
+        }
     }
 
     /**
@@ -3216,4 +3267,95 @@ KNOWLEDGE;
         ];
     }
 
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas del sidebar (primer parámetro null)
+        add_submenu_page(
+            null,
+            __('Talleres - Dashboard', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'talleres',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        add_submenu_page(
+            null,
+            __('Talleres', 'flavor-chat-ia'),
+            __('Talleres', 'flavor-chat-ia'),
+            $capability,
+            'talleres-listado',
+            [$this, 'render_pagina_talleres']
+        );
+
+        add_submenu_page(
+            null,
+            __('Inscripciones', 'flavor-chat-ia'),
+            __('Inscripciones', 'flavor-chat-ia'),
+            $capability,
+            'talleres-inscripciones',
+            [$this, 'render_pagina_inscripciones']
+        );
+
+        add_submenu_page(
+            null,
+            __('Materiales', 'flavor-chat-ia'),
+            __('Materiales', 'flavor-chat-ia'),
+            $capability,
+            'talleres-materiales',
+            [$this, 'render_pagina_materiales']
+        );
+    }
+
+    /**
+     * Renderizar página dashboard
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Talleres', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de talleres
+     */
+    public function render_pagina_talleres() {
+        $views_path = dirname(__FILE__) . '/views/talleres.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Talleres', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de inscripciones
+     */
+    public function render_pagina_inscripciones() {
+        $views_path = dirname(__FILE__) . '/views/inscripciones.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Inscripciones', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de materiales
+     */
+    public function render_pagina_materiales() {
+        $views_path = dirname(__FILE__) . '/views/materiales.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Materiales', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
 }

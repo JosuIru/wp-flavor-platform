@@ -59,8 +59,201 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         // Hooks específicos de WooCommerce si es necesario
         add_action('woocommerce_cart_updated', [$this, 'on_cart_updated']);
 
+        // REST API
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registra rutas REST API
+     */
+    public function register_rest_routes(): void {
+        $namespace = 'flavor/v1';
+
+        // Productos
+        register_rest_route($namespace, '/woocommerce/productos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_productos'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Producto individual
+        register_rest_route($namespace, '/woocommerce/productos/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_producto'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Categorías
+        register_rest_route($namespace, '/woocommerce/categorias', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_categorias'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        // Carrito
+        register_rest_route($namespace, '/woocommerce/carrito', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_carrito'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+
+        // Mis pedidos
+        register_rest_route($namespace, '/woocommerce/mis-pedidos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'api_get_mis_pedidos'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+    }
+
+    /**
+     * Verifica si el usuario está logueado
+     */
+    public function check_user_logged_in(): bool {
+        return is_user_logged_in();
+    }
+
+    /**
+     * API: Obtener productos
+     */
+    public function api_get_productos(\WP_REST_Request $request): \WP_REST_Response {
+        $args = [
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => $request->get_param('per_page') ?: 20,
+            'paged' => $request->get_param('page') ?: 1,
+        ];
+
+        if ($categoria = $request->get_param('categoria')) {
+            $args['tax_query'] = [['taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => $categoria]];
+        }
+
+        $query = new \WP_Query($args);
+        $productos = [];
+
+        foreach ($query->posts as $post) {
+            $product = wc_get_product($post->ID);
+            if (!$product) continue;
+
+            $productos[] = [
+                'id' => $product->get_id(),
+                'nombre' => $product->get_name(),
+                'precio' => $product->get_price(),
+                'precio_html' => $product->get_price_html(),
+                'imagen' => wp_get_attachment_url($product->get_image_id()),
+                'en_stock' => $product->is_in_stock(),
+            ];
+        }
+
+        return new \WP_REST_Response(['productos' => $productos, 'total' => $query->found_posts]);
+    }
+
+    /**
+     * API: Obtener producto
+     */
+    public function api_get_producto(\WP_REST_Request $request): \WP_REST_Response {
+        $product_id = $request->get_param('id');
+        $product = wc_get_product($product_id);
+
+        if (!$product) {
+            return new \WP_REST_Response(['error' => 'Producto no encontrado'], 404);
+        }
+
+        return new \WP_REST_Response([
+            'id' => $product->get_id(),
+            'nombre' => $product->get_name(),
+            'descripcion' => $product->get_description(),
+            'descripcion_corta' => $product->get_short_description(),
+            'precio' => $product->get_price(),
+            'precio_regular' => $product->get_regular_price(),
+            'precio_rebajado' => $product->get_sale_price(),
+            'imagen' => wp_get_attachment_url($product->get_image_id()),
+            'galeria' => array_map('wp_get_attachment_url', $product->get_gallery_image_ids()),
+            'en_stock' => $product->is_in_stock(),
+            'stock' => $product->get_stock_quantity(),
+        ]);
+    }
+
+    /**
+     * API: Obtener categorías
+     */
+    public function api_get_categorias(\WP_REST_Request $request): \WP_REST_Response {
+        $categorias = get_terms([
+            'taxonomy' => 'product_cat',
+            'hide_empty' => true,
+        ]);
+
+        $lista = [];
+        foreach ($categorias as $cat) {
+            $lista[] = [
+                'id' => $cat->term_id,
+                'nombre' => $cat->name,
+                'slug' => $cat->slug,
+                'count' => $cat->count,
+            ];
+        }
+
+        return new \WP_REST_Response(['categorias' => $lista]);
+    }
+
+    /**
+     * API: Obtener carrito
+     */
+    public function api_get_carrito(\WP_REST_Request $request): \WP_REST_Response {
+        if (!function_exists('WC') || !WC()->cart) {
+            return new \WP_REST_Response(['error' => 'WooCommerce no disponible'], 500);
+        }
+
+        $cart = WC()->cart;
+        $items = [];
+
+        foreach ($cart->get_cart() as $key => $item) {
+            $product = $item['data'];
+            $items[] = [
+                'key' => $key,
+                'product_id' => $item['product_id'],
+                'nombre' => $product->get_name(),
+                'cantidad' => $item['quantity'],
+                'precio' => $product->get_price(),
+                'subtotal' => $cart->get_product_subtotal($product, $item['quantity']),
+            ];
+        }
+
+        return new \WP_REST_Response([
+            'items' => $items,
+            'total' => $cart->get_cart_total(),
+            'items_count' => $cart->get_cart_contents_count(),
+        ]);
+    }
+
+    /**
+     * API: Obtener mis pedidos
+     */
+    public function api_get_mis_pedidos(\WP_REST_Request $request): \WP_REST_Response {
+        $user_id = get_current_user_id();
+
+        $orders = wc_get_orders([
+            'customer_id' => $user_id,
+            'limit' => $request->get_param('per_page') ?: 10,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ]);
+
+        $pedidos = [];
+        foreach ($orders as $order) {
+            $pedidos[] = [
+                'id' => $order->get_id(),
+                'numero' => $order->get_order_number(),
+                'estado' => $order->get_status(),
+                'total' => $order->get_total(),
+                'fecha' => $order->get_date_created()->date('Y-m-d H:i:s'),
+                'items_count' => $order->get_item_count(),
+            ];
+        }
+
+        return new \WP_REST_Response(['pedidos' => $pedidos]);
     }
 
     /**
@@ -320,7 +513,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('cart_updated', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible', 'flavor-chat-ia'),
             ];
         }
 
@@ -344,7 +537,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             if ($cart->remove_cart_item($cart_item_key)) {
                 return [
                     'success' => true,
-                    'mensaje' => __('Carrito vaciado.', 'flavor-chat-ia'),
+                    'mensaje' => __('Producto eliminado del carrito.', 'flavor-chat-ia'),
                     'cart_updated' => true,
                 ];
             }

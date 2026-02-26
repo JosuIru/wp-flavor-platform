@@ -63,57 +63,95 @@ class Flavor_Dynamic_Pages {
      * Mapea slug URL -> module_id
      */
     private $module_slugs = [
+        // Eventos y Actividades
         'eventos' => 'eventos',
         'talleres' => 'talleres',
         'cursos' => 'cursos',
+        // Reservas y Espacios
+        'reservas' => 'reservas',
+        'espacios' => 'espacios_comunes',
+        'espacios-comunes' => 'espacios_comunes',
+        'huertos' => 'huertos_urbanos',
+        'huertos-urbanos' => 'huertos_urbanos',
+        // Movilidad
         'bicicletas' => 'bicicletas_compartidas',
         'bicicletas-compartidas' => 'bicicletas_compartidas',
         'carpooling' => 'carpooling',
         'parkings' => 'parkings',
-        'espacios' => 'espacios_comunes',
-        'espacios-comunes' => 'espacios_comunes',
-        'reservas' => 'reservas',
-        'biblioteca' => 'biblioteca',
-        'marketplace' => 'marketplace',
-        'banco-tiempo' => 'banco_tiempo',
-        'banco-de-tiempo' => 'banco_tiempo',
-        'grupos-consumo' => 'grupos_consumo',
-        'huertos' => 'huertos_urbanos',
-        'huertos-urbanos' => 'huertos_urbanos',
-        'compostaje' => 'compostaje',
-        'reciclaje' => 'reciclaje',
-        'incidencias' => 'incidencias',
-        'avisos' => 'avisos_municipales',
-        'avisos-municipales' => 'avisos_municipales',
-        'participacion' => 'participacion',
-        'presupuestos' => 'presupuestos_participativos',
-        'presupuestos-participativos' => 'presupuestos_participativos',
-        'ayuda-vecinal' => 'ayuda_vecinal',
-        'socios' => 'socios',
-        'facturas' => 'facturas',
-        'fichaje' => 'fichaje_empleados',
-        'fichaje-empleados' => 'fichaje_empleados',
-        'podcast' => 'podcast',
-        'radio' => 'radio',
-        'multimedia' => 'multimedia',
+        // Comunidad y Social
+        'comunidades' => 'comunidades',
+        'colectivos' => 'colectivos',
         'foros' => 'foros',
+        'red-social' => 'red_social',
         'chat' => 'chat_interno',
         'chat-interno' => 'chat_interno',
         'chat-grupos' => 'chat_grupos',
         'grupos' => 'chat_grupos',
-        'red-social' => 'red_social',
-        'comunidades' => 'comunidades',
-        'colectivos' => 'colectivos',
+        // Incidencias y Participación
+        'incidencias' => 'incidencias',
+        'participacion' => 'participacion',
+        'presupuestos' => 'presupuestos_participativos',
+        'presupuestos-participativos' => 'presupuestos_participativos',
+        // Comercio y Economía
+        'marketplace' => 'marketplace',
+        'grupos-consumo' => 'grupos_consumo',
+        'banco-tiempo' => 'banco_tiempo',
+        'banco-de-tiempo' => 'banco_tiempo',
+        'economia-don' => 'economia_don',
+        'economia-suficiencia' => 'economia_suficiencia',
+        // Biblioteca y Multimedia
+        'biblioteca' => 'biblioteca',
+        'multimedia' => 'multimedia',
+        'podcast' => 'podcast',
+        'radio' => 'radio',
+        'recetas' => 'recetas',
+        // Ayuda y Cuidados
+        'ayuda-vecinal' => 'ayuda_vecinal',
+        'circulos-cuidados' => 'circulos_cuidados',
+        'justicia-restaurativa' => 'justicia_restaurativa',
+        // Ecología
+        'compostaje' => 'compostaje',
+        'reciclaje' => 'reciclaje',
+        'huella-ecologica' => 'huella_ecologica',
+        'biodiversidad-local' => 'biodiversidad_local',
+        'biodiversidad' => 'biodiversidad_local',
+        // Cultura y Saberes
+        'saberes-ancestrales' => 'saberes_ancestrales',
+        'saberes' => 'saberes_ancestrales',
+        // Trámites y Administración
+        'tramites' => 'tramites',
+        'avisos' => 'avisos_municipales',
+        'avisos-municipales' => 'avisos_municipales',
+        'transparencia' => 'transparencia',
+        'seguimiento-denuncias' => 'seguimiento_denuncias',
+        'denuncias' => 'seguimiento_denuncias',
+        'documentacion-legal' => 'documentacion_legal',
+        // Campañas y Mapeo
+        'campanias' => 'campanias',
+        'mapa-actores' => 'mapa_actores',
+        // Empleo y Trabajo
+        'trabajo-digno' => 'trabajo_digno',
+        'fichaje' => 'fichaje_empleados',
+        'fichaje-empleados' => 'fichaje_empleados',
+        // Socios y Membresías
+        'socios' => 'socios',
+        'facturas' => 'facturas',
+        'clientes' => 'clientes',
+        // Servicios Locales
+        'bares' => 'bares',
+        // Sistema
+        'sello-conciencia' => 'sello_conciencia',
+        // Empresarial y Marketing
         'advertising' => 'advertising',
         'publicidad' => 'advertising',
         'empresarial' => 'empresarial',
-        'clientes' => 'clientes',
         'email-marketing' => 'email_marketing',
+        // Otros
         'dex-solana' => 'dex_solana',
         'trading' => 'trading_ia',
         'trading-ia' => 'trading_ia',
-        'bares' => 'bares',
         'themacle' => 'themacle',
+        'mi-red' => 'mi_red',
     ];
 
     /**
@@ -161,6 +199,12 @@ class Flavor_Dynamic_Pages {
                 $item_id = isset($parts[2]) ? absint($parts[2]) : 0;
 
                 if ($module) {
+                    // Resetear estado 404 de WordPress
+                    global $wp_query;
+                    $wp_query->is_404 = false;
+                    $wp_query->is_page = true;
+                    $wp_query->is_singular = true;
+
                     // Setear variables y manejar como página dinámica
                     $this->current_module = sanitize_key($module);
                     $this->current_action = sanitize_key($action);
@@ -219,6 +263,12 @@ class Flavor_Dynamic_Pages {
             $item_id = absint($action);
             $action = 'ver';
         }
+
+        // Resetear estado 404 de WordPress
+        global $wp_query;
+        $wp_query->is_404 = false;
+        $wp_query->is_page = true;
+        $wp_query->is_singular = true;
 
         // Setear variables del módulo
         $this->current_module = $module_id;
@@ -295,7 +345,7 @@ class Flavor_Dynamic_Pages {
      */
     public function maybe_flush_rules() {
         // Forzar flush cuando cambia la ruta base o la versión
-        $current_key = FLAVOR_CHAT_IA_VERSION . '_' . $this->base_path . '_v17_auto_shortcodes';
+        $current_key = FLAVOR_CHAT_IA_VERSION . '_' . $this->base_path . '_v20_404_fix';
         if (get_option('flavor_dynamic_pages_rules_flushed') !== $current_key) {
             flush_rewrite_rules();
             update_option('flavor_dynamic_pages_rules_flushed', $current_key);
@@ -364,6 +414,14 @@ class Flavor_Dynamic_Pages {
             return;
         }
 
+        // Resetear el estado 404 de WordPress
+        // WordPress marca como 404 porque no encuentra una página real,
+        // pero nosotros manejamos estas rutas dinámicamente
+        global $wp_query;
+        $wp_query->is_404 = false;
+        $wp_query->is_page = true;
+        $wp_query->is_singular = true;
+
         // Parsear variables
         $this->current_module = sanitize_key(get_query_var('flavor_module', ''));
         $this->current_action = sanitize_key(get_query_var('flavor_action', 'index'));
@@ -384,20 +442,107 @@ class Flavor_Dynamic_Pages {
     private function enqueue_assets() {
         wp_enqueue_style('dashicons');
 
+        // CSS global del portal (incluye variables de Design Settings)
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/portal.css')) {
+            wp_enqueue_style(
+                'flavor-portal',
+                FLAVOR_CHAT_IA_URL . 'assets/css/portal.css',
+                [],
+                FLAVOR_CHAT_IA_VERSION
+            );
+        }
+
         // CSS del dashboard
         if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/dashboard-vb-widgets.css')) {
             wp_enqueue_style(
                 'flavor-dynamic-pages',
                 FLAVOR_CHAT_IA_URL . 'assets/css/dashboard-vb-widgets.css',
-                [],
+                ['flavor-portal'],
                 FLAVOR_CHAT_IA_VERSION
             );
+        }
+
+        // CSS del módulo específico (si existe)
+        $module = $this->current_module ?? '';
+        if ($module) {
+            // Convertir module_id (guión_bajo) a slug de directorio (guión)
+            $module_dir = str_replace('_', '-', $module);
+
+            // Paths posibles para el CSS del módulo
+            $module_css_paths = [
+                // Con formato de directorio (guiones)
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/frontend.css",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}-frontend.css",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-frontend.css",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-catalogo.css",
+                // Con formato de ID (guiones bajos) como fallback
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/frontend.css",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/{$module}-frontend.css",
+            ];
+
+            foreach ($module_css_paths as $css_path) {
+                if (file_exists($css_path)) {
+                    $css_handle = 'flavor-module-' . basename($css_path, '.css');
+                    wp_enqueue_style(
+                        $css_handle,
+                        str_replace(FLAVOR_CHAT_IA_PATH, FLAVOR_CHAT_IA_URL, $css_path),
+                        ['flavor-portal'],
+                        FLAVOR_CHAT_IA_VERSION
+                    );
+                }
+            }
         }
 
         // CSS adicional inline
         wp_register_style('flavor-dynamic-pages-inline', false);
         wp_enqueue_style('flavor-dynamic-pages-inline');
         wp_add_inline_style('flavor-dynamic-pages-inline', $this->get_inline_styles());
+
+        // JS del módulo específico (si existe)
+        if ($module) {
+            // Paths posibles para el JS del módulo
+            $module_js_paths = [
+                // Con formato de directorio (guiones)
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/frontend.js",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}-frontend.js",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-frontend.js",
+                // Con formato de ID (guiones bajos) como fallback
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/frontend.js",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/{$module}-frontend.js",
+            ];
+
+            foreach ($module_js_paths as $js_path) {
+                if (file_exists($js_path)) {
+                    $js_handle = 'flavor-module-' . basename($js_path, '.js');
+                    wp_enqueue_script(
+                        $js_handle,
+                        str_replace(FLAVOR_CHAT_IA_PATH, FLAVOR_CHAT_IA_URL, $js_path),
+                        ['jquery'],
+                        FLAVOR_CHAT_IA_VERSION,
+                        true // In footer
+                    );
+
+                    // Pasar configuración al script
+                    wp_localize_script($js_handle, 'gcFrontend', [
+                        'ajaxUrl'   => admin_url('admin-ajax.php'),
+                        'restUrl'   => rest_url('flavor/v1/grupos-consumo/'),
+                        'nonce'     => wp_create_nonce('gc_nonce'),
+                        'restNonce' => wp_create_nonce('wp_rest'),
+                        'isLoggedIn' => is_user_logged_in(),
+                        'loginUrl'  => wp_login_url(home_url($_SERVER['REQUEST_URI'] ?? '')),
+                        'i18n'      => [
+                            'agregado'        => __('Producto agregado a la lista', 'flavor-chat-ia'),
+                            'eliminado'       => __('Producto eliminado de la lista', 'flavor-chat-ia'),
+                            'error'           => __('Ha ocurrido un error', 'flavor-chat-ia'),
+                            'confirmarEliminar' => __('¿Eliminar este producto?', 'flavor-chat-ia'),
+                            'pedidoCreado'    => __('Pedido creado correctamente', 'flavor-chat-ia'),
+                            'cargando'        => __('Cargando...', 'flavor-chat-ia'),
+                            'sinProductos'    => __('Tu lista está vacía', 'flavor-chat-ia'),
+                        ],
+                    ]);
+                }
+            }
+        }
     }
 
     /**
@@ -709,9 +854,66 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
+     * Renderiza Mi Red Social
+     *
+     * Usa el sistema de Mi Red Social para renderizar la interfaz unificada de módulos sociales.
+     */
+    private function render_mi_red_social() {
+        // Indicar que estamos en el contexto de dynamic-pages
+        // Esto evita que layout.php use get_header()/get_footer() duplicados
+        $GLOBALS['flavor_dynamic_pages'] = true;
+
+        // Cargar la clase si no está cargada
+        if (!class_exists('Flavor_Mi_Red_Social')) {
+            $class_path = FLAVOR_CHAT_IA_PATH . 'includes/frontend/class-mi-red-social.php';
+            if (file_exists($class_path)) {
+                require_once $class_path;
+            }
+        }
+
+        // Verificar que la clase existe
+        if (!class_exists('Flavor_Mi_Red_Social')) {
+            echo '<div class="flavor-error">';
+            echo '<p>' . esc_html__('Mi Red Social no está disponible.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        // Obtener la instancia y renderizar
+        $mi_red = Flavor_Mi_Red_Social::get_instance();
+
+        // Mapear la acción a la vista
+        $vista = $this->current_action;
+        if ($vista === 'index' || empty($vista)) {
+            $vista = 'feed';
+        }
+
+        // Pasar parámetros adicionales (id de perfil, término de búsqueda, etc.)
+        $params = [];
+        if ($this->current_item_id) {
+            $params['id'] = $this->current_item_id;
+        }
+        if (isset($_GET['q'])) {
+            $params['q'] = sanitize_text_field($_GET['q']);
+        }
+        if (isset($_GET['tipo'])) {
+            $params['tipo'] = sanitize_key($_GET['tipo']);
+        }
+
+        // Renderizar la vista
+        $mi_red->render($vista, $params);
+    }
+
+    /**
      * Renderiza el contenido de un módulo
      */
     private function render_module_content() {
+        // Verificar si es Mi Red Social
+        if (in_array($this->current_module, ['mi-red', 'mi_red'])) {
+            $this->render_mi_red_social();
+            return;
+        }
+
         // Verificar si es una sección especial del usuario (no requiere módulo)
         $secciones_especiales = $this->get_special_sections();
         if (isset($secciones_especiales[$this->current_module])) {
@@ -741,7 +943,15 @@ class Flavor_Dynamic_Pages {
                             <?php esc_html_e('Dashboard', 'flavor-chat-ia'); ?>
                         </a>
                         <span>›</span>
-                        <span><?php echo esc_html($module_name); ?></span>
+                        <?php if ($this->current_action && $this->current_action !== 'index'): ?>
+                            <a href="<?php echo esc_url(home_url('/' . $this->base_path . '/' . str_replace('_', '-', $this->current_module) . '/')); ?>">
+                                <?php echo esc_html($module_name); ?>
+                            </a>
+                            <span>›</span>
+                            <span><?php echo esc_html($this->get_action_label($this->current_action)); ?></span>
+                        <?php else: ?>
+                            <span><?php echo esc_html($module_name); ?></span>
+                        <?php endif; ?>
                     </div>
                     <div class="fmd-title-row">
                         <div class="fmd-icon">
@@ -768,28 +978,76 @@ class Flavor_Dynamic_Pages {
                 <!-- Widgets específicos del módulo -->
                 <?php $this->render_module_specific_widgets($module); ?>
 
-                <!-- Tabs de contenido -->
+                <!-- Tabs de contenido (solo si hay tabs configurados) -->
                 <?php $tabs = $this->get_module_tabs($module); ?>
-                <div class="fmd-tabs">
+                <?php if (!empty($tabs)): ?>
+                <?php
+                // Separar tabs base de tabs de integración
+                $tabs_base = [];
+                $tabs_integracion = [];
+                foreach ($tabs as $tab_id => $tab_info) {
+                    if (!empty($tab_info['is_integration'])) {
+                        $tabs_integracion[$tab_id] = $tab_info;
+                    } else {
+                        $tabs_base[$tab_id] = $tab_info;
+                    }
+                }
+                $tiene_integraciones = !empty($tabs_integracion);
+                ?>
+                <div class="fmd-tabs <?php echo $tiene_integraciones ? 'has-integrations' : ''; ?>">
                     <nav class="fmd-tabs-nav">
-                        <?php foreach ($tabs as $tab_id => $tab_info): ?>
-                            <button class="fmd-tab <?php echo $tab_id === array_key_first($tabs) ? 'active' : ''; ?>" data-tab="<?php echo esc_attr($tab_id); ?>">
+                        <?php
+                        $is_first = true;
+                        foreach ($tabs_base as $tab_id => $tab_info):
+                            $badge = $this->get_tab_badge_value($tab_info);
+                        ?>
+                            <button class="fmd-tab <?php echo $is_first ? 'active' : ''; ?>" data-tab="<?php echo esc_attr($tab_id); ?>">
                                 <span class="dashicons <?php echo esc_attr($tab_info['icon']); ?>"></span>
                                 <?php echo esc_html($tab_info['label']); ?>
+                                <?php if ($badge > 0): ?>
+                                    <span class="fmd-tab-badge"><?php echo esc_html($badge); ?></span>
+                                <?php endif; ?>
                             </button>
-                        <?php endforeach; ?>
+                        <?php
+                            $is_first = false;
+                        endforeach;
+
+                        // Tabs de integración (módulos de red)
+                        if ($tiene_integraciones):
+                        ?>
+                        <span class="fmd-tabs-separator" title="<?php esc_attr_e('Módulos de red', 'flavor-chat-ia'); ?>"></span>
+                        <?php
+                        foreach ($tabs_integracion as $tab_id => $tab_info):
+                            $badge = $this->get_tab_badge_value($tab_info);
+                        ?>
+                            <button class="fmd-tab fmd-tab--integration" data-tab="<?php echo esc_attr($tab_id); ?>" data-source="<?php echo esc_attr($tab_info['source_module'] ?? ''); ?>">
+                                <span class="dashicons <?php echo esc_attr($tab_info['icon']); ?>"></span>
+                                <?php echo esc_html($tab_info['label']); ?>
+                                <?php if ($badge > 0): ?>
+                                    <span class="fmd-tab-badge"><?php echo esc_html($badge); ?></span>
+                                <?php endif; ?>
+                            </button>
+                        <?php
+                        endforeach;
+                        endif;
+                        ?>
                     </nav>
 
                     <div class="fmd-tab-panels">
-                        <?php foreach ($tabs as $tab_id => $tab_info):
-                            $is_first = $tab_id === array_key_first($tabs);
+                        <?php
+                        $is_first = true;
+                        foreach ($tabs as $tab_id => $tab_info):
                         ?>
                             <div class="fmd-tab-panel <?php echo $is_first ? 'active' : ''; ?>" data-panel="<?php echo esc_attr($tab_id); ?>">
                                 <?php $this->render_tab_content($tab_id, $tab_info, $module); ?>
                             </div>
-                        <?php endforeach; ?>
+                        <?php
+                            $is_first = false;
+                        endforeach;
+                        ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
             <?php elseif ($this->is_create_action($this->current_action)): ?>
                 <div class="fmd-form-container">
@@ -899,7 +1157,8 @@ class Flavor_Dynamic_Pages {
         }
 
         $module_id = str_replace('_', '-', $this->current_module);
-        $base_url = home_url('/' . $module_id . '/');
+        // Usar la ruta dentro de mi-portal para mantener consistencia con el sistema dinámico
+        $base_url = home_url('/' . $this->base_path . '/' . $module_id . '/');
         ?>
         <div class="fmd-module-widgets">
             <div class="fmd-widgets-grid">
@@ -908,7 +1167,9 @@ class Flavor_Dynamic_Pages {
                     $widget_url = $widget['link'] ?? $base_url;
                     $widget_action = $widget['action'] ?? '';
                     if ($widget_action) {
-                        $widget_url = $base_url . $widget_action . '/';
+                        // Limpiar barras para evitar doble //
+                        $widget_action = trim($widget_action, '/');
+                        $widget_url = trailingslashit($base_url . $widget_action);
                     }
                 ?>
                     <div class="fmd-widget fmd-widget--<?php echo esc_attr($widget['size'] ?? 'medium'); ?>">
@@ -971,379 +1232,379 @@ class Flavor_Dynamic_Pages {
         // Widgets específicos por módulo
         $module_id = str_replace('_', '-', $this->current_module);
 
+        // ============================================================
+        // WIDGETS: Resumen rápido y accesos directos (máximo 2-3)
+        // Los widgets muestran información condensada y destacada
+        // Los tabs (abajo) ofrecen el contenido completo organizado
+        // ============================================================
         $widgets_config = [
             // === GRUPOS DE CONSUMO ===
+            // Widget: Ciclo actual (resumen) + Mi Pedido (estado)
+            // Tabs: Catálogo completo, Pedidos, Productores, Ciclos
             'grupos-consumo' => [
-                ['title' => __('Ciclo Activo', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'shortcode' => '[gc_ciclo_actual]'],
-                ['title' => __('Mi Pedido', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'large', 'shortcode' => '[gc_mi_pedido]'],
-                ['title' => __('Productos', 'flavor-chat-ia'), 'icon' => 'dashicons-products', 'size' => 'large', 'shortcode' => '[gc_productos]'],
-                ['title' => __('Productores Cercanos', 'flavor-chat-ia'), 'icon' => 'dashicons-store', 'size' => 'medium', 'shortcode' => '[gc_productores_cercanos]'],
-                ['title' => __('Mi Cesta', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'medium', 'shortcode' => '[gc_mi_cesta]'],
+                ['title' => __('Ciclo Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-update', 'size' => 'medium', 'shortcode' => '[gc_ciclo_actual]', 'action' => 'ciclo'],
+                ['title' => __('Mi Pedido', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'large', 'shortcode' => '[gc_mi_pedido]', 'action' => 'mi-pedido'],
             ],
 
             // === EVENTOS ===
+            // Widget: Resumen personal | Tabs: Listados completos
             'eventos' => [
-                ['title' => __('Próximos Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="eventos" limit="6"]'],
-                ['title' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'size' => 'medium', 'shortcode' => '[eventos_mis_inscripciones]'],
-                ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'large', 'shortcode' => '[eventos_calendario]'],
+                ['title' => __('Próximo Evento', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'medium', 'shortcode' => '[eventos_proximo]', 'action' => 'proximos'],
+                ['title' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'size' => 'medium', 'shortcode' => '[eventos_mis_inscripciones limite="3"]', 'action' => 'inscripciones'],
             ],
 
             // === RESERVAS ===
+            // Widget: Próxima reserva | Tabs: Listados y calendario
             'reservas' => [
-                ['title' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'large', 'shortcode' => '[espacios_mis_reservas]'],
-                ['title' => __('Espacios Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-location', 'size' => 'medium', 'shortcode' => '[espacios_listado]'],
-                ['title' => __('Calendario de Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'large', 'shortcode' => '[espacios_calendario]'],
+                ['title' => __('Próxima Reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'shortcode' => '[reservas_proxima]', 'action' => 'mis-reservas'],
+                ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'large', 'shortcode' => '[reservas_calendario_mini]', 'action' => 'calendario'],
             ],
 
             // === ESPACIOS COMUNES ===
+            // Widget: Próxima reserva | Tabs: Espacios y calendario
             'espacios-comunes' => [
-                ['title' => __('Espacios Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home', 'size' => 'large', 'shortcode' => '[espacios_listado]'],
-                ['title' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'shortcode' => '[espacios_mis_reservas]'],
-                ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'large', 'shortcode' => '[espacios_calendario]'],
+                ['title' => __('Próxima Reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'shortcode' => '[espacios_proxima_reserva]', 'action' => 'mis-reservas'],
+                ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'large', 'shortcode' => '[espacios_calendario_mini]', 'action' => 'calendario'],
             ],
 
             // === HUERTOS URBANOS ===
+            // Widget: Estado de mi parcela | Tabs: Listado y mapa
             'huertos-urbanos' => [
-                ['title' => __('Mi Parcela', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'size' => 'large', 'shortcode' => '[mi_parcela]'],
-                ['title' => __('Calendario de Cultivos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'medium', 'shortcode' => '[calendario_cultivos]'],
-                ['title' => __('Lista de Huertos', 'flavor-chat-ia'), 'icon' => 'dashicons-grid-view', 'size' => 'medium', 'shortcode' => '[lista_huertos]'],
-                ['title' => __('Mapa de Huertos', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'size' => 'large', 'shortcode' => '[mapa_huertos]'],
-                ['title' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'medium', 'shortcode' => '[intercambios_huertos]'],
+                ['title' => __('Mi Parcela', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'size' => 'large', 'shortcode' => '[mi_parcela_resumen]', 'action' => 'mi-parcela'],
+                ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'medium', 'shortcode' => '[huertos_calendario]', 'action' => 'calendario'],
             ],
 
             // === BIBLIOTECA ===
+            // Widget: Préstamos activos | Tabs: Catálogo completo
             'biblioteca' => [
-                ['title' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'shortcode' => '[biblioteca_mis_prestamos]'],
-                ['title' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'size' => 'large', 'shortcode' => '[biblioteca_catalogo]'],
-                ['title' => __('Mis Libros', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'medium', 'shortcode' => '[biblioteca_mis_libros]'],
+                ['title' => __('Préstamos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'shortcode' => '[biblioteca_prestamos_activos]', 'action' => 'mis-prestamos'],
+                ['title' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'large', 'shortcode' => '[biblioteca_novedades limit="4"]', 'action' => 'novedades'],
             ],
 
             // === MARKETPLACE ===
+            // Widget: Estadísticas | Tabs: Listados
             'marketplace' => [
-                ['title' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-tag', 'size' => 'large', 'shortcode' => '[marketplace_listado]'],
-                ['title' => __('Publicar Anuncio', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'size' => 'medium', 'shortcode' => '[marketplace_formulario]'],
+                ['title' => __('Mis Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[marketplace_mis_stats]', 'action' => 'mis-anuncios'],
+                ['title' => __('Destacados', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'large', 'shortcode' => '[marketplace_destacados limit="4"]', 'action' => 'listado'],
             ],
 
             // === INCIDENCIAS ===
+            // Widget: Resumen estado | Tabs: Listados y mapa
             'incidencias' => [
-                ['title' => __('Mis Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-flag', 'size' => 'large', 'shortcode' => '[incidencias_mis_incidencias]'],
-                ['title' => __('Listado de Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-warning', 'size' => 'medium', 'shortcode' => '[incidencias_listado]'],
-                ['title' => __('Mapa de Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'size' => 'large', 'shortcode' => '[incidencias_mapa]'],
-                ['title' => __('Reportar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[incidencias_reportar]'],
+                ['title' => __('Estado Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'medium', 'shortcode' => '[incidencias_resumen_estado]', 'action' => 'mis-reportes'],
+                ['title' => __('Últimas Reportadas', 'flavor-chat-ia'), 'icon' => 'dashicons-flag', 'size' => 'large', 'shortcode' => '[incidencias_recientes limite="4"]', 'action' => 'listado'],
             ],
 
             // === BANCO DE TIEMPO ===
+            // Widget: Mi saldo y estadísticas | Tabs: Listados
             'banco-tiempo' => [
-                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'shortcode' => '[flavor_banco_tiempo_mi_saldo]'],
-                ['title' => __('Mis Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'medium', 'shortcode' => '[flavor_banco_tiempo_mis_intercambios]'],
-                ['title' => __('Servicios Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'large', 'shortcode' => '[flavor_banco_tiempo_servicios]'],
-                ['title' => __('Mi Reputación', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'medium', 'shortcode' => '[bt_mi_reputacion]'],
-                ['title' => __('Fondo Solidario', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'small', 'shortcode' => '[bt_fondo_solidario]'],
+                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'shortcode' => '[banco_tiempo_mi_saldo]', 'action' => 'mi-saldo'],
+                ['title' => __('Últimos Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'large', 'shortcode' => '[banco_tiempo_ultimos_intercambios limite="4"]', 'action' => 'intercambios'],
             ],
 
             // === BICICLETAS COMPARTIDAS ===
+            // Widget: Estado préstamo | Tabs: Disponibilidad y mapa
             'bicicletas-compartidas' => [
-                ['title' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard', 'size' => 'medium', 'shortcode' => '[bicicletas-compartidas_mis-prestamos]'],
-                ['title' => __('Bicicletas Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="bicicletas-compartidas"]'],
-                ['title' => __('Acciones', 'flavor-chat-ia'), 'icon' => 'dashicons-yes-alt', 'size' => 'medium', 'shortcode' => '[flavor_bicicletas_compartidas_acciones]'],
+                ['title' => __('Mi Préstamo Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard', 'size' => 'medium', 'shortcode' => '[bicicletas_prestamo_actual]', 'action' => 'mis-prestamos'],
+                ['title' => __('Estaciones Cercanas', 'flavor-chat-ia'), 'icon' => 'dashicons-location', 'size' => 'large', 'shortcode' => '[bicicletas_estaciones_cercanas]', 'action' => 'mapa'],
             ],
 
             // === PARKINGS ===
+            // Widget: Estado en tiempo real | Tabs: Reservas y mapa
             'parkings' => [
-                ['title' => __('Disponibilidad', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility', 'size' => 'medium', 'shortcode' => '[flavor_disponibilidad_parking]'],
-                ['title' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'shortcode' => '[flavor_mis_reservas_parking]'],
-                ['title' => __('Mapa de Parkings', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'size' => 'large', 'shortcode' => '[flavor_mapa_parkings]'],
-                ['title' => __('Ocupación en Tiempo Real', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[flavor_ocupacion_tiempo_real]'],
-                ['title' => __('Solicitar Plaza', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_solicitar_plaza]'],
+                ['title' => __('Ocupación Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[parking_ocupacion_actual]', 'action' => 'disponibilidad'],
+                ['title' => __('Mi Reserva Activa', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'shortcode' => '[parking_reserva_activa]', 'action' => 'mis-reservas'],
             ],
 
             // === CARPOOLING ===
+            // Widget: Próximo viaje | Tabs: Búsqueda y ofertas
             'carpooling' => [
-                ['title' => __('Mis Viajes', 'flavor-chat-ia'), 'icon' => 'dashicons-car', 'size' => 'large', 'shortcode' => '[carpooling_mis_viajes]'],
-                ['title' => __('Buscar Viaje', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'size' => 'large', 'shortcode' => '[carpooling_buscar_viaje]'],
-                ['title' => __('Publicar Viaje', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[carpooling_publicar_viaje]'],
-                ['title' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'size' => 'medium', 'shortcode' => '[carpooling_mis_reservas]'],
+                ['title' => __('Próximo Viaje', 'flavor-chat-ia'), 'icon' => 'dashicons-car', 'size' => 'large', 'shortcode' => '[carpooling_proximo_viaje]', 'action' => 'mis-viajes'],
+                ['title' => __('Búsqueda Rápida', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'size' => 'medium', 'shortcode' => '[carpooling_busqueda_rapida]', 'action' => 'buscar'],
             ],
 
             // === RECICLAJE ===
+            // Widget: Mi impacto | Tabs: Puntos y guía
             'reciclaje' => [
-                ['title' => __('Mis Puntos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[reciclaje_mis_puntos]'],
-                ['title' => __('Puntos Cercanos', 'flavor-chat-ia'), 'icon' => 'dashicons-location', 'size' => 'large', 'shortcode' => '[reciclaje_puntos_cercanos]'],
-                ['title' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'shortcode' => '[reciclaje_ranking]'],
-                ['title' => __('Guía de Reciclaje', 'flavor-chat-ia'), 'icon' => 'dashicons-info', 'size' => 'medium', 'shortcode' => '[reciclaje_guia]'],
-                ['title' => __('Recompensas', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'medium', 'shortcode' => '[reciclaje_recompensas]'],
+                ['title' => __('Mi Impacto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[reciclaje_mi_impacto]', 'action' => 'mis-puntos'],
+                ['title' => __('Punto Más Cercano', 'flavor-chat-ia'), 'icon' => 'dashicons-location', 'size' => 'medium', 'shortcode' => '[reciclaje_punto_cercano]', 'action' => 'puntos-cercanos'],
             ],
 
             // === COMPOSTAJE ===
+            // Widget: Estadísticas | Tabs: Mapa y aportaciones
             'compostaje' => [
-                ['title' => __('Mis Aportaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'size' => 'medium', 'shortcode' => '[mis_aportaciones]'],
-                ['title' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[estadisticas_compostaje]'],
-                ['title' => __('Mapa de Composteras', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'size' => 'large', 'shortcode' => '[mapa_composteras]'],
-                ['title' => __('Registrar Aportación', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[registrar_aportacion]'],
-                ['title' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'shortcode' => '[ranking_compostaje]'],
+                ['title' => __('Mi Balance', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area', 'size' => 'medium', 'shortcode' => '[compostaje_mi_balance]', 'action' => 'mis-aportaciones'],
+                ['title' => __('Compostera Cercana', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'size' => 'medium', 'shortcode' => '[compostaje_cercana]', 'action' => 'mapa'],
             ],
 
             // === BARES / COMERCIOS ===
+            // Widget: Destacados | Tabs: Listado y mapa
             'bares' => [
-                ['title' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-store', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="bares" limit="6"]'],
+                ['title' => __('Destacados', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'large', 'shortcode' => '[bares_destacados limit="4"]', 'action' => 'listado'],
             ],
 
             // === CURSOS ===
+            // Widget: Progreso actual | Tabs: Catálogo
             'cursos' => [
-                ['title' => __('Mis Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'size' => 'large', 'shortcode' => '[cursos_mis_cursos]'],
-                ['title' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'size' => 'large', 'shortcode' => '[cursos_catalogo]'],
-                ['title' => __('Aula Virtual', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home', 'size' => 'medium', 'shortcode' => '[cursos_aula]'],
+                ['title' => __('Mi Progreso', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'shortcode' => '[cursos_mi_progreso]', 'action' => 'mis-cursos'],
+                ['title' => __('Próximos a Comenzar', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'large', 'shortcode' => '[cursos_proximos limit="3"]', 'action' => 'catalogo'],
             ],
 
             // === TALLERES ===
+            // Widget: Próximo taller | Tabs: Catálogo
             'talleres' => [
-                ['title' => __('Próximos Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer', 'size' => 'large', 'shortcode' => '[proximos_talleres]'],
-                ['title' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'size' => 'medium', 'shortcode' => '[mis_inscripciones_talleres]'],
-                ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'large', 'shortcode' => '[calendario_talleres]'],
-                ['title' => __('Proponer Taller', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[proponer_taller]'],
+                ['title' => __('Próximo Taller', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'medium', 'shortcode' => '[talleres_proximo]', 'action' => 'proximos'],
+                ['title' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'size' => 'medium', 'shortcode' => '[talleres_mis_inscripciones limite="3"]', 'action' => 'inscripciones'],
             ],
 
             // === COLECTIVOS ===
+            // Widget: Mi actividad | Tabs: Listados
             'colectivos' => [
-                ['title' => __('Mis Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="colectivos" vista="mis"]'],
-                ['title' => __('Colectivos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="colectivos" limit="6"]'],
+                ['title' => __('Mi Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[colectivos_mi_actividad]', 'action' => 'mis-colectivos'],
+                ['title' => __('Destacados', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'large', 'shortcode' => '[colectivos_destacados limit="4"]', 'action' => 'listado'],
             ],
 
             // === COMUNIDADES ===
+            // Widget: Mi comunidad | Tabs: Directorio y mapa
             'comunidades' => [
-                ['title' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'size' => 'large', 'shortcode' => '[flavor_network_directory]'],
-                ['title' => __('Mapa de Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'size' => 'large', 'shortcode' => '[flavor_network_map]'],
-                ['title' => __('Tablón', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-post', 'size' => 'medium', 'shortcode' => '[flavor_network_board]'],
+                ['title' => __('Mi Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-multisite', 'size' => 'medium', 'shortcode' => '[mi_comunidad_resumen]', 'action' => 'mis-comunidades'],
+                ['title' => __('Actividad Reciente', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'size' => 'large', 'shortcode' => '[comunidades_actividad limit="5"]', 'action' => 'tablon'],
             ],
 
             // === SOCIOS ===
+            // Widget: Estado membresía | Tabs: Directorio
             'socios' => [
-                ['title' => __('Mi Membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="socios" vista="mi"]'],
-                ['title' => __('Directorio de Socios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="socios"]'],
+                ['title' => __('Mi Carnet', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'size' => 'large', 'shortcode' => '[socios_mi_carnet]', 'action' => 'mi-membresia'],
             ],
 
             // === FOROS ===
+            // Widget: Actividad reciente | Tabs: Discusiones
             'foros' => [
-                ['title' => __('Últimas Discusiones', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="foros" limit="5"]'],
+                ['title' => __('Actividad Reciente', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'size' => 'large', 'shortcode' => '[foros_actividad_reciente limit="5"]', 'action' => 'actividad'],
             ],
 
             // === CHAT GRUPOS ===
+            // Widget: Mensajes sin leer | Tabs: Grupos
             'chat-grupos' => [
-                ['title' => __('Mis Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[flavor_grupos_lista]'],
-                ['title' => __('Explorar Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'size' => 'large', 'shortcode' => '[flavor_grupos_explorar]'],
-                ['title' => __('Crear Grupo', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_grupos_crear]'],
+                ['title' => __('Mensajes Nuevos', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'size' => 'medium', 'shortcode' => '[chat_grupos_sin_leer]', 'action' => 'mis-grupos'],
+                ['title' => __('Grupos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'large', 'shortcode' => '[chat_grupos_activos limit="4"]', 'action' => 'mis-grupos'],
             ],
 
             // === CHAT INTERNO ===
+            // Widget: Mensajes sin leer | Tabs: Bandeja
             'chat-interno' => [
-                ['title' => __('Bandeja de Entrada', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'size' => 'large', 'shortcode' => '[flavor_chat_inbox]'],
-                ['title' => __('Iniciar Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'size' => 'medium', 'shortcode' => '[flavor_iniciar_chat]'],
+                ['title' => __('Sin Leer', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'size' => 'large', 'shortcode' => '[chat_mensajes_sin_leer]', 'action' => 'bandeja'],
             ],
 
             // === RED SOCIAL ===
+            // Widget: Notificaciones | Tabs: Feed
             'red-social' => [
-                ['title' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[rs_perfil]'],
-                ['title' => __('Feed de Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'size' => 'large', 'shortcode' => '[rs_feed]'],
-                ['title' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'size' => 'medium', 'shortcode' => '[rs_explorar]'],
-                ['title' => __('Historias', 'flavor-chat-ia'), 'icon' => 'dashicons-format-video', 'size' => 'medium', 'shortcode' => '[rs_historias]'],
+                ['title' => __('Notificaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-bell', 'size' => 'medium', 'shortcode' => '[rs_notificaciones]', 'action' => 'notificaciones'],
+                ['title' => __('Mi Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[rs_mi_actividad]', 'action' => 'mi-perfil'],
             ],
 
             // === PARTICIPACIÓN ===
+            // Widget: Votaciones activas | Tabs: Propuestas
             'participacion' => [
-                ['title' => __('Propuestas Activas', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'size' => 'large', 'shortcode' => '[propuestas_activas]'],
-                ['title' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-forms', 'size' => 'medium', 'shortcode' => '[votacion_activa]'],
-                ['title' => __('Crear Propuesta', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'medium', 'shortcode' => '[crear_propuesta]'],
-                ['title' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[resultados_participacion]'],
+                ['title' => __('Votaciones Activas', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up', 'size' => 'medium', 'shortcode' => '[votaciones_activas]', 'action' => 'votaciones'],
+                ['title' => __('Mis Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'medium', 'shortcode' => '[mis_propuestas_resumen]', 'action' => 'propuestas'],
             ],
 
             // === PRESUPUESTOS PARTICIPATIVOS ===
+            // Widget: Estado actual | Tabs: Proyectos
             'presupuestos-participativos' => [
-                ['title' => __('Presupuesto Participativo', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'large', 'shortcode' => '[presupuesto_participativo]'],
-                ['title' => __('Fases', 'flavor-chat-ia'), 'icon' => 'dashicons-editor-ol', 'size' => 'medium', 'shortcode' => '[fases_participacion]'],
+                ['title' => __('Estado Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'large', 'shortcode' => '[presupuesto_estado_actual]', 'action' => 'presupuesto'],
             ],
 
             // === AVISOS MUNICIPALES ===
+            // Widget: Urgentes | Tabs: Listado completo
             'avisos-municipales' => [
-                ['title' => __('Avisos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'size' => 'large', 'shortcode' => '[avisos_activos]'],
-                ['title' => __('Avisos Urgentes', 'flavor-chat-ia'), 'icon' => 'dashicons-warning', 'size' => 'medium', 'shortcode' => '[avisos_urgentes]'],
-                ['title' => __('Suscribirse', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'size' => 'small', 'shortcode' => '[suscribirse_avisos]'],
-                ['title' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup', 'size' => 'medium', 'shortcode' => '[historial_avisos]'],
+                ['title' => __('Avisos Urgentes', 'flavor-chat-ia'), 'icon' => 'dashicons-warning', 'size' => 'large', 'shortcode' => '[avisos_urgentes]', 'action' => 'urgentes'],
             ],
 
             // === AYUDA VECINAL ===
+            // Widget: Solicitudes cercanas | Tabs: Listados
             'ayuda-vecinal' => [
-                ['title' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-sos', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="ayuda-vecinal"]'],
+                ['title' => __('Ayuda Cercana', 'flavor-chat-ia'), 'icon' => 'dashicons-location', 'size' => 'large', 'shortcode' => '[ayuda_vecinal_cercana]', 'action' => 'mapa'],
             ],
 
             // === TRÁMITES ===
+            // Widget: Expedientes pendientes | Tabs: Catálogo
             'tramites' => [
-                ['title' => __('Mis Expedientes', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'large', 'shortcode' => '[mis_expedientes]'],
-                ['title' => __('Catálogo de Trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-forms', 'size' => 'large', 'shortcode' => '[catalogo_tramites]'],
-                ['title' => __('Iniciar Trámite', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[iniciar_tramite]'],
+                ['title' => __('Pendientes', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'medium', 'shortcode' => '[tramites_pendientes]', 'action' => 'mis-expedientes'],
+                ['title' => __('Más Solicitados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[tramites_populares limit="4"]', 'action' => 'catalogo'],
             ],
 
             // === TRANSPARENCIA ===
+            // Widget: Resumen presupuesto | Tabs: Portal completo
             'transparencia' => [
-                ['title' => __('Portal', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility', 'size' => 'large', 'shortcode' => '[transparencia_portal]'],
-                ['title' => __('Presupuesto Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'medium', 'shortcode' => '[transparencia_presupuesto_actual]'],
-                ['title' => __('Últimos Gastos', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt', 'size' => 'medium', 'shortcode' => '[transparencia_ultimos_gastos]'],
-                ['title' => __('Actas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-text', 'size' => 'medium', 'shortcode' => '[transparencia_actas]'],
-                ['title' => __('Indicadores', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[transparencia_indicadores]'],
+                ['title' => __('Presupuesto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'large', 'shortcode' => '[transparencia_presupuesto_resumen]', 'action' => 'presupuesto'],
             ],
 
             // === FICHAJE EMPLEADOS ===
+            // Widget: Panel de fichaje | Tab: Historial
             'fichaje-empleados' => [
-                ['title' => __('Panel de Control', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'large', 'shortcode' => '[flavor_fichaje_empleados_acciones]'],
+                ['title' => __('Fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'large', 'shortcode' => '[fichaje_boton]', 'action' => 'fichar'],
             ],
 
             // === MULTIMEDIA ===
+            // Widget: Últimas subidas | Tabs: Galerías
             'multimedia' => [
-                ['title' => __('Mi Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'size' => 'medium', 'shortcode' => '[flavor_mi_galeria]'],
-                ['title' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-images-alt2', 'size' => 'large', 'shortcode' => '[flavor_galeria]'],
-                ['title' => __('Álbumes', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'size' => 'medium', 'shortcode' => '[flavor_albumes]'],
-                ['title' => __('Subir', 'flavor-chat-ia'), 'icon' => 'dashicons-upload', 'size' => 'medium', 'shortcode' => '[flavor_subir_multimedia]'],
+                ['title' => __('Mis Subidas', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'size' => 'medium', 'shortcode' => '[multimedia_mis_subidas limite="4"]', 'action' => 'mi-galeria'],
+                ['title' => __('Recientes', 'flavor-chat-ia'), 'icon' => 'dashicons-images-alt2', 'size' => 'large', 'shortcode' => '[multimedia_recientes limit="6"]', 'action' => 'galeria'],
             ],
 
             // === PODCAST ===
+            // Widget: Reproductor | Tabs: Episodios
             'podcast' => [
-                ['title' => __('Episodios', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone', 'size' => 'large', 'shortcode' => '[podcast_lista_episodios]'],
-                ['title' => __('Reproductor', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-play', 'size' => 'medium', 'shortcode' => '[podcast_player]'],
-                ['title' => __('Series', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio', 'size' => 'medium', 'shortcode' => '[podcast_series]'],
-                ['title' => __('Suscribirse', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'size' => 'small', 'shortcode' => '[podcast_suscribirse]'],
+                ['title' => __('Último Episodio', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone', 'size' => 'large', 'shortcode' => '[podcast_ultimo_episodio]', 'action' => 'episodios'],
             ],
 
             // === RADIO ===
+            // Widget: En directo | Tabs: Programación
             'radio' => [
-                ['title' => __('En Directo', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-volumeon', 'size' => 'large', 'shortcode' => '[flavor_radio_player]'],
-                ['title' => __('Programación', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'shortcode' => '[flavor_radio_programacion]'],
-                ['title' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'size' => 'medium', 'shortcode' => '[flavor_radio_chat]'],
-                ['title' => __('Dedicatorias', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'medium', 'shortcode' => '[flavor_radio_dedicatorias]'],
+                ['title' => __('En Directo', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-volumeon', 'size' => 'large', 'shortcode' => '[radio_en_directo]', 'action' => 'en-directo'],
             ],
 
             // === FACTURAS ===
+            // Widget: Resumen | Tabs: Historial
             'facturas' => [
-                ['title' => __('Mis Facturas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-spreadsheet', 'size' => 'large', 'shortcode' => '[flavor_mis_facturas]'],
-                ['title' => __('Historial de Pagos', 'flavor-chat-ia'), 'icon' => 'dashicons-backup', 'size' => 'medium', 'shortcode' => '[flavor_historial_pagos]'],
+                ['title' => __('Pendientes', 'flavor-chat-ia'), 'icon' => 'dashicons-warning', 'size' => 'medium', 'shortcode' => '[facturas_pendientes]', 'action' => 'mis-facturas'],
+                ['title' => __('Último Pago', 'flavor-chat-ia'), 'icon' => 'dashicons-yes', 'size' => 'medium', 'shortcode' => '[ultimo_pago]', 'action' => 'historial'],
             ],
 
             // === TRADING IA ===
+            // Widget: Resumen portfolio | Tabs: Dashboard
             'trading-ia' => [
-                ['title' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'large', 'shortcode' => '[trading_ia_dashboard]'],
-                ['title' => __('Portfolio', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'size' => 'medium', 'shortcode' => '[trading_ia_portfolio]'],
-                ['title' => __('Mercado', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[trading_ia_mercado]'],
-                ['title' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup', 'size' => 'medium', 'shortcode' => '[trading_ia_historial]'],
+                ['title' => __('Balance', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'large', 'shortcode' => '[trading_balance]', 'action' => 'dashboard'],
             ],
 
             // === ADVERTISING ===
+            // Widget: Rendimiento | Tabs: Campañas
             'advertising' => [
-                ['title' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[flavor_ads_dashboard]'],
-                ['title' => __('Crear Anuncio', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_ads_crear]'],
-                ['title' => __('Ingresos', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt', 'size' => 'medium', 'shortcode' => '[flavor_ads_ingresos]'],
+                ['title' => __('Rendimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[ads_rendimiento]', 'action' => 'dashboard'],
             ],
 
             // === EMAIL MARKETING ===
+            // Widget: Estado suscripción | Tabs: Archivo
             'email-marketing' => [
-                ['title' => __('Suscripción', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'size' => 'medium', 'shortcode' => '[flavor_suscripcion_newsletter]'],
-                ['title' => __('Preferencias', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-generic', 'size' => 'medium', 'shortcode' => '[flavor_preferencias_email]'],
-                ['title' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'size' => 'large', 'shortcode' => '[flavor_archivo_newsletters]'],
+                ['title' => __('Mi Suscripción', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'size' => 'large', 'shortcode' => '[newsletter_mi_estado]', 'action' => 'suscripcion'],
             ],
 
             // === WOOCOMMERCE ===
+            // Widget: Últimos pedidos | Tabs: Cuenta
             'woocommerce' => [
-                ['title' => __('Mis Pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'large', 'shortcode' => '[woocommerce_my_account]'],
-                ['title' => __('Productos Destacados', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'large', 'shortcode' => '[products limit="4" columns="4"]'],
+                ['title' => __('Último Pedido', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'medium', 'shortcode' => '[woo_ultimo_pedido]', 'action' => 'mis-pedidos'],
+                ['title' => __('Ofertas', 'flavor-chat-ia'), 'icon' => 'dashicons-tag', 'size' => 'large', 'shortcode' => '[products on_sale="true" limit="4"]', 'action' => 'productos'],
             ],
 
             // === DEX SOLANA ===
+            // Widget: Balance | Tabs: Trading
             'dex-solana' => [
-                ['title' => __('Dashboard Trading', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="dex-solana" vista="dashboard"]'],
-                ['title' => __('Mi Portfolio', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="dex-solana" vista="portfolio"]'],
-                ['title' => __('Pools de Liquidez', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="dex-solana" vista="pools"]'],
-                ['title' => __('Swap', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="dex-solana" vista="swap"]'],
-                ['title' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="dex-solana" vista="historial"]'],
+                ['title' => __('Balance', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'large', 'shortcode' => '[dex_balance]', 'action' => 'dashboard'],
             ],
 
             // === EMPRESARIAL ===
+            // Widget: Mi empresa | Tabs: Directorio
             'empresarial' => [
-                ['title' => __('Directorio de Empresas', 'flavor-chat-ia'), 'icon' => 'dashicons-building', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="empresarial" limit="6"]'],
-                ['title' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="empresarial" vista="servicios"]'],
-                ['title' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="empresarial" vista="categorias"]'],
-                ['title' => __('Buscar Empresa', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="empresarial" vista="buscar"]'],
+                ['title' => __('Mi Empresa', 'flavor-chat-ia'), 'icon' => 'dashicons-building', 'size' => 'large', 'shortcode' => '[empresa_mi_ficha]', 'action' => 'mi-empresa'],
             ],
 
             // === CLIENTES (CRM) ===
+            // Widget: Estadísticas | Tabs: Listado
             'clientes' => [
-                ['title' => __('Mis Clientes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'large', 'shortcode' => '[flavor_module_listing module="clientes" limit="10"]'],
-                ['title' => __('Fichas de Clientes', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="clientes" vista="fichas"]'],
-                ['title' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[flavor_module_listing module="clientes" vista="estadisticas"]'],
-                ['title' => __('Nuevo Cliente', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_module_form module="clientes" action="crear"]'],
+                ['title' => __('Resumen CRM', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[crm_resumen]', 'action' => 'estadisticas'],
             ],
 
             // === HUELLA ECOLÓGICA ===
             'huella-ecologica' => [
-                ['title' => __('Calculadora', 'flavor-chat-ia'), 'icon' => 'dashicons-calculator', 'size' => 'large', 'shortcode' => '[flavor_huella_calculadora]'],
-                ['title' => __('Mis Registros', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'medium', 'shortcode' => '[flavor_huella_mis_registros]'],
-                ['title' => __('Logros', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'shortcode' => '[flavor_huella_logros]'],
-                ['title' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[flavor_huella_comunidad]'],
-                ['title' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'size' => 'large', 'shortcode' => '[flavor_huella_proyectos]'],
+                ['title' => __('Mi Huella', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'medium', 'shortcode' => '[flavor_huella_mis_registros]', 'action' => 'mis-registros'],
+                ['title' => __('Calculadora', 'flavor-chat-ia'), 'icon' => 'dashicons-calculator', 'size' => 'large', 'shortcode' => '[flavor_huella_calculadora]', 'action' => 'calculadora'],
             ],
 
             // === SABERES ANCESTRALES ===
             'saberes-ancestrales' => [
-                ['title' => __('Catálogo de Saberes', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'size' => 'large', 'shortcode' => '[flavor_saberes_catalogo]'],
-                ['title' => __('Compartir Saber', 'flavor-chat-ia'), 'icon' => 'dashicons-share', 'size' => 'medium', 'shortcode' => '[flavor_saberes_compartir]'],
-                ['title' => __('Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'size' => 'medium', 'shortcode' => '[flavor_saberes_talleres]'],
+                ['title' => __('Mis Saberes', 'flavor-chat-ia'), 'icon' => 'dashicons-share', 'size' => 'medium', 'shortcode' => '[flavor_mis_saberes]', 'action' => 'mis-saberes'],
+                ['title' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'size' => 'large', 'shortcode' => '[flavor_saberes_catalogo limit="6"]', 'action' => 'catalogo'],
             ],
 
             // === ECONOMÍA DEL DON ===
             'economia-don' => [
-                ['title' => __('Dones Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'large', 'shortcode' => '[flavor_don_listado]'],
-                ['title' => __('Mis Dones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[flavor_don_mis_dones]'],
-                ['title' => __('Muro de Gratitud', 'flavor-chat-ia'), 'icon' => 'dashicons-format-quote', 'size' => 'medium', 'shortcode' => '[flavor_don_muro_gratitud]'],
-                ['title' => __('Ofrecer Don', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_don_ofrecer]'],
+                ['title' => __('Mis Dones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[flavor_don_mis_dones]', 'action' => 'mis-dones'],
+                ['title' => __('Dones Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'large', 'shortcode' => '[flavor_don_listado limit="6"]', 'action' => 'listado'],
             ],
 
             // === ECONOMÍA DE SUFICIENCIA ===
             'economia-suficiencia' => [
-                ['title' => __('Introducción', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_intro]'],
-                ['title' => __('Mi Camino', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'large', 'shortcode' => '[flavor_suficiencia_mi_camino]'],
-                ['title' => __('Evaluación', 'flavor-chat-ia'), 'icon' => 'dashicons-forms', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_evaluacion]'],
-                ['title' => __('Compromisos', 'flavor-chat-ia'), 'icon' => 'dashicons-yes-alt', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_compromisos]'],
-                ['title' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_biblioteca]'],
+                ['title' => __('Mi Camino', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'large', 'shortcode' => '[flavor_suficiencia_mi_camino]', 'action' => 'mi-camino'],
+                ['title' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_biblioteca]', 'action' => 'biblioteca'],
             ],
 
             // === TRABAJO DIGNO ===
             'trabajo-digno' => [
-                ['title' => __('Ofertas de Empleo', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman', 'size' => 'large', 'shortcode' => '[flavor_trabajo_ofertas]'],
-                ['title' => __('Mi Perfil Laboral', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_mi_perfil]'],
-                ['title' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_formacion]'],
-                ['title' => __('Emprendimientos', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_emprendimientos]'],
-                ['title' => __('Publicar Oferta', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_publicar]'],
+                ['title' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'size' => 'medium', 'shortcode' => '[flavor_trabajo_mi_perfil]', 'action' => 'mi-perfil'],
+                ['title' => __('Ofertas', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman', 'size' => 'large', 'shortcode' => '[flavor_trabajo_ofertas limit="6"]', 'action' => 'ofertas'],
             ],
 
             // === CÍRCULOS DE CUIDADOS ===
             'circulos-cuidados' => [
-                ['title' => __('Círculos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'large', 'shortcode' => '[flavor_circulos_listado]'],
-                ['title' => __('Mis Cuidados', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'medium', 'shortcode' => '[flavor_circulos_mis_cuidados]'],
-                ['title' => __('Necesidades', 'flavor-chat-ia'), 'icon' => 'dashicons-sos', 'size' => 'medium', 'shortcode' => '[flavor_circulos_necesidades]'],
+                ['title' => __('Mis Cuidados', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'size' => 'medium', 'shortcode' => '[flavor_circulos_mis_cuidados]', 'action' => 'mis-cuidados'],
+                ['title' => __('Círculos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'large', 'shortcode' => '[flavor_circulos_listado limit="6"]', 'action' => 'listado'],
             ],
 
             // === JUSTICIA RESTAURATIVA ===
             'justicia-restaurativa' => [
-                ['title' => __('Información', 'flavor-chat-ia'), 'icon' => 'dashicons-info', 'size' => 'medium', 'shortcode' => '[flavor_justicia_info]'],
-                ['title' => __('Mis Procesos', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'large', 'shortcode' => '[flavor_justicia_mis_procesos]'],
-                ['title' => __('Mediadores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[flavor_justicia_mediadores]'],
-                ['title' => __('Solicitar Mediación', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'size' => 'medium', 'shortcode' => '[flavor_justicia_solicitar]'],
+                ['title' => __('Mis Procesos', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'large', 'shortcode' => '[flavor_justicia_mis_procesos]', 'action' => 'mis-procesos'],
+                ['title' => __('Mediadores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[flavor_justicia_mediadores]', 'action' => 'mediadores'],
             ],
 
             // === SELLO CONCIENCIA ===
             'sello-conciencia' => [
-                ['title' => __('Mi Badge', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'shortcode' => '[flavor_sello_badge]'],
-                ['title' => __('Premisas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'large', 'shortcode' => '[flavor_sello_premisas]'],
+                ['title' => __('Mi Badge', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'shortcode' => '[flavor_sello_badge]', 'action' => 'badge'],
+                ['title' => __('Premisas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'large', 'shortcode' => '[flavor_sello_premisas]', 'action' => 'premisas'],
             ],
         ];
 
         return $widgets_config[$module_id] ?? [];
+    }
+
+    /**
+     * Obtiene el label legible de una acción
+     *
+     * @param string $action Slug de la acción
+     * @return string Label legible
+     */
+    private function get_action_label($action) {
+        $labels = [
+            'mi-pedido'      => __('Mi Pedido', 'flavor-chat-ia'),
+            'mi-cesta'       => __('Mi Cesta', 'flavor-chat-ia'),
+            'productos'      => __('Productos', 'flavor-chat-ia'),
+            'productores'    => __('Productores', 'flavor-chat-ia'),
+            'ciclos'         => __('Ciclos', 'flavor-chat-ia'),
+            'mapa'           => __('Mapa', 'flavor-chat-ia'),
+            'calendario'     => __('Calendario', 'flavor-chat-ia'),
+            'listado'        => __('Listado', 'flavor-chat-ia'),
+            'crear'          => __('Crear', 'flavor-chat-ia'),
+            'nuevo'          => __('Nuevo', 'flavor-chat-ia'),
+            'nueva'          => __('Nueva', 'flavor-chat-ia'),
+            'editar'         => __('Editar', 'flavor-chat-ia'),
+            'ver'            => __('Detalle', 'flavor-chat-ia'),
+            'mis-reservas'   => __('Mis Reservas', 'flavor-chat-ia'),
+            'mis-pedidos'    => __('Mis Pedidos', 'flavor-chat-ia'),
+            'mis-reportes'   => __('Mis Reportes', 'flavor-chat-ia'),
+            'inscripciones'  => __('Inscripciones', 'flavor-chat-ia'),
+            'suscripciones'  => __('Suscripciones', 'flavor-chat-ia'),
+            'estadisticas'   => __('Estadísticas', 'flavor-chat-ia'),
+            'configuracion'  => __('Configuración', 'flavor-chat-ia'),
+        ];
+
+        // Buscar en el array o convertir slug a texto legible
+        if (isset($labels[$action])) {
+            return $labels[$action];
+        }
+
+        // Fallback: convertir slug a texto (mi-pedido → Mi Pedido)
+        return ucwords(str_replace('-', ' ', $action));
     }
 
     /**
@@ -1364,263 +1625,523 @@ class Flavor_Dynamic_Pages {
         // Tabs específicos por módulo
         $module_id = str_replace('_', '-', $this->current_module);
 
+        // ============================================================
+        // TABS POR MÓDULO: Complementan los widgets con vistas completas
+        // Widgets = Resumen rápido | Tabs = Contenido completo organizado
+        // ============================================================
         $tabs_config = [
             // === GRUPOS DE CONSUMO ===
+            // Widgets: Mi Pedido (resumen), Productos (destacados)
+            // Tabs: Navegación completa del ciclo de consumo
             'grupos-consumo' => [
-                'pedidos' => ['label' => __('Mis Pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
-                'productos' => ['label' => __('Productos', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
-                'productores' => ['label' => __('Productores', 'flavor-chat-ia'), 'icon' => 'dashicons-store'],
-                'ciclos' => ['label' => __('Ciclos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'productos'   => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
+                'pedidos'     => ['label' => __('Mis Pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
+                'productores' => ['label' => __('Productores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'ciclos'      => ['label' => __('Ciclos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                // Integraciones
+                'foro'        => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'recetas'     => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
+                'trueques'    => ['label' => __('Trueques', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'is_integration' => true],
             ],
 
             // === EVENTOS ===
+            // Widgets: Inscripciones (resumen), Próximos (destacados)
+            // Tabs: Vistas alternativas del contenido
             'eventos' => [
-                'proximos' => ['label' => __('Próximos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'proximos'      => ['label' => __('Próximos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
                 'inscripciones' => ['label' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt'],
-                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'calendario'    => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'mapa'          => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                // Integraciones
+                'multimedia'    => ['label' => __('Fotos', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
+                'comentarios'   => ['label' => __('Comentarios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
 
             // === RESERVAS ===
             'reservas' => [
+                'recursos'     => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
                 'mis-reservas' => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'espacios' => ['label' => __('Espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
-                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'calendario'   => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
             ],
 
             // === ESPACIOS COMUNES ===
             'espacios-comunes' => [
-                'disponibles' => ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
+                'espacios'     => ['label' => __('Espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
                 'mis-reservas' => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'calendario'   => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                // Integraciones
+                'normas'       => ['label' => __('Normas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'is_integration' => true],
+                'foro'         => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
 
             // === HUERTOS URBANOS ===
             'huertos-urbanos' => [
-                'mi-parcela' => ['label' => __('Mi Parcela', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3'],
-                'parcelas' => ['label' => __('Parcelas', 'flavor-chat-ia'), 'icon' => 'dashicons-grid-view'],
+                'listado'  => ['label' => __('Huertos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3'],
+                'mi-parcela' => ['label' => __('Mi Parcela', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
+                'mapa'     => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
                 'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                // Integraciones
+                'banco-semillas' => ['label' => __('Banco Semillas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true],
+                'foro'           => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'recetas'        => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
             ],
 
             // === BIBLIOTECA ===
             'biblioteca' => [
+                'catalogo'      => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
                 'mis-prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
-                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
-                'novedades' => ['label' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
+                'novedades'     => ['label' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
+                // Integraciones
+                'resenas'       => ['label' => __('Reseñas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'clubes-lectura' => ['label' => __('Clubes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
             ],
 
             // === MARKETPLACE ===
             'marketplace' => [
-                'mis-anuncios' => ['label' => __('Mis Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
-                'explorar' => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
-                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                'listado'      => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'mis-anuncios' => ['label' => __('Mis Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-write-blog'],
+                'categorias'   => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                // Integraciones
+                'favoritos'    => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'is_integration' => true],
+                'mensajes'     => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
             ],
 
             // === INCIDENCIAS ===
+            // Widgets: Mis Incidencias (resumen), Mapa (vista rápida)
+            // Tabs: Listado completo con filtros, mapa interactivo, estadísticas
             'incidencias' => [
+                'listado'      => ['label' => __('Todas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
                 'mis-reportes' => ['label' => __('Mis Reportes', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
-                'todas' => ['label' => __('Todas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'mapa'         => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                // Integraciones
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
+                'categorias'   => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category', 'is_integration' => true],
             ],
 
             // === BANCO DE TIEMPO ===
             'banco-tiempo' => [
-                'mi-saldo' => ['label' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
-                'servicios' => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'servicios'    => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'mi-saldo'     => ['label' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
                 'intercambios' => ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
+                'ranking'      => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                // Integraciones
+                'valoraciones' => ['label' => __('Valoraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true],
+                'mensajes'     => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
             ],
 
             // === BICICLETAS COMPARTIDAS ===
             'bicicletas-compartidas' => [
+                'disponibles'   => ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site'],
                 'mis-prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                'disponibles' => ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'mapa'          => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                // Integraciones
+                'estaciones'    => ['label' => __('Estaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'is_integration' => true],
+                'incidencias'   => ['label' => __('Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-warning', 'is_integration' => true, 'source_module' => 'incidencias'],
+                'estadisticas'  => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
             ],
 
             // === PARKINGS ===
             'parkings' => [
-                'mi-plaza' => ['label' => __('Mi Plaza', 'flavor-chat-ia'), 'icon' => 'dashicons-car'],
-                'disponibles' => ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
-                'reservas' => ['label' => __('Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'disponibilidad' => ['label' => __('Disponibilidad', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                'mis-reservas'   => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'mapa'           => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                // Integraciones
+                'tarifas'        => ['label' => __('Tarifas', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt', 'is_integration' => true],
+                'ocupacion'      => ['label' => __('Ocupación', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'is_integration' => true],
             ],
 
             // === CARPOOLING ===
             'carpooling' => [
+                'buscar'     => ['label' => __('Buscar Viaje', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
                 'mis-viajes' => ['label' => __('Mis Viajes', 'flavor-chat-ia'), 'icon' => 'dashicons-car'],
-                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
-                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'ofrecer'    => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                // Integraciones
+                'rutas'      => ['label' => __('Rutas Frecuentes', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'is_integration' => true],
+                'valoraciones' => ['label' => __('Valoraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true],
+                'mensajes'   => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
             ],
 
             // === RECICLAJE ===
             'reciclaje' => [
-                'mi-impacto' => ['label' => __('Mi Impacto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
-                'puntos' => ['label' => __('Puntos', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'puntos-cercanos' => ['label' => __('Puntos', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                'mis-puntos'      => ['label' => __('Mi Impacto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'guia'            => ['label' => __('Guía', 'flavor-chat-ia'), 'icon' => 'dashicons-info'],
+                // Integraciones
+                'ranking'         => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true],
+                'recompensas'     => ['label' => __('Recompensas', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true],
+                'calendario'      => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true],
             ],
 
             // === COMPOSTAJE ===
             'compostaje' => [
-                'mi-compostador' => ['label' => __('Mi Compostador', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3'],
-                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'mapa'             => ['label' => __('Composteras', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'mis-aportaciones' => ['label' => __('Mis Aportaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3'],
+                'estadisticas'     => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area'],
+                // Integraciones
+                'comunidad'        => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'ranking'          => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true],
+                'guias'            => ['label' => __('Guías', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'is_integration' => true],
             ],
 
             // === BARES / COMERCIOS ===
             'bares' => [
-                'favoritos' => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
-                'cerca' => ['label' => __('Cerca', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'listado' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-store'],
+                'mapa'    => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                // Integraciones
+                'eventos'     => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
+                'opiniones'   => ['label' => __('Opiniones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true],
+                'promociones' => ['label' => __('Promociones', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'is_integration' => true],
             ],
 
             // === CURSOS ===
             'cursos' => [
-                'mis-cursos' => ['label' => __('Mis Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
-                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
-                'progreso' => ['label' => __('Progreso', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                'catalogo'   => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+                'mis-cursos' => ['label' => __('Mis Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                // Integraciones
+                'materiales' => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
+                'multimedia' => ['label' => __('Videos', 'flavor-chat-ia'), 'icon' => 'dashicons-video-alt3', 'is_integration' => true, 'source_module' => 'multimedia'],
+                'foro'       => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
 
             // === TALLERES ===
             'talleres' => [
-                'proximos' => ['label' => __('Próximos', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer'],
+                'proximos'      => ['label' => __('Próximos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
                 'inscripciones' => ['label' => __('Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt'],
-                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'calendario'    => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                // Integraciones
+                'materiales'    => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
+                'multimedia'    => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
+                'foro'          => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
 
             // === COLECTIVOS ===
             'colectivos' => [
-                'mis-colectivos' => ['label' => __('Mis Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                'explorar' => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
-                'actividad' => ['label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
+                'listado'        => ['label' => __('Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'mis-colectivos' => ['label' => __('Mis Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                // Integraciones
+                'proyectos'      => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true],
+                'asambleas'      => ['label' => __('Asambleas', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'multimedia'     => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
+                'eventos'        => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
+                'documentos'     => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
             ],
 
             // === COMUNIDADES ===
             'comunidades' => [
-                'mis-comunidades' => ['label' => __('Mis Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-multisite'],
-                'explorar' => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'directorio' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
+                'mapa'       => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                'tablon'     => ['label' => __('Tablón', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                // Integraciones
+                'foros'      => ['label' => __('Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
+                'eventos'    => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
+                'anuncios'   => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'is_integration' => true, 'source_module' => 'marketplace'],
+                'recursos'   => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
             ],
 
             // === SOCIOS ===
             'socios' => [
-                'mi-membresia' => ['label' => __('Mi Membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id'],
-                'beneficios' => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
-                'directorio' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'mi-membresia' => ['label' => __('Mi Membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
+                'directorio'   => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                // Integraciones
+                'beneficios'   => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true],
+                'eventos'      => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
+                'historial'    => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup', 'is_integration' => true],
             ],
 
             // === FOROS ===
             'foros' => [
-                'discusiones' => ['label' => __('Discusiones', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
-                'mis-posts' => ['label' => __('Mis Posts', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
-                'populares' => ['label' => __('Populares', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'listado'   => ['label' => __('Discusiones', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
+                'categorias'=> ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                'actividad' => ['label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
+                // Integraciones
+                'comunidades' => ['label' => __('Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'source_module' => 'comunidades'],
+                'colectivos'  => ['label' => __('Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'is_integration' => true, 'source_module' => 'colectivos'],
             ],
 
             // === CHAT GRUPOS ===
             'chat-grupos' => [
                 'mis-grupos' => ['label' => __('Mis Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                'mensajes' => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
-                'explorar' => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
+                'explorar'   => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
             ],
 
             // === RED SOCIAL ===
             'red-social' => [
-                'feed' => ['label' => __('Feed', 'flavor-chat-ia'), 'icon' => 'dashicons-rss'],
-                'perfil' => ['label' => __('Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
-                'conexiones' => ['label' => __('Conexiones', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
+                'feed'      => ['label' => __('Feed', 'flavor-chat-ia'), 'icon' => 'dashicons-rss'],
+                'mi-perfil' => ['label' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'explorar'  => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                // Integraciones
+                'amigos'    => ['label' => __('Amigos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'mensajes'  => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
+                'historias' => ['label' => __('Historias', 'flavor-chat-ia'), 'icon' => 'dashicons-format-video', 'is_integration' => true],
             ],
 
             // === PARTICIPACIÓN ===
             'participacion' => [
                 'propuestas' => ['label' => __('Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
-                'mis-propuestas' => ['label' => __('Mis Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
-                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-forms'],
+                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up'],
+                'resultados' => ['label' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                // Integraciones
+                'debates'    => ['label' => __('Debates', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'reuniones'  => ['label' => __('Reuniones', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'source_module' => 'eventos'],
             ],
 
             // === PRESUPUESTOS PARTICIPATIVOS ===
             'presupuestos-participativos' => [
-                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
-                'mis-proyectos' => ['label' => __('Mis Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
-                'resultados' => ['label' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'proyectos'  => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up'],
+                'fases'      => ['label' => __('Fases', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                // Integraciones
+                'seguimiento' => ['label' => __('Seguimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility', 'is_integration' => true],
+                'transparencia' => ['label' => __('Transparencia', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'is_integration' => true, 'source_module' => 'transparencia'],
             ],
 
             // === AVISOS MUNICIPALES ===
             'avisos-municipales' => [
-                'recientes' => ['label' => __('Recientes', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
-                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
-                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
+                'activos'   => ['label' => __('Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'urgentes'  => ['label' => __('Urgentes', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
+                'historial' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
+                // Integraciones
+                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'is_integration' => true],
+                'categorias'    => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category', 'is_integration' => true],
             ],
 
             // === AYUDA VECINAL ===
             'ayuda-vecinal' => [
-                'solicitudes' => ['label' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
-                'mis-solicitudes' => ['label' => __('Mis Solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'solicitudes' => ['label' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'ofrecer'     => ['label' => __('Ofrecer Ayuda', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mapa'        => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                // Integraciones
+                'voluntarios' => ['label' => __('Voluntarios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
             ],
 
             // === TRÁMITES ===
             'tramites' => [
-                'mis-tramites' => ['label' => __('Mis Trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
-                'disponibles' => ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-forms'],
-                'estado' => ['label' => __('Estado', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
+                'catalogo'       => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'mis-expedientes'=> ['label' => __('Mis Expedientes', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                // Integraciones
+                'citas'          => ['label' => __('Citas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true],
+                'documentos'     => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-default', 'is_integration' => true],
             ],
 
             // === TRANSPARENCIA ===
             'transparencia' => [
-                'documentos' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
-                'presupuestos' => ['label' => __('Presupuestos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
-                'actas' => ['label' => __('Actas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-text'],
+                'portal'      => ['label' => __('Portal', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                'presupuesto' => ['label' => __('Presupuesto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                'actas'       => ['label' => __('Actas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                // Integraciones
+                'contratos'   => ['label' => __('Contratos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true],
+                'indicadores' => ['label' => __('Indicadores', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
             ],
 
             // === FICHAJE EMPLEADOS ===
             'fichaje-empleados' => [
-                'fichar' => ['label' => __('Fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
-                'historial' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'resumen' => ['label' => __('Resumen', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'fichar'    => ['label' => __('Fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
+                'historial' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
             ],
 
             // === MULTIMEDIA ===
             'multimedia' => [
-                'galeria' => ['label' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
-                'mis-publicaciones' => ['label' => __('Mis Publicaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-images-alt2'],
-                'albumes' => ['label' => __('Álbumes', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'galeria'    => ['label' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'mi-galeria' => ['label' => __('Mi Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-images-alt2'],
+                'albumes'    => ['label' => __('Álbumes', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                // Integraciones
+                'comunidades' => ['label' => __('Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'source_module' => 'comunidades'],
+                'colectivos'  => ['label' => __('Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'is_integration' => true, 'source_module' => 'colectivos'],
+                'eventos'     => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
             ],
 
             // === PODCAST ===
             'podcast' => [
                 'episodios' => ['label' => __('Episodios', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
-                'favoritos' => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
-                'series' => ['label' => __('Series', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio'],
+                'series'    => ['label' => __('Series', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio'],
+                // Integraciones
+                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'is_integration' => true],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
             ],
 
             // === RADIO ===
             'radio' => [
-                'directo' => ['label' => __('En Directo', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-volumeon'],
+                'en-directo'   => ['label' => __('En Directo', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-volumeon'],
                 'programacion' => ['label' => __('Programación', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'archivo' => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
+                'podcasts'     => ['label' => __('Podcasts', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
+                // Integraciones
+                'archivo'      => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true],
+                'chat'         => ['label' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true],
+                'colaboradores' => ['label' => __('Colaboradores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
             ],
 
             // === FACTURAS ===
             'facturas' => [
-                'mis-facturas' => ['label' => __('Mis Facturas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-spreadsheet'],
-                'pendientes' => ['label' => __('Pendientes', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
-                'resumen' => ['label' => __('Resumen', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'mis-facturas' => ['label' => __('Mis Facturas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'historial'    => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
             ],
 
             // === WOOCOMMERCE ===
             'woocommerce' => [
-                'pedidos' => ['label' => __('Mis Pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
-                'productos' => ['label' => __('Productos', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
-                'wishlist' => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'mis-pedidos' => ['label' => __('Mis Pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
+                'productos'   => ['label' => __('Productos', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
+            ],
+
+            // === TRADING IA ===
+            'trading-ia' => [
+                'dashboard'  => ['label' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                'portfolio'  => ['label' => __('Portfolio', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'historial'  => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
+            ],
+
+            // === ADVERTISING ===
+            'advertising' => [
+                'dashboard' => ['label' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area'],
+                'campanas'  => ['label' => __('Campañas', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'ingresos'  => ['label' => __('Ingresos', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
+            ],
+
+            // === EMAIL MARKETING ===
+            'email-marketing' => [
+                'suscripcion'  => ['label' => __('Suscripción', 'flavor-chat-ia'), 'icon' => 'dashicons-email'],
+                'preferencias' => ['label' => __('Preferencias', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-settings'],
+                'archivo'      => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
+            ],
+
+            // === DEX SOLANA ===
+            'dex-solana' => [
+                'dashboard' => ['label' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                'swap'      => ['label' => __('Swap', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
+                'pools'     => ['label' => __('Pools', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
+            ],
+
+            // === EMPRESARIAL ===
+            'empresarial' => [
+                'directorio' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-building'],
+                'servicios'  => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer'],
+                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+            ],
+
+            // === CLIENTES (CRM) ===
+            'clientes' => [
+                'listado'      => ['label' => __('Clientes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+            ],
+
+            // === HUELLA ECOLÓGICA ===
+            'huella-ecologica' => [
+                'calculadora' => ['label' => __('Calculadora', 'flavor-chat-ia'), 'icon' => 'dashicons-performance'],
+                'mis-registros' => ['label' => __('Mis Registros', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                'logros'      => ['label' => __('Logros', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                // Integraciones
+                'proyectos'   => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true],
+                'comunidad'   => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'is_integration' => true],
+                'retos'       => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-flag', 'is_integration' => true],
+            ],
+
+            // === SABERES ANCESTRALES ===
+            'saberes-ancestrales' => [
+                'catalogo'  => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
+                'compartir' => ['label' => __('Compartir', 'flavor-chat-ia'), 'icon' => 'dashicons-share'],
+                'talleres'  => ['label' => __('Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+                // Integraciones
+                'maestros'  => ['label' => __('Maestros', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman', 'is_integration' => true],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
+                'foro'      => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'recetas'   => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
+            ],
+
+            // === ECONOMÍA DEL DON ===
+            'economia-don' => [
+                'dones'     => ['label' => __('Dones', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'mis-dones' => ['label' => __('Mis Dones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'gratitud'  => ['label' => __('Muro Gratitud', 'flavor-chat-ia'), 'icon' => 'dashicons-format-status'],
+                // Integraciones
+                'mapa'      => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'is_integration' => true],
+                'foro'      => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+            ],
+
+            // === ECONOMÍA DE SUFICIENCIA ===
+            'economia-suficiencia' => [
+                'introduccion' => ['label' => __('Introducción', 'flavor-chat-ia'), 'icon' => 'dashicons-info'],
+                'mi-camino'    => ['label' => __('Mi Camino', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'biblioteca'   => ['label' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
+                // Integraciones
+                'retos'        => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true],
+                'comunidad'    => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'huella'       => ['label' => __('Mi Huella', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area', 'is_integration' => true, 'source_module' => 'huella-ecologica'],
+            ],
+
+            // === TRABAJO DIGNO ===
+            'trabajo-digno' => [
+                'ofertas'    => ['label' => __('Ofertas', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
+                'mi-perfil'  => ['label' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'formacion'  => ['label' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+                // Integraciones
+                'emprendimientos' => ['label' => __('Emprendimientos', 'flavor-chat-ia'), 'icon' => 'dashicons-store', 'is_integration' => true],
+                'alertas'    => ['label' => __('Alertas', 'flavor-chat-ia'), 'icon' => 'dashicons-bell', 'is_integration' => true],
+                'cursos'     => ['label' => __('Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'is_integration' => true, 'source_module' => 'cursos'],
+            ],
+
+            // === CÍRCULOS DE CUIDADOS ===
+            'circulos-cuidados' => [
+                'circulos'     => ['label' => __('Círculos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'mis-cuidados' => ['label' => __('Mis Cuidados', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'necesidades'  => ['label' => __('Necesidades', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
+                // Integraciones
+                'calendario'   => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true],
+                'recursos'     => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
+                'foro'         => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+            ],
+
+            // === JUSTICIA RESTAURATIVA ===
+            'justicia-restaurativa' => [
+                'informacion'  => ['label' => __('Información', 'flavor-chat-ia'), 'icon' => 'dashicons-info'],
+                'mis-procesos' => ['label' => __('Mis Procesos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'mediadores'   => ['label' => __('Mediadores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                // Integraciones
+                'recursos'     => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'is_integration' => true],
+                'formacion'    => ['label' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'is_integration' => true, 'source_module' => 'cursos'],
+            ],
+
+            // === SELLO CONCIENCIA ===
+            'sello-conciencia' => [
+                'mi-badge' => ['label' => __('Mi Badge', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'premisas' => ['label' => __('Premisas', 'flavor-chat-ia'), 'icon' => 'dashicons-editor-ul'],
+            ],
+
+            // === CHAT INTERNO ===
+            'chat-interno' => [
+                'bandeja'  => ['label' => __('Bandeja', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
+                'contactos'=> ['label' => __('Contactos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+            ],
+
+            // === BIODIVERSIDAD LOCAL ===
+            'biodiversidad-local' => [
+                'especies' => ['label' => __('Especies', 'flavor-chat-ia'), 'icon' => 'dashicons-palmtree'],
+                'mapa'     => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                'avistamientos' => ['label' => __('Avistamientos', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                // Integraciones
+                'galeria'   => ['label' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
+                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true],
+                'foro'      => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+            ],
+
+            // === RECETAS ===
+            'recetas' => [
+                'listado'     => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+                'mis-recetas' => ['label' => __('Mis Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-write-blog'],
+                'categorias'  => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                // Integraciones
+                'ingredientes' => ['label' => __('Ingredientes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'is_integration' => true],
+                'temporada'    => ['label' => __('De temporada', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true],
+                'huertos'      => ['label' => __('Huertos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'is_integration' => true, 'source_module' => 'huertos-urbanos'],
+                'grupos-consumo' => ['label' => __('G. Consumo', 'flavor-chat-ia'), 'icon' => 'dashicons-store', 'is_integration' => true, 'source_module' => 'grupos-consumo'],
             ],
         ];
 
-        // Tabs por defecto si no existe configuración específica
+        // Tabs por defecto para módulos sin configuración específica
         $tabs_default = [
-            'listado' => ['label' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-            'actividad' => ['label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
+            'listado'   => ['label' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+            'actividad' => ['label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
         ];
 
         return $tabs_config[$module_id] ?? $tabs_default;
@@ -1629,19 +2150,135 @@ class Flavor_Dynamic_Pages {
     /**
      * Renderiza el contenido de un tab
      *
+     * Soporta múltiples tipos de contenido:
+     * - 'content' como shortcode: '[shortcode_name args]'
+     * - 'content' como template: 'template:nombre-archivo.php'
+     * - 'content' como método: 'nombre_metodo' (del módulo)
+     * - 'content' como callable: function($tab_id, $module) {}
+     * - Sin 'content': usa sistema legacy de switch/case
+     *
      * @param string $tab_id    ID del tab
      * @param array  $tab_info  Información del tab
      * @param object $module    Instancia del módulo
      */
     private function render_tab_content($tab_id, $tab_info, $module) {
-        // Si el módulo tiene método render_tab_{tab_id}(), usarlo
+        // PRIORIDAD 1: Si el tab tiene 'content' definido, usarlo
+        if (!empty($tab_info['content'])) {
+            $this->render_tab_content_dynamic($tab_id, $tab_info, $module);
+            return;
+        }
+
+        // PRIORIDAD 2: Si el módulo tiene método render_tab_{tab_id}(), usarlo
         $method_name = 'render_tab_' . str_replace('-', '_', $tab_id);
         if ($module && method_exists($module, $method_name)) {
             $module->$method_name(get_current_user_id());
             return;
         }
 
-        // Renderizado genérico según el tipo de tab
+        // PRIORIDAD 3: Sistema legacy - renderizado genérico según el tipo de tab
+        $this->render_tab_content_legacy($tab_id, $tab_info, $module);
+    }
+
+    /**
+     * Renderiza contenido dinámico de un tab (nuevo sistema)
+     *
+     * @param string $tab_id    ID del tab
+     * @param array  $tab_info  Información del tab
+     * @param object $module    Instancia del módulo
+     */
+    private function render_tab_content_dynamic($tab_id, $tab_info, $module) {
+        $contenido = $tab_info['content'];
+        $module_id = str_replace('_', '-', $this->current_module);
+
+        // Tipo 1: Shortcode
+        if (is_string($contenido) && strpos($contenido, '[') === 0) {
+            echo do_shortcode($contenido);
+            return;
+        }
+
+        // Tipo 2: Template
+        if (is_string($contenido) && strpos($contenido, 'template:') === 0) {
+            $template_name = str_replace('template:', '', $contenido);
+            $this->render_tab_template($template_name, $tab_id, $module_id, $module);
+            return;
+        }
+
+        // Tipo 3: Callable (closure o función)
+        if (is_callable($contenido)) {
+            call_user_func($contenido, $tab_id, $module, $this);
+            return;
+        }
+
+        // Tipo 4: Nombre de método del módulo
+        if (is_string($contenido) && $module && method_exists($module, $contenido)) {
+            $module->{$contenido}(get_current_user_id());
+            return;
+        }
+
+        // Tipo 5: String directo (HTML)
+        if (is_string($contenido)) {
+            echo wp_kses_post($contenido);
+            return;
+        }
+
+        // Fallback: mensaje vacío
+        echo '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', 'flavor-chat-ia') . '</p>';
+    }
+
+    /**
+     * Carga un template para un tab
+     *
+     * @param string $template_name Nombre del archivo de template
+     * @param string $tab_id       ID del tab
+     * @param string $module_id    ID del módulo
+     * @param object $module       Instancia del módulo
+     */
+    private function render_tab_template($template_name, $tab_id, $module_id, $module) {
+        $module_slug = str_replace('_', '-', $module_id);
+
+        // Buscar template en orden de prioridad (tema > plugin)
+        $paths = [
+            get_stylesheet_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
+            get_template_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
+            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/tabs/{$template_name}",
+            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/tabs/{$template_name}",
+            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/tabs/{$template_name}",
+        ];
+
+        // Variables disponibles en el template
+        $tab_data = [
+            'tab_id'    => $tab_id,
+            'module_id' => $module_id,
+            'module'    => $module,
+            'user_id'   => get_current_user_id(),
+        ];
+
+        foreach ($paths as $path) {
+            if (file_exists($path)) {
+                extract($tab_data);
+                include $path;
+                return;
+            }
+        }
+
+        // Template no encontrado
+        echo '<div class="fmd-error">';
+        echo '<p>' . sprintf(
+            esc_html__('Template "%s" no encontrado para el módulo %s', 'flavor-chat-ia'),
+            esc_html($template_name),
+            esc_html($module_slug)
+        ) . '</p>';
+        echo '</div>';
+    }
+
+    /**
+     * Sistema legacy de renderizado de tabs
+     *
+     * @param string $tab_id    ID del tab
+     * @param array  $tab_info  Información del tab
+     * @param object $module    Instancia del módulo
+     */
+    private function render_tab_content_legacy($tab_id, $tab_info, $module) {
         switch ($tab_id) {
             case 'listado':
             case 'todos':
@@ -1674,6 +2311,7 @@ class Flavor_Dynamic_Pages {
 
             case 'pedidos':
             case 'productos':
+            case 'productores':
             case 'espacios':
             case 'proximos':
             case 'ciclos':
@@ -1753,6 +2391,7 @@ class Flavor_Dynamic_Pages {
 
         // Mapeo de módulo a shortcode de mapa real
         $mapas = [
+            'grupos-consumo'       => '[gc_productores_cercanos]',
             'huertos-urbanos'      => '[mapa_huertos]',
             'parkings'             => '[flavor_mapa_parkings]',
             'incidencias'          => '[incidencias_mapa]',
@@ -1844,7 +2483,7 @@ class Flavor_Dynamic_Pages {
             // Mapeo de tab_id a shortcode específico por módulo
             $shortcodes_por_modulo = [
                 'grupos-consumo' => [
-                    'pedidos'     => '[gc_mi_pedido]',
+                    'pedidos'     => '[gc_historial]',
                     'productos'   => '[gc_productos]',
                     'productores' => '[gc_productores_cercanos]',
                     'ciclos'      => '[gc_ciclo_actual]',
@@ -2006,6 +2645,30 @@ class Flavor_Dynamic_Pages {
         ];
 
         return $colores[$color] ?? $color;
+    }
+
+    /**
+     * Obtiene el valor del badge de un tab
+     *
+     * @param array $tab_info Información del tab
+     * @return int Valor del badge (0 si no hay)
+     */
+    private function get_tab_badge_value($tab_info) {
+        $badge = $tab_info['badge'] ?? null;
+
+        if (is_null($badge)) {
+            return 0;
+        }
+
+        if (is_numeric($badge)) {
+            return intval($badge);
+        }
+
+        if (is_callable($badge)) {
+            return intval(call_user_func($badge));
+        }
+
+        return 0;
     }
 
     /**
@@ -2368,12 +3031,295 @@ class Flavor_Dynamic_Pages {
         $module_normalizado = str_replace('_', '-', $module);
 
         // Acciones que son vistas (listados, mapas, calendarios) - NO formularios
-        $acciones_vista = ['mapa', 'listado', 'calendario', 'catalogo', 'grid', 'lista', 'buscar'];
+        $acciones_vista = ['mapa', 'listado', 'calendario', 'catalogo', 'grid', 'lista', 'buscar', 'productos', 'productores'];
 
         // Acciones que son páginas personalizadas del módulo
         $acciones_personalizadas = [
             'mis-reservas', 'mis-prestamos', 'mis-inscripciones', 'mis-anuncios',
-            'mis-cursos', 'mis-viajes', 'mis-incidencias', 'mis-pedidos', 'historial'
+            'mis-cursos', 'mis-viajes', 'mis-incidencias', 'mis-pedidos', 'historial',
+            'mi-pedido', 'mi-cesta', 'ciclos', 'suscripciones', 'cestas'
+        ];
+
+        // Shortcodes específicos por módulo y acción
+        $shortcodes_especificos = [
+            'grupos-consumo' => [
+                'productos'     => '[gc_productos]',
+                'mi-pedido'     => '[gc_mi_pedido]',
+                'mi-cesta'      => '[gc_mi_cesta]',
+                'mis-pedidos'   => '[gc_historial]',
+                'productores'   => '[gc_productores_cercanos]',
+                'ciclos'        => '[gc_ciclo_actual]',
+                'suscripciones' => '[gc_suscripciones]',
+                'cestas'        => '[gc_suscripciones]',
+                'unirme'        => '[gc_grupos_lista]',
+                'panel'         => '[gc_panel]',
+            ],
+            'banco-tiempo' => [
+                'mi-saldo'        => '[banco_tiempo_mi_saldo]',
+                'mis-intercambios' => '[banco_tiempo_mis_intercambios]',
+                'servicios'       => '[banco_tiempo_servicios]',
+                'mi-reputacion'   => '[banco_tiempo_ranking]',
+                'ofrecer'         => '[banco_tiempo_ofrecer]',
+            ],
+            'eventos' => [
+                'listado'          => '[eventos_listado]',
+                'mis-inscripciones' => '[eventos_mis_inscripciones]',
+                'calendario'       => '[eventos_calendario]',
+            ],
+            'reservas' => [
+                'mis-reservas' => '[reservas_mis_reservas]',
+                'recursos'     => '[reservas_recursos]',
+                'calendario'   => '[reservas_calendario]',
+                'nueva'        => '[reservas_formulario]',
+            ],
+            'espacios-comunes' => [
+                'listado'      => '[espacios_listado]',
+                'mis-reservas' => '[espacios_mis_reservas]',
+                'calendario'   => '[espacios_calendario]',
+                'reservar'     => '[espacios_reservar]',
+            ],
+            'huertos-urbanos' => [
+                'mi-parcela'   => '[mi_parcela]',
+                'calendario'   => '[calendario_cultivos]',
+                'listado'      => '[lista_huertos]',
+                'mapa'         => '[mapa_huertos]',
+                'intercambios' => '[intercambios_huertos]',
+            ],
+            'biblioteca' => [
+                'mis-prestamos' => '[biblioteca_mis_prestamos]',
+                'catalogo'      => '[biblioteca_catalogo]',
+                'mis-libros'    => '[biblioteca_mis_libros]',
+            ],
+            'marketplace' => [
+                'listado'      => '[marketplace_listado]',
+                'mis-anuncios' => '[marketplace_mis_anuncios]',
+                'publicar'     => '[marketplace_formulario]',
+            ],
+            'incidencias' => [
+                'mis-reportes' => '[incidencias_mis_reportes]',
+                'listado'      => '[incidencias_listado]',
+                'mapa'         => '[incidencias_mapa]',
+                'reportar'     => '[incidencias_reportar]',
+            ],
+            'talleres' => [
+                'catalogo'         => '[talleres_catalogo]',
+                'mis-inscripciones' => '[talleres_mis_inscripciones]',
+                'calendario'       => '[talleres_calendario]',
+                'proponer'         => '[talleres_proponer]',
+            ],
+            'cursos' => [
+                'mis-cursos' => '[cursos_mis_inscripciones]',
+                'catalogo'   => '[cursos_catalogo]',
+                'aula'       => '[cursos_aula]',
+            ],
+            'carpooling' => [
+                'mis-viajes'   => '[carpooling_mis_viajes]',
+                'buscar'       => '[carpooling_buscar]',
+                'publicar'     => '[carpooling_publicar]',
+                'mis-reservas' => '[carpooling_mis_reservas]',
+            ],
+            'reciclaje' => [
+                'mis-puntos'      => '[reciclaje_mis_puntos]',
+                'puntos-cercanos' => '[reciclaje_puntos_cercanos]',
+                'ranking'         => '[reciclaje_ranking]',
+                'guia'            => '[reciclaje_guia]',
+                'recompensas'     => '[reciclaje_recompensas]',
+            ],
+            'compostaje' => [
+                'mis-aportaciones' => '[mis_aportaciones]',
+                'estadisticas'     => '[estadisticas_compostaje]',
+                'mapa'             => '[mapa_composteras]',
+                'registrar'        => '[registrar_aportacion]',
+                'ranking'          => '[ranking_compostaje]',
+            ],
+            'bicicletas-compartidas' => [
+                'mis-prestamos' => '[bicicletas-compartidas_mis-prestamos]',
+                'disponibles'   => '[flavor_module_listing module="bicicletas-compartidas"]',
+                'acciones'      => '[flavor_bicicletas_compartidas_acciones]',
+            ],
+            'parkings' => [
+                'disponibilidad' => '[flavor_disponibilidad_parking]',
+                'mis-reservas'   => '[flavor_mis_reservas_parking]',
+                'mapa'           => '[flavor_mapa_parkings]',
+                'ocupacion'      => '[flavor_ocupacion_tiempo_real]',
+                'solicitar'      => '[flavor_solicitar_plaza]',
+            ],
+            'bares' => [
+                'listado' => '[flavor_module_listing module="bares" limit="12"]',
+            ],
+            'colectivos' => [
+                'mis-colectivos' => '[flavor_module_listing module="colectivos" vista="mis"]',
+                'listado'        => '[flavor_module_listing module="colectivos" limit="12"]',
+            ],
+            'comunidades' => [
+                'directorio' => '[flavor_network_directory]',
+                'mapa'       => '[flavor_network_map]',
+                'tablon'     => '[flavor_network_board]',
+            ],
+            'socios' => [
+                'mi-membresia' => '[flavor_module_listing module="socios" vista="mi"]',
+                'directorio'   => '[flavor_module_listing module="socios"]',
+            ],
+            'foros' => [
+                'listado' => '[flavor_module_listing module="foros" limit="10"]',
+            ],
+            'chat-grupos' => [
+                'mis-grupos' => '[flavor_grupos_lista]',
+                'explorar'   => '[flavor_grupos_explorar]',
+                'crear'      => '[flavor_grupos_crear]',
+            ],
+            'chat-interno' => [
+                'bandeja' => '[flavor_chat_inbox]',
+                'nuevo'   => '[flavor_iniciar_chat]',
+            ],
+            'red-social' => [
+                'perfil'    => '[rs_perfil]',
+                'feed'      => '[rs_feed]',
+                'explorar'  => '[rs_explorar]',
+                'historias' => '[rs_historias]',
+            ],
+            'participacion' => [
+                'propuestas'  => '[propuestas_activas]',
+                'votaciones'  => '[votacion_activa]',
+                'crear'       => '[crear_propuesta]',
+                'resultados'  => '[resultados_participacion]',
+            ],
+            'presupuestos-participativos' => [
+                'presupuesto' => '[presupuesto_participativo]',
+                'fases'       => '[fases_participacion]',
+            ],
+            'avisos-municipales' => [
+                'activos'     => '[avisos_activos]',
+                'urgentes'    => '[avisos_urgentes]',
+                'suscribirse' => '[suscribirse_avisos]',
+                'historial'   => '[historial_avisos]',
+            ],
+            'ayuda-vecinal' => [
+                'solicitudes' => '[flavor_module_listing module="ayuda-vecinal"]',
+            ],
+            'tramites' => [
+                'mis-expedientes' => '[mis_expedientes]',
+                'catalogo'        => '[catalogo_tramites]',
+                'iniciar'         => '[iniciar_tramite]',
+            ],
+            'transparencia' => [
+                'portal'      => '[transparencia_portal]',
+                'presupuesto' => '[transparencia_presupuesto_actual]',
+                'gastos'      => '[transparencia_ultimos_gastos]',
+                'actas'       => '[transparencia_actas]',
+                'indicadores' => '[transparencia_indicadores]',
+            ],
+            'fichaje-empleados' => [
+                'panel' => '[flavor_fichaje_empleados_acciones]',
+            ],
+            'multimedia' => [
+                'mi-galeria' => '[flavor_mi_galeria]',
+                'galeria'    => '[flavor_galeria]',
+                'albumes'    => '[flavor_albumes]',
+                'subir'      => '[flavor_subir_multimedia]',
+            ],
+            'podcast' => [
+                'episodios'   => '[podcast_lista_episodios]',
+                'reproductor' => '[podcast_player]',
+                'series'      => '[podcast_series]',
+                'suscribirse' => '[podcast_suscribirse]',
+            ],
+            'radio' => [
+                'directo'      => '[flavor_radio_player]',
+                'programacion' => '[flavor_radio_programacion]',
+                'chat'         => '[flavor_radio_chat]',
+                'dedicatorias' => '[flavor_radio_dedicatorias]',
+            ],
+            'facturas' => [
+                'mis-facturas' => '[flavor_mis_facturas]',
+                'historial'    => '[flavor_historial_pagos]',
+            ],
+            'trading-ia' => [
+                'dashboard'  => '[trading_ia_dashboard]',
+                'portfolio'  => '[trading_ia_portfolio]',
+                'mercado'    => '[trading_ia_mercado]',
+                'historial'  => '[trading_ia_historial]',
+            ],
+            'advertising' => [
+                'dashboard' => '[flavor_ads_dashboard]',
+                'crear'     => '[flavor_ads_crear]',
+                'ingresos'  => '[flavor_ads_ingresos]',
+            ],
+            'email-marketing' => [
+                'suscripcion'  => '[flavor_suscripcion_newsletter]',
+                'preferencias' => '[flavor_preferencias_email]',
+                'archivo'      => '[flavor_archivo_newsletters]',
+            ],
+            'woocommerce' => [
+                'mis-pedidos' => '[woocommerce_my_account]',
+                'productos'   => '[products limit="12" columns="4"]',
+            ],
+            'dex-solana' => [
+                'dashboard'  => '[flavor_module_listing module="dex-solana" vista="dashboard"]',
+                'portfolio'  => '[flavor_module_listing module="dex-solana" vista="portfolio"]',
+                'pools'      => '[flavor_module_listing module="dex-solana" vista="pools"]',
+                'swap'       => '[flavor_module_listing module="dex-solana" vista="swap"]',
+                'historial'  => '[flavor_module_listing module="dex-solana" vista="historial"]',
+            ],
+            'empresarial' => [
+                'directorio'  => '[flavor_module_listing module="empresarial" limit="12"]',
+                'servicios'   => '[flavor_module_listing module="empresarial" vista="servicios"]',
+                'categorias'  => '[flavor_module_listing module="empresarial" vista="categorias"]',
+                'buscar'      => '[flavor_module_listing module="empresarial" vista="buscar"]',
+            ],
+            'clientes' => [
+                'listado'      => '[flavor_module_listing module="clientes" limit="12"]',
+                'fichas'       => '[flavor_module_listing module="clientes" vista="fichas"]',
+                'estadisticas' => '[flavor_module_listing module="clientes" vista="estadisticas"]',
+                'nuevo'        => '[flavor_module_form module="clientes" action="crear"]',
+            ],
+            'huella-ecologica' => [
+                'calculadora'   => '[flavor_huella_calculadora]',
+                'mis-registros' => '[flavor_huella_mis_registros]',
+                'logros'        => '[flavor_huella_logros]',
+                'comunidad'     => '[flavor_huella_comunidad]',
+                'proyectos'     => '[flavor_huella_proyectos]',
+            ],
+            'saberes-ancestrales' => [
+                'catalogo'  => '[flavor_saberes_catalogo]',
+                'compartir' => '[flavor_saberes_compartir]',
+                'talleres'  => '[flavor_saberes_talleres]',
+            ],
+            'economia-don' => [
+                'listado'   => '[flavor_don_listado]',
+                'mis-dones' => '[flavor_don_mis_dones]',
+                'muro'      => '[flavor_don_muro_gratitud]',
+                'ofrecer'   => '[flavor_don_ofrecer]',
+            ],
+            'economia-suficiencia' => [
+                'intro'       => '[flavor_suficiencia_intro]',
+                'mi-camino'   => '[flavor_suficiencia_mi_camino]',
+                'evaluacion'  => '[flavor_suficiencia_evaluacion]',
+                'compromisos' => '[flavor_suficiencia_compromisos]',
+                'biblioteca'  => '[flavor_suficiencia_biblioteca]',
+            ],
+            'trabajo-digno' => [
+                'ofertas'        => '[flavor_trabajo_ofertas]',
+                'mi-perfil'      => '[flavor_trabajo_mi_perfil]',
+                'formacion'      => '[flavor_trabajo_formacion]',
+                'emprendimientos' => '[flavor_trabajo_emprendimientos]',
+                'publicar'       => '[flavor_trabajo_publicar]',
+            ],
+            'circulos-cuidados' => [
+                'listado'      => '[flavor_circulos_listado]',
+                'mis-cuidados' => '[flavor_circulos_mis_cuidados]',
+                'necesidades'  => '[flavor_circulos_necesidades]',
+            ],
+            'justicia-restaurativa' => [
+                'info'         => '[flavor_justicia_info]',
+                'mis-procesos' => '[flavor_justicia_mis_procesos]',
+                'mediadores'   => '[flavor_justicia_mediadores]',
+                'solicitar'    => '[flavor_justicia_solicitar]',
+            ],
+            'sello-conciencia' => [
+                'badge'    => '[flavor_sello_badge]',
+                'premisas' => '[flavor_sello_premisas]',
+            ],
         ];
 
         ?>
@@ -2383,7 +3329,10 @@ class Flavor_Dynamic_Pages {
 
         <div class="fmd-action-body">
             <?php
-            if (in_array($action, $acciones_vista)) {
+            // Primero verificar si hay un shortcode específico para este módulo y acción
+            if (isset($shortcodes_especificos[$module_normalizado][$action])) {
+                echo do_shortcode($shortcodes_especificos[$module_normalizado][$action]);
+            } elseif (in_array($action, $acciones_vista)) {
                 // Usar shortcode de listado/vista
                 $shortcode = sprintf('[flavor_module_listing module="%s" vista="%s"]', esc_attr($module_normalizado), esc_attr($action));
                 echo do_shortcode($shortcode);
@@ -2415,34 +3364,51 @@ class Flavor_Dynamic_Pages {
     private function render_module_dashboard_scripts() {
         ?>
         <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tabs functionality
-            const tabs = document.querySelectorAll('.fmd-tab');
-            const panels = document.querySelectorAll('.fmd-tab-panel');
+        (function() {
+            function initTabs() {
+                // Tabs functionality
+                const tabs = document.querySelectorAll('.fmd-tab');
+                const panels = document.querySelectorAll('.fmd-tab-panel');
 
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const targetPanel = this.dataset.tab;
+                if (tabs.length === 0) {
+                    return;
+                }
 
-                    // Remove active from all
-                    tabs.forEach(t => t.classList.remove('active'));
-                    panels.forEach(p => p.classList.remove('active'));
+                tabs.forEach(function(tab) {
+                    tab.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetPanel = this.getAttribute('data-tab');
 
-                    // Add active to clicked
-                    this.classList.add('active');
-                    document.querySelector(`[data-panel="${targetPanel}"]`).classList.add('active');
+                        // Remove active from all
+                        tabs.forEach(function(t) { t.classList.remove('active'); });
+                        panels.forEach(function(p) { p.classList.remove('active'); });
+
+                        // Add active to clicked
+                        this.classList.add('active');
+                        const panel = document.querySelector('[data-panel="' + targetPanel + '"]');
+                        if (panel) {
+                            panel.classList.add('active');
+                        }
+                    });
                 });
-            });
 
-            // Search functionality
-            const searchInput = document.querySelector('.fmd-search');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    // Implementar búsqueda en tiempo real
-                    console.log('Buscando:', this.value);
-                });
+                // Search functionality
+                const searchInput = document.querySelector('.fmd-search');
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        // Implementar búsqueda en tiempo real
+                        console.log('Buscando:', this.value);
+                    });
+                }
             }
-        });
+
+            // Inicializar cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initTabs);
+            } else {
+                initTabs();
+            }
+        })();
         </script>
         <?php
     }
@@ -2923,6 +3889,13 @@ class Flavor_Dynamic_Pages {
         $modules = $loader->get_loaded_modules();
         $result = [];
 
+        // Mi Red Social: interfaz unificada de módulos sociales (destacado al inicio)
+        $result['mi-red'] = [
+            'name' => __('Mi Red', 'flavor-chat-ia'),
+            'description' => __('Tu red social unificada', 'flavor-chat-ia'),
+            'icon' => 'dashicons-share-alt',
+        ];
+
         foreach ($modules as $id => $instance) {
             $result[$id] = [
                 'name' => $instance->name ?? ucfirst(str_replace(['-', '_'], ' ', $id)),
@@ -2983,29 +3956,415 @@ class Flavor_Dynamic_Pages {
      */
     private function get_module_actions($module_id) {
         $acciones_por_modulo = [
+            // ═══════════════════════════════════════════════════════════════
+            // Eventos y Actividades (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
             'eventos' => [
-                'crear' => ['label' => __('Crear evento', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
                 'mis-eventos' => ['label' => __('Mis eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'asistencias' => ['label' => __('Asistencias', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                // Integraciones
+                'multimedia' => ['label' => __('Fotos', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'comentarios' => ['label' => __('Comentarios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
             ],
+            'talleres' => [
+                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-talleres' => ['label' => __('Mis talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+                'inscripciones' => ['label' => __('Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                // Integraciones
+                'materiales' => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+            ],
+            'cursos' => [
+                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-cursos' => ['label' => __('Mis cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
+                'progreso' => ['label' => __('Mi progreso', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                'certificados' => ['label' => __('Certificados', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                // Integraciones
+                'lecciones' => ['label' => __('Lecciones', 'flavor-chat-ia'), 'icon' => 'dashicons-video-alt3'],
+                'materiales' => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Reservas y Espacios (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
             'reservas' => [
-                'nueva' => ['label' => __('Nueva reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'nueva' => ['label' => __('Nueva', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
                 'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-building'],
             ],
+            'espacios-comunes' => [
+                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'espacios' => ['label' => __('Espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-building'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'normas' => ['label' => __('Normas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+            ],
+            'huertos-urbanos' => [
+                'mi-parcela' => ['label' => __('Mi parcela', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+                'solicitar' => ['label' => __('Solicitar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'banco-semillas' => ['label' => __('Banco semillas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'recetas' => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Movilidad (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'bicicletas-compartidas' => [
+                'alquilar' => ['label' => __('Alquilar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-alquileres' => ['label' => __('Mis alquileres', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'estaciones' => ['label' => __('Estaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'incidencias' => ['label' => __('Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+            ],
+            'carpooling' => [
+                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                'mis-viajes' => ['label' => __('Mis viajes', 'flavor-chat-ia'), 'icon' => 'dashicons-car'],
+                'rutas-frecuentes' => ['label' => __('Rutas frecuentes', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
+                'valoraciones' => ['label' => __('Valoraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
+                'mensajes' => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
+            ],
+            'parkings' => [
+                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'disponibilidad' => ['label' => __('Disponibilidad', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                'tarifas' => ['label' => __('Tarifas', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Comunidad y Social (con integraciones de otros módulos)
+            // ═══════════════════════════════════════════════════════════════
+            'comunidades' => [
+                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-comunidades' => ['label' => __('Mis comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'explorar' => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                // Integraciones con otros módulos
+                'foros' => ['label' => __('Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'eventos' => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'anuncios' => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+            ],
+            'colectivos' => [
+                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-colectivos' => ['label' => __('Mis colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
+                // Integraciones con otros módulos
+                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'asambleas' => ['label' => __('Asambleas', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'eventos' => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'documentos' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+            ],
+            'foros' => [
+                'nuevo-tema' => ['label' => __('Nuevo tema', 'flavor-chat-ia'), 'icon' => 'dashicons-edit'],
+                'mis-temas' => ['label' => __('Mis temas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+            ],
+            'red-social' => [
+                'feed' => ['label' => __('Feed', 'flavor-chat-ia'), 'icon' => 'dashicons-rss'],
+                'mi-perfil' => ['label' => __('Mi perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'amigos' => ['label' => __('Amigos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'mensajes' => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
+                'notificaciones' => ['label' => __('Notificaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Incidencias y Participación (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
             'incidencias' => [
                 'reportar' => ['label' => __('Reportar', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
                 'mis-reportes' => ['label' => __('Mis reportes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-            ],
-            'marketplace' => [
-                'publicar' => ['label' => __('Publicar anuncio', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-anuncios' => ['label' => __('Mis anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
-            ],
-            'biblioteca' => [
-                'solicitar' => ['label' => __('Solicitar préstamo', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
-                'mis-prestamos' => ['label' => __('Mis préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
             ],
             'participacion' => [
-                'proponer' => ['label' => __('Nueva propuesta', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
+                'proponer' => ['label' => __('Proponer', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
                 'mis-propuestas' => ['label' => __('Mis propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-yes'],
+                'debates' => ['label' => __('Debates', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'resultados' => ['label' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+            ],
+            'presupuestos-participativos' => [
+                'proponer' => ['label' => __('Proponer', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
+                'mis-propuestas' => ['label' => __('Mis propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'votacion' => ['label' => __('Votación', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'seguimiento' => ['label' => __('Seguimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                'historico' => ['label' => __('Histórico', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Comercio y Economía (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'marketplace' => [
+                'publicar' => ['label' => __('Publicar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-anuncios' => ['label' => __('Mis anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
+                'favoritos' => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'mensajes' => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
+                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+            ],
+            'grupos-consumo' => [
+                'productos' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
+                'mi-cesta' => ['label' => __('Mi cesta', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
+                'mi-pedido' => ['label' => __('Mi pedido', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
+                'mis-pedidos' => ['label' => __('Mis pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'suscripciones' => ['label' => __('Cestas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
+                'unirme' => ['label' => __('Unirme', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                // Integraciones
+                'productores' => ['label' => __('Productores', 'flavor-chat-ia'), 'icon' => 'dashicons-businessperson'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'recetas' => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+            ],
+            'banco-tiempo' => [
+                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                'mis-servicios' => ['label' => __('Mis servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
+                'mi-balance' => ['label' => __('Mi balance', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'intercambios' => ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
+                'ranking' => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+            ],
+            'economia-don' => [
+                'ofrecer' => ['label' => __('Ofrecer don', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                'mis-dones' => ['label' => __('Mis dones', 'flavor-chat-ia'), 'icon' => 'dashicons-gift'],
+                'recibidos' => ['label' => __('Recibidos', 'flavor-chat-ia'), 'icon' => 'dashicons-download'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+            ],
+            'economia-suficiencia' => [
+                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
+                'mi-huella' => ['label' => __('Mi huella', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area'],
+                'comunidad' => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'retos' => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'biblioteca' => ['label' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Biblioteca y Multimedia (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'biblioteca' => [
+                'solicitar' => ['label' => __('Solicitar', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
+                'mis-prestamos' => ['label' => __('Mis préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                'reservas' => ['label' => __('Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'novedades' => ['label' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
+                'resenas' => ['label' => __('Reseñas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+            ],
+            'multimedia' => [
+                'subir' => ['label' => __('Subir', 'flavor-chat-ia'), 'icon' => 'dashicons-upload'],
+                'mis-archivos' => ['label' => __('Mis archivos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-archive'],
+                'galeria' => ['label' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'videos' => ['label' => __('Videos', 'flavor-chat-ia'), 'icon' => 'dashicons-video-alt3'],
+                'albumes' => ['label' => __('Álbumes', 'flavor-chat-ia'), 'icon' => 'dashicons-images-alt2'],
+            ],
+            'podcast' => [
+                'subir' => ['label' => __('Subir', 'flavor-chat-ia'), 'icon' => 'dashicons-upload'],
+                'mis-podcasts' => ['label' => __('Mis podcasts', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
+                'episodios' => ['label' => __('Episodios', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio'],
+                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-rss'],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+            ],
+            'radio' => [
+                'programacion' => ['label' => __('Programación', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'en-vivo' => ['label' => __('En vivo', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-volumeon'],
+                'programas' => ['label' => __('Programas', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio'],
+                'archivo' => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-media-archive'],
+                'colaborar' => ['label' => __('Colaborar', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+            ],
+            'recetas' => [
+                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-recetas' => ['label' => __('Mis recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+                'favoritas' => ['label' => __('Favoritas', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                'ingredientes' => ['label' => __('Ingredientes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'temporada' => ['label' => __('De temporada', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Ayuda y Cuidados (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'ayuda-vecinal' => [
+                'solicitar' => ['label' => __('Solicitar', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
+                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'mis-solicitudes' => ['label' => __('Mis solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'voluntarios' => ['label' => __('Voluntarios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+            ],
+            'circulos-cuidados' => [
+                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-circulos' => ['label' => __('Mis círculos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'necesidades' => ['label' => __('Necesidades', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+            ],
+            'justicia-restaurativa' => [
+                'iniciar' => ['label' => __('Iniciar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-procesos' => ['label' => __('Mis procesos', 'flavor-chat-ia'), 'icon' => 'dashicons-shield'],
+                'mediadores' => ['label' => __('Mediadores', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
+                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
+                'formacion' => ['label' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Ecología (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'compostaje' => [
+                'registrar' => ['label' => __('Registrar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-aportes' => ['label' => __('Mis aportes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'composteras' => ['label' => __('Composteras', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area'],
+                'comunidad' => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'guias' => ['label' => __('Guías', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
+            ],
+            'reciclaje' => [
+                'registrar' => ['label' => __('Registrar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-registros' => ['label' => __('Mis registros', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'puntos' => ['label' => __('Puntos limpios', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                'ranking' => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'guias' => ['label' => __('Guías', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
+            ],
+            'huella-ecologica' => [
+                'calculadora' => ['label' => __('Calculadora', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'mi-huella' => ['label' => __('Mi huella', 'flavor-chat-ia'), 'icon' => 'dashicons-palmtree'],
+                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'retos' => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'comunidad' => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
+                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
+            ],
+            'biodiversidad-local' => [
+                'registrar' => ['label' => __('Registrar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-avistamientos' => ['label' => __('Mis avistamientos', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'galeria' => ['label' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Cultura y Saberes (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'saberes-ancestrales' => [
+                'aportar' => ['label' => __('Aportar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'talleres' => ['label' => __('Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
+                'maestros' => ['label' => __('Maestros', 'flavor-chat-ia'), 'icon' => 'dashicons-businessperson'],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'recetas' => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Trámites y Administración (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'tramites' => [
+                'nuevo' => ['label' => __('Nuevo', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-tramites' => ['label' => __('Mis trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
+                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'citas' => ['label' => __('Citas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'documentos' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+            ],
+            'avisos-municipales' => [
+                'recientes' => ['label' => __('Recientes', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
+                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-email'],
+                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                'archivo' => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
+            ],
+            'transparencia' => [
+                'documentos' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'presupuestos' => ['label' => __('Presupuestos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                'contratos' => ['label' => __('Contratos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'indicadores' => ['label' => __('Indicadores', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'solicitar' => ['label' => __('Solicitar info', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+            ],
+            'seguimiento-denuncias' => [
+                'nueva' => ['label' => __('Nueva', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
+                'mis-denuncias' => ['label' => __('Mis denuncias', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'anonimas' => ['label' => __('Anónimas', 'flavor-chat-ia'), 'icon' => 'dashicons-hidden'],
+                'seguimiento' => ['label' => __('Seguimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+            ],
+            'documentacion-legal' => [
+                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                'mis-guardados' => ['label' => __('Guardados', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                'modelos' => ['label' => __('Modelos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'leyes' => ['label' => __('Leyes', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Campañas y Mapeo (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'campanias' => [
+                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'mis-campanias' => ['label' => __('Mis campañas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'participando' => ['label' => __('Participando', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'acciones' => ['label' => __('Acciones', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
+                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+            ],
+            'mapa-actores' => [
+                'registrar' => ['label' => __('Registrar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'red' => ['label' => __('Red', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
+                'directorio' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                'colaboraciones' => ['label' => __('Colaboraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Empleo y Trabajo (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'trabajo-digno' => [
+                'ofertas' => ['label' => __('Ofertas', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
+                'publicar' => ['label' => __('Publicar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-aplicaciones' => ['label' => __('Aplicaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'mi-cv' => ['label' => __('Mi CV', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'formacion' => ['label' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+                'alertas' => ['label' => __('Alertas', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
+            ],
+            'fichaje-empleados' => [
+                'fichar' => ['label' => __('Fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
+                'mis-fichajes' => ['label' => __('Mis fichajes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'informes' => ['label' => __('Informes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'vacaciones' => ['label' => __('Vacaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-palmtree'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Socios y Membresías (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'socios' => [
+                'mi-membresia' => ['label' => __('Mi membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id'],
+                'pagar-cuota' => ['label' => __('Pagar cuota', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
+                'beneficios' => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'carnet' => ['label' => __('Carnet', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
+                'historial' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
+                'directorio' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+            ],
+
+            // ═══════════════════════════════════════════════════════════════
+            // Servicios Locales (con integraciones)
+            // ═══════════════════════════════════════════════════════════════
+            'bares' => [
+                'carta' => ['label' => __('Carta', 'flavor-chat-ia'), 'icon' => 'dashicons-food'],
+                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'eventos' => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'opiniones' => ['label' => __('Opiniones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
+                'promociones' => ['label' => __('Promociones', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
             ],
         ];
 
@@ -3018,30 +4377,68 @@ class Flavor_Dynamic_Pages {
      */
     private function get_module_icon($module_id) {
         $iconos = [
+            // Eventos y Actividades
             'eventos' => 'dashicons-calendar-alt',
             'talleres' => 'dashicons-welcome-learn-more',
             'cursos' => 'dashicons-book-alt',
+            // Reservas y Espacios
             'reservas' => 'dashicons-calendar',
-            'incidencias' => 'dashicons-warning',
-            'marketplace' => 'dashicons-cart',
-            'biblioteca' => 'dashicons-book',
-            'podcast' => 'dashicons-microphone',
-            'radio' => 'dashicons-format-audio',
-            'comunidades' => 'dashicons-groups',
+            'espacios-comunes' => 'dashicons-building',
             'huertos-urbanos' => 'dashicons-carrot',
+            // Movilidad
             'bicicletas-compartidas' => 'dashicons-dashboard',
             'carpooling' => 'dashicons-car',
             'parkings' => 'dashicons-location-alt',
-            'banco-tiempo' => 'dashicons-clock',
-            'grupos-consumo' => 'dashicons-store',
-            'espacios-comunes' => 'dashicons-building',
+            // Comunidad y Social
+            'comunidades' => 'dashicons-groups',
+            'colectivos' => 'dashicons-networking',
+            'foros' => 'dashicons-admin-comments',
+            'red-social' => 'dashicons-share',
+            // Incidencias y Participación
+            'incidencias' => 'dashicons-warning',
             'participacion' => 'dashicons-megaphone',
-            'presupuestos' => 'dashicons-chart-pie',
+            'presupuestos-participativos' => 'dashicons-chart-pie',
+            // Comercio y Economía
+            'marketplace' => 'dashicons-cart',
+            'grupos-consumo' => 'dashicons-store',
+            'banco-tiempo' => 'dashicons-clock',
+            'economia-don' => 'dashicons-heart',
+            'economia-suficiencia' => 'dashicons-chart-area',
+            // Biblioteca y Multimedia
+            'biblioteca' => 'dashicons-book',
+            'multimedia' => 'dashicons-format-gallery',
+            'podcast' => 'dashicons-microphone',
+            'radio' => 'dashicons-format-audio',
+            'recetas' => 'dashicons-carrot',
+            // Ayuda y Cuidados
+            'ayuda-vecinal' => 'dashicons-sos',
+            'circulos-cuidados' => 'dashicons-heart',
+            'justicia-restaurativa' => 'dashicons-shield',
+            // Ecología
+            'compostaje' => 'dashicons-carrot',
+            'reciclaje' => 'dashicons-update',
+            'huella-ecologica' => 'dashicons-palmtree',
+            'biodiversidad-local' => 'dashicons-carrot',
+            // Cultura y Saberes
+            'saberes-ancestrales' => 'dashicons-book-alt',
+            // Trámites y Administración
             'tramites' => 'dashicons-clipboard',
             'avisos-municipales' => 'dashicons-bell',
             'transparencia' => 'dashicons-visibility',
-            'reciclaje' => 'dashicons-update',
-            'compostaje' => 'dashicons-carrot',
+            'seguimiento-denuncias' => 'dashicons-flag',
+            'documentacion-legal' => 'dashicons-media-document',
+            // Campañas y Mapeo
+            'campanias' => 'dashicons-megaphone',
+            'mapa-actores' => 'dashicons-location-alt',
+            // Empleo y Trabajo
+            'trabajo-digno' => 'dashicons-businessman',
+            'fichaje-empleados' => 'dashicons-clock',
+            // Socios y Membresías
+            'socios' => 'dashicons-id',
+            // Servicios Locales
+            'bares' => 'dashicons-food',
+            // Sistema
+            'sello-conciencia' => 'dashicons-heart',
         ];
 
         $id_normalizado = str_replace('_', '-', $module_id);
@@ -3053,26 +4450,68 @@ class Flavor_Dynamic_Pages {
      */
     private function get_module_color($module_id) {
         $colores = [
+            // Eventos y Actividades
             'eventos' => '#4f46e5',
             'talleres' => '#7c3aed',
             'cursos' => '#2563eb',
+            // Reservas y Espacios
             'reservas' => '#0891b2',
-            'incidencias' => '#dc2626',
-            'marketplace' => '#ea580c',
-            'biblioteca' => '#65a30d',
-            'podcast' => '#db2777',
-            'radio' => '#e11d48',
-            'comunidades' => '#0d9488',
+            'espacios-comunes' => '#6366f1',
             'huertos-urbanos' => '#16a34a',
+            // Movilidad
             'bicicletas-compartidas' => '#0284c7',
             'carpooling' => '#7c3aed',
             'parkings' => '#64748b',
-            'banco-tiempo' => '#f59e0b',
-            'grupos-consumo' => '#22c55e',
-            'espacios-comunes' => '#6366f1',
+            // Comunidad y Social
+            'comunidades' => '#0d9488',
+            'colectivos' => '#059669',
+            'foros' => '#0891b2',
+            'red-social' => '#8b5cf6',
+            // Incidencias y Participación
+            'incidencias' => '#dc2626',
             'participacion' => '#8b5cf6',
-            'presupuestos' => '#06b6d4',
+            'presupuestos-participativos' => '#06b6d4',
+            // Comercio y Economía
+            'marketplace' => '#ea580c',
+            'grupos-consumo' => '#22c55e',
+            'banco-tiempo' => '#f59e0b',
+            'economia-don' => '#ec4899',
+            'economia-suficiencia' => '#10b981',
+            // Biblioteca y Multimedia
+            'biblioteca' => '#65a30d',
+            'multimedia' => '#a855f7',
+            'podcast' => '#db2777',
+            'radio' => '#e11d48',
+            'recetas' => '#f97316',
+            // Ayuda y Cuidados
+            'ayuda-vecinal' => '#ef4444',
+            'circulos-cuidados' => '#f43f5e',
+            'justicia-restaurativa' => '#8b5cf6',
+            // Ecología
+            'compostaje' => '#84cc16',
+            'reciclaje' => '#22c55e',
+            'huella-ecologica' => '#10b981',
+            'biodiversidad-local' => '#14b8a6',
+            // Cultura y Saberes
+            'saberes-ancestrales' => '#a16207',
+            // Trámites y Administración
             'tramites' => '#3b82f6',
+            'avisos-municipales' => '#f59e0b',
+            'transparencia' => '#0ea5e9',
+            'seguimiento-denuncias' => '#dc2626',
+            'documentacion-legal' => '#6366f1',
+            // Campañas y Mapeo
+            'campanias' => '#f97316',
+            'mapa-actores' => '#14b8a6',
+            // Empleo y Trabajo
+            'trabajo-digno' => '#0284c7',
+            'fichaje-empleados' => '#64748b',
+            // Socios y Membresías
+            'socios' => '#7c3aed',
+            // Servicios Locales
+            'bares' => '#ca8a04',
+            // Sistema
+            'sello-conciencia' => '#9333ea',
         ];
 
         $id_normalizado = str_replace('_', '-', $module_id);
@@ -3302,6 +4741,7 @@ class Flavor_Dynamic_Pages {
         .fas-nav-item:hover {
             background: var(--fap-bg);
             color: var(--fap-text);
+            text-decoration: underline;
         }
 
         .fas-nav-item.active {
@@ -4049,6 +5489,63 @@ class Flavor_Dynamic_Pages {
 
         .fmd-tab-panel.active {
             display: block;
+        }
+
+        /* Tab Separator - Network Modules */
+        .fmd-tabs-separator {
+            display: flex;
+            align-items: center;
+            margin: 0 8px;
+            padding: 12px 0;
+        }
+
+        .fmd-tabs-separator::before {
+            content: "";
+            width: 1px;
+            height: 24px;
+            background: var(--fap-border);
+        }
+
+        /* Integration Tabs */
+        .fmd-tab--integration {
+            opacity: 0.85;
+        }
+
+        .fmd-tab--integration:hover {
+            opacity: 1;
+        }
+
+        .fmd-tab--integration.active {
+            opacity: 1;
+        }
+
+        /* Tab Badge */
+        .fmd-tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1;
+            color: #fff;
+            background: var(--module-color, #3b82f6);
+            border-radius: 9px;
+            margin-left: 4px;
+        }
+
+        .fmd-tab.active .fmd-tab-badge {
+            background: var(--module-color, #3b82f6);
+        }
+
+        .fmd-tab--integration .fmd-tab-badge {
+            background: var(--fap-text-muted);
+        }
+
+        .fmd-tab--integration.active .fmd-tab-badge {
+            background: var(--module-color, #3b82f6);
         }
 
         .fmd-panel-header {

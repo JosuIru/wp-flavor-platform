@@ -19,11 +19,16 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Integration_Consumer;
 
     /**
      * Constructor
      */
     public function __construct() {
+        // Auto-registered AJAX handlers
+        add_action('wp_ajax_colectivos_obtener_colectivo', [$this, 'ajax_obtener_colectivo']);
+        add_action('wp_ajax_nopriv_colectivos_obtener_colectivo', [$this, 'ajax_obtener_colectivo']);
+
         $this->id = 'colectivos';
         $this->name = 'Colectivos y Asociaciones'; // Translation loaded on init
         $this->description = 'Gestión de colectivos, asociaciones y cooperativas con proyectos, asambleas y miembros'; // Translation loaded on init
@@ -84,15 +89,45 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Define que tipos de contenido acepta este modulo
+     *
+     * @return array IDs de providers aceptados
+     */
+    protected function get_accepted_integrations() {
+        return ['multimedia', 'articulos_social', 'eventos', 'podcast'];
+    }
+
+    /**
+     * Define donde se muestran los metaboxes de integracion
+     *
+     * @return array Configuracion de targets
+     */
+    protected function get_integration_targets() {
+        global $wpdb;
+        return [
+            [
+                'type'    => 'table',
+                'table'   => $wpdb->prefix . 'flavor_colectivos',
+                'context' => 'normal',
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
+        $this->register_as_integration_consumer();
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         $this->register_ajax_handlers();
+
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         $this->registrar_en_panel_unificado();
     }
 
@@ -110,6 +145,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         add_shortcode('colectivos_mis_colectivos', [$this, 'shortcode_mis_colectivos']);
         add_shortcode('colectivos_proyectos', [$this, 'shortcode_proyectos']);
         add_shortcode('colectivos_asambleas', [$this, 'shortcode_asambleas']);
+        add_shortcode('colectivos_mi_actividad', [$this, 'shortcode_mi_actividad']);
     }
 
     /**
@@ -276,6 +312,132 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
         ob_start();
         include dirname(__FILE__) . '/views/asambleas.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mi actividad en colectivos
+     * Muestra resumen de actividad reciente del usuario en sus colectivos
+     */
+    public function shortcode_mi_actividad($atributos) {
+        $atributos = shortcode_atts([
+            'limite' => 5,
+        ], $atributos, 'colectivos_mi_actividad');
+
+        $identificador_usuario = get_current_user_id();
+
+        if (!$identificador_usuario) {
+            return '<p class="flavor-col-login-required">' .
+                esc_html__('Inicia sesión para ver tu actividad.', 'flavor-chat-ia') . '</p>';
+        }
+
+        global $wpdb;
+        $tabla_miembros = $wpdb->prefix . 'flavor_colectivos_miembros';
+        $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
+        $tabla_proyectos = $wpdb->prefix . 'flavor_colectivos_proyectos';
+        $tabla_asambleas = $wpdb->prefix . 'flavor_colectivos_asambleas';
+
+        // Obtener colectivos del usuario
+        $mis_colectivos = $wpdb->get_results($wpdb->prepare(
+            "SELECT c.id, c.nombre, c.tipo, m.rol, m.fecha_alta
+             FROM $tabla_miembros m
+             JOIN $tabla_colectivos c ON m.colectivo_id = c.id
+             WHERE m.usuario_id = %d AND m.estado = 'activo'
+             ORDER BY m.fecha_alta DESC
+             LIMIT 5",
+            $identificador_usuario
+        ));
+
+        // Obtener próximas asambleas de mis colectivos
+        $colectivo_ids = wp_list_pluck($mis_colectivos, 'id');
+        $proximas_asambleas = [];
+        if (!empty($colectivo_ids)) {
+            $placeholders = implode(',', array_fill(0, count($colectivo_ids), '%d'));
+            $proximas_asambleas = $wpdb->get_results($wpdb->prepare(
+                "SELECT a.*, c.nombre as colectivo_nombre
+                 FROM $tabla_asambleas a
+                 JOIN $tabla_colectivos c ON a.colectivo_id = c.id
+                 WHERE a.colectivo_id IN ($placeholders)
+                 AND a.fecha >= CURDATE()
+                 AND a.estado = 'convocada'
+                 ORDER BY a.fecha ASC
+                 LIMIT 3",
+                ...$colectivo_ids
+            ));
+        }
+
+        // Obtener proyectos activos
+        $proyectos_activos = [];
+        if (!empty($colectivo_ids)) {
+            $placeholders = implode(',', array_fill(0, count($colectivo_ids), '%d'));
+            $proyectos_activos = $wpdb->get_results($wpdb->prepare(
+                "SELECT p.*, c.nombre as colectivo_nombre
+                 FROM $tabla_proyectos p
+                 JOIN $tabla_colectivos c ON p.colectivo_id = c.id
+                 WHERE p.colectivo_id IN ($placeholders)
+                 AND p.estado = 'en_curso'
+                 ORDER BY p.fecha_actualizacion DESC
+                 LIMIT 3",
+                ...$colectivo_ids
+            ));
+        }
+
+        $roles_etiquetas = $this->get_default_settings()['roles_miembro'];
+
+        ob_start();
+        ?>
+        <div class="flavor-colectivos-mi-actividad">
+            <?php if (empty($mis_colectivos)) : ?>
+                <p class="flavor-col-empty"><?php esc_html_e('No perteneces a ningún colectivo todavía.', 'flavor-chat-ia'); ?></p>
+            <?php else : ?>
+                <div class="flavor-col-actividad-grid">
+                    <!-- Mis colectivos -->
+                    <div class="flavor-col-actividad-seccion">
+                        <h4><?php esc_html_e('Mis Colectivos', 'flavor-chat-ia'); ?></h4>
+                        <ul class="flavor-col-lista-compacta">
+                            <?php foreach ($mis_colectivos as $colectivo) : ?>
+                                <li>
+                                    <a href="<?php echo esc_url(home_url('/colectivos/detalle/?colectivo=' . $colectivo->id)); ?>">
+                                        <?php echo esc_html($colectivo->nombre); ?>
+                                    </a>
+                                    <span class="flavor-col-rol-badge"><?php echo esc_html($roles_etiquetas[$colectivo->rol] ?? $colectivo->rol); ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <?php if (!empty($proximas_asambleas)) : ?>
+                    <div class="flavor-col-actividad-seccion">
+                        <h4><?php esc_html_e('Próximas Asambleas', 'flavor-chat-ia'); ?></h4>
+                        <ul class="flavor-col-lista-compacta">
+                            <?php foreach ($proximas_asambleas as $asamblea) : ?>
+                                <li>
+                                    <span class="flavor-col-fecha"><?php echo esc_html(date_i18n('d M', strtotime($asamblea->fecha))); ?></span>
+                                    <?php echo esc_html($asamblea->titulo); ?>
+                                    <small><?php echo esc_html($asamblea->colectivo_nombre); ?></small>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($proyectos_activos)) : ?>
+                    <div class="flavor-col-actividad-seccion">
+                        <h4><?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?></h4>
+                        <ul class="flavor-col-lista-compacta">
+                            <?php foreach ($proyectos_activos as $proyecto) : ?>
+                                <li>
+                                    <?php echo esc_html($proyecto->nombre); ?>
+                                    <small><?php echo esc_html($proyecto->colectivo_nombre); ?></small>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
         return ob_get_clean();
     }
 
@@ -2584,5 +2746,108 @@ KNOWLEDGE;
                 'parent' => 'colectivos',
             ],
         ];
+    }
+
+    // =========================================================================
+    // PÁGINAS DE ADMINISTRACIÓN
+    // =========================================================================
+
+    /**
+     * Registra las páginas de administración del módulo (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Página principal (oculta)
+        add_submenu_page(
+            null,
+            __('Colectivos', 'flavor-chat-ia'),
+            __('Colectivos', 'flavor-chat-ia'),
+            $capability,
+            'colectivos',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Página: Listado (oculta)
+        add_submenu_page(
+            null,
+            __('Todos los Colectivos', 'flavor-chat-ia'),
+            __('Listado', 'flavor-chat-ia'),
+            $capability,
+            'colectivos-listado',
+            [$this, 'render_pagina_listado']
+        );
+
+        // Página: Proyectos (oculta)
+        add_submenu_page(
+            null,
+            __('Proyectos', 'flavor-chat-ia'),
+            __('Proyectos', 'flavor-chat-ia'),
+            $capability,
+            'colectivos-proyectos',
+            [$this, 'render_pagina_proyectos']
+        );
+
+        // Página: Asambleas (oculta)
+        add_submenu_page(
+            null,
+            __('Asambleas', 'flavor-chat-ia'),
+            __('Asambleas', 'flavor-chat-ia'),
+            $capability,
+            'colectivos-asambleas',
+            [$this, 'render_pagina_asambleas']
+        );
+    }
+
+    /**
+     * Renderiza página dashboard
+     */
+    public function render_pagina_dashboard() {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('Dashboard Colectivos', 'flavor-chat-ia') . '</h1>';
+        $views_path = dirname(__FILE__) . '/views/listado-colectivos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza página de listado
+     */
+    public function render_pagina_listado() {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('Todos los Colectivos', 'flavor-chat-ia') . '</h1>';
+        $views_path = dirname(__FILE__) . '/views/listado-colectivos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza página de proyectos
+     */
+    public function render_pagina_proyectos() {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('Proyectos', 'flavor-chat-ia') . '</h1>';
+        $views_path = dirname(__FILE__) . '/views/proyectos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza página de asambleas
+     */
+    public function render_pagina_asambleas() {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('Asambleas', 'flavor-chat-ia') . '</h1>';
+        $views_path = dirname(__FILE__) . '/views/asambleas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
+        echo '</div>';
     }
 }

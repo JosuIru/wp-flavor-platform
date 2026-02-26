@@ -62,10 +62,56 @@ class Flavor_Autoloader {
         // Registrar mapeo de prefijos
         self::register_namespace('Flavor_', FLAVOR_CHAT_IA_PATH . 'includes/');
 
-        // Registrar el autoloader SPL
+        // Registrar el autoloader SPL para Flavor_*
         spl_autoload_register([__CLASS__, 'autoload'], true, $prepend);
 
+        // Registrar autoloader PSR-4 para namespace Flavor_Chat_IA
+        spl_autoload_register([__CLASS__, 'autoload_psr4'], true, $prepend);
+
         self::log('Autoloader registrado correctamente');
+    }
+
+    /**
+     * Autoloader PSR-4 para namespace Flavor_Chat_IA
+     *
+     * @param string $class_name Nombre completo de la clase con namespace
+     * @return bool
+     */
+    public static function autoload_psr4($class_name) {
+        // Solo procesar clases del namespace Flavor_Chat_IA
+        $namespace_prefix = 'Flavor_Chat_IA\\';
+
+        if (strpos($class_name, $namespace_prefix) !== 0) {
+            return false;
+        }
+
+        // Remover el prefijo del namespace
+        $relative_class = substr($class_name, strlen($namespace_prefix));
+
+        // Convertir namespace separators a directory separators
+        // y convertir a minúsculas con guiones
+        $parts = explode('\\', $relative_class);
+        $class_file = 'class-' . strtolower(str_replace('_', '-', array_pop($parts))) . '.php';
+
+        // Construir ruta del archivo
+        $base_dir = FLAVOR_CHAT_IA_PATH . 'includes/';
+
+        // Si hay subdirectorios en el namespace
+        if (!empty($parts)) {
+            $subdir = strtolower(implode('/', $parts)) . '/';
+            $file_path = $base_dir . $subdir . $class_file;
+        } else {
+            $file_path = $base_dir . $class_file;
+        }
+
+        if (file_exists($file_path)) {
+            require_once $file_path;
+            self::$loaded_classes[$class_name] = $file_path;
+            self::log("Clase PSR-4 cargada: {$class_name} desde {$file_path}");
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -87,6 +133,11 @@ class Flavor_Autoloader {
      * @return bool True si se cargó, false si no
      */
     public static function autoload($nombre_clase) {
+        // Validar que el nombre de clase no sea null o vacío
+        if (empty($nombre_clase) || !is_string($nombre_clase)) {
+            return false;
+        }
+
         // Solo procesar clases con prefijo Flavor_
         if (strpos($nombre_clase, 'Flavor_') !== 0) {
             return false;
@@ -150,12 +201,36 @@ class Flavor_Autoloader {
                     break;
 
                 case 'module':
-                    $carpeta_especial = 'modules/';
-                    // Flavor_Module_WooCommerce → woocommerce/class-woocommerce.php
-                    if (count($partes) >= 2) {
-                        $nombre_modulo = strtolower($partes[1]);
-                        $carpeta_especial .= $nombre_modulo . '/';
-                        $nombre_archivo = 'class-' . self::convert_to_filename(array_slice($partes, 1));
+                    // Verificar si es un Trait
+                    $ultimo_segmento = end($partes);
+                    if (strtolower($ultimo_segmento) === 'trait') {
+                        // Los traits pueden estar en diferentes ubicaciones
+                        $trait_name = strtolower(implode('-', array_slice($partes, 0, -1)));
+
+                        // Lista de ubicaciones posibles para traits
+                        $trait_paths = [
+                            'traits/trait-' . $trait_name . '.php',
+                            'admin/trait-' . $trait_name . '.php',
+                            'modules/trait-' . $trait_name . '.php',
+                        ];
+
+                        foreach ($trait_paths as $path) {
+                            if (file_exists($directorio_base . $path)) {
+                                return $directorio_base . $path;
+                            }
+                        }
+
+                        // Fallback
+                        $carpeta_especial = 'traits/';
+                        $nombre_archivo = 'trait-' . $trait_name . '.php';
+                    } else {
+                        // Módulo normal: Flavor_Module_WooCommerce → modules/woocommerce/class-woocommerce.php
+                        $carpeta_especial = 'modules/';
+                        if (count($partes) >= 2) {
+                            $nombre_modulo = strtolower($partes[1]);
+                            $carpeta_especial .= $nombre_modulo . '/';
+                            $nombre_archivo = 'class-' . self::convert_to_filename(array_slice($partes, 1));
+                        }
                     }
                     break;
 
@@ -208,13 +283,28 @@ class Flavor_Autoloader {
                     break;
 
                 case 'app':
-                    // Flavor_App_Integration → app-integration/class-app-integration.php
-                    $carpeta_especial = 'app-integration/';
-                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    // Clases App pueden estar en diferentes ubicaciones
+                    // Primero verificar si existe en la raíz de includes
+                    $nombre_archivo_temp = 'class-' . self::convert_to_filename($partes);
+                    if (file_exists($directorio_base . $nombre_archivo_temp)) {
+                        // Flavor_App_Profiles → class-app-profiles.php
+                        $carpeta_especial = '';
+                        $nombre_archivo = $nombre_archivo_temp;
+                    } else {
+                        // Flavor_App_Integration → app-integration/class-app-integration.php
+                        $carpeta_especial = 'app-integration/';
+                        $nombre_archivo = $nombre_archivo_temp;
+                    }
                     break;
 
                 case 'editor':
                     $carpeta_especial = 'editor/';
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'mi':
+                    // Flavor_Mi_Red_Social → frontend/class-mi-red-social.php
+                    $carpeta_especial = 'frontend/';
                     $nombre_archivo = 'class-' . self::convert_to_filename($partes);
                     break;
 
@@ -225,6 +315,66 @@ class Flavor_Autoloader {
 
                 case 'api':
                     $carpeta_especial = 'api/';
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'reputation':
+                    // Flavor_Reputation_Manager → class-reputation-manager.php
+                    // Flavor_Reputation_API → api/class-reputation-api.php
+                    $ultimo_segmento = end($partes);
+                    if (strtolower($ultimo_segmento) === 'api') {
+                        $carpeta_especial = 'api/';
+                    } else {
+                        $carpeta_especial = '';
+                    }
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'analytics':
+                    // Flavor_Analytics_Dashboard → admin/class-analytics-dashboard.php
+                    $carpeta_especial = 'admin/';
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'report':
+                    // Flavor_Report_Exporter → class-report-exporter.php
+                    $carpeta_especial = '';
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'client':
+                    // Flavor_Client_Dashboard_API → api/class-client-dashboard-api.php
+                    $carpeta_especial = 'api/';
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'privacy':
+                    $carpeta_especial = 'privacy/';
+                    // Flavor_Privacy_Manager → class-privacy-manager.php
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'data':
+                    // Flavor_Data_Exporter → privacy/class-data-exporter.php
+                    $carpeta_especial = 'privacy/';
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'moderation':
+                    // Flavor_Moderation_Manager → moderation/class-moderation-manager.php
+                    $carpeta_especial = 'moderation/';
+                    $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    break;
+
+                case 'admin':
+                case 'documentation':
+                case 'demo':
+                case 'unified':
+                    // Clases de administración
+                    // Flavor_Documentation_Page → admin/class-documentation-page.php
+                    // Flavor_Demo_Data_Manager → admin/class-demo-data-manager.php
+                    // Flavor_Unified_Admin_Panel → admin/class-unified-admin-panel.php
+                    $carpeta_especial = 'admin/';
                     $nombre_archivo = 'class-' . self::convert_to_filename($partes);
                     break;
 
@@ -280,6 +430,11 @@ class Flavor_Autoloader {
      * @return bool True si se cargó, false si no existe
      */
     private static function load_file($ruta_archivo) {
+        // Validar que la ruta no sea null, vacía o inválida
+        if (empty($ruta_archivo) || !is_string($ruta_archivo)) {
+            return false;
+        }
+
         if (file_exists($ruta_archivo)) {
             require_once $ruta_archivo;
             return true;
