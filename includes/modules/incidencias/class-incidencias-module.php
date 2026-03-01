@@ -300,6 +300,9 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
         // Registrar en Panel Unificado de Gestión
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         // Cargar funcionalidades del Sello de Conciencia (+13 pts)
@@ -3383,6 +3386,18 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Estadísticas de Incidencias', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-incidencias-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Incidencias_Dashboard_Tab::get_instance();
         }
     }
 }

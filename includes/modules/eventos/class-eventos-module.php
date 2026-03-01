@@ -86,18 +86,209 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
     }
 
     // =========================================================================
-    // TABS DEL DASHBOARD (SISTEMA FLEXIBLE)
+    // CONFIGURACION DEL RENDERER (SISTEMA CENTRALIZADO)
+    // =========================================================================
+
+    /**
+     * Configuracion para el Module Renderer
+     *
+     * Define tabs, campos, estadisticas y comportamiento del modulo
+     * para el sistema de renderizado centralizado.
+     *
+     * @return array Configuracion completa del modulo
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'eventos',
+            'title'    => __('Eventos', 'flavor-chat-ia'),
+            'subtitle' => __('Calendario de actividades y eventos', 'flavor-chat-ia'),
+            'icon'     => '📅',
+            'color'    => 'purple',
+
+            // Configuracion de base de datos
+            'database' => [
+                'table'         => 'flavor_eventos',
+                'status_field'  => 'estado',
+                'exclude_status'=> 'borrador',
+                'order_by'      => 'fecha_inicio ASC',
+                'filter_fields' => ['tipo', 'estado'],
+            ],
+
+            // Mapeo de campos BD -> campos internos
+            'fields' => [
+                'titulo'      => 'titulo',
+                'descripcion' => 'descripcion',
+                'estado'      => 'estado',
+                'imagen'      => 'imagen',
+                'fecha'       => 'fecha_inicio',
+                'ubicacion'   => 'ubicacion',
+                'tipo'        => 'tipo',
+                'precio'      => 'precio',
+                'aforo'       => 'aforo_maximo',
+            ],
+
+            // Estadisticas para el dashboard
+            'stats' => [
+                [
+                    'label'       => __('Proximos eventos', 'flavor-chat-ia'),
+                    'icon'        => 'dashicons-calendar',
+                    'color'       => '#8b5cf6',
+                    'count_where' => "estado = 'publicado' AND fecha_inicio > NOW()",
+                ],
+                [
+                    'label'       => __('Hoy', 'flavor-chat-ia'),
+                    'icon'        => 'dashicons-calendar-alt',
+                    'color'       => '#10b981',
+                    'count_where' => "estado = 'publicado' AND DATE(fecha_inicio) = CURDATE()",
+                ],
+                [
+                    'label'       => __('Esta semana', 'flavor-chat-ia'),
+                    'icon'        => 'dashicons-clock',
+                    'color'       => '#f59e0b',
+                    'count_where' => "estado = 'publicado' AND fecha_inicio BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)",
+                ],
+            ],
+
+            // Tabs del frontend (Mi Portal)
+            'tabs' => [
+                'proximos-eventos' => [
+                    'label'   => __('Proximos Eventos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-calendar',
+                    'content' => '[eventos_proximos limit="12"]',
+                ],
+                'mis-inscripciones' => [
+                    'label'   => __('Mis Inscripciones', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-tickets-alt',
+                    'content' => '[eventos_mis_inscripciones limite="20"]',
+                    'cap'     => 'read',
+                ],
+                'calendario' => [
+                    'label'   => __('Calendario', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-calendar-alt',
+                    'content' => '[eventos_calendario]',
+                ],
+                'crear-evento' => [
+                    'label'   => __('Crear Evento', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-plus-alt',
+                    'content' => 'render_tab_crear_evento',
+                    'cap'     => 'edit_posts',
+                ],
+            ],
+
+            // Estados posibles
+            'estados' => [
+                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'cancelado'  => ['label' => __('Cancelado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'finalizado' => ['label' => __('Finalizado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🏁'],
+            ],
+
+            // Configuracion del archive/listado
+            'archive' => [
+                'columns'      => 3,
+                'show_filters' => true,
+                'filter_field' => 'tipo',
+                'filters'      => [
+                    ['id' => 'todos', 'label' => __('Todos', 'flavor-chat-ia')],
+                    ['id' => 'conferencia', 'label' => __('Conferencias', 'flavor-chat-ia')],
+                    ['id' => 'taller', 'label' => __('Talleres', 'flavor-chat-ia')],
+                    ['id' => 'charla', 'label' => __('Charlas', 'flavor-chat-ia')],
+                    ['id' => 'festival', 'label' => __('Festivales', 'flavor-chat-ia')],
+                    ['id' => 'deportivo', 'label' => __('Deportivos', 'flavor-chat-ia')],
+                    ['id' => 'cultural', 'label' => __('Culturales', 'flavor-chat-ia')],
+                    ['id' => 'social', 'label' => __('Sociales', 'flavor-chat-ia')],
+                    ['id' => 'networking', 'label' => __('Networking', 'flavor-chat-ia')],
+                ],
+                'cta_text' => __('Crear Evento', 'flavor-chat-ia'),
+                'cta_url'  => home_url('/mi-portal/eventos/crear-evento/'),
+                'cta_icon' => 'dashicons-plus-alt',
+            ],
+
+            // Configuracion del single/detalle
+            'single' => [
+                'meta_fields' => [
+                    ['field' => 'fecha_inicio', 'icon' => '📅', 'prefix' => ''],
+                    ['field' => 'ubicacion', 'icon' => '📍', 'prefix' => ''],
+                    ['field' => 'tipo', 'icon' => '🏷️', 'prefix' => ''],
+                ],
+                'detail_fields' => [
+                    ['field' => 'precio', 'label' => __('Precio', 'flavor-chat-ia')],
+                    ['field' => 'aforo_maximo', 'label' => __('Aforo maximo', 'flavor-chat-ia')],
+                    ['field' => 'inscritos_count', 'label' => __('Inscritos', 'flavor-chat-ia')],
+                ],
+                'actions' => [
+                    [
+                        'label'   => __('Inscribirse', 'flavor-chat-ia'),
+                        'icon'    => '✋',
+                        'primary' => true,
+                        'action'  => 'flavorEventos.inscribirse({id})',
+                    ],
+                    [
+                        'label'  => __('Compartir', 'flavor-chat-ia'),
+                        'icon'   => '📤',
+                        'action' => 'flavorEventos.compartir({id})',
+                    ],
+                ],
+            ],
+
+            // Configuracion del formulario
+            'form' => [
+                'create_title' => __('Crear Evento', 'flavor-chat-ia'),
+                'edit_title'   => __('Editar Evento', 'flavor-chat-ia'),
+                'description'  => __('Completa los datos del evento', 'flavor-chat-ia'),
+                'fields' => [
+                    ['name' => 'titulo', 'type' => 'text', 'label' => __('Titulo', 'flavor-chat-ia'), 'required' => true, 'placeholder' => __('Nombre del evento', 'flavor-chat-ia')],
+                    ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripcion', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
+                    ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                        'conferencia' => __('Conferencia', 'flavor-chat-ia'),
+                        'taller'      => __('Taller', 'flavor-chat-ia'),
+                        'charla'      => __('Charla', 'flavor-chat-ia'),
+                        'festival'    => __('Festival', 'flavor-chat-ia'),
+                        'deportivo'   => __('Deportivo', 'flavor-chat-ia'),
+                        'cultural'    => __('Cultural', 'flavor-chat-ia'),
+                        'social'      => __('Social', 'flavor-chat-ia'),
+                        'networking'  => __('Networking', 'flavor-chat-ia'),
+                    ]],
+                    ['name' => 'fecha_inicio', 'type' => 'datetime-local', 'label' => __('Fecha y hora de inicio', 'flavor-chat-ia'), 'required' => true],
+                    ['name' => 'fecha_fin', 'type' => 'datetime-local', 'label' => __('Fecha y hora de fin', 'flavor-chat-ia')],
+                    ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicacion', 'flavor-chat-ia'), 'placeholder' => __('Lugar del evento', 'flavor-chat-ia')],
+                    ['name' => 'direccion', 'type' => 'text', 'label' => __('Direccion', 'flavor-chat-ia'), 'placeholder' => __('Direccion completa', 'flavor-chat-ia')],
+                    ['name' => 'precio', 'type' => 'number', 'label' => __('Precio', 'flavor-chat-ia'), 'min' => 0, 'default' => 0, 'help' => __('0 para eventos gratuitos', 'flavor-chat-ia')],
+                    ['name' => 'aforo_maximo', 'type' => 'number', 'label' => __('Aforo maximo', 'flavor-chat-ia'), 'min' => 0, 'default' => 0, 'help' => __('0 para sin limite', 'flavor-chat-ia')],
+                    ['name' => 'es_online', 'type' => 'checkbox', 'label' => __('Evento online', 'flavor-chat-ia'), 'checkbox_label' => __('Este evento es virtual/online', 'flavor-chat-ia')],
+                    ['name' => 'url_online', 'type' => 'url', 'label' => __('URL del evento online', 'flavor-chat-ia'), 'placeholder' => 'https://...'],
+                    ['name' => 'imagen', 'type' => 'image', 'label' => __('Imagen del evento', 'flavor-chat-ia')],
+                ],
+            ],
+
+            // Configuracion de la card
+            'card' => [
+                'show_image'  => true,
+                'show_date'   => true,
+                'show_status' => true,
+                'date_field'  => 'fecha_inicio',
+                'date_format' => 'd M Y - H:i',
+                'badges' => [
+                    ['field' => 'es_online', 'value' => 1, 'label' => 'Online', 'color' => 'blue'],
+                    ['field' => 'precio', 'value' => 0, 'label' => 'Gratis', 'color' => 'green'],
+                ],
+            ],
+        ];
+    }
+
+    // =========================================================================
+    // TABS DEL DASHBOARD (SISTEMA FLEXIBLE - LEGACY)
     // =========================================================================
 
     /**
      * Define los tabs del dashboard para Mi Portal
      *
-     * @return array Configuración de tabs
+     * @return array Configuracion de tabs
      */
     protected function define_dashboard_tabs() {
         return [
             'proximos' => [
-                'label'    => __('Próximos', 'flavor-chat-ia'),
+                'label'    => __('Proximos', 'flavor-chat-ia'),
                 'icon'     => 'dashicons-calendar',
                 'content'  => '[eventos_proximos limit="12"]',
                 'priority' => 10,
@@ -131,6 +322,467 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         ];
     }
 
+    // =========================================================================
+    // FUNCIONES DE RENDERIZADO DE TABS
+    // =========================================================================
+
+    /**
+     * Renderiza el tab de proximos eventos
+     *
+     * @param int $usuario_id ID del usuario actual
+     */
+    public function render_tab_proximos_eventos($usuario_id) {
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('El modulo de eventos no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $eventos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$tabla_eventos}
+             WHERE estado = 'publicado' AND fecha_inicio >= NOW()
+             ORDER BY fecha_inicio ASC
+             LIMIT %d",
+            12
+        ));
+
+        if (empty($eventos)) {
+            ?>
+            <div class="flavor-empty-state">
+                <span class="dashicons dashicons-calendar-alt" style="font-size: 48px; color: #ccc;"></span>
+                <h3><?php esc_html_e('No hay eventos proximos', 'flavor-chat-ia'); ?></h3>
+                <p><?php esc_html_e('Aun no hay eventos programados. Vuelve pronto.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
+            return;
+        }
+
+        echo '<div class="flavor-eventos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">';
+        foreach ($eventos as $evento) {
+            $this->render_evento_card_frontend($evento);
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el tab de mis inscripciones
+     *
+     * @param int $usuario_id ID del usuario actual
+     */
+    public function render_tab_mis_inscripciones($usuario_id) {
+        if (!$usuario_id) {
+            echo '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesion para ver tus inscripciones.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        $inscripciones = $wpdb->get_results($wpdb->prepare(
+            "SELECT i.*, e.titulo, e.fecha_inicio, e.fecha_fin, e.ubicacion, e.imagen, e.tipo
+             FROM {$tabla_inscripciones} i
+             JOIN {$tabla_eventos} e ON i.evento_id = e.id
+             WHERE i.user_id = %d
+             ORDER BY e.fecha_inicio DESC
+             LIMIT 20",
+            $usuario_id
+        ));
+
+        if (empty($inscripciones)) {
+            ?>
+            <div class="flavor-empty-state">
+                <span class="dashicons dashicons-tickets-alt" style="font-size: 48px; color: #ccc;"></span>
+                <h3><?php esc_html_e('Sin inscripciones', 'flavor-chat-ia'); ?></h3>
+                <p><?php esc_html_e('No estas inscrito a ningun evento. Explora los eventos disponibles.', 'flavor-chat-ia'); ?></p>
+                <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="button button-primary">
+                    <?php esc_html_e('Ver eventos', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php
+            return;
+        }
+
+        echo '<div class="flavor-inscripciones-lista">';
+        foreach ($inscripciones as $inscripcion) {
+            $es_futuro = strtotime($inscripcion->fecha_inicio) > time();
+            $estado_clase = $inscripcion->estado === 'confirmada' ? 'confirmada' : ($inscripcion->estado === 'pendiente' ? 'pendiente' : 'cancelada');
+            ?>
+            <div class="inscripcion-card" style="display: flex; gap: 16px; padding: 16px; background: #fff; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <?php if (!empty($inscripcion->imagen)): ?>
+                    <img src="<?php echo esc_url($inscripcion->imagen); ?>" alt="" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                <?php else: ?>
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #8b5cf6, #6366f1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <span class="dashicons dashicons-calendar" style="color: #fff; font-size: 32px;"></span>
+                    </div>
+                <?php endif; ?>
+                <div style="flex: 1;">
+                    <h4 style="margin: 0 0 4px 0; font-size: 16px;"><?php echo esc_html($inscripcion->titulo); ?></h4>
+                    <p style="margin: 0 0 8px 0; color: #666; font-size: 14px;">
+                        <span class="dashicons dashicons-calendar" style="font-size: 14px; vertical-align: middle;"></span>
+                        <?php echo esc_html(date_i18n('d M Y - H:i', strtotime($inscripcion->fecha_inicio))); ?>
+                        <?php if (!empty($inscripcion->ubicacion)): ?>
+                            <span style="margin-left: 12px;"><span class="dashicons dashicons-location" style="font-size: 14px; vertical-align: middle;"></span> <?php echo esc_html($inscripcion->ubicacion); ?></span>
+                        <?php endif; ?>
+                    </p>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span class="estado-badge estado-<?php echo esc_attr($estado_clase); ?>" style="padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; background: <?php echo $inscripcion->estado === 'confirmada' ? '#dcfce7' : ($inscripcion->estado === 'pendiente' ? '#fef3c7' : '#fee2e2'); ?>; color: <?php echo $inscripcion->estado === 'confirmada' ? '#166534' : ($inscripcion->estado === 'pendiente' ? '#92400e' : '#991b1b'); ?>;">
+                            <?php echo esc_html(ucfirst($inscripcion->estado)); ?>
+                        </span>
+                        <?php if ($es_futuro): ?>
+                            <span style="padding: 4px 12px; border-radius: 20px; font-size: 12px; background: #e0e7ff; color: #3730a3;">
+                                <?php esc_html_e('Proximo', 'flavor-chat-ia'); ?>
+                            </span>
+                        <?php endif; ?>
+                        <span style="color: #999; font-size: 12px;">
+                            <?php echo esc_html($inscripcion->num_plazas); ?> <?php esc_html_e('plaza(s)', 'flavor-chat-ia'); ?>
+                        </span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/eventos/' . $inscripcion->evento_id . '/')); ?>" class="button" style="font-size: 13px;">
+                        <?php esc_html_e('Ver evento', 'flavor-chat-ia'); ?>
+                    </a>
+                    <?php if ($es_futuro && $inscripcion->estado !== 'cancelada'): ?>
+                        <button class="button flavor-cancelar-inscripcion" data-id="<?php echo esc_attr($inscripcion->id); ?>" data-evento="<?php echo esc_attr($inscripcion->evento_id); ?>" style="font-size: 13px; color: #dc2626;">
+                            <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        </button>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Renderiza el tab de calendario
+     *
+     * @param int $usuario_id ID del usuario actual
+     */
+    public function render_tab_calendario($usuario_id) {
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        $mes_actual = isset($_GET['mes']) ? sanitize_text_field($_GET['mes']) : date('Y-m');
+        if (!preg_match('/^\d{4}-\d{2}$/', $mes_actual)) {
+            $mes_actual = date('Y-m');
+        }
+
+        $inicio_mes = $mes_actual . '-01';
+        $fin_mes = date('Y-m-t', strtotime($inicio_mes));
+        $nombre_mes = date_i18n('F Y', strtotime($inicio_mes));
+
+        $eventos = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, titulo, fecha_inicio, tipo, estado
+             FROM {$tabla_eventos}
+             WHERE estado = 'publicado' AND DATE(fecha_inicio) BETWEEN %s AND %s
+             ORDER BY fecha_inicio ASC",
+            $inicio_mes,
+            $fin_mes
+        ));
+
+        // Agrupar por dia
+        $eventos_por_dia = [];
+        foreach ($eventos as $evento) {
+            $dia = date('j', strtotime($evento->fecha_inicio));
+            if (!isset($eventos_por_dia[$dia])) {
+                $eventos_por_dia[$dia] = [];
+            }
+            $eventos_por_dia[$dia][] = $evento;
+        }
+
+        // Navegacion de meses
+        $mes_anterior = date('Y-m', strtotime($inicio_mes . ' -1 month'));
+        $mes_siguiente = date('Y-m', strtotime($inicio_mes . ' +1 month'));
+        $url_base = remove_query_arg('mes');
+
+        ?>
+        <div class="flavor-calendario-container">
+            <div class="calendario-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <a href="<?php echo esc_url(add_query_arg('mes', $mes_anterior, $url_base)); ?>" class="button">
+                    <span class="dashicons dashicons-arrow-left-alt2"></span> <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                </a>
+                <h3 style="margin: 0; text-transform: capitalize;"><?php echo esc_html($nombre_mes); ?></h3>
+                <a href="<?php echo esc_url(add_query_arg('mes', $mes_siguiente, $url_base)); ?>" class="button">
+                    <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?> <span class="dashicons dashicons-arrow-right-alt2"></span>
+                </a>
+            </div>
+
+            <div class="calendario-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; background: #f3f4f6; padding: 4px; border-radius: 12px;">
+                <?php
+                // Cabeceras de dias
+                $dias_semana = [
+                    __('Lun', 'flavor-chat-ia'),
+                    __('Mar', 'flavor-chat-ia'),
+                    __('Mie', 'flavor-chat-ia'),
+                    __('Jue', 'flavor-chat-ia'),
+                    __('Vie', 'flavor-chat-ia'),
+                    __('Sab', 'flavor-chat-ia'),
+                    __('Dom', 'flavor-chat-ia'),
+                ];
+                foreach ($dias_semana as $dia_nombre): ?>
+                    <div style="padding: 8px; text-align: center; font-weight: 600; font-size: 12px; color: #6b7280;">
+                        <?php echo esc_html($dia_nombre); ?>
+                    </div>
+                <?php endforeach;
+
+                // Calcular primer dia del mes
+                $primer_dia_semana = (date('N', strtotime($inicio_mes)) - 1);
+                $total_dias = date('t', strtotime($inicio_mes));
+                $hoy = date('j');
+                $mes_hoy = date('Y-m');
+
+                // Dias vacios al inicio
+                for ($i = 0; $i < $primer_dia_semana; $i++): ?>
+                    <div style="padding: 8px; background: #fff; opacity: 0.3;"></div>
+                <?php endfor;
+
+                // Dias del mes
+                for ($dia = 1; $dia <= $total_dias; $dia++):
+                    $tiene_eventos = isset($eventos_por_dia[$dia]);
+                    $es_hoy = ($dia == $hoy && $mes_actual == $mes_hoy);
+                    ?>
+                    <div style="padding: 8px; background: <?php echo $es_hoy ? '#e0e7ff' : '#fff'; ?>; border-radius: 8px; min-height: 60px; position: relative;">
+                        <span style="font-weight: <?php echo $es_hoy ? '700' : '500'; ?>; color: <?php echo $es_hoy ? '#4f46e5' : '#374151'; ?>; font-size: 14px;">
+                            <?php echo esc_html($dia); ?>
+                        </span>
+                        <?php if ($tiene_eventos): ?>
+                            <div style="margin-top: 4px;">
+                                <?php foreach (array_slice($eventos_por_dia[$dia], 0, 2) as $evento_dia): ?>
+                                    <a href="<?php echo esc_url(home_url('/mi-portal/eventos/' . $evento_dia->id . '/')); ?>"
+                                       style="display: block; padding: 2px 4px; margin-bottom: 2px; background: #8b5cf6; color: #fff; border-radius: 4px; font-size: 10px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                       title="<?php echo esc_attr($evento_dia->titulo); ?>">
+                                        <?php echo esc_html(mb_substr($evento_dia->titulo, 0, 15)); ?>
+                                    </a>
+                                <?php endforeach; ?>
+                                <?php if (count($eventos_por_dia[$dia]) > 2): ?>
+                                    <span style="font-size: 10px; color: #6b7280;">+<?php echo count($eventos_por_dia[$dia]) - 2; ?> <?php esc_html_e('mas', 'flavor-chat-ia'); ?></span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endfor; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el tab de crear evento
+     *
+     * @param int $usuario_id ID del usuario actual
+     */
+    public function render_tab_crear_evento($usuario_id) {
+        if (!$usuario_id || !current_user_can('edit_posts')) {
+            echo '<div class="flavor-access-denied"><p>' . esc_html__('No tienes permisos para crear eventos.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $configuracion = $this->get_default_settings();
+        $tipos_evento = $configuracion['tipos_evento'] ?? ['conferencia', 'taller', 'charla', 'festival', 'deportivo', 'cultural', 'social', 'networking'];
+        ?>
+        <div class="flavor-form-container" style="max-width: 700px;">
+            <form id="form-crear-evento" class="flavor-form" method="post">
+                <?php wp_nonce_field('eventos_crear', 'eventos_nonce'); ?>
+                <input type="hidden" name="action" value="eventos_crear_evento">
+                <input type="hidden" name="organizador_id" value="<?php echo esc_attr($usuario_id); ?>">
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="titulo" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Titulo del evento', 'flavor-chat-ia'); ?> <span style="color: red;">*</span></label>
+                    <input type="text" id="titulo" name="titulo" required style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;" placeholder="<?php esc_attr_e('Nombre del evento', 'flavor-chat-ia'); ?>">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="descripcion" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Descripcion', 'flavor-chat-ia'); ?> <span style="color: red;">*</span></label>
+                    <textarea id="descripcion" name="descripcion" rows="4" required style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;" placeholder="<?php esc_attr_e('Describe el evento...', 'flavor-chat-ia'); ?>"></textarea>
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label for="tipo" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Tipo de evento', 'flavor-chat-ia'); ?> <span style="color: red;">*</span></label>
+                        <select id="tipo" name="tipo" required style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;">
+                            <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($tipos_evento as $tipo): ?>
+                                <option value="<?php echo esc_attr($tipo); ?>"><?php echo esc_html(ucfirst($tipo)); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ubicacion" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Ubicacion', 'flavor-chat-ia'); ?></label>
+                        <input type="text" id="ubicacion" name="ubicacion" style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;" placeholder="<?php esc_attr_e('Lugar del evento', 'flavor-chat-ia'); ?>">
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label for="fecha_inicio" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Fecha y hora de inicio', 'flavor-chat-ia'); ?> <span style="color: red;">*</span></label>
+                        <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" required style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_fin" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Fecha y hora de fin', 'flavor-chat-ia'); ?></label>
+                        <input type="datetime-local" id="fecha_fin" name="fecha_fin" style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;">
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label for="precio" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></label>
+                        <input type="number" id="precio" name="precio" min="0" step="0.01" value="0" style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;">
+                        <small style="color: #6b7280; font-size: 12px;"><?php esc_html_e('0 para eventos gratuitos', 'flavor-chat-ia'); ?></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="aforo_maximo" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Aforo maximo', 'flavor-chat-ia'); ?></label>
+                        <input type="number" id="aforo_maximo" name="aforo_maximo" min="0" value="0" style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;">
+                        <small style="color: #6b7280; font-size: 12px;"><?php esc_html_e('0 para sin limite', 'flavor-chat-ia'); ?></small>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="es_online" name="es_online" value="1" style="width: 18px; height: 18px;">
+                        <span><?php esc_html_e('Es un evento online/virtual', 'flavor-chat-ia'); ?></span>
+                    </label>
+                </div>
+
+                <div class="form-group url-online-group" style="margin-bottom: 20px; display: none;">
+                    <label for="url_online" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('URL del evento online', 'flavor-chat-ia'); ?></label>
+                    <input type="url" id="url_online" name="url_online" style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px;" placeholder="https://...">
+                </div>
+
+                <div class="form-actions" style="display: flex; gap: 12px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                    <button type="submit" class="button button-primary" style="padding: 10px 24px; font-size: 15px;">
+                        <?php esc_html_e('Crear Evento', 'flavor-chat-ia'); ?>
+                    </button>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="button" style="padding: 10px 24px; font-size: 15px;">
+                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxOnline = document.getElementById('es_online');
+            const urlOnlineGroup = document.querySelector('.url-online-group');
+
+            if (checkboxOnline && urlOnlineGroup) {
+                checkboxOnline.addEventListener('change', function() {
+                    urlOnlineGroup.style.display = this.checked ? 'block' : 'none';
+                });
+            }
+
+            const formCrearEvento = document.getElementById('form-crear-evento');
+            if (formCrearEvento) {
+                formCrearEvento.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    formData.append('action', 'eventos_crear_evento_ajax');
+
+                    fetch(typeof flavorAjax !== 'undefined' ? flavorAjax.url : ajaxurl, {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'same-origin'
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = data.data.redirect || '<?php echo esc_js(home_url('/mi-portal/eventos/')); ?>';
+                        } else {
+                            alert(data.data.message || '<?php echo esc_js(__('Error al crear el evento', 'flavor-chat-ia')); ?>');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('<?php echo esc_js(__('Error de conexion', 'flavor-chat-ia')); ?>');
+                    });
+                });
+            }
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza una card de evento para el frontend
+     *
+     * @param object $evento Datos del evento
+     */
+    private function render_evento_card_frontend($evento) {
+        $url_detalle = home_url('/mi-portal/eventos/' . $evento->id . '/');
+        $fecha_formateada = date_i18n('d M Y - H:i', strtotime($evento->fecha_inicio));
+        $es_gratuito = empty($evento->precio) || $evento->precio == 0;
+        $plazas_disponibles = $evento->aforo_maximo > 0 ? ($evento->aforo_maximo - $evento->inscritos_count) : null;
+        ?>
+        <div class="evento-card" style="background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s;">
+            <?php if (!empty($evento->imagen)): ?>
+                <div class="evento-imagen" style="aspect-ratio: 16/9; overflow: hidden;">
+                    <img src="<?php echo esc_url($evento->imagen); ?>" alt="<?php echo esc_attr($evento->titulo); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            <?php else: ?>
+                <div class="evento-imagen-placeholder" style="aspect-ratio: 16/9; background: linear-gradient(135deg, #8b5cf6, #6366f1); display: flex; align-items: center; justify-content: center;">
+                    <span class="dashicons dashicons-calendar" style="font-size: 48px; color: rgba(255,255,255,0.8);"></span>
+                </div>
+            <?php endif; ?>
+
+            <div class="evento-content" style="padding: 16px;">
+                <div class="evento-badges" style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+                    <span style="padding: 4px 10px; background: #f3e8ff; color: #7c3aed; border-radius: 20px; font-size: 11px; font-weight: 500;">
+                        <?php echo esc_html(ucfirst($evento->tipo)); ?>
+                    </span>
+                    <?php if ($es_gratuito): ?>
+                        <span style="padding: 4px 10px; background: #dcfce7; color: #166534; border-radius: 20px; font-size: 11px; font-weight: 500;">
+                            <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+                        </span>
+                    <?php endif; ?>
+                    <?php if (!empty($evento->es_online) && $evento->es_online): ?>
+                        <span style="padding: 4px 10px; background: #dbeafe; color: #1e40af; border-radius: 20px; font-size: 11px; font-weight: 500;">
+                            <?php esc_html_e('Online', 'flavor-chat-ia'); ?>
+                        </span>
+                    <?php endif; ?>
+                </div>
+
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3;">
+                    <a href="<?php echo esc_url($url_detalle); ?>" style="color: #1f2937; text-decoration: none;">
+                        <?php echo esc_html($evento->titulo); ?>
+                    </a>
+                </h3>
+
+                <div class="evento-meta" style="font-size: 13px; color: #6b7280;">
+                    <p style="margin: 0 0 4px 0; display: flex; align-items: center; gap: 6px;">
+                        <span class="dashicons dashicons-calendar" style="font-size: 14px;"></span>
+                        <?php echo esc_html($fecha_formateada); ?>
+                    </p>
+                    <?php if (!empty($evento->ubicacion)): ?>
+                        <p style="margin: 0 0 4px 0; display: flex; align-items: center; gap: 6px;">
+                            <span class="dashicons dashicons-location" style="font-size: 14px;"></span>
+                            <?php echo esc_html($evento->ubicacion); ?>
+                        </p>
+                    <?php endif; ?>
+                    <?php if ($plazas_disponibles !== null): ?>
+                        <p style="margin: 0; display: flex; align-items: center; gap: 6px; color: <?php echo $plazas_disponibles > 0 ? '#059669' : '#dc2626'; ?>;">
+                            <span class="dashicons dashicons-groups" style="font-size: 14px;"></span>
+                            <?php if ($plazas_disponibles > 0): ?>
+                                <?php echo sprintf(esc_html__('%d plazas disponibles', 'flavor-chat-ia'), $plazas_disponibles); ?>
+                            <?php else: ?>
+                                <?php esc_html_e('Completo', 'flavor-chat-ia'); ?>
+                            <?php endif; ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="evento-actions" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f3f4f6;">
+                    <a href="<?php echo esc_url($url_detalle); ?>" class="button button-primary" style="width: 100%; text-align: center; padding: 8px 16px; font-size: 14px;">
+                        <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
@@ -144,6 +796,8 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Registrar como consumidor de integraciones
         $this->register_as_integration_consumer();
@@ -615,6 +1269,19 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
+
+        // Migas de pan
+        ?>
+        <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
+            <a href="<?php echo admin_url('admin.php?page=eventos-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
+                <span class="dashicons dashicons-calendar-alt" style="font-size: 14px; vertical-align: middle;"></span>
+                <?php _e('Eventos', 'flavor-chat-ia'); ?>
+            </a>
+            <span style="color: #646970; margin: 0 5px;">›</span>
+            <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-chat-ia'); ?></span>
+        </nav>
+        <?php
+
         $this->render_page_header(__('Configuración de Eventos', 'flavor-chat-ia'));
 
         $configuracion_actual = $this->get_default_settings();
@@ -1659,5 +2326,19 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $path = dirname(__FILE__) . '/views/entradas.php';
         if (file_exists($path)) include $path;
         echo '</div>';
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-eventos-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Eventos_Dashboard_Tab')) {
+                Flavor_Eventos_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

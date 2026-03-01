@@ -141,7 +141,7 @@ $total_anuncios = $query->found_posts;
                                class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
                                 <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
                             </a>
-                            <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/editar/?id=' . $anuncio['id'])); ?>"
+                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('marketplace', $anuncio['id'], 'editar')); ?>"
                                class="px-3 py-1 text-sm bg-indigo-100 text-indigo-600 rounded-lg hover:bg-indigo-200 transition-colors">
                                 <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
                             </a>

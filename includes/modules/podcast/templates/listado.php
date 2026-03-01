@@ -282,7 +282,7 @@ $estadisticas = $estadisticas ?? [];
         <div class="flavor-cta-contenido">
             <h2><?php esc_html_e('Crea tu propio podcast', 'flavor-chat-ia'); ?></h2>
             <p><?php esc_html_e('Comparte tu voz con la comunidad. Crear una serie es facil y gratuito.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(add_query_arg('accion', 'crear-serie')); ?>"
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('podcast', 'crear-serie')); ?>"
                class="flavor-btn flavor-btn-primary flavor-btn-lg">
                 <span class="dashicons dashicons-plus-alt"></span>
                 <?php esc_html_e('Crear nueva serie', 'flavor-chat-ia'); ?>

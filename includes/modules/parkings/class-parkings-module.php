@@ -380,6 +380,26 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         dbDelta($sql_reservas);
         dbDelta($sql_asignaciones);
         dbDelta($sql_lista_espera);
+
+        // Verificar y añadir columnas que pueden faltar en tablas existentes
+        $this->ensure_columns_exist();
+    }
+
+    /**
+     * Verifica y añade columnas que pueden faltar en tablas existentes
+     */
+    private function ensure_columns_exist() {
+        global $wpdb;
+
+        // Columnas para tabla de reservas
+        $columnas_reservas = $wpdb->get_col("SHOW COLUMNS FROM {$this->tabla_reservas}", 0);
+
+        if (!in_array('penalizacion', $columnas_reservas)) {
+            $wpdb->query("ALTER TABLE {$this->tabla_reservas} ADD COLUMN penalizacion decimal(10,2) DEFAULT 0");
+        }
+        if (!in_array('fecha_actualizacion', $columnas_reservas)) {
+            $wpdb->query("ALTER TABLE {$this->tabla_reservas} ADD COLUMN fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+        }
     }
 
     /**
@@ -408,9 +428,53 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si debe cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'flavor_mapa_parkings',
+            'flavor_disponibilidad_parking',
+            'flavor_mis_reservas_parking',
+            'flavor_solicitar_plaza',
+            'flavor_parking_grid',
+            'flavor_parking_stats',
+            'flavor_tarifas_parking',
+            'flavor_ocupacion_tiempo_real',
+            'flavor_parkings_mapa',
+            'flavor_parkings_listado',
+            'flavor_parkings_disponibles',
+            'flavor_parkings_reservar',
+            'flavor_parkings_mis_reservas',
+            'flavor_parkings_mi_plaza',
+            'flavor_parkings_lista_espera',
+            'flavor_parkings_dashboard',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Registrar assets CSS y JS
      */
     public function registrar_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
         $plugin_url = plugin_dir_url(dirname(dirname(dirname(__FILE__))));
         $modulo_url = $plugin_url . 'includes/modules/parkings/assets/';
 
@@ -3997,6 +4061,113 @@ KNOWLEDGE;
 
 [flavor_module_listing module="parkings" action="mis_reservas" columnas="2" limite="20"]',
                 'parent' => 'parkings',
+            ],
+        ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'parkings',
+            'title'    => __('Parkings Comunitarios', 'flavor-chat-ia'),
+            'subtitle' => __('Encuentra y reserva plazas de aparcamiento en tu barrio', 'flavor-chat-ia'),
+            'icon'     => '🅿️',
+            'color'    => 'blue',
+
+            'database' => [
+                'table'       => 'flavor_parkings',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'      => ['type' => 'text', 'label' => __('Nombre', 'flavor-chat-ia'), 'required' => true],
+                'direccion'   => ['type' => 'text', 'label' => __('Dirección', 'flavor-chat-ia'), 'required' => true],
+                'plazas_total' => ['type' => 'number', 'label' => __('Total plazas', 'flavor-chat-ia')],
+                'plazas_libres' => ['type' => 'number', 'label' => __('Plazas libres', 'flavor-chat-ia')],
+                'precio_hora' => ['type' => 'number', 'label' => __('Precio/hora', 'flavor-chat-ia'), 'step' => '0.1'],
+                'precio_dia'  => ['type' => 'number', 'label' => __('Precio/día', 'flavor-chat-ia'), 'step' => '0.5'],
+                'horario'     => ['type' => 'text', 'label' => __('Horario', 'flavor-chat-ia')],
+                'latitud'     => ['type' => 'hidden', 'label' => __('Latitud', 'flavor-chat-ia')],
+                'longitud'    => ['type' => 'hidden', 'label' => __('Longitud', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'disponible' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'ocupado'    => ['label' => __('Ocupado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔴'],
+                'reservado'  => ['label' => __('Reservado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
+                'cerrado'    => ['label' => __('Cerrado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚫'],
+            ],
+
+            'stats' => [
+                'total_parkings'   => ['label' => __('Parkings', 'flavor-chat-ia'), 'icon' => '🅿️', 'color' => 'blue'],
+                'plazas_libres'    => ['label' => __('Plazas libres', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'green'],
+                'plazas_ocupadas'  => ['label' => __('Plazas ocupadas', 'flavor-chat-ia'), 'icon' => '🔴', 'color' => 'red'],
+                'ocupacion_media'  => ['label' => __('Ocupación media', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'purple'],
+            ],
+
+            'card' => [
+                'template'     => 'parking-card',
+                'title_field'  => 'nombre',
+                'subtitle_field' => 'direccion',
+                'meta_fields'  => ['plazas_libres', 'precio_hora', 'horario'],
+                'show_mapa'    => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'mapa' => [
+                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-location',
+                    'content' => 'shortcode:parkings_mapa',
+                    'public'  => true,
+                ],
+                'listado' => [
+                    'label'   => __('Listado', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-list-view',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'reservar' => [
+                    'label'      => __('Reservar', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-calendar-alt',
+                    'content'    => 'shortcode:parkings_reservar',
+                    'requires_login' => true,
+                ],
+                'mis-reservas' => [
+                    'label'      => __('Mis reservas', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:parkings_mis_reservas',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'nombre',
+                'order'      => 'ASC',
+                'filterable' => ['zona', 'estado'],
+                'show_mapa'  => true,
+            ],
+
+            'dashboard' => [
+                'widgets' => ['mapa_ocupacion', 'stats', 'mis_reservas', 'historial'],
+                'actions' => [
+                    'reservar' => ['label' => __('Reservar plaza', 'flavor-chat-ia'), 'icon' => '🅿️', 'color' => 'blue'],
+                    'mapa'     => ['label' => __('Ver mapa', 'flavor-chat-ia'), 'icon' => '🗺️', 'color' => 'green'],
+                ],
+            ],
+
+            'features' => [
+                'reservas'       => true,
+                'tiempo_real'    => true,
+                'geolocalización' => true,
+                'notificaciones' => true,
+                'historico'      => true,
             ],
         ];
     }

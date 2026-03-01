@@ -13,6 +13,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Evitar redeclaración si ya existe
+if (class_exists('Chat_IA_Admin_Shortcuts')) {
+    return;
+}
+
 class Chat_IA_Admin_Shortcuts {
 
     /**

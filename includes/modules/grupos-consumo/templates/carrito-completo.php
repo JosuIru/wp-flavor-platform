@@ -376,7 +376,7 @@ $url_catalogo = $args['url_catalogo'] ?? get_post_type_archive_link('gc_producto
             </p>
         </div>
         <div class="flavor-gc-modal-footer">
-            <a href="<?php echo esc_url(home_url('/mi-cuenta/?tab=gc-mis-pedidos')); ?>" class="flavor-gc-btn flavor-gc-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')); ?>" class="flavor-gc-btn flavor-gc-btn-primary">
                 <?php _e('Ver mis pedidos', 'flavor-chat-ia'); ?>
             </a>
         </div>

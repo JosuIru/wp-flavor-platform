@@ -54,20 +54,55 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
     }
 
     /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'espacios_listado',
+            'espacios_detalle',
+            'espacios_reservar',
+            'espacios_mis_reservas',
+            'espacios_calendario',
+            'espacios_proxima_reserva',
+            'espacios_equipamiento',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Registrar assets
      */
     public function registrar_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
         $base_url = plugins_url('assets/', dirname(__FILE__));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
-        wp_register_style(
+        wp_enqueue_style(
             'flavor-espacios-comunes',
             $base_url . 'css/espacios-comunes.css',
             [],
             $version
         );
 
-        wp_register_script(
+        wp_enqueue_script(
             'flavor-espacios-comunes',
             $base_url . 'js/espacios-comunes.js',
             ['jquery'],

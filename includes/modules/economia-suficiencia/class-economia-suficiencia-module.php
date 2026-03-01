@@ -17,6 +17,8 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
+
     /**
      * Categorías de necesidades (basadas en Max-Neef)
      */
@@ -170,6 +172,11 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $this->module_color = '#27ae60';
 
         parent::__construct();
+
+        // Registrar en el Panel de Administración Unificado
+        $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
     }
 
     /**
@@ -445,7 +452,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      * Encola los assets del módulo
      */
     public function enqueue_assets(): void {
-        if (!$this->is_module_page()) {
+        if (!$this->should_load_assets()) {
             return;
         }
 
@@ -477,9 +484,11 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
-     * Verifica si estamos en una página del módulo
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
      */
-    private function is_module_page(): bool {
+    private function should_load_assets(): bool {
         global $post;
         if (!$post) {
             return false;
@@ -1039,5 +1048,1337 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      */
     public function get_knowledge_base() {
         return __('La Economía de Suficiencia promueve un modelo basado en "suficiente" vs "máximo", enfocándose en necesidades reales y bienestar colectivo.', 'flavor-chat-ia');
+    }
+
+    // =========================================================================
+    // PANEL DE ADMINISTRACIÓN UNIFICADO
+    // =========================================================================
+
+    /**
+     * Configuración del módulo para el Panel de Administración Unificado
+     *
+     * Define las páginas de admin, categoría y callbacks de renderizado.
+     * El mapping 'economia_suficiencia' => 'suficiencia-dashboard' se establece
+     * automáticamente al usar el slug de la primera página.
+     *
+     * @return array Configuración completa del módulo para admin
+     */
+    public function get_admin_config(): array {
+        return [
+            'id'         => 'economia_suficiencia',
+            'label'      => __('Economía de Suficiencia', 'flavor-chat-ia'),
+            'icon'       => 'dashicons-editor-expand',
+            'capability' => 'manage_options',
+            'categoria'  => 'sostenibilidad',
+            'paginas'    => [
+                [
+                    'slug'     => 'suficiencia-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                    'badge'    => [$this, 'contar_compromisos_pendientes'],
+                ],
+                [
+                    'slug'     => 'suficiencia-usuarios',
+                    'titulo'   => __('Usuarios', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_usuarios'],
+                ],
+                [
+                    'slug'     => 'suficiencia-compromisos',
+                    'titulo'   => __('Compromisos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_compromisos'],
+                ],
+                [
+                    'slug'     => 'suficiencia-biblioteca',
+                    'titulo'   => __('Biblioteca', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_biblioteca'],
+                ],
+                [
+                    'slug'     => 'suficiencia-config',
+                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas'     => [$this, 'get_estadisticas_admin'],
+            'dashboard_widget' => [$this, 'render_admin_widget'],
+        ];
+    }
+
+    /**
+     * Obtiene estadísticas para el dashboard unificado
+     *
+     * @return array Estadísticas del módulo
+     */
+    public function get_estadisticas_admin(): array {
+        global $wpdb;
+
+        $total_usuarios_participando = $wpdb->get_var(
+            "SELECT COUNT(DISTINCT post_author)
+             FROM {$wpdb->posts}
+             WHERE post_type IN ('es_reflexion', 'es_compromiso', 'es_practica')
+             AND post_status = 'publish'"
+        );
+
+        $total_compromisos_activos = $wpdb->get_var(
+            "SELECT COUNT(*)
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'es_compromiso'
+             AND p.post_status = 'publish'
+             AND pm.meta_key = '_es_estado'
+             AND pm.meta_value = 'activo'"
+        );
+
+        $total_recursos_compartidos = wp_count_posts('es_recurso')->publish ?? 0;
+
+        return [
+            [
+                'icon'   => 'dashicons-groups',
+                'valor'  => intval($total_usuarios_participando),
+                'label'  => __('Participantes', 'flavor-chat-ia'),
+                'color'  => 'green',
+                'enlace' => admin_url('admin.php?page=suficiencia-usuarios'),
+            ],
+            [
+                'icon'   => 'dashicons-heart',
+                'valor'  => intval($total_compromisos_activos),
+                'label'  => __('Compromisos activos', 'flavor-chat-ia'),
+                'color'  => 'blue',
+                'enlace' => admin_url('admin.php?page=suficiencia-compromisos'),
+            ],
+            [
+                'icon'   => 'dashicons-share',
+                'valor'  => intval($total_recursos_compartidos),
+                'label'  => __('Recursos compartidos', 'flavor-chat-ia'),
+                'color'  => 'purple',
+                'enlace' => admin_url('admin.php?page=suficiencia-biblioteca'),
+            ],
+        ];
+    }
+
+    /**
+     * Cuenta compromisos pendientes de revisión (para badge)
+     *
+     * @return int Número de compromisos pendientes
+     */
+    public function contar_compromisos_pendientes(): int {
+        global $wpdb;
+
+        $pendientes = $wpdb->get_var(
+            "SELECT COUNT(*)
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'es_compromiso'
+             AND p.post_status = 'publish'
+             AND pm.meta_key = '_es_estado'
+             AND pm.meta_value = 'pendiente_revision'"
+        );
+
+        return intval($pendientes);
+    }
+
+    /**
+     * Renderiza el widget del dashboard unificado
+     */
+    public function render_admin_widget(): void {
+        global $wpdb;
+
+        $estadisticas_recientes = $wpdb->get_row(
+            "SELECT
+                (SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'es_practica' AND post_status = 'publish' AND post_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)) as practicas_semana,
+                (SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'es_compromiso' AND post_status = 'publish' AND post_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)) as compromisos_semana
+            "
+        );
+        ?>
+        <div class="suficiencia-widget-resumen">
+            <p>
+                <strong><?php echo intval($estadisticas_recientes->practicas_semana ?? 0); ?></strong>
+                <?php _e('prácticas registradas esta semana', 'flavor-chat-ia'); ?>
+            </p>
+            <p>
+                <strong><?php echo intval($estadisticas_recientes->compromisos_semana ?? 0); ?></strong>
+                <?php _e('nuevos compromisos esta semana', 'flavor-chat-ia'); ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de Dashboard de administración
+     */
+    public function render_admin_dashboard(): void {
+        global $wpdb;
+
+        // Obtener estadísticas generales
+        $total_usuarios = $wpdb->get_var(
+            "SELECT COUNT(DISTINCT post_author)
+             FROM {$wpdb->posts}
+             WHERE post_type IN ('es_reflexion', 'es_compromiso', 'es_practica')
+             AND post_status = 'publish'"
+        );
+
+        $total_compromisos_activos = $wpdb->get_var(
+            "SELECT COUNT(*)
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'es_compromiso'
+             AND p.post_status = 'publish'
+             AND pm.meta_key = '_es_estado'
+             AND pm.meta_value = 'activo'"
+        );
+
+        $total_practicas = wp_count_posts('es_practica')->publish ?? 0;
+        $total_recursos = wp_count_posts('es_recurso')->publish ?? 0;
+        $total_reflexiones = wp_count_posts('es_reflexion')->publish ?? 0;
+
+        // Calcular progreso comunitario (promedio de puntos por usuario)
+        $promedio_puntos = $wpdb->get_var(
+            "SELECT AVG(CAST(meta_value AS UNSIGNED))
+             FROM {$wpdb->usermeta}
+             WHERE meta_key = '_es_puntos_suficiencia'"
+        );
+
+        // Usuarios más activos
+        $usuarios_activos = $wpdb->get_results(
+            "SELECT u.ID, u.display_name,
+                    (SELECT meta_value FROM {$wpdb->usermeta} WHERE user_id = u.ID AND meta_key = '_es_puntos_suficiencia') as puntos,
+                    COUNT(p.ID) as actividad
+             FROM {$wpdb->users} u
+             INNER JOIN {$wpdb->posts} p ON p.post_author = u.ID
+             WHERE p.post_type IN ('es_reflexion', 'es_compromiso', 'es_practica')
+             AND p.post_status = 'publish'
+             GROUP BY u.ID
+             ORDER BY actividad DESC
+             LIMIT 5"
+        );
+
+        // Compromisos más populares
+        $compromisos_populares = $wpdb->get_results(
+            "SELECT pm.meta_value as tipo, COUNT(*) as total
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'es_compromiso'
+             AND p.post_status = 'publish'
+             AND pm.meta_key = '_es_tipo'
+             GROUP BY pm.meta_value
+             ORDER BY total DESC
+             LIMIT 5"
+        );
+
+        // Actividad reciente
+        $actividad_reciente = $wpdb->get_results(
+            "SELECT p.ID, p.post_type, p.post_title, p.post_date, u.display_name
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->users} u ON p.post_author = u.ID
+             WHERE p.post_type IN ('es_reflexion', 'es_compromiso', 'es_practica', 'es_recurso')
+             AND p.post_status = 'publish'
+             ORDER BY p.post_date DESC
+             LIMIT 10"
+        );
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Dashboard - Economía de Suficiencia', 'flavor-chat-ia')); ?>
+
+            <!-- KPIs principales -->
+            <div class="flavor-admin-kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-groups" style="font-size: 32px; color: #27ae60;"></span>
+                    <h3 style="margin: 10px 0 5px; font-size: 28px;"><?php echo intval($total_usuarios); ?></h3>
+                    <p style="color: #666; margin: 0;"><?php _e('Usuarios participando', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-heart" style="font-size: 32px; color: #e74c3c;"></span>
+                    <h3 style="margin: 10px 0 5px; font-size: 28px;"><?php echo intval($total_compromisos_activos); ?></h3>
+                    <p style="color: #666; margin: 0;"><?php _e('Compromisos activos', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-chart-bar" style="font-size: 32px; color: #3498db;"></span>
+                    <h3 style="margin: 10px 0 5px; font-size: 28px;"><?php echo number_format(floatval($promedio_puntos), 1); ?></h3>
+                    <p style="color: #666; margin: 0;"><?php _e('Progreso comunitario (promedio)', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-share" style="font-size: 32px; color: #9b59b6;"></span>
+                    <h3 style="margin: 10px 0 5px; font-size: 28px;"><?php echo intval($total_recursos); ?></h3>
+                    <p style="color: #666; margin: 0;"><?php _e('Recursos compartidos', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+
+            <div class="flavor-admin-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                <!-- Usuarios más activos -->
+                <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h2><?php _e('Usuarios más activos', 'flavor-chat-ia'); ?></h2>
+                    <?php if ($usuarios_activos): ?>
+                        <table class="widefat striped">
+                            <thead>
+                                <tr>
+                                    <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
+                                    <th><?php _e('Puntos', 'flavor-chat-ia'); ?></th>
+                                    <th><?php _e('Actividad', 'flavor-chat-ia'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($usuarios_activos as $usuario): ?>
+                                    <tr>
+                                        <td>
+                                            <?php echo get_avatar($usuario->ID, 24); ?>
+                                            <?php echo esc_html($usuario->display_name); ?>
+                                        </td>
+                                        <td><strong><?php echo intval($usuario->puntos); ?></strong></td>
+                                        <td><?php echo intval($usuario->actividad); ?> <?php _e('acciones', 'flavor-chat-ia'); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p class="description"><?php _e('Aún no hay usuarios participando.', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Compromisos más populares -->
+                <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h2><?php _e('Compromisos más populares', 'flavor-chat-ia'); ?></h2>
+                    <?php if ($compromisos_populares): ?>
+                        <ul style="margin: 0; padding: 0; list-style: none;">
+                            <?php foreach ($compromisos_populares as $compromiso):
+                                $tipo_info = self::TIPOS_COMPROMISO[$compromiso->tipo] ?? ['nombre' => $compromiso->tipo, 'icono' => 'dashicons-marker'];
+                            ?>
+                                <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>
+                                        <span class="dashicons <?php echo esc_attr($tipo_info['icono']); ?>"></span>
+                                        <?php echo esc_html($tipo_info['nombre']); ?>
+                                    </span>
+                                    <strong><?php echo intval($compromiso->total); ?> <?php _e('personas', 'flavor-chat-ia'); ?></strong>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="description"><?php _e('Aún no hay compromisos registrados.', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Actividad reciente -->
+            <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 20px;">
+                <h2><?php _e('Actividad reciente', 'flavor-chat-ia'); ?></h2>
+                <?php if ($actividad_reciente): ?>
+                    <table class="widefat striped">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($actividad_reciente as $actividad):
+                                $tipo_labels = [
+                                    'es_reflexion' => __('Reflexión', 'flavor-chat-ia'),
+                                    'es_compromiso' => __('Compromiso', 'flavor-chat-ia'),
+                                    'es_practica' => __('Práctica', 'flavor-chat-ia'),
+                                    'es_recurso' => __('Recurso', 'flavor-chat-ia'),
+                                ];
+                            ?>
+                                <tr>
+                                    <td><?php echo esc_html(date_i18n('j M Y, H:i', strtotime($actividad->post_date))); ?></td>
+                                    <td><span class="flavor-badge"><?php echo esc_html($tipo_labels[$actividad->post_type] ?? $actividad->post_type); ?></span></td>
+                                    <td><?php echo esc_html($actividad->post_title); ?></td>
+                                    <td><?php echo esc_html($actividad->display_name); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p class="description"><?php _e('No hay actividad reciente.', 'flavor-chat-ia'); ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de gestión de usuarios
+     */
+    public function render_admin_usuarios(): void {
+        global $wpdb;
+
+        // Paginación
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $items_por_pagina = 20;
+        $offset = ($pagina_actual - 1) * $items_por_pagina;
+
+        // Filtros
+        $filtro_nivel = isset($_GET['nivel']) ? sanitize_key($_GET['nivel']) : '';
+        $buscar = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        // Construir query
+        $query_where = "WHERE p.post_type IN ('es_reflexion', 'es_compromiso', 'es_practica') AND p.post_status = 'publish'";
+        $query_params = [];
+
+        if ($buscar) {
+            $query_where .= " AND u.display_name LIKE %s";
+            $query_params[] = '%' . $wpdb->esc_like($buscar) . '%';
+        }
+
+        // Obtener usuarios con su actividad
+        $total_usuarios = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(DISTINCT p.post_author)
+                 FROM {$wpdb->posts} p
+                 INNER JOIN {$wpdb->users} u ON p.post_author = u.ID
+                 {$query_where}",
+                ...$query_params
+            )
+        );
+
+        $usuarios = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT u.ID, u.display_name, u.user_email, u.user_registered,
+                        COALESCE((SELECT meta_value FROM {$wpdb->usermeta} WHERE user_id = u.ID AND meta_key = '_es_puntos_suficiencia'), 0) as puntos,
+                        COUNT(p.ID) as total_actividad,
+                        SUM(CASE WHEN p.post_type = 'es_compromiso' THEN 1 ELSE 0 END) as total_compromisos,
+                        SUM(CASE WHEN p.post_type = 'es_practica' THEN 1 ELSE 0 END) as total_practicas,
+                        SUM(CASE WHEN p.post_type = 'es_reflexion' THEN 1 ELSE 0 END) as total_reflexiones
+                 FROM {$wpdb->users} u
+                 INNER JOIN {$wpdb->posts} p ON p.post_author = u.ID
+                 {$query_where}
+                 GROUP BY u.ID
+                 ORDER BY puntos DESC
+                 LIMIT %d OFFSET %d",
+                ...array_merge($query_params, [$items_por_pagina, $offset])
+            )
+        );
+
+        $total_paginas = ceil($total_usuarios / $items_por_pagina);
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Usuarios - Economía de Suficiencia', 'flavor-chat-ia')); ?>
+
+            <!-- Filtros -->
+            <div class="tablenav top">
+                <form method="get" style="display: flex; gap: 10px; align-items: center;">
+                    <input type="hidden" name="page" value="suficiencia-usuarios">
+                    <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-chat-ia'); ?>">
+                    <select name="nivel">
+                        <option value=""><?php _e('Todos los niveles', 'flavor-chat-ia'); ?></option>
+                        <?php foreach (self::NIVELES_SUFICIENCIA as $nivel_id => $nivel_data): ?>
+                            <option value="<?php echo esc_attr($nivel_id); ?>" <?php selected($filtro_nivel, $nivel_id); ?>>
+                                <?php echo esc_html($nivel_data['nombre']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                </form>
+            </div>
+
+            <!-- Tabla de usuarios -->
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;"></th>
+                        <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Email', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Nivel', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Puntos', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Compromisos', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Prácticas', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Reflexiones', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($usuarios): ?>
+                        <?php foreach ($usuarios as $usuario):
+                            $nivel_data = $this->get_nivel_usuario($usuario->ID);
+                        ?>
+                            <tr>
+                                <td><?php echo get_avatar($usuario->ID, 32); ?></td>
+                                <td>
+                                    <strong><?php echo esc_html($usuario->display_name); ?></strong>
+                                    <br><small><?php _e('Desde:', 'flavor-chat-ia'); ?> <?php echo esc_html(date_i18n('j M Y', strtotime($usuario->user_registered))); ?></small>
+                                </td>
+                                <td><?php echo esc_html($usuario->user_email); ?></td>
+                                <td>
+                                    <span class="flavor-badge" style="background-color: <?php echo esc_attr($nivel_data['nivel']['color']); ?>; color: #fff;">
+                                        <?php echo esc_html($nivel_data['nivel']['nombre']); ?>
+                                    </span>
+                                </td>
+                                <td><strong><?php echo intval($usuario->puntos); ?></strong></td>
+                                <td><?php echo intval($usuario->total_compromisos); ?></td>
+                                <td><?php echo intval($usuario->total_practicas); ?></td>
+                                <td><?php echo intval($usuario->total_reflexiones); ?></td>
+                                <td>
+                                    <a href="<?php echo esc_url(get_edit_user_link($usuario->ID)); ?>" class="button button-small">
+                                        <?php _e('Ver perfil', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="9"><?php _e('No se encontraron usuarios participando en el módulo.', 'flavor-chat-ia'); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+            <!-- Paginación -->
+            <?php if ($total_paginas > 1): ?>
+                <div class="tablenav bottom">
+                    <div class="tablenav-pages">
+                        <span class="displaying-num">
+                            <?php printf(__('%d usuarios', 'flavor-chat-ia'), $total_usuarios); ?>
+                        </span>
+                        <?php
+                        echo paginate_links([
+                            'base'    => add_query_arg('paged', '%#%'),
+                            'format'  => '',
+                            'current' => $pagina_actual,
+                            'total'   => $total_paginas,
+                            'type'    => 'plain',
+                        ]);
+                        ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de gestión de compromisos
+     */
+    public function render_admin_compromisos(): void {
+        global $wpdb;
+
+        // Procesar acciones
+        if (isset($_POST['accion_compromiso']) && wp_verify_nonce($_POST['_wpnonce_suficiencia'], 'suficiencia_admin_compromisos')) {
+            $compromiso_id = intval($_POST['compromiso_id']);
+            $accion = sanitize_key($_POST['accion_compromiso']);
+
+            switch ($accion) {
+                case 'aprobar':
+                    update_post_meta($compromiso_id, '_es_estado', 'activo');
+                    echo '<div class="notice notice-success"><p>' . __('Compromiso aprobado.', 'flavor-chat-ia') . '</p></div>';
+                    break;
+                case 'rechazar':
+                    update_post_meta($compromiso_id, '_es_estado', 'rechazado');
+                    echo '<div class="notice notice-warning"><p>' . __('Compromiso rechazado.', 'flavor-chat-ia') . '</p></div>';
+                    break;
+                case 'completar':
+                    update_post_meta($compromiso_id, '_es_estado', 'completado');
+                    echo '<div class="notice notice-success"><p>' . __('Compromiso marcado como completado.', 'flavor-chat-ia') . '</p></div>';
+                    break;
+            }
+        }
+
+        // Paginación y filtros
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $items_por_pagina = 20;
+        $offset = ($pagina_actual - 1) * $items_por_pagina;
+        $filtro_estado = isset($_GET['estado']) ? sanitize_key($_GET['estado']) : '';
+        $filtro_tipo = isset($_GET['tipo']) ? sanitize_key($_GET['tipo']) : '';
+
+        // Construir query
+        $query_where = "WHERE p.post_type = 'es_compromiso' AND p.post_status = 'publish'";
+        $query_params = [];
+
+        if ($filtro_estado) {
+            $query_where .= " AND pm_estado.meta_value = %s";
+            $query_params[] = $filtro_estado;
+        }
+
+        if ($filtro_tipo) {
+            $query_where .= " AND pm_tipo.meta_value = %s";
+            $query_params[] = $filtro_tipo;
+        }
+
+        // Total compromisos
+        $count_query = "SELECT COUNT(DISTINCT p.ID)
+                        FROM {$wpdb->posts} p
+                        LEFT JOIN {$wpdb->postmeta} pm_estado ON p.ID = pm_estado.post_id AND pm_estado.meta_key = '_es_estado'
+                        LEFT JOIN {$wpdb->postmeta} pm_tipo ON p.ID = pm_tipo.post_id AND pm_tipo.meta_key = '_es_tipo'
+                        {$query_where}";
+        $total_compromisos = $wpdb->get_var($query_params ? $wpdb->prepare($count_query, ...$query_params) : $count_query);
+
+        // Obtener compromisos
+        $select_query = "SELECT p.ID, p.post_title, p.post_date, p.post_author,
+                                u.display_name,
+                                pm_estado.meta_value as estado,
+                                pm_tipo.meta_value as tipo,
+                                pm_duracion.meta_value as duracion,
+                                pm_dias.meta_value as dias_cumplidos,
+                                pm_desc.meta_value as descripcion
+                         FROM {$wpdb->posts} p
+                         INNER JOIN {$wpdb->users} u ON p.post_author = u.ID
+                         LEFT JOIN {$wpdb->postmeta} pm_estado ON p.ID = pm_estado.post_id AND pm_estado.meta_key = '_es_estado'
+                         LEFT JOIN {$wpdb->postmeta} pm_tipo ON p.ID = pm_tipo.post_id AND pm_tipo.meta_key = '_es_tipo'
+                         LEFT JOIN {$wpdb->postmeta} pm_duracion ON p.ID = pm_duracion.post_id AND pm_duracion.meta_key = '_es_duracion_dias'
+                         LEFT JOIN {$wpdb->postmeta} pm_dias ON p.ID = pm_dias.post_id AND pm_dias.meta_key = '_es_dias_cumplidos'
+                         LEFT JOIN {$wpdb->postmeta} pm_desc ON p.ID = pm_desc.post_id AND pm_desc.meta_key = '_es_descripcion'
+                         {$query_where}
+                         ORDER BY p.post_date DESC
+                         LIMIT %d OFFSET %d";
+
+        $query_final_params = array_merge($query_params, [$items_por_pagina, $offset]);
+        $compromisos = $wpdb->get_results($wpdb->prepare($select_query, ...$query_final_params));
+
+        $total_paginas = ceil($total_compromisos / $items_por_pagina);
+
+        $estados_compromisos = [
+            'activo' => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => '#27ae60'],
+            'pendiente_revision' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => '#f39c12'],
+            'completado' => ['label' => __('Completado', 'flavor-chat-ia'), 'color' => '#3498db'],
+            'abandonado' => ['label' => __('Abandonado', 'flavor-chat-ia'), 'color' => '#95a5a6'],
+            'rechazado' => ['label' => __('Rechazado', 'flavor-chat-ia'), 'color' => '#e74c3c'],
+        ];
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Compromisos - Economía de Suficiencia', 'flavor-chat-ia')); ?>
+
+            <!-- Resumen de tipos de compromiso disponibles -->
+            <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                <h3><?php _e('Tipos de compromiso disponibles', 'flavor-chat-ia'); ?></h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                    <?php foreach (self::TIPOS_COMPROMISO as $tipo_id => $tipo_data): ?>
+                        <div style="padding: 10px 15px; background: #f0f0f1; border-radius: 6px; display: flex; align-items: center; gap: 8px;">
+                            <span class="dashicons <?php echo esc_attr($tipo_data['icono']); ?>"></span>
+                            <span><strong><?php echo esc_html($tipo_data['nombre']); ?></strong></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="tablenav top">
+                <form method="get" style="display: flex; gap: 10px; align-items: center;">
+                    <input type="hidden" name="page" value="suficiencia-compromisos">
+                    <select name="estado">
+                        <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($estados_compromisos as $estado_id => $estado_data): ?>
+                            <option value="<?php echo esc_attr($estado_id); ?>" <?php selected($filtro_estado, $estado_id); ?>>
+                                <?php echo esc_html($estado_data['label']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <select name="tipo">
+                        <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                        <?php foreach (self::TIPOS_COMPROMISO as $tipo_id => $tipo_data): ?>
+                            <option value="<?php echo esc_attr($tipo_id); ?>" <?php selected($filtro_tipo, $tipo_id); ?>>
+                                <?php echo esc_html($tipo_data['nombre']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                </form>
+            </div>
+
+            <!-- Tabla de compromisos -->
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Progreso', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Fecha inicio', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($compromisos): ?>
+                        <?php foreach ($compromisos as $compromiso):
+                            $tipo_info = self::TIPOS_COMPROMISO[$compromiso->tipo] ?? ['nombre' => $compromiso->tipo, 'icono' => 'dashicons-marker'];
+                            $estado_info = $estados_compromisos[$compromiso->estado] ?? ['label' => $compromiso->estado, 'color' => '#999'];
+                            $duracion = intval($compromiso->duracion);
+                            $dias_cumplidos = intval($compromiso->dias_cumplidos);
+                            $progreso = $duracion > 0 ? min(100, round(($dias_cumplidos / $duracion) * 100)) : 0;
+                        ?>
+                            <tr>
+                                <td>
+                                    <span class="dashicons <?php echo esc_attr($tipo_info['icono']); ?>"></span>
+                                    <?php echo esc_html($tipo_info['nombre']); ?>
+                                </td>
+                                <td>
+                                    <?php echo get_avatar($compromiso->post_author, 24); ?>
+                                    <?php echo esc_html($compromiso->display_name); ?>
+                                </td>
+                                <td>
+                                    <?php echo esc_html($compromiso->descripcion ? wp_trim_words($compromiso->descripcion, 10) : '-'); ?>
+                                </td>
+                                <td>
+                                    <span class="flavor-badge" style="background-color: <?php echo esc_attr($estado_info['color']); ?>; color: #fff;">
+                                        <?php echo esc_html($estado_info['label']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="flex: 1; background: #e0e0e0; border-radius: 4px; height: 8px;">
+                                            <div style="width: <?php echo $progreso; ?>%; background: #27ae60; border-radius: 4px; height: 100%;"></div>
+                                        </div>
+                                        <span><?php echo $dias_cumplidos; ?>/<?php echo $duracion; ?> <?php _e('días', 'flavor-chat-ia'); ?></span>
+                                    </div>
+                                </td>
+                                <td><?php echo esc_html(date_i18n('j M Y', strtotime($compromiso->post_date))); ?></td>
+                                <td>
+                                    <?php if ($compromiso->estado === 'pendiente_revision'): ?>
+                                        <form method="post" style="display: inline;">
+                                            <?php wp_nonce_field('suficiencia_admin_compromisos', '_wpnonce_suficiencia'); ?>
+                                            <input type="hidden" name="compromiso_id" value="<?php echo $compromiso->ID; ?>">
+                                            <button type="submit" name="accion_compromiso" value="aprobar" class="button button-small button-primary">
+                                                <?php _e('Aprobar', 'flavor-chat-ia'); ?>
+                                            </button>
+                                            <button type="submit" name="accion_compromiso" value="rechazar" class="button button-small">
+                                                <?php _e('Rechazar', 'flavor-chat-ia'); ?>
+                                            </button>
+                                        </form>
+                                    <?php elseif ($compromiso->estado === 'activo'): ?>
+                                        <form method="post" style="display: inline;">
+                                            <?php wp_nonce_field('suficiencia_admin_compromisos', '_wpnonce_suficiencia'); ?>
+                                            <input type="hidden" name="compromiso_id" value="<?php echo $compromiso->ID; ?>">
+                                            <button type="submit" name="accion_compromiso" value="completar" class="button button-small">
+                                                <?php _e('Marcar completado', 'flavor-chat-ia'); ?>
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7"><?php _e('No se encontraron compromisos.', 'flavor-chat-ia'); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+            <!-- Paginación -->
+            <?php if ($total_paginas > 1): ?>
+                <div class="tablenav bottom">
+                    <div class="tablenav-pages">
+                        <span class="displaying-num">
+                            <?php printf(__('%d compromisos', 'flavor-chat-ia'), $total_compromisos); ?>
+                        </span>
+                        <?php
+                        echo paginate_links([
+                            'base'    => add_query_arg('paged', '%#%'),
+                            'format'  => '',
+                            'current' => $pagina_actual,
+                            'total'   => $total_paginas,
+                            'type'    => 'plain',
+                        ]);
+                        ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de biblioteca de recursos educativos
+     */
+    public function render_admin_biblioteca(): void {
+        global $wpdb;
+
+        // Procesar acciones de agregar/editar recurso
+        if (isset($_POST['guardar_recurso']) && wp_verify_nonce($_POST['_wpnonce_suficiencia'], 'suficiencia_admin_biblioteca')) {
+            $recurso_id = isset($_POST['recurso_id']) ? intval($_POST['recurso_id']) : 0;
+            $titulo = sanitize_text_field($_POST['titulo']);
+            $contenido = wp_kses_post($_POST['contenido']);
+            $categoria_recurso = sanitize_key($_POST['categoria_recurso']);
+            $tipo_recurso = sanitize_key($_POST['tipo_recurso']);
+
+            $post_data = [
+                'post_title'   => $titulo,
+                'post_content' => $contenido,
+                'post_type'    => 'es_recurso',
+                'post_status'  => 'publish',
+            ];
+
+            if ($recurso_id) {
+                $post_data['ID'] = $recurso_id;
+                wp_update_post($post_data);
+                $mensaje = __('Recurso actualizado correctamente.', 'flavor-chat-ia');
+            } else {
+                $recurso_id = wp_insert_post($post_data);
+                $mensaje = __('Recurso creado correctamente.', 'flavor-chat-ia');
+            }
+
+            if ($recurso_id && !is_wp_error($recurso_id)) {
+                update_post_meta($recurso_id, '_es_categoria', $categoria_recurso);
+                update_post_meta($recurso_id, '_es_tipo', $tipo_recurso);
+                echo '<div class="notice notice-success"><p>' . esc_html($mensaje) . '</p></div>';
+            }
+        }
+
+        // Eliminar recurso
+        if (isset($_GET['eliminar']) && isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'eliminar_recurso')) {
+            $recurso_id = intval($_GET['eliminar']);
+            wp_delete_post($recurso_id, true);
+            echo '<div class="notice notice-success"><p>' . __('Recurso eliminado.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        // Paginación
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $items_por_pagina = 20;
+        $offset = ($pagina_actual - 1) * $items_por_pagina;
+
+        // Filtros
+        $filtro_categoria = isset($_GET['categoria']) ? sanitize_key($_GET['categoria']) : '';
+        $filtro_tipo = isset($_GET['tipo']) ? sanitize_key($_GET['tipo']) : '';
+
+        $categorias_recursos = [
+            'libros' => __('Libros', 'flavor-chat-ia'),
+            'articulos' => __('Artículos', 'flavor-chat-ia'),
+            'videos' => __('Videos', 'flavor-chat-ia'),
+            'podcasts' => __('Podcasts', 'flavor-chat-ia'),
+            'cursos' => __('Cursos', 'flavor-chat-ia'),
+            'herramientas' => __('Herramientas', 'flavor-chat-ia'),
+            'comunidades' => __('Comunidades', 'flavor-chat-ia'),
+        ];
+
+        $tipos_recursos = [
+            'enlace' => __('Enlace externo', 'flavor-chat-ia'),
+            'documento' => __('Documento descargable', 'flavor-chat-ia'),
+            'texto' => __('Contenido propio', 'flavor-chat-ia'),
+        ];
+
+        // Construir query
+        $query_where = "WHERE p.post_type = 'es_recurso' AND p.post_status = 'publish'";
+        $query_params = [];
+
+        if ($filtro_categoria) {
+            $query_where .= " AND pm_cat.meta_value = %s";
+            $query_params[] = $filtro_categoria;
+        }
+
+        if ($filtro_tipo) {
+            $query_where .= " AND pm_tipo.meta_value = %s";
+            $query_params[] = $filtro_tipo;
+        }
+
+        $count_query = "SELECT COUNT(DISTINCT p.ID)
+                        FROM {$wpdb->posts} p
+                        LEFT JOIN {$wpdb->postmeta} pm_cat ON p.ID = pm_cat.post_id AND pm_cat.meta_key = '_es_categoria'
+                        LEFT JOIN {$wpdb->postmeta} pm_tipo ON p.ID = pm_tipo.post_id AND pm_tipo.meta_key = '_es_tipo'
+                        {$query_where}";
+        $total_recursos = $wpdb->get_var($query_params ? $wpdb->prepare($count_query, ...$query_params) : $count_query);
+
+        $select_query = "SELECT p.ID, p.post_title, p.post_content, p.post_date, p.post_author,
+                                u.display_name,
+                                pm_cat.meta_value as categoria,
+                                pm_tipo.meta_value as tipo
+                         FROM {$wpdb->posts} p
+                         INNER JOIN {$wpdb->users} u ON p.post_author = u.ID
+                         LEFT JOIN {$wpdb->postmeta} pm_cat ON p.ID = pm_cat.post_id AND pm_cat.meta_key = '_es_categoria'
+                         LEFT JOIN {$wpdb->postmeta} pm_tipo ON p.ID = pm_tipo.post_id AND pm_tipo.meta_key = '_es_tipo'
+                         {$query_where}
+                         ORDER BY p.post_date DESC
+                         LIMIT %d OFFSET %d";
+
+        $query_final_params = array_merge($query_params, [$items_por_pagina, $offset]);
+        $recursos = $wpdb->get_results($wpdb->prepare($select_query, ...$query_final_params));
+
+        $total_paginas = ceil($total_recursos / $items_por_pagina);
+
+        // Verificar si estamos editando
+        $editando_recurso = null;
+        if (isset($_GET['editar'])) {
+            $editando_recurso = get_post(intval($_GET['editar']));
+        }
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php
+            $acciones_header = [
+                ['label' => __('Añadir recurso', 'flavor-chat-ia'), 'url' => '#formulario-recurso', 'class' => 'button-primary'],
+            ];
+            $this->render_page_header(__('Biblioteca - Economía de Suficiencia', 'flavor-chat-ia'), $acciones_header);
+            ?>
+
+            <!-- Formulario para añadir/editar recurso -->
+            <div id="formulario-recurso" class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                <h3><?php echo $editando_recurso ? __('Editar recurso', 'flavor-chat-ia') : __('Añadir nuevo recurso educativo', 'flavor-chat-ia'); ?></h3>
+                <form method="post">
+                    <?php wp_nonce_field('suficiencia_admin_biblioteca', '_wpnonce_suficiencia'); ?>
+                    <?php if ($editando_recurso): ?>
+                        <input type="hidden" name="recurso_id" value="<?php echo $editando_recurso->ID; ?>">
+                    <?php endif; ?>
+
+                    <table class="form-table">
+                        <tr>
+                            <th><label for="titulo"><?php _e('Título', 'flavor-chat-ia'); ?></label></th>
+                            <td>
+                                <input type="text" name="titulo" id="titulo" class="regular-text" required
+                                       value="<?php echo $editando_recurso ? esc_attr($editando_recurso->post_title) : ''; ?>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="categoria_recurso"><?php _e('Categoría', 'flavor-chat-ia'); ?></label></th>
+                            <td>
+                                <select name="categoria_recurso" id="categoria_recurso">
+                                    <?php
+                                    $cat_actual = $editando_recurso ? get_post_meta($editando_recurso->ID, '_es_categoria', true) : '';
+                                    foreach ($categorias_recursos as $cat_id => $cat_label):
+                                    ?>
+                                        <option value="<?php echo esc_attr($cat_id); ?>" <?php selected($cat_actual, $cat_id); ?>>
+                                            <?php echo esc_html($cat_label); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="tipo_recurso"><?php _e('Tipo', 'flavor-chat-ia'); ?></label></th>
+                            <td>
+                                <select name="tipo_recurso" id="tipo_recurso">
+                                    <?php
+                                    $tipo_actual = $editando_recurso ? get_post_meta($editando_recurso->ID, '_es_tipo', true) : '';
+                                    foreach ($tipos_recursos as $tipo_id => $tipo_label):
+                                    ?>
+                                        <option value="<?php echo esc_attr($tipo_id); ?>" <?php selected($tipo_actual, $tipo_id); ?>>
+                                            <?php echo esc_html($tipo_label); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="contenido"><?php _e('Contenido/Descripción', 'flavor-chat-ia'); ?></label></th>
+                            <td>
+                                <?php
+                                wp_editor(
+                                    $editando_recurso ? $editando_recurso->post_content : '',
+                                    'contenido',
+                                    ['textarea_rows' => 8, 'media_buttons' => true]
+                                );
+                                ?>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <p class="submit">
+                        <button type="submit" name="guardar_recurso" class="button button-primary">
+                            <?php echo $editando_recurso ? __('Actualizar recurso', 'flavor-chat-ia') : __('Añadir recurso', 'flavor-chat-ia'); ?>
+                        </button>
+                        <?php if ($editando_recurso): ?>
+                            <a href="<?php echo admin_url('admin.php?page=suficiencia-biblioteca'); ?>" class="button">
+                                <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                            </a>
+                        <?php endif; ?>
+                    </p>
+                </form>
+            </div>
+
+            <!-- Filtros -->
+            <div class="tablenav top">
+                <form method="get" style="display: flex; gap: 10px; align-items: center;">
+                    <input type="hidden" name="page" value="suficiencia-biblioteca">
+                    <select name="categoria">
+                        <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($categorias_recursos as $cat_id => $cat_label): ?>
+                            <option value="<?php echo esc_attr($cat_id); ?>" <?php selected($filtro_categoria, $cat_id); ?>>
+                                <?php echo esc_html($cat_label); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <select name="tipo">
+                        <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($tipos_recursos as $tipo_id => $tipo_label): ?>
+                            <option value="<?php echo esc_attr($tipo_id); ?>" <?php selected($filtro_tipo, $tipo_id); ?>>
+                                <?php echo esc_html($tipo_label); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                </form>
+            </div>
+
+            <!-- Tabla de recursos -->
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Categoría', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Autor', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($recursos): ?>
+                        <?php foreach ($recursos as $recurso): ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo esc_html($recurso->post_title); ?></strong>
+                                    <br><small><?php echo esc_html(wp_trim_words(strip_tags($recurso->post_content), 15)); ?></small>
+                                </td>
+                                <td><?php echo esc_html($categorias_recursos[$recurso->categoria] ?? $recurso->categoria); ?></td>
+                                <td><?php echo esc_html($tipos_recursos[$recurso->tipo] ?? $recurso->tipo); ?></td>
+                                <td><?php echo esc_html($recurso->display_name); ?></td>
+                                <td><?php echo esc_html(date_i18n('j M Y', strtotime($recurso->post_date))); ?></td>
+                                <td>
+                                    <a href="<?php echo add_query_arg('editar', $recurso->ID); ?>" class="button button-small">
+                                        <?php _e('Editar', 'flavor-chat-ia'); ?>
+                                    </a>
+                                    <a href="<?php echo wp_nonce_url(add_query_arg('eliminar', $recurso->ID), 'eliminar_recurso'); ?>"
+                                       class="button button-small"
+                                       onclick="return confirm('<?php esc_attr_e('¿Estás seguro de eliminar este recurso?', 'flavor-chat-ia'); ?>');">
+                                        <?php _e('Eliminar', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6"><?php _e('No hay recursos en la biblioteca.', 'flavor-chat-ia'); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+            <!-- Paginación -->
+            <?php if ($total_paginas > 1): ?>
+                <div class="tablenav bottom">
+                    <div class="tablenav-pages">
+                        <span class="displaying-num">
+                            <?php printf(__('%d recursos', 'flavor-chat-ia'), $total_recursos); ?>
+                        </span>
+                        <?php
+                        echo paginate_links([
+                            'base'    => add_query_arg('paged', '%#%'),
+                            'format'  => '',
+                            'current' => $pagina_actual,
+                            'total'   => $total_paginas,
+                            'type'    => 'plain',
+                        ]);
+                        ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de configuración del módulo
+     */
+    public function render_admin_config(): void {
+        // Guardar configuración
+        if (isset($_POST['guardar_config']) && wp_verify_nonce($_POST['_wpnonce_suficiencia'], 'suficiencia_admin_config')) {
+            $opciones = [
+                'es_habilitar_biblioteca' => isset($_POST['es_habilitar_biblioteca']) ? 1 : 0,
+                'es_habilitar_gamificacion' => isset($_POST['es_habilitar_gamificacion']) ? 1 : 0,
+                'es_puntos_reflexion' => max(1, intval($_POST['es_puntos_reflexion'])),
+                'es_puntos_compromiso' => max(1, intval($_POST['es_puntos_compromiso'])),
+                'es_puntos_practica' => max(1, intval($_POST['es_puntos_practica'])),
+                'es_puntos_compartir' => max(1, intval($_POST['es_puntos_compartir'])),
+                'es_duracion_minima_compromiso' => max(1, intval($_POST['es_duracion_minima_compromiso'])),
+                'es_duracion_maxima_compromiso' => max(1, intval($_POST['es_duracion_maxima_compromiso'])),
+                'es_moderacion_compromisos' => isset($_POST['es_moderacion_compromisos']) ? 1 : 0,
+                'es_mostrar_ranking' => isset($_POST['es_mostrar_ranking']) ? 1 : 0,
+                'es_notificar_nuevos_compromisos' => isset($_POST['es_notificar_nuevos_compromisos']) ? 1 : 0,
+                'es_email_notificaciones' => sanitize_email($_POST['es_email_notificaciones']),
+            ];
+
+            foreach ($opciones as $opcion_key => $opcion_valor) {
+                update_option($opcion_key, $opcion_valor);
+            }
+
+            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        // Obtener valores actuales
+        $config = [
+            'es_habilitar_biblioteca' => get_option('es_habilitar_biblioteca', 1),
+            'es_habilitar_gamificacion' => get_option('es_habilitar_gamificacion', 1),
+            'es_puntos_reflexion' => get_option('es_puntos_reflexion', 5),
+            'es_puntos_compromiso' => get_option('es_puntos_compromiso', 10),
+            'es_puntos_practica' => get_option('es_puntos_practica', 3),
+            'es_puntos_compartir' => get_option('es_puntos_compartir', 15),
+            'es_duracion_minima_compromiso' => get_option('es_duracion_minima_compromiso', 7),
+            'es_duracion_maxima_compromiso' => get_option('es_duracion_maxima_compromiso', 365),
+            'es_moderacion_compromisos' => get_option('es_moderacion_compromisos', 0),
+            'es_mostrar_ranking' => get_option('es_mostrar_ranking', 1),
+            'es_notificar_nuevos_compromisos' => get_option('es_notificar_nuevos_compromisos', 1),
+            'es_email_notificaciones' => get_option('es_email_notificaciones', get_option('admin_email')),
+        ];
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Configuración - Economía de Suficiencia', 'flavor-chat-ia')); ?>
+
+            <form method="post">
+                <?php wp_nonce_field('suficiencia_admin_config', '_wpnonce_suficiencia'); ?>
+
+                <!-- Configuración General -->
+                <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h2><?php _e('Configuración General', 'flavor-chat-ia'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th><?php _e('Biblioteca de recursos', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="es_habilitar_biblioteca" value="1" <?php checked($config['es_habilitar_biblioteca'], 1); ?>>
+                                    <?php _e('Habilitar biblioteca de objetos compartidos', 'flavor-chat-ia'); ?>
+                                </label>
+                                <p class="description"><?php _e('Permite a los usuarios compartir y solicitar préstamos de objetos.', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Moderación de compromisos', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="es_moderacion_compromisos" value="1" <?php checked($config['es_moderacion_compromisos'], 1); ?>>
+                                    <?php _e('Requerir aprobación para nuevos compromisos', 'flavor-chat-ia'); ?>
+                                </label>
+                                <p class="description"><?php _e('Los compromisos quedarán en estado pendiente hasta ser aprobados por un administrador.', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Sistema de Gamificación -->
+                <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h2><?php _e('Sistema de Gamificación', 'flavor-chat-ia'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th><?php _e('Habilitar gamificación', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="es_habilitar_gamificacion" value="1" <?php checked($config['es_habilitar_gamificacion'], 1); ?>>
+                                    <?php _e('Activar sistema de puntos y niveles', 'flavor-chat-ia'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Mostrar ranking público', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="es_mostrar_ranking" value="1" <?php checked($config['es_mostrar_ranking'], 1); ?>>
+                                    <?php _e('Mostrar clasificación de usuarios por puntos', 'flavor-chat-ia'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Puntos por acción', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <table style="border-collapse: separate; border-spacing: 10px 5px;">
+                                    <tr>
+                                        <td><label><?php _e('Reflexión:', 'flavor-chat-ia'); ?></label></td>
+                                        <td><input type="number" name="es_puntos_reflexion" value="<?php echo esc_attr($config['es_puntos_reflexion']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-chat-ia'); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label><?php _e('Nuevo compromiso:', 'flavor-chat-ia'); ?></label></td>
+                                        <td><input type="number" name="es_puntos_compromiso" value="<?php echo esc_attr($config['es_puntos_compromiso']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-chat-ia'); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label><?php _e('Práctica diaria:', 'flavor-chat-ia'); ?></label></td>
+                                        <td><input type="number" name="es_puntos_practica" value="<?php echo esc_attr($config['es_puntos_practica']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-chat-ia'); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label><?php _e('Compartir recurso:', 'flavor-chat-ia'); ?></label></td>
+                                        <td><input type="number" name="es_puntos_compartir" value="<?php echo esc_attr($config['es_puntos_compartir']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-chat-ia'); ?></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Compromisos -->
+                <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h2><?php _e('Configuración de Compromisos', 'flavor-chat-ia'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th><?php _e('Duración mínima', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <input type="number" name="es_duracion_minima_compromiso" value="<?php echo esc_attr($config['es_duracion_minima_compromiso']); ?>" min="1" max="365" style="width: 80px;"> <?php _e('días', 'flavor-chat-ia'); ?>
+                                <p class="description"><?php _e('Duración mínima que debe tener un compromiso.', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Duración máxima', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <input type="number" name="es_duracion_maxima_compromiso" value="<?php echo esc_attr($config['es_duracion_maxima_compromiso']); ?>" min="1" max="365" style="width: 80px;"> <?php _e('días', 'flavor-chat-ia'); ?>
+                                <p class="description"><?php _e('Duración máxima permitida para un compromiso.', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Notificaciones -->
+                <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h2><?php _e('Notificaciones', 'flavor-chat-ia'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th><?php _e('Notificar nuevos compromisos', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="es_notificar_nuevos_compromisos" value="1" <?php checked($config['es_notificar_nuevos_compromisos'], 1); ?>>
+                                    <?php _e('Enviar email cuando se registre un nuevo compromiso', 'flavor-chat-ia'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Email de notificaciones', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <input type="email" name="es_email_notificaciones" value="<?php echo esc_attr($config['es_email_notificaciones']); ?>" class="regular-text">
+                                <p class="description"><?php _e('Dirección de email donde se enviarán las notificaciones de administración.', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Niveles de suficiencia (solo lectura) -->
+                <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h2><?php _e('Niveles de Suficiencia', 'flavor-chat-ia'); ?></h2>
+                    <p class="description"><?php _e('Los niveles están predefinidos y se asignan automáticamente según los puntos acumulados.', 'flavor-chat-ia'); ?></p>
+                    <table class="widefat striped" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Nivel', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Puntos mínimos', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach (self::NIVELES_SUFICIENCIA as $nivel_id => $nivel_data): ?>
+                                <tr>
+                                    <td>
+                                        <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: <?php echo esc_attr($nivel_data['color']); ?>; margin-right: 8px;"></span>
+                                        <strong><?php echo esc_html($nivel_data['nombre']); ?></strong>
+                                    </td>
+                                    <td><?php echo intval($nivel_data['puntos_min']); ?></td>
+                                    <td><?php echo esc_html($nivel_data['descripcion']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="submit">
+                    <button type="submit" name="guardar_config" class="button button-primary button-large">
+                        <?php _e('Guardar configuración', 'flavor-chat-ia'); ?>
+                    </button>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'economia-suficiencia',
+            'title'    => __('Economía de Suficiencia', 'flavor-chat-ia'),
+            'subtitle' => __('Vivir con lo suficiente para el bienestar colectivo', 'flavor-chat-ia'),
+            'icon'     => '🌿',
+            'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
+
+            'database' => [
+                'table'       => 'flavor_economia_suficiencia',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['type' => 'text', 'label' => __('Práctica', 'flavor-chat-ia'), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['consumo', 'energia', 'transporte', 'alimentacion', 'vivienda']],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'impacto'     => ['type' => 'number', 'label' => __('Impacto estimado', 'flavor-chat-ia')],
+                'dificultad'  => ['type' => 'select', 'label' => __('Dificultad', 'flavor-chat-ia'), 'options' => ['facil', 'media', 'dificil']],
+            ],
+
+            'estados' => [
+                'propuesta'  => ['label' => __('Propuesta', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '💡'],
+                'en_practica' => ['label' => __('En práctica', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🌱'],
+                'consolidada' => ['label' => __('Consolidada', 'flavor-chat-ia'), 'color' => 'emerald', 'icon' => '🌿'],
+                'compartida' => ['label' => __('Compartida', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🤝'],
+            ],
+
+            'stats' => [
+                'practicas_activas' => ['label' => __('Prácticas activas', 'flavor-chat-ia'), 'icon' => '🌿', 'color' => 'emerald'],
+                'participantes'     => ['label' => __('Participantes', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+                'ahorro_recursos'   => ['label' => __('Recursos ahorrados', 'flavor-chat-ia'), 'icon' => '♻️', 'color' => 'green'],
+                'impacto_comunidad' => ['label' => __('Impacto comunidad', 'flavor-chat-ia'), 'icon' => '🌍', 'color' => 'teal'],
+            ],
+
+            'card' => [
+                'template'     => 'practica-card',
+                'title_field'  => 'titulo',
+                'subtitle_field' => 'categoria',
+                'meta_fields'  => ['dificultad', 'impacto'],
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'practicas' => [
+                    'label'   => __('Prácticas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-portfolio',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'biblioteca' => [
+                    'label'   => __('Biblioteca', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-book',
+                    'content' => 'shortcode:suficiencia_biblioteca',
+                    'public'  => true,
+                ],
+                'mi-compromiso' => [
+                    'label'      => __('Mi compromiso', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-heart',
+                    'content'    => 'shortcode:suficiencia_mi_compromiso',
+                    'requires_login' => true,
+                ],
+                'registrar' => [
+                    'label'      => __('Registrar práctica', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:suficiencia_registrar',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'titulo',
+                'order'      => 'ASC',
+                'filterable' => ['categoria', 'dificultad'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['mi_nivel', 'practicas_sugeridas', 'comunidad', 'recursos'],
+                'actions' => [
+                    'compromiso' => ['label' => __('Nuevo compromiso', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'emerald'],
+                    'explorar'   => ['label' => __('Explorar prácticas', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'green'],
+                ],
+            ],
+
+            'features' => [
+                'compromisos'    => true,
+                'seguimiento'    => true,
+                'gamificacion'   => true,
+                'comunidad'      => true,
+                'recursos'       => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-economia-suficiencia-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Economia_Suficiencia_Dashboard_Tab')) {
+                Flavor_Economia_Suficiencia_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

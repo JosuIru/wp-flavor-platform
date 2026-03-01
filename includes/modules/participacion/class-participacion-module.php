@@ -181,6 +181,9 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         add_action('flavor_participacion_actualizar_estados', [$this, 'actualizar_estados_automaticos']);
 
         // Registrar en Panel Unificado de Gestión
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
     }
 
@@ -3000,5 +3003,17 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/resultados.php';
         if (file_exists($views_path)) { include $views_path; }
         else { echo '<div class="wrap"><h1>' . esc_html__('Resultados', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-participacion-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Participacion_Dashboard_Tab::get_instance();
+        }
     }
 }

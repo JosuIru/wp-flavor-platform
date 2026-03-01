@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) exit;
             <span class="dashicons dashicons-tickets-alt" style="font-size: 24px; color: #dba617;"></span>
             <span><?php echo esc_html__('Entradas', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=eventos-configuracion'); ?>" class="eventos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <a href="<?php echo admin_url('admin.php?page=eventos-config'); ?>" class="eventos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
             <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
         </a>

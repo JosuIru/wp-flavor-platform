@@ -129,6 +129,24 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
 
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
+
+        // Cargar Dashboard Tab para el panel del cliente
+        $this->cargar_dashboard_tab();
+    }
+
+    /**
+     * Carga el Dashboard Tab del módulo
+     */
+    private function cargar_dashboard_tab() {
+        $ruta_dashboard_tab = dirname(__FILE__) . '/class-colectivos-dashboard-tab.php';
+        if (file_exists($ruta_dashboard_tab)) {
+            require_once $ruta_dashboard_tab;
+            if (class_exists('Flavor_Colectivos_Dashboard_Tab')) {
+                Flavor_Colectivos_Dashboard_Tab::get_instance();
+            }
+        }
     }
 
     // =========================================================
@@ -2849,5 +2867,151 @@ KNOWLEDGE;
             include $views_path;
         }
         echo '</div>';
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array Configuración completa del módulo
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'colectivos',
+            'title'    => __('Colectivos', 'flavor-chat-ia'),
+            'subtitle' => __('Grupos organizados del barrio', 'flavor-chat-ia'),
+            'icon'     => '✊',
+            'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
+
+            'database' => [
+                'table'          => 'flavor_colectivos',
+                'status_field'   => 'estado',
+                'exclude_status' => 'eliminado',
+                'order_by'       => 'created_at DESC',
+                'filter_fields'  => ['estado', 'categoria', 'ambito'],
+            ],
+
+            'fields' => [
+                'titulo'      => 'nombre',
+                'descripcion' => 'descripcion',
+                'imagen'      => 'logo',
+                'estado'      => 'estado',
+                'categoria'   => 'categoria',
+                'ambito'      => 'ambito',
+                'miembros'    => 'num_miembros',
+                'user_id'     => 'creador_id',
+            ],
+
+            'estados' => [
+                'activo'   => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'inactivo' => ['label' => __('Inactivo', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚫'],
+            ],
+
+            'stats' => [
+                ['label' => __('Colectivos', 'flavor-chat-ia'), 'icon' => '✊', 'color' => 'rose', 'count_where' => "estado = 'activo'"],
+                ['label' => __('Miembros', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COALESCE(SUM(num_miembros), 0) FROM {table} WHERE estado = 'activo'"],
+                ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'green', 'query' => "SELECT COUNT(*) FROM {table}_proyectos WHERE estado = 'activo'"],
+                ['label' => __('Asambleas', 'flavor-chat-ia'), 'icon' => '🗣️', 'color' => 'purple', 'query' => "SELECT COUNT(*) FROM {table}_asambleas WHERE fecha > NOW()"],
+            ],
+
+            'card' => [
+                'color'  => 'rose',
+                'icon'   => '✊',
+                'fields' => [
+                    'id'       => 'id',
+                    'title'    => 'nombre',
+                    'subtitle' => 'descripcion',
+                    'image'    => 'logo',
+                    'url'      => 'url',
+                ],
+                'badge' => [
+                    'field'  => 'estado',
+                    'colors' => ['activo' => 'green', 'inactivo' => 'gray'],
+                ],
+                'meta' => [
+                    ['icon' => '👥', 'field' => 'miembros', 'suffix' => ' miembros'],
+                    ['icon' => '📁', 'field' => 'categoria'],
+                ],
+            ],
+
+            'tabs' => [
+                'listado' => [
+                    'label'   => __('Colectivos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-groups',
+                    'content' => 'template:archive.php',
+                ],
+                'mis-colectivos' => [
+                    'label'   => __('Mis Colectivos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-admin-users',
+                    'content' => 'template:mis-colectivos.php',
+                ],
+                'proyectos' => [
+                    'label'   => __('Proyectos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-portfolio',
+                    'content' => 'template:proyectos.php',
+                ],
+                'asambleas' => [
+                    'label'   => __('Asambleas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-megaphone',
+                    'content' => 'template:asambleas.php',
+                ],
+                'documentos' => [
+                    'label'          => __('Documentos', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-media-document',
+                    'is_integration' => true,
+                    'source_module'  => 'multimedia',
+                ],
+            ],
+
+            'archive' => [
+                'columns'     => 3,
+                'per_page'    => 12,
+                'filter_field'=> 'categoria',
+                'filters' => [
+                    ['id' => 'todos', 'label' => __('Todos', 'flavor-chat-ia'), 'active' => true],
+                    ['id' => 'social', 'label' => __('Social', 'flavor-chat-ia'), 'icon' => '🤝'],
+                    ['id' => 'cultural', 'label' => __('Cultural', 'flavor-chat-ia'), 'icon' => '🎭'],
+                    ['id' => 'ecologista', 'label' => __('Ecologista', 'flavor-chat-ia'), 'icon' => '🌿'],
+                    ['id' => 'vecinal', 'label' => __('Vecinal', 'flavor-chat-ia'), 'icon' => '🏘️'],
+                ],
+                'cta_text' => __('Crear colectivo', 'flavor-chat-ia'),
+                'cta_icon' => '➕',
+                'cta_url'  => home_url('/mi-portal/colectivos/nuevo/'),
+                'empty_state' => [
+                    'icon'     => '✊',
+                    'title'    => __('No hay colectivos', 'flavor-chat-ia'),
+                    'text'     => __('Organiza el primer colectivo del barrio', 'flavor-chat-ia'),
+                ],
+            ],
+
+            'dashboard' => [
+                'show_header' => true,
+                'header_actions' => [
+                    ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => '➕', 'url' => home_url('/mi-portal/colectivos/nuevo/'), 'primary' => true],
+                    ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => '🔍', 'url' => home_url('/mi-portal/colectivos/')],
+                ],
+                'quick_actions' => [
+                    ['title' => __('Explorar', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'rose', 'url' => home_url('/mi-portal/colectivos/')],
+                    ['title' => __('Mis colectivos', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'url' => home_url('/mi-portal/colectivos/?tab=mis-colectivos')],
+                    ['title' => __('Proyectos', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'green', 'url' => home_url('/mi-portal/colectivos/?tab=proyectos')],
+                    ['title' => __('Asambleas', 'flavor-chat-ia'), 'icon' => '🗣️', 'color' => 'purple', 'url' => home_url('/mi-portal/colectivos/?tab=asambleas')],
+                ],
+                'show_recent' => true,
+                'recent_title' => __('Colectivos activos', 'flavor-chat-ia'),
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-colectivos-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Colectivos_Dashboard_Tab')) {
+                Flavor_Colectivos_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

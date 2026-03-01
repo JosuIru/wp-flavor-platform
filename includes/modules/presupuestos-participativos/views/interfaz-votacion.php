@@ -19,7 +19,20 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Valores por defecto seguros
+$atributos = $atributos ?? [];
+$edicion = $edicion ?? [];
+$proyectos = $proyectos ?? [];
+$categorias = $categorias ?? [];
+$votos_usuario = $votos_usuario ?? [];
+$votos_maximos = $votos_maximos ?? 3;
+$votos_restantes = $votos_restantes ?? $votos_maximos;
+$identificador_usuario = $identificador_usuario ?? get_current_user_id();
+
 $columnas = intval($atributos['columnas'] ?? 2);
+
+// Normalizar edición (soporta arrays y objetos)
+$edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion->anio ?? date('Y'));
 ?>
 
 <div class="flavor-pp-votacion-contenedor">
@@ -28,7 +41,7 @@ $columnas = intval($atributos['columnas'] ?? 2);
         <p class="flavor-pp-votacion-intro">
             <?php printf(
                 esc_html__('Edicion %d - Selecciona los proyectos que quieres apoyar con tu voto.', 'flavor-chat-ia'),
-                intval($edicion->anio)
+                intval($edicion_anio)
             ); ?>
         </p>
     </div>
@@ -80,16 +93,25 @@ $columnas = intval($atributos['columnas'] ?? 2);
 
         <div class="flavor-pp-grid flavor-pp-grid-votacion flavor-pp-columnas-<?php echo esc_attr($columnas); ?>">
             <?php foreach ($proyectos as $proyecto):
-                $votado = in_array($proyecto->id, $votos_usuario);
-                $categoria_nombre = $categorias[$proyecto->categoria] ?? ucfirst($proyecto->categoria);
+                // Normalizar proyecto (soporta arrays y objetos)
+                $proy_id = is_array($proyecto) ? ($proyecto['id'] ?? 0) : ($proyecto->id ?? 0);
+                $proy_titulo = is_array($proyecto) ? ($proyecto['titulo'] ?? '') : ($proyecto->titulo ?? '');
+                $proy_descripcion = is_array($proyecto) ? ($proyecto['descripcion'] ?? '') : ($proyecto->descripcion ?? '');
+                $proy_categoria = is_array($proyecto) ? ($proyecto['categoria'] ?? '') : ($proyecto->categoria ?? '');
+                $proy_imagen = is_array($proyecto) ? ($proyecto['imagen_url'] ?? $proyecto['imagen'] ?? '') : ($proyecto->imagen_url ?? $proyecto->imagen ?? '');
+                $proy_presupuesto = is_array($proyecto) ? ($proyecto['presupuesto_estimado'] ?? $proyecto['presupuesto_solicitado'] ?? 0) : ($proyecto->presupuesto_estimado ?? $proyecto->presupuesto_solicitado ?? 0);
+                $proy_votos = is_array($proyecto) ? ($proyecto['votos_recibidos'] ?? 0) : ($proyecto->votos_recibidos ?? 0);
+
+                $votado = in_array($proy_id, $votos_usuario);
+                $categoria_nombre = $categorias[$proy_categoria] ?? ucfirst($proy_categoria);
             ?>
             <article class="flavor-pp-proyecto flavor-pp-proyecto-votacion <?php echo $votado ? 'votado' : ''; ?>"
-                     data-id="<?php echo esc_attr($proyecto->id); ?>"
-                     data-categoria="<?php echo esc_attr($proyecto->categoria); ?>">
+                     data-id="<?php echo esc_attr($proy_id); ?>"
+                     data-categoria="<?php echo esc_attr($proy_categoria); ?>">
 
-                <?php if (!empty($proyecto->imagen_url)): ?>
+                <?php if (!empty($proy_imagen)): ?>
                 <div class="flavor-pp-proyecto-imagen">
-                    <img src="<?php echo esc_url($proyecto->imagen_url); ?>" alt="<?php echo esc_attr($proyecto->titulo); ?>" loading="lazy">
+                    <img src="<?php echo esc_url($proy_imagen); ?>" alt="<?php echo esc_attr($proy_titulo); ?>" loading="lazy">
                     <?php if ($votado): ?>
                     <div class="flavor-pp-votado-badge">
                         <span class="dashicons dashicons-yes-alt"></span>
@@ -100,24 +122,24 @@ $columnas = intval($atributos['columnas'] ?? 2);
                 <?php endif; ?>
 
                 <div class="flavor-pp-proyecto-contenido">
-                    <span class="flavor-pp-categoria flavor-pp-categoria-<?php echo esc_attr($proyecto->categoria); ?>">
+                    <span class="flavor-pp-categoria flavor-pp-categoria-<?php echo esc_attr($proy_categoria); ?>">
                         <?php echo esc_html($categoria_nombre); ?>
                     </span>
 
-                    <h3 class="flavor-pp-proyecto-titulo"><?php echo esc_html($proyecto->titulo); ?></h3>
+                    <h3 class="flavor-pp-proyecto-titulo"><?php echo esc_html($proy_titulo); ?></h3>
 
                     <p class="flavor-pp-proyecto-descripcion">
-                        <?php echo esc_html(wp_trim_words($proyecto->descripcion, 30, '...')); ?>
+                        <?php echo esc_html(wp_trim_words($proy_descripcion, 30, '...')); ?>
                     </p>
 
                     <div class="flavor-pp-proyecto-meta">
                         <span class="flavor-pp-meta-item">
                             <span class="dashicons dashicons-money-alt"></span>
-                            <?php echo esc_html(number_format($proyecto->presupuesto_estimado, 0, ',', '.')); ?> EUR
+                            <?php echo esc_html(number_format($proy_presupuesto, 0, ',', '.')); ?> EUR
                         </span>
                         <span class="flavor-pp-meta-item">
                             <span class="dashicons dashicons-heart"></span>
-                            <?php echo esc_html($proyecto->votos_recibidos ?? 0); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html($proy_votos); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?>
                         </span>
                     </div>
 
@@ -125,21 +147,21 @@ $columnas = intval($atributos['columnas'] ?? 2);
                         <?php if ($votado): ?>
                             <button type="button"
                                     class="flavor-pp-boton flavor-pp-boton-secundario flavor-pp-btn-quitar-voto"
-                                    data-proyecto-id="<?php echo esc_attr($proyecto->id); ?>">
+                                    data-proyecto-id="<?php echo esc_attr($proy_id); ?>">
                                 <span class="dashicons dashicons-heart"></span>
                                 <?php esc_html_e('Quitar voto', 'flavor-chat-ia'); ?>
                             </button>
                         <?php else: ?>
                             <button type="button"
                                     class="flavor-pp-boton flavor-pp-boton-primario flavor-pp-btn-votar"
-                                    data-proyecto-id="<?php echo esc_attr($proyecto->id); ?>"
+                                    data-proyecto-id="<?php echo esc_attr($proy_id); ?>"
                                     <?php echo ($votos_restantes <= 0) ? 'disabled' : ''; ?>>
                                 <span class="dashicons dashicons-heart"></span>
                                 <?php esc_html_e('Votar este proyecto', 'flavor-chat-ia'); ?>
                             </button>
                         <?php endif; ?>
 
-                        <a href="<?php echo esc_url(add_query_arg('proyecto', $proyecto->id, home_url('/proyectos-participativos/'))); ?>"
+                        <a href="<?php echo esc_url(add_query_arg('proyecto', $proy_id, home_url('/proyectos-participativos/'))); ?>"
                            class="flavor-pp-boton flavor-pp-boton-texto">
                             <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
                         </a>

@@ -16,6 +16,61 @@ if (!defined('ABSPATH')) {
 trait Flavor_Module_Admin_Pages_Trait {
 
     /**
+     * Mapping de IDs de módulo a sus páginas de dashboard principal
+     * Permite a otros sistemas saber cuál es la página de entrada de cada módulo
+     *
+     * @var array
+     */
+    protected static $module_dashboard_pages = [
+        'grupos_consumo' => 'gc-dashboard',
+        'eventos' => 'eventos-dashboard',
+        'presupuestos_participativos' => 'pp-dashboard',
+        'mapa_actores' => 'actores-dashboard',
+        'incidencias' => 'incidencias-dashboard',
+        'foros' => 'foros-dashboard',
+        'participacion' => 'participacion-dashboard',
+        'tramites' => 'tramites-dashboard',
+        'socios' => 'socios-dashboard',
+        'reservas' => 'reservas-dashboard',
+        'facturas' => 'facturas-dashboard',
+        'clientes' => 'clientes-dashboard',
+        'reciclaje' => 'reciclaje-dashboard',
+        'huertos_urbanos' => 'huertos-dashboard',
+        'banco_tiempo' => 'banco-tiempo-dashboard',
+        'ayuda_vecinal' => 'ayuda-dashboard',
+        'carpooling' => 'carpooling-dashboard',
+        'bicicletas_compartidas' => 'bicicletas-dashboard',
+        'compostaje' => 'compostaje-dashboard',
+        'espacios_comunes' => 'espacios-dashboard',
+        'marketplace' => 'marketplace-dashboard',
+        'cursos' => 'cursos-dashboard',
+        'talleres' => 'talleres-dashboard',
+        'biblioteca' => 'biblioteca-dashboard',
+        'multimedia' => 'multimedia-dashboard',
+        'podcast' => 'podcast-dashboard',
+        'radio' => 'radio-dashboard',
+    ];
+
+    /**
+     * Obtiene el slug de la página dashboard de un módulo
+     *
+     * @param string $module_id ID del módulo
+     * @return string|null Slug de la página o null si no existe
+     */
+    public static function get_module_dashboard_page($module_id) {
+        return self::$module_dashboard_pages[$module_id] ?? null;
+    }
+
+    /**
+     * Obtiene todos los mappings de módulos a dashboards
+     *
+     * @return array
+     */
+    public static function get_all_module_dashboard_pages() {
+        return self::$module_dashboard_pages;
+    }
+
+    /**
      * Registra las páginas de admin del módulo en el panel unificado
      * Llamar desde el método init() del módulo
      */
@@ -119,7 +174,7 @@ trait Flavor_Module_Admin_Pages_Trait {
     }
 
     /**
-     * Helper: Renderiza el header estándar de una página de módulo
+     * Helper: Renderiza el header estándar de una página de módulo con breadcrumbs
      *
      * @param string $titulo Título de la página
      * @param array $acciones Botones de acción [['label' => '', 'url' => '', 'class' => '']]
@@ -127,7 +182,31 @@ trait Flavor_Module_Admin_Pages_Trait {
     protected function render_page_header($titulo, $acciones = []) {
         $config = method_exists($this, 'get_admin_config') ? $this->get_admin_config() : [];
         $icon = $config['icon'] ?? 'dashicons-admin-generic';
+        $module_label = $config['label'] ?? '';
+
+        // Determinar la página principal del módulo para el breadcrumb
+        $main_page_url = '';
+        if (!empty($config['paginas']) && is_array($config['paginas'])) {
+            $main_page_url = admin_url('admin.php?page=' . $config['paginas'][0]['slug']);
+        }
+
+        // Verificar si estamos en una subpágina (no el dashboard principal)
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        $is_subpage = !empty($config['paginas']) && $current_page !== $config['paginas'][0]['slug'];
         ?>
+
+        <?php if ($is_subpage && !empty($main_page_url) && !empty($module_label)): ?>
+        <!-- Migas de pan -->
+        <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
+            <a href="<?php echo esc_url($main_page_url); ?>" style="color: #2271b1; text-decoration: none;">
+                <span class="dashicons <?php echo esc_attr($icon); ?>" style="font-size: 14px; vertical-align: middle;"></span>
+                <?php echo esc_html($module_label); ?>
+            </a>
+            <span style="color: #646970; margin: 0 5px;">›</span>
+            <span style="color: #1d2327;"><?php echo esc_html($titulo); ?></span>
+        </nav>
+        <?php endif; ?>
+
         <div class="page-header">
             <h1>
                 <span class="dashicons <?php echo esc_attr($icon); ?>"></span>

@@ -127,6 +127,8 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en panel de administracion unificado
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'register_shortcodes']);
@@ -141,10 +143,27 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_nopriv_compostaje_consultar_estado', [$this, 'ajax_consultar_estado']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
+        // Cargar Dashboard Tab para el panel del usuario
+        $this->cargar_dashboard_tab();
+
         // Cron para notificaciones
         add_action('flavor_compostaje_notificaciones_diarias', [$this, 'enviar_notificaciones_turnos']);
         if (!wp_next_scheduled('flavor_compostaje_notificaciones_diarias')) {
             wp_schedule_event(time(), 'daily', 'flavor_compostaje_notificaciones_diarias');
+        }
+    }
+
+    /**
+     * Carga la clase Dashboard Tab para el panel del usuario
+     *
+     * @return void
+     */
+    private function cargar_dashboard_tab() {
+        $dashboard_tab_file = dirname(__FILE__) . '/class-compostaje-dashboard-tab.php';
+
+        if (file_exists($dashboard_tab_file)) {
+            require_once $dashboard_tab_file;
+            Flavor_Compostaje_Dashboard_Tab::get_instance();
         }
     }
 
@@ -2657,5 +2676,115 @@ KNOWLEDGE;
                 'parent' => 'compostaje',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'compostaje',
+            'title'    => __('Compostaje Comunitario', 'flavor-chat-ia'),
+            'subtitle' => __('Convierte residuos orgánicos en abono natural', 'flavor-chat-ia'),
+            'icon'     => '🥕',
+            'color'    => 'success', // Usa variable CSS --flavor-success del tema
+
+            'database' => [
+                'table'       => 'flavor_puntos_compostaje',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'        => ['label' => __('Nombre', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
+                'ubicacion'     => ['label' => __('Ubicación', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
+                'tipo'          => ['label' => __('Tipo', 'flavor-chat-ia'), 'type' => 'select', 'options' => ['comunitario' => 'Comunitario', 'vecinal' => 'Vecinal', 'escolar' => 'Escolar']],
+                'capacidad'     => ['label' => __('Capacidad (kg)', 'flavor-chat-ia'), 'type' => 'number'],
+                'nivel_llenado' => ['label' => __('Nivel de llenado', 'flavor-chat-ia'), 'type' => 'range'],
+                'fase'          => ['label' => __('Fase', 'flavor-chat-ia'), 'type' => 'select'],
+                'estado'        => ['label' => __('Estado', 'flavor-chat-ia'), 'type' => 'select'],
+            ],
+
+            'estados' => [
+                'activo'       => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'recepcion'    => ['label' => __('Recepción', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📥'],
+                'maduracion'   => ['label' => __('Maduración', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
+                'listo'        => ['label' => __('Listo', 'flavor-chat-ia'), 'color' => 'emerald', 'icon' => '🌱'],
+                'mantenimiento'=> ['label' => __('Mantenimiento', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '🔧'],
+            ],
+
+            'stats' => [
+                'total_puntos'   => ['label' => __('Puntos activos', 'flavor-chat-ia'), 'icon' => '📍', 'color' => 'amber'],
+                'kg_compostados' => ['label' => __('Kg compostados', 'flavor-chat-ia'), 'icon' => '🥕', 'color' => 'green'],
+                'co2_evitado'    => ['label' => __('CO₂ evitado', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'teal'],
+                'participantes'  => ['label' => __('Participantes', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+            ],
+
+            'card' => [
+                'title_field'    => 'nombre',
+                'subtitle_field' => 'ubicacion',
+                'badge_field'    => 'fase',
+                'meta_fields'    => ['tipo', 'capacidad', 'nivel_llenado'],
+            ],
+
+            'tabs' => [
+                'puntos' => [
+                    'label'   => __('Composteras', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-carrot',
+                    'content' => 'template:_archive.php',
+                ],
+                'registrar' => [
+                    'label'   => __('Registrar aporte', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-plus-alt',
+                    'content' => 'template:registrar.php',
+                ],
+                'mis-aportes' => [
+                    'label'   => __('Mis aportes', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-chart-bar',
+                    'content' => 'template:mis-aportes.php',
+                ],
+                'turnos' => [
+                    'label'   => __('Turnos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-calendar-alt',
+                    'content' => 'template:turnos.php',
+                ],
+                'ranking' => [
+                    'label'   => __('Ranking', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-awards',
+                    'content' => 'template:ranking.php',
+                ],
+            ],
+
+            'archive' => [
+                'columns'      => 3,
+                'per_page'     => 12,
+                'show_filters' => true,
+                'show_search'  => true,
+            ],
+
+            'dashboard' => [
+                'show_stats'   => true,
+                'show_actions' => true,
+                'actions'      => [
+                    'registrar_aporte' => ['label' => __('Registrar aporte', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'amber'],
+                    'ver_turnos'       => ['label' => __('Ver turnos', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'blue'],
+                ],
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-compostaje-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Compostaje_Dashboard_Tab')) {
+                Flavor_Compostaje_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

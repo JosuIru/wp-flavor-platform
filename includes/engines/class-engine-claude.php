@@ -9,6 +9,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Evitar redeclaración si ya existe (ej: desde chat-ia-addon)
+if (class_exists('Chat_IA_Engine_Claude')) {
+    return;
+}
+
 class Chat_IA_Engine_Claude extends Chat_IA_Engine_Base {
 
     const API_URL = 'https://api.anthropic.com/v1/messages';

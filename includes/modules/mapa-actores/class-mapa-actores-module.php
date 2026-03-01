@@ -28,6 +28,9 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Directorio de actores del territorio: administraciones, empresas, instituciones, medios de comunicacion. Con relaciones, posiciones y contactos.';
 
         parent::__construct();
+
+        // Registrar en el Panel Unificado de Administracion
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -885,6 +888,961 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
             [
                 'pregunta' => 'Como registro una relacion entre actores?',
                 'respuesta' => 'En la ficha del actor, puedes agregar relaciones indicando el tipo (pertenece a, controla, financia, colabora, etc.) y la intensidad.',
+            ],
+        ];
+    }
+
+    // =========================================================================
+    // PANEL DE ADMINISTRACION UNIFICADO
+    // =========================================================================
+
+    /**
+     * Configuracion del modulo para el Panel Unificado de Administracion
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'mapa_actores',
+            'label' => __('Mapa de Actores', 'flavor-chat-ia'),
+            'icon' => 'dashicons-networking',
+            'capability' => 'manage_options',
+            'categoria' => 'comunidad',
+            'paginas' => [
+                [
+                    'slug' => 'actores-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'actores-listado',
+                    'titulo' => __('Listado', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                ],
+                [
+                    'slug' => 'actores-relaciones',
+                    'titulo' => __('Relaciones', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_relaciones'],
+                    'badge' => [$this, 'contar_relaciones_pendientes'],
+                ],
+                [
+                    'slug' => 'actores-config',
+                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget'],
+            'estadisticas' => [$this, 'get_estadisticas_admin'],
+        ];
+    }
+
+    /**
+     * Obtiene estadisticas para el panel unificado
+     *
+     * @return array
+     */
+    public function get_estadisticas_admin() {
+        global $wpdb;
+        $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
+        $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
+
+        $total_actores = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actores WHERE activo = 1");
+        $total_relaciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_relaciones");
+
+        return [
+            [
+                'icon' => 'dashicons-networking',
+                'valor' => $total_actores,
+                'label' => __('Actores', 'flavor-chat-ia'),
+                'color' => 'blue',
+                'enlace' => admin_url('admin.php?page=actores-listado'),
+            ],
+            [
+                'icon' => 'dashicons-admin-links',
+                'valor' => $total_relaciones,
+                'label' => __('Relaciones', 'flavor-chat-ia'),
+                'color' => 'purple',
+                'enlace' => admin_url('admin.php?page=actores-relaciones'),
+            ],
+        ];
+    }
+
+    /**
+     * Contador de relaciones pendientes de verificacion
+     *
+     * @return int
+     */
+    public function contar_relaciones_pendientes() {
+        global $wpdb;
+        $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
+
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_relaciones WHERE verificada = 0");
+    }
+
+    /**
+     * Renderiza el dashboard de administracion del modulo
+     */
+    public function render_admin_dashboard() {
+        global $wpdb;
+        $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
+        $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
+
+        // Estadisticas generales
+        $estadisticas = [
+            'total_actores' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actores WHERE activo = 1"),
+            'aliados' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actores WHERE activo = 1 AND posicion_general = 'aliado'"),
+            'neutros' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actores WHERE activo = 1 AND posicion_general = 'neutro'"),
+            'opositores' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actores WHERE activo = 1 AND posicion_general = 'opositor'"),
+            'total_relaciones' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_relaciones"),
+            'relaciones_sin_verificar' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_relaciones WHERE verificada = 0"),
+        ];
+
+        // Tipos de actores
+        $tipos_actores = $wpdb->get_results(
+            "SELECT tipo, COUNT(*) as cantidad
+             FROM $tabla_actores
+             WHERE activo = 1
+             GROUP BY tipo
+             ORDER BY cantidad DESC"
+        );
+
+        // Actores recientes
+        $actores_recientes = $wpdb->get_results(
+            "SELECT id, nombre, tipo, posicion_general, created_at
+             FROM $tabla_actores
+             WHERE activo = 1
+             ORDER BY created_at DESC
+             LIMIT 10"
+        );
+
+        // Actores con mas influencia
+        $actores_influyentes = $wpdb->get_results(
+            "SELECT id, nombre, tipo, posicion_general, nivel_influencia
+             FROM $tabla_actores
+             WHERE activo = 1
+             ORDER BY FIELD(nivel_influencia, 'muy_alto', 'alto', 'medio', 'bajo')
+             LIMIT 5"
+        );
+
+        $this->render_page_header(__('Mapa de Actores - Dashboard', 'flavor-chat-ia'), [
+            [
+                'label' => __('Nuevo Actor', 'flavor-chat-ia'),
+                'url' => admin_url('admin.php?page=actores-listado&action=nuevo'),
+                'class' => 'button-primary',
+            ],
+        ]);
+        ?>
+        <div class="wrap flavor-admin-dashboard">
+            <!-- KPIs principales -->
+            <div class="flavor-admin-kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-networking" style="font-size: 32px; color: #2271b1; margin-bottom: 10px;"></span>
+                    <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['total_actores']); ?></div>
+                    <div style="color: #646970;"><?php _e('Total Actores', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-thumbs-up" style="font-size: 32px; color: #00a32a; margin-bottom: 10px;"></span>
+                    <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['aliados']); ?></div>
+                    <div style="color: #646970;"><?php _e('Aliados', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-thumbs-down" style="font-size: 32px; color: #d63638; margin-bottom: 10px;"></span>
+                    <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['opositores']); ?></div>
+                    <div style="color: #646970;"><?php _e('Opositores', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span class="dashicons dashicons-admin-links" style="font-size: 32px; color: #8b5cf6; margin-bottom: 10px;"></span>
+                    <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['total_relaciones']); ?></div>
+                    <div style="color: #646970;"><?php _e('Relaciones', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+
+            <div class="flavor-admin-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <!-- Columna principal -->
+                <div class="flavor-admin-main">
+                    <!-- Tipos de actores -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                        <h3 style="margin-top: 0;"><?php _e('Distribucion por Tipo', 'flavor-chat-ia'); ?></h3>
+                        <?php if (!empty($tipos_actores)): ?>
+                            <table class="widefat striped" style="border: none;">
+                                <tbody>
+                                    <?php
+                                    $tipos_labels = $this->get_tipos_actor();
+                                    foreach ($tipos_actores as $tipo_actor):
+                                    ?>
+                                        <tr>
+                                            <td><?php echo esc_html($tipos_labels[$tipo_actor->tipo] ?? $tipo_actor->tipo); ?></td>
+                                            <td style="text-align: right; font-weight: 600;"><?php echo esc_html($tipo_actor->cantidad); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <p style="color: #646970;"><?php _e('No hay actores registrados.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Actores recientes -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0;"><?php _e('Actores Recientes', 'flavor-chat-ia'); ?></h3>
+                        <?php if (!empty($actores_recientes)): ?>
+                            <table class="widefat striped" style="border: none;">
+                                <thead>
+                                    <tr>
+                                        <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
+                                        <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                                        <th><?php _e('Posicion', 'flavor-chat-ia'); ?></th>
+                                        <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $tipos_labels = $this->get_tipos_actor();
+                                    $posiciones_labels = [
+                                        'aliado' => __('Aliado', 'flavor-chat-ia'),
+                                        'neutro' => __('Neutro', 'flavor-chat-ia'),
+                                        'opositor' => __('Opositor', 'flavor-chat-ia'),
+                                        'desconocido' => __('Desconocido', 'flavor-chat-ia'),
+                                    ];
+                                    foreach ($actores_recientes as $actor_reciente):
+                                    ?>
+                                        <tr>
+                                            <td>
+                                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor_reciente->id)); ?>">
+                                                    <?php echo esc_html($actor_reciente->nombre); ?>
+                                                </a>
+                                            </td>
+                                            <td><?php echo esc_html($tipos_labels[$actor_reciente->tipo] ?? $actor_reciente->tipo); ?></td>
+                                            <td>
+                                                <?php
+                                                $posicion_color = [
+                                                    'aliado' => '#00a32a',
+                                                    'neutro' => '#646970',
+                                                    'opositor' => '#d63638',
+                                                    'desconocido' => '#9ca3af',
+                                                ];
+                                                $color_actual = $posicion_color[$actor_reciente->posicion_general] ?? '#646970';
+                                                ?>
+                                                <span style="color: <?php echo esc_attr($color_actual); ?>; font-weight: 500;">
+                                                    <?php echo esc_html($posiciones_labels[$actor_reciente->posicion_general] ?? $actor_reciente->posicion_general); ?>
+                                                </span>
+                                            </td>
+                                            <td><?php echo esc_html(date_i18n('d M Y', strtotime($actor_reciente->created_at))); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                            <p style="margin-bottom: 0; margin-top: 15px;">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado')); ?>" class="button">
+                                    <?php _e('Ver todos los actores', 'flavor-chat-ia'); ?>
+                                </a>
+                            </p>
+                        <?php else: ?>
+                            <p style="color: #646970;"><?php _e('No hay actores registrados.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="flavor-admin-sidebar">
+                    <!-- Actores influyentes -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                        <h3 style="margin-top: 0;"><?php _e('Actores Clave', 'flavor-chat-ia'); ?></h3>
+                        <?php if (!empty($actores_influyentes)): ?>
+                            <ul style="margin: 0; padding: 0; list-style: none;">
+                                <?php
+                                $influencia_icons = [
+                                    'muy_alto' => '🔥',
+                                    'alto' => '⭐',
+                                    'medio' => '●',
+                                    'bajo' => '○',
+                                ];
+                                foreach ($actores_influyentes as $actor_influyente):
+                                ?>
+                                    <li style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                                        <span title="<?php echo esc_attr(ucfirst(str_replace('_', ' ', $actor_influyente->nivel_influencia))); ?>">
+                                            <?php echo esc_html($influencia_icons[$actor_influyente->nivel_influencia] ?? '●'); ?>
+                                        </span>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor_influyente->id)); ?>">
+                                            <?php echo esc_html($actor_influyente->nombre); ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p style="color: #646970; margin-bottom: 0;"><?php _e('Sin datos.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Acciones rapidas -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0;"><?php _e('Acciones Rapidas', 'flavor-chat-ia'); ?></h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=nuevo')); ?>" class="button button-primary" style="text-align: center;">
+                                <?php _e('Agregar Actor', 'flavor-chat-ia'); ?>
+                            </a>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones')); ?>" class="button" style="text-align: center;">
+                                <?php _e('Gestionar Relaciones', 'flavor-chat-ia'); ?>
+                            </a>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=actores-config')); ?>" class="button" style="text-align: center;">
+                                <?php _e('Configuracion', 'flavor-chat-ia'); ?>
+                            </a>
+                        </div>
+
+                        <?php if ($estadisticas['relaciones_sin_verificar'] > 0): ?>
+                            <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 4px; border-left: 4px solid #ffc107;">
+                                <strong><?php _e('Pendiente:', 'flavor-chat-ia'); ?></strong>
+                                <?php printf(
+                                    _n('%d relacion sin verificar', '%d relaciones sin verificar', $estadisticas['relaciones_sin_verificar'], 'flavor-chat-ia'),
+                                    $estadisticas['relaciones_sin_verificar']
+                                ); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el listado de actores en administracion
+     */
+    public function render_admin_listado() {
+        global $wpdb;
+        $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
+
+        // Parametros de filtrado y paginacion
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $por_pagina = 20;
+        $offset = ($pagina_actual - 1) * $por_pagina;
+
+        $filtro_tipo = isset($_GET['filtro_tipo']) ? sanitize_text_field($_GET['filtro_tipo']) : '';
+        $filtro_posicion = isset($_GET['filtro_posicion']) ? sanitize_text_field($_GET['filtro_posicion']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        // Construir consulta
+        $where_condiciones = ["activo = 1"];
+        $where_parametros = [];
+
+        if (!empty($filtro_tipo)) {
+            $where_condiciones[] = "tipo = %s";
+            $where_parametros[] = $filtro_tipo;
+        }
+
+        if (!empty($filtro_posicion)) {
+            $where_condiciones[] = "posicion_general = %s";
+            $where_parametros[] = $filtro_posicion;
+        }
+
+        if (!empty($busqueda)) {
+            $where_condiciones[] = "(nombre LIKE %s OR descripcion LIKE %s)";
+            $like_busqueda = '%' . $wpdb->esc_like($busqueda) . '%';
+            $where_parametros[] = $like_busqueda;
+            $where_parametros[] = $like_busqueda;
+        }
+
+        $where_sql = implode(' AND ', $where_condiciones);
+
+        // Contar total
+        $total_consulta = "SELECT COUNT(*) FROM $tabla_actores WHERE $where_sql";
+        if (!empty($where_parametros)) {
+            $total_items = (int) $wpdb->get_var($wpdb->prepare($total_consulta, $where_parametros));
+        } else {
+            $total_items = (int) $wpdb->get_var($total_consulta);
+        }
+
+        $total_paginas = ceil($total_items / $por_pagina);
+
+        // Obtener actores
+        $consulta_actores = "SELECT * FROM $tabla_actores WHERE $where_sql ORDER BY nombre ASC LIMIT %d OFFSET %d";
+        $parametros_consulta = array_merge($where_parametros, [$por_pagina, $offset]);
+        $actores = $wpdb->get_results($wpdb->prepare($consulta_actores, $parametros_consulta));
+
+        $this->render_page_header(__('Listado de Actores', 'flavor-chat-ia'), [
+            [
+                'label' => __('Nuevo Actor', 'flavor-chat-ia'),
+                'url' => admin_url('admin.php?page=actores-listado&action=nuevo'),
+                'class' => 'button-primary',
+            ],
+        ]);
+        ?>
+        <div class="wrap">
+            <!-- Filtros -->
+            <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <input type="hidden" name="page" value="actores-listado">
+
+                <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>"
+                       placeholder="<?php esc_attr_e('Buscar actores...', 'flavor-chat-ia'); ?>"
+                       style="min-width: 200px;">
+
+                <select name="filtro_tipo">
+                    <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <?php
+                    $tipos_labels = $this->get_tipos_actor();
+                    foreach ($tipos_labels as $tipo_valor => $tipo_etiqueta):
+                    ?>
+                        <option value="<?php echo esc_attr($tipo_valor); ?>" <?php selected($filtro_tipo, $tipo_valor); ?>>
+                            <?php echo esc_html($tipo_etiqueta); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <select name="filtro_posicion">
+                    <option value=""><?php _e('Todas las posiciones', 'flavor-chat-ia'); ?></option>
+                    <option value="aliado" <?php selected($filtro_posicion, 'aliado'); ?>><?php _e('Aliado', 'flavor-chat-ia'); ?></option>
+                    <option value="neutro" <?php selected($filtro_posicion, 'neutro'); ?>><?php _e('Neutro', 'flavor-chat-ia'); ?></option>
+                    <option value="opositor" <?php selected($filtro_posicion, 'opositor'); ?>><?php _e('Opositor', 'flavor-chat-ia'); ?></option>
+                    <option value="desconocido" <?php selected($filtro_posicion, 'desconocido'); ?>><?php _e('Desconocido', 'flavor-chat-ia'); ?></option>
+                </select>
+
+                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+
+                <?php if ($filtro_tipo || $filtro_posicion || $busqueda): ?>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado')); ?>" class="button">
+                        <?php _e('Limpiar', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php endif; ?>
+            </form>
+
+            <!-- Tabla de actores -->
+            <?php if (!empty($actores)): ?>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;"><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Posicion', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Influencia', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Ubicacion', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 120px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $tipos_labels = $this->get_tipos_actor();
+                        $posiciones_colores = [
+                            'aliado' => '#00a32a',
+                            'neutro' => '#646970',
+                            'opositor' => '#d63638',
+                            'desconocido' => '#9ca3af',
+                        ];
+                        $influencia_labels = [
+                            'bajo' => __('Bajo', 'flavor-chat-ia'),
+                            'medio' => __('Medio', 'flavor-chat-ia'),
+                            'alto' => __('Alto', 'flavor-chat-ia'),
+                            'muy_alto' => __('Muy Alto', 'flavor-chat-ia'),
+                        ];
+                        foreach ($actores as $actor):
+                        ?>
+                            <tr>
+                                <td>
+                                    <strong>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor->id)); ?>">
+                                            <?php echo esc_html($actor->nombre); ?>
+                                        </a>
+                                    </strong>
+                                    <?php if ($actor->verificado): ?>
+                                        <span title="<?php esc_attr_e('Verificado', 'flavor-chat-ia'); ?>">✓</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo esc_html($tipos_labels[$actor->tipo] ?? $actor->tipo); ?></td>
+                                <td>
+                                    <span style="color: <?php echo esc_attr($posiciones_colores[$actor->posicion_general] ?? '#646970'); ?>; font-weight: 500;">
+                                        <?php echo esc_html(ucfirst($actor->posicion_general)); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo esc_html($influencia_labels[$actor->nivel_influencia] ?? $actor->nivel_influencia); ?></td>
+                                <td><?php echo esc_html($actor->municipio ?: '-'); ?></td>
+                                <td>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=editar&id=' . $actor->id)); ?>"
+                                       class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                        <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
+                                    </a>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones&actor_id=' . $actor->id)); ?>"
+                                       class="button button-small" title="<?php esc_attr_e('Ver Relaciones', 'flavor-chat-ia'); ?>">
+                                        <span class="dashicons dashicons-admin-links" style="vertical-align: middle;"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <!-- Paginacion -->
+                <?php if ($total_paginas > 1): ?>
+                    <div class="tablenav bottom" style="margin-top: 20px;">
+                        <div class="tablenav-pages">
+                            <span class="displaying-num">
+                                <?php printf(_n('%s elemento', '%s elementos', $total_items, 'flavor-chat-ia'), number_format_i18n($total_items)); ?>
+                            </span>
+                            <?php
+                            $url_paginacion = add_query_arg([
+                                'page' => 'actores-listado',
+                                'filtro_tipo' => $filtro_tipo,
+                                'filtro_posicion' => $filtro_posicion,
+                                's' => $busqueda,
+                            ], admin_url('admin.php'));
+
+                            echo paginate_links([
+                                'base' => $url_paginacion . '&paged=%#%',
+                                'format' => '',
+                                'prev_text' => '&laquo;',
+                                'next_text' => '&raquo;',
+                                'total' => $total_paginas,
+                                'current' => $pagina_actual,
+                            ]);
+                            ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+            <?php else: ?>
+                <div class="notice notice-info" style="margin-top: 20px;">
+                    <p>
+                        <?php if ($busqueda || $filtro_tipo || $filtro_posicion): ?>
+                            <?php _e('No se encontraron actores con los filtros seleccionados.', 'flavor-chat-ia'); ?>
+                        <?php else: ?>
+                            <?php _e('No hay actores registrados. Comienza agregando el primero.', 'flavor-chat-ia'); ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pagina de relaciones
+     */
+    public function render_admin_relaciones() {
+        global $wpdb;
+        $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
+        $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
+
+        // Filtro por actor especifico
+        $actor_id_filtro = isset($_GET['actor_id']) ? intval($_GET['actor_id']) : 0;
+
+        // Obtener relaciones
+        $consulta_base = "
+            SELECT r.*,
+                   ao.nombre as actor_origen_nombre,
+                   ad.nombre as actor_destino_nombre,
+                   ao.tipo as actor_origen_tipo,
+                   ad.tipo as actor_destino_tipo
+            FROM $tabla_relaciones r
+            LEFT JOIN $tabla_actores ao ON r.actor_origen_id = ao.id
+            LEFT JOIN $tabla_actores ad ON r.actor_destino_id = ad.id
+        ";
+
+        if ($actor_id_filtro) {
+            $consulta_base .= " WHERE r.actor_origen_id = %d OR r.actor_destino_id = %d";
+            $relaciones = $wpdb->get_results($wpdb->prepare($consulta_base . " ORDER BY r.created_at DESC LIMIT 100", $actor_id_filtro, $actor_id_filtro));
+        } else {
+            $relaciones = $wpdb->get_results($consulta_base . " ORDER BY r.created_at DESC LIMIT 100");
+        }
+
+        // Obtener lista de actores para el selector
+        $lista_actores = $wpdb->get_results("SELECT id, nombre FROM $tabla_actores WHERE activo = 1 ORDER BY nombre ASC");
+
+        // Tipos de relacion
+        $tipos_relacion = [
+            'pertenece_a' => __('Pertenece a', 'flavor-chat-ia'),
+            'controla' => __('Controla', 'flavor-chat-ia'),
+            'financia' => __('Financia', 'flavor-chat-ia'),
+            'colabora' => __('Colabora con', 'flavor-chat-ia'),
+            'compite' => __('Compite con', 'flavor-chat-ia'),
+            'influye' => __('Influye en', 'flavor-chat-ia'),
+            'depende' => __('Depende de', 'flavor-chat-ia'),
+            'otro' => __('Otro', 'flavor-chat-ia'),
+        ];
+
+        $this->render_page_header(__('Relaciones entre Actores', 'flavor-chat-ia'), [
+            [
+                'label' => __('Nueva Relacion', 'flavor-chat-ia'),
+                'url' => '#',
+                'class' => 'button-primary',
+            ],
+        ]);
+        ?>
+        <div class="wrap">
+            <!-- Filtro por actor -->
+            <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
+                <input type="hidden" name="page" value="actores-relaciones">
+
+                <select name="actor_id" style="min-width: 250px;">
+                    <option value=""><?php _e('Todos los actores', 'flavor-chat-ia'); ?></option>
+                    <?php foreach ($lista_actores as $actor_opcion): ?>
+                        <option value="<?php echo esc_attr($actor_opcion->id); ?>" <?php selected($actor_id_filtro, $actor_opcion->id); ?>>
+                            <?php echo esc_html($actor_opcion->nombre); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+
+                <?php if ($actor_id_filtro): ?>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones')); ?>" class="button">
+                        <?php _e('Ver todas', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php endif; ?>
+            </form>
+
+            <!-- Tabla de relaciones -->
+            <?php if (!empty($relaciones)): ?>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;"><?php _e('Actor Origen', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 15%;"><?php _e('Tipo Relacion', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 25%;"><?php _e('Actor Destino', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Intensidad', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($relaciones as $relacion): ?>
+                            <tr>
+                                <td>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $relacion->actor_origen_id)); ?>">
+                                        <?php echo esc_html($relacion->actor_origen_nombre); ?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <?php echo esc_html($tipos_relacion[$relacion->tipo_relacion] ?? $relacion->tipo_relacion); ?>
+                                    <?php if ($relacion->bidireccional): ?>
+                                        <span title="<?php esc_attr_e('Bidireccional', 'flavor-chat-ia'); ?>">↔</span>
+                                    <?php else: ?>
+                                        <span>→</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $relacion->actor_destino_id)); ?>">
+                                        <?php echo esc_html($relacion->actor_destino_nombre); ?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <?php
+                                    $intensidad_label = [
+                                        'debil' => __('Debil', 'flavor-chat-ia'),
+                                        'moderada' => __('Moderada', 'flavor-chat-ia'),
+                                        'fuerte' => __('Fuerte', 'flavor-chat-ia'),
+                                    ];
+                                    echo esc_html($intensidad_label[$relacion->intensidad] ?? $relacion->intensidad);
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php if ($relacion->verificada): ?>
+                                        <span style="color: #00a32a;">✓ <?php _e('Verificada', 'flavor-chat-ia'); ?></span>
+                                    <?php else: ?>
+                                        <span style="color: #dba617;">⏳ <?php _e('Pendiente', 'flavor-chat-ia'); ?></span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <button type="button" class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                        <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <div class="notice notice-info">
+                    <p>
+                        <?php if ($actor_id_filtro): ?>
+                            <?php _e('Este actor no tiene relaciones registradas.', 'flavor-chat-ia'); ?>
+                        <?php else: ?>
+                            <?php _e('No hay relaciones registradas entre actores.', 'flavor-chat-ia'); ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <!-- Grafo de relaciones (placeholder) -->
+            <div style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <h3 style="margin-top: 0;"><?php _e('Visualizacion del Grafo', 'flavor-chat-ia'); ?></h3>
+                <div id="grafo-relaciones" style="height: 400px; background: #f6f7f7; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #646970;">
+                    <?php _e('El grafo de relaciones se mostrara aqui. Requiere la libreria de visualizacion.', 'flavor-chat-ia'); ?>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pagina de configuracion
+     */
+    public function render_admin_config() {
+        // Guardar configuracion si se envio el formulario
+        if (isset($_POST['guardar_config_actores']) && check_admin_referer('actores_config_nonce')) {
+            $configuracion = [
+                'tipos_personalizados' => sanitize_textarea_field($_POST['tipos_personalizados'] ?? ''),
+                'relaciones_personalizadas' => sanitize_textarea_field($_POST['relaciones_personalizadas'] ?? ''),
+                'mostrar_mapa' => isset($_POST['mostrar_mapa']) ? 1 : 0,
+                'mostrar_grafo_relaciones' => isset($_POST['mostrar_grafo_relaciones']) ? 1 : 0,
+                'permitir_edicion_comunidad' => isset($_POST['permitir_edicion_comunidad']) ? 1 : 0,
+                'requiere_verificacion' => isset($_POST['requiere_verificacion']) ? 1 : 0,
+                'ambitos_disponibles' => array_map('sanitize_text_field', $_POST['ambitos_disponibles'] ?? []),
+            ];
+
+            update_option('flavor_mapa_actores_config', $configuracion);
+
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuracion guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        // Cargar configuracion actual
+        $configuracion = get_option('flavor_mapa_actores_config', []);
+        $configuracion = wp_parse_args($configuracion, [
+            'tipos_personalizados' => '',
+            'relaciones_personalizadas' => '',
+            'mostrar_mapa' => 1,
+            'mostrar_grafo_relaciones' => 1,
+            'permitir_edicion_comunidad' => 1,
+            'requiere_verificacion' => 1,
+            'ambitos_disponibles' => ['local', 'comarcal', 'provincial', 'autonomico', 'estatal', 'internacional'],
+        ]);
+
+        $this->render_page_header(__('Configuracion del Mapa de Actores', 'flavor-chat-ia'));
+        ?>
+        <div class="wrap">
+            <form method="post" action="">
+                <?php wp_nonce_field('actores_config_nonce'); ?>
+
+                <!-- Tipos de actores -->
+                <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h3 style="margin-top: 0;"><?php _e('Tipos de Actores', 'flavor-chat-ia'); ?></h3>
+                    <p class="description"><?php _e('Los tipos predefinidos son: Administracion Publica, Empresa, Institucion, Medio de Comunicacion, Partido Politico, Sindicato, ONG, Colectivo, Persona, Otro.', 'flavor-chat-ia'); ?></p>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="tipos_personalizados"><?php _e('Tipos Personalizados', 'flavor-chat-ia'); ?></label>
+                            </th>
+                            <td>
+                                <textarea name="tipos_personalizados" id="tipos_personalizados" rows="4" class="large-text"
+                                          placeholder="<?php esc_attr_e('Un tipo por linea: slug|Nombre visible', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($configuracion['tipos_personalizados']); ?></textarea>
+                                <p class="description"><?php _e('Formato: slug|Nombre visible (ej: cooperativa|Cooperativa)', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Tipos de relaciones -->
+                <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h3 style="margin-top: 0;"><?php _e('Tipos de Relaciones', 'flavor-chat-ia'); ?></h3>
+                    <p class="description"><?php _e('Los tipos predefinidos son: Pertenece a, Controla, Financia, Colabora, Compite, Influye, Depende, Otro.', 'flavor-chat-ia'); ?></p>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="relaciones_personalizadas"><?php _e('Relaciones Personalizadas', 'flavor-chat-ia'); ?></label>
+                            </th>
+                            <td>
+                                <textarea name="relaciones_personalizadas" id="relaciones_personalizadas" rows="4" class="large-text"
+                                          placeholder="<?php esc_attr_e('Un tipo por linea: slug|Nombre visible', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($configuracion['relaciones_personalizadas']); ?></textarea>
+                                <p class="description"><?php _e('Formato: slug|Nombre visible (ej: subcontrata|Subcontrata)', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Opciones del mapa -->
+                <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h3 style="margin-top: 0;"><?php _e('Opciones de Visualizacion', 'flavor-chat-ia'); ?></h3>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Caracteristicas', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <fieldset>
+                                    <label>
+                                        <input type="checkbox" name="mostrar_mapa" value="1" <?php checked($configuracion['mostrar_mapa'], 1); ?>>
+                                        <?php _e('Mostrar mapa geografico de actores', 'flavor-chat-ia'); ?>
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="mostrar_grafo_relaciones" value="1" <?php checked($configuracion['mostrar_grafo_relaciones'], 1); ?>>
+                                        <?php _e('Mostrar grafo de relaciones', 'flavor-chat-ia'); ?>
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="permitir_edicion_comunidad" value="1" <?php checked($configuracion['permitir_edicion_comunidad'], 1); ?>>
+                                        <?php _e('Permitir que la comunidad sugiera actores', 'flavor-chat-ia'); ?>
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="requiere_verificacion" value="1" <?php checked($configuracion['requiere_verificacion'], 1); ?>>
+                                        <?php _e('Los actores nuevos requieren verificacion', 'flavor-chat-ia'); ?>
+                                    </label>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Ambitos Geograficos', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <fieldset>
+                                    <?php
+                                    $ambitos_todos = [
+                                        'local' => __('Local', 'flavor-chat-ia'),
+                                        'comarcal' => __('Comarcal', 'flavor-chat-ia'),
+                                        'provincial' => __('Provincial', 'flavor-chat-ia'),
+                                        'autonomico' => __('Autonomico', 'flavor-chat-ia'),
+                                        'estatal' => __('Estatal', 'flavor-chat-ia'),
+                                        'internacional' => __('Internacional', 'flavor-chat-ia'),
+                                    ];
+                                    foreach ($ambitos_todos as $ambito_valor => $ambito_etiqueta):
+                                    ?>
+                                        <label style="display: inline-block; margin-right: 15px;">
+                                            <input type="checkbox" name="ambitos_disponibles[]" value="<?php echo esc_attr($ambito_valor); ?>"
+                                                   <?php checked(in_array($ambito_valor, $configuracion['ambitos_disponibles'])); ?>>
+                                            <?php echo esc_html($ambito_etiqueta); ?>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p class="submit">
+                    <button type="submit" name="guardar_config_actores" class="button button-primary">
+                        <?php _e('Guardar Configuracion', 'flavor-chat-ia'); ?>
+                    </button>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'mapa-actores',
+            'title'    => __('Mapa de Actores', 'flavor-chat-ia'),
+            'subtitle' => __('Documenta y visualiza actores del territorio', 'flavor-chat-ia'),
+            'icon'     => '🗺️',
+            'color'    => 'info', // Usa variable CSS --flavor-info del tema
+
+            'database' => [
+                'table'       => 'flavor_mapa_actores',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'      => ['type' => 'text', 'label' => __('Nombre', 'flavor-chat-ia'), 'required' => true],
+                'tipo'        => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'required' => true],
+                'posicion'    => ['type' => 'select', 'label' => __('Posición', 'flavor-chat-ia')],
+                'influencia'  => ['type' => 'range', 'label' => __('Nivel de influencia', 'flavor-chat-ia'), 'min' => 1, 'max' => 5],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'logo'        => ['type' => 'file', 'label' => __('Logo', 'flavor-chat-ia')],
+                'web'         => ['type' => 'url', 'label' => __('Sitio web', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'aliado'    => ['label' => __('Aliado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🤝'],
+                'neutro'    => ['label' => __('Neutro', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚪'],
+                'opositor'  => ['label' => __('Opositor', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'variable'  => ['label' => __('Variable', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⚡'],
+            ],
+
+            'stats' => [
+                [
+                    'key'   => 'total_actores',
+                    'label' => __('Actores', 'flavor-chat-ia'),
+                    'icon'  => '🏢',
+                    'color' => 'cyan',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_mapa_actores",
+                ],
+                [
+                    'key'   => 'aliados',
+                    'label' => __('Aliados', 'flavor-chat-ia'),
+                    'icon'  => '🤝',
+                    'color' => 'green',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_mapa_actores WHERE posicion = 'aliado'",
+                ],
+                [
+                    'key'   => 'opositores',
+                    'label' => __('Opositores', 'flavor-chat-ia'),
+                    'icon'  => '❌',
+                    'color' => 'red',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_mapa_actores WHERE posicion = 'opositor'",
+                ],
+                [
+                    'key'   => 'relaciones',
+                    'label' => __('Relaciones', 'flavor-chat-ia'),
+                    'icon'  => '🔗',
+                    'color' => 'purple',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_mapa_actores_relaciones",
+                ],
+            ],
+
+            'card' => [
+                'layout'      => 'entity',
+                'image_field' => 'logo',
+                'title_field' => 'nombre',
+                'meta_fields' => ['tipo', 'posicion', 'influencia'],
+                'badge_field' => 'posicion',
+            ],
+
+            'tabs' => [
+                'listado' => [
+                    'label'   => __('Actores', 'flavor-chat-ia'),
+                    'icon'    => '🏢',
+                    'content' => 'template:mapa-actores/_listado.php',
+                ],
+                'grafo' => [
+                    'label'   => __('Grafo', 'flavor-chat-ia'),
+                    'icon'    => '🕸️',
+                    'content' => 'shortcode:mapa_actores_grafo',
+                ],
+                'por-tipo' => [
+                    'label'   => __('Por tipo', 'flavor-chat-ia'),
+                    'icon'    => '📊',
+                    'content' => 'shortcode:mapa_actores_tipos',
+                ],
+                'relaciones' => [
+                    'label'   => __('Relaciones', 'flavor-chat-ia'),
+                    'icon'    => '🔗',
+                    'content' => 'shortcode:mapa_actores_relaciones',
+                ],
+            ],
+
+            'archive' => [
+                'columns'       => 3,
+                'per_page'      => 18,
+                'order_by'      => 'influencia',
+                'order'         => 'DESC',
+                'filterable_by' => ['tipo', 'posicion', 'influencia'],
+            ],
+
+            'dashboard' => [
+                'widgets' => [
+                    'actores_clave'   => ['type' => 'list', 'title' => __('Actores clave', 'flavor-chat-ia')],
+                    'grafo_mini'      => ['type' => 'graph', 'title' => __('Grafo de relaciones', 'flavor-chat-ia')],
+                ],
+                'actions' => [
+                    'nuevo_actor' => [
+                        'label' => __('Añadir actor', 'flavor-chat-ia'),
+                        'icon'  => '➕',
+                        'modal' => 'mapa-actores-nuevo',
+                    ],
+                ],
+            ],
+
+            'features' => [
+                'has_archive'    => true,
+                'has_single'     => true,
+                'has_dashboard'  => true,
+                'has_search'     => true,
+                'has_graph'      => true,
+                'has_relations'  => true,
+                'has_timeline'   => true,
             ],
         ];
     }

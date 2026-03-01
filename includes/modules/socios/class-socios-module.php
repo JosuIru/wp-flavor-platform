@@ -115,6 +115,9 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
         // Registrar en Panel Unificado de Gestión
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         // Cargar sistema de cuotas periodicas
@@ -2042,6 +2045,18 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Gestión de Pagos', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-socios-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Socios_Dashboard_Tab::get_instance();
         }
     }
 }

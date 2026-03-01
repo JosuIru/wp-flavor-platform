@@ -65,7 +65,7 @@ $resultados = $datos_vista['resultados'] ?? [];
                     <h3><?php esc_html_e('Personas', 'flavor-chat-ia'); ?></h3>
                     <div class="mi-red-usuarios-lista">
                         <?php foreach ($resultados['usuarios'] as $user) : ?>
-                            <a href="<?php echo esc_url($base_url . 'perfil/?id=' . $user['ID']); ?>" class="mi-red-usuario-item">
+                            <a href="<?php echo esc_url($base_url . 'perfil/' . $user['ID'] . '/'); ?>" class="mi-red-usuario-item">
                                 <img src="<?php echo esc_url($user['avatar']); ?>" alt="" class="mi-red-usuario-item__avatar">
                                 <div class="mi-red-usuario-item__info">
                                     <span class="mi-red-usuario-item__nombre"><?php echo esc_html($user['display_name']); ?></span>

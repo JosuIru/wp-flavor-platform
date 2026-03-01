@@ -818,7 +818,7 @@ class Flavor_GC_Membership {
                 __('Enhorabuena! Tu solicitud para unirte al grupo "%s" ha sido aprobada. Ya puedes empezar a hacer pedidos.', 'flavor-chat-ia'),
                 $grupo->post_title
             ),
-            'enlace' => home_url('/mi-cuenta/?tab=gc-mi-grupo'),
+            'enlace' => home_url('/mi-portal/grupos-consumo/'),
             'enlace_texto' => __('Ir a Mi Grupo', 'flavor-chat-ia'),
         ];
 
@@ -1055,7 +1055,7 @@ class Flavor_GC_Membership {
                 esc_html($grupo->post_title)
             ); ?></p>
             <div class="gc-union-acciones">
-                <a href="<?php echo esc_url(home_url('/mi-cuenta/?tab=gc-mi-grupo')); ?>" class="gc-btn gc-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="gc-btn gc-btn-primary">
                     <?php _e('Ir a mi grupo', 'flavor-chat-ia'); ?>
                 </a>
             </div>

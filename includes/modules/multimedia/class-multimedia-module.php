@@ -363,6 +363,8 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en panel de administración unificado
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         add_action('init', [$this, 'maybe_create_tables']);
 
@@ -402,13 +404,26 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         // Admin menu
         add_action('admin_menu', [$this, 'add_admin_menu']);
 
-        // Hooks de integración
-        add_filter('flavor_user_dashboard_tabs', [$this, 'add_dashboard_tab']);
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
 
         // Cron para limpieza
         add_action('flavor_multimedia_cleanup', [$this, 'cron_cleanup_archivos']);
         if (!wp_next_scheduled('flavor_multimedia_cleanup')) {
             wp_schedule_event(time(), 'daily', 'flavor_multimedia_cleanup');
+        }
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs() {
+        $tab_file = dirname(__FILE__) . '/class-multimedia-dashboard-tab.php';
+        if (file_exists($tab_file)) {
+            require_once $tab_file;
+            if (class_exists('Flavor_Multimedia_Dashboard_Tab')) {
+                Flavor_Multimedia_Dashboard_Tab::get_instance();
+            }
         }
     }
 
@@ -2836,10 +2851,50 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si debe cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'flavor_galeria',
+            'flavor_albumes',
+            'flavor_subir_multimedia',
+            'flavor_mi_galeria',
+            'flavor_carousel',
+            'flavor_multimedia_galeria',
+            'flavor_multimedia_mis_fotos',
+            'flavor_multimedia_subir',
+            'flavor_multimedia_albumes',
+            'flavor_multimedia_album',
+            'flavor_multimedia_visor',
+            'flavor_multimedia_dashboard',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Enqueue frontend assets
      */
     public function enqueue_frontend_assets() {
         if (!$this->can_activate()) {
+            return;
+        }
+
+        if (!$this->should_load_assets()) {
             return;
         }
 
@@ -3373,6 +3428,111 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Moderación de Contenido', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'multimedia',
+            'title'    => __('Galería Multimedia', 'flavor-chat-ia'),
+            'subtitle' => __('Comparte fotos y videos con la comunidad', 'flavor-chat-ia'),
+            'icon'     => '📷',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_multimedia',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['label' => __('Título', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
+                'descripcion' => ['label' => __('Descripción', 'flavor-chat-ia'), 'type' => 'textarea'],
+                'tipo'        => ['label' => __('Tipo', 'flavor-chat-ia'), 'type' => 'select', 'options' => ['imagen' => 'Imagen', 'video' => 'Video', 'audio' => 'Audio']],
+                'archivo'     => ['label' => __('Archivo', 'flavor-chat-ia'), 'type' => 'file'],
+                'album_id'    => ['label' => __('Álbum', 'flavor-chat-ia'), 'type' => 'select'],
+                'privacidad'  => ['label' => __('Privacidad', 'flavor-chat-ia'), 'type' => 'select'],
+                'estado'      => ['label' => __('Estado', 'flavor-chat-ia'), 'type' => 'select'],
+            ],
+
+            'estados' => [
+                'publico'   => ['label' => __('Público', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🌐'],
+                'pendiente' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
+                'privado'   => ['label' => __('Privado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🔒'],
+                'rechazado' => ['label' => __('Rechazado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+            ],
+
+            'stats' => [
+                'total_archivos' => ['label' => __('Total archivos', 'flavor-chat-ia'), 'icon' => '📁', 'color' => 'pink'],
+                'imagenes'       => ['label' => __('Imágenes', 'flavor-chat-ia'), 'icon' => '🖼️', 'color' => 'blue'],
+                'videos'         => ['label' => __('Videos', 'flavor-chat-ia'), 'icon' => '🎬', 'color' => 'purple'],
+                'pendientes'     => ['label' => __('Pendientes', 'flavor-chat-ia'), 'icon' => '⏳', 'color' => 'yellow'],
+            ],
+
+            'card' => [
+                'title_field'    => 'titulo',
+                'subtitle_field' => 'descripcion',
+                'badge_field'    => 'estado',
+                'image_field'    => 'thumbnail_url',
+                'meta_fields'    => ['tipo', 'fecha_creacion', 'likes'],
+            ],
+
+            'tabs' => [
+                'galeria' => [
+                    'label'   => __('Galería', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-format-gallery',
+                    'content' => 'template:_archive.php',
+                ],
+                'albumes' => [
+                    'label'   => __('Álbumes', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-images-alt2',
+                    'content' => 'template:albumes.php',
+                ],
+                'mi-galeria' => [
+                    'label'   => __('Mi galería', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-admin-media',
+                    'content' => 'template:mi-galeria.php',
+                ],
+                'subir' => [
+                    'label'   => __('Subir', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-cloud-upload',
+                    'content' => 'template:subir.php',
+                ],
+            ],
+
+            'archive' => [
+                'columns'      => 4,
+                'per_page'     => 16,
+                'show_filters' => true,
+                'show_search'  => true,
+            ],
+
+            'dashboard' => [
+                'show_stats'   => true,
+                'show_actions' => true,
+                'actions'      => [
+                    'subir_archivo' => ['label' => __('Subir archivo', 'flavor-chat-ia'), 'icon' => '📤', 'color' => 'pink'],
+                    'crear_album'   => ['label' => __('Crear álbum', 'flavor-chat-ia'), 'icon' => '📁', 'color' => 'blue'],
+                ],
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-multimedia-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Multimedia_Dashboard_Tab')) {
+                Flavor_Multimedia_Dashboard_Tab::get_instance();
+            }
         }
     }
 }

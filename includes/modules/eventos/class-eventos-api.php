@@ -109,6 +109,152 @@ class Flavor_Eventos_API {
                 ],
             ],
         ]);
+
+        // POST /eventos - Crear evento
+        register_rest_route(self::API_NAMESPACE, '/eventos', [
+            'methods' => WP_REST_Server::CREATABLE,
+            'callback' => [$this, 'crear_evento'],
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            },
+            'args' => [
+                'titulo' => [
+                    'required' => true,
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'descripcion' => [
+                    'required' => true,
+                    'sanitize_callback' => 'wp_kses_post',
+                ],
+                'tipo' => [
+                    'required' => true,
+                    'sanitize_callback' => 'sanitize_key',
+                ],
+                'fecha_inicio' => [
+                    'required' => true,
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
+
+        // Registrar AJAX handler para crear eventos (compatibilidad con formularios)
+        add_action('wp_ajax_eventos_crear_evento_ajax', [$this, 'ajax_crear_evento']);
+    }
+
+    /**
+     * POST /eventos - Crear un nuevo evento
+     */
+    public function crear_evento($request) {
+        global $wpdb;
+
+        $usuario_id = get_current_user_id();
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        // Preparar datos del evento
+        $datos_evento = [
+            'titulo'         => $request->get_param('titulo'),
+            'descripcion'    => $request->get_param('descripcion'),
+            'tipo'           => $request->get_param('tipo'),
+            'fecha_inicio'   => $request->get_param('fecha_inicio'),
+            'fecha_fin'      => $request->get_param('fecha_fin') ?: null,
+            'ubicacion'      => $request->get_param('ubicacion') ?: '',
+            'direccion'      => $request->get_param('direccion') ?: '',
+            'precio'         => floatval($request->get_param('precio') ?: 0),
+            'aforo_maximo'   => intval($request->get_param('aforo_maximo') ?: 0),
+            'es_online'      => $request->get_param('es_online') ? 1 : 0,
+            'url_online'     => $request->get_param('url_online') ?: '',
+            'imagen'         => $request->get_param('imagen') ?: '',
+            'estado'         => 'publicado',
+            'organizador_id' => $usuario_id,
+            'created_at'     => current_time('mysql'),
+            'updated_at'     => current_time('mysql'),
+        ];
+
+        // Insertar en BD
+        $resultado = $wpdb->insert($tabla_eventos, $datos_evento);
+
+        if ($resultado === false) {
+            return new WP_Error(
+                'evento_create_error',
+                __('Error al crear el evento', 'flavor-chat-ia'),
+                ['status' => 500]
+            );
+        }
+
+        $evento_id = $wpdb->insert_id;
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => [
+                'id' => $evento_id,
+                'message' => __('Evento creado correctamente', 'flavor-chat-ia'),
+                'redirect' => home_url('/mi-portal/eventos/' . $evento_id . '/'),
+            ],
+        ]);
+    }
+
+    /**
+     * AJAX: Crear evento (para formularios tradicionales)
+     */
+    public function ajax_crear_evento() {
+        // Verificar nonce
+        if (!isset($_POST['eventos_nonce']) || !wp_verify_nonce($_POST['eventos_nonce'], 'eventos_crear')) {
+            wp_send_json_error(['message' => __('Sesion expirada. Recarga la pagina.', 'flavor-chat-ia')]);
+        }
+
+        // Verificar permisos
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => __('No tienes permisos para crear eventos.', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $usuario_id = get_current_user_id();
+
+        // Validar campos requeridos
+        $titulo = isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '';
+        $descripcion = isset($_POST['descripcion']) ? wp_kses_post($_POST['descripcion']) : '';
+        $tipo = isset($_POST['tipo']) ? sanitize_key($_POST['tipo']) : '';
+        $fecha_inicio = isset($_POST['fecha_inicio']) ? sanitize_text_field($_POST['fecha_inicio']) : '';
+
+        if (empty($titulo) || empty($descripcion) || empty($tipo) || empty($fecha_inicio)) {
+            wp_send_json_error(['message' => __('Completa todos los campos requeridos.', 'flavor-chat-ia')]);
+        }
+
+        // Preparar datos
+        $datos_evento = [
+            'titulo'         => $titulo,
+            'descripcion'    => $descripcion,
+            'tipo'           => $tipo,
+            'fecha_inicio'   => $fecha_inicio,
+            'fecha_fin'      => isset($_POST['fecha_fin']) ? sanitize_text_field($_POST['fecha_fin']) : null,
+            'ubicacion'      => isset($_POST['ubicacion']) ? sanitize_text_field($_POST['ubicacion']) : '',
+            'direccion'      => isset($_POST['direccion']) ? sanitize_text_field($_POST['direccion']) : '',
+            'precio'         => isset($_POST['precio']) ? floatval($_POST['precio']) : 0,
+            'aforo_maximo'   => isset($_POST['aforo_maximo']) ? intval($_POST['aforo_maximo']) : 0,
+            'es_online'      => isset($_POST['es_online']) && $_POST['es_online'] ? 1 : 0,
+            'url_online'     => isset($_POST['url_online']) ? esc_url_raw($_POST['url_online']) : '',
+            'imagen'         => isset($_POST['imagen']) ? esc_url_raw($_POST['imagen']) : '',
+            'estado'         => 'publicado',
+            'organizador_id' => $usuario_id,
+            'created_at'     => current_time('mysql'),
+            'updated_at'     => current_time('mysql'),
+        ];
+
+        // Insertar
+        $resultado = $wpdb->insert($tabla_eventos, $datos_evento);
+
+        if ($resultado === false) {
+            wp_send_json_error(['message' => __('Error al guardar el evento. Intentalo de nuevo.', 'flavor-chat-ia')]);
+        }
+
+        $evento_id = $wpdb->insert_id;
+
+        wp_send_json_success([
+            'id' => $evento_id,
+            'message' => __('Evento creado correctamente', 'flavor-chat-ia'),
+            'redirect' => home_url('/mi-portal/eventos/' . $evento_id . '/'),
+        ]);
     }
 
     /**

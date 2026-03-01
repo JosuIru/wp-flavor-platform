@@ -44,15 +44,40 @@ if (empty($title)) {
     return;
 }
 
-// Obtener clases de gradiente
-$gradient = flavor_get_gradient_classes($color);
+// Colores semánticos que usan variables CSS del tema
+$semantic_colors = ['primary', 'secondary', 'success', 'warning', 'error', 'info', 'accent'];
+$use_theme_vars = in_array($color, $semantic_colors, true);
+
+// Obtener clases de gradiente o estilos inline
+$inline_style = '';
+$gradient_classes = '';
+
+if ($use_theme_vars) {
+    // Usar variables CSS del tema
+    $css_var_map = [
+        'primary'   => '--flavor-primary',
+        'secondary' => '--flavor-secondary',
+        'success'   => '--flavor-success',
+        'warning'   => '--flavor-warning',
+        'error'     => '--flavor-error',
+        'info'      => '--flavor-info',
+        'accent'    => '--flavor-primary',
+    ];
+    $css_var = $css_var_map[$color] ?? '--flavor-primary';
+    $inline_style = "background: linear-gradient(135deg, var({$css_var}) 0%, var({$css_var}-dark, var({$css_var})) 100%);";
+} else {
+    // Usar clases de Tailwind
+    $gradient = flavor_get_gradient_classes($color);
+    $gradient_classes = "bg-gradient-to-r {$gradient['from']} {$gradient['to']}";
+}
+
 $color_classes = flavor_get_color_classes($color);
 
 // Construir título con icono
 $display_title = $icon ? "{$icon} {$title}" : $title;
 ?>
 
-<div class="bg-gradient-to-r <?php echo esc_attr($gradient['from']); ?> <?php echo esc_attr($gradient['to']); ?> text-white rounded-2xl p-8 mb-8 shadow-lg">
+<div class="<?php echo esc_attr($gradient_classes); ?> text-white rounded-2xl p-8 mb-8 shadow-lg" <?php if ($inline_style): ?>style="<?php echo esc_attr($inline_style); ?>"<?php endif; ?>>
     <div class="flex items-center justify-between flex-wrap gap-4">
         <div>
             <h1 class="text-3xl font-bold mb-2"><?php echo esc_html($display_title); ?></h1>

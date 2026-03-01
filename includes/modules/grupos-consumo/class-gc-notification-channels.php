@@ -527,7 +527,7 @@ class Flavor_GC_Notification_Channels {
                 $pedido_id,
                 number_format($pedido->total, 2) . '€'
             ),
-            'enlace' => home_url('/mi-cuenta/?tab=gc-mis-pedidos'),
+            'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
             'enlace_texto' => 'Ver mis pedidos',
         ];
 
@@ -542,7 +542,7 @@ class Flavor_GC_Notification_Channels {
             'pedido_id' => $pedido_id,
             'titulo' => 'Pedido modificado',
             'mensaje' => sprintf('Tu pedido #%d ha sido actualizado.', $pedido_id),
-            'enlace' => home_url('/mi-cuenta/?tab=gc-mis-pedidos'),
+            'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
             'enlace_texto' => 'Ver detalles',
         ];
 
@@ -570,7 +570,7 @@ class Flavor_GC_Notification_Channels {
             'ciclo_nombre' => $entrega->ciclo_nombre,
             'titulo' => 'Tu entrega está lista',
             'mensaje' => __('Tu pedido está preparado y listo para recoger.', 'flavor-chat-ia'),
-            'enlace' => home_url('/mi-cuenta/?tab=gc-mis-pedidos'),
+            'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
             'enlace_texto' => 'Ver detalles de entrega',
         ];
 
@@ -603,7 +603,7 @@ class Flavor_GC_Notification_Channels {
                 $suscripcion->cesta_nombre,
                 number_format($suscripcion->importe, 2) . '€'
             ),
-            'enlace' => home_url('/mi-cuenta/?tab=gc-mi-suscripcion'),
+            'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'suscripciones'),
             'enlace_texto' => 'Ver mi suscripción',
         ];
 
@@ -747,7 +747,7 @@ class Flavor_GC_Notification_Channels {
                     $suscripcion->cesta_nombre,
                     number_format($suscripcion->importe, 2) . '€'
                 ),
-                'enlace' => home_url('/mi-cuenta/?tab=gc-mi-suscripcion'),
+                'enlace' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'suscripciones'),
                 'enlace_texto' => 'Gestionar suscripción',
             ];
 

@@ -30,9 +30,9 @@ $parcelas_ocupadas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_parcelas WHERE 
             <span class="dashicons dashicons-admin-tools" style="font-size: 24px; color: #8c52ff;"></span>
             <span><?php echo esc_html__('Recursos', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=huertos-configuracion'); ?>" class="huertos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <a href="<?php echo admin_url('admin.php?page=huertos-config'); ?>" class="huertos-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
-            <span><?php echo esc_html__('Configuracion', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
         </a>
     </div>
 

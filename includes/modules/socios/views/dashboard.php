@@ -24,28 +24,28 @@ $ingresos_mes = $wpdb->get_var("SELECT SUM(importe) FROM $tabla_cuotas WHERE est
 
 // Socios por tipo
 $socios_por_tipo = $wpdb->get_results(
-    "SELECT tipo, COUNT(*) as total
+    "SELECT tipo_socio as tipo, COUNT(*) as total
      FROM $tabla_socios
      WHERE estado = 'activo'
-     GROUP BY tipo
+     GROUP BY tipo_socio
      ORDER BY total DESC"
 );
 
 // Últimos socios
 $ultimos_socios = $wpdb->get_results(
-    "SELECT s.*, u.display_name
+    "SELECT s.*, u.display_name, s.numero_socio as numero, s.tipo_socio as tipo
      FROM $tabla_socios s
-     LEFT JOIN {$wpdb->users} u ON s.user_id = u.ID
+     LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
      ORDER BY s.fecha_alta DESC
      LIMIT 10"
 );
 
 // Cuotas pendientes de pago
 $cuotas_pendientes_lista = $wpdb->get_results(
-    "SELECT c.*, s.numero as numero_socio, u.display_name as nombre_socio
+    "SELECT c.*, s.numero_socio, u.display_name as nombre_socio
      FROM $tabla_cuotas c
      INNER JOIN $tabla_socios s ON c.socio_id = s.id
-     LEFT JOIN {$wpdb->users} u ON s.user_id = u.ID
+     LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
      WHERE c.estado = 'pendiente'
      ORDER BY c.fecha_cargo ASC
      LIMIT 10"
@@ -81,11 +81,7 @@ $ingresos_por_mes = $wpdb->get_results(
             <span class="dashicons dashicons-clipboard" style="font-size: 24px; color: #8c52ff;"></span>
             <span><?php echo esc_html__('Pagos', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=socios-reportes'); ?>" class="socios-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #dba617;"></span>
-            <span><?php echo esc_html__('Reportes', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=socios-configuracion'); ?>" class="socios-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <a href="<?php echo admin_url('admin.php?page=socios-config'); ?>" class="socios-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
             <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
         </a>

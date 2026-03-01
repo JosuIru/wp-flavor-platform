@@ -51,6 +51,25 @@ class Flavor_Autoloader {
     private static $debug = false;
 
     /**
+     * Mapeo especial para clases/traits con nombres de archivo diferentes
+     * Formato: 'Nombre_Clase' => 'ruta/relativa/archivo.php'
+     *
+     * @var array
+     */
+    private static $special_mappings = [
+        'Flavor_Module_Integration_Consumer' => 'modules/trait-module-integrations.php',
+        'Flavor_Module_Dashboard_Tabs_Trait' => 'traits/trait-module-dashboard-tabs.php',
+        'Flavor_Module_Tab_Integrations_Trait' => 'traits/trait-module-tab-integrations.php',
+        'Flavor_Module_Notifications_Trait' => 'modules/trait-module-notifications.php',
+        'Flavor_Module_Admin_UI_Trait' => 'modules/trait-module-admin-ui.php',
+        'Flavor_Module_Frontend_Actions' => 'modules/trait-module-frontend-actions.php',
+        'Flavor_Module_Admin_Pages_Trait' => 'admin/trait-module-admin-pages.php',
+        'Flavor_Dashboard_Widget_Trait' => 'modules/trait-dashboard-widget.php',
+        'Flavor_WhatsApp_Features' => 'modules/trait-whatsapp-features.php',
+        'Flavor_Encuestas_Features' => 'modules/trait-encuestas-features.php',
+    ];
+
+    /**
      * Registra el autoloader
      *
      * @param bool $prepend Si debe agregarse al inicio de la cola
@@ -148,6 +167,16 @@ class Flavor_Autoloader {
             return true;
         }
 
+        // Verificar mapeo especial primero
+        if (isset(self::$special_mappings[$nombre_clase])) {
+            $ruta_archivo = FLAVOR_CHAT_IA_PATH . 'includes/' . self::$special_mappings[$nombre_clase];
+            if (self::load_file($ruta_archivo)) {
+                self::$loaded_classes[$nombre_clase] = $ruta_archivo;
+                self::log("Clase cargada (mapeo especial): {$nombre_clase} desde {$ruta_archivo}");
+                return true;
+            }
+        }
+
         // Intentar cargar desde los prefijos registrados
         foreach (self::$prefix_map as $prefijo => $directorio_base) {
             if (strpos($nombre_clase, $prefijo) === 0) {
@@ -201,17 +230,20 @@ class Flavor_Autoloader {
                     break;
 
                 case 'module':
-                    // Verificar si es un Trait
+                    // Verificar si es un Trait o similar
                     $ultimo_segmento = end($partes);
-                    if (strtolower($ultimo_segmento) === 'trait') {
-                        // Los traits pueden estar en diferentes ubicaciones
-                        $trait_name = strtolower(implode('-', array_slice($partes, 0, -1)));
+                    $trait_suffixes = ['trait', 'actions', 'integrations', 'features', 'notifications', 'consumer'];
+
+                    if (in_array(strtolower($ultimo_segmento), $trait_suffixes)) {
+                        // Es un trait de módulo
+                        // Flavor_Module_Frontend_Actions → modules/trait-module-frontend-actions.php
+                        $trait_name = strtolower(implode('-', $partes));
 
                         // Lista de ubicaciones posibles para traits
                         $trait_paths = [
+                            'modules/trait-' . $trait_name . '.php',
                             'traits/trait-' . $trait_name . '.php',
                             'admin/trait-' . $trait_name . '.php',
-                            'modules/trait-' . $trait_name . '.php',
                         ];
 
                         foreach ($trait_paths as $path) {
@@ -221,8 +253,16 @@ class Flavor_Autoloader {
                         }
 
                         // Fallback
-                        $carpeta_especial = 'traits/';
+                        $carpeta_especial = 'modules/';
                         $nombre_archivo = 'trait-' . $trait_name . '.php';
+                    } elseif (count($partes) === 2 && in_array(strtolower($partes[1]), ['renderer', 'navigation', 'shortcodes', 'base'])) {
+                        // Clases helper de módulos que están en la raíz de includes:
+                        // Flavor_Module_Renderer → class-module-renderer.php
+                        // Flavor_Module_Navigation → class-module-navigation.php
+                        // Flavor_Module_Shortcodes → class-module-shortcodes.php
+                        // Flavor_Module_Base → class-module-base.php
+                        $carpeta_especial = '';
+                        $nombre_archivo = 'class-' . self::convert_to_filename($partes);
                     } else {
                         // Módulo normal: Flavor_Module_WooCommerce → modules/woocommerce/class-woocommerce.php
                         $carpeta_especial = 'modules/';
@@ -378,10 +418,57 @@ class Flavor_Autoloader {
                     $nombre_archivo = 'class-' . self::convert_to_filename($partes);
                     break;
 
+                case 'dashboard':
+                    // Flavor_Dashboard_Widget_Trait → modules/trait-dashboard-widget.php
+                    $ultimo_segmento = end($partes);
+                    if (strtolower($ultimo_segmento) === 'trait') {
+                        $trait_name = strtolower(implode('-', array_slice($partes, 0, -1)));
+                        $carpeta_especial = 'modules/';
+                        $nombre_archivo = 'trait-' . $trait_name . '.php';
+                    } else {
+                        $carpeta_especial = 'dashboard/';
+                        $nombre_archivo = 'class-' . self::convert_to_filename($partes);
+                    }
+                    break;
+
                 default:
                     // Verificar si es una API de módulo (ej: Flavor_Incidencias_API, Flavor_Espacios_Comunes_API)
                     $ultimo_segmento = end($partes);
-                    if (strtolower($ultimo_segmento) === 'api' && count($partes) >= 2) {
+                    $penultimo_segmento = count($partes) >= 2 ? $partes[count($partes) - 2] : '';
+
+                    // Verificar si es Frontend_Controller de un módulo
+                    // Flavor_Bicicletas_Compartidas_Frontend_Controller → modules/bicicletas-compartidas/frontend/class-...-frontend-controller.php
+                    if (strtolower($ultimo_segmento) === 'controller' && strtolower($penultimo_segmento) === 'frontend' && count($partes) >= 3) {
+                        $partes_modulo = array_slice($partes, 0, -2); // Quitar 'Frontend' y 'Controller'
+                        $nombre_modulo = strtolower(implode('-', $partes_modulo));
+                        $carpeta_especial = 'modules/' . $nombre_modulo . '/frontend/';
+                        $nombre_archivo = 'class-' . $nombre_modulo . '-frontend-controller.php';
+                    }
+                    // Verificar si es Dashboard_Tab de un módulo
+                    // Flavor_Cursos_Dashboard_Tab → modules/cursos/class-cursos-dashboard-tab.php
+                    elseif (strtolower($ultimo_segmento) === 'tab' && strtolower($penultimo_segmento) === 'dashboard' && count($partes) >= 3) {
+                        $partes_modulo = array_slice($partes, 0, -2); // Quitar 'Dashboard' y 'Tab'
+                        $nombre_modulo = strtolower(implode('-', $partes_modulo));
+                        $carpeta_especial = 'modules/' . $nombre_modulo . '/';
+                        $nombre_archivo = 'class-' . $nombre_modulo . '-dashboard-tab.php';
+                    }
+                    // Verificar si es GC_* (Grupos Consumo - prefijo especial)
+                    // Flavor_GC_Dashboard_Widget → modules/grupos-consumo/class-gc-dashboard-widget.php
+                    // Flavor_GC_Membership → modules/grupos-consumo/class-gc-membership.php
+                    elseif (strtolower($partes[0]) === 'gc' && count($partes) >= 2) {
+                        $carpeta_especial = 'modules/grupos-consumo/';
+                        $nombre_archivo = 'class-' . strtolower(implode('-', $partes)) . '.php';
+                    }
+                    // Verificar si es Widget de un módulo
+                    // Flavor_Circulos_Cuidados_Widget → modules/circulos-cuidados/class-circulos-cuidados-widget.php
+                    elseif (strtolower($ultimo_segmento) === 'widget' && count($partes) >= 2) {
+                        $partes_modulo = array_slice($partes, 0, -1); // Quitar 'Widget'
+                        $nombre_modulo = strtolower(implode('-', $partes_modulo));
+                        $carpeta_especial = 'modules/' . $nombre_modulo . '/';
+                        $nombre_archivo = 'class-' . $nombre_modulo . '-widget.php';
+                    }
+                    // Verificar si es una API de módulo
+                    elseif (strtolower($ultimo_segmento) === 'api' && count($partes) >= 2) {
                         // Tomar todas las partes excepto 'API' para formar el nombre del módulo
                         // Flavor_Incidencias_API → modules/incidencias/class-incidencias-api.php
                         // Flavor_Espacios_Comunes_API → modules/espacios-comunes/class-espacios-comunes-api.php
@@ -389,8 +476,33 @@ class Flavor_Autoloader {
                         $nombre_modulo = strtolower(implode('-', $partes_modulo));
                         $carpeta_especial = 'modules/' . $nombre_modulo . '/';
                         $nombre_archivo = 'class-' . $nombre_modulo . '-api.php';
-                    } else {
-                        // Sin carpeta especial
+                    }
+                    // Verificar si es Push_* (clases de notificaciones push)
+                    // Flavor_Push_Token_Manager → notifications/class-push-token-manager.php
+                    elseif (strtolower($partes[0]) === 'push' && count($partes) >= 2) {
+                        $carpeta_especial = 'notifications/';
+                        $nombre_archivo = 'class-' . strtolower(implode('-', $partes)) . '.php';
+                    }
+                    // Verificar si es un Trait de módulos
+                    // Flavor_WhatsApp_Features → modules/trait-whatsapp-features.php
+                    // Flavor_Encuestas_Features → modules/trait-encuestas-features.php
+                    // Flavor_Dashboard_Widget_Trait → modules/trait-dashboard-widget.php
+                    // Flavor_Module_Frontend_Actions → modules/trait-module-frontend-actions.php
+                    elseif (strtolower($ultimo_segmento) === 'features' ||
+                            strtolower($ultimo_segmento) === 'trait' ||
+                            strtolower($ultimo_segmento) === 'actions' ||
+                            strtolower($ultimo_segmento) === 'integrations') {
+                        $carpeta_especial = 'modules/';
+                        $nombre_archivo = 'trait-' . strtolower(implode('-', $partes)) . '.php';
+                    }
+                    // Verificar si es Feature_* (sistema de features compartidas)
+                    // Flavor_Feature_Ratings → features/class-feature-ratings.php
+                    elseif (strtolower($partes[0]) === 'feature' && count($partes) >= 2) {
+                        $carpeta_especial = 'features/';
+                        $nombre_archivo = 'class-' . strtolower(implode('-', $partes)) . '.php';
+                    }
+                    else {
+                        // Sin carpeta especial - buscar en raíz de includes
                         $nombre_archivo = 'class-' . self::convert_to_filename($partes);
                     }
                     break;

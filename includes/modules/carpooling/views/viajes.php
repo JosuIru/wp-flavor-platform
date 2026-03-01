@@ -18,8 +18,8 @@ if (!current_user_can('manage_options')) {
 
 global $wpdb;
 $tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
-$tabla_conductores = $wpdb->prefix . 'flavor_carpooling_conductores';
 $tabla_reservas = $wpdb->prefix . 'flavor_carpooling_reservas';
+$tabla_valoraciones = $wpdb->prefix . 'flavor_carpooling_valoraciones';
 
 // Obtener filtros
 $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'todos';
@@ -47,11 +47,11 @@ if (!empty($filtro_busqueda)) {
 }
 
 if (!empty($filtro_fecha_desde)) {
-    $where .= $wpdb->prepare(" AND DATE(v.fecha_viaje) >= %s", $filtro_fecha_desde);
+    $where .= $wpdb->prepare(" AND DATE(v.fecha_salida) >= %s", $filtro_fecha_desde);
 }
 
 if (!empty($filtro_fecha_hasta)) {
-    $where .= $wpdb->prepare(" AND DATE(v.fecha_viaje) <= %s", $filtro_fecha_hasta);
+    $where .= $wpdb->prepare(" AND DATE(v.fecha_salida) <= %s", $filtro_fecha_hasta);
 }
 
 // Obtener total de registros
@@ -64,13 +64,12 @@ $viajes = $wpdb->get_results(
     "SELECT
         v.*,
         u.display_name as nombre_conductor,
-        c.valoracion_promedio,
+        COALESCE((SELECT AVG(puntuacion) FROM {$tabla_valoraciones} WHERE valorado_id = v.conductor_id), 0) as valoracion_promedio,
         (SELECT COUNT(*) FROM {$tabla_reservas} WHERE viaje_id = v.id) as total_reservas
     FROM {$tabla_viajes} v
-    INNER JOIN {$tabla_conductores} c ON v.conductor_id = c.id
-    INNER JOIN {$wpdb->users} u ON c.usuario_id = u.ID
+    INNER JOIN {$wpdb->users} u ON v.conductor_id = u.ID
     {$where}
-    ORDER BY v.fecha_viaje DESC
+    ORDER BY v.fecha_salida DESC
     LIMIT {$elementos_por_pagina} OFFSET {$offset}"
 );
 
@@ -199,10 +198,7 @@ foreach ($stats_estados as $stat) {
                                 <strong><?php echo esc_html($viaje->origen); ?></strong>
                                 <span style="color: #666;"> → </span>
                                 <strong><?php echo esc_html($viaje->destino); ?></strong>
-                                <?php if ($viaje->distancia_km > 0) : ?>
-                                    <br><small style="color: #666;"><?php echo esc_html(number_format($viaje->distancia_km, 1)); ?> km</small>
-                                <?php endif; ?>
-                            </td>
+                                                            </td>
                             <td>
                                 <?php echo esc_html($viaje->nombre_conductor); ?>
                                 <br>
@@ -212,9 +208,9 @@ foreach ($stats_estados as $stat) {
                                 </small>
                             </td>
                             <td>
-                                <?php echo esc_html(date('d/m/Y', strtotime($viaje->fecha_viaje))); ?>
+                                <?php echo esc_html(date('d/m/Y', strtotime($viaje->fecha_salida))); ?>
                                 <br>
-                                <small><?php echo esc_html(date('H:i', strtotime($viaje->fecha_viaje))); ?></small>
+                                <small><?php echo esc_html(date('H:i', strtotime($viaje->fecha_salida))); ?></small>
                             </td>
                             <td>
                                 <span style="color: <?php echo $viaje->plazas_ocupadas >= $viaje->plazas_disponibles ? '#d63638' : '#00a32a'; ?>;">

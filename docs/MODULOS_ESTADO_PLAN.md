@@ -1,6 +1,6 @@
 # ⚠️ DOCUMENTO DEPRECADO
 
-> **Este documento ha sido reemplazado por [ESTADO-REAL-MODULOS.md](ESTADO-REAL-MODULOS.md)**
+> **Este documento ha sido reemplazado por [../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md](../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md)**
 >
 > La información aquí contenida está **DESACTUALIZADA** (19/02/2026).
 >
@@ -9,7 +9,7 @@
 > - Análisis preciso de líneas de código, REST routes y shortcodes
 > - Plan de acción priorizado y actualizado
 >
-> **Por favor, usa [ESTADO-REAL-MODULOS.md](ESTADO-REAL-MODULOS.md) para información actual.**
+> **Por favor, usa [../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md](../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md) para informacion actual.**
 
 ---
 

@@ -119,6 +119,7 @@ class Flavor_Incidencias_Frontend_Controller {
         add_shortcode('incidencias_mis_reportes', [$this, 'shortcode_mis_reportes']);
         add_shortcode('incidencias_detalle', [$this, 'shortcode_detalle']);
         add_shortcode('incidencias_estadisticas', [$this, 'shortcode_estadisticas']);
+        add_shortcode('incidencias_recientes', [$this, 'shortcode_recientes']);
     }
 
     /**
@@ -223,7 +224,104 @@ class Flavor_Incidencias_Frontend_Controller {
     }
 
     /**
+     * Shortcode: Incidencias recientes (widget compacto)
+     *
+     * Muestra las últimas incidencias en formato compacto para widgets/sidebars.
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del widget
+     */
+    public function shortcode_recientes($atts) {
+        global $wpdb;
+
+        $atts = shortcode_atts([
+            'limite' => 4,
+            'estado' => '',
+            'mostrar_fecha' => 'true',
+            'mostrar_estado' => 'true',
+        ], $atts);
+
+        $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+            return '';
+        }
+
+        // Query para obtener incidencias recientes
+        $where = ["estado != 'eliminada'"];
+        $params = [];
+
+        if (!empty($atts['estado'])) {
+            $where[] = "estado = %s";
+            $params[] = $atts['estado'];
+        }
+
+        $where_sql = implode(' AND ', $where);
+        $limite = absint($atts['limite']);
+
+        $query = "SELECT id, titulo, descripcion, estado, ubicacion, created_at
+                  FROM $tabla_incidencias
+                  WHERE $where_sql
+                  ORDER BY created_at DESC
+                  LIMIT %d";
+        $params[] = $limite;
+
+        $incidencias = $wpdb->get_results($wpdb->prepare($query, $params));
+
+        if (empty($incidencias)) {
+            return '<div class="flavor-widget-empty">
+                <span class="text-4xl">✅</span>
+                <p class="text-gray-500 text-sm mt-2">' . __('No hay incidencias recientes', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        // Estados con colores
+        $estados_config = [
+            'pendiente' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔴'],
+            'en_proceso' => ['label' => __('En proceso', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
+            'validada' => ['label' => __('Validada', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🔵'],
+            'resuelta' => ['label' => __('Resuelta', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+        ];
+
+        ob_start();
+        ?>
+        <div class="flavor-incidencias-recientes space-y-3">
+            <?php foreach ($incidencias as $incidencia):
+                $estado_info = $estados_config[$incidencia->estado] ?? $estados_config['pendiente'];
+                $url = home_url("/mi-portal/incidencias/{$incidencia->id}/");
+            ?>
+                <a href="<?php echo esc_url($url); ?>"
+                   class="block p-3 bg-white rounded-lg border border-gray-100 hover:border-<?php echo esc_attr($estado_info['color']); ?>-300 hover:shadow-sm transition-all group">
+                    <div class="flex items-start gap-3">
+                        <span class="text-lg flex-shrink-0"><?php echo esc_html($estado_info['icon']); ?></span>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-medium text-gray-900 text-sm truncate group-hover:text-<?php echo esc_attr($estado_info['color']); ?>-600">
+                                <?php echo esc_html($incidencia->titulo); ?>
+                            </h4>
+                            <?php if ($atts['mostrar_fecha'] === 'true'): ?>
+                                <p class="text-xs text-gray-500 mt-0.5">
+                                    <?php echo esc_html(human_time_diff(strtotime($incidencia->created_at), current_time('timestamp'))); ?>
+                                    <?php _e('atrás', 'flavor-chat-ia'); ?>
+                                </p>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ($atts['mostrar_estado'] === 'true'): ?>
+                            <span class="px-2 py-0.5 text-xs rounded-full bg-<?php echo esc_attr($estado_info['color']); ?>-100 text-<?php echo esc_attr($estado_info['color']); ?>-700 flex-shrink-0">
+                                <?php echo esc_html($estado_info['label']); ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
      * Renderizar listado de incidencias
+     *
+     * Usa el sistema de plantillas dinámicas (Archive Renderer)
      */
     private function render_listado($atts) {
         global $wpdb;
@@ -234,7 +332,17 @@ class Flavor_Incidencias_Frontend_Controller {
             return;
         }
 
-        $where = ["1=1"];
+        // Parámetros de paginación y filtros
+        $per_page = intval($atts['limite'] ?? 20);
+        $current_page = max(1, intval($_GET['pag'] ?? 1));
+        $offset = ($current_page - 1) * $per_page;
+
+        // Filtros desde URL
+        $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
+
+        // Construir query
+        $where = ["estado != 'eliminada'"];
         $params = [];
 
         if (!empty($atts['categoria'])) {
@@ -245,16 +353,122 @@ class Flavor_Incidencias_Frontend_Controller {
         if (!empty($atts['estado'])) {
             $where[] = "estado = %s";
             $params[] = $atts['estado'];
+        } elseif ($estado_filtro) {
+            $where[] = "estado = %s";
+            $params[] = $estado_filtro;
         }
 
-        // Extraer variables para el template
-        $limit = intval($atts['limite']);
-        $mostrar_filtros = $atts['mostrar_filtros'] === 'true' || $atts['mostrar_filtros'] === true;
+        if ($tipo_filtro) {
+            $where[] = "tipo = %s";
+            $params[] = $tipo_filtro;
+        }
 
-        $template = dirname(__FILE__) . '/../templates/listado.php';
+        $where_sql = implode(' AND ', $where);
+
+        // Obtener total para paginación
+        $count_query = "SELECT COUNT(*) FROM $tabla_incidencias WHERE $where_sql";
+        if (!empty($params)) {
+            $total_incidencias = (int) $wpdb->get_var($wpdb->prepare($count_query, $params));
+        } else {
+            $total_incidencias = (int) $wpdb->get_var($count_query);
+        }
+
+        // Obtener incidencias paginadas
+        $query = "SELECT * FROM $tabla_incidencias WHERE $where_sql ORDER BY created_at DESC LIMIT %d OFFSET %d";
+        $query_params = array_merge($params, [$per_page, $offset]);
+        $incidencias_raw = $wpdb->get_results($wpdb->prepare($query, $query_params));
+
+        // Transformar datos al formato que espera el Archive Renderer
+        // Los campos deben coincidir con card_config.fields en get_module_config()
+        $incidencias = [];
+        foreach ($incidencias_raw as $inc) {
+            $incidencias[] = [
+                'id'          => $inc->id,
+                'titulo'      => $inc->titulo,
+                'descripcion' => wp_trim_words($inc->descripcion ?? '', 25),
+                'imagen'      => $inc->imagen ?? '',
+                'url'         => home_url('/mi-portal/incidencias/' . $inc->id . '/'),
+                'fecha'       => date_i18n(get_option('date_format'), strtotime($inc->created_at)),
+                'estado'      => $inc->estado,
+                'tipo'        => $inc->tipo ?? '',
+                'ubicacion'   => $inc->ubicacion ?? '',
+                'categoria'   => $inc->categoria ?? '',
+            ];
+        }
+
+        // Calcular estadísticas
+        $estadisticas = $this->calcular_estadisticas_listado($tabla_incidencias);
+
+        // Cargar el template estándar con Archive Renderer
+        $template = FLAVOR_CHAT_IA_PATH . 'templates/frontend/incidencias/archive.php';
         if (file_exists($template)) {
             include $template;
         }
+    }
+
+    /**
+     * Calcula estadísticas para el listado
+     */
+    private function calcular_estadisticas_listado($tabla) {
+        global $wpdb;
+
+        return [
+            'pendientes'   => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'pendiente'"),
+            'en_proceso'   => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado IN ('en_proceso', 'validada')"),
+            'resueltas'    => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'resuelta'"),
+            'tiempo_medio' => $this->calcular_tiempo_medio_resolucion($tabla),
+        ];
+    }
+
+    /**
+     * Calcula el tiempo medio de resolución
+     */
+    private function calcular_tiempo_medio_resolucion($tabla) {
+        global $wpdb;
+
+        $tiempo = $wpdb->get_var(
+            "SELECT AVG(DATEDIFF(fecha_resolucion, created_at))
+             FROM $tabla
+             WHERE estado = 'resuelta'
+             AND fecha_resolucion IS NOT NULL
+             AND created_at IS NOT NULL"
+        );
+
+        if ($tiempo === null) {
+            return '—';
+        }
+
+        return round($tiempo, 1) . ' ' . __('días', 'flavor-chat-ia');
+    }
+
+    /**
+     * Obtiene el label de un estado
+     */
+    private function get_estado_label($estado) {
+        $labels = [
+            'pendiente'   => __('Pendiente', 'flavor-chat-ia'),
+            'validada'    => __('Validada', 'flavor-chat-ia'),
+            'en_proceso'  => __('En proceso', 'flavor-chat-ia'),
+            'resuelta'    => __('Resuelta', 'flavor-chat-ia'),
+            'cerrada'     => __('Cerrada', 'flavor-chat-ia'),
+            'rechazada'   => __('Rechazada', 'flavor-chat-ia'),
+        ];
+        return $labels[$estado] ?? ucfirst($estado);
+    }
+
+    /**
+     * Obtiene el color de un estado
+     */
+    private function get_estado_color($estado) {
+        $colors = [
+            'pendiente'   => 'yellow',
+            'validada'    => 'blue',
+            'en_proceso'  => 'blue',
+            'resuelta'    => 'green',
+            'cerrada'     => 'gray',
+            'rechazada'   => 'red',
+        ];
+        return $colors[$estado] ?? 'gray';
     }
 
     /**

@@ -173,6 +173,9 @@ class Flavor_Network_Content_Bridge {
      * Inicializar hooks
      */
     private function init_hooks() {
+        // Asegurar que la tabla de nodos existe con las columnas correctas
+        $this->ensure_nodes_table();
+
         // Añadir campo de visibilidad en red a los metaboxes de providers
         add_action('flavor_integration_provider_metabox_after', [$this, 'render_network_visibility_field'], 10, 2);
         add_action('flavor_integration_save_provider_meta', [$this, 'save_network_visibility'], 10, 2);
@@ -213,6 +216,55 @@ class Flavor_Network_Content_Bridge {
         add_action('flavor_network_daily_metrics', [$this, 'calculate_daily_node_metrics']);
         if (!wp_next_scheduled('flavor_network_daily_metrics')) {
             wp_schedule_event(time(), 'daily', 'flavor_network_daily_metrics');
+        }
+    }
+
+    /**
+     * Asegura que la tabla de nodos existe con las columnas correctas
+     */
+    private function ensure_nodes_table() {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_network_nodes';
+
+        // Verificar si la tabla existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla'") !== $tabla) {
+            $charset_collate = $wpdb->get_charset_collate();
+            $sql = "CREATE TABLE $tabla (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                nombre varchar(255) NOT NULL,
+                slug varchar(100) NOT NULL,
+                url varchar(500) NOT NULL,
+                logo_url varchar(500) DEFAULT NULL,
+                descripcion text,
+                api_key varchar(64) DEFAULT NULL,
+                es_nodo_local tinyint(1) DEFAULT 0,
+                estado enum('activo','inactivo','pendiente') DEFAULT 'pendiente',
+                nivel_confianza varchar(50) DEFAULT 'no_verificado',
+                reputacion_score decimal(5,2) DEFAULT 50.00,
+                uptime_percent decimal(5,2) DEFAULT 100.00,
+                ultima_sincronizacion datetime DEFAULT NULL,
+                fecha_registro datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY slug (slug),
+                KEY estado (estado),
+                KEY nivel_confianza (nivel_confianza)
+            ) $charset_collate";
+
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        } else {
+            // Verificar si las columnas de reputación existen, si no, añadirlas
+            $columnas = $wpdb->get_col("SHOW COLUMNS FROM $tabla", 0);
+
+            if (!in_array('reputacion_score', $columnas)) {
+                $wpdb->query("ALTER TABLE $tabla ADD COLUMN reputacion_score decimal(5,2) DEFAULT 50.00");
+            }
+            if (!in_array('nivel_confianza', $columnas)) {
+                $wpdb->query("ALTER TABLE $tabla ADD COLUMN nivel_confianza varchar(50) DEFAULT 'no_verificado'");
+            }
+            if (!in_array('uptime_percent', $columnas)) {
+                $wpdb->query("ALTER TABLE $tabla ADD COLUMN uptime_percent decimal(5,2) DEFAULT 100.00");
+            }
         }
     }
 

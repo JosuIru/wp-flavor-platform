@@ -7,7 +7,15 @@
     'use strict';
 
     var FlavorEconomiaDon = {
-        config: window.flavorEconomiaDonConfig || {},
+        config: $.extend({
+            ajaxUrl: '/wp-admin/admin-ajax.php',
+            nonce: '',
+            strings: {
+                procesando: 'Procesando...',
+                error: 'Ha ocurrido un error',
+                confirmacion: '¿Estás seguro?'
+            }
+        }, window.flavorEconomiaDonConfig || {}),
 
         init: function() {
             this.bindEvents();

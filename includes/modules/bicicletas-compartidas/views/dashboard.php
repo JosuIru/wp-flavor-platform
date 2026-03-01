@@ -16,9 +16,9 @@ if (!current_user_can('manage_options')) {
 }
 
 global $wpdb;
-$tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_compartidas_bicicletas';
-$tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_compartidas_estaciones';
-$tabla_usos = $wpdb->prefix . 'flavor_bicicletas_compartidas_usos';
+$tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_bicicletas';
+$tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
+$tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
 
 $fecha_inicio_mes = date('Y-m-01 00:00:00');
 
@@ -32,18 +32,18 @@ $total_estaciones = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_estaciones}");
 $estaciones_activas = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_estaciones} WHERE estado = 'activa'");
 
 $usos_mes = $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_usos} WHERE fecha_inicio >= %s",
+    "SELECT COUNT(*) FROM {$tabla_prestamos} WHERE fecha_inicio >= %s",
     $fecha_inicio_mes
 ));
 
-$usos_activos = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_usos} WHERE estado = 'activo'");
+$usos_activos = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_prestamos} WHERE estado = 'activo'");
 
 // Calcular distancia total y CO2 ahorrado
 $stats_distancia = $wpdb->get_row($wpdb->prepare(
     "SELECT
-        SUM(distancia_km) as distancia_total,
+        SUM(kilometros_recorridos) as distancia_total,
         AVG(duracion_minutos) as duracion_promedio
-    FROM {$tabla_usos}
+    FROM {$tabla_prestamos}
     WHERE estado = 'completado' AND fecha_inicio >= %s",
     $fecha_inicio_mes
 ));
@@ -57,10 +57,10 @@ $top_estaciones = $wpdb->get_results(
     "SELECT
         e.nombre,
         e.direccion,
-        COUNT(u.id) as total_usos,
+        COUNT(p.id) as total_usos,
         (SELECT COUNT(*) FROM {$tabla_bicicletas} WHERE estacion_actual_id = e.id) as bicicletas_actuales
     FROM {$tabla_estaciones} e
-    LEFT JOIN {$tabla_usos} u ON (e.id = u.estacion_origen_id OR e.id = u.estacion_destino_id)
+    LEFT JOIN {$tabla_prestamos} p ON (e.id = p.estacion_salida_id OR e.id = p.estacion_llegada_id)
     WHERE e.estado = 'activa'
     GROUP BY e.id
     ORDER BY total_usos DESC
@@ -72,8 +72,8 @@ $datos_grafica = $wpdb->get_results(
     "SELECT
         DATE(fecha_inicio) as fecha,
         COUNT(*) as usos,
-        SUM(distancia_km) as distancia
-    FROM {$tabla_usos}
+        SUM(kilometros_recorridos) as distancia
+    FROM {$tabla_prestamos}
     WHERE fecha_inicio >= DATE_SUB(NOW(), INTERVAL 30 DAY)
     GROUP BY DATE(fecha_inicio)
     ORDER BY fecha ASC"

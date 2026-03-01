@@ -191,7 +191,12 @@ class Flavor_Shared_Features {
         // Cargar handler si existe
         if ($this->features[$id]['handler'] && class_exists($this->features[$id]['handler'])) {
             $handler_class = $this->features[$id]['handler'];
-            $this->features[$id]['handler_instance'] = new $handler_class();
+            // Usar get_instance() para clases singleton
+            if (method_exists($handler_class, 'get_instance')) {
+                $this->features[$id]['handler_instance'] = $handler_class::get_instance();
+            } else {
+                $this->features[$id]['handler_instance'] = new $handler_class();
+            }
         }
 
         return $this;

@@ -1245,7 +1245,7 @@ class Flavor_Podcast_Frontend_Controller {
             <?php if (empty($mis_series)): ?>
                 <div class="flavor-aviso">
                     <p><?php _e('Primero debes crear una serie para poder subir episodios.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(add_query_arg('accion', 'crear-serie')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('podcast', 'crear-serie')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php _e('Crear serie', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

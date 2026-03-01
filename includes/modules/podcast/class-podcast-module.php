@@ -127,6 +127,22 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en panel de administración unificado
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
+
+        // Inicializar Dashboard Tab para usuario
+        $this->init_dashboard_tab();
+    }
+
+    /**
+     * Inicializa el Dashboard Tab del usuario
+     */
+    private function init_dashboard_tab() {
+        $dashboard_tab_file = plugin_dir_path(__FILE__) . 'class-podcast-dashboard-tab.php';
+        if (file_exists($dashboard_tab_file)) {
+            require_once $dashboard_tab_file;
+            Flavor_Podcast_Dashboard_Tab::get_instance();
+        }
     }
 
     /**
@@ -151,9 +167,43 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del modulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'podcast_player',
+            'podcast_lista_episodios',
+            'podcast_series',
+            'podcast_suscribirse',
+            'podcast_estadisticas',
+            'podcast_buscar',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Encola assets CSS y JS
      */
     public function enqueue_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
         $modulo_url = plugin_dir_url(__FILE__);
         $modulo_path = plugin_dir_path(__FILE__);
         $version = self::VERSION;
@@ -2789,5 +2839,746 @@ KNOWLEDGE;
                 'parent' => 'podcast',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'podcast',
+            'title'    => __('Podcasts', 'flavor-chat-ia'),
+            'subtitle' => __('Escucha y crea contenido de audio', 'flavor-chat-ia'),
+            'icon'     => '🎙️',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_podcast_series',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['label' => __('Título', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
+                'descripcion' => ['label' => __('Descripción', 'flavor-chat-ia'), 'type' => 'textarea'],
+                'portada'     => ['label' => __('Portada', 'flavor-chat-ia'), 'type' => 'image'],
+                'categoria'   => ['label' => __('Categoría', 'flavor-chat-ia'), 'type' => 'select'],
+                'estado'      => ['label' => __('Estado', 'flavor-chat-ia'), 'type' => 'select'],
+            ],
+
+            'estados' => [
+                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'pausado'    => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'archivado'  => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '📦'],
+            ],
+
+            'stats' => [
+                'total_series'    => ['label' => __('Series', 'flavor-chat-ia'), 'icon' => '🎙️', 'color' => 'purple'],
+                'total_episodios' => ['label' => __('Episodios', 'flavor-chat-ia'), 'icon' => '🎧', 'color' => 'blue'],
+                'suscriptores'    => ['label' => __('Suscriptores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
+                'reproducciones'  => ['label' => __('Reproducciones', 'flavor-chat-ia'), 'icon' => '▶️', 'color' => 'indigo'],
+            ],
+
+            'card' => [
+                'title_field'    => 'titulo',
+                'subtitle_field' => 'descripcion',
+                'badge_field'    => 'estado',
+                'image_field'    => 'portada',
+                'meta_fields'    => ['total_episodios', 'autor', 'ultima_actualizacion'],
+            ],
+
+            'tabs' => [
+                'episodios' => [
+                    'label'    => __('Episodios', 'flavor-chat-ia'),
+                    'icon'     => 'dashicons-playlist-audio',
+                    'content'  => 'callback:render_tab_episodios',
+                    'default'  => true,
+                ],
+                'programas' => [
+                    'label'    => __('Programas', 'flavor-chat-ia'),
+                    'icon'     => 'dashicons-microphone',
+                    'content'  => 'callback:render_tab_programas',
+                ],
+                'mis-suscripciones' => [
+                    'label'    => __('Mis Suscripciones', 'flavor-chat-ia'),
+                    'icon'     => 'dashicons-rss',
+                    'content'  => 'callback:render_tab_suscripciones',
+                    'requires_login' => true,
+                ],
+                'favoritos' => [
+                    'label'    => __('Favoritos', 'flavor-chat-ia'),
+                    'icon'     => 'dashicons-heart',
+                    'content'  => 'callback:render_tab_favoritos',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'      => 3,
+                'per_page'     => 12,
+                'show_filters' => true,
+                'show_search'  => true,
+            ],
+
+            'dashboard' => [
+                'show_stats'   => true,
+                'show_actions' => true,
+                'actions'      => [
+                    'crear_serie'   => ['label' => __('Crear serie', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'purple'],
+                    'subir_episodio'=> ['label' => __('Subir episodio', 'flavor-chat-ia'), 'icon' => '🎧', 'color' => 'blue'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza el tab de Episodios - Lista de ultimos episodios publicados
+     *
+     * @return string HTML del contenido
+     */
+    public function render_tab_episodios(): string {
+        global $wpdb;
+
+        $tabla_episodios = $this->tabla_episodios;
+        $tabla_series = $this->tabla_series;
+        $por_pagina = 12;
+        $pagina_actual = max(1, intval($_GET['pag'] ?? 1));
+        $offset = ($pagina_actual - 1) * $por_pagina;
+
+        // Obtener episodios recientes
+        $episodios = $wpdb->get_results($wpdb->prepare(
+            "SELECT e.*, s.titulo AS serie_titulo, s.imagen_url AS serie_imagen, s.categoria AS serie_categoria
+             FROM {$tabla_episodios} e
+             INNER JOIN {$tabla_series} s ON e.serie_id = s.id
+             WHERE e.estado = 'publicado' AND s.estado = 'publicado'
+             ORDER BY e.fecha_publicacion DESC
+             LIMIT %d OFFSET %d",
+            $por_pagina,
+            $offset
+        ));
+
+        $total_episodios = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_episodios} e
+             INNER JOIN {$tabla_series} s ON e.serie_id = s.id
+             WHERE e.estado = 'publicado' AND s.estado = 'publicado'"
+        );
+        $total_paginas = ceil($total_episodios / $por_pagina);
+
+        ob_start();
+        ?>
+        <div class="flavor-podcast-tab flavor-tab-episodios">
+            <div class="flavor-tab-header mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <span class="dashicons dashicons-playlist-audio text-purple-600"></span>
+                    <?php esc_html_e('Ultimos Episodios', 'flavor-chat-ia'); ?>
+                </h2>
+                <p class="text-gray-600 mt-1">
+                    <?php printf(esc_html__('%d episodios disponibles', 'flavor-chat-ia'), $total_episodios); ?>
+                </p>
+            </div>
+
+            <?php if (empty($episodios)): ?>
+                <div class="flavor-empty-state bg-gray-50 rounded-2xl p-12 text-center">
+                    <span class="dashicons dashicons-playlist-audio text-gray-300 text-6xl mb-4"></span>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No hay episodios todavia', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-gray-500"><?php esc_html_e('Los episodios publicados apareceran aqui.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php foreach ($episodios as $episodio): ?>
+                        <article class="flavor-episodio-card bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+                            <div class="relative aspect-video bg-gray-100">
+                                <?php
+                                $imagen = $episodio->imagen_url ?: $episodio->serie_imagen;
+                                if ($imagen): ?>
+                                    <img src="<?php echo esc_url($imagen); ?>"
+                                         alt="<?php echo esc_attr($episodio->titulo); ?>"
+                                         class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-indigo-600">
+                                        <span class="dashicons dashicons-microphone text-white text-4xl opacity-50"></span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <span class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                    <?php echo esc_html($this->formatear_duracion($episodio->duracion_segundos)); ?>
+                                </span>
+
+                                <button class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 hover:opacity-100 transition-opacity"
+                                        data-play-episodio="<?php echo esc_attr($episodio->id); ?>"
+                                        data-audio-url="<?php echo esc_url($episodio->archivo_url); ?>">
+                                    <span class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
+                                        <span class="dashicons dashicons-controls-play text-purple-600 text-2xl ml-1"></span>
+                                    </span>
+                                </button>
+                            </div>
+
+                            <div class="p-4">
+                                <div class="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                                    <?php if ($episodio->serie_categoria): ?>
+                                        <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                                            <?php echo esc_html(ucfirst($episodio->serie_categoria)); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                    <span><?php echo esc_html(human_time_diff(strtotime($episodio->fecha_publicacion))); ?></span>
+                                </div>
+
+                                <h3 class="font-semibold text-gray-900 mb-1 line-clamp-2">
+                                    <?php echo esc_html($episodio->titulo); ?>
+                                </h3>
+
+                                <p class="text-sm text-gray-500 mb-3">
+                                    <?php echo esc_html($episodio->serie_titulo); ?>
+                                    <?php if ($episodio->temporada > 0): ?>
+                                        - S<?php echo esc_html($episodio->temporada); ?>E<?php echo esc_html($episodio->numero_episodio); ?>
+                                    <?php endif; ?>
+                                </p>
+
+                                <div class="flex items-center justify-between text-sm text-gray-400">
+                                    <span class="flex items-center gap-1">
+                                        <span class="dashicons dashicons-controls-play text-xs"></span>
+                                        <?php echo number_format_i18n($episodio->reproducciones); ?>
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="dashicons dashicons-heart text-xs"></span>
+                                        <?php echo number_format_i18n($episodio->me_gusta); ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php if ($total_paginas > 1): ?>
+                    <nav class="flex justify-center items-center gap-2 mt-8">
+                        <?php if ($pagina_actual > 1): ?>
+                            <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>"
+                               class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <span class="px-4 py-2 text-gray-600">
+                            <?php printf(esc_html__('Pagina %d de %d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?>
+                        </span>
+
+                        <?php if ($pagina_actual < $total_paginas): ?>
+                            <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>"
+                               class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                            </a>
+                        <?php endif; ?>
+                    </nav>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el tab de Programas - Catalogo de series/podcasts
+     *
+     * @return string HTML del contenido
+     */
+    public function render_tab_programas(): string {
+        global $wpdb;
+
+        $tabla_series = $this->tabla_series;
+        $por_pagina = 12;
+        $pagina_actual = max(1, intval($_GET['pag'] ?? 1));
+        $offset = ($pagina_actual - 1) * $por_pagina;
+        $categoria_filtro = sanitize_text_field($_GET['categoria'] ?? '');
+
+        // Condicion de categoria
+        $where_categoria = '';
+        $params = [];
+        if (!empty($categoria_filtro)) {
+            $where_categoria = " AND categoria = %s";
+            $params[] = $categoria_filtro;
+        }
+
+        // Obtener series
+        $consulta_series = "SELECT s.*, u.display_name AS autor_nombre,
+                           (SELECT COUNT(*) FROM {$this->tabla_episodios} e WHERE e.serie_id = s.id AND e.estado = 'publicado') AS total_episodios_pub
+                           FROM {$tabla_series} s
+                           LEFT JOIN {$wpdb->users} u ON s.autor_id = u.ID
+                           WHERE s.estado = 'publicado' {$where_categoria}
+                           ORDER BY s.fecha_ultimo_episodio DESC, s.fecha_creacion DESC
+                           LIMIT %d OFFSET %d";
+
+        $params[] = $por_pagina;
+        $params[] = $offset;
+
+        $series = $wpdb->get_results($wpdb->prepare($consulta_series, $params));
+
+        // Total
+        $consulta_total = "SELECT COUNT(*) FROM {$tabla_series} WHERE estado = 'publicado' {$where_categoria}";
+        if (!empty($categoria_filtro)) {
+            $total_series = (int) $wpdb->get_var($wpdb->prepare($consulta_total, $categoria_filtro));
+        } else {
+            $total_series = (int) $wpdb->get_var($consulta_total);
+        }
+        $total_paginas = ceil($total_series / $por_pagina);
+
+        // Obtener categorias disponibles
+        $categorias = $wpdb->get_col(
+            "SELECT DISTINCT categoria FROM {$tabla_series} WHERE estado = 'publicado' AND categoria IS NOT NULL AND categoria != '' ORDER BY categoria"
+        );
+
+        ob_start();
+        ?>
+        <div class="flavor-podcast-tab flavor-tab-programas">
+            <div class="flavor-tab-header mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                            <span class="dashicons dashicons-microphone text-purple-600"></span>
+                            <?php esc_html_e('Programas', 'flavor-chat-ia'); ?>
+                        </h2>
+                        <p class="text-gray-600 mt-1">
+                            <?php printf(esc_html__('%d series de podcast', 'flavor-chat-ia'), $total_series); ?>
+                        </p>
+                    </div>
+
+                    <?php if (!empty($categorias)): ?>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="<?php echo esc_url(remove_query_arg(['categoria', 'pag'])); ?>"
+                               class="px-3 py-1.5 rounded-full text-sm <?php echo empty($categoria_filtro) ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+                                <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                            </a>
+                            <?php foreach ($categorias as $categoria): ?>
+                                <a href="<?php echo esc_url(add_query_arg(['categoria' => $categoria, 'pag' => 1])); ?>"
+                                   class="px-3 py-1.5 rounded-full text-sm <?php echo $categoria_filtro === $categoria ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+                                    <?php echo esc_html(ucfirst($categoria)); ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <?php if (empty($series)): ?>
+                <div class="flavor-empty-state bg-gray-50 rounded-2xl p-12 text-center">
+                    <span class="dashicons dashicons-microphone text-gray-300 text-6xl mb-4"></span>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No hay programas todavia', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-gray-500"><?php esc_html_e('Los programas publicados apareceran aqui.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php foreach ($series as $serie): ?>
+                        <article class="flavor-serie-card bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow group">
+                            <div class="relative aspect-square bg-gray-100">
+                                <?php if ($serie->imagen_url): ?>
+                                    <img src="<?php echo esc_url($serie->imagen_url); ?>"
+                                         alt="<?php echo esc_attr($serie->titulo); ?>"
+                                         class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-indigo-600">
+                                        <span class="dashicons dashicons-microphone text-white text-6xl opacity-50"></span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($serie->categoria): ?>
+                                    <span class="absolute top-3 left-3 bg-white/90 text-purple-700 text-xs font-medium px-2 py-1 rounded-full">
+                                        <?php echo esc_html(ucfirst($serie->categoria)); ?>
+                                    </span>
+                                <?php endif; ?>
+
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                    <a href="<?php echo esc_url($this->obtener_url_serie($serie)); ?>"
+                                       class="w-full text-center bg-white text-purple-600 font-medium py-2 rounded-lg hover:bg-purple-50 transition-colors">
+                                        <?php esc_html_e('Ver programa', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="p-4">
+                                <h3 class="font-bold text-gray-900 mb-1 line-clamp-1">
+                                    <?php echo esc_html($serie->titulo); ?>
+                                </h3>
+
+                                <p class="text-sm text-gray-500 mb-3">
+                                    <?php esc_html_e('Por', 'flavor-chat-ia'); ?> <?php echo esc_html($serie->autor_nombre); ?>
+                                </p>
+
+                                <p class="text-sm text-gray-600 line-clamp-2 mb-3">
+                                    <?php echo esc_html(wp_trim_words($serie->descripcion_corta ?: $serie->descripcion, 15)); ?>
+                                </p>
+
+                                <div class="flex items-center justify-between text-sm text-gray-400 pt-3 border-t border-gray-100">
+                                    <span class="flex items-center gap-1">
+                                        <span class="dashicons dashicons-playlist-audio text-xs"></span>
+                                        <?php echo intval($serie->total_episodios_pub ?: $serie->total_episodios); ?>
+                                        <?php esc_html_e('episodios', 'flavor-chat-ia'); ?>
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="dashicons dashicons-groups text-xs"></span>
+                                        <?php echo number_format_i18n($serie->suscriptores); ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php if ($total_paginas > 1): ?>
+                    <nav class="flex justify-center items-center gap-2 mt-8">
+                        <?php if ($pagina_actual > 1): ?>
+                            <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>"
+                               class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <span class="px-4 py-2 text-gray-600">
+                            <?php printf(esc_html__('Pagina %d de %d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?>
+                        </span>
+
+                        <?php if ($pagina_actual < $total_paginas): ?>
+                            <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>"
+                               class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                            </a>
+                        <?php endif; ?>
+                    </nav>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el tab de Mis Suscripciones - Series a las que esta suscrito el usuario
+     *
+     * @return string HTML del contenido
+     */
+    public function render_tab_suscripciones(): string {
+        if (!is_user_logged_in()) {
+            return $this->render_mensaje_login(__('Inicia sesion para ver tus suscripciones', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $usuario_id = get_current_user_id();
+
+        // Obtener suscripciones
+        $suscripciones = $wpdb->get_results($wpdb->prepare(
+            "SELECT sus.*, s.titulo, s.descripcion, s.imagen_url, s.categoria, s.total_episodios, s.suscriptores,
+                    u.display_name AS autor_nombre,
+                    (SELECT COUNT(*) FROM {$this->tabla_episodios} e
+                     WHERE e.serie_id = s.id AND e.estado = 'publicado'
+                     AND e.fecha_publicacion > sus.fecha_ultima_actividad) AS episodios_nuevos,
+                    (SELECT e.titulo FROM {$this->tabla_episodios} e
+                     WHERE e.serie_id = s.id AND e.estado = 'publicado'
+                     ORDER BY e.fecha_publicacion DESC LIMIT 1) AS ultimo_episodio,
+                    (SELECT e.fecha_publicacion FROM {$this->tabla_episodios} e
+                     WHERE e.serie_id = s.id AND e.estado = 'publicado'
+                     ORDER BY e.fecha_publicacion DESC LIMIT 1) AS fecha_ultimo_episodio
+             FROM {$this->tabla_suscripciones} sus
+             INNER JOIN {$this->tabla_series} s ON sus.serie_id = s.id
+             LEFT JOIN {$wpdb->users} u ON s.autor_id = u.ID
+             WHERE sus.usuario_id = %d AND s.estado = 'publicado'
+             ORDER BY sus.fecha_suscripcion DESC",
+            $usuario_id
+        ));
+
+        ob_start();
+        ?>
+        <div class="flavor-podcast-tab flavor-tab-suscripciones">
+            <div class="flavor-tab-header mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <span class="dashicons dashicons-rss text-purple-600"></span>
+                    <?php esc_html_e('Mis Suscripciones', 'flavor-chat-ia'); ?>
+                </h2>
+                <p class="text-gray-600 mt-1">
+                    <?php printf(esc_html__('%d series suscritas', 'flavor-chat-ia'), count($suscripciones)); ?>
+                </p>
+            </div>
+
+            <?php if (empty($suscripciones)): ?>
+                <div class="flavor-empty-state bg-gray-50 rounded-2xl p-12 text-center">
+                    <span class="dashicons dashicons-rss text-gray-300 text-6xl mb-4"></span>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No tienes suscripciones', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-gray-500 mb-4"><?php esc_html_e('Explora el catalogo y suscribete a las series que te interesen.', 'flavor-chat-ia'); ?></p>
+                    <a href="?tab=programas" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <span class="dashicons dashicons-search"></span>
+                        <?php esc_html_e('Explorar programas', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="space-y-4">
+                    <?php foreach ($suscripciones as $suscripcion): ?>
+                        <div class="flavor-suscripcion-item bg-white rounded-xl shadow-sm p-4 flex gap-4 items-start hover:shadow-md transition-shadow">
+                            <div class="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                <?php if ($suscripcion->imagen_url): ?>
+                                    <img src="<?php echo esc_url($suscripcion->imagen_url); ?>"
+                                         alt="<?php echo esc_attr($suscripcion->titulo); ?>"
+                                         class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-indigo-600">
+                                        <span class="dashicons dashicons-microphone text-white text-2xl opacity-50"></span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                                            <?php echo esc_html($suscripcion->titulo); ?>
+                                            <?php if ($suscripcion->episodios_nuevos > 0): ?>
+                                                <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                                    <?php echo intval($suscripcion->episodios_nuevos); ?> <?php esc_html_e('nuevo(s)', 'flavor-chat-ia'); ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </h3>
+                                        <p class="text-sm text-gray-500">
+                                            <?php esc_html_e('Por', 'flavor-chat-ia'); ?> <?php echo esc_html($suscripcion->autor_nombre); ?>
+                                            <?php if ($suscripcion->categoria): ?>
+                                                - <?php echo esc_html(ucfirst($suscripcion->categoria)); ?>
+                                            <?php endif; ?>
+                                        </p>
+                                    </div>
+
+                                    <button type="button"
+                                            class="flavor-btn-cancelar-suscripcion text-gray-400 hover:text-red-500 transition-colors"
+                                            data-serie-id="<?php echo intval($suscripcion->serie_id); ?>"
+                                            title="<?php esc_attr_e('Cancelar suscripcion', 'flavor-chat-ia'); ?>">
+                                        <span class="dashicons dashicons-no-alt"></span>
+                                    </button>
+                                </div>
+
+                                <?php if ($suscripcion->ultimo_episodio): ?>
+                                    <div class="mt-2 p-2 bg-gray-50 rounded-lg">
+                                        <p class="text-sm text-gray-600">
+                                            <span class="font-medium"><?php esc_html_e('Ultimo:', 'flavor-chat-ia'); ?></span>
+                                            <?php echo esc_html(wp_trim_words($suscripcion->ultimo_episodio, 10)); ?>
+                                            <span class="text-gray-400">- <?php echo esc_html(human_time_diff(strtotime($suscripcion->fecha_ultimo_episodio))); ?></span>
+                                        </p>
+                                    </div>
+                                <?php endif; ?>
+
+                                <div class="flex items-center gap-4 mt-3 text-sm text-gray-400">
+                                    <span class="flex items-center gap-1">
+                                        <span class="dashicons dashicons-playlist-audio text-xs"></span>
+                                        <?php echo intval($suscripcion->total_episodios); ?> <?php esc_html_e('episodios', 'flavor-chat-ia'); ?>
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="dashicons dashicons-calendar-alt text-xs"></span>
+                                        <?php esc_html_e('Suscrito', 'flavor-chat-ia'); ?> <?php echo esc_html(human_time_diff(strtotime($suscripcion->fecha_suscripcion))); ?>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <a href="<?php echo esc_url(add_query_arg('serie', $suscripcion->serie_id)); ?>"
+                               class="flex-shrink-0 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors">
+                                <span class="dashicons dashicons-controls-play"></span>
+                                <?php esc_html_e('Escuchar', 'flavor-chat-ia'); ?>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el tab de Favoritos - Episodios marcados como favoritos
+     *
+     * @return string HTML del contenido
+     */
+    public function render_tab_favoritos(): string {
+        if (!is_user_logged_in()) {
+            return $this->render_mensaje_login(__('Inicia sesion para ver tus favoritos', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $usuario_id = get_current_user_id();
+        $tabla_favoritos = $wpdb->prefix . 'flavor_podcast_favoritos';
+
+        // Verificar si existe la tabla de favoritos
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_favoritos'") !== $tabla_favoritos) {
+            return $this->render_mensaje_error(__('La funcionalidad de favoritos no esta disponible.', 'flavor-chat-ia'));
+        }
+
+        // Obtener favoritos
+        $favoritos = $wpdb->get_results($wpdb->prepare(
+            "SELECT f.*, e.titulo, e.descripcion, e.imagen_url AS episodio_imagen, e.archivo_url,
+                    e.duracion_segundos, e.reproducciones, e.me_gusta, e.fecha_publicacion,
+                    e.temporada, e.numero_episodio,
+                    s.titulo AS serie_titulo, s.imagen_url AS serie_imagen, s.categoria
+             FROM {$tabla_favoritos} f
+             INNER JOIN {$this->tabla_episodios} e ON f.episodio_id = e.id
+             INNER JOIN {$this->tabla_series} s ON e.serie_id = s.id
+             WHERE f.usuario_id = %d AND e.estado = 'publicado'
+             ORDER BY f.fecha_agregado DESC",
+            $usuario_id
+        ));
+
+        ob_start();
+        ?>
+        <div class="flavor-podcast-tab flavor-tab-favoritos">
+            <div class="flavor-tab-header mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <span class="dashicons dashicons-heart text-red-500"></span>
+                    <?php esc_html_e('Mis Favoritos', 'flavor-chat-ia'); ?>
+                </h2>
+                <p class="text-gray-600 mt-1">
+                    <?php printf(esc_html__('%d episodios guardados', 'flavor-chat-ia'), count($favoritos)); ?>
+                </p>
+            </div>
+
+            <?php if (empty($favoritos)): ?>
+                <div class="flavor-empty-state bg-gray-50 rounded-2xl p-12 text-center">
+                    <span class="dashicons dashicons-heart text-gray-300 text-6xl mb-4"></span>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No tienes favoritos', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-gray-500 mb-4"><?php esc_html_e('Guarda episodios que te gusten para escucharlos mas tarde.', 'flavor-chat-ia'); ?></p>
+                    <a href="?tab=episodios" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <span class="dashicons dashicons-search"></span>
+                        <?php esc_html_e('Explorar episodios', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="space-y-4">
+                    <?php foreach ($favoritos as $favorito): ?>
+                        <div class="flavor-favorito-item bg-white rounded-xl shadow-sm p-4 flex gap-4 items-start hover:shadow-md transition-shadow">
+                            <div class="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                <?php
+                                $imagen = $favorito->episodio_imagen ?: $favorito->serie_imagen;
+                                if ($imagen): ?>
+                                    <img src="<?php echo esc_url($imagen); ?>"
+                                         alt="<?php echo esc_attr($favorito->titulo); ?>"
+                                         class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-indigo-600">
+                                        <span class="dashicons dashicons-microphone text-white text-2xl opacity-50"></span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <span class="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">
+                                    <?php echo esc_html($this->formatear_duracion($favorito->duracion_segundos)); ?>
+                                </span>
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <h3 class="font-bold text-gray-900 line-clamp-1">
+                                            <?php echo esc_html($favorito->titulo); ?>
+                                        </h3>
+                                        <p class="text-sm text-gray-500">
+                                            <?php echo esc_html($favorito->serie_titulo); ?>
+                                            <?php if ($favorito->temporada > 0): ?>
+                                                - S<?php echo esc_html($favorito->temporada); ?>E<?php echo esc_html($favorito->numero_episodio); ?>
+                                            <?php endif; ?>
+                                        </p>
+                                    </div>
+
+                                    <button type="button"
+                                            class="flavor-btn-quitar-favorito text-red-500 hover:text-red-600 transition-colors"
+                                            data-episodio-id="<?php echo intval($favorito->episodio_id); ?>"
+                                            title="<?php esc_attr_e('Quitar de favoritos', 'flavor-chat-ia'); ?>">
+                                        <span class="dashicons dashicons-heart"></span>
+                                    </button>
+                                </div>
+
+                                <p class="text-sm text-gray-600 mt-2 line-clamp-2">
+                                    <?php echo esc_html(wp_trim_words($favorito->descripcion, 20)); ?>
+                                </p>
+
+                                <div class="flex items-center gap-4 mt-3 text-sm text-gray-400">
+                                    <span class="flex items-center gap-1">
+                                        <span class="dashicons dashicons-controls-play text-xs"></span>
+                                        <?php echo number_format_i18n($favorito->reproducciones); ?>
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="dashicons dashicons-calendar-alt text-xs"></span>
+                                        <?php echo esc_html(date_i18n('j M Y', strtotime($favorito->fecha_publicacion))); ?>
+                                    </span>
+                                    <?php if ($favorito->categoria): ?>
+                                        <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs">
+                                            <?php echo esc_html(ucfirst($favorito->categoria)); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <button type="button"
+                                    class="flex-shrink-0 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center hover:bg-purple-700 transition-colors"
+                                    data-play-episodio="<?php echo esc_attr($favorito->episodio_id); ?>"
+                                    data-audio-url="<?php echo esc_url($favorito->archivo_url); ?>"
+                                    title="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-controls-play text-xl ml-0.5"></span>
+                            </button>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza mensaje de login requerido
+     *
+     * @param string $mensaje Mensaje a mostrar
+     * @return string HTML del mensaje
+     */
+    private function render_mensaje_login(string $mensaje = ''): string {
+        if (empty($mensaje)) {
+            $mensaje = __('Debes iniciar sesion para acceder a esta seccion.', 'flavor-chat-ia');
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-login-required bg-gray-50 rounded-2xl p-12 text-center">
+            <span class="dashicons dashicons-lock text-gray-300 text-6xl mb-4"></span>
+            <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
+            <p class="text-gray-500 mb-4"><?php echo esc_html($mensaje); ?></p>
+            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>"
+               class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                <span class="dashicons dashicons-admin-users"></span>
+                <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza mensaje de error
+     *
+     * @param string $mensaje Mensaje de error
+     * @return string HTML del mensaje
+     */
+    private function render_mensaje_error(string $mensaje): string {
+        ob_start();
+        ?>
+        <div class="flavor-error-message bg-red-50 rounded-2xl p-8 text-center">
+            <span class="dashicons dashicons-warning text-red-400 text-4xl mb-3"></span>
+            <p class="text-red-700"><?php echo esc_html($mensaje); ?></p>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-podcast-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Podcast_Dashboard_Tab')) {
+                Flavor_Podcast_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

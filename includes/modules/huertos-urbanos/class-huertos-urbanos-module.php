@@ -166,6 +166,30 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         if (!wp_next_scheduled('flavor_huertos_cron_notificaciones')) {
             wp_schedule_event(time(), 'daily', 'flavor_huertos_cron_notificaciones');
         }
+
+        // Inicializar Dashboard Tab para el area de usuario
+        $this->inicializar_dashboard_tab();
+    }
+
+    /**
+     * Inicializa el Dashboard Tab para el area de usuario frontend
+     *
+     * Registra tabs en "Mi Cuenta" para mostrar:
+     * - Listado de huertos disponibles
+     * - Mi parcela asignada
+     * - Calendario de cultivos y tareas
+     * - Mapa de huertos
+     */
+    private function inicializar_dashboard_tab() {
+        $ruta_archivo_dashboard_tab = __DIR__ . '/class-huertos-urbanos-dashboard-tab.php';
+
+        if (file_exists($ruta_archivo_dashboard_tab)) {
+            require_once $ruta_archivo_dashboard_tab;
+
+            if (class_exists('Flavor_Huertos_Urbanos_Dashboard_Tab')) {
+                Flavor_Huertos_Urbanos_Dashboard_Tab::get_instance();
+            }
+        }
     }
 
     /**
@@ -544,6 +568,19 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
+
+        // Migas de pan
+        ?>
+        <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
+            <a href="<?php echo admin_url('admin.php?page=huertos-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
+                <span class="dashicons dashicons-carrot" style="font-size: 14px; vertical-align: middle;"></span>
+                <?php _e('Huertos Urbanos', 'flavor-chat-ia'); ?>
+            </a>
+            <span style="color: #646970; margin: 0 5px;">›</span>
+            <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-chat-ia'); ?></span>
+        </nav>
+        <?php
+
         $this->render_page_header(__('Configuración de Huertos Urbanos', 'flavor-chat-ia'));
 
         $configuracion_actual = $this->get_default_settings();
@@ -3091,5 +3128,68 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/recursos.php';
         if (file_exists($views_path)) { include $views_path; }
         else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Recursos', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'huertos-urbanos',
+            'title'    => __('Huertos Urbanos', 'flavor-chat-ia'),
+            'subtitle' => __('Cultiva en comunidad', 'flavor-chat-ia'),
+            'icon'     => '🌱',
+            'color'    => 'success', // Usa variable CSS --flavor-success del tema
+
+            'database' => [
+                'table'          => 'flavor_huertos',
+                'status_field'   => 'estado',
+                'exclude_status' => 'eliminado',
+                'order_by'       => 'nombre ASC',
+                'filter_fields'  => ['estado', 'zona'],
+            ],
+
+            'fields' => [
+                'titulo'      => 'nombre',
+                'descripcion' => 'descripcion',
+                'imagen'      => 'imagen',
+                'estado'      => 'estado',
+                'zona'        => 'zona',
+                'parcelas'    => 'num_parcelas',
+                'ubicacion'   => 'direccion',
+            ],
+
+            'estados' => [
+                'activo'      => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'en_obras'    => ['label' => __('En obras', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
+                'inactivo'    => ['label' => __('Inactivo', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚫'],
+            ],
+
+            'stats' => [
+                ['label' => __('Huertos', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'lime', 'count_where' => "estado = 'activo'"],
+                ['label' => __('Parcelas', 'flavor-chat-ia'), 'icon' => '🟫', 'color' => 'amber', 'query' => "SELECT COUNT(*) FROM {table}_parcelas WHERE estado = 'activa'"],
+                ['label' => __('Huertanos', 'flavor-chat-ia'), 'icon' => '👨‍🌾', 'color' => 'green', 'query' => "SELECT COUNT(DISTINCT user_id) FROM {table}_parcelas WHERE user_id IS NOT NULL"],
+                ['label' => __('Cosechas (kg)', 'flavor-chat-ia'), 'icon' => '🥕', 'color' => 'orange', 'query' => "SELECT COALESCE(SUM(cantidad), 0) FROM {table}_cosechas"],
+            ],
+
+            'tabs' => [
+                'listado' => ['label' => __('Huertos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'content' => 'template:archive.php'],
+                'mi-parcela' => ['label' => __('Mi Parcela', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home', 'content' => 'template:mi-parcela.php'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location', 'content' => 'template:mapa.php'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'content' => 'template:calendario.php'],
+                'banco-semillas' => ['label' => __('Banco Semillas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true, 'content' => '[huertos_banco_semillas]'],
+                'recetas' => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
+            ],
+
+            'dashboard' => [
+                'show_header' => true,
+                'quick_actions' => [
+                    ['title' => __('Mi parcela', 'flavor-chat-ia'), 'icon' => '🏡', 'color' => 'lime', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=mi-parcela')],
+                    ['title' => __('Huertos', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'green', 'url' => home_url('/mi-portal/huertos-urbanos/')],
+                    ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'blue', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=calendario')],
+                    ['title' => __('Semillas', 'flavor-chat-ia'), 'icon' => '🌰', 'color' => 'amber', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=banco-semillas')],
+                ],
+            ],
+        ];
     }
 }

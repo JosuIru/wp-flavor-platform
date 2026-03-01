@@ -310,6 +310,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             'class-email-marketing-api.php',
             'class-email-marketing-sender.php',
             'class-email-marketing-tracking.php',
+            'class-em-dashboard-tab.php',
         ];
 
         foreach ($archivos_dependencias as $archivo) {
@@ -1097,10 +1098,44 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'em_formulario_suscripcion',
+            'em_preferencias',
+            'em_confirmar_suscripcion',
+            'em_darse_baja',
+            'flavor_suscripcion_newsletter',
+            'flavor_preferencias_email',
+            'flavor_archivo_newsletters',
+            'flavor_contador_suscriptores',
+            'flavor_formulario_popup',
+            'flavor_email_preview',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Encolar assets de frontend
      */
     public function enqueue_frontend_assets() {
-        if (!$this->can_activate()) {
+        if (!$this->should_load_assets()) {
             return;
         }
 
@@ -7076,6 +7111,116 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
 [flavor_module_listing module="email_marketing" action="estadisticas"]',
                 'parent' => 'email-marketing',
+            ],
+        ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'email-marketing',
+            'title'    => __('Email Marketing', 'flavor-chat-ia'),
+            'subtitle' => __('Gestiona campañas de email y listas de suscriptores', 'flavor-chat-ia'),
+            'icon'     => '📧',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_email_campaigns',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'      => ['type' => 'text', 'label' => __('Nombre campaña', 'flavor-chat-ia'), 'required' => true],
+                'asunto'      => ['type' => 'text', 'label' => __('Asunto', 'flavor-chat-ia'), 'required' => true],
+                'lista_id'    => ['type' => 'select', 'label' => __('Lista destino', 'flavor-chat-ia')],
+                'contenido'   => ['type' => 'editor', 'label' => __('Contenido', 'flavor-chat-ia')],
+                'fecha_envio' => ['type' => 'datetime', 'label' => __('Fecha programada', 'flavor-chat-ia')],
+                'plantilla'   => ['type' => 'select', 'label' => __('Plantilla', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'borrador'    => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'programada'  => ['label' => __('Programada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏰'],
+                'enviando'    => ['label' => __('Enviando', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📤'],
+                'enviada'     => ['label' => __('Enviada', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'pausada'     => ['label' => __('Pausada', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '⏸️'],
+            ],
+
+            'stats' => [
+                'campanias_activas' => ['label' => __('Campañas activas', 'flavor-chat-ia'), 'icon' => '📧', 'color' => 'blue'],
+                'suscriptores'      => ['label' => __('Suscriptores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
+                'tasa_apertura'     => ['label' => __('Tasa apertura', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'purple'],
+                'tasa_clics'        => ['label' => __('Tasa clics', 'flavor-chat-ia'), 'icon' => '🖱️', 'color' => 'indigo'],
+            ],
+
+            'card' => [
+                'template'     => 'campania-card',
+                'title_field'  => 'nombre',
+                'subtitle_field' => 'asunto',
+                'meta_fields'  => ['fecha_envio', 'enviados', 'aperturas'],
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'campanias' => [
+                    'label'      => __('Campañas', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-email-alt',
+                    'content'    => 'template:_archive.php',
+                    'requires_login' => true,
+                ],
+                'crear' => [
+                    'label'      => __('Crear campaña', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:email_marketing_crear',
+                    'requires_login' => true,
+                ],
+                'listas' => [
+                    'label'      => __('Listas', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-groups',
+                    'content'    => 'shortcode:email_marketing_listas',
+                    'requires_login' => true,
+                ],
+                'plantillas' => [
+                    'label'      => __('Plantillas', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-layout',
+                    'content'    => 'shortcode:email_marketing_plantillas',
+                    'requires_login' => true,
+                ],
+                'estadisticas' => [
+                    'label'      => __('Estadísticas', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-chart-bar',
+                    'content'    => 'shortcode:email_marketing_estadisticas',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 2,
+                'per_page'   => 10,
+                'order_by'   => 'fecha_creacion',
+                'order'      => 'DESC',
+                'filterable' => ['estado', 'lista'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'campanias_recientes', 'rendimiento', 'listas_activas'],
+                'actions' => [
+                    'crear'    => ['label' => __('Nueva campaña', 'flavor-chat-ia'), 'icon' => '📧', 'color' => 'blue'],
+                    'importar' => ['label' => __('Importar contactos', 'flavor-chat-ia'), 'icon' => '📥', 'color' => 'green'],
+                ],
+            ],
+
+            'features' => [
+                'editor_visual'   => true,
+                'plantillas'      => true,
+                'segmentacion'    => true,
+                'automatizacion'  => true,
+                'tracking'        => true,
+                'ab_testing'      => true,
             ],
         ];
     }

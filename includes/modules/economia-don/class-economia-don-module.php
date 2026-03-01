@@ -169,6 +169,8 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         // Panel Unificado
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
@@ -1158,12 +1160,47 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        // Cargar en páginas del CPT
+        if (is_singular('ed_don') || is_post_type_archive('ed_don')) {
+            return true;
+        }
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'economia_don',
+            'mis_dones',
+            'ofrecer_don',
+            'muro_gratitud',
+            'flavor_don_listado',
+            'flavor_don_mis_dones',
+            'flavor_don_ofrecer',
+            'flavor_don_muro_gratitud',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Encola assets
      */
     public function enqueue_assets() {
-        if (!is_singular('ed_don') &&
-            !is_post_type_archive('ed_don') &&
-            !has_shortcode(get_post()->post_content ?? '', 'economia_don')) {
+        if (!$this->should_load_assets()) {
             return;
         }
 
@@ -1310,5 +1347,122 @@ KNOWLEDGE;
      */
     public function get_tool_definitions() {
         return [];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'economia-don',
+            'title'    => __('Economía del Don', 'flavor-chat-ia'),
+            'subtitle' => __('Dar y recibir sin esperar retorno directo', 'flavor-chat-ia'),
+            'icon'     => '🎁',
+            'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_economia_don',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['type' => 'text', 'label' => __('Qué ofreces', 'flavor-chat-ia'), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['objetos', 'alimentos', 'servicios', 'tiempo', 'conocimiento', 'espacios']],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'ubicacion'   => ['type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia')],
+                'disponibilidad' => ['type' => 'text', 'label' => __('Disponibilidad', 'flavor-chat-ia')],
+                'imagen'      => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'disponible' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'reservado'  => ['label' => __('Reservado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
+                'entregado'  => ['label' => __('Entregado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✅'],
+                'expirado'   => ['label' => __('Expirado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⏰'],
+            ],
+
+            'stats' => [
+                'dones_activos'  => ['label' => __('Dones activos', 'flavor-chat-ia'), 'icon' => '🎁', 'color' => 'amber'],
+                'dones_dados'    => ['label' => __('Dones dados', 'flavor-chat-ia'), 'icon' => '💝', 'color' => 'rose'],
+                'dones_recibidos' => ['label' => __('Dones recibidos', 'flavor-chat-ia'), 'icon' => '🤲', 'color' => 'blue'],
+                'participantes'  => ['label' => __('Participantes', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'purple'],
+            ],
+
+            'card' => [
+                'template'     => 'don-card',
+                'title_field'  => 'titulo',
+                'subtitle_field' => 'categoria',
+                'meta_fields'  => ['ubicacion', 'disponibilidad'],
+                'show_imagen'  => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'dones' => [
+                    'label'   => __('Dones disponibles', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-heart',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'ofrecer' => [
+                    'label'      => __('Ofrecer don', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:economia_don_ofrecer',
+                    'requires_login' => true,
+                ],
+                'mis-dones' => [
+                    'label'      => __('Mis dones', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:economia_don_mis_dones',
+                    'requires_login' => true,
+                ],
+                'recibidos' => [
+                    'label'      => __('Recibidos', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-download',
+                    'content'    => 'shortcode:economia_don_recibidos',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'fecha_publicacion',
+                'order'      => 'DESC',
+                'filterable' => ['categoria', 'zona'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'dones_recientes', 'mis_ofrecimientos', 'solicitudes_pendientes'],
+                'actions' => [
+                    'ofrecer'  => ['label' => __('Ofrecer don', 'flavor-chat-ia'), 'icon' => '🎁', 'color' => 'amber'],
+                    'explorar' => ['label' => __('Explorar dones', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'matching'       => true,
+                'chat'           => true,
+                'valoraciones'   => true,
+                'notificaciones' => true,
+                'karma'          => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-economia-don-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Economia_Don_Dashboard_Tab')) {
+                Flavor_Economia_Don_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

@@ -134,6 +134,8 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en panel de administracion unificado
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
@@ -156,6 +158,22 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         // Programar cron si no existe
         if (!wp_next_scheduled('transparencia_check_plazos')) {
             wp_schedule_event(time(), 'daily', 'transparencia_check_plazos');
+        }
+
+        // Cargar Dashboard Tab para el frontend del usuario
+        $this->cargar_dashboard_tab();
+    }
+
+    /**
+     * Carga el Dashboard Tab del modulo
+     */
+    private function cargar_dashboard_tab() {
+        $ruta_dashboard_tab = dirname(__FILE__) . '/class-transparencia-dashboard-tab.php';
+        if (file_exists($ruta_dashboard_tab)) {
+            require_once $ruta_dashboard_tab;
+            if (class_exists('Flavor_Transparencia_Dashboard_Tab')) {
+                Flavor_Transparencia_Dashboard_Tab::get_instance();
+            }
         }
     }
 
@@ -2808,5 +2826,121 @@ KNOWLEDGE;
                 'parent' => 'transparencia',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'transparencia',
+            'title'    => __('Portal de Transparencia', 'flavor-chat-ia'),
+            'subtitle' => __('Acceso a información pública y rendición de cuentas', 'flavor-chat-ia'),
+            'icon'     => '🔍',
+            'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
+
+            'database' => [
+                'table'       => 'flavor_transparencia',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['presupuestos', 'contratos', 'subvenciones', 'personal', 'actas', 'normativa']],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'documento'   => ['type' => 'file', 'label' => __('Documento', 'flavor-chat-ia')],
+                'año'         => ['type' => 'number', 'label' => __('Año', 'flavor-chat-ia')],
+                'fecha_publicacion' => ['type' => 'date', 'label' => __('Fecha publicación', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'pendiente'  => ['label' => __('Pendiente revisión', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
+                'archivado'  => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'slate', 'icon' => '🗄️'],
+            ],
+
+            'stats' => [
+                'documentos_publicados' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => '📄', 'color' => 'cyan'],
+                'solicitudes_atendidas' => ['label' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'blue'],
+                'descargas_total'       => ['label' => __('Descargas', 'flavor-chat-ia'), 'icon' => '📥', 'color' => 'green'],
+                'tiempo_respuesta'      => ['label' => __('Tiempo medio respuesta', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'purple'],
+            ],
+
+            'card' => [
+                'template'     => 'documento-card',
+                'title_field'  => 'titulo',
+                'subtitle_field' => 'categoria',
+                'meta_fields'  => ['año', 'fecha_publicacion'],
+                'show_descarga' => true,
+            ],
+
+            'tabs' => [
+                'documentos' => [
+                    'label'   => __('Documentos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-media-document',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'presupuestos' => [
+                    'label'   => __('Presupuestos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-chart-pie',
+                    'content' => 'shortcode:transparencia_presupuestos',
+                    'public'  => true,
+                ],
+                'solicitar' => [
+                    'label'      => __('Solicitar información', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:transparencia_solicitar',
+                    'requires_login' => true,
+                ],
+                'mis-solicitudes' => [
+                    'label'      => __('Mis solicitudes', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:transparencia_mis_solicitudes',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'fecha_publicacion',
+                'order'      => 'DESC',
+                'filterable' => ['categoria', 'año'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'documentos_recientes', 'graficos_presupuesto', 'solicitudes'],
+                'actions' => [
+                    'solicitar' => ['label' => __('Solicitar información', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'cyan'],
+                    'buscar'    => ['label' => __('Buscar documento', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'buscador'         => true,
+                'descargas'        => true,
+                'solicitudes'      => true,
+                'graficos'         => true,
+                'historial'        => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-transparencia-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Transparencia_Dashboard_Tab')) {
+                Flavor_Transparencia_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

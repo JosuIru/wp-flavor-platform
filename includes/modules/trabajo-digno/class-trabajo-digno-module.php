@@ -209,6 +209,8 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
         // Panel Unificado Admin
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
@@ -1331,5 +1333,130 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             'success' => false,
             'message' => __('Acción no implementada', 'flavor-chat-ia'),
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'trabajo-digno',
+            'title'    => __('Trabajo Digno', 'flavor-chat-ia'),
+            'subtitle' => __('Ofertas de empleo con criterios de dignidad laboral', 'flavor-chat-ia'),
+            'icon'     => '💼',
+            'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_trabajo_digno',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'        => ['type' => 'text', 'label' => __('Puesto', 'flavor-chat-ia'), 'required' => true],
+                'empresa'       => ['type' => 'text', 'label' => __('Empresa/Organización', 'flavor-chat-ia'), 'required' => true],
+                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'tipo_contrato' => ['type' => 'select', 'label' => __('Tipo de contrato', 'flavor-chat-ia')],
+                'jornada'       => ['type' => 'select', 'label' => __('Jornada', 'flavor-chat-ia'), 'options' => ['completa', 'parcial', 'flexible']],
+                'salario'       => ['type' => 'text', 'label' => __('Salario', 'flavor-chat-ia')],
+                'ubicacion'     => ['type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia')],
+                'indice_dignidad' => ['type' => 'number', 'label' => __('Índice dignidad', 'flavor-chat-ia'), 'min' => 0, 'max' => 100],
+            ],
+
+            'estados' => [
+                'activa'    => ['label' => __('Activa', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'pausada'   => ['label' => __('Pausada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'cubierta'  => ['label' => __('Cubierta', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✅'],
+                'cancelada' => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+            ],
+
+            'stats' => [
+                'ofertas_activas'  => ['label' => __('Ofertas activas', 'flavor-chat-ia'), 'icon' => '💼', 'color' => 'sky'],
+                'empresas'         => ['label' => __('Empresas', 'flavor-chat-ia'), 'icon' => '🏢', 'color' => 'blue'],
+                'emprendimientos'  => ['label' => __('Emprendimientos', 'flavor-chat-ia'), 'icon' => '🚀', 'color' => 'indigo'],
+                'contrataciones'   => ['label' => __('Contrataciones', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green'],
+            ],
+
+            'card' => [
+                'template'     => 'oferta-card',
+                'title_field'  => 'titulo',
+                'subtitle_field' => 'empresa',
+                'meta_fields'  => ['jornada', 'ubicacion', 'indice_dignidad'],
+                'show_badge'   => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'ofertas' => [
+                    'label'   => __('Ofertas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-clipboard',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'emprendimientos' => [
+                    'label'   => __('Emprendimientos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-lightbulb',
+                    'content' => 'shortcode:trabajo_emprendimientos',
+                    'public'  => true,
+                ],
+                'publicar' => [
+                    'label'      => __('Publicar oferta', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:trabajo_publicar',
+                    'requires_login' => true,
+                ],
+                'mis-postulaciones' => [
+                    'label'      => __('Mis postulaciones', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:trabajo_mis_postulaciones',
+                    'requires_login' => true,
+                ],
+                'mi-cv' => [
+                    'label'      => __('Mi CV', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-id',
+                    'content'    => 'shortcode:trabajo_mi_cv',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 2,
+                'per_page'   => 12,
+                'order_by'   => 'fecha_publicacion',
+                'order'      => 'DESC',
+                'filterable' => ['tipo_contrato', 'jornada', 'zona'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'ofertas_recientes', 'mis_postulaciones', 'emprendimientos_locales'],
+                'actions' => [
+                    'publicar'  => ['label' => __('Publicar oferta', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'sky'],
+                    'buscar'    => ['label' => __('Buscar empleo', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'indice_dignidad'  => true,
+                'postulaciones'    => true,
+                'cv_online'        => true,
+                'emprendimientos'  => true,
+                'alertas'          => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-trabajo-digno-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Trabajo_Digno_Dashboard_Tab')) {
+                Flavor_Trabajo_Digno_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

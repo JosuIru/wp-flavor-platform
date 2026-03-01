@@ -44,6 +44,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['em_settings_nonce']))
 ?>
 
 <div class="wrap em-configuracion">
+    <!-- Migas de pan -->
+    <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
+        <a href="<?php echo admin_url('admin.php?page=flavor-email-marketing'); ?>" style="color: #2271b1; text-decoration: none;">
+            <span class="dashicons dashicons-email-alt" style="font-size: 14px; vertical-align: middle;"></span>
+            <?php _e('Email Marketing', 'flavor-chat-ia'); ?>
+        </a>
+        <span style="color: #646970; margin: 0 5px;">›</span>
+        <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-chat-ia'); ?></span>
+    </nav>
+
     <h1><?php _e('Configuración de Email Marketing', 'flavor-chat-ia'); ?></h1>
 
     <form method="post">

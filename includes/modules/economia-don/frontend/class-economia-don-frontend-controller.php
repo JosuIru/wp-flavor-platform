@@ -237,7 +237,7 @@ class Flavor_Economia_Don_Frontend_Controller {
 
             <?php if (is_user_logged_in()): ?>
                 <div class="flavor-don-cta-ofrecer">
-                    <a href="<?php echo esc_url(add_query_arg('accion', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-heart"></span>
                         <?php _e('Ofrecer un don', 'flavor-chat-ia'); ?>
                     </a>
@@ -492,7 +492,7 @@ class Flavor_Economia_Don_Frontend_Controller {
                         <span class="dashicons dashicons-heart"></span>
                         <?php _e('Ofrecer Don', 'flavor-chat-ia'); ?>
                     </button>
-                    <a href="<?php echo esc_url(remove_query_arg('accion')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('economia-don')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -530,7 +530,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             <?php if (empty($dones)): ?>
                 <div class="flavor-alert flavor-alert-info">
                     <?php _e('No has ofrecido ningún don todavía.', 'flavor-chat-ia'); ?>
-                    <a href="<?php echo esc_url(add_query_arg('accion', 'ofrecer')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                         <?php _e('Ofrecer mi primer don', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -831,7 +831,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             </div>
 
             <div class="flavor-acciones-rapidas">
-                <a href="<?php echo esc_url(add_query_arg('accion', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-heart"></span>
                     <?php _e('Ofrecer un don', 'flavor-chat-ia'); ?>
                 </a>
@@ -892,7 +892,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             wp_send_json_success([
                 'message' => __('¡Gracias por tu generosidad! Tu don está disponible.', 'flavor-chat-ia'),
                 'don_id' => $wpdb->insert_id,
-                'redirect' => add_query_arg('don_id', $wpdb->insert_id, remove_query_arg('accion')),
+                'redirect' => Flavor_Chat_Helpers::get_item_url('economia-don', $wpdb->insert_id),
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al publicar.', 'flavor-chat-ia')]);

@@ -127,7 +127,7 @@ class Flavor_GC_Frontend_Controller {
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(get_permalink()),
-            'carritoUrl' => home_url('/mi-cuenta/?tab=gc-lista-compra'),
+            'carritoUrl' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-cesta'),
             'i18n' => [
                 'agregado' => __('Producto agregado al pedido', 'flavor-chat-ia'),
                 'eliminado' => __('Producto eliminado del pedido', 'flavor-chat-ia'),
@@ -1400,7 +1400,7 @@ class Flavor_GC_Frontend_Controller {
                 'total_items' => intval($total_items),
                 'ciclo_activo' => $ciclo_activo,
                 'porcentaje_gestion' => $porcentaje_gestion,
-                'url_carrito' => home_url('/mi-cuenta/?tab=gc-lista-compra'),
+                'url_carrito' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-cesta'),
             ];
             include $ruta_template;
         }

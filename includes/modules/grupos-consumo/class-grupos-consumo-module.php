@@ -3155,9 +3155,31 @@ KNOWLEDGE;
     }
 
     /**
-     * Shortcode: Ciclo actual
+     * Shortcode: Ciclo actual / Ciclos
+     *
+     * @param array $atributos Atributos del shortcode:
+     *                         - vista: 'actual', 'listado', 'calendario' (default: 'actual')
+     *                         - limite: número máximo de ciclos a mostrar
+     *                         - mostrar_pasados: 'si' o 'no' (default: 'no')
      */
     public function shortcode_ciclo_actual($atributos) {
+        $atributos = shortcode_atts([
+            'vista'           => 'actual',
+            'limite'          => 5,
+            'mostrar_pasados' => 'no',
+        ], $atributos);
+
+        // Vista de listado: mostrar múltiples ciclos
+        if ($atributos['vista'] === 'listado') {
+            return $this->render_ciclos_listado($atributos);
+        }
+
+        // Vista de calendario
+        if ($atributos['vista'] === 'calendario') {
+            return $this->shortcode_calendario($atributos);
+        }
+
+        // Vista por defecto: ciclo actual
         $resultado = $this->action_ciclo_actual([]);
 
         if (!$resultado['success']) {
@@ -3171,23 +3193,147 @@ KNOWLEDGE;
             <h3><?php echo esc_html($ciclo['nombre']); ?></h3>
             <p><strong><?php _e('Cierra:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($ciclo['fecha_cierre']); ?></p>
             <p><strong><?php _e('Entrega:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($ciclo['fecha_entrega']); ?></p>
-            <?php if ($ciclo['lugar_entrega']): ?>
+            <?php if (!empty($ciclo['lugar_entrega'])): ?>
                 <p><strong><?php _e('Lugar:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($ciclo['lugar_entrega']); ?></p>
             <?php endif; ?>
-            <p class="gc-tiempo-restante"><?php printf(__('Quedan %s para cerrar el ciclo', 'flavor-chat-ia'), $ciclo['tiempo_restante']); ?></p>
+            <?php if (!empty($ciclo['tiempo_restante'])): ?>
+                <p class="gc-tiempo-restante"><?php printf(__('Quedan %s para cerrar el ciclo', 'flavor-chat-ia'), $ciclo['tiempo_restante']); ?></p>
+            <?php endif; ?>
         </div>
         <?php
         return ob_get_clean();
     }
 
     /**
+     * Renderiza un listado de ciclos
+     *
+     * @param array $atributos Atributos del shortcode
+     * @return string HTML del listado
+     */
+    protected function render_ciclos_listado($atributos) {
+        $limite = absint($atributos['limite']) ?: 5;
+        $mostrar_pasados = $atributos['mostrar_pasados'] === 'si';
+
+        // Query de ciclos
+        $meta_query = [];
+        if (!$mostrar_pasados) {
+            $meta_query[] = [
+                'key'     => '_gc_fecha_cierre',
+                'value'   => current_time('Y-m-d'),
+                'compare' => '>=',
+                'type'    => 'DATE',
+            ];
+        }
+
+        $ciclos = get_posts([
+            'post_type'      => 'gc_ciclo',
+            'post_status'    => 'publish',
+            'posts_per_page' => $limite,
+            'meta_query'     => $meta_query,
+            'orderby'        => 'meta_value',
+            'meta_key'       => '_gc_fecha_cierre',
+            'order'          => 'ASC',
+        ]);
+
+        if (empty($ciclos)) {
+            return '<p class="gc-sin-ciclos">' . __('No hay ciclos programados próximamente.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="gc-ciclos-listado">
+            <h3 class="gc-seccion-titulo">
+                <span class="dashicons dashicons-calendar-alt"></span>
+                <?php _e('Ciclos de Pedido', 'flavor-chat-ia'); ?>
+            </h3>
+            <div class="gc-ciclos-grid">
+                <?php foreach ($ciclos as $ciclo_post):
+                    $estado = get_post_meta($ciclo_post->ID, '_gc_estado', true) ?: 'pendiente';
+                    $fecha_cierre = get_post_meta($ciclo_post->ID, '_gc_fecha_cierre', true);
+                    $fecha_entrega = get_post_meta($ciclo_post->ID, '_gc_fecha_entrega', true);
+                    $lugar_entrega = get_post_meta($ciclo_post->ID, '_gc_lugar_entrega', true);
+                    $es_abierto = $estado === 'abierto';
+                ?>
+                    <div class="gc-ciclo-card gc-ciclo-<?php echo esc_attr($estado); ?>">
+                        <div class="gc-ciclo-header">
+                            <h4><?php echo esc_html($ciclo_post->post_title); ?></h4>
+                            <span class="gc-ciclo-estado gc-estado-<?php echo esc_attr($estado); ?>">
+                                <?php echo esc_html(ucfirst($estado)); ?>
+                            </span>
+                        </div>
+                        <div class="gc-ciclo-fechas">
+                            <p>
+                                <span class="dashicons dashicons-clock"></span>
+                                <strong><?php _e('Cierre:', 'flavor-chat-ia'); ?></strong>
+                                <?php echo $fecha_cierre ? date_i18n('j M Y', strtotime($fecha_cierre)) : '-'; ?>
+                            </p>
+                            <p>
+                                <span class="dashicons dashicons-location"></span>
+                                <strong><?php _e('Entrega:', 'flavor-chat-ia'); ?></strong>
+                                <?php echo $fecha_entrega ? date_i18n('j M Y', strtotime($fecha_entrega)) : '-'; ?>
+                            </p>
+                            <?php if ($lugar_entrega): ?>
+                                <p class="gc-ciclo-lugar">
+                                    <span class="dashicons dashicons-location-alt"></span>
+                                    <?php echo esc_html($lugar_entrega); ?>
+                                </p>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ($es_abierto): ?>
+                            <a href="<?php echo esc_url(get_permalink($ciclo_post->ID)); ?>" class="gc-btn gc-btn-primary gc-btn-sm">
+                                <?php _e('Ver productos', 'flavor-chat-ia'); ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <style>
+        .gc-ciclos-listado { padding: 20px 0; }
+        .gc-seccion-titulo { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 1.25rem; }
+        .gc-ciclos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .gc-ciclo-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; }
+        .gc-ciclo-card.gc-ciclo-abierto { border-color: #16a34a; }
+        .gc-ciclo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .gc-ciclo-header h4 { margin: 0; font-size: 1.1rem; }
+        .gc-ciclo-estado { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .gc-estado-abierto { background: #dcfce7; color: #16a34a; }
+        .gc-estado-cerrado { background: #fee2e2; color: #dc2626; }
+        .gc-estado-pendiente { background: #fef3c7; color: #d97706; }
+        .gc-ciclo-fechas p { margin: 8px 0; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+        .gc-ciclo-fechas .dashicons { font-size: 16px; width: 16px; height: 16px; color: #6b7280; }
+        .gc-btn-sm { display: inline-block; margin-top: 15px; padding: 8px 16px; background: #4a7c59; color: #fff; text-decoration: none; border-radius: 6px; font-size: 0.875rem; font-weight: 500; }
+        .gc-btn-sm:hover { background: #3d6a4a; color: #fff; }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
      * Shortcode: Productos
+     *
+     * @param array $atributos Atributos del shortcode:
+     *                         - vista: 'catalogo', 'grid', 'list' (default: 'grid')
+     *                         - categoria: slug de categoría para filtrar
+     *                         - limite/limit: número máximo de productos
+     *                         - productor: ID del productor para filtrar
      */
     public function shortcode_productos($atributos) {
         $atributos = shortcode_atts([
+            'vista'     => 'grid',
             'categoria' => '',
-            'limite' => 12,
+            'limite'    => 12,
+            'limit'     => 12, // Alias
+            'productor' => '',
         ], $atributos);
+
+        // Usar limit si se proporciona
+        $limite = absint($atributos['limit']) ?: absint($atributos['limite']);
+
+        // Si vista es 'catalogo', usar el template de catálogo completo
+        if ($atributos['vista'] === 'catalogo') {
+            return $this->render_catalogo_completo($atributos);
+        }
 
         $resultado = $this->action_listar_productos($atributos);
 
@@ -3313,6 +3459,178 @@ KNOWLEDGE;
         </style>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el catálogo completo de productos con filtros
+     *
+     * @param array $atributos Atributos del shortcode
+     * @return string HTML del catálogo
+     */
+    protected function render_catalogo_completo($atributos) {
+        // Intentar cargar el template del catálogo si existe
+        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/grupos-consumo/templates/catalogo.php';
+
+        if (file_exists($template_path)) {
+            // Preparar datos para el template
+            $limite = absint($atributos['limit']) ?: absint($atributos['limite']);
+
+            // Obtener productos
+            $args_query = [
+                'post_type'      => 'gc_producto',
+                'post_status'    => 'publish',
+                'posts_per_page' => $limite ?: -1,
+                'orderby'        => 'title',
+                'order'          => 'ASC',
+            ];
+
+            if (!empty($atributos['productor'])) {
+                $args_query['meta_query'][] = [
+                    'key'   => '_gc_productor_id',
+                    'value' => absint($atributos['productor']),
+                ];
+            }
+
+            if (!empty($atributos['categoria'])) {
+                $args_query['tax_query'] = [[
+                    'taxonomy' => 'gc_categoria',
+                    'field'    => 'slug',
+                    'terms'    => sanitize_text_field($atributos['categoria']),
+                ]];
+            }
+
+            $productos = get_posts($args_query);
+
+            // Obtener productores para filtros
+            $productores = get_posts([
+                'post_type'      => 'gc_productor',
+                'posts_per_page' => -1,
+                'orderby'        => 'title',
+                'order'          => 'ASC',
+            ]);
+
+            // Obtener categorías
+            $categorias = get_terms([
+                'taxonomy'   => 'gc_categoria',
+                'hide_empty' => true,
+            ]);
+
+            // Lista de compra del usuario
+            $lista_compra = [];
+            if (is_user_logged_in()) {
+                global $wpdb;
+                $items = $wpdb->get_results($wpdb->prepare(
+                    "SELECT producto_id, cantidad FROM {$wpdb->prefix}flavor_gc_lista_compra WHERE usuario_id = %d",
+                    get_current_user_id()
+                ));
+                foreach ($items as $item) {
+                    $lista_compra[$item->producto_id] = floatval($item->cantidad);
+                }
+            }
+
+            // Obtener ciclo activo
+            $ciclo_activo = $this->obtener_ciclo_activo_interno();
+
+            // Configuración del módulo
+            $opciones = get_option('flavor_chat_modules', []);
+            $porcentaje_gestion = floatval($opciones['grupos_consumo']['settings']['porcentaje_gestion'] ?? 5);
+
+            $args = [
+                'productos'          => $productos,
+                'productores'        => $productores,
+                'categorias'         => is_array($categorias) ? $categorias : [],
+                'lista_compra'       => $lista_compra,
+                'ciclo_activo'       => $ciclo_activo,
+                'porcentaje_gestion' => $porcentaje_gestion,
+                'atts'               => $atributos,
+            ];
+
+            ob_start();
+            include $template_path;
+            return ob_get_clean();
+        }
+
+        // Fallback: usar el render simple de productos
+        $resultado = $this->action_listar_productos($atributos);
+
+        if (!$resultado['success']) {
+            return '<p>' . esc_html($resultado['error']) . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="gc-catalogo gc-catalogo-completo">
+            <div class="gc-catalogo-header">
+                <h2><?php _e('Catálogo de Productos', 'flavor-chat-ia'); ?></h2>
+            </div>
+            <div class="gc-productos-grid gc-productos-catalogo">
+                <?php if (empty($resultado['productos'])): ?>
+                    <p class="gc-sin-productos"><?php _e('No hay productos disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                <?php else: ?>
+                    <?php foreach ($resultado['productos'] as $producto): ?>
+                        <div class="gc-producto-card">
+                            <?php if (!empty($producto['imagen'])): ?>
+                                <div class="gc-producto-imagen">
+                                    <img src="<?php echo esc_url($producto['imagen']); ?>" alt="<?php echo esc_attr($producto['nombre']); ?>" />
+                                </div>
+                            <?php endif; ?>
+                            <div class="gc-producto-info">
+                                <h4><?php echo esc_html($producto['nombre']); ?></h4>
+                                <?php if (!empty($producto['productor'])): ?>
+                                    <p class="gc-productor"><?php echo esc_html($producto['productor']); ?></p>
+                                <?php endif; ?>
+                                <p class="gc-precio"><?php echo number_format($producto['precio'], 2, ',', '.'); ?> € / <?php echo esc_html($producto['unidad']); ?></p>
+                            </div>
+                            <?php if (is_user_logged_in()): ?>
+                                <button class="gc-anadir-pedido" data-producto-id="<?php echo esc_attr($producto['id']); ?>">
+                                    <?php _e('Añadir al pedido', 'flavor-chat-ia'); ?>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene el ciclo activo (método interno)
+     *
+     * @return array|null Datos del ciclo o null
+     */
+    protected function obtener_ciclo_activo_interno() {
+        $ciclos = get_posts([
+            'post_type'      => 'gc_ciclo',
+            'post_status'    => 'publish',
+            'posts_per_page' => 1,
+            'meta_query'     => [
+                [
+                    'key'   => '_gc_estado',
+                    'value' => 'abierto',
+                ],
+            ],
+            'orderby'  => 'meta_value',
+            'meta_key' => '_gc_fecha_cierre',
+            'order'    => 'ASC',
+        ]);
+
+        if (empty($ciclos)) {
+            return null;
+        }
+
+        $ciclo = $ciclos[0];
+        return [
+            'id'            => $ciclo->ID,
+            'titulo'        => $ciclo->post_title,
+            'fecha_cierre'  => get_post_meta($ciclo->ID, '_gc_fecha_cierre', true),
+            'fecha_entrega' => get_post_meta($ciclo->ID, '_gc_fecha_entrega', true),
+            'hora_entrega'  => get_post_meta($ciclo->ID, '_gc_hora_entrega', true),
+            'lugar_entrega' => get_post_meta($ciclo->ID, '_gc_lugar_entrega', true),
+            'notas'         => get_post_meta($ciclo->ID, '_gc_notas', true),
+            'estado'        => 'abierto',
+        ];
     }
 
     /**
@@ -4534,10 +4852,50 @@ KNOWLEDGE;
     }
 
     /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'gc_ciclo_actual',
+            'gc_productos',
+            'gc_mi_pedido',
+            'gc_catalogo',
+            'gc_carrito',
+            'gc_calendario',
+            'gc_historial',
+            'gc_suscripciones',
+            'gc_mi_cesta',
+            'gc_grupos_lista',
+            'gc_productores_cercanos',
+            'gc_panel',
+            'gc_nav',
+            'gc_mis_pedidos',
+            'gc_productores',
+            'gc_ciclos',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Encola assets del módulo
      */
     public function enqueue_assets() {
-        if (!is_admin()) {
+        if (!is_admin() && $this->should_load_assets()) {
             $plugin_url = plugins_url('assets/', __FILE__);
             $version = defined('FLAVOR_VERSION') ? FLAVOR_VERSION : '1.0.0';
 
@@ -4955,15 +5313,29 @@ KNOWLEDGE;
      * Muestra productores que realizan entregas a domicilio en la ubicación del usuario.
      * Usa la geolocalización del navegador para determinar la ubicación.
      *
-     * @param array $atributos Atributos del shortcode
+     * @param array $atributos Atributos del shortcode:
+     *                         - vista: 'cercanos', 'grid', 'list' (default: 'cercanos')
+     *                         - limite/limit: número máximo de productores
+     *                         - mostrar_mapa: 'si' o 'no'
+     *                         - titulo: título de la sección
      * @return string HTML del componente
      */
     public function shortcode_productores_cercanos($atributos) {
         $atributos = shortcode_atts([
-            'limite' => 6,
+            'vista'       => 'cercanos',
+            'limite'      => 12,
+            'limit'       => 12, // Alias
             'mostrar_mapa' => 'si',
-            'titulo' => __('Productores que entregan en tu zona', 'flavor-chat-ia'),
+            'titulo'      => __('Productores que entregan en tu zona', 'flavor-chat-ia'),
         ], $atributos);
+
+        // Usar limit si se proporciona
+        $limite = absint($atributos['limit']) ?: absint($atributos['limite']);
+
+        // Vista de grid: mostrar todos los productores en formato grid simple
+        if ($atributos['vista'] === 'grid' || $atributos['vista'] === 'list') {
+            return $this->render_productores_grid($atributos);
+        }
 
         // Encolar assets necesarios
         wp_enqueue_script('gc-frontend');
@@ -5341,6 +5713,116 @@ KNOWLEDGE;
     }
 
     /**
+     * Renderiza un grid de productores
+     *
+     * @param array $atributos Atributos del shortcode
+     * @return string HTML del grid
+     */
+    protected function render_productores_grid($atributos) {
+        $limite = absint($atributos['limit']) ?: absint($atributos['limite']);
+        $vista = $atributos['vista'];
+
+        // Obtener productores
+        $productores = get_posts([
+            'post_type'      => 'gc_productor',
+            'post_status'    => 'publish',
+            'posts_per_page' => $limite ?: 12,
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+        ]);
+
+        if (empty($productores)) {
+            return '<p class="gc-sin-productores">' . __('No hay productores disponibles en este momento.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="gc-productores-grid gc-productores-<?php echo esc_attr($vista); ?>">
+            <?php foreach ($productores as $productor):
+                $imagen = get_the_post_thumbnail_url($productor->ID, 'medium');
+                $certificacion_eco = get_post_meta($productor->ID, '_gc_certificacion_eco', true);
+                $ubicacion = get_post_meta($productor->ID, '_gc_ubicacion', true);
+                $descripcion = get_the_excerpt($productor);
+
+                // Contar productos del productor
+                $productos_count = count(get_posts([
+                    'post_type'      => 'gc_producto',
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'meta_query'     => [
+                        [
+                            'key'   => '_gc_productor_id',
+                            'value' => $productor->ID,
+                        ],
+                    ],
+                    'fields' => 'ids',
+                ]));
+            ?>
+                <div class="gc-productor-card">
+                    <div class="gc-productor-imagen">
+                        <?php if ($imagen): ?>
+                            <img src="<?php echo esc_url($imagen); ?>" alt="<?php echo esc_attr($productor->post_title); ?>" />
+                        <?php else: ?>
+                            <div class="gc-productor-sin-imagen">
+                                <span class="dashicons dashicons-store"></span>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($certificacion_eco): ?>
+                            <span class="gc-badge-eco" title="<?php esc_attr_e('Productor ecológico certificado', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-awards"></span>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="gc-productor-info">
+                        <h4><?php echo esc_html($productor->post_title); ?></h4>
+                        <?php if ($ubicacion): ?>
+                            <p class="gc-productor-ubicacion">
+                                <span class="dashicons dashicons-location"></span>
+                                <?php echo esc_html($ubicacion); ?>
+                            </p>
+                        <?php endif; ?>
+                        <?php if ($descripcion): ?>
+                            <p class="gc-productor-descripcion"><?php echo esc_html(wp_trim_words($descripcion, 15)); ?></p>
+                        <?php endif; ?>
+                        <p class="gc-productor-productos">
+                            <span class="dashicons dashicons-products"></span>
+                            <?php printf(_n('%d producto', '%d productos', $productos_count, 'flavor-chat-ia'), $productos_count); ?>
+                        </p>
+                    </div>
+                    <div class="gc-productor-acciones">
+                        <a href="<?php echo esc_url(get_permalink($productor->ID)); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
+                            <?php _e('Ver productos', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <style>
+        .gc-productores-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px 0; }
+        .gc-productores-list { display: flex; flex-direction: column; gap: 15px; }
+        .gc-productores-list .gc-productor-card { display: flex; flex-direction: row; align-items: center; }
+        .gc-productores-list .gc-productor-imagen { width: 100px; flex-shrink: 0; }
+        .gc-productor-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: transform 0.2s, box-shadow 0.2s; }
+        .gc-productor-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+        .gc-productor-imagen { position: relative; height: 180px; background: #f3f4f6; }
+        .gc-productor-imagen img { width: 100%; height: 100%; object-fit: cover; }
+        .gc-productor-sin-imagen { display: flex; align-items: center; justify-content: center; height: 100%; color: #9ca3af; }
+        .gc-productor-sin-imagen .dashicons { font-size: 48px; width: 48px; height: 48px; }
+        .gc-badge-eco { position: absolute; top: 10px; right: 10px; background: #16a34a; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .gc-badge-eco .dashicons { font-size: 16px; width: 16px; height: 16px; }
+        .gc-productor-info { padding: 15px; }
+        .gc-productor-info h4 { margin: 0 0 8px; font-size: 1.1rem; color: #111827; }
+        .gc-productor-ubicacion, .gc-productor-productos { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #6b7280; margin: 5px 0; }
+        .gc-productor-descripcion { font-size: 0.9rem; color: #4b5563; margin: 10px 0; line-height: 1.4; }
+        .gc-productor-acciones { padding: 0 15px 15px; }
+        .gc-btn-outline { display: inline-block; padding: 8px 16px; border: 2px solid #4a7c59; color: #4a7c59; text-decoration: none; border-radius: 6px; font-size: 0.875rem; font-weight: 500; background: transparent; }
+        .gc-btn-outline:hover { background: #4a7c59; color: #fff; }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
      * Define las páginas del módulo (Page Creator V3)
      *
      * @return array Definiciones de páginas
@@ -5501,5 +5983,169 @@ KNOWLEDGE;
         if (class_exists('Flavor_GC_Dashboard_Widget')) {
             $registry->register(new Flavor_GC_Dashboard_Widget());
         }
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'grupos-consumo',
+            'title'    => __('Grupos de Consumo', 'flavor-chat-ia'),
+            'subtitle' => __('Compra colectiva directa a productores locales', 'flavor-chat-ia'),
+            'icon'     => '🥬',
+            'color'    => 'success', // Usa variable CSS --flavor-success del tema
+
+            'database' => [
+                'table'       => 'flavor_gc_grupos',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'       => ['type' => 'text', 'label' => __('Nombre del grupo', 'flavor-chat-ia'), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'ubicacion'    => ['type' => 'text', 'label' => __('Punto de recogida', 'flavor-chat-ia')],
+                'dia_recogida' => ['type' => 'select', 'label' => __('Día de recogida', 'flavor-chat-ia')],
+                'hora_recogida' => ['type' => 'time', 'label' => __('Hora de recogida', 'flavor-chat-ia')],
+                'cuota_mensual' => ['type' => 'number', 'label' => __('Cuota mensual', 'flavor-chat-ia'), 'step' => '0.5'],
+                'max_miembros' => ['type' => 'number', 'label' => __('Máximo miembros', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'activo'    => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'pausado'   => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'cerrado'   => ['label' => __('Cerrado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔴'],
+                'completo'  => ['label' => __('Completo', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✅'],
+            ],
+
+            'stats' => [
+                'grupos_activos'    => ['label' => __('Grupos activos', 'flavor-chat-ia'), 'icon' => '🥬', 'color' => 'emerald'],
+                'consumidores'      => ['label' => __('Consumidores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+                'productores'       => ['label' => __('Productores', 'flavor-chat-ia'), 'icon' => '🌾', 'color' => 'amber'],
+                'pedidos_mes'       => ['label' => __('Pedidos/mes', 'flavor-chat-ia'), 'icon' => '📦', 'color' => 'purple'],
+            ],
+
+            'card' => [
+                'template'     => 'grupo-consumo-card',
+                'title_field'  => 'nombre',
+                'subtitle_field' => 'ubicacion',
+                'meta_fields'  => ['dia_recogida', 'miembros_count', 'estado'],
+                'show_imagen'  => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                // === TABS PÚBLICOS (visibles sin login) ===
+                'grupos' => [
+                    'label'   => __('Grupos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-groups',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'productos' => [
+                    'label'   => __('Productos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-products',
+                    'content' => '[gc_catalogo]',
+                    'public'  => true,
+                ],
+                'productores' => [
+                    'label'   => __('Productores', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-store',
+                    'content' => '[gc_productores]',
+                    'public'  => true,
+                ],
+
+                // === TABS PRIVADOS (requieren login) ===
+                'mi-cesta' => [
+                    'label'      => __('Mi cesta', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-cart',
+                    'content'    => '[gc_mi_cesta]',
+                    'requires_login' => true,
+                ],
+                'mi-pedido' => [
+                    'label'      => __('Mi pedido', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-list-view',
+                    'content'    => '[gc_mi_pedido]',
+                    'requires_login' => true,
+                    'hidden_nav' => true,
+                ],
+                'mis-pedidos' => [
+                    'label'      => __('Mis pedidos', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-clipboard',
+                    'content'    => '[gc_historial]',
+                    'requires_login' => true,
+                ],
+                'ciclos' => [
+                    'label'      => __('Ciclos', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-calendar-alt',
+                    'content'    => '[gc_ciclo_actual]',
+                    'requires_login' => true,
+                ],
+                'suscripciones' => [
+                    'label'      => __('Suscripciones', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-heart',
+                    'content'    => '[gc_suscripciones]',
+                    'requires_login' => true,
+                    'hidden_nav' => true,
+                ],
+                'panel' => [
+                    'label'      => __('Panel', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-dashboard',
+                    'content'    => '[gc_panel]',
+                    'requires_login' => true,
+                    'hidden_nav' => true,
+                ],
+
+                // === ACCIONES (accesibles solo por URL) ===
+                'unirme' => [
+                    'label'         => __('Unirme', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-plus-alt',
+                    'content'       => '[gc_formulario_union]',
+                    'requires_login' => true,
+                    'hidden_nav'    => true,
+                ],
+
+                // === INTEGRACIONES CON OTROS MÓDULOS ===
+                'foro' => [
+                    'label'         => __('Foro', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-admin-comments',
+                    'is_integration' => true,
+                    'source_module' => 'foros',
+                ],
+                'recetas' => [
+                    'label'         => __('Recetas', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-carrot',
+                    'is_integration' => true,
+                    'source_module' => 'recetas',
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 9,
+                'order_by'   => 'nombre',
+                'order'      => 'ASC',
+                'filterable' => ['zona', 'dia_recogida', 'estado'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['ciclo_actual', 'mi_cesta', 'proxima_recogida', 'mis_grupos'],
+                'actions' => [
+                    'pedir'   => ['label' => __('Hacer pedido', 'flavor-chat-ia'), 'icon' => '🛒', 'color' => 'emerald'],
+                    'unirse'  => ['label' => __('Unirse a grupo', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'ciclos_pedido'     => true,
+                'pagos_online'      => true,
+                'trueques'          => true,
+                'chat_grupo'        => true,
+                'notificaciones'    => true,
+                'facturacion'       => true,
+            ],
+        ];
     }
 }

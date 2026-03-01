@@ -416,9 +416,43 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'avisos_activos',
+            'avisos_zona',
+            'suscribirse_avisos',
+            'historial_avisos',
+            'aviso_detalle',
+            'avisos_urgentes',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Encola assets frontend
      */
     public function enqueue_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
         $module_url = plugin_dir_url(__FILE__);
 
         wp_enqueue_style(
@@ -1544,20 +1578,20 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
     public function enviar_avisos_programados() {
         global $wpdb;
 
+        // Obtener avisos publicados recientes que no han sido notificados (via meta)
         $avisos_pendientes = $wpdb->get_results(
-            "SELECT * FROM {$this->tablas['avisos']}
-             WHERE publicado = 1 AND notificaciones_enviadas = 0
-             AND fecha_publicacion IS NOT NULL AND fecha_publicacion <= NOW()"
+            "SELECT a.* FROM {$this->tablas['avisos']} a
+             LEFT JOIN {$wpdb->postmeta} pm ON a.id = pm.post_id AND pm.meta_key = '_notificaciones_enviadas'
+             WHERE a.estado = 'publicado'
+             AND (pm.meta_value IS NULL OR pm.meta_value = '0')
+             AND a.fecha_publicacion IS NOT NULL AND a.fecha_publicacion <= NOW()"
         );
 
         foreach ($avisos_pendientes as $aviso) {
             $this->programar_notificaciones($aviso->id);
 
-            $wpdb->update(
-                $this->tablas['avisos'],
-                ['notificaciones_enviadas' => 1],
-                ['id' => $aviso->id]
-            );
+            // Guardar flag de notificación en meta
+            update_post_meta($aviso->id, '_notificaciones_enviadas', '1');
         }
     }
 
@@ -2598,4 +2632,93 @@ KNOWLEDGE;
         ];
     }
 
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'avisos_municipales',
+            'title'    => __('Avisos Municipales', 'flavor-chat-ia'),
+            'subtitle' => __('Comunicados oficiales del ayuntamiento', 'flavor-chat-ia'),
+            'icon'     => '📢',
+            'color'    => 'warning', // Usa variable CSS --flavor-warning del tema
+
+            'database' => [
+                'table'       => 'flavor_avisos_municipales',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['label' => __('Título', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
+                'contenido'   => ['label' => __('Contenido', 'flavor-chat-ia'), 'type' => 'wysiwyg', 'required' => true],
+                'prioridad'   => ['label' => __('Prioridad', 'flavor-chat-ia'), 'type' => 'select', 'options' => ['baja' => 'Baja', 'media' => 'Media', 'alta' => 'Alta', 'urgente' => 'Urgente']],
+                'categoria'   => ['label' => __('Categoría', 'flavor-chat-ia'), 'type' => 'select'],
+                'zona'        => ['label' => __('Zona', 'flavor-chat-ia'), 'type' => 'select'],
+                'fecha_inicio'=> ['label' => __('Fecha inicio', 'flavor-chat-ia'), 'type' => 'datetime'],
+                'fecha_fin'   => ['label' => __('Fecha fin', 'flavor-chat-ia'), 'type' => 'datetime'],
+            ],
+
+            'estados' => [
+                'publicado' => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'borrador'  => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'expirado'  => ['label' => __('Expirado', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '⏰'],
+                'archivado' => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '📦'],
+            ],
+
+            'stats' => [
+                'avisos_activos' => ['label' => __('Avisos activos', 'flavor-chat-ia'), 'icon' => '📢', 'color' => 'orange'],
+                'urgentes'       => ['label' => __('Urgentes', 'flavor-chat-ia'), 'icon' => '🚨', 'color' => 'red'],
+                'no_leidos'      => ['label' => __('Sin leer', 'flavor-chat-ia'), 'icon' => '📬', 'color' => 'blue'],
+                'suscriptores'   => ['label' => __('Suscriptores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
+            ],
+
+            'card' => [
+                'title_field'    => 'titulo',
+                'subtitle_field' => 'extracto',
+                'badge_field'    => 'prioridad',
+                'meta_fields'    => ['categoria', 'fecha_inicio', 'visualizaciones'],
+            ],
+
+            'tabs' => [
+                'todos' => [
+                    'label'   => __('Todos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-megaphone',
+                    'content' => 'template:_archive.php',
+                ],
+                'urgentes' => [
+                    'label'   => __('Urgentes', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-warning',
+                    'content' => 'template:urgentes.php',
+                ],
+                'no-leidos' => [
+                    'label'   => __('Sin leer', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-email',
+                    'content' => 'template:no-leidos.php',
+                ],
+                'suscripcion' => [
+                    'label'   => __('Suscripción', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-bell',
+                    'content' => 'template:suscripcion.php',
+                ],
+            ],
+
+            'archive' => [
+                'columns'      => 2,
+                'per_page'     => 12,
+                'show_filters' => true,
+                'show_search'  => true,
+            ],
+
+            'dashboard' => [
+                'show_stats'   => true,
+                'show_actions' => true,
+                'actions'      => [
+                    'suscribirse' => ['label' => __('Suscribirse', 'flavor-chat-ia'), 'icon' => '🔔', 'color' => 'orange'],
+                    'ver_todos'   => ['label' => __('Ver todos', 'flavor-chat-ia'), 'icon' => '📢', 'color' => 'blue'],
+                ],
+            ],
+        ];
+    }
 }

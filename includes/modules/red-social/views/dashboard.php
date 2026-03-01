@@ -32,7 +32,7 @@ if ($tabla_publicaciones_existe) {
     ));
 
     $usuarios_activos = $wpdb->get_var(
-        "SELECT COUNT(DISTINCT autor_id) FROM $tabla_publicaciones WHERE fecha_creacion >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+        "SELECT COUNT(DISTINCT usuario_id) FROM $tabla_publicaciones WHERE fecha_creacion >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
     );
 }
 
@@ -112,17 +112,13 @@ if ($usar_datos_ejemplo) {
             <span class="dashicons dashicons-groups" style="font-size: 24px; color: #00a32a;"></span>
             <span><?php echo esc_html__('Usuarios', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=red-social-reportes'); ?>" class="red-social-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <a href="<?php echo admin_url('admin.php?page=red-social-moderacion'); ?>" class="red-social-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-flag" style="font-size: 24px; color: #d63638;"></span>
-            <span><?php echo esc_html__('Reportes', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Moderación', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=red-social-estadisticas'); ?>" class="red-social-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #8c52ff;"></span>
-            <span><?php echo esc_html__('Estadisticas', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=red-social-configuracion'); ?>" class="red-social-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <a href="<?php echo admin_url('admin.php?page=flavor-app-composer&module=red_social'); ?>" class="red-social-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
-            <span><?php echo esc_html__('Configuracion', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
         </a>
     </div>
 

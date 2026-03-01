@@ -2,6 +2,9 @@
 /**
  * Vista de Gestión de Conductores - Carpooling
  *
+ * Nota: Los conductores se derivan de usuarios que han publicado viajes,
+ * ya que no existe tabla separada de conductores.
+ *
  * @package FlavorChatIA
  * @subpackage Carpooling
  */
@@ -17,13 +20,11 @@ if (!current_user_can('manage_options')) {
 }
 
 global $wpdb;
-$tabla_conductores = $wpdb->prefix . 'flavor_carpooling_conductores';
 $tabla_vehiculos = $wpdb->prefix . 'flavor_carpooling_vehiculos';
 $tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
+$tabla_valoraciones = $wpdb->prefix . 'flavor_carpooling_valoraciones';
 
 // Obtener filtros
-$filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'todos';
-$filtro_verificacion = isset($_GET['verificacion']) ? sanitize_text_field($_GET['verificacion']) : 'todos';
 $filtro_busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
 
 // Paginación
@@ -31,18 +32,8 @@ $elementos_por_pagina = 20;
 $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
 $offset = ($pagina_actual - 1) * $elementos_por_pagina;
 
-// Construir consulta
+// Construir consulta para conductores (usuarios que han creado viajes)
 $where = "WHERE 1=1";
-
-if ($filtro_estado !== 'todos') {
-    $where .= $wpdb->prepare(" AND c.estado = %s", $filtro_estado);
-}
-
-if ($filtro_verificacion === 'verificado') {
-    $where .= " AND c.verificado = 1";
-} elseif ($filtro_verificacion === 'pendiente') {
-    $where .= " AND c.verificado = 0";
-}
 
 if (!empty($filtro_busqueda)) {
     $where .= $wpdb->prepare(" AND (u.display_name LIKE %s OR u.user_email LIKE %s)",
@@ -51,40 +42,42 @@ if (!empty($filtro_busqueda)) {
     );
 }
 
-// Obtener total de registros
+// Obtener total de conductores únicos
 $total_conductores = $wpdb->get_var(
-    "SELECT COUNT(*) FROM {$tabla_conductores} c
-    INNER JOIN {$wpdb->users} u ON c.usuario_id = u.ID
+    "SELECT COUNT(DISTINCT v.conductor_id)
+    FROM {$tabla_viajes} v
+    INNER JOIN {$wpdb->users} u ON v.conductor_id = u.ID
     {$where}"
 );
 
-// Obtener conductores
+// Obtener conductores con estadísticas
 $conductores = $wpdb->get_results(
     "SELECT
-        c.*,
+        u.ID as id,
         u.display_name,
         u.user_email,
-        (SELECT COUNT(*) FROM {$tabla_viajes} WHERE conductor_id = c.id) as total_viajes,
-        (SELECT COUNT(*) FROM {$tabla_viajes} WHERE conductor_id = c.id AND estado = 'completado') as viajes_completados,
-        (SELECT COUNT(*) FROM {$tabla_vehiculos} WHERE conductor_id = c.id) as total_vehiculos
-    FROM {$tabla_conductores} c
-    INNER JOIN {$wpdb->users} u ON c.usuario_id = u.ID
+        u.user_registered as fecha_registro,
+        COUNT(v.id) as total_viajes,
+        SUM(CASE WHEN v.estado = 'finalizado' THEN 1 ELSE 0 END) as viajes_completados,
+        (SELECT COUNT(*) FROM {$tabla_vehiculos} WHERE propietario_id = u.ID) as total_vehiculos,
+        COALESCE((SELECT AVG(puntuacion) FROM {$tabla_valoraciones} WHERE valorado_id = u.ID), 0) as valoracion_promedio,
+        (SELECT COUNT(*) FROM {$tabla_valoraciones} WHERE valorado_id = u.ID) as total_valoraciones
+    FROM {$tabla_viajes} v
+    INNER JOIN {$wpdb->users} u ON v.conductor_id = u.ID
     {$where}
-    ORDER BY c.fecha_registro DESC
+    GROUP BY v.conductor_id
+    ORDER BY total_viajes DESC
     LIMIT {$elementos_por_pagina} OFFSET {$offset}"
 );
 
 $total_paginas = ceil($total_conductores / $elementos_por_pagina);
 
 // Estadísticas rápidas
-$stats_totales = $wpdb->get_row(
-    "SELECT
-        COUNT(*) as total,
-        SUM(CASE WHEN estado = 'activo' THEN 1 ELSE 0 END) as activos,
-        SUM(CASE WHEN verificado = 1 THEN 1 ELSE 0 END) as verificados,
-        SUM(CASE WHEN verificado = 0 THEN 1 ELSE 0 END) as pendientes
-    FROM {$tabla_conductores}"
-);
+$stats_totales = (object) [
+    'total' => $total_conductores ?? 0,
+    'activos' => $wpdb->get_var("SELECT COUNT(DISTINCT conductor_id) FROM {$tabla_viajes} WHERE estado = 'activo'") ?? 0,
+    'con_viajes_completados' => $wpdb->get_var("SELECT COUNT(DISTINCT conductor_id) FROM {$tabla_viajes} WHERE estado = 'finalizado'") ?? 0
+];
 ?>
 
 <div class="wrap">
@@ -98,7 +91,7 @@ $stats_totales = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats_totales->total, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Total', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Total Conductores', 'flavor-chat-ia'); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -106,23 +99,15 @@ $stats_totales = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats_totales->activos, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Con viajes activos', 'flavor-chat-ia'); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
             <div style="font-size: 24px; font-weight: bold; color: #2271b1;">
-                <?php echo esc_html(number_format($stats_totales->verificados, 0, ',', '.')); ?>
+                <?php echo esc_html(number_format($stats_totales->con_viajes_completados, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Verificados', 'flavor-chat-ia'); ?>
-            </div>
-        </div>
-        <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
-            <div style="font-size: 24px; font-weight: bold; color: #d63638;">
-                <?php echo esc_html(number_format($stats_totales->pendientes, 0, ',', '.')); ?>
-            </div>
-            <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Con viajes completados', 'flavor-chat-ia'); ?>
             </div>
         </div>
     </div>
@@ -133,25 +118,6 @@ $stats_totales = $wpdb->get_row(
             <input type="hidden" name="page" value="flavor-carpooling-conductores">
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
-
-                <div>
-                    <label for="estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
-                    <select name="estado" id="estado" class="regular-text">
-                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></option>
-                        <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php esc_html_e('Inactivo', 'flavor-chat-ia'); ?></option>
-                        <option value="suspendido" <?php selected($filtro_estado, 'suspendido'); ?>><?php esc_html_e('Suspendido', 'flavor-chat-ia'); ?></option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="verificacion"><?php esc_html_e('Verificación', 'flavor-chat-ia'); ?></label>
-                    <select name="verificacion" id="verificacion" class="regular-text">
-                        <option value="todos" <?php selected($filtro_verificacion, 'todos'); ?>><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="verificado" <?php selected($filtro_verificacion, 'verificado'); ?>><?php esc_html_e('Verificados', 'flavor-chat-ia'); ?></option>
-                        <option value="pendiente" <?php selected($filtro_verificacion, 'pendiente'); ?>><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></option>
-                    </select>
-                </div>
 
                 <div>
                     <label for="busqueda"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
@@ -178,11 +144,9 @@ $stats_totales = $wpdb->get_row(
                 <tr>
                     <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
                     <th><?php esc_html_e('Conductor', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Valoración', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Valoracion', 'flavor-chat-ia'); ?></th>
                     <th><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Vehículos', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Verificación', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Vehiculos', 'flavor-chat-ia'); ?></th>
                     <th><?php esc_html_e('Registro', 'flavor-chat-ia'); ?></th>
                     <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
@@ -196,10 +160,6 @@ $stats_totales = $wpdb->get_row(
                                 <strong><?php echo esc_html($conductor->display_name); ?></strong>
                                 <br>
                                 <small style="color: #666;"><?php echo esc_html($conductor->user_email); ?></small>
-                                <?php if ($conductor->telefono) : ?>
-                                    <br>
-                                    <small style="color: #666;">📱 <?php echo esc_html($conductor->telefono); ?></small>
-                                <?php endif; ?>
                             </td>
                             <td>
                                 <div style="font-size: 18px;">
@@ -226,37 +186,10 @@ $stats_totales = $wpdb->get_row(
                                     <br>
                                     <small>
                                         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores&action=vehiculos&conductor_id=' . $conductor->id)); ?>">
-                                            <?php esc_html_e('Ver vehículos', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Ver vehiculos', 'flavor-chat-ia'); ?>
                                         </a>
                                     </small>
                                 <?php endif; ?>
-                            </td>
-                            <td>
-                                <?php if ($conductor->verificado) : ?>
-                                    <span class="badge" style="background: #00a32a; color: white; padding: 4px 8px; border-radius: 3px; font-size: 11px;">
-                                        ✓ <?php esc_html_e('Verificado', 'flavor-chat-ia'); ?>
-                                    </span>
-                                    <?php if ($conductor->fecha_verificacion) : ?>
-                                        <br>
-                                        <small style="color: #666;"><?php echo date('d/m/Y', strtotime($conductor->fecha_verificacion)); ?></small>
-                                    <?php endif; ?>
-                                <?php else : ?>
-                                    <span class="badge" style="background: #d63638; color: white; padding: 4px 8px; border-radius: 3px; font-size: 11px;">
-                                        ⚠ <?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?>
-                                    </span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?php
-                                $color_estado = [
-                                    'activo' => '#00a32a',
-                                    'inactivo' => '#666',
-                                    'suspendido' => '#d63638'
-                                ];
-                                ?>
-                                <span class="badge" style="background: <?php echo esc_attr($color_estado[$conductor->estado] ?? '#666'); ?>; color: white; padding: 4px 8px; border-radius: 3px; font-size: 11px;">
-                                    <?php echo esc_html(ucfirst($conductor->estado)); ?>
-                                </span>
                             </td>
                             <td>
                                 <?php echo date('d/m/Y', strtotime($conductor->fecha_registro)); ?>
@@ -264,24 +197,18 @@ $stats_totales = $wpdb->get_row(
                                 <small style="color: #666;"><?php echo human_time_diff(strtotime($conductor->fecha_registro), current_time('timestamp')); ?></small>
                             </td>
                             <td>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores&action=ver&conductor_id=' . $conductor->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Ver Perfil', 'flavor-chat-ia'); ?>
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes&conductor_id=' . $conductor->id)); ?>" class="button button-small">
+                                    <?php esc_html_e('Ver Viajes', 'flavor-chat-ia'); ?>
                                 </a>
-                                <?php if (!$conductor->verificado) : ?>
-                                    <br><br>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores&action=verificar&conductor_id=' . $conductor->id)); ?>" class="button button-small button-primary">
-                                        <?php esc_html_e('Verificar', 'flavor-chat-ia'); ?>
-                                    </a>
-                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="9" style="text-align: center; padding: 40px;">
+                        <td colspan="7" style="text-align: center; padding: 40px;">
                             <div style="color: #666;">
                                 <span class="dashicons dashicons-admin-users" style="font-size: 48px; opacity: 0.3;"></span>
-                                <p><?php esc_html_e('No se encontraron conductores con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No se encontraron conductores.', 'flavor-chat-ia'); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -290,7 +217,7 @@ $stats_totales = $wpdb->get_row(
         </table>
     </div>
 
-    <!-- Paginación -->
+    <!-- Paginacion -->
     <?php if ($total_paginas > 1) : ?>
         <div class="tablenav bottom">
             <div class="tablenav-pages">

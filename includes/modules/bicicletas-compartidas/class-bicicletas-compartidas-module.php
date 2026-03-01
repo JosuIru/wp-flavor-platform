@@ -82,10 +82,1342 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
+        add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // Registrar en panel unificado de gestión
         $this->registrar_en_panel_unificado();
+
+        // Inicializar Dashboard Tab para el área de usuario
+        $this->inicializar_dashboard_tab();
+
+        // AJAX handlers para shortcodes
+        add_action('wp_ajax_bicicletas_reservar', [$this, 'ajax_reservar_bicicleta']);
+        add_action('wp_ajax_nopriv_bicicletas_reservar', [$this, 'ajax_login_required']);
+
+        // Enqueue assets frontend
+        add_action('wp_enqueue_scripts', [$this, 'maybe_enqueue_frontend_assets']);
+    }
+
+    /**
+     * Registra los shortcodes del módulo
+     */
+    public function register_shortcodes() {
+        add_shortcode('bicicletas_mapa', [$this, 'shortcode_mapa']);
+        add_shortcode('bicicletas_estaciones', [$this, 'shortcode_estaciones']);
+        add_shortcode('bicicletas_reservar', [$this, 'shortcode_reservar']);
+        add_shortcode('bicicletas_mis_viajes', [$this, 'shortcode_mis_viajes']);
+        add_shortcode('bicicletas_estadisticas', [$this, 'shortcode_estadisticas']);
+        add_shortcode('bicicletas_tarifas', [$this, 'shortcode_tarifas']);
+    }
+
+    /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'bicicletas_mapa',
+            'bicicletas_estaciones',
+            'bicicletas_reservar',
+            'bicicletas_mis_viajes',
+            'bicicletas_estadisticas',
+            'bicicletas_tarifas',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Encola assets frontend solo cuando se usan shortcodes
+     */
+    public function maybe_enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
+        $assets_url = plugin_dir_url(__FILE__) . 'assets/';
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
+        wp_enqueue_style(
+            'bicicletas-frontend',
+            $assets_url . 'css/bicicletas-frontend.css',
+            [],
+            $version
+        );
+
+        wp_enqueue_script(
+            'bicicletas-frontend',
+            $assets_url . 'js/bicicletas-frontend.js',
+            ['jquery'],
+            $version,
+            true
+        );
+
+        // Leaflet para mapas
+        wp_enqueue_style('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', [], '1.9.4');
+        wp_enqueue_script('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', [], '1.9.4', true);
+
+        wp_localize_script('bicicletas-frontend', 'bicicletasData', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('bicicletas_frontend'),
+            'user_logged_in' => is_user_logged_in(),
+            'user_id' => get_current_user_id(),
+            'strings' => [
+                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'confirmar_reserva' => __('¿Deseas reservar esta bicicleta?', 'flavor-chat-ia'),
+                'reserva_confirmada' => __('Tu reserva ha sido confirmada.', 'flavor-chat-ia'),
+                'viaje_iniciado' => __('Tu viaje ha comenzado.', 'flavor-chat-ia'),
+                'viaje_finalizado' => __('Tu viaje ha finalizado correctamente.', 'flavor-chat-ia'),
+                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
+            ]
+        ]);
+    }
+
+    /**
+     * Inicializa el Dashboard Tab para el área de usuario frontend
+     *
+     * Registra tabs en "Mi Cuenta" para mostrar:
+     * - Historial de viajes del usuario
+     * - Información de cuenta (saldo, plan activo)
+     * - Estadísticas personales (km, CO2 ahorrado)
+     */
+    private function inicializar_dashboard_tab() {
+        $ruta_archivo_dashboard_tab = __DIR__ . '/class-bicicletas-dashboard-tab.php';
+
+        if (file_exists($ruta_archivo_dashboard_tab)) {
+            require_once $ruta_archivo_dashboard_tab;
+
+            if (class_exists('Flavor_Bicicletas_Dashboard_Tab')) {
+                Flavor_Bicicletas_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    // =========================================================================
+    // SHORTCODES
+    // =========================================================================
+
+    /**
+     * Shortcode: Mapa con estaciones y disponibilidad
+     * Uso: [bicicletas_mapa altura="500" zoom="14" lat="" lng=""]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del mapa
+     */
+    public function shortcode_mapa($atts) {
+        global $wpdb;
+        $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
+
+        $atributos = shortcode_atts([
+            'altura' => 500,
+            'zoom' => 14,
+            'lat' => '',
+            'lng' => '',
+            'mostrar_leyenda' => 'yes',
+        ], $atts);
+
+        // Obtener estaciones activas
+        $estaciones = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+            $estaciones = $wpdb->get_results(
+                "SELECT id, nombre, direccion, latitud, longitud, capacidad_total, bicicletas_disponibles, estado, tipo
+                 FROM $tabla_estaciones
+                 WHERE estado = 'activa'
+                 ORDER BY nombre ASC"
+            );
+        }
+
+        // Calcular centro del mapa
+        $centro_lat = !empty($atributos['lat']) ? floatval($atributos['lat']) : 40.4168;
+        $centro_lng = !empty($atributos['lng']) ? floatval($atributos['lng']) : -3.7038;
+
+        if (empty($atributos['lat']) && !empty($estaciones)) {
+            $suma_lat = 0;
+            $suma_lng = 0;
+            foreach ($estaciones as $estacion) {
+                $suma_lat += floatval($estacion->latitud);
+                $suma_lng += floatval($estacion->longitud);
+            }
+            $centro_lat = $suma_lat / count($estaciones);
+            $centro_lng = $suma_lng / count($estaciones);
+        }
+
+        $mapa_id = 'bicicletas-mapa-' . wp_rand(1000, 9999);
+
+        ob_start();
+        ?>
+        <div class="flavor-bicicletas-mapa-wrapper">
+            <div class="bg-gradient-to-r from-green-500 to-teal-500 rounded-t-xl p-4 text-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🚲</span>
+                        <div>
+                            <h3 class="text-lg font-bold"><?php esc_html_e('Estaciones de Bicicletas', 'flavor-chat-ia'); ?></h3>
+                            <p class="text-sm opacity-90"><?php echo esc_html(count($estaciones)); ?> <?php esc_html_e('estaciones activas', 'flavor-chat-ia'); ?></p>
+                        </div>
+                    </div>
+                    <button type="button" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-sm" onclick="flavorBicicletasGeolocate('<?php echo esc_js($mapa_id); ?>')">
+                        📍 <?php esc_html_e('Mi ubicación', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </div>
+
+            <div id="<?php echo esc_attr($mapa_id); ?>" class="flavor-leaflet-map rounded-b-xl shadow-lg" style="height: <?php echo esc_attr(intval($atributos['altura'])); ?>px;"></div>
+
+            <?php if ($atributos['mostrar_leyenda'] === 'yes'): ?>
+            <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-600">
+                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-green-500 rounded-full"></span> <?php esc_html_e('Alta disponibilidad', 'flavor-chat-ia'); ?></span>
+                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-yellow-500 rounded-full"></span> <?php esc_html_e('Pocas bicis', 'flavor-chat-ia'); ?></span>
+                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-red-500 rounded-full"></span> <?php esc_html_e('Sin bicis', 'flavor-chat-ia'); ?></span>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof L === 'undefined') {
+                console.warn('Leaflet no está cargado');
+                return;
+            }
+
+            var mapEl = document.getElementById('<?php echo esc_js($mapa_id); ?>');
+            if (!mapEl || mapEl._leaflet_id) return;
+
+            var map = L.map('<?php echo esc_js($mapa_id); ?>').setView([<?php echo esc_js($centro_lat); ?>, <?php echo esc_js($centro_lng); ?>], <?php echo esc_js(intval($atributos['zoom'])); ?>);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
+            }).addTo(map);
+
+            // Función para color según disponibilidad
+            function getMarkerColor(disponibles, capacidad) {
+                var porcentaje = (disponibles / capacidad) * 100;
+                if (porcentaje >= 50) return '#22c55e'; // verde
+                if (porcentaje >= 20) return '#eab308'; // amarillo
+                return '#ef4444'; // rojo
+            }
+
+            // Añadir marcadores de estaciones
+            var estaciones = <?php echo wp_json_encode(array_map(function($estacion) {
+                return [
+                    'id' => intval($estacion->id),
+                    'nombre' => $estacion->nombre,
+                    'direccion' => $estacion->direccion,
+                    'lat' => floatval($estacion->latitud),
+                    'lng' => floatval($estacion->longitud),
+                    'capacidad' => intval($estacion->capacidad_total),
+                    'disponibles' => intval($estacion->bicicletas_disponibles),
+                    'tipo' => $estacion->tipo,
+                ];
+            }, $estaciones)); ?>;
+
+            estaciones.forEach(function(est) {
+                var color = getMarkerColor(est.disponibles, est.capacidad);
+                var icono = L.divIcon({
+                    html: '<div style="background:' + color + '; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; border:2px solid white; box-shadow:0 2px 4px rgba(0,0,0,0.3);">🚲</div>',
+                    className: 'flavor-bici-marker',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+
+                var marcador = L.marker([est.lat, est.lng], { icon: icono }).addTo(map);
+
+                var popupContent = '<div class="flavor-bici-popup">' +
+                    '<strong>' + est.nombre + '</strong><br>' +
+                    '<span class="text-gray-600">' + est.direccion + '</span><br>' +
+                    '<div style="margin-top:8px; padding:8px; background:#f3f4f6; border-radius:8px;">' +
+                    '<span style="font-size:1.5em; font-weight:bold; color:' + color + ';">' + est.disponibles + '</span> / ' + est.capacidad + ' bicis<br>' +
+                    '<small>' + (est.capacidad - est.disponibles) + ' huecos libres</small>' +
+                    '</div>' +
+                    '<a href="?estacion_id=' + est.id + '" class="inline-block mt-2 px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">Ver bicicletas</a>' +
+                    '</div>';
+
+                marcador.bindPopup(popupContent);
+            });
+
+            // Guardar referencia al mapa
+            window['flavorBicicletasMap_<?php echo esc_js($mapa_id); ?>'] = map;
+        });
+
+        // Función para geolocalización
+        function flavorBicicletasGeolocate(mapId) {
+            var map = window['flavorBicicletasMap_' + mapId];
+            if (!map) return;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    var lat = pos.coords.latitude;
+                    var lng = pos.coords.longitude;
+                    map.setView([lat, lng], 15);
+
+                    L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            html: '<div style="background:#3b82f6; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>',
+                            className: 'flavor-user-marker',
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10]
+                        })
+                    }).addTo(map).bindPopup('<?php echo esc_js(__('Tu ubicación', 'flavor-chat-ia')); ?>');
+                }, function(err) {
+                    alert('<?php echo esc_js(__('No se pudo obtener tu ubicación', 'flavor-chat-ia')); ?>');
+                });
+            }
+        }
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Lista de estaciones con bicis disponibles
+     * Uso: [bicicletas_estaciones limite="12" columnas="3" ordenar="nombre"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML de las estaciones
+     */
+    public function shortcode_estaciones($atts) {
+        global $wpdb;
+        $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
+        $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas';
+
+        $atributos = shortcode_atts([
+            'limite' => 12,
+            'columnas' => 3,
+            'ordenar' => 'nombre', // nombre, disponibles, distancia
+            'mostrar_vacia' => 'no',
+        ], $atts);
+
+        $estaciones = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+            $orden_sql = 'nombre ASC';
+            if ($atributos['ordenar'] === 'disponibles') {
+                $orden_sql = 'bicicletas_disponibles DESC';
+            }
+
+            $condicion_disponibilidad = '';
+            if ($atributos['mostrar_vacia'] === 'no') {
+                $condicion_disponibilidad = 'AND bicicletas_disponibles > 0';
+            }
+
+            $estaciones = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM $tabla_estaciones
+                 WHERE estado = 'activa' $condicion_disponibilidad
+                 ORDER BY $orden_sql
+                 LIMIT %d",
+                intval($atributos['limite'])
+            ));
+        }
+
+        $columnas_clase = $this->get_grid_columns_class(intval($atributos['columnas']));
+
+        ob_start();
+        ?>
+        <div class="flavor-bicicletas-estaciones">
+            <div class="bg-gradient-to-r from-green-500 to-teal-500 rounded-t-xl p-4 text-white mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">📍</span>
+                    <div>
+                        <h3 class="text-lg font-bold"><?php esc_html_e('Estaciones de Bicicletas', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-sm opacity-90"><?php echo esc_html(count($estaciones)); ?> <?php esc_html_e('con bicicletas disponibles', 'flavor-chat-ia'); ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <?php if (empty($estaciones)): ?>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
+                    <span class="text-4xl mb-2 block">🚲</span>
+                    <p class="text-yellow-700"><?php esc_html_e('No hay estaciones con bicicletas disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="grid <?php echo esc_attr($columnas_clase); ?> gap-4">
+                    <?php foreach ($estaciones as $estacion):
+                        $porcentaje_ocupacion = ($estacion->bicicletas_disponibles / max(1, $estacion->capacidad_total)) * 100;
+                        $color_barra = $porcentaje_ocupacion >= 50 ? 'bg-green-500' : ($porcentaje_ocupacion >= 20 ? 'bg-yellow-500' : 'bg-red-500');
+                        $estado_texto = $porcentaje_ocupacion >= 50 ? __('Alta disponibilidad', 'flavor-chat-ia') : ($porcentaje_ocupacion >= 20 ? __('Pocas bicis', 'flavor-chat-ia') : __('Casi vacía', 'flavor-chat-ia'));
+                    ?>
+                        <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100 overflow-hidden">
+                            <div class="p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-800"><?php echo esc_html($estacion->nombre); ?></h4>
+                                        <p class="text-sm text-gray-500"><?php echo esc_html($estacion->direccion); ?></p>
+                                    </div>
+                                    <span class="text-2xl">🚲</span>
+                                </div>
+
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div class="text-center">
+                                        <span class="text-3xl font-bold text-gray-800"><?php echo esc_html($estacion->bicicletas_disponibles); ?></span>
+                                        <p class="text-xs text-gray-500"><?php esc_html_e('disponibles', 'flavor-chat-ia'); ?></p>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full <?php echo esc_attr($color_barra); ?> rounded-full transition-all" style="width: <?php echo esc_attr($porcentaje_ocupacion); ?>%;"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1"><?php echo esc_html($estado_texto); ?></p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">
+                                        <?php echo esc_html($estacion->capacidad_total - $estacion->bicicletas_disponibles); ?> <?php esc_html_e('huecos libres', 'flavor-chat-ia'); ?>
+                                    </span>
+                                    <span class="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600">
+                                        <?php echo esc_html(ucfirst($estacion->tipo)); ?>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-100 p-3 bg-gray-50">
+                                <a href="?estacion_id=<?php echo esc_attr($estacion->id); ?>" class="block w-full text-center py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors">
+                                    <?php esc_html_e('Ver bicicletas', 'flavor-chat-ia'); ?>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Formulario para reservar bicicleta
+     * Uso: [bicicletas_reservar estacion_id=""]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del formulario
+     */
+    public function shortcode_reservar($atts) {
+        global $wpdb;
+        $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas';
+        $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
+
+        // Verificar login
+        if (!is_user_logged_in()) {
+            return $this->render_login_required('reservar una bicicleta');
+        }
+
+        $atributos = shortcode_atts([
+            'estacion_id' => isset($_GET['estacion_id']) ? intval($_GET['estacion_id']) : 0,
+        ], $atts);
+
+        $estacion_seleccionada_id = intval($atributos['estacion_id']);
+
+        // Obtener estaciones
+        $estaciones = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
+            $estaciones = $wpdb->get_results(
+                "SELECT id, nombre, direccion, bicicletas_disponibles FROM $tabla_estaciones WHERE estado = 'activa' AND bicicletas_disponibles > 0 ORDER BY nombre"
+            );
+        }
+
+        // Obtener bicicletas de la estación seleccionada
+        $bicicletas_disponibles = [];
+        if ($estacion_seleccionada_id > 0 && Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
+            $bicicletas_disponibles = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, codigo, tipo, marca, modelo, talla, color FROM $tabla_bicicletas WHERE estacion_actual_id = %d AND estado = 'disponible' ORDER BY tipo, codigo",
+                $estacion_seleccionada_id
+            ));
+        }
+
+        // Verificar si el usuario ya tiene un préstamo activo
+        $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
+        $usuario_id = get_current_user_id();
+        $prestamo_activo = null;
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+            $prestamo_activo = $wpdb->get_row($wpdb->prepare(
+                "SELECT p.*, b.codigo as bicicleta_codigo FROM $tabla_prestamos p
+                 LEFT JOIN $tabla_bicicletas b ON p.bicicleta_id = b.id
+                 WHERE p.usuario_id = %d AND p.estado = 'activo'",
+                $usuario_id
+            ));
+        }
+
+        // Configuración de fianza
+        $requiere_fianza = $this->get_setting('requiere_fianza', true);
+        $importe_fianza = $this->get_setting('importe_fianza', 50);
+
+        ob_start();
+        ?>
+        <div class="flavor-bicicletas-reservar">
+            <div class="bg-gradient-to-r from-green-500 to-teal-500 rounded-t-xl p-4 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🚲</span>
+                    <div>
+                        <h3 class="text-lg font-bold"><?php esc_html_e('Reservar Bicicleta', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Selecciona una bicicleta disponible', 'flavor-chat-ia'); ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-b-xl shadow-lg p-6">
+                <?php if ($prestamo_activo): ?>
+                    <!-- Usuario ya tiene un préstamo activo -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+                        <span class="text-4xl mb-3 block">🚴</span>
+                        <h4 class="font-bold text-blue-800 mb-2"><?php esc_html_e('Ya tienes una bicicleta en uso', 'flavor-chat-ia'); ?></h4>
+                        <p class="text-blue-600 mb-4">
+                            <?php printf(
+                                esc_html__('Bicicleta %s desde %s', 'flavor-chat-ia'),
+                                '<strong>' . esc_html($prestamo_activo->bicicleta_codigo) . '</strong>',
+                                esc_html(date_i18n('d/m/Y H:i', strtotime($prestamo_activo->fecha_inicio)))
+                            ); ?>
+                        </p>
+                        <a href="?accion=devolver" class="inline-block px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium">
+                            <?php esc_html_e('Devolver bicicleta', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <form id="form-reservar-bicicleta" class="space-y-6">
+                        <?php wp_nonce_field('bicicletas_reservar', 'bicicletas_nonce'); ?>
+
+                        <!-- Paso 1: Seleccionar estación -->
+                        <div class="form-group">
+                            <label for="estacion_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                <?php esc_html_e('1. Selecciona una estación', 'flavor-chat-ia'); ?>
+                            </label>
+                            <select name="estacion_id" id="estacion_id" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
+                                <option value=""><?php esc_html_e('-- Elige una estación --', 'flavor-chat-ia'); ?></option>
+                                <?php foreach ($estaciones as $estacion): ?>
+                                    <option value="<?php echo esc_attr($estacion->id); ?>" <?php selected($estacion_seleccionada_id, $estacion->id); ?>>
+                                        <?php echo esc_html($estacion->nombre); ?> (<?php echo esc_html($estacion->bicicletas_disponibles); ?> <?php esc_html_e('bicis', 'flavor-chat-ia'); ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Paso 2: Seleccionar bicicleta -->
+                        <div class="form-group" id="bicicletas-container" style="<?php echo empty($bicicletas_disponibles) ? 'display:none;' : ''; ?>">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <?php esc_html_e('2. Selecciona una bicicleta', 'flavor-chat-ia'); ?>
+                            </label>
+                            <div id="bicicletas-lista" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <?php foreach ($bicicletas_disponibles as $bicicleta): ?>
+                                    <label class="bicicleta-opcion flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-green-400 transition-colors">
+                                        <input type="radio" name="bicicleta_id" value="<?php echo esc_attr($bicicleta->id); ?>" class="sr-only" required>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-bold text-gray-800"><?php echo esc_html($bicicleta->codigo); ?></span>
+                                                <span class="px-2 py-0.5 bg-gray-100 rounded text-xs"><?php echo esc_html(ucfirst($bicicleta->tipo)); ?></span>
+                                            </div>
+                                            <p class="text-sm text-gray-500"><?php echo esc_html($bicicleta->marca . ' ' . $bicicleta->modelo); ?></p>
+                                            <p class="text-xs text-gray-400"><?php esc_html_e('Talla:', 'flavor-chat-ia'); ?> <?php echo esc_html($bicicleta->talla); ?> | <?php esc_html_e('Color:', 'flavor-chat-ia'); ?> <?php echo esc_html($bicicleta->color); ?></p>
+                                        </div>
+                                        <span class="text-2xl">🚲</span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <!-- Información de fianza -->
+                        <?php if ($requiere_fianza): ?>
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                            <div class="flex items-start gap-3">
+                                <span class="text-xl">💰</span>
+                                <div>
+                                    <h5 class="font-medium text-yellow-800"><?php esc_html_e('Fianza requerida', 'flavor-chat-ia'); ?></h5>
+                                    <p class="text-sm text-yellow-700">
+                                        <?php printf(
+                                            esc_html__('Se requiere una fianza de %s€ que será devuelta al entregar la bicicleta en buen estado.', 'flavor-chat-ia'),
+                                            esc_html(number_format($importe_fianza, 2, ',', '.'))
+                                        ); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Términos y condiciones -->
+                        <div class="form-group">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="acepto_terminos" id="acepto_terminos" required class="mt-1 w-4 h-4 text-green-500 border-gray-300 rounded focus:ring-green-500">
+                                <span class="text-sm text-gray-600">
+                                    <?php esc_html_e('Acepto las condiciones de uso del servicio de bicicletas compartidas y me comprometo a devolver la bicicleta en buen estado.', 'flavor-chat-ia'); ?>
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Botón de reserva -->
+                        <div class="pt-4">
+                            <button type="submit" id="btn-reservar" class="w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span class="normal-state"><?php esc_html_e('Reservar Bicicleta', 'flavor-chat-ia'); ?> 🚲</span>
+                                <span class="loading-state hidden"><?php esc_html_e('Procesando...', 'flavor-chat-ia'); ?></span>
+                            </button>
+                        </div>
+
+                        <div id="reserva-mensaje" class="hidden"></div>
+                    </form>
+
+                    <script>
+                    (function() {
+                        var form = document.getElementById('form-reservar-bicicleta');
+                        var estacionSelect = document.getElementById('estacion_id');
+                        var bicicletasContainer = document.getElementById('bicicletas-container');
+                        var bicicletasLista = document.getElementById('bicicletas-lista');
+                        var btnReservar = document.getElementById('btn-reservar');
+                        var mensajeDiv = document.getElementById('reserva-mensaje');
+
+                        // Cambio de estación: cargar bicicletas
+                        estacionSelect.addEventListener('change', function() {
+                            var estacionId = this.value;
+                            if (!estacionId) {
+                                bicicletasContainer.style.display = 'none';
+                                return;
+                            }
+
+                            bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4"><span class="animate-spin inline-block">⏳</span> <?php echo esc_js(__('Cargando bicicletas...', 'flavor-chat-ia')); ?></div>';
+                            bicicletasContainer.style.display = 'block';
+
+                            fetch('<?php echo esc_url(rest_url('flavor/v1/bicicletas')); ?>?estacion_id=' + estacionId + '&estado=disponible')
+                                .then(function(r) { return r.json(); })
+                                .then(function(data) {
+                                    if (data.success && data.bicicletas.length > 0) {
+                                        var html = '';
+                                        data.bicicletas.forEach(function(bici) {
+                                            html += '<label class="bicicleta-opcion flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-green-400 transition-colors">' +
+                                                '<input type="radio" name="bicicleta_id" value="' + bici.id + '" class="sr-only" required>' +
+                                                '<div class="flex-1">' +
+                                                '<div class="flex items-center gap-2">' +
+                                                '<span class="font-bold text-gray-800">' + bici.codigo + '</span>' +
+                                                '<span class="px-2 py-0.5 bg-gray-100 rounded text-xs">' + bici.tipo + '</span>' +
+                                                '</div>' +
+                                                '<p class="text-sm text-gray-500">' + (bici.marca || '') + ' ' + (bici.modelo || '') + '</p>' +
+                                                '<p class="text-xs text-gray-400">Talla: ' + (bici.talla || '-') + ' | Color: ' + (bici.color || '-') + '</p>' +
+                                                '</div>' +
+                                                '<span class="text-2xl">🚲</span>' +
+                                                '</label>';
+                                        });
+                                        bicicletasLista.innerHTML = html;
+                                        initBicicletaOpciones();
+                                    } else {
+                                        bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4 text-gray-500"><?php echo esc_js(__('No hay bicicletas disponibles en esta estación', 'flavor-chat-ia')); ?></div>';
+                                    }
+                                })
+                                .catch(function(err) {
+                                    bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4 text-red-500"><?php echo esc_js(__('Error al cargar bicicletas', 'flavor-chat-ia')); ?></div>';
+                                });
+                        });
+
+                        // Selección visual de bicicleta
+                        function initBicicletaOpciones() {
+                            document.querySelectorAll('.bicicleta-opcion').forEach(function(label) {
+                                label.addEventListener('click', function() {
+                                    document.querySelectorAll('.bicicleta-opcion').forEach(function(l) {
+                                        l.classList.remove('border-green-500', 'bg-green-50');
+                                    });
+                                    this.classList.add('border-green-500', 'bg-green-50');
+                                });
+                            });
+                        }
+                        initBicicletaOpciones();
+
+                        // Envío del formulario
+                        form.addEventListener('submit', function(e) {
+                            e.preventDefault();
+
+                            var bicicletaId = form.querySelector('input[name="bicicleta_id"]:checked');
+                            if (!bicicletaId) {
+                                alert('<?php echo esc_js(__('Selecciona una bicicleta', 'flavor-chat-ia')); ?>');
+                                return;
+                            }
+
+                            btnReservar.disabled = true;
+                            btnReservar.querySelector('.normal-state').classList.add('hidden');
+                            btnReservar.querySelector('.loading-state').classList.remove('hidden');
+
+                            var formData = new FormData();
+                            formData.append('action', 'bicicletas_reservar');
+                            formData.append('bicicleta_id', bicicletaId.value);
+                            formData.append('bicicletas_nonce', form.querySelector('[name="bicicletas_nonce"]').value);
+
+                            fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(function(r) { return r.json(); })
+                            .then(function(data) {
+                                if (data.success) {
+                                    mensajeDiv.innerHTML = '<div class="bg-green-50 border border-green-200 rounded-xl p-4 text-green-700"><strong>✓</strong> ' + data.data.mensaje + '</div>';
+                                    mensajeDiv.classList.remove('hidden');
+                                    form.reset();
+                                    bicicletasContainer.style.display = 'none';
+                                    setTimeout(function() {
+                                        window.location.reload();
+                                    }, 2000);
+                                } else {
+                                    mensajeDiv.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700"><strong>✗</strong> ' + (data.data || '<?php echo esc_js(__('Error al reservar', 'flavor-chat-ia')); ?>') + '</div>';
+                                    mensajeDiv.classList.remove('hidden');
+                                }
+                            })
+                            .catch(function(err) {
+                                mensajeDiv.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700"><?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?></div>';
+                                mensajeDiv.classList.remove('hidden');
+                            })
+                            .finally(function() {
+                                btnReservar.disabled = false;
+                                btnReservar.querySelector('.normal-state').classList.remove('hidden');
+                                btnReservar.querySelector('.loading-state').classList.add('hidden');
+                            });
+                        });
+                    })();
+                    </script>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Historial de viajes del usuario
+     * Uso: [bicicletas_mis_viajes limite="20" mostrar_activo="yes"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML del historial
+     */
+    public function shortcode_mis_viajes($atts) {
+        global $wpdb;
+
+        // Verificar login
+        if (!is_user_logged_in()) {
+            return $this->render_login_required('ver tu historial de viajes');
+        }
+
+        $atributos = shortcode_atts([
+            'limite' => 20,
+            'mostrar_activo' => 'yes',
+        ], $atts);
+
+        $usuario_id = get_current_user_id();
+        $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
+        $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas';
+        $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
+
+        $prestamos = [];
+        $prestamo_activo = null;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+            // Obtener préstamo activo
+            if ($atributos['mostrar_activo'] === 'yes') {
+                $prestamo_activo = $wpdb->get_row($wpdb->prepare(
+                    "SELECT p.*, b.codigo as bicicleta_codigo, b.tipo as bicicleta_tipo, b.marca, b.modelo,
+                            es.nombre as estacion_salida_nombre
+                     FROM $tabla_prestamos p
+                     LEFT JOIN $tabla_bicicletas b ON p.bicicleta_id = b.id
+                     LEFT JOIN $tabla_estaciones es ON p.estacion_salida_id = es.id
+                     WHERE p.usuario_id = %d AND p.estado = 'activo'",
+                    $usuario_id
+                ));
+            }
+
+            // Obtener historial
+            $prestamos = $wpdb->get_results($wpdb->prepare(
+                "SELECT p.*, b.codigo as bicicleta_codigo, b.tipo as bicicleta_tipo,
+                        es.nombre as estacion_salida_nombre, el.nombre as estacion_llegada_nombre
+                 FROM $tabla_prestamos p
+                 LEFT JOIN $tabla_bicicletas b ON p.bicicleta_id = b.id
+                 LEFT JOIN $tabla_estaciones es ON p.estacion_salida_id = es.id
+                 LEFT JOIN $tabla_estaciones el ON p.estacion_llegada_id = el.id
+                 WHERE p.usuario_id = %d AND p.estado = 'finalizado'
+                 ORDER BY p.fecha_fin DESC
+                 LIMIT %d",
+                $usuario_id,
+                intval($atributos['limite'])
+            ));
+        }
+
+        // Calcular totales
+        $total_viajes = count($prestamos);
+        $total_km = 0;
+        $total_minutos = 0;
+        foreach ($prestamos as $prestamo) {
+            $total_km += floatval($prestamo->kilometros_recorridos);
+            $total_minutos += intval($prestamo->duracion_minutos);
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-bicicletas-mis-viajes">
+            <div class="bg-gradient-to-r from-green-500 to-teal-500 rounded-t-xl p-4 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">📋</span>
+                    <div>
+                        <h3 class="text-lg font-bold"><?php esc_html_e('Mis Viajes en Bicicleta', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-sm opacity-90"><?php echo esc_html($total_viajes); ?> <?php esc_html_e('viajes realizados', 'flavor-chat-ia'); ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-b-xl shadow-lg">
+                <?php if ($prestamo_activo): ?>
+                    <!-- Viaje activo -->
+                    <div class="p-4 bg-blue-50 border-b border-blue-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl animate-bounce">🚴</span>
+                                <div>
+                                    <span class="font-bold text-blue-800"><?php esc_html_e('Viaje en curso', 'flavor-chat-ia'); ?></span>
+                                    <p class="text-sm text-blue-600">
+                                        <?php echo esc_html($prestamo_activo->bicicleta_codigo); ?> -
+                                        <?php printf(esc_html__('Desde %s', 'flavor-chat-ia'), esc_html($prestamo_activo->estacion_salida_nombre)); ?>
+                                    </p>
+                                    <p class="text-xs text-blue-500">
+                                        <?php
+                                        $inicio = strtotime($prestamo_activo->fecha_inicio);
+                                        $duracion_actual = round((time() - $inicio) / 60);
+                                        printf(
+                                            esc_html__('Iniciado hace %s minutos', 'flavor-chat-ia'),
+                                            esc_html($duracion_actual)
+                                        );
+                                        ?>
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="?accion=devolver" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium">
+                                <?php esc_html_e('Devolver', 'flavor-chat-ia'); ?>
+                            </a>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (empty($prestamos) && !$prestamo_activo): ?>
+                    <div class="p-8 text-center">
+                        <span class="text-4xl mb-3 block">🚲</span>
+                        <p class="text-gray-500"><?php esc_html_e('Aún no has realizado ningún viaje.', 'flavor-chat-ia'); ?></p>
+                        <a href="?pagina=reservar" class="inline-block mt-4 px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
+                            <?php esc_html_e('Reservar mi primera bicicleta', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <!-- Resumen -->
+                    <div class="grid grid-cols-3 gap-4 p-4 border-b border-gray-100">
+                        <div class="text-center">
+                            <span class="text-2xl font-bold text-gray-800"><?php echo esc_html($total_viajes); ?></span>
+                            <p class="text-xs text-gray-500"><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-2xl font-bold text-gray-800"><?php echo esc_html(number_format($total_km, 1)); ?></span>
+                            <p class="text-xs text-gray-500"><?php esc_html_e('Km totales', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-2xl font-bold text-gray-800"><?php echo esc_html(round($total_minutos / 60, 1)); ?></span>
+                            <p class="text-xs text-gray-500"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Lista de viajes -->
+                    <div class="divide-y divide-gray-100">
+                        <?php foreach ($prestamos as $prestamo):
+                            $duracion_texto = $prestamo->duracion_minutos < 60
+                                ? $prestamo->duracion_minutos . ' min'
+                                : round($prestamo->duracion_minutos / 60, 1) . ' h';
+                        ?>
+                            <div class="p-4 hover:bg-gray-50 transition-colors">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start gap-3">
+                                        <span class="text-xl">🚲</span>
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-medium text-gray-800"><?php echo esc_html($prestamo->bicicleta_codigo); ?></span>
+                                                <span class="px-2 py-0.5 bg-gray-100 rounded text-xs"><?php echo esc_html(ucfirst($prestamo->bicicleta_tipo)); ?></span>
+                                            </div>
+                                            <p class="text-sm text-gray-500">
+                                                <?php echo esc_html($prestamo->estacion_salida_nombre); ?>
+                                                <?php if ($prestamo->estacion_llegada_nombre): ?>
+                                                    → <?php echo esc_html($prestamo->estacion_llegada_nombre); ?>
+                                                <?php endif; ?>
+                                            </p>
+                                            <p class="text-xs text-gray-400">
+                                                <?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($prestamo->fecha_inicio))); ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-sm font-medium text-gray-700"><?php echo esc_html($duracion_texto); ?></span>
+                                        <?php if ($prestamo->kilometros_recorridos > 0): ?>
+                                            <p class="text-xs text-gray-500"><?php echo esc_html(number_format($prestamo->kilometros_recorridos, 1)); ?> km</p>
+                                        <?php endif; ?>
+                                        <?php if ($prestamo->valoracion): ?>
+                                            <p class="text-xs text-yellow-500">
+                                                <?php echo str_repeat('⭐', intval($prestamo->valoracion)); ?>
+                                            </p>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Estadísticas personales (km, CO2 ahorrado)
+     * Uso: [bicicletas_estadisticas]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML de estadísticas
+     */
+    public function shortcode_estadisticas($atts) {
+        global $wpdb;
+
+        // Verificar login
+        if (!is_user_logged_in()) {
+            return $this->render_login_required('ver tus estadísticas');
+        }
+
+        $usuario_id = get_current_user_id();
+        $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
+
+        // Obtener estadísticas
+        $estadisticas = [
+            'total_viajes' => 0,
+            'total_km' => 0,
+            'total_minutos' => 0,
+            'co2_ahorrado' => 0,
+            'calorias_quemadas' => 0,
+            'viajes_mes_actual' => 0,
+            'km_mes_actual' => 0,
+        ];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+            // Totales históricos
+            $totales = $wpdb->get_row($wpdb->prepare(
+                "SELECT COUNT(*) as viajes, COALESCE(SUM(kilometros_recorridos), 0) as km, COALESCE(SUM(duracion_minutos), 0) as minutos
+                 FROM $tabla_prestamos
+                 WHERE usuario_id = %d AND estado = 'finalizado'",
+                $usuario_id
+            ));
+
+            if ($totales) {
+                $estadisticas['total_viajes'] = intval($totales->viajes);
+                $estadisticas['total_km'] = floatval($totales->km);
+                $estadisticas['total_minutos'] = intval($totales->minutos);
+            }
+
+            // Mes actual
+            $mes_actual = $wpdb->get_row($wpdb->prepare(
+                "SELECT COUNT(*) as viajes, COALESCE(SUM(kilometros_recorridos), 0) as km
+                 FROM $tabla_prestamos
+                 WHERE usuario_id = %d AND estado = 'finalizado' AND MONTH(fecha_fin) = MONTH(CURRENT_DATE()) AND YEAR(fecha_fin) = YEAR(CURRENT_DATE())",
+                $usuario_id
+            ));
+
+            if ($mes_actual) {
+                $estadisticas['viajes_mes_actual'] = intval($mes_actual->viajes);
+                $estadisticas['km_mes_actual'] = floatval($mes_actual->km);
+            }
+        }
+
+        // Calcular CO2 ahorrado (aprox. 120g CO2/km en coche)
+        $estadisticas['co2_ahorrado'] = $estadisticas['total_km'] * 0.12;
+
+        // Calcular calorías quemadas (aprox. 25 calorías/km en bicicleta)
+        $estadisticas['calorias_quemadas'] = $estadisticas['total_km'] * 25;
+
+        // Horas totales
+        $horas_totales = round($estadisticas['total_minutos'] / 60, 1);
+
+        // Árboles equivalentes (1 árbol absorbe ~22kg CO2/año)
+        $arboles_equivalentes = round($estadisticas['co2_ahorrado'] / 22, 1);
+
+        ob_start();
+        ?>
+        <div class="flavor-bicicletas-estadisticas">
+            <div class="bg-gradient-to-r from-green-500 to-teal-500 rounded-t-xl p-6 text-white">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">📊</span>
+                    <div>
+                        <h3 class="text-xl font-bold"><?php esc_html_e('Tus Estadísticas de Ciclismo', 'flavor-chat-ia'); ?></h3>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Impacto positivo en el medio ambiente', 'flavor-chat-ia'); ?></p>
+                    </div>
+                </div>
+
+                <!-- KPIs principales -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
+                        <span class="text-3xl font-bold"><?php echo esc_html($estadisticas['total_viajes']); ?></span>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></p>
+                    </div>
+                    <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
+                        <span class="text-3xl font-bold"><?php echo esc_html(number_format($estadisticas['total_km'], 1)); ?></span>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Kilómetros', 'flavor-chat-ia'); ?></p>
+                    </div>
+                    <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
+                        <span class="text-3xl font-bold"><?php echo esc_html($horas_totales); ?></span>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></p>
+                    </div>
+                    <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
+                        <span class="text-3xl font-bold"><?php echo esc_html(number_format($estadisticas['co2_ahorrado'], 1)); ?></span>
+                        <p class="text-sm opacity-90"><?php esc_html_e('kg CO₂ ahorrado', 'flavor-chat-ia'); ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-b-xl shadow-lg p-6">
+                <!-- Impacto ambiental -->
+                <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🌍</span> <?php esc_html_e('Tu Impacto Ambiental', 'flavor-chat-ia'); ?>
+                </h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-green-50 rounded-xl p-4 text-center">
+                        <span class="text-4xl mb-2 block">🌳</span>
+                        <span class="text-2xl font-bold text-green-700"><?php echo esc_html($arboles_equivalentes); ?></span>
+                        <p class="text-sm text-green-600"><?php esc_html_e('Árboles equivalentes', 'flavor-chat-ia'); ?></p>
+                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('en absorción de CO₂', 'flavor-chat-ia'); ?></p>
+                    </div>
+                    <div class="bg-orange-50 rounded-xl p-4 text-center">
+                        <span class="text-4xl mb-2 block">🔥</span>
+                        <span class="text-2xl font-bold text-orange-700"><?php echo esc_html(number_format($estadisticas['calorias_quemadas'])); ?></span>
+                        <p class="text-sm text-orange-600"><?php esc_html_e('Calorías quemadas', 'flavor-chat-ia'); ?></p>
+                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('equivale a', 'flavor-chat-ia'); ?> <?php echo esc_html(round($estadisticas['calorias_quemadas'] / 280)); ?> 🍔</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-xl p-4 text-center">
+                        <span class="text-4xl mb-2 block">💰</span>
+                        <span class="text-2xl font-bold text-blue-700"><?php echo esc_html(number_format($estadisticas['total_km'] * 0.15, 2)); ?>€</span>
+                        <p class="text-sm text-blue-600"><?php esc_html_e('Dinero ahorrado', 'flavor-chat-ia'); ?></p>
+                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('vs transporte público', 'flavor-chat-ia'); ?></p>
+                    </div>
+                </div>
+
+                <!-- Estadísticas del mes -->
+                <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>📅</span> <?php esc_html_e('Este Mes', 'flavor-chat-ia'); ?>
+                </h4>
+
+                <div class="flex items-center gap-6">
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-600"><?php esc_html_e('Viajes realizados', 'flavor-chat-ia'); ?></span>
+                            <span class="font-bold"><?php echo esc_html($estadisticas['viajes_mes_actual']); ?></span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500 rounded-full" style="width: <?php echo min(100, $estadisticas['viajes_mes_actual'] * 10); ?>%;"></div>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-600"><?php esc_html_e('Kilómetros', 'flavor-chat-ia'); ?></span>
+                            <span class="font-bold"><?php echo esc_html(number_format($estadisticas['km_mes_actual'], 1)); ?></span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-teal-500 rounded-full" style="width: <?php echo min(100, $estadisticas['km_mes_actual'] * 2); ?>%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <?php if ($estadisticas['total_viajes'] === 0): ?>
+                    <div class="mt-6 text-center bg-gray-50 rounded-xl p-6">
+                        <span class="text-4xl mb-2 block">🚲</span>
+                        <p class="text-gray-600"><?php esc_html_e('¡Aún no has realizado ningún viaje!', 'flavor-chat-ia'); ?></p>
+                        <a href="?pagina=reservar" class="inline-block mt-3 px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
+                            <?php esc_html_e('Hacer mi primer viaje', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Tarifas y planes disponibles
+     * Uso: [bicicletas_tarifas]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML de tarifas
+     */
+    public function shortcode_tarifas($atts) {
+        // Obtener configuración de precios
+        $precio_hora = $this->get_setting('precio_hora', 0);
+        $precio_dia = $this->get_setting('precio_dia', 0);
+        $precio_mes = $this->get_setting('precio_mes', 10);
+        $requiere_fianza = $this->get_setting('requiere_fianza', true);
+        $importe_fianza = $this->get_setting('importe_fianza', 50);
+        $duracion_maxima_dias = $this->get_setting('duracion_maxima_prestamo_dias', 7);
+
+        ob_start();
+        ?>
+        <div class="flavor-bicicletas-tarifas">
+            <div class="bg-gradient-to-r from-green-500 to-teal-500 rounded-t-xl p-6 text-white text-center">
+                <span class="text-4xl mb-2 block">💳</span>
+                <h3 class="text-2xl font-bold"><?php esc_html_e('Tarifas y Planes', 'flavor-chat-ia'); ?></h3>
+                <p class="text-sm opacity-90"><?php esc_html_e('Elige el plan que mejor se adapte a ti', 'flavor-chat-ia'); ?></p>
+            </div>
+
+            <div class="bg-white rounded-b-xl shadow-lg p-6">
+                <!-- Planes -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- Plan Por Uso -->
+                    <div class="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-green-300 transition-colors">
+                        <div class="bg-gray-50 p-4 text-center">
+                            <h4 class="font-bold text-gray-800"><?php esc_html_e('Por Uso', 'flavor-chat-ia'); ?></h4>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('Pago por hora', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <div class="p-6 text-center">
+                            <div class="text-4xl font-bold text-gray-800 mb-1">
+                                <?php if ($precio_hora > 0): ?>
+                                    <?php echo esc_html(number_format($precio_hora, 2, ',', '.')); ?>€
+                                <?php else: ?>
+                                    <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+                                <?php endif; ?>
+                            </div>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('por hora', 'flavor-chat-ia'); ?></p>
+
+                            <ul class="text-left text-sm text-gray-600 mt-4 space-y-2">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Sin compromiso', 'flavor-chat-ia'); ?>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Todas las estaciones', 'flavor-chat-ia'); ?>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php printf(esc_html__('Máx. %d días', 'flavor-chat-ia'), $duracion_maxima_dias); ?>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Plan Diario -->
+                    <div class="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-green-300 transition-colors">
+                        <div class="bg-gray-50 p-4 text-center">
+                            <h4 class="font-bold text-gray-800"><?php esc_html_e('Pase Diario', 'flavor-chat-ia'); ?></h4>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('Todo el día', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <div class="p-6 text-center">
+                            <div class="text-4xl font-bold text-gray-800 mb-1">
+                                <?php if ($precio_dia > 0): ?>
+                                    <?php echo esc_html(number_format($precio_dia, 2, ',', '.')); ?>€
+                                <?php else: ?>
+                                    <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+                                <?php endif; ?>
+                            </div>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('24 horas', 'flavor-chat-ia'); ?></p>
+
+                            <ul class="text-left text-sm text-gray-600 mt-4 space-y-2">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Uso ilimitado 24h', 'flavor-chat-ia'); ?>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Ideal para turistas', 'flavor-chat-ia'); ?>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Sin límite de viajes', 'flavor-chat-ia'); ?>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Plan Mensual (destacado) -->
+                    <div class="border-2 border-green-500 rounded-xl overflow-hidden relative">
+                        <div class="absolute top-0 right-0 bg-green-500 text-white text-xs px-3 py-1 rounded-bl-lg font-medium">
+                            <?php esc_html_e('RECOMENDADO', 'flavor-chat-ia'); ?>
+                        </div>
+                        <div class="bg-green-500 text-white p-4 text-center">
+                            <h4 class="font-bold"><?php esc_html_e('Abono Mensual', 'flavor-chat-ia'); ?></h4>
+                            <p class="text-sm opacity-90"><?php esc_html_e('La mejor opción', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <div class="p-6 text-center">
+                            <div class="text-4xl font-bold text-green-600 mb-1">
+                                <?php echo esc_html(number_format($precio_mes, 2, ',', '.')); ?>€
+                            </div>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('al mes', 'flavor-chat-ia'); ?></p>
+
+                            <ul class="text-left text-sm text-gray-600 mt-4 space-y-2">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Viajes ilimitados', 'flavor-chat-ia'); ?>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Reserva prioritaria', 'flavor-chat-ia'); ?>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Bicis eléctricas', 'flavor-chat-ia'); ?>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span>
+                                    <?php esc_html_e('Estadísticas detalladas', 'flavor-chat-ia'); ?>
+                                </li>
+                            </ul>
+
+                            <a href="?plan=mensual" class="mt-4 block w-full py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors">
+                                <?php esc_html_e('Suscribirme', 'flavor-chat-ia'); ?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de fianza -->
+                <?php if ($requiere_fianza): ?>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">💰</span>
+                        <div>
+                            <h5 class="font-bold text-yellow-800"><?php esc_html_e('Fianza', 'flavor-chat-ia'); ?></h5>
+                            <p class="text-sm text-yellow-700">
+                                <?php printf(
+                                    esc_html__('Se requiere una fianza de %s€ que será devuelta íntegramente al finalizar tu suscripción o al devolver la bicicleta en buen estado.', 'flavor-chat-ia'),
+                                    esc_html(number_format($importe_fianza, 2, ',', '.'))
+                                ); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- Condiciones -->
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <h5 class="font-bold text-gray-800 mb-3"><?php esc_html_e('Condiciones del servicio', 'flavor-chat-ia'); ?></h5>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-gray-400">•</span>
+                            <?php printf(esc_html__('Duración máxima por préstamo: %d días', 'flavor-chat-ia'), $duracion_maxima_dias); ?>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-gray-400">•</span>
+                            <?php esc_html_e('Devolución en cualquier estación con espacio disponible', 'flavor-chat-ia'); ?>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-gray-400">•</span>
+                            <?php esc_html_e('Uso del casco obligatorio', 'flavor-chat-ia'); ?>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-gray-400">•</span>
+                            <?php esc_html_e('El usuario es responsable de la bicicleta durante el préstamo', 'flavor-chat-ia'); ?>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-gray-400">•</span>
+                            <?php esc_html_e('Reportar cualquier incidencia inmediatamente', 'flavor-chat-ia'); ?>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    // =========================================================================
+    // HELPERS PARA SHORTCODES
+    // =========================================================================
+
+    /**
+     * Renderiza mensaje de login requerido
+     *
+     * @param string $accion_descripcion Descripción de la acción
+     * @return string HTML
+     */
+    private function render_login_required($accion_descripcion = '') {
+        ob_start();
+        ?>
+        <div class="flavor-login-required bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+            <span class="text-4xl mb-3 block">🔒</span>
+            <h4 class="font-bold text-gray-800 mb-2"><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h4>
+            <p class="text-gray-600 mb-4">
+                <?php
+                if ($accion_descripcion) {
+                    printf(esc_html__('Debes iniciar sesión para %s.', 'flavor-chat-ia'), esc_html($accion_descripcion));
+                } else {
+                    esc_html_e('Debes iniciar sesión para acceder a esta funcionalidad.', 'flavor-chat-ia');
+                }
+                ?>
+            </p>
+            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="inline-block px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium">
+                <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene clase CSS para grid de columnas
+     *
+     * @param int $columnas Número de columnas
+     * @return string Clase CSS
+     */
+    private function get_grid_columns_class($columnas) {
+        $clases_columnas = [
+            1 => 'grid-cols-1',
+            2 => 'grid-cols-1 md:grid-cols-2',
+            3 => 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+            4 => 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+        ];
+        return $clases_columnas[$columnas] ?? 'grid-cols-1 md:grid-cols-3';
+    }
+
+    /**
+     * AJAX: Reservar bicicleta
+     */
+    public function ajax_reservar_bicicleta() {
+        // Verificar nonce
+        if (!check_ajax_referer('bicicletas_reservar', 'bicicletas_nonce', false)) {
+            wp_send_json_error(__('Sesión expirada. Recarga la página.', 'flavor-chat-ia'));
+        }
+
+        // Verificar login
+        if (!is_user_logged_in()) {
+            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+        }
+
+        $bicicleta_id = isset($_POST['bicicleta_id']) ? absint($_POST['bicicleta_id']) : 0;
+
+        if (!$bicicleta_id) {
+            wp_send_json_error(__('Selecciona una bicicleta', 'flavor-chat-ia'));
+        }
+
+        // Crear un WP_REST_Request para reusar la lógica existente
+        $request = new WP_REST_Request('POST');
+        $request->set_param('id', $bicicleta_id);
+
+        $resultado = $this->api_reservar_bicicleta($request);
+
+        if ($resultado->get_status() === 201) {
+            $datos = $resultado->get_data();
+            wp_send_json_success([
+                'mensaje' => $datos['mensaje'],
+                'prestamo' => $datos['prestamo'],
+            ]);
+        } else {
+            $datos = $resultado->get_data();
+            wp_send_json_error($datos['error'] ?? __('Error al reservar', 'flavor-chat-ia'));
+        }
+    }
+
+    /**
+     * AJAX: Login requerido
+     */
+    public function ajax_login_required() {
+        wp_send_json_error(__('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'));
     }
 
     /**
@@ -1670,4 +3002,105 @@ KNOWLEDGE;
         ];
     }
 
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'bicicletas-compartidas',
+            'title'    => __('Bicicletas Compartidas', 'flavor-chat-ia'),
+            'subtitle' => __('Sistema de préstamo de bicicletas comunitario', 'flavor-chat-ia'),
+            'icon'     => '🚲',
+            'color'    => 'success', // Usa variable CSS --flavor-success del tema
+
+            'database' => [
+                'table'       => 'flavor_bicicletas',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'codigo'       => ['type' => 'text', 'label' => __('Código bicicleta', 'flavor-chat-ia'), 'required' => true],
+                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['urbana', 'montaña', 'electrica', 'plegable', 'cargo']],
+                'estacion_id'  => ['type' => 'select', 'label' => __('Estación', 'flavor-chat-ia')],
+                'estado_fisico' => ['type' => 'select', 'label' => __('Estado físico', 'flavor-chat-ia'), 'options' => ['perfecto', 'bueno', 'reparacion']],
+                'bateria'      => ['type' => 'number', 'label' => __('Batería %', 'flavor-chat-ia'), 'min' => 0, 'max' => 100],
+            ],
+
+            'estados' => [
+                'disponible' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'en_uso'     => ['label' => __('En uso', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🚴'],
+                'reservada'  => ['label' => __('Reservada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
+                'reparacion' => ['label' => __('En reparación', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔧'],
+            ],
+
+            'stats' => [
+                'bicis_disponibles' => ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => '🚲', 'color' => 'lime'],
+                'en_uso'            => ['label' => __('En uso', 'flavor-chat-ia'), 'icon' => '🚴', 'color' => 'blue'],
+                'estaciones'        => ['label' => __('Estaciones', 'flavor-chat-ia'), 'icon' => '📍', 'color' => 'purple'],
+                'km_recorridos'     => ['label' => __('km recorridos', 'flavor-chat-ia'), 'icon' => '🛤️', 'color' => 'green'],
+            ],
+
+            'card' => [
+                'template'     => 'bicicleta-card',
+                'title_field'  => 'codigo',
+                'subtitle_field' => 'tipo',
+                'meta_fields'  => ['estacion', 'bateria'],
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'mapa' => [
+                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-location',
+                    'content' => 'shortcode:bicicletas_mapa',
+                    'public'  => true,
+                ],
+                'estaciones' => [
+                    'label'   => __('Estaciones', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-marker',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'alquilar' => [
+                    'label'      => __('Alquilar', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-unlock',
+                    'content'    => 'shortcode:bicicletas_alquilar',
+                    'requires_login' => true,
+                ],
+                'mis-alquileres' => [
+                    'label'      => __('Mis alquileres', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:bicicletas_mis_alquileres',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'codigo',
+                'order'      => 'ASC',
+                'filterable' => ['tipo', 'estado', 'estacion'],
+                'show_mapa'  => true,
+            ],
+
+            'dashboard' => [
+                'widgets' => ['mapa_tiempo_real', 'stats', 'mis_alquileres', 'estaciones_cercanas'],
+                'actions' => [
+                    'alquilar'  => ['label' => __('Alquilar bici', 'flavor-chat-ia'), 'icon' => '🚲', 'color' => 'lime'],
+                    'devolver'  => ['label' => __('Devolver bici', 'flavor-chat-ia'), 'icon' => '🔒', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'geolocalizacion' => true,
+                'tiempo_real'     => true,
+                'reservas'        => true,
+                'qr_desbloqueo'   => true,
+                'estadisticas'    => true,
+            ],
+        ];
+    }
 }

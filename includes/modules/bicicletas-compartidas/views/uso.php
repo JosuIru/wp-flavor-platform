@@ -10,8 +10,8 @@ if (!defined('ABSPATH')) exit;
 if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficientes.', 'flavor-chat-ia'));
 
 global $wpdb;
-$tabla_usos = $wpdb->prefix . 'flavor_bicicletas_compartidas_usos';
-$tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_compartidas_bicicletas';
+$tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
+$tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_bicicletas';
 
 $fecha_inicio_mes = date('Y-m-01');
 
@@ -19,11 +19,11 @@ $fecha_inicio_mes = date('Y-m-01');
 $stats = $wpdb->get_row($wpdb->prepare(
     "SELECT
         COUNT(*) as total_usos,
-        SUM(distancia_km) as distancia_total,
-        AVG(distancia_km) as distancia_promedio,
+        SUM(kilometros_recorridos) as distancia_total,
+        AVG(kilometros_recorridos) as distancia_promedio,
         AVG(duracion_minutos) as duracion_promedio,
         COUNT(DISTINCT usuario_id) as usuarios_unicos
-    FROM {$tabla_usos}
+    FROM {$tabla_prestamos}
     WHERE fecha_inicio >= %s",
     $fecha_inicio_mes
 ));
@@ -33,13 +33,13 @@ $top_usuarios = $wpdb->get_results($wpdb->prepare(
     "SELECT
         u.display_name,
         u.user_email,
-        COUNT(uso.id) as total_usos,
-        SUM(uso.distancia_km) as distancia_total,
-        AVG(uso.duracion_minutos) as duracion_promedio
-    FROM {$tabla_usos} uso
-    INNER JOIN {$wpdb->users} u ON uso.usuario_id = u.ID
-    WHERE uso.fecha_inicio >= %s
-    GROUP BY uso.usuario_id
+        COUNT(p.id) as total_usos,
+        SUM(p.kilometros_recorridos) as distancia_total,
+        AVG(p.duracion_minutos) as duracion_promedio
+    FROM {$tabla_prestamos} p
+    INNER JOIN {$wpdb->users} u ON p.usuario_id = u.ID
+    WHERE p.fecha_inicio >= %s
+    GROUP BY p.usuario_id
     ORDER BY total_usos DESC
     LIMIT 10",
     $fecha_inicio_mes
@@ -50,12 +50,12 @@ $top_bicicletas = $wpdb->get_results($wpdb->prepare(
     "SELECT
         b.codigo,
         b.modelo,
-        COUNT(uso.id) as total_usos,
-        SUM(uso.distancia_km) as distancia_total
-    FROM {$tabla_usos} uso
-    INNER JOIN {$tabla_bicicletas} b ON uso.bicicleta_id = b.id
-    WHERE uso.fecha_inicio >= %s
-    GROUP BY uso.bicicleta_id
+        COUNT(p.id) as total_usos,
+        SUM(p.kilometros_recorridos) as distancia_total
+    FROM {$tabla_prestamos} p
+    INNER JOIN {$tabla_bicicletas} b ON p.bicicleta_id = b.id
+    WHERE p.fecha_inicio >= %s
+    GROUP BY p.bicicleta_id
     ORDER BY total_usos DESC
     LIMIT 10",
     $fecha_inicio_mes
@@ -66,7 +66,7 @@ $usos_por_hora = $wpdb->get_results(
     "SELECT
         HOUR(fecha_inicio) as hora,
         COUNT(*) as total_usos
-    FROM {$tabla_usos}
+    FROM {$tabla_prestamos}
     WHERE fecha_inicio >= DATE_SUB(NOW(), INTERVAL 30 DAY)
     GROUP BY HOUR(fecha_inicio)
     ORDER BY hora ASC"

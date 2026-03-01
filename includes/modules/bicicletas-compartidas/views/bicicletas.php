@@ -10,8 +10,8 @@ if (!defined('ABSPATH')) exit;
 if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficientes.', 'flavor-chat-ia'));
 
 global $wpdb;
-$tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_compartidas_bicicletas';
-$tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_compartidas_estaciones';
+$tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_bicicletas';
+$tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
 $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'todos';
 

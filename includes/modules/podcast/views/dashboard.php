@@ -10,21 +10,21 @@ if (!defined('ABSPATH')) {
 }
 
 global $wpdb;
-$tabla_podcasts = $wpdb->prefix . 'flavor_podcasts';
+$tabla_series = $wpdb->prefix . 'flavor_podcast_series';
 $tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
 $tabla_suscripciones = $wpdb->prefix . 'flavor_podcast_suscripciones';
 
-// Obtener estadísticas generales
-$total_podcasts = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_podcasts WHERE estado = 'publicado'");
-$total_episodios = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_episodios WHERE estado = 'publicado'");
-$total_suscriptores = $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_suscripciones");
-$total_reproducciones = $wpdb->get_var("SELECT SUM(reproducciones) FROM $tabla_episodios");
+// Obtener estadisticas generales
+$total_podcasts = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_series WHERE estado = 'publicado'");
+$total_episodios = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_episodios WHERE estado = 'publicado'");
+$total_suscriptores = (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_suscripciones");
+$total_reproducciones = (int) $wpdb->get_var("SELECT COALESCE(SUM(reproducciones), 0) FROM $tabla_episodios");
 
-// Episodios más populares
+// Episodios mas populares
 $episodios_populares = $wpdb->get_results("
-    SELECT e.*, p.titulo as podcast_titulo
+    SELECT e.*, s.titulo as podcast_titulo
     FROM $tabla_episodios e
-    INNER JOIN $tabla_podcasts p ON e.podcast_id = p.id
+    INNER JOIN $tabla_series s ON e.serie_id = s.id
     WHERE e.estado = 'publicado'
     ORDER BY e.reproducciones DESC
     LIMIT 10
@@ -71,11 +71,7 @@ $stats_plataforma = [
             <span class="dashicons dashicons-groups" style="font-size: 24px; color: #8c52ff;"></span>
             <span><?php echo esc_html__('Suscriptores', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=podcast-estadisticas'); ?>" class="podcast-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #dba617;"></span>
-            <span><?php echo esc_html__('Estadísticas', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=podcast-configuracion'); ?>" class="podcast-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <a href="<?php echo admin_url('admin.php?page=flavor-app-composer&module=podcast'); ?>" class="podcast-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
             <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
         </a>

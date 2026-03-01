@@ -1,7 +1,7 @@
 # Pantallas pendientes por módulo (auditoría 2026-02-16)
 
 > **Nota:** Este documento se refiere a las **pantallas móviles Flutter** (`mobile-apps/`), NO a los módulos PHP del plugin.
-> Para el estado de los módulos PHP del backend, consulta **[ESTADO-REAL-MODULOS.md](ESTADO-REAL-MODULOS.md)**.
+> Para el estado de los modulos PHP del backend, consulta **[../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md](../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md)**.
 
 Resumen extraído de `reports/matriz_pantallas_faltantes_audit_2026-02-16.csv`. Para cada pantalla se incluye el módulo, el tipo de riesgo/pendiente y los endpoints asociados para que el backlog pueda priorizar.
 
@@ -582,4 +582,3 @@ Resumen extraído de `reports/matriz_pantallas_faltantes_audit_2026-02-16.csv`. 
   - Riesgo/reportado: BAJO
   - Endpoints de muestra: N/A
   - Notas audit: ok
-

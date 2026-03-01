@@ -4,6 +4,12 @@
 (function($) {
     'use strict';
 
+    // Evitar inicialización duplicada
+    if (window.gcFrontendInitialized) {
+        return;
+    }
+    window.gcFrontendInitialized = true;
+
     // Configuración global
     const config = window.gcFrontend || {};
 
@@ -71,7 +77,7 @@
             const $control = $(this).closest('.gc-cantidad-control-modal');
             const $input = $control.find('input[type="number"]');
             const valorActual = parseInt($input.val()) || 1;
-            $input.val(Math.max(1, valorActual - 2));
+            $input.val(Math.max(1, valorActual - 1));
         });
 
         // Botón más (+)
@@ -81,7 +87,7 @@
             const $control = $(this).closest('.gc-cantidad-control-modal');
             const $input = $control.find('input[type="number"]');
             const valorActual = parseInt($input.val()) || 1;
-            $input.val(Math.min(99, valorActual + 2));
+            $input.val(Math.min(99, valorActual + 1));
         });
 
         // Enviar formulario del modal

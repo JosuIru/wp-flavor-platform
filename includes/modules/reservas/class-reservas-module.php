@@ -113,16 +113,29 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         $this->register_as_integration_consumer();
 
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'registrar_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Admin pages
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
 
         // Cargar Frontend Controller
         $this->cargar_frontend_controller();
+
+        // Cargar Dashboard Tab
+        $this->cargar_dashboard_tab();
+
+        // AJAX handlers para shortcodes
+        add_action('wp_ajax_reservas_crear', [$this, 'ajax_crear_reserva']);
+        add_action('wp_ajax_nopriv_reservas_crear', [$this, 'ajax_crear_reserva']);
+        add_action('wp_ajax_reservas_cancelar', [$this, 'ajax_cancelar_reserva']);
+        add_action('wp_ajax_reservas_disponibilidad', [$this, 'ajax_consultar_disponibilidad']);
+        add_action('wp_ajax_nopriv_reservas_disponibilidad', [$this, 'ajax_consultar_disponibilidad']);
     }
 
     /**
@@ -133,6 +146,17 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         if (file_exists($archivo_controller)) {
             require_once $archivo_controller;
             Flavor_Reservas_Frontend_Controller::get_instance();
+        }
+    }
+
+    /**
+     * Carga el Dashboard Tab para el panel del usuario
+     */
+    private function cargar_dashboard_tab() {
+        $archivo_dashboard_tab = dirname(__FILE__) . '/class-reservas-dashboard-tab.php';
+        if (file_exists($archivo_dashboard_tab)) {
+            require_once $archivo_dashboard_tab;
+            Flavor_Reservas_Dashboard_Tab::get_instance();
         }
     }
 
@@ -439,6 +463,1194 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
                 'estados_reserva' => $this->get_setting('estados_reserva', []),
             ],
         ], 200);
+    }
+
+    // =========================================================================
+    // SHORTCODES
+    // =========================================================================
+
+    /**
+     * Registra todos los shortcodes del módulo de reservas
+     */
+    public function registrar_shortcodes() {
+        add_shortcode('reservas_recursos', [$this, 'shortcode_recursos']);
+        add_shortcode('reservas_calendario', [$this, 'shortcode_calendario']);
+        add_shortcode('reservas_formulario', [$this, 'shortcode_formulario']);
+        add_shortcode('reservas_mis_reservas', [$this, 'shortcode_mis_reservas']);
+        add_shortcode('reservas_cancelar', [$this, 'shortcode_cancelar']);
+        add_shortcode('reservas_disponibilidad', [$this, 'shortcode_disponibilidad']);
+    }
+
+    /**
+     * Encola los estilos y scripts necesarios para los shortcodes
+     */
+    private function encolar_assets_shortcodes() {
+        static $assets_encolados = false;
+        if ($assets_encolados) {
+            return;
+        }
+        $assets_encolados = true;
+
+        // Estilos CSS inline para los shortcodes
+        wp_add_inline_style('flavor-frontend', $this->obtener_estilos_shortcodes());
+
+        // Localizar script para AJAX
+        wp_localize_script('jquery', 'reservasAjax', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce('reservas_shortcode_nonce'),
+        ]);
+    }
+
+    /**
+     * Obtiene los estilos CSS para los shortcodes
+     */
+    private function obtener_estilos_shortcodes() {
+        return '
+        .reservas-container {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .reservas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .reservas-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e5e7eb;
+        }
+        .reservas-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .reservas-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .reservas-card-icon {
+            font-size: 2rem;
+        }
+        .reservas-card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+        .reservas-card-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+        .reservas-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        .reservas-badge-disponible { background: #d1fae5; color: #065f46; }
+        .reservas-badge-pendiente { background: #fef3c7; color: #92400e; }
+        .reservas-badge-confirmada { background: #dbeafe; color: #1e40af; }
+        .reservas-badge-cancelada { background: #fee2e2; color: #991b1b; }
+        .reservas-badge-completada { background: #e5e7eb; color: #374151; }
+        .reservas-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+        .reservas-btn-primary {
+            background: #2563eb;
+            color: #fff;
+        }
+        .reservas-btn-primary:hover {
+            background: #1d4ed8;
+            color: #fff;
+        }
+        .reservas-btn-danger {
+            background: #dc2626;
+            color: #fff;
+        }
+        .reservas-btn-danger:hover {
+            background: #b91c1c;
+        }
+        .reservas-btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        .reservas-btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        .reservas-form {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+        }
+        .reservas-form-group {
+            margin-bottom: 1.25rem;
+        }
+        .reservas-form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.375rem;
+        }
+        .reservas-form-input,
+        .reservas-form-select,
+        .reservas-form-textarea {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            font-size: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        .reservas-form-input:focus,
+        .reservas-form-select:focus,
+        .reservas-form-textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .reservas-form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 640px) {
+            .reservas-form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        .reservas-calendario {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+        }
+        .reservas-calendario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .reservas-calendario-titulo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+        .reservas-calendario-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+        .reservas-calendario-dia-header {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            padding: 0.5rem;
+        }
+        .reservas-calendario-dia {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid transparent;
+        }
+        .reservas-calendario-dia:hover {
+            background: #f3f4f6;
+        }
+        .reservas-calendario-dia.disponible {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .reservas-calendario-dia.parcial {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .reservas-calendario-dia.lleno {
+            background: #fee2e2;
+            color: #991b1b;
+            cursor: not-allowed;
+        }
+        .reservas-calendario-dia.hoy {
+            border: 2px solid #2563eb;
+            font-weight: 600;
+        }
+        .reservas-calendario-dia.pasado {
+            color: #d1d5db;
+            cursor: not-allowed;
+        }
+        .reservas-franjas {
+            margin-top: 1.5rem;
+        }
+        .reservas-franja {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+        .reservas-franja-hora {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        .reservas-franja-plazas {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .reservas-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .reservas-tabla th {
+            background: #f3f4f6;
+            padding: 0.875rem 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .reservas-tabla td {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+        .reservas-tabla tr:hover td {
+            background: #f9fafb;
+        }
+        .reservas-empty {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #6b7280;
+        }
+        .reservas-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .reservas-mensaje {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .reservas-mensaje-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .reservas-mensaje-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        .reservas-mensaje-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        .reservas-disponibilidad-resultado {
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .reservas-disponibilidad-resultado.disponible {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+        }
+        .reservas-disponibilidad-resultado.no-disponible {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+        }
+        .reservas-disponibilidad-icono {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        ';
+    }
+
+    /**
+     * Shortcode [reservas_recursos] - Lista de recursos/servicios reservables
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function shortcode_recursos($atts) {
+        $this->encolar_assets_shortcodes();
+
+        $atributos = shortcode_atts([
+            'columnas' => '3',
+            'mostrar_disponibilidad' => 'si',
+        ], $atts);
+
+        $tipos_servicio = $this->get_setting('tipos_servicio', []);
+
+        if (empty($tipos_servicio)) {
+            return $this->renderizar_mensaje_vacio(__('No hay recursos configurados.', 'flavor-chat-ia'));
+        }
+
+        $iconos_servicio = [
+            'mesa_restaurante'  => '🍽️',
+            'espacio_coworking' => '💼',
+            'clase_deportiva'   => '🏃',
+            'sala_reunion'      => '🏢',
+            'equipo'            => '🔧',
+            'vehiculo'          => '🚗',
+        ];
+
+        $columnas_grid = absint($atributos['columnas']);
+        $fecha_hoy = current_time('Y-m-d');
+
+        ob_start();
+        ?>
+        <div class="reservas-container">
+            <div class="reservas-grid" style="grid-template-columns: repeat(<?php echo esc_attr($columnas_grid); ?>, 1fr);">
+                <?php foreach ($tipos_servicio as $clave_servicio => $etiqueta_servicio):
+                    $icono_recurso = $iconos_servicio[$clave_servicio] ?? '📋';
+                    $plazas_disponibles = 0;
+
+                    if ($atributos['mostrar_disponibilidad'] === 'si') {
+                        $hora_apertura = $this->get_setting('hora_apertura', '09:00');
+                        $hora_cierre = $this->get_setting('hora_cierre', '22:00');
+                        $ocupacion_hoy = $this->obtener_ocupacion_en_franja($fecha_hoy, $hora_apertura, $hora_cierre);
+                        $capacidad_maxima = $this->get_setting('capacidad_maxima', 50);
+                        $plazas_disponibles = max(0, $capacidad_maxima - $ocupacion_hoy);
+                    }
+                ?>
+                <div class="reservas-card">
+                    <div class="reservas-card-header">
+                        <span class="reservas-card-icon"><?php echo esc_html($icono_recurso); ?></span>
+                        <h3 class="reservas-card-title"><?php echo esc_html($etiqueta_servicio); ?></h3>
+                    </div>
+                    <?php if ($atributos['mostrar_disponibilidad'] === 'si'): ?>
+                    <div class="reservas-card-meta">
+                        <span class="reservas-badge <?php echo $plazas_disponibles > 0 ? 'reservas-badge-disponible' : 'reservas-badge-cancelada'; ?>">
+                            <?php echo $plazas_disponibles > 0
+                                ? sprintf(__('%d plazas disponibles hoy', 'flavor-chat-ia'), $plazas_disponibles)
+                                : __('Sin disponibilidad hoy', 'flavor-chat-ia'); ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
+                    <a href="?reservar=<?php echo esc_attr($clave_servicio); ?>" class="reservas-btn reservas-btn-primary">
+                        <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode [reservas_calendario id="X"] - Calendario de disponibilidad
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function shortcode_calendario($atts) {
+        $this->encolar_assets_shortcodes();
+
+        $atributos = shortcode_atts([
+            'id'               => '',
+            'tipo_servicio'    => '',
+            'mes'              => '',
+            'anio'             => '',
+            'mostrar_franjas'  => 'si',
+        ], $atts);
+
+        $mes_actual = $atributos['mes'] ? absint($atributos['mes']) : (int) date('n');
+        $anio_actual = $atributos['anio'] ? absint($atributos['anio']) : (int) date('Y');
+
+        $primer_dia_mes = mktime(0, 0, 0, $mes_actual, 1, $anio_actual);
+        $nombre_mes = date_i18n('F Y', $primer_dia_mes);
+        $dias_en_mes = (int) date('t', $primer_dia_mes);
+        $dia_semana_inicio = (int) date('N', $primer_dia_mes);
+        $fecha_hoy = current_time('Y-m-d');
+
+        $dias_semana = [
+            __('Lun', 'flavor-chat-ia'),
+            __('Mar', 'flavor-chat-ia'),
+            __('Mié', 'flavor-chat-ia'),
+            __('Jue', 'flavor-chat-ia'),
+            __('Vie', 'flavor-chat-ia'),
+            __('Sáb', 'flavor-chat-ia'),
+            __('Dom', 'flavor-chat-ia'),
+        ];
+
+        $capacidad_maxima = $this->get_setting('capacidad_maxima', 50);
+
+        // Calcular mes anterior y siguiente
+        $mes_anterior = $mes_actual - 1;
+        $anio_anterior = $anio_actual;
+        if ($mes_anterior < 1) {
+            $mes_anterior = 12;
+            $anio_anterior--;
+        }
+
+        $mes_siguiente = $mes_actual + 1;
+        $anio_siguiente = $anio_actual;
+        if ($mes_siguiente > 12) {
+            $mes_siguiente = 1;
+            $anio_siguiente++;
+        }
+
+        ob_start();
+        ?>
+        <div class="reservas-container">
+            <div class="reservas-calendario">
+                <div class="reservas-calendario-header">
+                    <a href="?mes=<?php echo esc_attr($mes_anterior); ?>&anio=<?php echo esc_attr($anio_anterior); ?>" class="reservas-btn reservas-btn-secondary">
+                        &larr; <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                    </a>
+                    <h2 class="reservas-calendario-titulo"><?php echo esc_html(ucfirst($nombre_mes)); ?></h2>
+                    <a href="?mes=<?php echo esc_attr($mes_siguiente); ?>&anio=<?php echo esc_attr($anio_siguiente); ?>" class="reservas-btn reservas-btn-secondary">
+                        <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?> &rarr;
+                    </a>
+                </div>
+
+                <div class="reservas-calendario-grid">
+                    <?php foreach ($dias_semana as $nombre_dia): ?>
+                        <div class="reservas-calendario-dia-header"><?php echo esc_html($nombre_dia); ?></div>
+                    <?php endforeach; ?>
+
+                    <?php
+                    // Espacios vacíos antes del primer día
+                    for ($espacio = 1; $espacio < $dia_semana_inicio; $espacio++): ?>
+                        <div class="reservas-calendario-dia"></div>
+                    <?php endfor; ?>
+
+                    <?php for ($numero_dia = 1; $numero_dia <= $dias_en_mes; $numero_dia++):
+                        $fecha_dia = sprintf('%04d-%02d-%02d', $anio_actual, $mes_actual, $numero_dia);
+                        $es_hoy = ($fecha_dia === $fecha_hoy);
+                        $es_pasado = ($fecha_dia < $fecha_hoy);
+
+                        $hora_apertura = $this->get_setting('hora_apertura', '09:00');
+                        $hora_cierre = $this->get_setting('hora_cierre', '22:00');
+                        $ocupacion_dia = $this->obtener_ocupacion_en_franja($fecha_dia, $hora_apertura, $hora_cierre);
+                        $porcentaje_ocupacion = ($capacidad_maxima > 0) ? ($ocupacion_dia / $capacidad_maxima) * 100 : 0;
+
+                        $clase_estado = 'disponible';
+                        if ($es_pasado) {
+                            $clase_estado = 'pasado';
+                        } elseif ($porcentaje_ocupacion >= 100) {
+                            $clase_estado = 'lleno';
+                        } elseif ($porcentaje_ocupacion >= 50) {
+                            $clase_estado = 'parcial';
+                        }
+                    ?>
+                        <div class="reservas-calendario-dia <?php echo esc_attr($clase_estado); ?> <?php echo $es_hoy ? 'hoy' : ''; ?>"
+                             data-fecha="<?php echo esc_attr($fecha_dia); ?>"
+                             title="<?php echo esc_attr(sprintf(__('Ocupación: %d%%', 'flavor-chat-ia'), $porcentaje_ocupacion)); ?>">
+                            <span><?php echo esc_html($numero_dia); ?></span>
+                        </div>
+                    <?php endfor; ?>
+                </div>
+
+                <?php if ($atributos['mostrar_franjas'] === 'si'): ?>
+                <div class="reservas-franjas" id="reservas-franjas-detalle">
+                    <h4><?php esc_html_e('Selecciona un día para ver las franjas disponibles', 'flavor-chat-ia'); ?></h4>
+                </div>
+                <?php endif; ?>
+
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <span><span style="display:inline-block;width:12px;height:12px;background:#d1fae5;border-radius:2px;margin-right:4px;"></span><?php esc_html_e('Disponible', 'flavor-chat-ia'); ?></span>
+                    <span><span style="display:inline-block;width:12px;height:12px;background:#fef3c7;border-radius:2px;margin-right:4px;"></span><?php esc_html_e('Parcialmente ocupado', 'flavor-chat-ia'); ?></span>
+                    <span><span style="display:inline-block;width:12px;height:12px;background:#fee2e2;border-radius:2px;margin-right:4px;"></span><?php esc_html_e('Completo', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var diasCalendario = document.querySelectorAll('.reservas-calendario-dia[data-fecha]');
+            diasCalendario.forEach(function(elementoDia) {
+                if (!elementoDia.classList.contains('pasado') && !elementoDia.classList.contains('lleno')) {
+                    elementoDia.addEventListener('click', function() {
+                        var fechaSeleccionada = this.getAttribute('data-fecha');
+                        if (typeof reservasAjax !== 'undefined') {
+                            var contenedorFranjas = document.getElementById('reservas-franjas-detalle');
+                            contenedorFranjas.innerHTML = '<p><?php esc_html_e('Cargando franjas...', 'flavor-chat-ia'); ?></p>';
+
+                            var formData = new FormData();
+                            formData.append('action', 'reservas_disponibilidad');
+                            formData.append('fecha', fechaSeleccionada);
+                            formData.append('nonce', reservasAjax.nonce);
+
+                            fetch(reservasAjax.ajaxurl, {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(function(respuesta) { return respuesta.json(); })
+                            .then(function(datos) {
+                                if (datos.success && datos.data.franjas) {
+                                    var htmlFranjas = '<h4><?php esc_html_e('Franjas para', 'flavor-chat-ia'); ?> ' + fechaSeleccionada + '</h4>';
+                                    datos.data.franjas.forEach(function(franja) {
+                                        var claseDisponible = franja.disponible ? 'disponible' : 'no-disponible';
+                                        htmlFranjas += '<div class="reservas-franja">';
+                                        htmlFranjas += '<span class="reservas-franja-hora">' + franja.hora_inicio + ' - ' + franja.hora_fin + '</span>';
+                                        htmlFranjas += '<span class="reservas-franja-plazas">' + franja.plazas_libres + ' <?php esc_html_e('plazas', 'flavor-chat-ia'); ?></span>';
+                                        htmlFranjas += '</div>';
+                                    });
+                                    contenedorFranjas.innerHTML = htmlFranjas;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode [reservas_formulario id="X"] - Formulario de reserva
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function shortcode_formulario($atts) {
+        $this->encolar_assets_shortcodes();
+
+        $atributos = shortcode_atts([
+            'id'             => '',
+            'tipo_servicio'  => '',
+            'redirect'       => '',
+        ], $atts);
+
+        $tipos_servicio = $this->get_setting('tipos_servicio', []);
+        $hora_apertura = $this->get_setting('hora_apertura', '09:00');
+        $hora_cierre = $this->get_setting('hora_cierre', '22:00');
+        $dias_antelacion = $this->get_setting('dias_antelacion', 30);
+
+        $fecha_minima = current_time('Y-m-d');
+        $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
+
+        $usuario_actual = wp_get_current_user();
+        $nombre_predeterminado = $usuario_actual->ID ? $usuario_actual->display_name : '';
+        $email_predeterminado = $usuario_actual->ID ? $usuario_actual->user_email : '';
+
+        $tipo_preseleccionado = sanitize_text_field($atributos['tipo_servicio']);
+        if (empty($tipo_preseleccionado) && isset($_GET['reservar'])) {
+            $tipo_preseleccionado = sanitize_text_field($_GET['reservar']);
+        }
+
+        ob_start();
+        ?>
+        <div class="reservas-container">
+            <div class="reservas-form" id="reservas-formulario">
+                <div id="reservas-mensajes"></div>
+
+                <form id="form-nueva-reserva" method="post">
+                    <?php wp_nonce_field('reservas_crear_nonce', 'reservas_nonce'); ?>
+
+                    <div class="reservas-form-group">
+                        <label class="reservas-form-label" for="tipo_servicio"><?php esc_html_e('Tipo de servicio', 'flavor-chat-ia'); ?> *</label>
+                        <select name="tipo_servicio" id="tipo_servicio" class="reservas-form-select" required>
+                            <option value=""><?php esc_html_e('Selecciona un servicio', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($tipos_servicio as $clave => $etiqueta): ?>
+                                <option value="<?php echo esc_attr($clave); ?>" <?php selected($tipo_preseleccionado, $clave); ?>>
+                                    <?php echo esc_html($etiqueta); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="reservas-form-row">
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="nombre_cliente"><?php esc_html_e('Nombre completo', 'flavor-chat-ia'); ?> *</label>
+                            <input type="text" name="nombre_cliente" id="nombre_cliente" class="reservas-form-input"
+                                   value="<?php echo esc_attr($nombre_predeterminado); ?>" required>
+                        </div>
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="email_cliente"><?php esc_html_e('Email', 'flavor-chat-ia'); ?> *</label>
+                            <input type="email" name="email_cliente" id="email_cliente" class="reservas-form-input"
+                                   value="<?php echo esc_attr($email_predeterminado); ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="reservas-form-group">
+                        <label class="reservas-form-label" for="telefono_cliente"><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></label>
+                        <input type="tel" name="telefono_cliente" id="telefono_cliente" class="reservas-form-input">
+                    </div>
+
+                    <div class="reservas-form-row">
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="fecha_reserva"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?> *</label>
+                            <input type="date" name="fecha_reserva" id="fecha_reserva" class="reservas-form-input"
+                                   min="<?php echo esc_attr($fecha_minima); ?>"
+                                   max="<?php echo esc_attr($fecha_maxima); ?>" required>
+                        </div>
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="num_personas"><?php esc_html_e('Número de personas', 'flavor-chat-ia'); ?> *</label>
+                            <input type="number" name="num_personas" id="num_personas" class="reservas-form-input"
+                                   min="1" max="<?php echo esc_attr($this->get_setting('capacidad_maxima', 50)); ?>" value="1" required>
+                        </div>
+                    </div>
+
+                    <div class="reservas-form-row">
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="hora_inicio"><?php esc_html_e('Hora de inicio', 'flavor-chat-ia'); ?> *</label>
+                            <input type="time" name="hora_inicio" id="hora_inicio" class="reservas-form-input"
+                                   min="<?php echo esc_attr($hora_apertura); ?>"
+                                   max="<?php echo esc_attr($hora_cierre); ?>" required>
+                        </div>
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="hora_fin"><?php esc_html_e('Hora de fin', 'flavor-chat-ia'); ?></label>
+                            <input type="time" name="hora_fin" id="hora_fin" class="reservas-form-input"
+                                   min="<?php echo esc_attr($hora_apertura); ?>"
+                                   max="<?php echo esc_attr($hora_cierre); ?>">
+                            <small style="color:#6b7280;"><?php esc_html_e('Opcional. Se calculará automáticamente.', 'flavor-chat-ia'); ?></small>
+                        </div>
+                    </div>
+
+                    <div class="reservas-form-group">
+                        <label class="reservas-form-label" for="notas"><?php esc_html_e('Notas adicionales', 'flavor-chat-ia'); ?></label>
+                        <textarea name="notas" id="notas" class="reservas-form-textarea" rows="3"
+                                  placeholder="<?php esc_attr_e('Alergias, preferencias, etc.', 'flavor-chat-ia'); ?>"></textarea>
+                    </div>
+
+                    <input type="hidden" name="redirect" value="<?php echo esc_attr($atributos['redirect']); ?>">
+
+                    <button type="submit" class="reservas-btn reservas-btn-primary" style="width:100%; padding: 0.875rem;">
+                        <?php esc_html_e('Confirmar Reserva', 'flavor-chat-ia'); ?>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var formularioReserva = document.getElementById('form-nueva-reserva');
+            if (formularioReserva) {
+                formularioReserva.addEventListener('submit', function(evento) {
+                    evento.preventDefault();
+
+                    var contenedorMensajes = document.getElementById('reservas-mensajes');
+                    var botonEnviar = formularioReserva.querySelector('button[type="submit"]');
+                    var textoOriginalBoton = botonEnviar.textContent;
+
+                    botonEnviar.disabled = true;
+                    botonEnviar.textContent = '<?php esc_html_e('Procesando...', 'flavor-chat-ia'); ?>';
+                    contenedorMensajes.innerHTML = '';
+
+                    var formData = new FormData(formularioReserva);
+                    formData.append('action', 'reservas_crear');
+
+                    fetch(reservasAjax.ajaxurl, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(function(respuesta) { return respuesta.json(); })
+                    .then(function(datos) {
+                        if (datos.success) {
+                            contenedorMensajes.innerHTML = '<div class="reservas-mensaje reservas-mensaje-success">' + datos.data.mensaje + '</div>';
+                            formularioReserva.reset();
+                            if (datos.data.redirect) {
+                                setTimeout(function() {
+                                    window.location.href = datos.data.redirect;
+                                }, 2000);
+                            }
+                        } else {
+                            contenedorMensajes.innerHTML = '<div class="reservas-mensaje reservas-mensaje-error">' + datos.data.error + '</div>';
+                        }
+                    })
+                    .catch(function(error) {
+                        contenedorMensajes.innerHTML = '<div class="reservas-mensaje reservas-mensaje-error"><?php esc_html_e('Error de conexión. Inténtalo de nuevo.', 'flavor-chat-ia'); ?></div>';
+                    })
+                    .finally(function() {
+                        botonEnviar.disabled = false;
+                        botonEnviar.textContent = textoOriginalBoton;
+                    });
+                });
+            }
+        });
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode [reservas_mis_reservas] - Reservas del usuario actual
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function shortcode_mis_reservas($atts) {
+        $this->encolar_assets_shortcodes();
+
+        $atributos = shortcode_atts([
+            'limite'       => '20',
+            'estado'       => '',
+            'mostrar_pasadas' => 'no',
+        ], $atts);
+
+        $identificador_usuario = get_current_user_id();
+
+        if (!$identificador_usuario) {
+            return '<div class="reservas-container">
+                <div class="reservas-mensaje reservas-mensaje-info">
+                    ' . sprintf(
+                        __('Debes <a href="%s">iniciar sesión</a> para ver tus reservas.', 'flavor-chat-ia'),
+                        wp_login_url(get_permalink())
+                    ) . '
+                </div>
+            </div>';
+        }
+
+        global $wpdb;
+        $nombre_tabla = $wpdb->prefix . 'flavor_reservas';
+
+        $condiciones_where = ['user_id = %d'];
+        $valores_preparados = [$identificador_usuario];
+
+        if (!empty($atributos['estado'])) {
+            $condiciones_where[] = 'estado = %s';
+            $valores_preparados[] = sanitize_text_field($atributos['estado']);
+        }
+
+        if ($atributos['mostrar_pasadas'] === 'no') {
+            $condiciones_where[] = 'fecha_reserva >= %s';
+            $valores_preparados[] = current_time('Y-m-d');
+        }
+
+        $limite = absint($atributos['limite']);
+        $valores_preparados[] = $limite;
+
+        $consulta_sql = "SELECT * FROM $nombre_tabla WHERE " . implode(' AND ', $condiciones_where) .
+                       " ORDER BY fecha_reserva ASC, hora_inicio ASC LIMIT %d";
+
+        $reservas_usuario = $wpdb->get_results($wpdb->prepare($consulta_sql, ...$valores_preparados));
+
+        if (empty($reservas_usuario)) {
+            return $this->renderizar_mensaje_vacio(__('No tienes reservas activas.', 'flavor-chat-ia'));
+        }
+
+        $tipos_servicio = $this->get_setting('tipos_servicio', []);
+        $estados_reserva = $this->get_setting('estados_reserva', []);
+
+        ob_start();
+        ?>
+        <div class="reservas-container">
+            <div class="reservas-grid">
+                <?php foreach ($reservas_usuario as $reserva):
+                    $etiqueta_tipo = $tipos_servicio[$reserva->tipo_servicio] ?? $reserva->tipo_servicio;
+                    $etiqueta_estado = $estados_reserva[$reserva->estado] ?? ucfirst($reserva->estado);
+                    $fecha_formateada = date_i18n(get_option('date_format'), strtotime($reserva->fecha_reserva));
+                ?>
+                <div class="reservas-card">
+                    <div class="reservas-card-header">
+                        <span class="reservas-card-icon">📅</span>
+                        <div>
+                            <h3 class="reservas-card-title"><?php echo esc_html($etiqueta_tipo); ?></h3>
+                            <span class="reservas-badge reservas-badge-<?php echo esc_attr($reserva->estado); ?>">
+                                <?php echo esc_html($etiqueta_estado); ?>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="reservas-card-meta">
+                        <p><strong><?php esc_html_e('Fecha:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($fecha_formateada); ?></p>
+                        <p><strong><?php esc_html_e('Hora:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(substr($reserva->hora_inicio, 0, 5)); ?> - <?php echo esc_html(substr($reserva->hora_fin, 0, 5)); ?></p>
+                        <p><strong><?php esc_html_e('Personas:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($reserva->num_personas); ?></p>
+                        <?php if (!empty($reserva->notas)): ?>
+                        <p><strong><?php esc_html_e('Notas:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($reserva->notas); ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <?php if (in_array($reserva->estado, ['pendiente', 'confirmada'], true)): ?>
+                    <a href="?cancelar_reserva=<?php echo esc_attr($reserva->id); ?>&_wpnonce=<?php echo wp_create_nonce('cancelar_reserva_' . $reserva->id); ?>"
+                       class="reservas-btn reservas-btn-danger"
+                       onclick="return confirm('<?php esc_attr_e('¿Estás seguro de que deseas cancelar esta reserva?', 'flavor-chat-ia'); ?>');">
+                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    </a>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode [reservas_cancelar id="X"] - Cancelar una reserva específica
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function shortcode_cancelar($atts) {
+        $this->encolar_assets_shortcodes();
+
+        $atributos = shortcode_atts([
+            'id' => '',
+        ], $atts);
+
+        // Procesar cancelación desde URL
+        if (isset($_GET['cancelar_reserva']) && isset($_GET['_wpnonce'])) {
+            $identificador_reserva = absint($_GET['cancelar_reserva']);
+
+            if (wp_verify_nonce($_GET['_wpnonce'], 'cancelar_reserva_' . $identificador_reserva)) {
+                $resultado_cancelacion = $this->action_cancelar_reserva(['reserva_id' => $identificador_reserva]);
+
+                if ($resultado_cancelacion['success']) {
+                    return '<div class="reservas-container">
+                        <div class="reservas-mensaje reservas-mensaje-success">' . esc_html($resultado_cancelacion['mensaje']) . '</div>
+                    </div>';
+                } else {
+                    return '<div class="reservas-container">
+                        <div class="reservas-mensaje reservas-mensaje-error">' . esc_html($resultado_cancelacion['error']) . '</div>
+                    </div>';
+                }
+            }
+        }
+
+        // Si se proporciona un ID específico
+        $identificador_reserva = absint($atributos['id']);
+        if (!$identificador_reserva) {
+            return '<div class="reservas-container">
+                <div class="reservas-mensaje reservas-mensaje-error">' .
+                esc_html__('No se especificó ninguna reserva para cancelar.', 'flavor-chat-ia') .
+                '</div>
+            </div>';
+        }
+
+        global $wpdb;
+        $nombre_tabla = $wpdb->prefix . 'flavor_reservas';
+        $reserva = $wpdb->get_row($wpdb->prepare("SELECT * FROM $nombre_tabla WHERE id = %d", $identificador_reserva));
+
+        if (!$reserva) {
+            return '<div class="reservas-container">
+                <div class="reservas-mensaje reservas-mensaje-error">' .
+                esc_html__('Reserva no encontrada.', 'flavor-chat-ia') .
+                '</div>
+            </div>';
+        }
+
+        $tipos_servicio = $this->get_setting('tipos_servicio', []);
+        $etiqueta_tipo = $tipos_servicio[$reserva->tipo_servicio] ?? $reserva->tipo_servicio;
+        $fecha_formateada = date_i18n(get_option('date_format'), strtotime($reserva->fecha_reserva));
+
+        ob_start();
+        ?>
+        <div class="reservas-container">
+            <div class="reservas-form">
+                <h3 style="margin-top:0;"><?php esc_html_e('Cancelar Reserva', 'flavor-chat-ia'); ?></h3>
+
+                <div class="reservas-card" style="box-shadow:none;border:2px solid #e5e7eb;">
+                    <p><strong><?php esc_html_e('Servicio:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($etiqueta_tipo); ?></p>
+                    <p><strong><?php esc_html_e('Fecha:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($fecha_formateada); ?></p>
+                    <p><strong><?php esc_html_e('Hora:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(substr($reserva->hora_inicio, 0, 5)); ?> - <?php echo esc_html(substr($reserva->hora_fin, 0, 5)); ?></p>
+                    <p><strong><?php esc_html_e('Personas:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($reserva->num_personas); ?></p>
+                    <p><strong><?php esc_html_e('Estado actual:', 'flavor-chat-ia'); ?></strong>
+                        <span class="reservas-badge reservas-badge-<?php echo esc_attr($reserva->estado); ?>">
+                            <?php echo esc_html(ucfirst($reserva->estado)); ?>
+                        </span>
+                    </p>
+                </div>
+
+                <?php if (in_array($reserva->estado, ['pendiente', 'confirmada'], true)): ?>
+                <form method="get" style="margin-top:1.5rem;">
+                    <input type="hidden" name="cancelar_reserva" value="<?php echo esc_attr($identificador_reserva); ?>">
+                    <?php wp_nonce_field('cancelar_reserva_' . $identificador_reserva, '_wpnonce', false); ?>
+
+                    <p style="color:#6b7280;margin-bottom:1rem;">
+                        <?php esc_html_e('¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.', 'flavor-chat-ia'); ?>
+                    </p>
+
+                    <button type="submit" class="reservas-btn reservas-btn-danger" style="width:100%;">
+                        <?php esc_html_e('Confirmar Cancelación', 'flavor-chat-ia'); ?>
+                    </button>
+                </form>
+                <?php else: ?>
+                <div class="reservas-mensaje reservas-mensaje-info" style="margin-top:1rem;">
+                    <?php esc_html_e('Esta reserva no puede ser cancelada porque ya está cancelada o completada.', 'flavor-chat-ia'); ?>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode [reservas_disponibilidad] - Verificar disponibilidad
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function shortcode_disponibilidad($atts) {
+        $this->encolar_assets_shortcodes();
+
+        $atributos = shortcode_atts([
+            'tipo_servicio' => '',
+            'fecha'         => '',
+            'mostrar_formulario' => 'si',
+        ], $atts);
+
+        $hora_apertura = $this->get_setting('hora_apertura', '09:00');
+        $hora_cierre = $this->get_setting('hora_cierre', '22:00');
+        $dias_antelacion = $this->get_setting('dias_antelacion', 30);
+        $fecha_minima = current_time('Y-m-d');
+        $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
+
+        ob_start();
+        ?>
+        <div class="reservas-container">
+            <?php if ($atributos['mostrar_formulario'] === 'si'): ?>
+            <div class="reservas-form">
+                <h3 style="margin-top:0;"><?php esc_html_e('Consultar Disponibilidad', 'flavor-chat-ia'); ?></h3>
+
+                <form id="form-disponibilidad">
+                    <div class="reservas-form-row">
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="disp_fecha"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?> *</label>
+                            <input type="date" name="fecha" id="disp_fecha" class="reservas-form-input"
+                                   min="<?php echo esc_attr($fecha_minima); ?>"
+                                   max="<?php echo esc_attr($fecha_maxima); ?>"
+                                   value="<?php echo esc_attr($atributos['fecha'] ?: $fecha_minima); ?>" required>
+                        </div>
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="disp_personas"><?php esc_html_e('Personas', 'flavor-chat-ia'); ?></label>
+                            <input type="number" name="num_personas" id="disp_personas" class="reservas-form-input"
+                                   min="1" value="1">
+                        </div>
+                    </div>
+
+                    <div class="reservas-form-row">
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="disp_hora_inicio"><?php esc_html_e('Hora inicio', 'flavor-chat-ia'); ?></label>
+                            <input type="time" name="hora_inicio" id="disp_hora_inicio" class="reservas-form-input"
+                                   min="<?php echo esc_attr($hora_apertura); ?>"
+                                   max="<?php echo esc_attr($hora_cierre); ?>"
+                                   value="<?php echo esc_attr($hora_apertura); ?>">
+                        </div>
+                        <div class="reservas-form-group">
+                            <label class="reservas-form-label" for="disp_hora_fin"><?php esc_html_e('Hora fin', 'flavor-chat-ia'); ?></label>
+                            <input type="time" name="hora_fin" id="disp_hora_fin" class="reservas-form-input"
+                                   min="<?php echo esc_attr($hora_apertura); ?>"
+                                   max="<?php echo esc_attr($hora_cierre); ?>"
+                                   value="<?php echo esc_attr($hora_cierre); ?>">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="reservas-btn reservas-btn-primary" style="width:100%;">
+                        <?php esc_html_e('Consultar Disponibilidad', 'flavor-chat-ia'); ?>
+                    </button>
+                </form>
+            </div>
+            <?php endif; ?>
+
+            <div id="resultado-disponibilidad" style="margin-top:1.5rem;"></div>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var formularioDisponibilidad = document.getElementById('form-disponibilidad');
+            if (formularioDisponibilidad) {
+                formularioDisponibilidad.addEventListener('submit', function(evento) {
+                    evento.preventDefault();
+
+                    var contenedorResultado = document.getElementById('resultado-disponibilidad');
+                    var botonConsultar = formularioDisponibilidad.querySelector('button[type="submit"]');
+                    var textoOriginalBoton = botonConsultar.textContent;
+
+                    botonConsultar.disabled = true;
+                    botonConsultar.textContent = '<?php esc_html_e('Consultando...', 'flavor-chat-ia'); ?>';
+
+                    var formData = new FormData(formularioDisponibilidad);
+                    formData.append('action', 'reservas_disponibilidad');
+                    formData.append('nonce', reservasAjax.nonce);
+
+                    fetch(reservasAjax.ajaxurl, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(function(respuesta) { return respuesta.json(); })
+                    .then(function(datos) {
+                        if (datos.success) {
+                            var resultado = datos.data;
+                            var claseResultado = resultado.disponible ? 'disponible' : 'no-disponible';
+                            var iconoResultado = resultado.disponible ? '✅' : '❌';
+
+                            var htmlResultado = '<div class="reservas-disponibilidad-resultado ' + claseResultado + '">';
+                            htmlResultado += '<div class="reservas-disponibilidad-icono">' + iconoResultado + '</div>';
+                            htmlResultado += '<h3>' + (resultado.disponible ? '<?php esc_html_e('¡Disponible!', 'flavor-chat-ia'); ?>' : '<?php esc_html_e('No disponible', 'flavor-chat-ia'); ?>') + '</h3>';
+                            htmlResultado += '<p>' + resultado.mensaje + '</p>';
+
+                            if (resultado.franjas && resultado.franjas.length > 0) {
+                                htmlResultado += '<div class="reservas-franjas" style="text-align:left;margin-top:1rem;">';
+                                htmlResultado += '<h4><?php esc_html_e('Franjas horarias:', 'flavor-chat-ia'); ?></h4>';
+                                resultado.franjas.forEach(function(franja) {
+                                    var claseFranja = franja.disponible ? 'disponible' : '';
+                                    htmlResultado += '<div class="reservas-franja ' + claseFranja + '">';
+                                    htmlResultado += '<span class="reservas-franja-hora">' + franja.hora_inicio + ' - ' + franja.hora_fin + '</span>';
+                                    htmlResultado += '<span class="reservas-franja-plazas">' + franja.plazas_libres + ' <?php esc_html_e('plazas libres', 'flavor-chat-ia'); ?></span>';
+                                    htmlResultado += '</div>';
+                                });
+                                htmlResultado += '</div>';
+                            }
+
+                            htmlResultado += '</div>';
+                            contenedorResultado.innerHTML = htmlResultado;
+                        } else {
+                            contenedorResultado.innerHTML = '<div class="reservas-mensaje reservas-mensaje-error">' + datos.data.error + '</div>';
+                        }
+                    })
+                    .catch(function(error) {
+                        contenedorResultado.innerHTML = '<div class="reservas-mensaje reservas-mensaje-error"><?php esc_html_e('Error de conexión.', 'flavor-chat-ia'); ?></div>';
+                    })
+                    .finally(function() {
+                        botonConsultar.disabled = false;
+                        botonConsultar.textContent = textoOriginalBoton;
+                    });
+                });
+            }
+        });
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza un mensaje vacío con estilo
+     */
+    private function renderizar_mensaje_vacio($mensaje) {
+        return '<div class="reservas-container">
+            <div class="reservas-empty">
+                <div class="reservas-empty-icon">📭</div>
+                <p>' . esc_html($mensaje) . '</p>
+            </div>
+        </div>';
+    }
+
+    // =========================================================================
+    // AJAX Handlers para Shortcodes
+    // =========================================================================
+
+    /**
+     * AJAX: Crear reserva desde shortcode
+     */
+    public function ajax_crear_reserva() {
+        // Verificar nonce
+        if (!wp_verify_nonce($_POST['reservas_nonce'] ?? '', 'reservas_crear_nonce')) {
+            wp_send_json_error(['error' => __('Error de seguridad. Recarga la página.', 'flavor-chat-ia')]);
+        }
+
+        $parametros_reserva = [
+            'tipo_servicio'    => sanitize_text_field($_POST['tipo_servicio'] ?? ''),
+            'nombre_cliente'   => sanitize_text_field($_POST['nombre_cliente'] ?? ''),
+            'email_cliente'    => sanitize_email($_POST['email_cliente'] ?? ''),
+            'telefono_cliente' => sanitize_text_field($_POST['telefono_cliente'] ?? ''),
+            'fecha_reserva'    => sanitize_text_field($_POST['fecha_reserva'] ?? ''),
+            'hora_inicio'      => sanitize_text_field($_POST['hora_inicio'] ?? ''),
+            'hora_fin'         => sanitize_text_field($_POST['hora_fin'] ?? ''),
+            'num_personas'     => absint($_POST['num_personas'] ?? 1),
+            'notas'            => sanitize_textarea_field($_POST['notas'] ?? ''),
+        ];
+
+        $resultado = $this->action_crear_reserva($parametros_reserva);
+
+        if ($resultado['success']) {
+            $datos_respuesta = [
+                'mensaje' => $resultado['mensaje'],
+                'reserva' => $resultado['reserva'],
+            ];
+
+            if (!empty($_POST['redirect'])) {
+                $datos_respuesta['redirect'] = esc_url($_POST['redirect']);
+            }
+
+            wp_send_json_success($datos_respuesta);
+        } else {
+            wp_send_json_error(['error' => $resultado['error']]);
+        }
+    }
+
+    /**
+     * AJAX: Cancelar reserva desde shortcode
+     */
+    public function ajax_cancelar_reserva() {
+        // Verificar nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'reservas_shortcode_nonce')) {
+            wp_send_json_error(['error' => __('Error de seguridad.', 'flavor-chat-ia')]);
+        }
+
+        $identificador_reserva = absint($_POST['reserva_id'] ?? 0);
+
+        if (!$identificador_reserva) {
+            wp_send_json_error(['error' => __('ID de reserva no válido.', 'flavor-chat-ia')]);
+        }
+
+        $resultado = $this->action_cancelar_reserva(['reserva_id' => $identificador_reserva]);
+
+        if ($resultado['success']) {
+            wp_send_json_success(['mensaje' => $resultado['mensaje']]);
+        } else {
+            wp_send_json_error(['error' => $resultado['error']]);
+        }
+    }
+
+    /**
+     * AJAX: Consultar disponibilidad desde shortcode
+     */
+    public function ajax_consultar_disponibilidad() {
+        // Verificar nonce (permite tanto el nonce del shortcode como el general)
+        $nonce_valido = wp_verify_nonce($_POST['nonce'] ?? '', 'reservas_shortcode_nonce');
+
+        if (!$nonce_valido) {
+            wp_send_json_error(['error' => __('Error de seguridad.', 'flavor-chat-ia')]);
+        }
+
+        $parametros_consulta = [
+            'fecha_reserva' => sanitize_text_field($_POST['fecha'] ?? ''),
+            'hora_inicio'   => sanitize_text_field($_POST['hora_inicio'] ?? ''),
+            'hora_fin'      => sanitize_text_field($_POST['hora_fin'] ?? ''),
+            'num_personas'  => absint($_POST['num_personas'] ?? 1),
+        ];
+
+        $resultado = $this->action_disponibilidad($parametros_consulta);
+
+        if ($resultado['success']) {
+            wp_send_json_success($resultado);
+        } else {
+            wp_send_json_error(['error' => $resultado['error']]);
+        }
     }
 
     /**
@@ -762,6 +1974,19 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
+
+        // Migas de pan
+        ?>
+        <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
+            <a href="<?php echo admin_url('admin.php?page=reservas-calendario'); ?>" style="color: #2271b1; text-decoration: none;">
+                <span class="dashicons dashicons-calendar" style="font-size: 14px; vertical-align: middle;"></span>
+                <?php _e('Reservas', 'flavor-chat-ia'); ?>
+            </a>
+            <span style="color: #646970; margin: 0 5px;">›</span>
+            <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-chat-ia'); ?></span>
+        </nav>
+        <?php
+
         $this->render_page_header(__('Configuración de Reservas', 'flavor-chat-ia'));
         $this->handle_admin_save_config();
         echo '<p>' . __('Configuración del sistema de reservas.', 'flavor-chat-ia') . '</p>';
@@ -1621,6 +2846,1158 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Calendario de Reservas', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    // =========================================================================
+    // MÉTODOS RENDER_TAB_* PARA DYNAMIC PAGES
+    // =========================================================================
+
+    /**
+     * Renderiza el tab de recursos disponibles
+     *
+     * @param int $usuario_id ID del usuario actual
+     */
+    public function render_tab_recursos($usuario_id = 0) {
+        global $wpdb;
+        $tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
+
+        // Verificar si existe la tabla
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_recursos)) !== $tabla_recursos) {
+            echo '<div class="fmd-empty-state">';
+            echo '<span class="dashicons dashicons-admin-home" style="font-size: 48px; color: #9ca3af;"></span>';
+            echo '<h3>' . esc_html__('Módulo en configuración', 'flavor-chat-ia') . '</h3>';
+            echo '<p>' . esc_html__('Los recursos reservables se están configurando.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        // Obtener recursos activos
+        $recursos = $wpdb->get_results(
+            "SELECT * FROM $tabla_recursos WHERE activo = 1 ORDER BY nombre ASC"
+        );
+
+        if (empty($recursos)) {
+            echo '<div class="fmd-empty-state">';
+            echo '<span class="dashicons dashicons-admin-home" style="font-size: 48px; color: #9ca3af;"></span>';
+            echo '<h3>' . esc_html__('No hay recursos disponibles', 'flavor-chat-ia') . '</h3>';
+            echo '<p>' . esc_html__('Actualmente no hay espacios o recursos configurados para reservar.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        ?>
+        <div class="reservas-recursos-grid">
+            <?php foreach ($recursos as $recurso): ?>
+                <div class="reservas-recurso-card">
+                    <?php if (!empty($recurso->imagen)): ?>
+                        <div class="recurso-imagen">
+                            <img src="<?php echo esc_url($recurso->imagen); ?>" alt="<?php echo esc_attr($recurso->nombre); ?>">
+                        </div>
+                    <?php else: ?>
+                        <div class="recurso-imagen recurso-imagen-placeholder">
+                            <span class="dashicons dashicons-admin-home"></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="recurso-info">
+                        <h4 class="recurso-nombre"><?php echo esc_html($recurso->nombre); ?></h4>
+
+                        <?php if (!empty($recurso->tipo)): ?>
+                            <span class="recurso-tipo"><?php echo esc_html(ucfirst($recurso->tipo)); ?></span>
+                        <?php endif; ?>
+
+                        <?php if (!empty($recurso->descripcion)): ?>
+                            <p class="recurso-descripcion"><?php echo esc_html(wp_trim_words($recurso->descripcion, 20)); ?></p>
+                        <?php endif; ?>
+
+                        <div class="recurso-meta">
+                            <?php if (!empty($recurso->capacidad)): ?>
+                                <span class="meta-item">
+                                    <span class="dashicons dashicons-groups"></span>
+                                    <?php printf(esc_html__('%d personas', 'flavor-chat-ia'), $recurso->capacidad); ?>
+                                </span>
+                            <?php endif; ?>
+
+                            <?php if (!empty($recurso->ubicacion)): ?>
+                                <span class="meta-item">
+                                    <span class="dashicons dashicons-location"></span>
+                                    <?php echo esc_html($recurso->ubicacion); ?>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="recurso-acciones">
+                            <a href="<?php echo esc_url(add_query_arg(['tab' => 'nueva-reserva', 'recurso_id' => $recurso->id], home_url('/mi-portal/reservas/'))); ?>" class="fmd-btn fmd-btn-primary fmd-btn-sm">
+                                <span class="dashicons dashicons-calendar-alt"></span>
+                                <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <style>
+        .reservas-recursos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .reservas-recurso-card {
+            background: var(--fmd-bg-card, #fff);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--fmd-border, #e5e7eb);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .reservas-recurso-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .recurso-imagen {
+            height: 160px;
+            overflow: hidden;
+            background: var(--fmd-bg-secondary, #f3f4f6);
+        }
+        .recurso-imagen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .recurso-imagen-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .recurso-imagen-placeholder .dashicons {
+            font-size: 48px;
+            color: var(--fmd-text-muted, #9ca3af);
+        }
+        .recurso-info {
+            padding: 1.25rem;
+        }
+        .recurso-nombre {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--fmd-text-primary, #1f2937);
+            margin: 0 0 0.5rem 0;
+        }
+        .recurso-tipo {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--fmd-primary, #2563eb);
+            background: var(--fmd-primary-light, #eff6ff);
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            margin-bottom: 0.75rem;
+        }
+        .recurso-descripcion {
+            font-size: 0.875rem;
+            color: var(--fmd-text-secondary, #6b7280);
+            margin: 0 0 1rem 0;
+            line-height: 1.5;
+        }
+        .recurso-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.8125rem;
+            color: var(--fmd-text-muted, #9ca3af);
+        }
+        .meta-item .dashicons {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+        }
+        .recurso-acciones {
+            display: flex;
+            gap: 0.5rem;
+        }
+        </style>
+        <?php
+    }
+
+    /**
+     * Renderiza el tab de mis reservas
+     *
+     * @param int $usuario_id ID del usuario actual
+     */
+    public function render_tab_mis_reservas($usuario_id = 0) {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<span class="dashicons dashicons-lock"></span>';
+            echo '<p>' . esc_html__('Inicia sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
+            echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/reservas/'))) . '" class="fmd-btn fmd-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+            echo '</div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+        $tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
+        $usuario_id = $usuario_id ?: get_current_user_id();
+
+        // Verificar si existe la tabla
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_reservas)) !== $tabla_reservas) {
+            echo '<div class="fmd-empty-state">';
+            echo '<span class="dashicons dashicons-calendar-alt" style="font-size: 48px; color: #9ca3af;"></span>';
+            echo '<h3>' . esc_html__('No hay reservas', 'flavor-chat-ia') . '</h3>';
+            echo '</div>';
+            return;
+        }
+
+        // Obtener reservas del usuario
+        $reservas = $wpdb->get_results($wpdb->prepare(
+            "SELECT r.*, rec.nombre as recurso_nombre, rec.tipo as recurso_tipo, rec.imagen as recurso_imagen
+             FROM $tabla_reservas r
+             LEFT JOIN $tabla_recursos rec ON r.recurso_id = rec.id
+             WHERE r.usuario_id = %d
+             ORDER BY r.fecha_inicio DESC
+             LIMIT 50",
+            $usuario_id
+        ));
+
+        if (empty($reservas)) {
+            echo '<div class="fmd-empty-state">';
+            echo '<span class="dashicons dashicons-calendar-alt" style="font-size: 48px; color: #9ca3af;"></span>';
+            echo '<h3>' . esc_html__('No tienes reservas', 'flavor-chat-ia') . '</h3>';
+            echo '<p>' . esc_html__('Aún no has realizado ninguna reserva.', 'flavor-chat-ia') . '</p>';
+            echo '<a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="fmd-btn fmd-btn-primary">';
+            echo '<span class="dashicons dashicons-plus-alt"></span> ' . esc_html__('Hacer una reserva', 'flavor-chat-ia');
+            echo '</a>';
+            echo '</div>';
+            return;
+        }
+
+        $estados_config = [
+            'pendiente'  => ['label' => __('Pendiente', 'flavor-chat-ia'), 'class' => 'warning'],
+            'confirmada' => ['label' => __('Confirmada', 'flavor-chat-ia'), 'class' => 'success'],
+            'completada' => ['label' => __('Completada', 'flavor-chat-ia'), 'class' => 'neutral'],
+            'cancelada'  => ['label' => __('Cancelada', 'flavor-chat-ia'), 'class' => 'error'],
+        ];
+
+        ?>
+        <div class="reservas-mis-reservas">
+            <?php foreach ($reservas as $reserva):
+                $estado_info = $estados_config[$reserva->estado] ?? ['label' => $reserva->estado, 'class' => 'neutral'];
+                $es_futura = strtotime($reserva->fecha_inicio) > time();
+                $puede_cancelar = $es_futura && in_array($reserva->estado, ['pendiente', 'confirmada']);
+            ?>
+                <div class="reserva-item reserva-estado-<?php echo esc_attr($reserva->estado); ?>">
+                    <div class="reserva-recurso">
+                        <?php if (!empty($reserva->recurso_imagen)): ?>
+                            <img src="<?php echo esc_url($reserva->recurso_imagen); ?>" alt="" class="recurso-thumb">
+                        <?php else: ?>
+                            <div class="recurso-thumb recurso-thumb-placeholder">
+                                <span class="dashicons dashicons-admin-home"></span>
+                            </div>
+                        <?php endif; ?>
+                        <div class="reserva-recurso-info">
+                            <h4><?php echo esc_html($reserva->recurso_nombre ?: __('Recurso', 'flavor-chat-ia')); ?></h4>
+                            <?php if (!empty($reserva->recurso_tipo)): ?>
+                                <span class="tipo"><?php echo esc_html(ucfirst($reserva->recurso_tipo)); ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="reserva-fechas">
+                        <div class="fecha-item">
+                            <span class="fecha-label"><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></span>
+                            <span class="fecha-valor"><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($reserva->fecha_inicio))); ?></span>
+                        </div>
+                        <div class="fecha-item">
+                            <span class="fecha-label"><?php esc_html_e('Fin', 'flavor-chat-ia'); ?></span>
+                            <span class="fecha-valor"><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($reserva->fecha_fin))); ?></span>
+                        </div>
+                    </div>
+
+                    <div class="reserva-estado-acciones">
+                        <span class="fmd-badge fmd-badge-<?php echo esc_attr($estado_info['class']); ?>">
+                            <?php echo esc_html($estado_info['label']); ?>
+                        </span>
+
+                        <?php if ($puede_cancelar): ?>
+                            <button type="button" class="fmd-btn fmd-btn-sm fmd-btn-outline-danger btn-cancelar-reserva"
+                                    data-id="<?php echo esc_attr($reserva->id); ?>"
+                                    data-nonce="<?php echo wp_create_nonce('reservas_cancelar_' . $reserva->id); ?>">
+                                <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <style>
+        .reservas-mis-reservas {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .reserva-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1.5rem;
+            align-items: center;
+            background: var(--fmd-bg-card, #fff);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--fmd-border, #e5e7eb);
+        }
+        .reserva-item.reserva-estado-cancelada {
+            opacity: 0.6;
+        }
+        .reserva-recurso {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .recurso-thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .recurso-thumb-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--fmd-bg-secondary, #f3f4f6);
+        }
+        .recurso-thumb-placeholder .dashicons {
+            font-size: 24px;
+            color: var(--fmd-text-muted, #9ca3af);
+        }
+        .reserva-recurso-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem 0;
+            color: var(--fmd-text-primary, #1f2937);
+        }
+        .reserva-recurso-info .tipo {
+            font-size: 0.8125rem;
+            color: var(--fmd-text-muted, #9ca3af);
+        }
+        .reserva-fechas {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .fecha-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .fecha-label {
+            font-size: 0.75rem;
+            color: var(--fmd-text-muted, #9ca3af);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .fecha-valor {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--fmd-text-primary, #1f2937);
+        }
+        .reserva-estado-acciones {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        @media (max-width: 768px) {
+            .reserva-item {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .reserva-fechas {
+                justify-content: space-between;
+            }
+            .reserva-estado-acciones {
+                justify-content: space-between;
+            }
+        }
+        </style>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-cancelar-reserva').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (!confirm('<?php echo esc_js(__('¿Estás seguro de que deseas cancelar esta reserva?', 'flavor-chat-ia')); ?>')) {
+                        return;
+                    }
+
+                    var reservaId = this.dataset.id;
+                    var nonce = this.dataset.nonce;
+                    var boton = this;
+
+                    boton.disabled = true;
+                    boton.textContent = '<?php echo esc_js(__('Cancelando...', 'flavor-chat-ia')); ?>';
+
+                    fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: 'action=reservas_cancelar&reserva_id=' + reservaId + '&nonce=' + nonce
+                    })
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert(data.data || '<?php echo esc_js(__('Error al cancelar', 'flavor-chat-ia')); ?>');
+                            boton.disabled = false;
+                            boton.textContent = '<?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?>';
+                        }
+                    })
+                    .catch(function() {
+                        alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                        boton.disabled = false;
+                        boton.textContent = '<?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?>';
+                    });
+                });
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza el tab de calendario
+     *
+     * @param int $usuario_id ID del usuario actual
+     */
+    public function render_tab_calendario($usuario_id = 0) {
+        global $wpdb;
+        $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+        $tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
+
+        // Obtener mes y año actuales o de los parámetros
+        $mes_actual = isset($_GET['mes']) ? intval($_GET['mes']) : intval(date('m'));
+        $anio_actual = isset($_GET['anio']) ? intval($_GET['anio']) : intval(date('Y'));
+
+        // Validar rango
+        if ($mes_actual < 1) { $mes_actual = 12; $anio_actual--; }
+        if ($mes_actual > 12) { $mes_actual = 1; $anio_actual++; }
+
+        $primer_dia_mes = mktime(0, 0, 0, $mes_actual, 1, $anio_actual);
+        $dias_en_mes = intval(date('t', $primer_dia_mes));
+        $dia_semana_inicio = intval(date('N', $primer_dia_mes)); // 1=Lunes, 7=Domingo
+
+        // Obtener reservas del mes
+        $fecha_inicio_mes = date('Y-m-01', $primer_dia_mes);
+        $fecha_fin_mes = date('Y-m-t', $primer_dia_mes);
+
+        $reservas_mes = [];
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_reservas)) === $tabla_reservas) {
+            $reservas_raw = $wpdb->get_results($wpdb->prepare(
+                "SELECT r.*, rec.nombre as recurso_nombre
+                 FROM $tabla_reservas r
+                 LEFT JOIN $tabla_recursos rec ON r.recurso_id = rec.id
+                 WHERE r.estado IN ('confirmada', 'pendiente')
+                   AND DATE(r.fecha_inicio) BETWEEN %s AND %s
+                 ORDER BY r.fecha_inicio ASC",
+                $fecha_inicio_mes,
+                $fecha_fin_mes
+            ));
+
+            foreach ($reservas_raw as $reserva) {
+                $dia = intval(date('j', strtotime($reserva->fecha_inicio)));
+                if (!isset($reservas_mes[$dia])) {
+                    $reservas_mes[$dia] = [];
+                }
+                $reservas_mes[$dia][] = $reserva;
+            }
+        }
+
+        // Navegación
+        $mes_anterior = $mes_actual - 1;
+        $anio_anterior = $anio_actual;
+        if ($mes_anterior < 1) { $mes_anterior = 12; $anio_anterior--; }
+
+        $mes_siguiente = $mes_actual + 1;
+        $anio_siguiente = $anio_actual;
+        if ($mes_siguiente > 12) { $mes_siguiente = 1; $anio_siguiente++; }
+
+        $base_url = home_url('/mi-portal/reservas/?tab=calendario');
+
+        $dias_semana = [
+            __('Lun', 'flavor-chat-ia'),
+            __('Mar', 'flavor-chat-ia'),
+            __('Mié', 'flavor-chat-ia'),
+            __('Jue', 'flavor-chat-ia'),
+            __('Vie', 'flavor-chat-ia'),
+            __('Sáb', 'flavor-chat-ia'),
+            __('Dom', 'flavor-chat-ia'),
+        ];
+
+        ?>
+        <div class="reservas-calendario-container">
+            <div class="calendario-header">
+                <a href="<?php echo esc_url($base_url . '&mes=' . $mes_anterior . '&anio=' . $anio_anterior); ?>" class="nav-btn">
+                    <span class="dashicons dashicons-arrow-left-alt2"></span>
+                </a>
+                <h3 class="mes-titulo"><?php echo esc_html(ucfirst(date_i18n('F Y', $primer_dia_mes))); ?></h3>
+                <a href="<?php echo esc_url($base_url . '&mes=' . $mes_siguiente . '&anio=' . $anio_siguiente); ?>" class="nav-btn">
+                    <span class="dashicons dashicons-arrow-right-alt2"></span>
+                </a>
+            </div>
+
+            <div class="calendario-grid">
+                <?php foreach ($dias_semana as $dia_nombre): ?>
+                    <div class="calendario-dia-header"><?php echo esc_html($dia_nombre); ?></div>
+                <?php endforeach; ?>
+
+                <?php
+                // Celdas vacías antes del primer día
+                for ($celda_vacia = 1; $celda_vacia < $dia_semana_inicio; $celda_vacia++) {
+                    echo '<div class="calendario-dia calendario-dia-vacio"></div>';
+                }
+
+                // Días del mes
+                $hoy = date('Y-m-d');
+                for ($dia = 1; $dia <= $dias_en_mes; $dia++):
+                    $fecha_dia = date('Y-m-d', mktime(0, 0, 0, $mes_actual, $dia, $anio_actual));
+                    $es_hoy = ($fecha_dia === $hoy);
+                    $es_pasado = ($fecha_dia < $hoy);
+                    $tiene_reservas = isset($reservas_mes[$dia]) && !empty($reservas_mes[$dia]);
+                    $num_reservas = $tiene_reservas ? count($reservas_mes[$dia]) : 0;
+
+                    $clases = ['calendario-dia'];
+                    if ($es_hoy) $clases[] = 'es-hoy';
+                    if ($es_pasado) $clases[] = 'es-pasado';
+                    if ($tiene_reservas) $clases[] = 'tiene-reservas';
+                ?>
+                    <div class="<?php echo esc_attr(implode(' ', $clases)); ?>" data-fecha="<?php echo esc_attr($fecha_dia); ?>">
+                        <span class="dia-numero"><?php echo $dia; ?></span>
+                        <?php if ($tiene_reservas): ?>
+                            <span class="dia-indicador" title="<?php echo esc_attr(sprintf(_n('%d reserva', '%d reservas', $num_reservas, 'flavor-chat-ia'), $num_reservas)); ?>">
+                                <?php echo $num_reservas; ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                <?php endfor; ?>
+            </div>
+
+            <div class="calendario-leyenda">
+                <span class="leyenda-item"><span class="indicador disponible"></span> <?php esc_html_e('Disponible', 'flavor-chat-ia'); ?></span>
+                <span class="leyenda-item"><span class="indicador reservado"></span> <?php esc_html_e('Con reservas', 'flavor-chat-ia'); ?></span>
+                <span class="leyenda-item"><span class="indicador hoy"></span> <?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></span>
+            </div>
+
+            <?php if (!empty($reservas_mes)): ?>
+            <div class="calendario-proximas">
+                <h4><?php esc_html_e('Reservas del mes', 'flavor-chat-ia'); ?></h4>
+                <div class="proximas-lista">
+                    <?php
+                    $todas_reservas = [];
+                    foreach ($reservas_mes as $reservas_dia) {
+                        $todas_reservas = array_merge($todas_reservas, $reservas_dia);
+                    }
+                    usort($todas_reservas, function($a, $b) {
+                        return strtotime($a->fecha_inicio) - strtotime($b->fecha_inicio);
+                    });
+                    $reservas_mostrar = array_slice($todas_reservas, 0, 10);
+
+                    foreach ($reservas_mostrar as $reserva):
+                    ?>
+                        <div class="proxima-item">
+                            <div class="proxima-fecha">
+                                <span class="dia"><?php echo esc_html(date_i18n('d', strtotime($reserva->fecha_inicio))); ?></span>
+                                <span class="mes"><?php echo esc_html(date_i18n('M', strtotime($reserva->fecha_inicio))); ?></span>
+                            </div>
+                            <div class="proxima-info">
+                                <span class="recurso"><?php echo esc_html($reserva->recurso_nombre); ?></span>
+                                <span class="hora"><?php echo esc_html(date_i18n('H:i', strtotime($reserva->fecha_inicio))); ?> - <?php echo esc_html(date_i18n('H:i', strtotime($reserva->fecha_fin))); ?></span>
+                            </div>
+                            <span class="fmd-badge fmd-badge-<?php echo $reserva->estado === 'confirmada' ? 'success' : 'warning'; ?>">
+                                <?php echo esc_html(ucfirst($reserva->estado)); ?>
+                            </span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .reservas-calendario-container {
+            background: var(--fmd-bg-card, #fff);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--fmd-border, #e5e7eb);
+        }
+        .calendario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .mes-titulo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--fmd-text-primary, #1f2937);
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--fmd-bg-secondary, #f3f4f6);
+            color: var(--fmd-text-primary, #1f2937);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover {
+            background: var(--fmd-border, #e5e7eb);
+        }
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .calendario-dia-header {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--fmd-text-muted, #9ca3af);
+            padding: 0.5rem;
+            text-transform: uppercase;
+        }
+        .calendario-dia {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+            background: var(--fmd-bg-secondary, #f9fafb);
+        }
+        .calendario-dia:hover:not(.es-pasado) {
+            background: var(--fmd-primary-light, #eff6ff);
+        }
+        .calendario-dia-vacio {
+            background: transparent;
+            cursor: default;
+        }
+        .dia-numero {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--fmd-text-primary, #1f2937);
+        }
+        .calendario-dia.es-hoy {
+            background: var(--fmd-primary, #2563eb);
+        }
+        .calendario-dia.es-hoy .dia-numero {
+            color: #fff;
+        }
+        .calendario-dia.es-pasado {
+            opacity: 0.4;
+            cursor: default;
+        }
+        .calendario-dia.tiene-reservas {
+            background: var(--fmd-success-light, #dcfce7);
+        }
+        .calendario-dia.tiene-reservas.es-hoy {
+            background: var(--fmd-primary, #2563eb);
+        }
+        .dia-indicador {
+            position: absolute;
+            bottom: 4px;
+            font-size: 0.625rem;
+            font-weight: 600;
+            background: var(--fmd-success, #22c55e);
+            color: #fff;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .calendario-leyenda {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--fmd-border, #e5e7eb);
+        }
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+            color: var(--fmd-text-muted, #6b7280);
+        }
+        .leyenda-item .indicador {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
+        .indicador.disponible { background: var(--fmd-bg-secondary, #f3f4f6); }
+        .indicador.reservado { background: var(--fmd-success-light, #dcfce7); }
+        .indicador.hoy { background: var(--fmd-primary, #2563eb); }
+        .calendario-proximas {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--fmd-border, #e5e7eb);
+        }
+        .calendario-proximas h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            color: var(--fmd-text-primary, #1f2937);
+        }
+        .proximas-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .proxima-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--fmd-bg-secondary, #f9fafb);
+            border-radius: 8px;
+        }
+        .proxima-fecha {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 40px;
+        }
+        .proxima-fecha .dia {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--fmd-primary, #2563eb);
+            line-height: 1;
+        }
+        .proxima-fecha .mes {
+            font-size: 0.625rem;
+            text-transform: uppercase;
+            color: var(--fmd-text-muted, #9ca3af);
+        }
+        .proxima-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .proxima-info .recurso {
+            font-weight: 500;
+            color: var(--fmd-text-primary, #1f2937);
+        }
+        .proxima-info .hora {
+            font-size: 0.8125rem;
+            color: var(--fmd-text-muted, #9ca3af);
+        }
+        </style>
+        <?php
+    }
+
+    /**
+     * Renderiza el tab de nueva reserva (formulario)
+     *
+     * @param int $usuario_id ID del usuario actual
+     */
+    public function render_tab_nueva_reserva($usuario_id = 0) {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<span class="dashicons dashicons-lock"></span>';
+            echo '<p>' . esc_html__('Inicia sesión para hacer una reserva.', 'flavor-chat-ia') . '</p>';
+            echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/reservas/'))) . '" class="fmd-btn fmd-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+            echo '</div>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
+
+        // Verificar si existe la tabla de recursos
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_recursos)) !== $tabla_recursos) {
+            echo '<div class="fmd-empty-state">';
+            echo '<span class="dashicons dashicons-admin-home" style="font-size: 48px; color: #9ca3af;"></span>';
+            echo '<h3>' . esc_html__('Sistema de reservas en configuración', 'flavor-chat-ia') . '</h3>';
+            echo '</div>';
+            return;
+        }
+
+        // Obtener recursos activos
+        $recursos = $wpdb->get_results(
+            "SELECT * FROM $tabla_recursos WHERE activo = 1 ORDER BY nombre ASC"
+        );
+
+        if (empty($recursos)) {
+            echo '<div class="fmd-empty-state">';
+            echo '<span class="dashicons dashicons-admin-home" style="font-size: 48px; color: #9ca3af;"></span>';
+            echo '<h3>' . esc_html__('No hay recursos disponibles', 'flavor-chat-ia') . '</h3>';
+            echo '<p>' . esc_html__('Actualmente no hay espacios configurados para reservar.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        // Recurso preseleccionado
+        $recurso_seleccionado = isset($_GET['recurso_id']) ? intval($_GET['recurso_id']) : 0;
+
+        $usuario_actual = wp_get_current_user();
+        ?>
+        <div class="reservas-formulario-container">
+            <form id="form-nueva-reserva" class="reservas-form">
+                <?php wp_nonce_field('reservas_crear', 'reservas_nonce'); ?>
+
+                <div class="form-section">
+                    <h4><?php esc_html_e('Selecciona el recurso', 'flavor-chat-ia'); ?></h4>
+
+                    <div class="form-group">
+                        <label for="recurso_id"><?php esc_html_e('Recurso a reservar', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <select id="recurso_id" name="recurso_id" required class="fmd-input">
+                            <option value=""><?php esc_html_e('-- Selecciona un recurso --', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($recursos as $recurso): ?>
+                                <option value="<?php echo esc_attr($recurso->id); ?>" <?php selected($recurso_seleccionado, $recurso->id); ?>>
+                                    <?php echo esc_html($recurso->nombre); ?>
+                                    <?php if (!empty($recurso->tipo)): ?> - <?php echo esc_html(ucfirst($recurso->tipo)); ?><?php endif; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4><?php esc_html_e('Fecha y hora', 'flavor-chat-ia'); ?></h4>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha_inicio"><?php esc_html_e('Fecha de inicio', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio" required class="fmd-input"
+                                   min="<?php echo esc_attr(date('Y-m-d')); ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="hora_inicio"><?php esc_html_e('Hora de inicio', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                            <input type="time" id="hora_inicio" name="hora_inicio" required class="fmd-input">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha_fin"><?php esc_html_e('Fecha de fin', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                            <input type="date" id="fecha_fin" name="fecha_fin" required class="fmd-input"
+                                   min="<?php echo esc_attr(date('Y-m-d')); ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="hora_fin"><?php esc_html_e('Hora de fin', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                            <input type="time" id="hora_fin" name="hora_fin" required class="fmd-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4><?php esc_html_e('Información adicional', 'flavor-chat-ia'); ?></h4>
+
+                    <div class="form-group">
+                        <label for="motivo"><?php esc_html_e('Motivo de la reserva', 'flavor-chat-ia'); ?></label>
+                        <textarea id="motivo" name="motivo" rows="3" class="fmd-input"
+                                  placeholder="<?php esc_attr_e('Describe brevemente para qué necesitas este recurso...', 'flavor-chat-ia'); ?>"></textarea>
+                    </div>
+                </div>
+
+                <div id="verificacion-disponibilidad" class="verificacion-box" style="display: none;">
+                    <span class="verificacion-icono"></span>
+                    <span class="verificacion-mensaje"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="btn-verificar" class="fmd-btn fmd-btn-outline">
+                        <span class="dashicons dashicons-search"></span>
+                        <?php esc_html_e('Verificar Disponibilidad', 'flavor-chat-ia'); ?>
+                    </button>
+                    <button type="submit" id="btn-reservar" class="fmd-btn fmd-btn-primary" disabled>
+                        <span class="dashicons dashicons-calendar-alt"></span>
+                        <?php esc_html_e('Confirmar Reserva', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <style>
+        .reservas-formulario-container {
+            max-width: 600px;
+        }
+        .reservas-form {
+            background: var(--fmd-bg-card, #fff);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--fmd-border, #e5e7eb);
+        }
+        .form-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--fmd-border, #e5e7eb);
+        }
+        .form-section:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .form-section h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--fmd-text-primary, #1f2937);
+            margin: 0 0 1rem 0;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--fmd-text-primary, #374151);
+            margin-bottom: 0.375rem;
+        }
+        .form-group .required {
+            color: var(--fmd-error, #ef4444);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .fmd-input {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            font-size: 1rem;
+            border: 1px solid var(--fmd-border, #d1d5db);
+            border-radius: 8px;
+            background: var(--fmd-bg, #fff);
+            color: var(--fmd-text-primary, #1f2937);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .fmd-input:focus {
+            outline: none;
+            border-color: var(--fmd-primary, #2563eb);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        textarea.fmd-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .verificacion-box {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .verificacion-box.disponible {
+            background: var(--fmd-success-light, #dcfce7);
+            border: 1px solid var(--fmd-success, #22c55e);
+        }
+        .verificacion-box.no-disponible {
+            background: var(--fmd-error-light, #fee2e2);
+            border: 1px solid var(--fmd-error, #ef4444);
+        }
+        .verificacion-box.cargando {
+            background: var(--fmd-bg-secondary, #f3f4f6);
+            border: 1px solid var(--fmd-border, #e5e7eb);
+        }
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+        </style>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('form-nueva-reserva');
+            var btnVerificar = document.getElementById('btn-verificar');
+            var btnReservar = document.getElementById('btn-reservar');
+            var verificacionBox = document.getElementById('verificacion-disponibilidad');
+
+            // Auto-rellenar fecha_fin cuando cambia fecha_inicio
+            document.getElementById('fecha_inicio').addEventListener('change', function() {
+                var fechaFin = document.getElementById('fecha_fin');
+                if (!fechaFin.value) {
+                    fechaFin.value = this.value;
+                }
+            });
+
+            // Verificar disponibilidad
+            btnVerificar.addEventListener('click', function() {
+                var recursoId = document.getElementById('recurso_id').value;
+                var fechaInicio = document.getElementById('fecha_inicio').value;
+                var horaInicio = document.getElementById('hora_inicio').value;
+                var fechaFin = document.getElementById('fecha_fin').value;
+                var horaFin = document.getElementById('hora_fin').value;
+
+                if (!recursoId || !fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+                    alert('<?php echo esc_js(__('Por favor, completa todos los campos de fecha y hora.', 'flavor-chat-ia')); ?>');
+                    return;
+                }
+
+                verificacionBox.style.display = 'flex';
+                verificacionBox.className = 'verificacion-box cargando';
+                verificacionBox.querySelector('.verificacion-mensaje').textContent = '<?php echo esc_js(__('Verificando disponibilidad...', 'flavor-chat-ia')); ?>';
+
+                fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'action=reservas_disponibilidad&recurso_id=' + recursoId +
+                          '&fecha_inicio=' + fechaInicio + '&hora_inicio=' + horaInicio +
+                          '&fecha_fin=' + fechaFin + '&hora_fin=' + horaFin
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success && data.data.disponible) {
+                        verificacionBox.className = 'verificacion-box disponible';
+                        verificacionBox.querySelector('.verificacion-mensaje').textContent = '<?php echo esc_js(__('Horario disponible', 'flavor-chat-ia')); ?>';
+                        btnReservar.disabled = false;
+                    } else {
+                        verificacionBox.className = 'verificacion-box no-disponible';
+                        verificacionBox.querySelector('.verificacion-mensaje').textContent = data.data?.mensaje || '<?php echo esc_js(__('Horario no disponible', 'flavor-chat-ia')); ?>';
+                        btnReservar.disabled = true;
+                    }
+                })
+                .catch(function() {
+                    verificacionBox.className = 'verificacion-box no-disponible';
+                    verificacionBox.querySelector('.verificacion-mensaje').textContent = '<?php echo esc_js(__('Error al verificar', 'flavor-chat-ia')); ?>';
+                });
+            });
+
+            // Enviar formulario
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (btnReservar.disabled) {
+                    alert('<?php echo esc_js(__('Verifica la disponibilidad antes de reservar.', 'flavor-chat-ia')); ?>');
+                    return;
+                }
+
+                btnReservar.disabled = true;
+                btnReservar.innerHTML = '<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>';
+
+                var formData = new FormData(form);
+                formData.append('action', 'reservas_crear');
+
+                fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        alert('<?php echo esc_js(__('Reserva creada correctamente', 'flavor-chat-ia')); ?>');
+                        window.location.href = '<?php echo esc_url(home_url('/mi-portal/reservas/?tab=mis-reservas')); ?>';
+                    } else {
+                        alert(data.data || '<?php echo esc_js(__('Error al crear la reserva', 'flavor-chat-ia')); ?>');
+                        btnReservar.disabled = false;
+                        btnReservar.innerHTML = '<span class="dashicons dashicons-calendar-alt"></span> <?php echo esc_js(__('Confirmar Reserva', 'flavor-chat-ia')); ?>';
+                    }
+                })
+                .catch(function() {
+                    alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                    btnReservar.disabled = false;
+                    btnReservar.innerHTML = '<span class="dashicons dashicons-calendar-alt"></span> <?php echo esc_js(__('Confirmar Reserva', 'flavor-chat-ia')); ?>';
+                });
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'reservas',
+            'title'    => __('Reservas', 'flavor-chat-ia'),
+            'subtitle' => __('Reserva espacios y recursos comunitarios', 'flavor-chat-ia'),
+            'icon'     => '📋',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'          => 'flavor_reservas',
+                'status_field'   => 'estado',
+                'exclude_status' => 'cancelada',
+                'order_by'       => 'fecha_inicio ASC',
+                'filter_fields'  => ['estado', 'recurso_id'],
+            ],
+
+            'fields' => [
+                'titulo'       => 'titulo',
+                'descripcion'  => 'descripcion',
+                'estado'       => 'estado',
+                'fecha_inicio' => 'fecha_inicio',
+                'fecha_fin'    => 'fecha_fin',
+                'recurso'      => 'recurso_id',
+                'user_id'      => 'user_id',
+            ],
+
+            'estados' => [
+                'pendiente'  => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
+                'confirmada' => ['label' => __('Confirmada', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'completada' => ['label' => __('Completada', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚫'],
+                'cancelada'  => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔴'],
+            ],
+
+            'stats' => [
+                ['label' => __('Pendientes', 'flavor-chat-ia'), 'icon' => '🟡', 'color' => 'yellow', 'count_where' => "estado = 'pendiente'"],
+                ['label' => __('Hoy', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'teal', 'count_where' => "DATE(fecha_inicio) = CURDATE() AND estado = 'confirmada'"],
+                ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => '🏠', 'color' => 'blue', 'query' => "SELECT COUNT(*) FROM {table}_recursos WHERE activo = 1"],
+            ],
+
+            'tabs' => [
+                'recursos' => ['label' => __('Recursos Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
+                'mis-reservas' => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'nueva-reserva' => ['label' => __('Hacer Reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+            ],
+
+            'dashboard' => [
+                'show_header' => true,
+                'quick_actions' => [
+                    ['title' => __('Reservar', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'teal', 'url' => home_url('/mi-portal/reservas/')],
+                    ['title' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'blue', 'url' => home_url('/mi-portal/reservas/?tab=mis-reservas')],
+                    ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'green', 'url' => home_url('/mi-portal/reservas/?tab=calendario')],
+                ],
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-reservas-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Reservas_Dashboard_Tab')) {
+                Flavor_Reservas_Dashboard_Tab::get_instance();
+            }
         }
     }
 }

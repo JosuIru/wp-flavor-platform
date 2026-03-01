@@ -12,6 +12,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Evitar redeclaración si ya existe (ej: desde chat-ia-addon)
+if (class_exists('Flavor_Engine_Manager')) {
+    return;
+}
+
 class Flavor_Engine_Manager {
 
     /**

@@ -158,6 +158,8 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
@@ -818,7 +820,7 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
      * Encola los assets del módulo
      */
     public function enqueue_assets(): void {
-        if (!$this->is_module_page()) {
+        if (!$this->should_load_assets()) {
             return;
         }
 
@@ -849,18 +851,44 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
-     * Verifica si estamos en una página del módulo
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
      */
-    private function is_module_page(): bool {
+    private function should_load_assets(): bool {
         global $post;
+
         if (!$post) {
             return false;
         }
-        return has_shortcode($post->post_content, 'saberes_catalogo')
-            || has_shortcode($post->post_content, 'saberes_portadores')
-            || has_shortcode($post->post_content, 'saberes_talleres')
-            || has_shortcode($post->post_content, 'saberes_compartir')
-            || strpos($_SERVER['REQUEST_URI'], '/saberes-ancestrales') !== false;
+
+        // Verificar CPTs del módulo
+        if (is_singular(['sa_saber', 'sa_taller', 'sa_portador'])) {
+            return true;
+        }
+
+        if (is_post_type_archive(['sa_saber', 'sa_taller'])) {
+            return true;
+        }
+
+        $shortcodes_modulo = [
+            'saberes_catalogo',
+            'saberes_portadores',
+            'saberes_talleres',
+            'saberes_compartir',
+            'saberes_mis_aprendizajes',
+            'flavor_saberes_catalogo',
+            'flavor_saberes_compartir',
+            'flavor_saberes_talleres',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1244,5 +1272,128 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
      */
     public function get_knowledge_base() {
         return __('Saberes Ancestrales preserva y transmite el conocimiento tradicional de la comunidad, conectando generaciones y honrando la sabiduría de los mayores.', 'flavor-chat-ia');
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'saberes-ancestrales',
+            'title'    => __('Saberes Ancestrales', 'flavor-chat-ia'),
+            'subtitle' => __('Preservación y transmisión del conocimiento tradicional', 'flavor-chat-ia'),
+            'icon'     => '📜',
+            'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_saberes_ancestrales',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['artesania', 'cocina', 'agricultura', 'medicina', 'musica', 'oficios', 'tradiciones']],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'guardian'    => ['type' => 'text', 'label' => __('Guardián del saber', 'flavor-chat-ia')],
+                'origen'      => ['type' => 'text', 'label' => __('Origen/Tradición', 'flavor-chat-ia')],
+                'multimedia'  => ['type' => 'file', 'label' => __('Material multimedia', 'flavor-chat-ia'), 'multiple' => true],
+            ],
+
+            'estados' => [
+                'documentado' => ['label' => __('Documentado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📝'],
+                'en_transmision' => ['label' => __('En transmisión', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🔄'],
+                'preservado'  => ['label' => __('Preservado', 'flavor-chat-ia'), 'color' => 'amber', 'icon' => '🏆'],
+                'en_riesgo'   => ['label' => __('En riesgo', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '⚠️'],
+            ],
+
+            'stats' => [
+                'saberes_catalogados' => ['label' => __('Saberes catalogados', 'flavor-chat-ia'), 'icon' => '📜', 'color' => 'yellow'],
+                'guardianes'          => ['label' => __('Guardianes', 'flavor-chat-ia'), 'icon' => '👴', 'color' => 'amber'],
+                'talleres_activos'    => ['label' => __('Talleres activos', 'flavor-chat-ia'), 'icon' => '🎓', 'color' => 'green'],
+                'aprendices'          => ['label' => __('Aprendices', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+            ],
+
+            'card' => [
+                'template'     => 'saber-card',
+                'title_field'  => 'titulo',
+                'subtitle_field' => 'categoria',
+                'meta_fields'  => ['guardian', 'origen'],
+                'show_imagen'  => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'catalogo' => [
+                    'label'   => __('Catálogo', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-portfolio',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'guardianes' => [
+                    'label'   => __('Guardianes', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-admin-users',
+                    'content' => 'shortcode:saberes_guardianes',
+                    'public'  => true,
+                ],
+                'talleres' => [
+                    'label'   => __('Talleres', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-welcome-learn-more',
+                    'content' => 'shortcode:saberes_talleres',
+                    'public'  => true,
+                ],
+                'documentar' => [
+                    'label'      => __('Documentar', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:saberes_documentar',
+                    'requires_login' => true,
+                ],
+                'aprender' => [
+                    'label'      => __('Aprender', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-book',
+                    'content'    => 'shortcode:saberes_aprender',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'titulo',
+                'order'      => 'ASC',
+                'filterable' => ['categoria', 'origen'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'saberes_destacados', 'proximos_talleres', 'guardianes_activos'],
+                'actions' => [
+                    'documentar' => ['label' => __('Documentar saber', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'yellow'],
+                    'aprender'   => ['label' => __('Aprender saber', 'flavor-chat-ia'), 'icon' => '📚', 'color' => 'green'],
+                ],
+            ],
+
+            'features' => [
+                'multimedia'       => true,
+                'transmision'      => true,
+                'talleres'         => true,
+                'reconocimiento'   => true,
+                'arbol_genealogico' => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-saberes-ancestrales-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Saberes_Ancestrales_Dashboard_Tab')) {
+                Flavor_Saberes_Ancestrales_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

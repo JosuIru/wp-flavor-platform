@@ -153,12 +153,59 @@ function flavor_marketplace_crear_tablas() {
         KEY puntuacion (puntuacion)
     ) $charset_collate;";
 
+    // Tabla de reportes de fraude/abuso
+    $tabla_reportes = $wpdb->prefix . 'flavor_marketplace_reportes';
+    $sql_reportes = "CREATE TABLE IF NOT EXISTS $tabla_reportes (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        anuncio_id bigint(20) unsigned DEFAULT NULL,
+        usuario_reportado_id bigint(20) unsigned DEFAULT NULL,
+        usuario_reportador_id bigint(20) unsigned DEFAULT NULL,
+        tipo varchar(50) NOT NULL DEFAULT 'otro',
+        descripcion text,
+        estado varchar(20) NOT NULL DEFAULT 'pendiente',
+        fecha_reporte datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        fecha_resolucion datetime DEFAULT NULL,
+        resuelto_por bigint(20) unsigned DEFAULT NULL,
+        notas_moderador text,
+        PRIMARY KEY (id),
+        KEY anuncio_id (anuncio_id),
+        KEY usuario_reportado_id (usuario_reportado_id),
+        KEY estado (estado),
+        KEY fecha_reporte (fecha_reporte)
+    ) $charset_collate;";
+
+    // Tabla de transacciones/ventas completadas
+    $tabla_transacciones = $wpdb->prefix . 'flavor_marketplace_transacciones';
+    $sql_transacciones = "CREATE TABLE IF NOT EXISTS $tabla_transacciones (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        anuncio_id bigint(20) unsigned NOT NULL,
+        vendedor_id bigint(20) unsigned NOT NULL,
+        comprador_id bigint(20) unsigned NOT NULL,
+        tipo_transaccion varchar(20) NOT NULL DEFAULT 'venta',
+        precio decimal(10,2) DEFAULT NULL,
+        estado varchar(20) NOT NULL DEFAULT 'pendiente',
+        fecha_inicio datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        fecha_completada datetime DEFAULT NULL,
+        valoracion_vendedor tinyint(1) DEFAULT NULL,
+        valoracion_comprador tinyint(1) DEFAULT NULL,
+        comentario_vendedor text,
+        comentario_comprador text,
+        PRIMARY KEY (id),
+        KEY anuncio_id (anuncio_id),
+        KEY vendedor_id (vendedor_id),
+        KEY comprador_id (comprador_id),
+        KEY estado (estado),
+        KEY fecha_inicio (fecha_inicio)
+    ) $charset_collate;";
+
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta($sql_anuncios);
     dbDelta($sql_categorias);
     dbDelta($sql_favoritos);
     dbDelta($sql_mensajes);
     dbDelta($sql_valoraciones);
+    dbDelta($sql_reportes);
+    dbDelta($sql_transacciones);
 
     // Insertar categorías por defecto
     flavor_marketplace_insertar_categorias_default();
@@ -219,6 +266,8 @@ function flavor_marketplace_eliminar_tablas() {
         $wpdb->prefix . 'flavor_marketplace_favoritos',
         $wpdb->prefix . 'flavor_marketplace_mensajes',
         $wpdb->prefix . 'flavor_marketplace_valoraciones',
+        $wpdb->prefix . 'flavor_marketplace_reportes',
+        $wpdb->prefix . 'flavor_marketplace_transacciones',
     ];
 
     foreach ($tablas as $tabla) {

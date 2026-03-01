@@ -118,6 +118,9 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 
         // Registrar en Panel Unificado de Gestión
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         // AJAX handlers
@@ -2946,4 +2949,16 @@ KNOWLEDGE;
         ];
     }
 
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-facturas-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Facturas_Dashboard_Tab::get_instance();
+        }
+    }
 }

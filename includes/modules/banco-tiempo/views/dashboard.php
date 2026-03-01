@@ -58,18 +58,18 @@ $intercambios_recientes = $wpdb->get_results(
     "SELECT t.*, s.titulo as servicio_titulo
      FROM $tabla_transacciones t
      LEFT JOIN $tabla_servicios s ON t.servicio_id = s.id
-     ORDER BY t.fecha_creacion DESC
+     ORDER BY t.fecha_solicitud DESC
      LIMIT 10"
 );
 
 // Actividad por mes (últimos 6 meses)
 $actividad_mensual = $wpdb->get_results(
-    "SELECT DATE_FORMAT(fecha_creacion, '%Y-%m') as mes,
+    "SELECT DATE_FORMAT(fecha_solicitud, '%Y-%m') as mes,
             COUNT(*) as total_intercambios,
             SUM(horas) as total_horas
      FROM $tabla_transacciones
      WHERE estado = 'completado'
-     AND fecha_creacion >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+     AND fecha_solicitud >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
      GROUP BY mes
      ORDER BY mes ASC"
 );
@@ -106,7 +106,7 @@ $actividad_mensual = $wpdb->get_results(
             <span class="dashicons dashicons-star-filled" style="font-size: 24px; color: #f59e0b;"></span>
             <span><?php echo esc_html__('Valoraciones', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=bt-configuracion'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <a href="<?php echo admin_url('admin.php?page=banco-tiempo-config'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
             <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
         </a>
@@ -328,7 +328,7 @@ $actividad_mensual = $wpdb->get_results(
                                 <?php echo $estado_texto; ?>
                             </span>
                         </td>
-                        <td><?php echo date_i18n('d/m/Y H:i', strtotime($intercambio->fecha_creacion)); ?></td>
+                        <td><?php echo date_i18n('d/m/Y H:i', strtotime($intercambio->fecha_solicitud)); ?></td>
                     </tr>
                     <?php endforeach; ?>
                     <?php if (empty($intercambios_recientes)): ?>

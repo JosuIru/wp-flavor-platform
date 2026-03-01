@@ -328,4 +328,93 @@ class Flavor_Chat_Helpers {
         </script>
         <?php
     }
+
+    /**
+     * Obtiene la URL base del portal
+     *
+     * @return string URL del portal (ej: https://sitio.com/mi-portal/)
+     */
+    public static function get_portal_url() {
+        return home_url('/mi-portal/');
+    }
+
+    /**
+     * Obtiene la URL de un módulo en el portal
+     *
+     * @param string $module_slug Slug del módulo (ej: 'economia-don', 'marketplace')
+     * @param string $action      Acción opcional (ej: 'crear', 'ofrecer', 'mis-dones')
+     * @param int    $item_id     ID de item opcional
+     * @return string URL completa del módulo
+     */
+    public static function get_module_url($module_slug, $action = '', $item_id = 0) {
+        $url = self::get_portal_url() . sanitize_title($module_slug) . '/';
+
+        if ($action) {
+            $url .= sanitize_title($action) . '/';
+        }
+
+        if ($item_id) {
+            $url .= absint($item_id) . '/';
+        }
+
+        return $url;
+    }
+
+    /**
+     * Obtiene la URL de una acción específica en un módulo
+     *
+     * @param string $module_slug Slug del módulo
+     * @param string $action      Acción a realizar
+     * @param array  $query_args  Argumentos query opcionales
+     * @return string URL completa
+     */
+    public static function get_action_url($module_slug, $action, $query_args = []) {
+        $url = self::get_module_url($module_slug, $action);
+
+        if (!empty($query_args)) {
+            $url = add_query_arg($query_args, $url);
+        }
+
+        return $url;
+    }
+
+    /**
+     * Obtiene la URL de un item específico en un módulo
+     *
+     * @param string $module_slug Slug del módulo
+     * @param int    $item_id     ID del item
+     * @param string $action      Acción opcional (ej: 'editar')
+     * @return string URL completa
+     */
+    public static function get_item_url($module_slug, $item_id, $action = '') {
+        if ($action) {
+            return self::get_module_url($module_slug, $action, $item_id);
+        }
+        return self::get_module_url($module_slug, '', $item_id);
+    }
+
+    /**
+     * Genera un enlace HTML a una acción del portal
+     *
+     * @param string $module_slug Slug del módulo
+     * @param string $action      Acción
+     * @param string $text        Texto del enlace
+     * @param array  $attrs       Atributos HTML adicionales
+     * @return string HTML del enlace
+     */
+    public static function portal_link($module_slug, $action, $text, $attrs = []) {
+        $url = self::get_action_url($module_slug, $action);
+
+        $attr_str = '';
+        foreach ($attrs as $key => $value) {
+            $attr_str .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
+        }
+
+        return sprintf(
+            '<a href="%s"%s>%s</a>',
+            esc_url($url),
+            $attr_str,
+            esc_html($text)
+        );
+    }
 }

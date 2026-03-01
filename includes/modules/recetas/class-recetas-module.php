@@ -1131,12 +1131,40 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del modulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'flavor_recetas',
+            'flavor_receta',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Enqueue frontend assets
      */
     public function enqueue_frontend_assets() {
-        if (is_singular('flavor_receta') || is_post_type_archive('flavor_receta')) {
-            wp_enqueue_style('dashicons');
+        if (!$this->should_load_assets() && !is_singular('flavor_receta') && !is_post_type_archive('flavor_receta')) {
+            return;
         }
+
+        wp_enqueue_style('dashicons');
     }
 
     /**
@@ -1268,5 +1296,141 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
         ];
 
         return $configs[$action_name] ?? null;
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'recetas',
+            'title'    => __('Recetario Comunitario', 'flavor-chat-ia'),
+            'subtitle' => __('Comparte y descubre recetas de la comunidad', 'flavor-chat-ia'),
+            'icon'     => '🍳',
+            'color'    => 'warning', // Usa variable CSS --flavor-warning del tema
+
+            'database' => [
+                'table'       => 'flavor_recetas',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'       => ['type' => 'text', 'label' => __('Nombre de la receta', 'flavor-chat-ia'), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'categoria'    => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia')],
+                'dificultad'   => ['type' => 'select', 'label' => __('Dificultad', 'flavor-chat-ia')],
+                'tiempo'       => ['type' => 'number', 'label' => __('Tiempo (minutos)', 'flavor-chat-ia')],
+                'porciones'    => ['type' => 'number', 'label' => __('Porciones', 'flavor-chat-ia')],
+                'ingredientes' => ['type' => 'textarea', 'label' => __('Ingredientes', 'flavor-chat-ia'), 'required' => true],
+                'pasos'        => ['type' => 'textarea', 'label' => __('Preparación', 'flavor-chat-ia'), 'required' => true],
+                'imagen'       => ['type' => 'file', 'label' => __('Imagen', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'publicada'  => ['label' => __('Publicada', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'destacada'  => ['label' => __('Destacada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⭐'],
+            ],
+
+            'stats' => [
+                [
+                    'key'   => 'total_recetas',
+                    'label' => __('Recetas', 'flavor-chat-ia'),
+                    'icon'  => '🍳',
+                    'color' => 'orange',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_recetas WHERE estado = 'publicada'",
+                ],
+                [
+                    'key'   => 'cocineros',
+                    'label' => __('Cocineros', 'flavor-chat-ia'),
+                    'icon'  => '👨‍🍳',
+                    'color' => 'blue',
+                    'query' => "SELECT COUNT(DISTINCT user_id) FROM {prefix}flavor_recetas",
+                ],
+                [
+                    'key'   => 'valoraciones',
+                    'label' => __('Valoraciones', 'flavor-chat-ia'),
+                    'icon'  => '⭐',
+                    'color' => 'yellow',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_recetas_valoraciones",
+                ],
+                [
+                    'key'   => 'mis_recetas',
+                    'label' => __('Mis recetas', 'flavor-chat-ia'),
+                    'icon'  => '📖',
+                    'color' => 'green',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_recetas WHERE user_id = {user_id}",
+                ],
+            ],
+
+            'card' => [
+                'layout'      => 'recipe',
+                'image_field' => 'imagen',
+                'title_field' => 'titulo',
+                'meta_fields' => ['tiempo', 'dificultad', 'porciones'],
+                'badge_field' => 'categoria',
+                'show_rating' => true,
+                'show_author' => true,
+            ],
+
+            'tabs' => [
+                'listado' => [
+                    'label'   => __('Recetas', 'flavor-chat-ia'),
+                    'icon'    => '🍳',
+                    'content' => 'template:recetas/_listado.php',
+                ],
+                'mis-recetas' => [
+                    'label'   => __('Mis recetas', 'flavor-chat-ia'),
+                    'icon'    => '📖',
+                    'content' => 'shortcode:recetas_mis_recetas',
+                ],
+                'favoritas' => [
+                    'label'   => __('Favoritas', 'flavor-chat-ia'),
+                    'icon'    => '❤️',
+                    'content' => 'shortcode:recetas_favoritas',
+                ],
+                'nueva' => [
+                    'label'   => __('Añadir', 'flavor-chat-ia'),
+                    'icon'    => '➕',
+                    'content' => 'shortcode:recetas_formulario',
+                ],
+            ],
+
+            'archive' => [
+                'columns'       => 3,
+                'per_page'      => 12,
+                'order_by'      => 'created_at',
+                'order'         => 'DESC',
+                'filterable_by' => ['categoria', 'dificultad', 'tiempo'],
+            ],
+
+            'dashboard' => [
+                'widgets' => [
+                    'recetas_destacadas' => ['type' => 'carousel', 'title' => __('Recetas destacadas', 'flavor-chat-ia')],
+                    'mis_recetas'        => ['type' => 'list', 'title' => __('Mis recetas', 'flavor-chat-ia')],
+                ],
+                'actions' => [
+                    'nueva_receta' => [
+                        'label' => __('Nueva receta', 'flavor-chat-ia'),
+                        'icon'  => '➕',
+                        'modal' => 'recetas-nueva',
+                    ],
+                ],
+            ],
+
+            'features' => [
+                'has_archive'    => true,
+                'has_single'     => true,
+                'has_dashboard'  => true,
+                'has_search'     => true,
+                'has_categories' => true,
+                'has_ratings'    => true,
+                'has_favorites'  => true,
+                'has_comments'   => true,
+                'has_print'      => true,
+            ],
+        ];
     }
 }

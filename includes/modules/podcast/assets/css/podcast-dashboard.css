@@ -1,0 +1,798 @@
+/**
+ * Estilos para el Dashboard Tab de Podcast
+ *
+ * @package FlavorChatIA
+ * @since 3.2.0
+ */
+
+/* ==========================================================================
+   Variables CSS
+   ========================================================================== */
+.flavor-podcast-dashboard-tab {
+    --podcast-primary: #6366f1;
+    --podcast-primary-hover: #4f46e5;
+    --podcast-secondary: #818cf8;
+    --podcast-success: #10b981;
+    --podcast-warning: #f59e0b;
+    --podcast-danger: #ef4444;
+    --podcast-text: #1f2937;
+    --podcast-text-muted: #6b7280;
+    --podcast-bg: #ffffff;
+    --podcast-bg-alt: #f9fafb;
+    --podcast-border: #e5e7eb;
+    --podcast-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --podcast-shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --podcast-radius: 12px;
+    --podcast-radius-sm: 8px;
+    --podcast-transition: all 0.2s ease;
+}
+
+/* ==========================================================================
+   Layout Base
+   ========================================================================== */
+.flavor-podcast-dashboard-tab {
+    padding: 0;
+    max-width: 100%;
+}
+
+.flavor-tab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--podcast-border);
+}
+
+.flavor-tab-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--podcast-text);
+}
+
+.flavor-tab-header h2 .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: var(--podcast-primary);
+}
+
+.flavor-header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+.flavor-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    background: var(--podcast-bg-alt);
+    color: var(--podcast-text-muted);
+}
+
+.flavor-badge-count {
+    background: var(--podcast-primary);
+    color: #fff;
+}
+
+.flavor-badge-categoria {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--podcast-primary);
+}
+
+.flavor-badge-nuevo {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--podcast-danger);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+.flavor-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    background: var(--podcast-bg-alt);
+    border-radius: var(--podcast-radius);
+}
+
+.flavor-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--podcast-text-muted);
+    opacity: 0.5;
+    margin-bottom: 16px;
+}
+
+.flavor-empty-state h3 {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+    color: var(--podcast-text);
+}
+
+.flavor-empty-state p {
+    margin: 0;
+    color: var(--podcast-text-muted);
+    max-width: 300px;
+}
+
+/* ==========================================================================
+   Login Required
+   ========================================================================== */
+.flavor-login-required {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.flavor-login-required .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: var(--podcast-warning);
+    margin-bottom: 20px;
+}
+
+.flavor-login-required h3 {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+}
+
+.flavor-login-required p {
+    margin: 0 0 24px;
+    color: var(--podcast-text-muted);
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+.flavor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--podcast-radius-sm);
+    cursor: pointer;
+    transition: var(--podcast-transition);
+    text-decoration: none;
+}
+
+.flavor-btn-primary {
+    background: var(--podcast-primary);
+    color: #fff;
+}
+
+.flavor-btn-primary:hover {
+    background: var(--podcast-primary-hover);
+    color: #fff;
+}
+
+.flavor-btn-outline {
+    background: transparent;
+    border: 1px solid var(--podcast-border);
+    color: var(--podcast-text);
+}
+
+.flavor-btn-outline:hover {
+    background: var(--podcast-bg-alt);
+    border-color: var(--podcast-text-muted);
+}
+
+.flavor-btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+.flavor-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--podcast-border);
+    border-radius: 50%;
+    color: var(--podcast-text-muted);
+    cursor: pointer;
+    transition: var(--podcast-transition);
+}
+
+.flavor-btn-icon:hover {
+    background: var(--podcast-bg-alt);
+    color: var(--podcast-primary);
+    border-color: var(--podcast-primary);
+}
+
+.flavor-btn-icon .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================================================
+   Suscripciones Grid
+   ========================================================================== */
+.flavor-suscripciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.flavor-suscripcion-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--podcast-bg);
+    border: 1px solid var(--podcast-border);
+    border-radius: var(--podcast-radius);
+    overflow: hidden;
+    transition: var(--podcast-transition);
+}
+
+.flavor-suscripcion-card:hover {
+    box-shadow: var(--podcast-shadow-lg);
+    border-color: var(--podcast-primary);
+}
+
+.flavor-suscripcion-imagen {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    background: var(--podcast-bg-alt);
+    overflow: hidden;
+}
+
+.flavor-suscripcion-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-imagen-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--podcast-primary), var(--podcast-secondary));
+}
+
+.flavor-imagen-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.flavor-suscripcion-contenido {
+    flex: 1;
+    padding: 16px;
+}
+
+.flavor-suscripcion-titulo {
+    margin: 0 0 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--podcast-text);
+    line-height: 1.3;
+}
+
+.flavor-suscripcion-autor {
+    margin: 0 0 10px;
+    font-size: 0.85rem;
+    color: var(--podcast-text-muted);
+}
+
+.flavor-suscripcion-meta {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--podcast-text-muted);
+}
+
+.flavor-suscripcion-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flavor-suscripcion-meta .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-ultimo-episodio {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--podcast-border);
+    font-size: 0.8rem;
+    color: var(--podcast-text-muted);
+}
+
+.flavor-ultimo-episodio strong {
+    color: var(--podcast-text);
+}
+
+.flavor-suscripcion-acciones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--podcast-border);
+    background: var(--podcast-bg-alt);
+}
+
+.flavor-suscripcion-acciones .flavor-btn-primary {
+    flex: 1;
+}
+
+/* ==========================================================================
+   Historial Lista
+   ========================================================================== */
+.flavor-historial-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.flavor-historial-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--podcast-bg);
+    border: 1px solid var(--podcast-border);
+    border-radius: var(--podcast-radius);
+    transition: var(--podcast-transition);
+}
+
+.flavor-historial-item:hover {
+    box-shadow: var(--podcast-shadow);
+    border-color: var(--podcast-primary);
+}
+
+.flavor-historial-progreso {
+    flex: 0 0 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flavor-progreso-bar {
+    height: 4px;
+    background: var(--podcast-bg-alt);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.flavor-progreso-completado {
+    height: 100%;
+    background: var(--podcast-primary);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.flavor-progreso-texto {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--podcast-text-muted);
+}
+
+.flavor-progreso-texto .dashicons-yes-alt {
+    color: var(--podcast-success);
+}
+
+.flavor-historial-meta {
+    flex: 0 0 auto;
+}
+
+.flavor-fecha {
+    font-size: 0.75rem;
+    color: var(--podcast-text-muted);
+}
+
+.flavor-historial-acciones {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* ==========================================================================
+   Favoritos Grid
+   ========================================================================== */
+.flavor-favoritos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.flavor-favorito-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--podcast-bg);
+    border: 1px solid var(--podcast-border);
+    border-radius: var(--podcast-radius);
+    overflow: hidden;
+    transition: var(--podcast-transition);
+}
+
+.flavor-favorito-card:hover {
+    box-shadow: var(--podcast-shadow-lg);
+}
+
+.flavor-favorito-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    color: var(--podcast-text-muted);
+    border-top: 1px solid var(--podcast-border);
+}
+
+.flavor-favorito-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flavor-favorito-meta .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-favorito-acciones {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.flavor-btn-quitar-favorito:hover {
+    color: var(--podcast-danger) !important;
+    border-color: var(--podcast-danger) !important;
+}
+
+/* ==========================================================================
+   Descargas Lista
+   ========================================================================== */
+.flavor-descargas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.flavor-descarga-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--podcast-bg);
+    border: 1px solid var(--podcast-border);
+    border-radius: var(--podcast-radius);
+    transition: var(--podcast-transition);
+}
+
+.flavor-descarga-item:hover {
+    box-shadow: var(--podcast-shadow);
+}
+
+.flavor-descarga-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: var(--podcast-text-muted);
+}
+
+.flavor-descarga-info span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flavor-descarga-info .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-espacio-total {
+    font-size: 0.85rem;
+    color: var(--podcast-text-muted);
+    padding: 4px 10px;
+    background: var(--podcast-bg-alt);
+    border-radius: var(--podcast-radius-sm);
+}
+
+.flavor-descarga-acciones {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* ==========================================================================
+   Mini Player
+   ========================================================================== */
+.flavor-mini-player {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+}
+
+.flavor-mini-player-imagen {
+    position: relative;
+    flex: 0 0 60px;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--podcast-radius-sm);
+    overflow: hidden;
+    background: var(--podcast-bg-alt);
+}
+
+.flavor-mini-player-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flavor-mini-player-imagen .flavor-imagen-placeholder {
+    border-radius: var(--podcast-radius-sm);
+}
+
+.flavor-mini-player-imagen .flavor-imagen-placeholder .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.flavor-mini-player-btn-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: var(--podcast-transition);
+}
+
+.flavor-mini-player-imagen:hover .flavor-mini-player-btn-play,
+.flavor-mini-player.is-playing .flavor-mini-player-btn-play {
+    opacity: 1;
+}
+
+.flavor-mini-player-btn-play .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.flavor-mini-player-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.flavor-mini-player-serie {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--podcast-primary);
+    margin-bottom: 2px;
+}
+
+.flavor-mini-player-titulo {
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--podcast-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flavor-episodio-numero {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--podcast-text-muted);
+    margin-right: 6px;
+}
+
+.flavor-mini-player-duracion {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--podcast-text-muted);
+}
+
+.flavor-mini-player-duracion .dashicons {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+}
+
+/* Mini player en modo reproduciendo */
+.flavor-mini-player.is-playing .flavor-mini-player-imagen {
+    box-shadow: 0 0 0 3px var(--podcast-primary);
+}
+
+.flavor-mini-player.is-playing .flavor-icon-play {
+    display: none;
+}
+
+.flavor-mini-player.is-playing .flavor-icon-pause {
+    display: block !important;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .flavor-tab-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .flavor-suscripciones-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-historial-item {
+        flex-wrap: wrap;
+    }
+
+    .flavor-historial-progreso {
+        flex: 1 0 100%;
+        order: 10;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--podcast-border);
+    }
+
+    .flavor-historial-meta {
+        margin-left: auto;
+    }
+
+    .flavor-historial-acciones {
+        order: 5;
+    }
+
+    .flavor-favoritos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-descarga-item {
+        flex-wrap: wrap;
+    }
+
+    .flavor-descarga-info {
+        flex: 1 0 100%;
+        order: 10;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--podcast-border);
+    }
+
+    .flavor-mini-player-imagen {
+        flex: 0 0 50px;
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .flavor-tab-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .flavor-mini-player-titulo {
+        font-size: 0.875rem;
+    }
+
+    .flavor-btn-sm {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.flavor-suscripcion-card,
+.flavor-historial-item,
+.flavor-favorito-card,
+.flavor-descarga-item {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Estado de carga */
+.flavor-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.flavor-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid var(--podcast-border);
+    border-top-color: var(--podcast-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Eliminar item animación */
+.flavor-removing {
+    animation: slideOut 0.3s ease forwards;
+}
+
+@keyframes slideOut {
+    to {
+        opacity: 0;
+        transform: translateX(-20px);
+        height: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+}

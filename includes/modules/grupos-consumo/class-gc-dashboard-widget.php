@@ -137,7 +137,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         // Estadísticas del usuario
         $tabla_pedidos = $this->prefix_tabla . 'pedidos';
         $tabla_lista = $this->prefix_tabla . 'lista_compra';
-        $tabla_entregas = $this->prefix_tabla . 'entregas';
+        $tabla_pagos_gc = $this->prefix_tabla . 'pagos';
 
         // Gasto del mes
         $gasto_mes = 0.0;
@@ -172,11 +172,11 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             ));
         }
 
-        // Entregas pendientes
-        $entregas_pendientes = 0;
-        if ($this->table_exists($tabla_entregas)) {
-            $entregas_pendientes = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$tabla_entregas}
+        // Pagos pendientes
+        $pagos_pendientes = 0;
+        if ($this->table_exists($tabla_pagos_gc)) {
+            $pagos_pendientes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_pagos_gc}
                  WHERE usuario_id = %d AND estado IN ('pendiente', 'procesando')",
                 $user_id
             ));
@@ -249,7 +249,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             ],
             'extra' => [
                 'pedidos_ciclo' => $pedidos_ciclo,
-                'entregas_pendientes' => $entregas_pendientes,
+                'pagos_pendientes' => $pagos_pendientes,
                 'ciclo_activo' => $ciclo_activo !== null,
             ],
         ];

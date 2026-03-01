@@ -176,6 +176,22 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
 
         // Panel de administración unificado
         $this->registrar_en_panel_unificado();
+
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
+    }
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-chat-estados-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            if (class_exists('Flavor_Chat_Estados_Dashboard_Tab')) {
+                Flavor_Chat_Estados_Dashboard_Tab::get_instance();
+            }
+        }
     }
 
     /**
@@ -1322,11 +1338,6 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
             </p>
         </div>
         <?php
-        return ob_get_clean();
-    }
-
-        ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-estados/frontend/crear-estado.php';
         return ob_get_clean();
     }
 

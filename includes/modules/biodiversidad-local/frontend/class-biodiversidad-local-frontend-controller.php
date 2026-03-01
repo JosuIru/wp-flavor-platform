@@ -289,7 +289,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
 
             <?php if (is_user_logged_in()): ?>
                 <div class="flavor-biodiversidad-cta">
-                    <a href="<?php echo esc_url(add_query_arg('accion', 'reportar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-plus"></span>
                         <?php _e('Reportar Avistamiento', 'flavor-chat-ia'); ?>
                     </a>
@@ -444,7 +444,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
                     </div>
 
                     <?php if (is_user_logged_in()): ?>
-                        <a href="<?php echo esc_url(add_query_arg(['accion' => 'reportar', 'especie_id' => $especie_id])); ?>"
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar', ['especie_id' => $especie_id])); ?>"
                            class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus"></span>
                             <?php _e('Reportar avistamiento', 'flavor-chat-ia'); ?>
@@ -720,7 +720,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
                         <span class="dashicons dashicons-upload"></span>
                         <?php _e('Enviar Avistamiento', 'flavor-chat-ia'); ?>
                     </button>
-                    <a href="<?php echo esc_url(remove_query_arg(['accion', 'especie_id'])); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('biodiversidad-local')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -758,7 +758,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
             <?php if (empty($avistamientos)): ?>
                 <div class="flavor-alert flavor-alert-info">
                     <?php _e('No has registrado ningún avistamiento todavía.', 'flavor-chat-ia'); ?>
-                    <a href="<?php echo esc_url(add_query_arg('accion', 'reportar')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                         <?php _e('Reportar tu primer avistamiento', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -1146,7 +1146,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
                 <?php if (empty($ultimos)): ?>
                     <p class="flavor-no-datos">
                         <?php _e('No has registrado avistamientos.', 'flavor-chat-ia'); ?>
-                        <a href="<?php echo esc_url(add_query_arg('accion', 'reportar')); ?>"><?php _e('Reportar uno', 'flavor-chat-ia'); ?></a>
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>"><?php _e('Reportar uno', 'flavor-chat-ia'); ?></a>
                     </p>
                 <?php else: ?>
                     <ul class="flavor-lista-simple">
@@ -1164,7 +1164,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
             </div>
 
             <div class="flavor-acciones-rapidas">
-                <a href="<?php echo esc_url(add_query_arg('accion', 'reportar')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad-local', 'reportar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus"></span>
                     <?php _e('Reportar Avistamiento', 'flavor-chat-ia'); ?>
                 </a>

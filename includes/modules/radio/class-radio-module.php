@@ -92,6 +92,8 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en panel de administración unificado
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         add_action('init', [$this, 'maybe_create_tables']);
 
@@ -135,8 +137,11 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         // Admin menu
         add_action('admin_menu', [$this, 'add_admin_menu']);
 
-        // Dashboard tab
+        // Dashboard tab (básico)
         add_filter('flavor_user_dashboard_tabs', [$this, 'add_dashboard_tab']);
+
+        // Dashboard tabs extendidos para el usuario
+        $this->init_dashboard_tabs();
 
         // Cron para actualizar oyentes
         add_action('flavor_radio_actualizar_oyentes', [$this, 'cron_actualizar_oyentes']);
@@ -2205,9 +2210,43 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del modulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'flavor_radio_player',
+            'flavor_radio_programacion',
+            'flavor_radio_dedicatorias',
+            'flavor_radio_chat',
+            'flavor_radio_proponer',
+            'flavor_radio_podcasts',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Enqueue frontend assets
      */
     public function enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
         if (!$this->can_activate()) {
             return;
         }
@@ -2583,5 +2622,145 @@ KNOWLEDGE;
                 'parent' => 'radio',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'radio',
+            'title'    => __('Radio Comunitaria', 'flavor-chat-ia'),
+            'subtitle' => __('Emisiones en vivo y podcasts de tu comunidad', 'flavor-chat-ia'),
+            'icon'     => '📻',
+            'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_radio_programas',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'       => ['type' => 'text', 'label' => __('Nombre programa', 'flavor-chat-ia'), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'categoria'    => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['musica', 'noticias', 'cultura', 'deportes', 'entretenimiento', 'educacion']],
+                'horario'      => ['type' => 'text', 'label' => __('Horario', 'flavor-chat-ia')],
+                'dia_emision'  => ['type' => 'select', 'label' => __('Día de emisión', 'flavor-chat-ia')],
+                'conductor_id' => ['type' => 'select', 'label' => __('Conductor', 'flavor-chat-ia')],
+                'imagen'       => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'en_vivo'     => ['label' => __('En vivo', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔴'],
+                'programado'  => ['label' => __('Programado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '📅'],
+                'pausado'     => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'archivado'   => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🗄️'],
+            ],
+
+            'stats' => [
+                'programas_activos' => ['label' => __('Programas', 'flavor-chat-ia'), 'icon' => '📻', 'color' => 'red'],
+                'oyentes_actuales'  => ['label' => __('Oyentes ahora', 'flavor-chat-ia'), 'icon' => '🎧', 'color' => 'green'],
+                'horas_emision'     => ['label' => __('Horas emitidas', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'blue'],
+                'conductores'       => ['label' => __('Conductores', 'flavor-chat-ia'), 'icon' => '🎙️', 'color' => 'purple'],
+            ],
+
+            'card' => [
+                'template'     => 'programa-card',
+                'title_field'  => 'nombre',
+                'subtitle_field' => 'categoria',
+                'meta_fields'  => ['horario', 'dia_emision'],
+                'show_imagen'  => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'en-vivo' => [
+                    'label'   => __('En vivo', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-controls-volumeon',
+                    'content' => 'shortcode:radio_en_vivo',
+                    'public'  => true,
+                ],
+                'programacion' => [
+                    'label'   => __('Programación', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-calendar-alt',
+                    'content' => 'shortcode:radio_programacion',
+                    'public'  => true,
+                ],
+                'programas' => [
+                    'label'   => __('Programas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-playlist-audio',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'mis-programas' => [
+                    'label'      => __('Mis programas', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:radio_mis_programas',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'nombre',
+                'order'      => 'ASC',
+                'filterable' => ['categoria', 'dia_emision'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['player_en_vivo', 'programacion_hoy', 'programas_populares', 'stats'],
+                'actions' => [
+                    'escuchar' => ['label' => __('Escuchar en vivo', 'flavor-chat-ia'), 'icon' => '🔴', 'color' => 'red'],
+                    'ver'      => ['label' => __('Ver programación', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'streaming'     => true,
+                'programacion'  => true,
+                'podcast'       => true,
+                'chat_en_vivo'  => true,
+                'estadisticas'  => true,
+            ],
+        ];
+    }
+
+    /**
+     * Inicializa los tabs extendidos del dashboard del usuario
+     *
+     * Carga la clase Flavor_Radio_Dashboard_Tab que proporciona tabs adicionales:
+     * - radio-mis-programas: Programas favoritos del usuario
+     * - radio-mis-dedicatorias: Dedicatorias enviadas por el usuario
+     * - radio-mis-propuestas: Propuestas de contenido enviadas
+     *
+     * @return void
+     */
+    private function init_dashboard_tabs() {
+        $dashboard_tab_file = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/class-radio-dashboard-tab.php';
+
+        if (file_exists($dashboard_tab_file)) {
+            require_once $dashboard_tab_file;
+
+            if (class_exists('Flavor_Radio_Dashboard_Tab')) {
+                Flavor_Radio_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-radio-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Radio_Dashboard_Tab')) {
+                Flavor_Radio_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

@@ -144,6 +144,9 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         $this->register_ajax_handlers();
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
     }
 
@@ -2993,5 +2996,17 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/resultados.php';
         if (file_exists($views_path)) { include $views_path; }
         else { echo '<div class="wrap"><h1>' . esc_html__('Resultados', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-presupuestos-participativos-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Presupuestos_Participativos_Dashboard_Tab::get_instance();
+        }
     }
 }

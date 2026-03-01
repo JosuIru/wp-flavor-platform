@@ -114,6 +114,8 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // AJAX handlers
         add_action('wp_ajax_reciclaje_registrar_deposito', [$this, 'ajax_registrar_deposito']);
@@ -140,6 +142,9 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         // Cargar funcionalidades del Sello de Conciencia (+13 pts)
         $this->cargar_funcionalidades_conciencia();
 
+        // Cargar Dashboard Tab para el cliente
+        $this->cargar_dashboard_tab();
+
         // Enqueue scripts
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
@@ -158,6 +163,20 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
             require_once $archivo_conciencia;
             if (class_exists('Flavor_Reciclaje_Conciencia_Features')) {
                 Flavor_Reciclaje_Conciencia_Features::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Carga las tabs del Dashboard del cliente
+     * Mis Aportes, Mis Puntos, Recompensas, Estadisticas/Impacto
+     */
+    private function cargar_dashboard_tab() {
+        $archivo_dashboard_tab = dirname(__FILE__) . '/class-reciclaje-dashboard-tab.php';
+        if (file_exists($archivo_dashboard_tab)) {
+            require_once $archivo_dashboard_tab;
+            if (class_exists('Flavor_Reciclaje_Dashboard_Tab')) {
+                Flavor_Reciclaje_Dashboard_Tab::get_instance();
             }
         }
     }
@@ -981,9 +1000,43 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del modulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'reciclaje_puntos_cercanos',
+            'reciclaje_calendario',
+            'reciclaje_mis_puntos',
+            'reciclaje_ranking',
+            'reciclaje_guia',
+            'reciclaje_recompensas',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Enqueue frontend assets
      */
     public function enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
         if (!$this->can_activate()) {
             return;
         }
@@ -1883,5 +1936,110 @@ KNOWLEDGE;
                 'parent' => 'reciclaje',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'reciclaje',
+            'title'    => __('Reciclaje Comunitario', 'flavor-chat-ia'),
+            'subtitle' => __('Puntos de reciclaje y gestión de residuos', 'flavor-chat-ia'),
+            'icon'     => '♻️',
+            'color'    => 'success', // Usa variable CSS --flavor-success del tema
+
+            'database' => [
+                'table'       => 'flavor_puntos_reciclaje',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'        => ['label' => __('Nombre', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
+                'direccion'     => ['label' => __('Dirección', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
+                'tipo_material' => ['label' => __('Tipo de material', 'flavor-chat-ia'), 'type' => 'multiselect'],
+                'latitud'       => ['label' => __('Latitud', 'flavor-chat-ia'), 'type' => 'number'],
+                'longitud'      => ['label' => __('Longitud', 'flavor-chat-ia'), 'type' => 'number'],
+                'horario'       => ['label' => __('Horario', 'flavor-chat-ia'), 'type' => 'text'],
+                'estado'        => ['label' => __('Estado', 'flavor-chat-ia'), 'type' => 'select'],
+            ],
+
+            'estados' => [
+                'activo'       => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'mantenimiento'=> ['label' => __('En mantenimiento', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🔧'],
+                'lleno'        => ['label' => __('Lleno', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '📦'],
+                'inactivo'     => ['label' => __('Inactivo', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⛔'],
+            ],
+
+            'stats' => [
+                'total_puntos'     => ['label' => __('Puntos activos', 'flavor-chat-ia'), 'icon' => '📍', 'color' => 'emerald'],
+                'kg_reciclados'    => ['label' => __('Kg reciclados', 'flavor-chat-ia'), 'icon' => '♻️', 'color' => 'green'],
+                'usuarios_activos' => ['label' => __('Usuarios', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+                'co2_evitado'      => ['label' => __('CO₂ evitado', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'teal'],
+            ],
+
+            'card' => [
+                'title_field'    => 'nombre',
+                'subtitle_field' => 'direccion',
+                'badge_field'    => 'estado',
+                'meta_fields'    => ['tipo_material', 'horario', 'distancia'],
+            ],
+
+            'tabs' => [
+                'mapa' => [
+                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-location-alt',
+                    'content' => 'template:mapa.php',
+                ],
+                'puntos' => [
+                    'label'   => __('Puntos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-admin-site-alt3',
+                    'content' => 'template:_archive.php',
+                ],
+                'mi-impacto' => [
+                    'label'   => __('Mi impacto', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-chart-line',
+                    'content' => 'template:mi-impacto.php',
+                ],
+                'guia' => [
+                    'label'   => __('Guía', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-book',
+                    'content' => 'template:guia.php',
+                ],
+            ],
+
+            'archive' => [
+                'columns'      => 3,
+                'per_page'     => 12,
+                'show_filters' => true,
+                'show_search'  => true,
+                'show_map'     => true,
+            ],
+
+            'dashboard' => [
+                'show_stats'   => true,
+                'show_actions' => true,
+                'actions'      => [
+                    'registrar'   => ['label' => __('Registrar reciclaje', 'flavor-chat-ia'), 'icon' => '♻️', 'color' => 'emerald'],
+                    'ver_mapa'    => ['label' => __('Ver mapa', 'flavor-chat-ia'), 'icon' => '🗺️', 'color' => 'blue'],
+                ],
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-reciclaje-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Reciclaje_Dashboard_Tab')) {
+                Flavor_Reciclaje_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

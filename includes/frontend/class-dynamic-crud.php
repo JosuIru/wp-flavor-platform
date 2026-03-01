@@ -414,6 +414,35 @@ class Flavor_Dynamic_CRUD {
                 'campos_listado' => ['tipo', 'fecha_hora', 'ubicacion'],
                 'filtros' => ['tipo'],
             ],
+
+            'presupuestos_participativos' => [
+                'tabla' => 'flavor_pp_proyectos',
+                'titulo_singular' => __('Propuesta', 'flavor-chat-ia'),
+                'titulo_plural' => __('Propuestas', 'flavor-chat-ia'),
+                'icono' => 'dashicons-portfolio',
+                'color' => '#7c3aed',
+                'campos' => [
+                    'titulo' => ['tipo' => 'text', 'label' => __('Título del proyecto', 'flavor-chat-ia'), 'required' => true, 'placeholder' => 'Nombre descriptivo de tu propuesta'],
+                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción detallada', 'flavor-chat-ia'), 'required' => true, 'rows' => 6],
+                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                        'infraestructura' => 'Infraestructura',
+                        'medio_ambiente' => 'Medio Ambiente',
+                        'cultura' => 'Cultura y Ocio',
+                        'deporte' => 'Deporte',
+                        'social' => 'Social',
+                        'educacion' => 'Educación',
+                        'accesibilidad' => 'Accesibilidad',
+                    ]],
+                    'presupuesto_solicitado' => ['tipo' => 'price', 'label' => __('Presupuesto estimado (€)', 'flavor-chat-ia'), 'required' => true],
+                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', 'flavor-chat-ia')],
+                    'imagen' => ['tipo' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+                ],
+                'campos_listado' => ['titulo', 'categoria', 'presupuesto_solicitado', 'votos_recibidos', 'estado'],
+                'filtros' => ['categoria', 'estado'],
+                'estados' => ['borrador', 'pendiente_validacion', 'validado', 'en_votacion', 'seleccionado', 'en_ejecucion', 'ejecutado', 'rechazado'],
+                'estado_inicial' => 'pendiente_validacion',
+                'campo_usuario' => 'proponente_id',
+            ],
         ];
 
         // Permitir que los módulos añadan/modifiquen su configuración
@@ -988,12 +1017,28 @@ class Flavor_Dynamic_CRUD {
         $data = $this->sanitize_form_data($_POST, $config['campos']);
 
         // Añadir campos automáticos
-        $data['user_id'] = get_current_user_id();
+        $campo_usuario = $config['campo_usuario'] ?? 'user_id';
+        $data[$campo_usuario] = get_current_user_id();
         $data['fecha_creacion'] = current_time('mysql');
-        $data['estado'] = 'pendiente';
+        $data['estado'] = $config['estado_inicial'] ?? 'pendiente';
+
+        // Campos especiales por módulo
+        global $wpdb;
+        if ($module_id === 'presupuestos_participativos' || $module_id === 'presupuestos-participativos') {
+            // Obtener edición activa
+            $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+            $edicion = $wpdb->get_row("SELECT id FROM {$tabla_ediciones} WHERE fase IN ('propuestas', 'activo') ORDER BY anio DESC LIMIT 1");
+            if ($edicion) {
+                $data['edicion_id'] = $edicion->id;
+            } else {
+                wp_send_json_error(['message' => __('No hay una edición activa de presupuestos participativos', 'flavor-chat-ia')]);
+            }
+        }
+
+        // Hook para que módulos añadan campos adicionales
+        $data = apply_filters('flavor_crud_before_create', $data, $module_id, $config);
 
         // Insertar en base de datos
-        global $wpdb;
         $tabla = $wpdb->prefix . $config['tabla'];
 
         $result = $wpdb->insert($tabla, $data);
@@ -1203,12 +1248,13 @@ class Flavor_Dynamic_CRUD {
         $user_id = get_current_user_id();
         $limite = absint($args['limite'] ?? 10);
         $offset = (absint($args['pagina'] ?? 1) - 1) * $limite;
+        $campo_usuario = $config['campo_usuario'] ?? 'user_id';
 
         // Construir WHERE según columnas disponibles
         $where_parts = [];
 
-        if ($args['solo_mios'] && $info_tabla['tiene_user_id']) {
-            $where_parts[] = $wpdb->prepare("user_id = %d", $user_id);
+        if (!empty($args['solo_mios']) && in_array($campo_usuario, $info_tabla['columnas'])) {
+            $where_parts[] = $wpdb->prepare("{$campo_usuario} = %d", $user_id);
         }
 
         if (!empty($args['estado']) && $info_tabla['tiene_estado']) {
@@ -1239,12 +1285,13 @@ class Flavor_Dynamic_CRUD {
         }
 
         $user_id = get_current_user_id();
+        $campo_usuario = $config['campo_usuario'] ?? 'user_id';
 
         // Construir WHERE según columnas disponibles
         $where_parts = [];
 
-        if ($args['solo_mios'] && $info_tabla['tiene_user_id']) {
-            $where_parts[] = $wpdb->prepare("user_id = %d", $user_id);
+        if (!empty($args['solo_mios']) && in_array($campo_usuario, $info_tabla['columnas'])) {
+            $where_parts[] = $wpdb->prepare("{$campo_usuario} = %d", $user_id);
         }
 
         $where = !empty($where_parts) ? "WHERE " . implode(" AND ", $where_parts) : "";
@@ -1263,10 +1310,15 @@ class Flavor_Dynamic_CRUD {
         // Admin puede todo
         if (current_user_can('manage_options')) return true;
 
+        // Obtener campo de usuario del config
+        $config = $this->get_module_config($module_id);
+        $campo_usuario = $config['campo_usuario'] ?? 'user_id';
+
         // Propietario puede editar
-        if (isset($item['user_id']) && (int)$item['user_id'] === $user_id) {
+        $item_user_id = $item[$campo_usuario] ?? ($item['user_id'] ?? null);
+        if ($item_user_id !== null && (int)$item_user_id === $user_id) {
             // Solo si no está en estado final
-            $estados_finales = ['completado', 'cancelado', 'cerrado'];
+            $estados_finales = ['completado', 'cancelado', 'cerrado', 'ejecutado', 'rechazado'];
             if (isset($item['estado']) && in_array($item['estado'], $estados_finales)) {
                 return false;
             }

@@ -226,7 +226,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                         <?php endforeach; ?>
                     </select>
                     <?php if (is_user_logged_in()): ?>
-                        <a href="<?php echo esc_url(add_query_arg('accion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos-cuidados', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus"></span>
                             <?php _e('Crear Círculo', 'flavor-chat-ia'); ?>
                         </a>
@@ -414,7 +414,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                         <h2>
                             <?php _e('Necesidades Abiertas', 'flavor-chat-ia'); ?>
                             <?php if ($es_miembro): ?>
-                                <a href="<?php echo esc_url(add_query_arg(['accion' => 'publicar_necesidad', 'circulo_id' => $circulo_id])); ?>"
+                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos-cuidados', 'publicar-necesidad', ['circulo_id' => $circulo_id])); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline" style="float: right;">
                                     <span class="dashicons dashicons-plus"></span>
                                     <?php _e('Publicar', 'flavor-chat-ia'); ?>
@@ -566,7 +566,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
                         <span class="dashicons dashicons-heart"></span>
                         <?php _e('Crear Círculo', 'flavor-chat-ia'); ?>
                     </button>
-                    <a href="<?php echo esc_url(remove_query_arg('accion')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('circulos-cuidados')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -950,7 +950,7 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
             wp_send_json_success([
                 'message' => __('Círculo creado. ¡Gracias por tejer comunidad!', 'flavor-chat-ia'),
                 'circulo_id' => $circulo_id,
-                'redirect' => add_query_arg('circulo_id', $circulo_id, remove_query_arg('accion')),
+                'redirect' => Flavor_Chat_Helpers::get_item_url('circulos-cuidados', $circulo_id),
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al crear el círculo.', 'flavor-chat-ia')]);

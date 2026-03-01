@@ -35,7 +35,7 @@ class Flavor_Foros_Frontend_Controller {
     private function __construct() {
         global $wpdb;
         $this->tabla_foros = $wpdb->prefix . 'flavor_foros';
-        $this->tabla_temas = $wpdb->prefix . 'flavor_foros_temas';
+        $this->tabla_temas = $wpdb->prefix . 'flavor_foros_hilos'; // El módulo usa 'hilos', no 'temas'
         $this->tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
         $this->tabla_votos = $wpdb->prefix . 'flavor_foros_votos';
 
@@ -111,17 +111,54 @@ class Flavor_Foros_Frontend_Controller {
     }
 
     /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'flavor_foros_listado',
+            'flavor_foros_categoria',
+            'flavor_foros_tema',
+            'flavor_foros_nuevo_tema',
+            'flavor_foros_mis_temas',
+            'flavor_foros_mis_respuestas',
+            'flavor_foros_buscar',
+            'flavor_foros_actividad_reciente',
+            'flavor_foros_integrado',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Registra assets frontend
      */
     public function registrar_assets() {
-        wp_register_style(
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
+        wp_enqueue_style(
             'flavor-foros-frontend',
             FLAVOR_CHAT_IA_URL . 'includes/modules/foros/assets/css/foros-frontend.css',
             [],
             FLAVOR_CHAT_IA_VERSION
         );
 
-        wp_register_script(
+        wp_enqueue_script(
             'flavor-foros-frontend',
             FLAVOR_CHAT_IA_URL . 'includes/modules/foros/assets/js/foros-frontend.js',
             ['jquery'],
@@ -318,7 +355,7 @@ class Flavor_Foros_Frontend_Controller {
                     <?php endif; ?>
                 </div>
                 <?php if (is_user_logged_in()): ?>
-                    <a href="<?php echo esc_url(add_query_arg(['accion' => 'nuevo_tema', 'foro_id' => $foro_id])); ?>"
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('foros', 'nuevo-tema', ['foro_id' => $foro_id])); ?>"
                        class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus"></span>
                         <?php _e('Nuevo Tema', 'flavor-chat-ia'); ?>
@@ -664,7 +701,7 @@ class Flavor_Foros_Frontend_Controller {
                         <span class="dashicons dashicons-welcome-add-page"></span>
                         <?php _e('Publicar Tema', 'flavor-chat-ia'); ?>
                     </button>
-                    <a href="<?php echo esc_url(remove_query_arg('accion')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('foros')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -1054,7 +1091,7 @@ class Flavor_Foros_Frontend_Controller {
             wp_send_json_success([
                 'message' => __('Tema creado correctamente.', 'flavor-chat-ia'),
                 'tema_id' => $tema_id,
-                'redirect' => add_query_arg('tema_id', $tema_id, remove_query_arg(['accion', 'foro_id'])),
+                'redirect' => Flavor_Chat_Helpers::get_item_url('foros', $tema_id),
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al crear el tema.', 'flavor-chat-ia')]);

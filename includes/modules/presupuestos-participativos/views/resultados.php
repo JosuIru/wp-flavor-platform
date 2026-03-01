@@ -16,14 +16,24 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Valores por defecto seguros
+$atributos = $atributos ?? [];
+$edicion = $edicion ?? [];
+$proyectos_ranking = $proyectos_ranking ?? [];
+$total_votantes = $total_votantes ?? 0;
+$total_proyectos = $total_proyectos ?? 0;
+
 $columnas = intval($atributos['columnas'] ?? 2);
-$presupuesto_total = floatval($edicion->presupuesto ?? 0);
+// Normalizar edicion (soporta arrays y objetos)
+$edicion_presupuesto = is_array($edicion) ? ($edicion['presupuesto_total'] ?? $edicion['presupuesto'] ?? 0) : ($edicion->presupuesto_total ?? $edicion->presupuesto ?? 0);
+$edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion->anio ?? date('Y'));
+$presupuesto_total = floatval($edicion_presupuesto);
 $presupuesto_asignado = 0;
 ?>
 
 <div class="flavor-pp-resultados-contenedor">
     <div class="flavor-pp-resultados-header">
-        <h2><?php printf(esc_html__('Resultados Presupuestos Participativos %d', 'flavor-chat-ia'), intval($edicion->anio)); ?></h2>
+        <h2><?php printf(esc_html__('Resultados Presupuestos Participativos %d', 'flavor-chat-ia'), intval($edicion_anio)); ?></h2>
 
         <div class="flavor-pp-estadisticas-resumen">
             <div class="flavor-pp-stat">
@@ -53,10 +63,23 @@ $presupuesto_asignado = 0;
             <div class="flavor-pp-ranking-lista">
                 <?php
                 $posicion = 1;
+                // Obtener max_votos del primer elemento
+                $primer_proyecto = reset($proyectos_ranking);
+                $max_votos = is_array($primer_proyecto)
+                    ? ($primer_proyecto['total_votos'] ?? $primer_proyecto['votos_recibidos'] ?? 1)
+                    : ($primer_proyecto->total_votos ?? $primer_proyecto->votos_recibidos ?? 1);
+
                 foreach ($proyectos_ranking as $proyecto):
-                    $es_seleccionado = in_array($proyecto->estado, ['seleccionado', 'en_ejecucion', 'ejecutado']);
+                    // Normalizar proyecto (soporta arrays y objetos)
+                    $proy_estado = is_array($proyecto) ? ($proyecto['estado'] ?? '') : ($proyecto->estado ?? '');
+                    $proy_titulo = is_array($proyecto) ? ($proyecto['titulo'] ?? '') : ($proyecto->titulo ?? '');
+                    $proy_descripcion = is_array($proyecto) ? ($proyecto['descripcion'] ?? '') : ($proyecto->descripcion ?? '');
+                    $proy_presupuesto = is_array($proyecto) ? ($proyecto['presupuesto_solicitado'] ?? $proyecto['presupuesto_estimado'] ?? 0) : ($proyecto->presupuesto_solicitado ?? $proyecto->presupuesto_estimado ?? 0);
+                    $proy_votos = is_array($proyecto) ? ($proyecto['total_votos'] ?? $proyecto['votos_recibidos'] ?? 0) : ($proyecto->total_votos ?? $proyecto->votos_recibidos ?? 0);
+
+                    $es_seleccionado = in_array($proy_estado, ['seleccionado', 'en_ejecucion', 'ejecutado']);
                     if ($es_seleccionado) {
-                        $presupuesto_asignado += floatval($proyecto->presupuesto_estimado);
+                        $presupuesto_asignado += floatval($proy_presupuesto);
                     }
                 ?>
                 <div class="flavor-pp-ranking-item <?php echo $es_seleccionado ? 'seleccionado' : ''; ?>">
@@ -72,7 +95,7 @@ $presupuesto_asignado = 0;
 
                     <div class="flavor-pp-ranking-proyecto">
                         <h4 class="flavor-pp-ranking-titulo">
-                            <?php echo esc_html($proyecto->titulo); ?>
+                            <?php echo esc_html($proy_titulo); ?>
                             <?php if ($es_seleccionado): ?>
                                 <span class="flavor-pp-badge-seleccionado">
                                     <span class="dashicons dashicons-yes-alt"></span>
@@ -81,26 +104,25 @@ $presupuesto_asignado = 0;
                             <?php endif; ?>
                         </h4>
                         <p class="flavor-pp-ranking-descripcion">
-                            <?php echo esc_html(wp_trim_words($proyecto->descripcion, 20, '...')); ?>
+                            <?php echo esc_html(wp_trim_words($proy_descripcion, 20, '...')); ?>
                         </p>
                     </div>
 
                     <div class="flavor-pp-ranking-stats">
                         <div class="flavor-pp-ranking-votos">
                             <span class="dashicons dashicons-heart"></span>
-                            <strong><?php echo esc_html($proyecto->total_votos); ?></strong>
+                            <strong><?php echo esc_html($proy_votos); ?></strong>
                             <span><?php esc_html_e('votos', 'flavor-chat-ia'); ?></span>
                         </div>
                         <div class="flavor-pp-ranking-presupuesto">
                             <span class="dashicons dashicons-money-alt"></span>
-                            <?php echo esc_html(number_format($proyecto->presupuesto_estimado, 0, ',', '.')); ?> EUR
+                            <?php echo esc_html(number_format($proy_presupuesto, 0, ',', '.')); ?> EUR
                         </div>
                     </div>
 
                     <div class="flavor-pp-ranking-barra">
                         <?php
-                        $max_votos = $proyectos_ranking[0]->total_votos ?: 1;
-                        $porcentaje = ($proyecto->total_votos / $max_votos) * 100;
+                        $porcentaje = $max_votos > 0 ? ($proy_votos / $max_votos) * 100 : 0;
                         ?>
                         <div class="flavor-pp-barra-progreso" style="width: <?php echo esc_attr($porcentaje); ?>%"></div>
                     </div>

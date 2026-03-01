@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
     use Flavor_Module_Notifications_Trait;
+    use Flavor_Module_Admin_Pages_Trait;
 
     /**
      * Constructor
@@ -266,6 +267,25 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         add_action('flavor_espacios_recordatorios', [$this, 'enviar_recordatorios']);
         if (!wp_next_scheduled('flavor_espacios_recordatorios')) {
             wp_schedule_event(time(), 'daily', 'flavor_espacios_recordatorios');
+        }
+
+        // Registrar en panel unificado
+        $this->registrar_en_panel_unificado();
+
+        // Cargar Dashboard Widget
+        $this->inicializar_dashboard_widget();
+    }
+
+    /**
+     * Inicializa el dashboard widget del módulo
+     */
+    private function inicializar_dashboard_widget() {
+        $archivo_widget = dirname(__FILE__) . '/class-espacios-dashboard-widget.php';
+        if (file_exists($archivo_widget)) {
+            require_once $archivo_widget;
+            if (class_exists('Flavor_Espacios_Dashboard_Widget')) {
+                new Flavor_Espacios_Dashboard_Widget();
+            }
         }
     }
 

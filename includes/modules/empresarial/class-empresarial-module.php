@@ -459,6 +459,9 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
         // Registrar en el panel de administración unificado
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
     }
 
@@ -2567,5 +2570,17 @@ KNOWLEDGE;
                 'action'      => 'empresarial_contacto',
             ],
         ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-empresarial-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Empresarial_Dashboard_Tab::get_instance();
+        }
     }
 }

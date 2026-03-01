@@ -382,7 +382,7 @@ trait Flavor_Dashboard_Widget_Trait {
             'transparencia'              => '_frontend_:/mi-portal/transparencia/',
             'campanias'                  => '_frontend_:/mi-portal/campanias/',
             'documentacion_legal'        => '_frontend_:/mi-portal/documentacion-legal/',
-            'seguimiento_denuncias'      => '_frontend_:/mi-portal/seguimiento-denuncias/',
+            'seguimiento_denuncias'      => 'denuncias-dashboard',
             'mapa_actores'               => '_frontend_:/mi-portal/mapa-actores/',
             'recetas'                    => '_frontend_:/mi-portal/recetas/',
         ];

@@ -271,6 +271,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         // Panel de administración unificado
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Inicializar funcionalidades WhatsApp (doble check, link preview, mensajes temporales)
         $this->init_whatsapp_features();
@@ -3803,5 +3805,121 @@ KNOWLEDGE;
                 'parent' => 'chat-grupos',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'chat-grupos',
+            'title'    => __('Chat en Grupos', 'flavor-chat-ia'),
+            'subtitle' => __('Comunicación en tiempo real por grupos temáticos', 'flavor-chat-ia'),
+            'icon'     => '💬',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_chat_grupos',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'       => ['type' => 'text', 'label' => __('Nombre del grupo', 'flavor-chat-ia'), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['publico', 'privado', 'secreto']],
+                'categoria'    => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia')],
+                'imagen'       => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+                'max_miembros' => ['type' => 'number', 'label' => __('Máx. miembros', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'activo'    => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'pausado'   => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'archivado' => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🗄️'],
+            ],
+
+            'stats' => [
+                'grupos_activos'   => ['label' => __('Grupos activos', 'flavor-chat-ia'), 'icon' => '💬', 'color' => 'sky'],
+                'miembros_totales' => ['label' => __('Miembros', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+                'mensajes_hoy'     => ['label' => __('Mensajes hoy', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'green'],
+                'usuarios_online'  => ['label' => __('Online ahora', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'emerald'],
+            ],
+
+            'card' => [
+                'template'     => 'grupo-card',
+                'title_field'  => 'nombre',
+                'subtitle_field' => 'tipo',
+                'meta_fields'  => ['miembros_count', 'mensajes_sin_leer'],
+                'show_imagen'  => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'grupos' => [
+                    'label'   => __('Grupos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-groups',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'crear' => [
+                    'label'      => __('Crear grupo', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:chat_grupos_crear',
+                    'requires_login' => true,
+                ],
+                'mis-grupos' => [
+                    'label'      => __('Mis grupos', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:chat_grupos_mis_grupos',
+                    'requires_login' => true,
+                ],
+                'mensajes' => [
+                    'label'      => __('Mensajes', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-email',
+                    'content'    => 'shortcode:chat_grupos_mensajes',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'nombre',
+                'order'      => 'ASC',
+                'filterable' => ['tipo', 'categoria'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['grupos_recientes', 'mensajes_sin_leer', 'usuarios_online', 'stats'],
+                'actions' => [
+                    'crear'  => ['label' => __('Crear grupo', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'sky'],
+                    'buscar' => ['label' => __('Buscar grupos', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'tiempo_real'    => true,
+                'archivos'       => true,
+                'menciones'      => true,
+                'reacciones'     => true,
+                'moderacion'     => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-chat-grupos-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Chat_Grupos_Dashboard_Tab')) {
+                Flavor_Chat_Grupos_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

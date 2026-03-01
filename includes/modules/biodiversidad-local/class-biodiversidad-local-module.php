@@ -195,6 +195,8 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
 
         // Panel Unificado Admin
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
@@ -1245,5 +1247,129 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             'success' => false,
             'message' => __('Acción no implementada', 'flavor-chat-ia'),
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'biodiversidad-local',
+            'title'    => __('Biodiversidad Local', 'flavor-chat-ia'),
+            'subtitle' => __('Catálogo de fauna y flora de tu comunidad', 'flavor-chat-ia'),
+            'icon'     => '🦋',
+            'color'    => 'info', // Usa variable CSS --flavor-info del tema
+
+            'database' => [
+                'table'       => 'flavor_biodiversidad_especies',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre_comun'     => ['type' => 'text', 'label' => __('Nombre común', 'flavor-chat-ia'), 'required' => true],
+                'nombre_cientifico' => ['type' => 'text', 'label' => __('Nombre científico', 'flavor-chat-ia')],
+                'tipo'             => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['fauna', 'flora', 'hongo']],
+                'estado_conservacion' => ['type' => 'select', 'label' => __('Estado conservación', 'flavor-chat-ia')],
+                'habitat'          => ['type' => 'text', 'label' => __('Hábitat', 'flavor-chat-ia')],
+                'descripcion'      => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'imagen'           => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'pendiente'  => ['label' => __('Pendiente validación', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
+                'validado'   => ['label' => __('Validado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'rechazado'  => ['label' => __('Rechazado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+            ],
+
+            'stats' => [
+                'especies_catalogadas' => ['label' => __('Especies', 'flavor-chat-ia'), 'icon' => '🦋', 'color' => 'lime'],
+                'avistamientos_total'  => ['label' => __('Avistamientos', 'flavor-chat-ia'), 'icon' => '👁️', 'color' => 'blue'],
+                'proyectos_activos'    => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'green'],
+                'contribuidores'       => ['label' => __('Contribuidores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'purple'],
+            ],
+
+            'card' => [
+                'template'     => 'especie-card',
+                'title_field'  => 'nombre_comun',
+                'subtitle_field' => 'nombre_cientifico',
+                'meta_fields'  => ['tipo', 'estado_conservacion'],
+                'show_imagen'  => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'catalogo' => [
+                    'label'   => __('Catálogo', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-portfolio',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'mapa' => [
+                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-location',
+                    'content' => 'shortcode:biodiversidad_mapa',
+                    'public'  => true,
+                ],
+                'avistamientos' => [
+                    'label'   => __('Avistamientos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-visibility',
+                    'content' => 'shortcode:biodiversidad_avistamientos',
+                    'public'  => true,
+                ],
+                'registrar' => [
+                    'label'      => __('Registrar', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:biodiversidad_registrar',
+                    'requires_login' => true,
+                ],
+                'proyectos' => [
+                    'label'   => __('Proyectos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-clipboard',
+                    'content' => 'shortcode:biodiversidad_proyectos',
+                    'public'  => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'nombre_comun',
+                'order'      => 'ASC',
+                'filterable' => ['tipo', 'estado_conservacion', 'habitat'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'especies_recientes', 'avistamientos_mapa', 'proyectos_activos'],
+                'actions' => [
+                    'avistamiento' => ['label' => __('Registrar avistamiento', 'flavor-chat-ia'), 'icon' => '👁️', 'color' => 'lime'],
+                    'especie'      => ['label' => __('Proponer especie', 'flavor-chat-ia'), 'icon' => '🦋', 'color' => 'green'],
+                ],
+            ],
+
+            'features' => [
+                'validacion_comunitaria' => true,
+                'geolocalizacion'        => true,
+                'galeria_fotos'          => true,
+                'gamificacion'           => true,
+                'exportar_datos'         => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-biodiversidad-local-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Biodiversidad_Local_Dashboard_Tab')) {
+                Flavor_Biodiversidad_Local_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

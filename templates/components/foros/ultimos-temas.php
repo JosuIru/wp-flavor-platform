@@ -192,7 +192,7 @@ $temas_a_mostrar = array_slice($temas_recientes, 0, $limite_temas);
                             </div>
 
                             <h3 class="text-lg font-bold transition-colors truncate" style="color: var(--flavor-text-primary, #1a1a1a);">
-                                <a href="/foros/tema/?id=<?php echo esc_attr($indice_tema); ?>" class="hover:underline" style="color: inherit;">
+                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('foros', $tema['id'] ?? $indice_tema, 'tema')); ?>" class="hover:underline" style="color: inherit;">
                                     <?php echo esc_html($tema['titulo']); ?>
                                 </a>
                             </h3>

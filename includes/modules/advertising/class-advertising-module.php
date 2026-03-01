@@ -379,6 +379,9 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         // Registrar en Panel Unificado de Gestión
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         // Crear tablas de base de datos si no existen
@@ -2409,5 +2412,17 @@ KNOWLEDGE;
             'submit_text' => __('Enviar para revisión', 'flavor-chat-ia'),
             'action' => 'crear_anuncio',
         ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-advertising-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Advertising_Dashboard_Tab::get_instance();
+        }
     }
 }

@@ -162,6 +162,9 @@ final class Flavor_Chat_IA {
      * Constructor privado
      */
     private function __construct() {
+        // NOTA: El textdomain se carga ANTES de crear la instancia (ver final del archivo)
+        // para evitar el warning "_load_textdomain_just_in_time" de WordPress 6.7+.
+
         $this->load_dependencies();
         $this->init_hooks();
     }
@@ -608,10 +611,9 @@ final class Flavor_Chat_IA {
         // Añadir schedules personalizados para crons
         add_filter('cron_schedules', [$this, 'add_cron_schedules']);
 
-        // Internacionalización - Cargar en 'init' según recomendación de WordPress 6.7+
-        // Esto evita el notice "_load_textdomain_just_in_time" que aparece cuando
-        // se carga el textdomain demasiado temprano (antes de init)
-        add_action('init', [$this, 'load_textdomain'], 0);
+        // NOTA: El textdomain se carga directamente en el constructor, antes de load_dependencies(),
+        // para evitar el warning "_load_textdomain_just_in_time" de WordPress 6.7+.
+        // No es necesario registrar un hook adicional aquí.
 
         // Limpiar rewrite rules una sola vez tras desactivar controladores frontend
         add_action('init', [$this, 'maybe_flush_frontend_rewrite_rules'], 999);
@@ -1416,10 +1418,8 @@ final class Flavor_Chat_IA {
             Flavor_Database_Installer::install_legal_pages();
         }
 
-        // Insertar badges predeterminados para sistema de reputación
-        if (class_exists('Flavor_Reputation_Manager')) {
-            Flavor_Reputation_Manager::insertar_badges_predeterminados();
-        }
+        // Nota: Los badges predeterminados se insertan automáticamente
+        // en Flavor_Database_Installer::install_tables()
 
         // Programar crons de reputación (reset semanal y mensual de puntos)
         if (!wp_next_scheduled('flavor_reset_puntos_semanales')) {
@@ -1737,10 +1737,8 @@ final class Flavor_Chat_IA {
             Flavor_Newsletter_Manager::desprogramar_cron();
         }
 
-        // Desprogramar cron de limpieza de tokens de pairing
-        if (class_exists('Flavor_App_Pairing')) {
-            Flavor_App_Pairing::desactivar_cron();
-        }
+        // Nota: Flavor_App_Pairing usa transients que se limpian automáticamente,
+        // no requiere desprogramación de cron
 
         flush_rewrite_rules();
     }
@@ -2010,5 +2008,25 @@ function flavor_chat_ia() {
     return Flavor_Chat_IA::get_instance();
 }
 
-// Iniciar el plugin
-flavor_chat_ia();
+/**
+ * Inicialización del plugin usando hooks de WordPress.
+ *
+ * WordPress 6.7+ muestra el notice "_load_textdomain_just_in_time" cuando
+ * se usa __() antes del hook 'init' y el textdomain no está cargado.
+ *
+ * Para evitar esto:
+ * 1. Cargamos el textdomain en 'plugins_loaded' con prioridad 0 (muy temprano)
+ * 2. Inicializamos el plugin en 'plugins_loaded' con prioridad 1 (justo después)
+ */
+
+// Cargar textdomain lo más temprano posible durante plugins_loaded
+add_action('plugins_loaded', function() {
+    load_plugin_textdomain(
+        'flavor-chat-ia',
+        false,
+        dirname(FLAVOR_CHAT_IA_BASENAME) . '/languages/'
+    );
+}, 0);
+
+// Inicializar el plugin después de cargar el textdomain
+add_action('plugins_loaded', 'flavor_chat_ia', 1);

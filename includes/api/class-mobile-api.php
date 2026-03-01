@@ -11,6 +11,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Evitar redeclaración si ya existe (ej: desde chat-ia-addon)
+if (class_exists('Chat_IA_Mobile_API')) {
+    return;
+}
+
 class Chat_IA_Mobile_API {
 
     /**

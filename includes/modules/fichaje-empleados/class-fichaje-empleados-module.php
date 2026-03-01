@@ -106,6 +106,9 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // Registrar en Panel Unificado de Gestión
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         // Cargar frontend controller
@@ -1791,4 +1794,16 @@ KNOWLEDGE;
         ];
     }
 
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-fichaje-empleados-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Fichaje_Empleados_Dashboard_Tab::get_instance();
+        }
+    }
 }

@@ -1579,6 +1579,3193 @@ class Flavor_Database_Installer {
             KEY tipo_interaccion (tipo_interaccion)
         ) $charset_collate;";
 
+        // =====================================================
+        // TABLAS PARA ECONOMÍA DEL DON
+        // =====================================================
+
+        // Dones ofrecidos
+        $tables[] = "CREATE TABLE {$prefix}economia_dones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            categoria varchar(100) NOT NULL,
+            condiciones text DEFAULT NULL,
+            ubicacion varchar(255) DEFAULT NULL,
+            imagen varchar(500) DEFAULT NULL,
+            estado enum('disponible','reservado','entregado','recibido') DEFAULT 'disponible',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY categoria (categoria),
+            KEY fecha_creacion (fecha_creacion)
+        ) $charset_collate;";
+
+        // Solicitudes de dones
+        $tables[] = "CREATE TABLE {$prefix}economia_solicitudes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            don_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            mensaje text DEFAULT NULL,
+            estado enum('pendiente','aceptada','rechazada') DEFAULT 'pendiente',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY don_id (don_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Entregas de dones
+        $tables[] = "CREATE TABLE {$prefix}economia_entregas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            don_id bigint(20) UNSIGNED NOT NULL,
+            donante_id bigint(20) UNSIGNED NOT NULL,
+            receptor_id bigint(20) UNSIGNED NOT NULL,
+            fecha_entrega datetime DEFAULT CURRENT_TIMESTAMP,
+            notas text DEFAULT NULL,
+            gratitud_enviada tinyint(1) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY don_id (don_id),
+            KEY donante_id (donante_id),
+            KEY receptor_id (receptor_id)
+        ) $charset_collate;";
+
+        // Gratitudes (muro de agradecimientos)
+        $tables[] = "CREATE TABLE {$prefix}economia_gratitudes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            don_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            mensaje text NOT NULL,
+            publico tinyint(1) DEFAULT 1,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY don_id (don_id),
+            KEY usuario_id (usuario_id),
+            KEY publico (publico),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA BIBLIOTECA COMUNITARIA
+        // =====================================================
+
+        // Libros de la biblioteca
+        $tables[] = "CREATE TABLE {$prefix}biblioteca_libros (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            propietario_id bigint(20) UNSIGNED NOT NULL,
+            isbn varchar(20) DEFAULT NULL,
+            titulo varchar(500) NOT NULL,
+            autor varchar(255) NOT NULL,
+            editorial varchar(255) DEFAULT NULL,
+            ano_publicacion int(11) DEFAULT NULL,
+            idioma varchar(50) DEFAULT 'Español',
+            genero varchar(100) DEFAULT NULL,
+            num_paginas int(11) DEFAULT NULL,
+            descripcion text DEFAULT NULL,
+            portada_url varchar(500) DEFAULT NULL,
+            estado_fisico enum('excelente','bueno','aceptable','desgastado') DEFAULT 'bueno',
+            disponibilidad enum('disponible','prestado','reservado','no_disponible') DEFAULT 'disponible',
+            tipo enum('donado','prestamo','intercambio') DEFAULT 'prestamo',
+            ubicacion varchar(255) DEFAULT NULL,
+            valoracion_media decimal(3,2) DEFAULT 0,
+            veces_prestado int(11) DEFAULT 0,
+            fecha_agregado datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY propietario_id (propietario_id),
+            KEY isbn (isbn),
+            KEY disponibilidad (disponibilidad),
+            KEY genero (genero),
+            FULLTEXT KEY ft_busqueda (titulo, autor, descripcion)
+        ) $charset_collate;";
+
+        // Reservas de libros
+        $tables[] = "CREATE TABLE {$prefix}biblioteca_reservas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            libro_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_expiracion datetime DEFAULT NULL,
+            estado enum('pendiente','confirmada','cancelada','expirada','convertida') DEFAULT 'pendiente',
+            notificado tinyint(1) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY libro_id (libro_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Reseñas de libros
+        $tables[] = "CREATE TABLE {$prefix}biblioteca_resenas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            libro_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            valoracion int(11) DEFAULT NULL,
+            resena text DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY libro_usuario (libro_id, usuario_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA BANCO DE TIEMPO
+        // =====================================================
+
+        // Servicios ofrecidos
+        $tables[] = "CREATE TABLE {$prefix}banco_tiempo_servicios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            categoria varchar(50) DEFAULT 'otros',
+            horas_estimadas decimal(4,2) DEFAULT 1.00,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY categoria (categoria),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Transacciones/Intercambios
+        $tables[] = "CREATE TABLE {$prefix}banco_tiempo_transacciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            servicio_id bigint(20) UNSIGNED DEFAULT NULL,
+            usuario_solicitante_id bigint(20) UNSIGNED NOT NULL,
+            usuario_receptor_id bigint(20) UNSIGNED NOT NULL,
+            horas decimal(4,2) NOT NULL,
+            mensaje text DEFAULT NULL,
+            fecha_preferida datetime DEFAULT NULL,
+            estado varchar(20) DEFAULT 'pendiente',
+            motivo_cancelacion text DEFAULT NULL,
+            valoracion_solicitante tinyint(1) DEFAULT NULL,
+            valoracion_receptor tinyint(1) DEFAULT NULL,
+            comentario_solicitante text DEFAULT NULL,
+            comentario_receptor text DEFAULT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_aceptacion datetime DEFAULT NULL,
+            fecha_completado datetime DEFAULT NULL,
+            fecha_cancelacion datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY servicio_id (servicio_id),
+            KEY usuario_solicitante_id (usuario_solicitante_id),
+            KEY usuario_receptor_id (usuario_receptor_id),
+            KEY estado (estado),
+            KEY fecha_solicitud (fecha_solicitud)
+        ) $charset_collate;";
+
+        // Reputación de usuarios
+        $tables[] = "CREATE TABLE {$prefix}banco_tiempo_reputacion (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            total_intercambios_completados int(11) DEFAULT 0,
+            total_horas_dadas decimal(8,2) DEFAULT 0,
+            total_horas_recibidas decimal(8,2) DEFAULT 0,
+            rating_promedio decimal(3,2) DEFAULT 0,
+            rating_puntualidad decimal(3,2) DEFAULT 0,
+            rating_calidad decimal(3,2) DEFAULT 0,
+            rating_comunicacion decimal(3,2) DEFAULT 0,
+            fecha_primer_intercambio datetime DEFAULT NULL,
+            fecha_ultimo_intercambio datetime DEFAULT NULL,
+            estado_verificacion enum('pendiente','verificado','destacado','mentor') DEFAULT 'pendiente',
+            fecha_verificacion datetime DEFAULT NULL,
+            verificado_por bigint(20) UNSIGNED DEFAULT NULL,
+            badges longtext DEFAULT NULL,
+            nivel int(3) DEFAULT 1,
+            puntos_confianza int(11) DEFAULT 0,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_id (usuario_id),
+            KEY estado_verificacion (estado_verificacion),
+            KEY rating_promedio (rating_promedio),
+            KEY nivel (nivel)
+        ) $charset_collate;";
+
+        // Donaciones solidarias
+        $tables[] = "CREATE TABLE {$prefix}banco_tiempo_donaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            donante_id bigint(20) UNSIGNED NOT NULL,
+            beneficiario_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo enum('fondo_comunitario','regalo_directo','emergencia') DEFAULT 'fondo_comunitario',
+            horas decimal(6,2) NOT NULL,
+            motivo varchar(255) DEFAULT NULL,
+            mensaje text DEFAULT NULL,
+            estado enum('pendiente','aceptada','rechazada','utilizada') DEFAULT 'pendiente',
+            fecha_donacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_utilizacion datetime DEFAULT NULL,
+            utilizada_por bigint(20) UNSIGNED DEFAULT NULL,
+            transaccion_origen_id bigint(20) UNSIGNED DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY donante_id (donante_id),
+            KEY beneficiario_id (beneficiario_id),
+            KEY tipo (tipo),
+            KEY estado (estado),
+            KEY fecha_donacion (fecha_donacion)
+        ) $charset_collate;";
+
+        // Métricas del sistema
+        $tables[] = "CREATE TABLE {$prefix}banco_tiempo_metricas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            periodo_inicio date NOT NULL,
+            periodo_fin date NOT NULL,
+            tipo_periodo enum('diario','semanal','mensual','trimestral','anual') DEFAULT 'mensual',
+            total_usuarios_activos int(11) DEFAULT 0,
+            nuevos_usuarios int(11) DEFAULT 0,
+            total_intercambios int(11) DEFAULT 0,
+            total_horas_intercambiadas decimal(10,2) DEFAULT 0,
+            horas_donadas_periodo decimal(10,2) DEFAULT 0,
+            fondo_comunitario_actual decimal(10,2) DEFAULT 0,
+            indice_equidad decimal(5,4) DEFAULT 0,
+            categoria_mas_demandada varchar(50) DEFAULT NULL,
+            categoria_menos_demandada varchar(50) DEFAULT NULL,
+            ratio_oferta_demanda longtext DEFAULT NULL,
+            alertas_generadas longtext DEFAULT NULL,
+            usuarios_con_deuda_alta int(11) DEFAULT 0,
+            usuarios_con_excedente_alto int(11) DEFAULT 0,
+            puntuacion_sostenibilidad int(3) DEFAULT 0,
+            datos_detalle longtext DEFAULT NULL,
+            fecha_calculo datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY periodo_inicio (periodo_inicio),
+            KEY tipo_periodo (tipo_periodo),
+            KEY puntuacion_sostenibilidad (puntuacion_sostenibilidad)
+        ) $charset_collate;";
+
+        // Valoraciones detalladas
+        $tables[] = "CREATE TABLE {$prefix}banco_tiempo_valoraciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            transaccion_id bigint(20) UNSIGNED NOT NULL,
+            valorador_id bigint(20) UNSIGNED NOT NULL,
+            valorado_id bigint(20) UNSIGNED NOT NULL,
+            rol_valorador enum('solicitante','receptor') NOT NULL,
+            rating_general tinyint(1) DEFAULT NULL,
+            rating_puntualidad tinyint(1) DEFAULT NULL,
+            rating_calidad tinyint(1) DEFAULT NULL,
+            rating_comunicacion tinyint(1) DEFAULT NULL,
+            comentario text DEFAULT NULL,
+            es_publica tinyint(1) DEFAULT 1,
+            fecha_valoracion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY transaccion_valorador (transaccion_id, valorador_id),
+            KEY valorado_id (valorado_id),
+            KEY rating_general (rating_general),
+            KEY fecha_valoracion (fecha_valoracion)
+        ) $charset_collate;";
+
+        // Límites y alertas por usuario
+        $tables[] = "CREATE TABLE {$prefix}banco_tiempo_limites (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            saldo_actual decimal(8,2) DEFAULT 0,
+            limite_deuda decimal(8,2) DEFAULT -20.00,
+            limite_acumulacion decimal(8,2) DEFAULT 100.00,
+            alerta_activa tinyint(1) DEFAULT 0,
+            tipo_alerta varchar(50) DEFAULT NULL,
+            fecha_ultima_alerta datetime DEFAULT NULL,
+            en_plan_equilibrio tinyint(1) DEFAULT 0,
+            notas_plan text DEFAULT NULL,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_id (usuario_id),
+            KEY saldo_actual (saldo_actual),
+            KEY alerta_activa (alerta_activa)
+        ) $charset_collate;";
+
+        // Intercambios programados
+        $tables[] = "CREATE TABLE {$prefix}banco_tiempo_intercambios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            transaccion_id bigint(20) UNSIGNED NOT NULL,
+            fecha_programada datetime NOT NULL,
+            lugar varchar(255) DEFAULT NULL,
+            notas text DEFAULT NULL,
+            recordatorio_enviado tinyint(1) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY transaccion_id (transaccion_id),
+            KEY fecha_programada (fecha_programada)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA GRUPOS DE CONSUMO
+        // =====================================================
+
+        // Pedidos individuales
+        $tables[] = "CREATE TABLE {$prefix}gc_pedidos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            ciclo_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            producto_id bigint(20) UNSIGNED NOT NULL,
+            cantidad decimal(10,2) NOT NULL,
+            precio_unitario decimal(10,2) NOT NULL,
+            estado varchar(20) DEFAULT 'pendiente',
+            notas text DEFAULT NULL,
+            fecha_pedido datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_modificacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY ciclo_id (ciclo_id),
+            KEY usuario_id (usuario_id),
+            KEY producto_id (producto_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Líneas de pedido
+        $tables[] = "CREATE TABLE {$prefix}gc_pedidos_lineas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            pedido_id bigint(20) UNSIGNED NOT NULL,
+            producto_id bigint(20) UNSIGNED NOT NULL,
+            cantidad decimal(10,2) NOT NULL,
+            precio_unitario decimal(10,2) NOT NULL,
+            subtotal decimal(10,2) NOT NULL,
+            notas text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY pedido_id (pedido_id),
+            KEY producto_id (producto_id)
+        ) $charset_collate;";
+
+        // Entregas
+        $tables[] = "CREATE TABLE {$prefix}gc_entregas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            ciclo_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            total_pedido decimal(10,2) DEFAULT 0,
+            gastos_gestion decimal(10,2) DEFAULT 0,
+            total_final decimal(10,2) DEFAULT 0,
+            estado_pago varchar(20) DEFAULT 'pendiente',
+            fecha_pago datetime DEFAULT NULL,
+            metodo_pago varchar(50) DEFAULT NULL,
+            estado_recogida varchar(20) DEFAULT 'pendiente',
+            fecha_recogida datetime DEFAULT NULL,
+            recogido_por varchar(255) DEFAULT NULL,
+            notas text DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY ciclo_id (ciclo_id),
+            KEY usuario_id (usuario_id),
+            KEY estado_pago (estado_pago),
+            KEY estado_recogida (estado_recogida)
+        ) $charset_collate;";
+
+        // Consolidado por productor
+        $tables[] = "CREATE TABLE {$prefix}gc_consolidado (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            ciclo_id bigint(20) UNSIGNED NOT NULL,
+            productor_id bigint(20) UNSIGNED DEFAULT NULL,
+            producto_id bigint(20) UNSIGNED NOT NULL,
+            cantidad_total decimal(10,2) DEFAULT 0,
+            numero_pedidos int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'pendiente',
+            fecha_solicitud datetime DEFAULT NULL,
+            fecha_confirmacion datetime DEFAULT NULL,
+            fecha_entrega datetime DEFAULT NULL,
+            notas text DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY ciclo_producto (ciclo_id, producto_id),
+            KEY productor_id (productor_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Consumidores/Membresía
+        $tables[] = "CREATE TABLE {$prefix}gc_consumidores (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            grupo_id bigint(20) UNSIGNED NOT NULL,
+            rol enum('consumidor','coordinador','productor') DEFAULT 'consumidor',
+            estado enum('pendiente','activo','suspendido','baja') DEFAULT 'pendiente',
+            preferencias_alimentarias text DEFAULT NULL,
+            alergias text DEFAULT NULL,
+            saldo_pendiente decimal(10,2) DEFAULT 0,
+            notas_internas text DEFAULT NULL,
+            fecha_alta datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_baja datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_grupo (usuario_id, grupo_id),
+            KEY grupo_id (grupo_id),
+            KEY estado (estado),
+            KEY rol (rol)
+        ) $charset_collate;";
+
+        // Suscripciones a cestas
+        $tables[] = "CREATE TABLE {$prefix}gc_suscripciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            consumidor_id bigint(20) UNSIGNED NOT NULL,
+            tipo_cesta_id bigint(20) UNSIGNED DEFAULT NULL,
+            frecuencia enum('semanal','quincenal','mensual') DEFAULT 'semanal',
+            importe decimal(10,2) DEFAULT 0,
+            estado enum('activa','pausada','cancelada') DEFAULT 'activa',
+            fecha_inicio date NOT NULL,
+            fecha_proximo_cargo date DEFAULT NULL,
+            fecha_pausa date DEFAULT NULL,
+            fecha_cancelacion date DEFAULT NULL,
+            notas text DEFAULT NULL,
+            metodo_pago varchar(50) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY consumidor_id (consumidor_id),
+            KEY tipo_cesta_id (tipo_cesta_id),
+            KEY estado (estado),
+            KEY fecha_proximo_cargo (fecha_proximo_cargo)
+        ) $charset_collate;";
+
+        // Historial de suscripciones
+        $tables[] = "CREATE TABLE {$prefix}gc_suscripciones_historial (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            suscripcion_id bigint(20) UNSIGNED NOT NULL,
+            ciclo_id bigint(20) UNSIGNED DEFAULT NULL,
+            importe decimal(10,2) NOT NULL,
+            estado enum('pendiente','procesado','fallido') DEFAULT 'pendiente',
+            fecha_cargo datetime DEFAULT CURRENT_TIMESTAMP,
+            notas text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY suscripcion_id (suscripcion_id),
+            KEY ciclo_id (ciclo_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Tipos de cestas
+        $tables[] = "CREATE TABLE {$prefix}gc_cestas_tipo (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            precio_base decimal(10,2) DEFAULT 0,
+            productos_incluidos longtext DEFAULT NULL,
+            imagen_id bigint(20) UNSIGNED DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            activa tinyint(1) DEFAULT 1,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY activa (activa),
+            KEY orden (orden)
+        ) $charset_collate;";
+
+        // Lista de compra
+        $tables[] = "CREATE TABLE {$prefix}gc_lista_compra (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            producto_id bigint(20) UNSIGNED NOT NULL,
+            cantidad decimal(10,2) DEFAULT 1.00,
+            fecha_agregado datetime DEFAULT CURRENT_TIMESTAMP,
+            notas varchar(255) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY producto_id (producto_id),
+            KEY fecha_agregado (fecha_agregado)
+        ) $charset_collate;";
+
+        // Pagos
+        $tables[] = "CREATE TABLE {$prefix}gc_pagos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            entrega_id bigint(20) UNSIGNED DEFAULT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            ciclo_id bigint(20) UNSIGNED DEFAULT NULL,
+            pasarela varchar(50) DEFAULT NULL,
+            transaction_id varchar(255) DEFAULT NULL,
+            importe decimal(10,2) NOT NULL,
+            moneda varchar(3) DEFAULT 'EUR',
+            estado enum('pendiente','procesando','completado','fallido','reembolsado','cancelado') DEFAULT 'pendiente',
+            datos_pasarela longtext DEFAULT NULL,
+            ip_cliente varchar(45) DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY entrega_id (entrega_id),
+            KEY usuario_id (usuario_id),
+            KEY ciclo_id (ciclo_id),
+            KEY pasarela (pasarela),
+            KEY estado (estado),
+            KEY fecha_creacion (fecha_creacion)
+        ) $charset_collate;";
+
+        // Productos
+        $tables[] = "CREATE TABLE {$prefix}gc_productos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            productor_id bigint(20) UNSIGNED DEFAULT NULL,
+            nombre varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            precio decimal(10,2) NOT NULL,
+            unidad varchar(50) DEFAULT 'unidad',
+            stock_disponible decimal(10,2) DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            es_ecologico tinyint(1) DEFAULT 0,
+            certificaciones varchar(255) DEFAULT NULL,
+            origen_km int(11) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY productor_id (productor_id),
+            KEY categoria (categoria),
+            KEY estado (estado),
+            KEY slug (slug)
+        ) $charset_collate;";
+
+        // Grupos de consumo
+        $tables[] = "CREATE TABLE {$prefix}gc_grupos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            ubicacion varchar(255) DEFAULT NULL,
+            coordinador_id bigint(20) UNSIGNED DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            configuracion longtext DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY coordinador_id (coordinador_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Notificaciones
+        $tables[] = "CREATE TABLE {$prefix}gc_notificaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo varchar(50) NOT NULL,
+            titulo varchar(255) NOT NULL,
+            mensaje text DEFAULT NULL,
+            relacionado_tipo varchar(50) DEFAULT NULL,
+            relacionado_id bigint(20) UNSIGNED DEFAULT NULL,
+            leida tinyint(1) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_lectura datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY leida (leida),
+            KEY tipo (tipo),
+            KEY fecha_creacion (fecha_creacion)
+        ) $charset_collate;";
+
+        // Solicitudes de membresía
+        $tables[] = "CREATE TABLE {$prefix}gc_solicitudes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            grupo_id bigint(20) UNSIGNED NOT NULL,
+            mensaje text DEFAULT NULL,
+            estado enum('pendiente','aprobada','rechazada') DEFAULT 'pendiente',
+            procesado_por bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_procesado datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY grupo_id (grupo_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Excedentes
+        $tables[] = "CREATE TABLE {$prefix}gc_excedentes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            ciclo_id bigint(20) UNSIGNED NOT NULL,
+            producto_id bigint(20) UNSIGNED NOT NULL,
+            cantidad_sobrante decimal(10,2) NOT NULL,
+            cantidad_reclamada decimal(10,2) DEFAULT 0,
+            cantidad_donada decimal(10,2) DEFAULT 0,
+            estado enum('disponible','parcial','agotado','donado','descartado') DEFAULT 'disponible',
+            destino_donacion varchar(255) DEFAULT NULL,
+            precio_solidario decimal(10,2) DEFAULT NULL,
+            motivo_excedente varchar(100) DEFAULT NULL,
+            notas text DEFAULT NULL,
+            fecha_registro datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_cierre datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY ciclo_id (ciclo_id),
+            KEY producto_id (producto_id),
+            KEY estado (estado),
+            KEY fecha_registro (fecha_registro)
+        ) $charset_collate;";
+
+        // Reclamaciones de excedentes
+        $tables[] = "CREATE TABLE {$prefix}gc_excedentes_reclamaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            excedente_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            cantidad decimal(10,2) NOT NULL,
+            precio_pagado decimal(10,2) DEFAULT 0,
+            estado enum('pendiente','confirmada','recogida','cancelada') DEFAULT 'pendiente',
+            fecha_reclamacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_recogida datetime DEFAULT NULL,
+            notas varchar(255) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY excedente_id (excedente_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Huella ecológica por ciclo
+        $tables[] = "CREATE TABLE {$prefix}gc_huella_ciclo (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            ciclo_id bigint(20) UNSIGNED NOT NULL,
+            km_evitados decimal(10,2) DEFAULT 0,
+            co2_evitado_kg decimal(10,2) DEFAULT 0,
+            plastico_evitado_kg decimal(10,4) DEFAULT 0,
+            agua_ahorrada_litros decimal(12,2) DEFAULT 0,
+            productores_locales int(11) DEFAULT 0,
+            productos_eco_porcentaje decimal(5,2) DEFAULT 0,
+            km_medio_producto decimal(8,2) DEFAULT 0,
+            num_participantes int(11) DEFAULT 0,
+            total_kg_productos decimal(10,2) DEFAULT 0,
+            puntuacion_sostenibilidad int(3) DEFAULT 0,
+            datos_detalle longtext DEFAULT NULL,
+            fecha_calculo datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY ciclo_id (ciclo_id),
+            KEY puntuacion_sostenibilidad (puntuacion_sostenibilidad)
+        ) $charset_collate;";
+
+        // Desglose de precios
+        $tables[] = "CREATE TABLE {$prefix}gc_precio_desglose (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            producto_id bigint(20) UNSIGNED NOT NULL,
+            ciclo_id bigint(20) UNSIGNED DEFAULT NULL,
+            precio_productor decimal(10,2) NOT NULL,
+            coste_transporte decimal(10,2) DEFAULT 0,
+            coste_gestion decimal(10,2) DEFAULT 0,
+            coste_mermas decimal(10,2) DEFAULT 0,
+            aportacion_fondo_social decimal(10,2) DEFAULT 0,
+            iva decimal(10,2) DEFAULT 0,
+            precio_final decimal(10,2) NOT NULL,
+            margen_productor_porcentaje decimal(5,2) DEFAULT 0,
+            origen_km int(11) DEFAULT NULL,
+            certificaciones varchar(255) DEFAULT NULL,
+            visible_publico tinyint(1) DEFAULT 1,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY producto_id (producto_id),
+            KEY ciclo_id (ciclo_id),
+            KEY visible_publico (visible_publico)
+        ) $charset_collate;";
+
+        // Sistema de trueque
+        $tables[] = "CREATE TABLE {$prefix}gc_trueque (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_ofrece_id bigint(20) UNSIGNED NOT NULL,
+            usuario_recibe_id bigint(20) UNSIGNED DEFAULT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            productos_ofrecidos longtext DEFAULT NULL,
+            productos_deseados longtext DEFAULT NULL,
+            valor_estimado decimal(10,2) DEFAULT NULL,
+            tipo enum('trueque','regalo','prestamo') DEFAULT 'trueque',
+            estado enum('abierto','en_negociacion','acordado','completado','cancelado','expirado') DEFAULT 'abierto',
+            fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_expiracion datetime DEFAULT NULL,
+            fecha_acuerdo datetime DEFAULT NULL,
+            fecha_completado datetime DEFAULT NULL,
+            ubicacion_intercambio varchar(255) DEFAULT NULL,
+            notas_intercambio text DEFAULT NULL,
+            valoracion_ofrece tinyint(1) DEFAULT NULL,
+            valoracion_recibe tinyint(1) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_ofrece_id (usuario_ofrece_id),
+            KEY usuario_recibe_id (usuario_recibe_id),
+            KEY estado (estado),
+            KEY tipo (tipo),
+            KEY fecha_publicacion (fecha_publicacion),
+            KEY fecha_expiracion (fecha_expiracion)
+        ) $charset_collate;";
+
+        // Mensajes de trueque
+        $tables[] = "CREATE TABLE {$prefix}gc_trueque_mensajes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            trueque_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            mensaje text NOT NULL,
+            propuesta_modificada longtext DEFAULT NULL,
+            fecha_mensaje datetime DEFAULT CURRENT_TIMESTAMP,
+            leido tinyint(1) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY trueque_id (trueque_id),
+            KEY usuario_id (usuario_id),
+            KEY fecha_mensaje (fecha_mensaje),
+            KEY leido (leido)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA ESPACIOS COMUNES
+        // =====================================================
+
+        // Espacios comunes
+        $tables[] = "CREATE TABLE {$prefix}espacios_comunes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tipo varchar(50) DEFAULT 'sala',
+            categoria varchar(100) DEFAULT NULL,
+            imagen_principal varchar(500) DEFAULT NULL,
+            galeria_imagenes text DEFAULT NULL,
+            direccion varchar(500) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            planta varchar(50) DEFAULT NULL,
+            capacidad_maxima int(11) DEFAULT 0,
+            superficie_m2 decimal(10,2) DEFAULT NULL,
+            equipamiento text DEFAULT NULL,
+            normas_uso text DEFAULT NULL,
+            horario_apertura time DEFAULT '08:00:00',
+            horario_cierre time DEFAULT '22:00:00',
+            dias_disponibles varchar(50) DEFAULT '1,2,3,4,5',
+            tiempo_minimo_reserva int(11) DEFAULT 30,
+            tiempo_maximo_reserva int(11) DEFAULT 240,
+            antelacion_minima_horas int(11) DEFAULT 24,
+            antelacion_maxima_dias int(11) DEFAULT 30,
+            precio_hora decimal(10,2) DEFAULT 0,
+            precio_socios decimal(10,2) DEFAULT NULL,
+            requiere_deposito tinyint(1) DEFAULT 0,
+            deposito_cantidad decimal(10,2) DEFAULT NULL,
+            requiere_aprobacion tinyint(1) DEFAULT 0,
+            responsable_id bigint(20) UNSIGNED DEFAULT NULL,
+            estado enum('activo','inactivo','mantenimiento','reservado') DEFAULT 'activo',
+            accesibilidad tinyint(1) DEFAULT 0,
+            wifi tinyint(1) DEFAULT 0,
+            parking tinyint(1) DEFAULT 0,
+            visualizaciones int(11) DEFAULT 0,
+            reservas_count int(11) DEFAULT 0,
+            metadata longtext DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY tipo (tipo),
+            KEY categoria (categoria),
+            KEY estado (estado),
+            KEY capacidad_maxima (capacidad_maxima),
+            KEY precio_hora (precio_hora)
+        ) $charset_collate;";
+
+        // Reservas de espacios
+        $tables[] = "CREATE TABLE {$prefix}espacios_reservas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            espacio_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) DEFAULT NULL,
+            descripcion text DEFAULT NULL,
+            fecha date NOT NULL,
+            hora_inicio time NOT NULL,
+            hora_fin time NOT NULL,
+            num_asistentes int(11) DEFAULT NULL,
+            estado enum('pendiente','aprobada','rechazada','cancelada','completada') DEFAULT 'pendiente',
+            motivo_rechazo text DEFAULT NULL,
+            precio_total decimal(10,2) DEFAULT 0,
+            deposito_pagado tinyint(1) DEFAULT 0,
+            pago_completado tinyint(1) DEFAULT 0,
+            referencia_pago varchar(100) DEFAULT NULL,
+            codigo_acceso varchar(50) DEFAULT NULL,
+            check_in_at datetime DEFAULT NULL,
+            check_out_at datetime DEFAULT NULL,
+            notas_admin text DEFAULT NULL,
+            aprobado_por bigint(20) UNSIGNED DEFAULT NULL,
+            aprobado_at datetime DEFAULT NULL,
+            metadata longtext DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY espacio_id (espacio_id),
+            KEY usuario_id (usuario_id),
+            KEY fecha (fecha),
+            KEY estado (estado),
+            KEY espacio_fecha (espacio_id, fecha),
+            KEY codigo_acceso (codigo_acceso)
+        ) $charset_collate;";
+
+        // Bloqueos de espacios
+        $tables[] = "CREATE TABLE {$prefix}espacios_bloqueos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            espacio_id bigint(20) UNSIGNED NOT NULL,
+            motivo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            fecha_inicio datetime NOT NULL,
+            fecha_fin datetime NOT NULL,
+            tipo enum('mantenimiento','evento_privado','festivo','otro') DEFAULT 'mantenimiento',
+            recurrente tinyint(1) DEFAULT 0,
+            creado_por bigint(20) UNSIGNED DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY espacio_id (espacio_id),
+            KEY fecha_inicio (fecha_inicio),
+            KEY fecha_fin (fecha_fin),
+            KEY tipo (tipo)
+        ) $charset_collate;";
+
+        // Equipamiento de espacios
+        $tables[] = "CREATE TABLE {$prefix}espacios_equipamiento (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            espacio_id bigint(20) UNSIGNED NOT NULL,
+            nombre varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            cantidad int(11) DEFAULT 1,
+            estado varchar(50) DEFAULT 'disponible',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY espacio_id (espacio_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Incidencias de espacios
+        $tables[] = "CREATE TABLE {$prefix}espacios_incidencias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            espacio_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            reserva_id bigint(20) UNSIGNED DEFAULT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            prioridad enum('baja','media','alta','urgente') DEFAULT 'media',
+            estado enum('abierta','en_progreso','resuelta','cerrada') DEFAULT 'abierta',
+            fecha_reporte datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_resolucion datetime DEFAULT NULL,
+            resuelto_por bigint(20) UNSIGNED DEFAULT NULL,
+            notas_resolucion text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY espacio_id (espacio_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY prioridad (prioridad)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA COMUNIDADES
+        // =====================================================
+
+        // Comunidades
+        $tables[] = "CREATE TABLE {$prefix}comunidades (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(200) NOT NULL,
+            slug varchar(200) NOT NULL,
+            descripcion text DEFAULT NULL,
+            imagen varchar(255) DEFAULT NULL,
+            tipo enum('abierta','cerrada','secreta') DEFAULT 'abierta',
+            categoria varchar(100) DEFAULT 'otros',
+            ubicacion varchar(200) DEFAULT NULL,
+            reglas text DEFAULT NULL,
+            miembros_count int(11) DEFAULT 0,
+            creador_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('activa','pausada','archivada') DEFAULT 'activa',
+            configuracion text DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY creador_id (creador_id),
+            KEY tipo (tipo),
+            KEY categoria (categoria),
+            KEY estado (estado),
+            KEY slug (slug)
+        ) $charset_collate;";
+
+        // Miembros de comunidades
+        $tables[] = "CREATE TABLE {$prefix}comunidades_miembros (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            comunidad_id bigint(20) UNSIGNED NOT NULL,
+            user_id bigint(20) UNSIGNED NOT NULL,
+            rol enum('admin','moderador','miembro') DEFAULT 'miembro',
+            estado enum('activo','pendiente','suspendido','baneado') DEFAULT 'activo',
+            joined_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY comunidad_usuario (comunidad_id, user_id),
+            KEY comunidad_id (comunidad_id),
+            KEY user_id (user_id),
+            KEY rol (rol),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Actividad/Feed de comunidades
+        $tables[] = "CREATE TABLE {$prefix}comunidades_actividad (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            comunidad_id bigint(20) UNSIGNED NOT NULL,
+            user_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('publicacion','evento','anuncio','encuesta') DEFAULT 'publicacion',
+            titulo varchar(255) DEFAULT NULL,
+            contenido longtext DEFAULT NULL,
+            adjuntos text DEFAULT NULL,
+            imagen varchar(500) DEFAULT NULL,
+            referencia_original bigint(20) UNSIGNED DEFAULT NULL,
+            reacciones_count int(11) DEFAULT 0,
+            comentarios_count int(11) DEFAULT 0,
+            es_fijado tinyint(1) DEFAULT 0,
+            metadata longtext DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY comunidad_id (comunidad_id),
+            KEY user_id (user_id),
+            KEY tipo (tipo),
+            KEY es_fijado (es_fijado),
+            KEY created_at (created_at)
+        ) $charset_collate;";
+
+        // Reacciones a actividades
+        $tables[] = "CREATE TABLE {$prefix}comunidades_actividad_reacciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            actividad_id bigint(20) UNSIGNED NOT NULL,
+            user_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('like') DEFAULT 'like',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY actividad_usuario (actividad_id, user_id),
+            KEY actividad_id (actividad_id),
+            KEY user_id (user_id)
+        ) $charset_collate;";
+
+        // Comentarios en comunidades
+        $tables[] = "CREATE TABLE {$prefix}comunidades_comentarios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            actividad_id bigint(20) UNSIGNED NOT NULL,
+            user_id bigint(20) UNSIGNED NOT NULL,
+            padre_id bigint(20) UNSIGNED DEFAULT NULL,
+            contenido text NOT NULL,
+            estado enum('activo','oculto','eliminado') DEFAULT 'activo',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY actividad_id (actividad_id),
+            KEY user_id (user_id),
+            KEY padre_id (padre_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Publicaciones de comunidades
+        $tables[] = "CREATE TABLE {$prefix}comunidades_publicaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            comunidad_id bigint(20) UNSIGNED NOT NULL,
+            autor_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) DEFAULT NULL,
+            contenido longtext NOT NULL,
+            tipo varchar(50) DEFAULT 'post',
+            adjuntos longtext DEFAULT NULL,
+            likes_count int(11) DEFAULT 0,
+            comentarios_count int(11) DEFAULT 0,
+            es_fijado tinyint(1) DEFAULT 0,
+            estado varchar(20) DEFAULT 'publicado',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY comunidad_id (comunidad_id),
+            KEY autor_id (autor_id),
+            KEY estado (estado),
+            KEY es_fijado (es_fijado)
+        ) $charset_collate;";
+
+        // Anuncios de comunidades
+        $tables[] = "CREATE TABLE {$prefix}comunidades_anuncios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            comunidad_id bigint(20) UNSIGNED NOT NULL,
+            user_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(200) NOT NULL,
+            contenido text DEFAULT NULL,
+            categoria varchar(50) DEFAULT 'general',
+            destacado tinyint(1) DEFAULT 0,
+            compartir_red tinyint(1) DEFAULT 0,
+            fecha_expiracion date DEFAULT NULL,
+            estado enum('borrador','publicado','archivado') DEFAULT 'publicado',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY comunidad_id (comunidad_id),
+            KEY user_id (user_id),
+            KEY categoria (categoria),
+            KEY estado (estado),
+            KEY destacado (destacado),
+            KEY fecha_expiracion (fecha_expiracion)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS ADICIONALES PARA TALLERES
+        // =====================================================
+
+        // Inscripciones a talleres
+        $tables[] = "CREATE TABLE {$prefix}talleres_inscripciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            taller_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('pendiente','confirmada','cancelada','asistio','no_asistio') DEFAULT 'pendiente',
+            fecha_inscripcion datetime DEFAULT CURRENT_TIMESTAMP,
+            notas text DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY taller_usuario (taller_id, usuario_id),
+            KEY taller_id (taller_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Sesiones de talleres
+        $tables[] = "CREATE TABLE {$prefix}talleres_sesiones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            taller_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) DEFAULT NULL,
+            fecha datetime NOT NULL,
+            duracion_minutos int(11) DEFAULT 60,
+            ubicacion varchar(255) DEFAULT NULL,
+            notas text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY taller_id (taller_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Asistencias a talleres
+        $tables[] = "CREATE TABLE {$prefix}talleres_asistencias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            sesion_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            asistio tinyint(1) DEFAULT 0,
+            hora_llegada time DEFAULT NULL,
+            notas text DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY sesion_usuario (sesion_id, usuario_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Materiales de talleres
+        $tables[] = "CREATE TABLE {$prefix}talleres_materiales (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            taller_id bigint(20) UNSIGNED NOT NULL,
+            nombre varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            cantidad int(11) DEFAULT 1,
+            incluido tinyint(1) DEFAULT 1,
+            coste decimal(10,2) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY taller_id (taller_id)
+        ) $charset_collate;";
+
+        // Valoraciones de talleres
+        $tables[] = "CREATE TABLE {$prefix}talleres_valoraciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            taller_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            valoracion int(11) NOT NULL,
+            comentario text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY taller_usuario (taller_id, usuario_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS ADICIONALES PARA CURSOS
+        // =====================================================
+
+        // Categorías de cursos
+        $tables[] = "CREATE TABLE {$prefix}cursos_categorias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            icono varchar(50) DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug)
+        ) $charset_collate;";
+
+        // Módulos de cursos
+        $tables[] = "CREATE TABLE {$prefix}cursos_modulos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            curso_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY curso_id (curso_id),
+            KEY orden (orden)
+        ) $charset_collate;";
+
+        // Lecciones de cursos
+        $tables[] = "CREATE TABLE {$prefix}cursos_lecciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            modulo_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            contenido longtext DEFAULT NULL,
+            tipo enum('video','texto','quiz','tarea') DEFAULT 'texto',
+            duracion_minutos int(11) DEFAULT 0,
+            recursos longtext DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY modulo_id (modulo_id),
+            KEY orden (orden)
+        ) $charset_collate;";
+
+        // Matrículas
+        $tables[] = "CREATE TABLE {$prefix}cursos_matriculas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            curso_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('activa','completada','cancelada','pausada') DEFAULT 'activa',
+            progreso int(11) DEFAULT 0,
+            fecha_inicio datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_completado datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY curso_usuario (curso_id, usuario_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Progreso de lecciones
+        $tables[] = "CREATE TABLE {$prefix}cursos_progreso (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            leccion_id bigint(20) UNSIGNED NOT NULL,
+            completada tinyint(1) DEFAULT 0,
+            puntuacion int(11) DEFAULT NULL,
+            fecha_inicio datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_completado datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_leccion (usuario_id, leccion_id),
+            KEY leccion_id (leccion_id)
+        ) $charset_collate;";
+
+        // Certificados
+        $tables[] = "CREATE TABLE {$prefix}cursos_certificados (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            curso_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            codigo varchar(50) NOT NULL,
+            fecha_emision datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY codigo (codigo),
+            KEY curso_id (curso_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Valoraciones de cursos
+        $tables[] = "CREATE TABLE {$prefix}cursos_valoraciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            curso_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            valoracion int(11) NOT NULL,
+            comentario text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY curso_usuario (curso_id, usuario_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS ADICIONALES PARA PARKINGS
+        // =====================================================
+
+        // Plazas de parking
+        $tables[] = "CREATE TABLE {$prefix}parkings_plazas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            parking_id bigint(20) UNSIGNED NOT NULL,
+            numero varchar(20) NOT NULL,
+            tipo enum('normal','discapacitado','moto','electrico') DEFAULT 'normal',
+            planta varchar(20) DEFAULT NULL,
+            estado enum('libre','ocupada','reservada','mantenimiento') DEFAULT 'libre',
+            PRIMARY KEY (id),
+            UNIQUE KEY parking_numero (parking_id, numero),
+            KEY parking_id (parking_id),
+            KEY estado (estado),
+            KEY tipo (tipo)
+        ) $charset_collate;";
+
+        // Reservas de parking
+        $tables[] = "CREATE TABLE {$prefix}parkings_reservas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            plaza_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha_inicio datetime NOT NULL,
+            fecha_fin datetime NOT NULL,
+            matricula varchar(20) DEFAULT NULL,
+            estado enum('pendiente','activa','completada','cancelada') DEFAULT 'pendiente',
+            precio decimal(10,2) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY plaza_id (plaza_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY fecha_inicio (fecha_inicio)
+        ) $charset_collate;";
+
+        // Asignaciones permanentes
+        $tables[] = "CREATE TABLE {$prefix}parkings_asignaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            plaza_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha_inicio date NOT NULL,
+            fecha_fin date DEFAULT NULL,
+            estado enum('activa','finalizada','cancelada') DEFAULT 'activa',
+            PRIMARY KEY (id),
+            KEY plaza_id (plaza_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Lista de espera
+        $tables[] = "CREATE TABLE {$prefix}parkings_lista_espera (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            parking_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo_plaza varchar(20) DEFAULT 'normal',
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            posicion int(11) DEFAULT NULL,
+            estado enum('esperando','notificado','asignado','cancelado') DEFAULT 'esperando',
+            PRIMARY KEY (id),
+            KEY parking_id (parking_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Propietarios
+        $tables[] = "CREATE TABLE {$prefix}parkings_propietarios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            plaza_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha_adquisicion date NOT NULL,
+            PRIMARY KEY (id),
+            KEY plaza_id (plaza_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS ADICIONALES PARA PODCAST
+        // =====================================================
+
+        // Series de podcast
+        $tables[] = "CREATE TABLE {$prefix}podcast_series (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            autor_id bigint(20) UNSIGNED DEFAULT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY autor_id (autor_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Podcasts (alias de series)
+        $tables[] = "CREATE TABLE {$prefix}podcasts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            rss_url varchar(500) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Suscripciones a podcast
+        $tables[] = "CREATE TABLE {$prefix}podcast_suscripciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            serie_id bigint(20) UNSIGNED NOT NULL,
+            notificaciones tinyint(1) DEFAULT 1,
+            fecha_suscripcion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_serie (usuario_id, serie_id),
+            KEY serie_id (serie_id)
+        ) $charset_collate;";
+
+        // Reproducciones
+        $tables[] = "CREATE TABLE {$prefix}podcast_reproducciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            episodio_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            ip varchar(45) DEFAULT NULL,
+            posicion_segundos int(11) DEFAULT 0,
+            completado tinyint(1) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY episodio_id (episodio_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Likes de podcast
+        $tables[] = "CREATE TABLE {$prefix}podcast_likes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            episodio_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY episodio_usuario (episodio_id, usuario_id)
+        ) $charset_collate;";
+
+        // Transcripciones
+        $tables[] = "CREATE TABLE {$prefix}podcast_transcripciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            episodio_id bigint(20) UNSIGNED NOT NULL,
+            contenido longtext NOT NULL,
+            idioma varchar(10) DEFAULT 'es',
+            generada_por varchar(50) DEFAULT 'manual',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY episodio_id (episodio_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA BICICLETAS COMPARTIDAS
+        // =====================================================
+
+        // Estaciones de bicicletas
+        $tables[] = "CREATE TABLE {$prefix}bicicletas_estaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            direccion varchar(500) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            capacidad int(11) DEFAULT 20,
+            bicis_disponibles int(11) DEFAULT 0,
+            huecos_libres int(11) DEFAULT 0,
+            horario varchar(100) DEFAULT '24h',
+            estado enum('operativa','mantenimiento','cerrada') DEFAULT 'operativa',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Préstamos de bicicletas
+        $tables[] = "CREATE TABLE {$prefix}bicicletas_prestamos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            bicicleta_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            estacion_origen_id bigint(20) UNSIGNED NOT NULL,
+            estacion_destino_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_inicio datetime NOT NULL,
+            fecha_fin datetime DEFAULT NULL,
+            duracion_minutos int(11) DEFAULT NULL,
+            km_recorridos decimal(10,2) DEFAULT NULL,
+            estado enum('activo','completado','incidencia') DEFAULT 'activo',
+            PRIMARY KEY (id),
+            KEY bicicleta_id (bicicleta_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY fecha_inicio (fecha_inicio)
+        ) $charset_collate;";
+
+        // Incidencias de bicicletas
+        $tables[] = "CREATE TABLE {$prefix}bicicletas_incidencias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            bicicleta_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo varchar(50) NOT NULL,
+            descripcion text DEFAULT NULL,
+            estado enum('reportada','revision','reparando','resuelta') DEFAULT 'reportada',
+            fecha_reporte datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_resolucion datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY bicicleta_id (bicicleta_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Mantenimiento
+        $tables[] = "CREATE TABLE {$prefix}bicicletas_mantenimiento (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            bicicleta_id bigint(20) UNSIGNED NOT NULL,
+            tipo varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tecnico varchar(100) DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            coste decimal(10,2) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY bicicleta_id (bicicleta_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA HUERTOS URBANOS (ADICIONALES)
+        // =====================================================
+
+        // Huertos
+        $tables[] = "CREATE TABLE {$prefix}huertos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            direccion varchar(500) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            superficie_m2 decimal(10,2) DEFAULT NULL,
+            num_parcelas int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Huertos urbanos (alias)
+        $tables[] = "CREATE TABLE {$prefix}huertos_urbanos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            ubicacion varchar(500) DEFAULT NULL,
+            descripcion text DEFAULT NULL,
+            num_parcelas int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Cultivos
+        $tables[] = "CREATE TABLE {$prefix}huertos_cultivos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            parcela_id bigint(20) UNSIGNED NOT NULL,
+            nombre varchar(100) NOT NULL,
+            variedad varchar(100) DEFAULT NULL,
+            fecha_siembra date DEFAULT NULL,
+            fecha_cosecha_estimada date DEFAULT NULL,
+            fecha_cosecha_real date DEFAULT NULL,
+            cantidad_cosechada decimal(10,2) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            notas text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY parcela_id (parcela_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Tareas de huerto
+        $tables[] = "CREATE TABLE {$prefix}huertos_tareas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            parcela_id bigint(20) UNSIGNED DEFAULT NULL,
+            huerto_id bigint(20) UNSIGNED DEFAULT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tipo varchar(50) DEFAULT 'general',
+            prioridad enum('baja','media','alta') DEFAULT 'media',
+            fecha_limite date DEFAULT NULL,
+            estado enum('pendiente','en_progreso','completada') DEFAULT 'pendiente',
+            asignado_a bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY parcela_id (parcela_id),
+            KEY huerto_id (huerto_id),
+            KEY estado (estado),
+            KEY asignado_a (asignado_a)
+        ) $charset_collate;";
+
+        // Participantes en tareas
+        $tables[] = "CREATE TABLE {$prefix}huertos_participantes_tareas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            tarea_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha_asignacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY tarea_usuario (tarea_id, usuario_id)
+        ) $charset_collate;";
+
+        // Solicitudes de parcela
+        $tables[] = "CREATE TABLE {$prefix}huertos_solicitudes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            huerto_id bigint(20) UNSIGNED DEFAULT NULL,
+            mensaje text DEFAULT NULL,
+            estado enum('pendiente','aprobada','rechazada','lista_espera') DEFAULT 'pendiente',
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_procesado datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY huerto_id (huerto_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Turnos de riego
+        $tables[] = "CREATE TABLE {$prefix}huertos_turnos_riego (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            parcela_id bigint(20) UNSIGNED NOT NULL,
+            dia_semana tinyint(1) NOT NULL,
+            hora_inicio time NOT NULL,
+            hora_fin time NOT NULL,
+            PRIMARY KEY (id),
+            KEY parcela_id (parcela_id)
+        ) $charset_collate;";
+
+        // Herramientas compartidas
+        $tables[] = "CREATE TABLE {$prefix}huertos_herramientas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            huerto_id bigint(20) UNSIGNED NOT NULL,
+            nombre varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            cantidad int(11) DEFAULT 1,
+            estado varchar(20) DEFAULT 'disponible',
+            PRIMARY KEY (id),
+            KEY huerto_id (huerto_id)
+        ) $charset_collate;";
+
+        // Intercambios
+        $tables[] = "CREATE TABLE {$prefix}huertos_intercambios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_ofrece_id bigint(20) UNSIGNED NOT NULL,
+            usuario_recibe_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo enum('semillas','plantas','cosecha','herramientas') NOT NULL,
+            descripcion text NOT NULL,
+            estado enum('disponible','reservado','completado') DEFAULT 'disponible',
+            fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_ofrece_id (usuario_ofrece_id),
+            KEY tipo (tipo),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Actividades de huerto
+        $tables[] = "CREATE TABLE {$prefix}huertos_actividades (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            huerto_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            fecha datetime NOT NULL,
+            tipo varchar(50) DEFAULT 'taller',
+            plazas int(11) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY huerto_id (huerto_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Pagos de parcelas
+        $tables[] = "CREATE TABLE {$prefix}huertos_pagos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            asignacion_id bigint(20) UNSIGNED NOT NULL,
+            importe decimal(10,2) NOT NULL,
+            concepto varchar(255) DEFAULT NULL,
+            fecha_pago datetime DEFAULT CURRENT_TIMESTAMP,
+            estado varchar(20) DEFAULT 'completado',
+            PRIMARY KEY (id),
+            KEY asignacion_id (asignacion_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA RECICLAJE (ADICIONALES)
+        // =====================================================
+
+        // Contenedores de reciclaje
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_contenedores (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            tipo varchar(50) NOT NULL,
+            direccion varchar(500) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            capacidad_litros int(11) DEFAULT NULL,
+            nivel_llenado int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'activo',
+            PRIMARY KEY (id),
+            KEY tipo (tipo),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Depósitos de reciclaje
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_depositos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            contenedor_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo_residuo varchar(50) NOT NULL,
+            cantidad_kg decimal(10,3) DEFAULT NULL,
+            puntos_ganados int(11) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY contenedor_id (contenedor_id),
+            KEY tipo_residuo (tipo_residuo)
+        ) $charset_collate;";
+
+        // Puntos por usuario
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_puntos_usuario (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            puntos_totales int(11) DEFAULT 0,
+            puntos_canjeados int(11) DEFAULT 0,
+            nivel varchar(20) DEFAULT 'principiante',
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Recompensas
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_recompensas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            puntos_requeridos int(11) NOT NULL,
+            stock int(11) DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY puntos_requeridos (puntos_requeridos)
+        ) $charset_collate;";
+
+        // Canjes
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_canjes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            recompensa_id bigint(20) UNSIGNED NOT NULL,
+            puntos_usados int(11) NOT NULL,
+            estado enum('pendiente','entregado','cancelado') DEFAULT 'pendiente',
+            fecha_canje datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_entrega datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY recompensa_id (recompensa_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Registros de reciclaje
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_registros (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo_material varchar(50) NOT NULL,
+            cantidad decimal(10,2) NOT NULL,
+            unidad varchar(20) DEFAULT 'kg',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            verificado tinyint(1) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY tipo_material (tipo_material),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Recogidas programadas
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_recogidas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            direccion varchar(500) NOT NULL,
+            tipo_residuos varchar(255) NOT NULL,
+            fecha_solicitada date NOT NULL,
+            horario_preferido varchar(50) DEFAULT NULL,
+            estado enum('pendiente','programada','completada','cancelada') DEFAULT 'pendiente',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY fecha_solicitada (fecha_solicitada)
+        ) $charset_collate;";
+
+        // Reportes de contenedores
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_reportes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            contenedor_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo_reporte varchar(50) NOT NULL,
+            descripcion text DEFAULT NULL,
+            estado enum('pendiente','revisado','resuelto') DEFAULT 'pendiente',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY contenedor_id (contenedor_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Premios de reciclaje
+        $tables[] = "CREATE TABLE {$prefix}reciclaje_premios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            puntos_necesarios int(11) NOT NULL,
+            cantidad_disponible int(11) DEFAULT NULL,
+            imagen varchar(500) DEFAULT NULL,
+            activo tinyint(1) DEFAULT 1,
+            PRIMARY KEY (id),
+            KEY activo (activo)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA COMPOSTAJE (ADICIONALES)
+        // =====================================================
+
+        // Composteras
+        $tables[] = "CREATE TABLE {$prefix}composteras (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            ubicacion varchar(500) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            capacidad_litros int(11) DEFAULT NULL,
+            nivel_llenado int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'activa',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Aportaciones de compost
+        $tables[] = "CREATE TABLE {$prefix}compostaje_aportaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            compostera_id bigint(20) UNSIGNED NOT NULL,
+            tipo_residuo varchar(50) NOT NULL,
+            cantidad_kg decimal(10,3) NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY compostera_id (compostera_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Aportaciones (alias)
+        $tables[] = "CREATE TABLE {$prefix}aportaciones_compost (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            compostera_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo varchar(50) NOT NULL,
+            cantidad decimal(10,3) NOT NULL,
+            puntos int(11) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Puntos de compostaje
+        $tables[] = "CREATE TABLE {$prefix}puntos_compostaje (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            direccion varchar(500) DEFAULT NULL,
+            horario varchar(255) DEFAULT NULL,
+            tipo varchar(50) DEFAULT 'comunitario',
+            estado varchar(20) DEFAULT 'activo',
+            PRIMARY KEY (id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Turnos de compostaje
+        $tables[] = "CREATE TABLE {$prefix}turnos_compostaje (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            compostera_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha date NOT NULL,
+            turno varchar(20) NOT NULL,
+            estado varchar(20) DEFAULT 'asignado',
+            PRIMARY KEY (id),
+            KEY compostera_id (compostera_id),
+            KEY usuario_id (usuario_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Inscripciones a turnos
+        $tables[] = "CREATE TABLE {$prefix}inscripciones_turno (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            turno_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha_inscripcion datetime DEFAULT CURRENT_TIMESTAMP,
+            asistio tinyint(1) DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY turno_usuario (turno_id, usuario_id)
+        ) $charset_collate;";
+
+        // Materiales compostables
+        $tables[] = "CREATE TABLE {$prefix}materiales_compostables (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            categoria varchar(50) NOT NULL,
+            compostable tinyint(1) DEFAULT 1,
+            instrucciones text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY categoria (categoria)
+        ) $charset_collate;";
+
+        // Depósitos de compostaje
+        $tables[] = "CREATE TABLE {$prefix}compostaje_depositos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            punto_id bigint(20) UNSIGNED DEFAULT NULL,
+            peso_kg decimal(10,3) NOT NULL,
+            tipo_residuo varchar(100) DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY punto_id (punto_id)
+        ) $charset_collate;";
+
+        // Mantenimiento de composteras
+        $tables[] = "CREATE TABLE {$prefix}compostaje_mantenimiento (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            compostera_id bigint(20) UNSIGNED NOT NULL,
+            tipo varchar(50) NOT NULL,
+            descripcion text DEFAULT NULL,
+            realizado_por bigint(20) UNSIGNED DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY compostera_id (compostera_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Recogidas de compost
+        $tables[] = "CREATE TABLE {$prefix}compostaje_recogidas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            compostera_id bigint(20) UNSIGNED NOT NULL,
+            cantidad_kg decimal(10,2) NOT NULL,
+            calidad varchar(20) DEFAULT 'buena',
+            destino varchar(255) DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY compostera_id (compostera_id)
+        ) $charset_collate;";
+
+        // Estadísticas de compost
+        $tables[] = "CREATE TABLE {$prefix}estadisticas_compost (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            periodo varchar(20) NOT NULL,
+            fecha_inicio date NOT NULL,
+            fecha_fin date NOT NULL,
+            total_kg decimal(12,2) DEFAULT 0,
+            participantes int(11) DEFAULT 0,
+            co2_evitado_kg decimal(10,2) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY periodo (periodo),
+            KEY fecha_inicio (fecha_inicio)
+        ) $charset_collate;";
+
+        // Logros de compostaje
+        $tables[] = "CREATE TABLE {$prefix}logros_compostaje (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            logro varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            fecha_obtenido datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA AYUDA VECINAL (ADICIONALES)
+        // =====================================================
+
+        // Solicitudes de ayuda
+        $tables[] = "CREATE TABLE {$prefix}ayuda_solicitudes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            categoria varchar(50) DEFAULT 'general',
+            urgencia enum('baja','media','alta','urgente') DEFAULT 'media',
+            estado enum('abierta','en_progreso','resuelta','cerrada') DEFAULT 'abierta',
+            ubicacion varchar(500) DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_resolucion datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY categoria (categoria),
+            KEY urgencia (urgencia),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Ofertas de ayuda
+        $tables[] = "CREATE TABLE {$prefix}ayuda_ofertas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            categoria varchar(50) DEFAULT 'general',
+            disponibilidad varchar(255) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activa',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY categoria (categoria),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Respuestas a solicitudes
+        $tables[] = "CREATE TABLE {$prefix}ayuda_respuestas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            solicitud_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            mensaje text NOT NULL,
+            estado enum('pendiente','aceptada','rechazada') DEFAULT 'pendiente',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY solicitud_id (solicitud_id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Valoraciones de ayuda
+        $tables[] = "CREATE TABLE {$prefix}ayuda_valoraciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            solicitud_id bigint(20) UNSIGNED NOT NULL,
+            valorador_id bigint(20) UNSIGNED NOT NULL,
+            valorado_id bigint(20) UNSIGNED NOT NULL,
+            puntuacion int(11) NOT NULL,
+            comentario text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY solicitud_valorador (solicitud_id, valorador_id),
+            KEY valorado_id (valorado_id)
+        ) $charset_collate;";
+
+        // Voluntarios de ayuda vecinal
+        $tables[] = "CREATE TABLE {$prefix}ayuda_vecinal_voluntarios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            habilidades text DEFAULT NULL,
+            disponibilidad varchar(255) DEFAULT NULL,
+            zona varchar(255) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_registro datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Asignaciones de ayuda
+        $tables[] = "CREATE TABLE {$prefix}ayuda_vecinal_asignaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            solicitud_id bigint(20) UNSIGNED NOT NULL,
+            voluntario_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('asignada','en_progreso','completada','cancelada') DEFAULT 'asignada',
+            fecha_asignacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_completado datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY solicitud_id (solicitud_id),
+            KEY voluntario_id (voluntario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Solicitudes de ayuda vecinal (alias)
+        $tables[] = "CREATE TABLE {$prefix}ayuda_vecinal_solicitudes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            tipo varchar(50) DEFAULT 'general',
+            urgente tinyint(1) DEFAULT 0,
+            estado varchar(20) DEFAULT 'pendiente',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Valoraciones ayuda vecinal (alias)
+        $tables[] = "CREATE TABLE {$prefix}ayuda_vecinal_valoraciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            solicitud_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            puntuacion int(11) NOT NULL,
+            comentario text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY solicitud_id (solicitud_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA EMAIL MARKETING
+        // =====================================================
+
+        // Listas de suscriptores
+        $tables[] = "CREATE TABLE {$prefix}em_listas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activa',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Suscriptores
+        $tables[] = "CREATE TABLE {$prefix}em_suscriptores (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            email varchar(255) NOT NULL,
+            nombre varchar(255) DEFAULT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            estado enum('activo','pendiente','dado_baja','rebotado') DEFAULT 'pendiente',
+            token_confirmacion varchar(64) DEFAULT NULL,
+            fecha_suscripcion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_confirmacion datetime DEFAULT NULL,
+            fecha_baja datetime DEFAULT NULL,
+            ip_suscripcion varchar(45) DEFAULT NULL,
+            metadata longtext DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY email (email),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Relación suscriptor-lista
+        $tables[] = "CREATE TABLE {$prefix}em_suscriptor_lista (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            suscriptor_id bigint(20) UNSIGNED NOT NULL,
+            lista_id bigint(20) UNSIGNED NOT NULL,
+            fecha_union datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY suscriptor_lista (suscriptor_id, lista_id),
+            KEY lista_id (lista_id)
+        ) $charset_collate;";
+
+        // Campañas
+        $tables[] = "CREATE TABLE {$prefix}em_campanias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            asunto varchar(255) NOT NULL,
+            contenido_html longtext NOT NULL,
+            contenido_texto longtext DEFAULT NULL,
+            lista_id bigint(20) UNSIGNED DEFAULT NULL,
+            estado enum('borrador','programada','enviando','enviada','pausada') DEFAULT 'borrador',
+            fecha_programada datetime DEFAULT NULL,
+            fecha_envio datetime DEFAULT NULL,
+            total_enviados int(11) DEFAULT 0,
+            total_abiertos int(11) DEFAULT 0,
+            total_clics int(11) DEFAULT 0,
+            total_rebotes int(11) DEFAULT 0,
+            total_bajas int(11) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY lista_id (lista_id),
+            KEY estado (estado),
+            KEY fecha_programada (fecha_programada)
+        ) $charset_collate;";
+
+        // Cola de envío
+        $tables[] = "CREATE TABLE {$prefix}em_cola (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            campania_id bigint(20) UNSIGNED NOT NULL,
+            suscriptor_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('pendiente','enviado','fallido') DEFAULT 'pendiente',
+            intentos int(11) DEFAULT 0,
+            fecha_programada datetime DEFAULT NULL,
+            fecha_envio datetime DEFAULT NULL,
+            error_mensaje text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY campania_id (campania_id),
+            KEY suscriptor_id (suscriptor_id),
+            KEY estado (estado),
+            KEY fecha_programada (fecha_programada)
+        ) $charset_collate;";
+
+        // Tracking de emails
+        $tables[] = "CREATE TABLE {$prefix}em_tracking (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            campania_id bigint(20) UNSIGNED NOT NULL,
+            suscriptor_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('apertura','clic','rebote','baja') NOT NULL,
+            url_clic varchar(500) DEFAULT NULL,
+            ip varchar(45) DEFAULT NULL,
+            user_agent text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY campania_id (campania_id),
+            KEY suscriptor_id (suscriptor_id),
+            KEY tipo (tipo),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Plantillas
+        $tables[] = "CREATE TABLE {$prefix}em_plantillas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            contenido_html longtext NOT NULL,
+            categoria varchar(50) DEFAULT 'general',
+            es_predeterminada tinyint(1) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY categoria (categoria)
+        ) $charset_collate;";
+
+        // Automatizaciones
+        $tables[] = "CREATE TABLE {$prefix}em_automatizaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            trigger_evento varchar(100) NOT NULL,
+            campania_id bigint(20) UNSIGNED DEFAULT NULL,
+            retraso_minutos int(11) DEFAULT 0,
+            condiciones longtext DEFAULT NULL,
+            activa tinyint(1) DEFAULT 1,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY trigger_evento (trigger_evento),
+            KEY activa (activa)
+        ) $charset_collate;";
+
+        // Auto-suscriptores
+        $tables[] = "CREATE TABLE {$prefix}em_auto_suscriptores (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            lista_id bigint(20) UNSIGNED NOT NULL,
+            evento varchar(100) NOT NULL,
+            activo tinyint(1) DEFAULT 1,
+            PRIMARY KEY (id),
+            KEY lista_id (lista_id),
+            KEY evento (evento)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA PRESUPUESTOS PARTICIPATIVOS
+        // =====================================================
+
+        // Procesos de presupuestos participativos
+        $tables[] = "CREATE TABLE {$prefix}pp_procesos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            presupuesto_total decimal(12,2) NOT NULL,
+            fase enum('propuestas','evaluacion','votacion','ejecucion','cerrado') DEFAULT 'propuestas',
+            fecha_inicio_propuestas date DEFAULT NULL,
+            fecha_fin_propuestas date DEFAULT NULL,
+            fecha_inicio_votacion date DEFAULT NULL,
+            fecha_fin_votacion date DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY fase (fase),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Propuestas
+        $tables[] = "CREATE TABLE {$prefix}pp_propuestas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            proceso_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            justificacion text DEFAULT NULL,
+            presupuesto_estimado decimal(12,2) NOT NULL,
+            categoria_id bigint(20) UNSIGNED DEFAULT NULL,
+            ubicacion varchar(500) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            imagenes longtext DEFAULT NULL,
+            documentos longtext DEFAULT NULL,
+            estado enum('borrador','enviada','evaluacion','aprobada','rechazada','votacion','ganadora','descartada') DEFAULT 'borrador',
+            votos_count int(11) DEFAULT 0,
+            apoyos_count int(11) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_envio datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY proceso_id (proceso_id),
+            KEY usuario_id (usuario_id),
+            KEY categoria_id (categoria_id),
+            KEY estado (estado),
+            KEY votos_count (votos_count)
+        ) $charset_collate;";
+
+        // Proyectos (propuestas ganadoras)
+        $tables[] = "CREATE TABLE {$prefix}pp_proyectos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            propuesta_id bigint(20) UNSIGNED NOT NULL,
+            proceso_id bigint(20) UNSIGNED NOT NULL,
+            presupuesto_asignado decimal(12,2) NOT NULL,
+            estado enum('pendiente','planificacion','en_ejecucion','completado','cancelado') DEFAULT 'pendiente',
+            porcentaje_avance int(11) DEFAULT 0,
+            fecha_inicio date DEFAULT NULL,
+            fecha_fin_estimada date DEFAULT NULL,
+            fecha_fin_real date DEFAULT NULL,
+            responsable_id bigint(20) UNSIGNED DEFAULT NULL,
+            notas text DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY propuesta_id (propuesta_id),
+            KEY proceso_id (proceso_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Votos
+        $tables[] = "CREATE TABLE {$prefix}pp_votos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            propuesta_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            proceso_id bigint(20) UNSIGNED NOT NULL,
+            puntos int(11) DEFAULT 1,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY propuesta_usuario (propuesta_id, usuario_id),
+            KEY proceso_id (proceso_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Apoyos (fase propuestas)
+        $tables[] = "CREATE TABLE {$prefix}pp_apoyos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            propuesta_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY propuesta_usuario (propuesta_id, usuario_id)
+        ) $charset_collate;";
+
+        // Categorías
+        $tables[] = "CREATE TABLE {$prefix}pp_categorias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            icono varchar(50) DEFAULT NULL,
+            color varchar(20) DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug)
+        ) $charset_collate;";
+
+        // Comentarios
+        $tables[] = "CREATE TABLE {$prefix}pp_comentarios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            propuesta_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            padre_id bigint(20) UNSIGNED DEFAULT NULL,
+            contenido text NOT NULL,
+            estado varchar(20) DEFAULT 'publicado',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY propuesta_id (propuesta_id),
+            KEY usuario_id (usuario_id),
+            KEY padre_id (padre_id)
+        ) $charset_collate;";
+
+        // Ediciones de propuestas
+        $tables[] = "CREATE TABLE {$prefix}pp_ediciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            propuesta_id bigint(20) UNSIGNED NOT NULL,
+            campo varchar(50) NOT NULL,
+            valor_anterior longtext DEFAULT NULL,
+            valor_nuevo longtext DEFAULT NULL,
+            editado_por bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY propuesta_id (propuesta_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Actualizaciones de proyectos
+        $tables[] = "CREATE TABLE {$prefix}pp_actualizaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            proyecto_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            contenido text NOT NULL,
+            imagenes longtext DEFAULT NULL,
+            porcentaje_avance int(11) DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY proyecto_id (proyecto_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Ejecución de proyectos
+        $tables[] = "CREATE TABLE {$prefix}pp_ejecucion (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            proyecto_id bigint(20) UNSIGNED NOT NULL,
+            concepto varchar(255) NOT NULL,
+            importe decimal(12,2) NOT NULL,
+            tipo enum('gasto','ingreso') DEFAULT 'gasto',
+            fecha date NOT NULL,
+            documento_url varchar(500) DEFAULT NULL,
+            notas text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY proyecto_id (proyecto_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Ciclos de presupuestos
+        $tables[] = "CREATE TABLE {$prefix}pp_ciclos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            proceso_id bigint(20) UNSIGNED NOT NULL,
+            nombre varchar(100) NOT NULL,
+            fecha_inicio date NOT NULL,
+            fecha_fin date NOT NULL,
+            presupuesto decimal(12,2) DEFAULT 0,
+            PRIMARY KEY (id),
+            KEY proceso_id (proceso_id)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA OTROS MÓDULOS
+        // =====================================================
+
+        // Campañas
+        $tables[] = "CREATE TABLE {$prefix}campanias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            objetivo text DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            meta_firmas int(11) DEFAULT NULL,
+            firmas_count int(11) DEFAULT 0,
+            estado enum('borrador','activa','completada','archivada') DEFAULT 'borrador',
+            creador_id bigint(20) UNSIGNED NOT NULL,
+            fecha_inicio date DEFAULT NULL,
+            fecha_fin date DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY creador_id (creador_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Firmas de campañas
+        $tables[] = "CREATE TABLE {$prefix}campanias_firmas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            campania_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            nombre varchar(255) DEFAULT NULL,
+            email varchar(255) DEFAULT NULL,
+            comentario text DEFAULT NULL,
+            es_publica tinyint(1) DEFAULT 1,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY campania_id (campania_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Actualizaciones de campañas
+        $tables[] = "CREATE TABLE {$prefix}campanias_actualizaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            campania_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            contenido text NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY campania_id (campania_id)
+        ) $charset_collate;";
+
+        // Participantes de campañas
+        $tables[] = "CREATE TABLE {$prefix}campanias_participantes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            campania_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            rol varchar(50) DEFAULT 'seguidor',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY campania_usuario (campania_id, usuario_id)
+        ) $charset_collate;";
+
+        // Acciones de campañas
+        $tables[] = "CREATE TABLE {$prefix}campanias_acciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            campania_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tipo varchar(50) NOT NULL,
+            fecha date DEFAULT NULL,
+            ubicacion varchar(500) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'programada',
+            PRIMARY KEY (id),
+            KEY campania_id (campania_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Mapa de actores
+        $tables[] = "CREATE TABLE {$prefix}mapa_actores (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            tipo varchar(50) NOT NULL,
+            descripcion text DEFAULT NULL,
+            ubicacion varchar(500) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            contacto varchar(255) DEFAULT NULL,
+            web varchar(500) DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            creador_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY tipo (tipo),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Personas en mapa de actores
+        $tables[] = "CREATE TABLE {$prefix}mapa_actores_personas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            actor_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            nombre varchar(255) NOT NULL,
+            rol varchar(100) DEFAULT NULL,
+            contacto varchar(255) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY actor_id (actor_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Relaciones entre actores
+        $tables[] = "CREATE TABLE {$prefix}mapa_actores_relaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            actor_origen_id bigint(20) UNSIGNED NOT NULL,
+            actor_destino_id bigint(20) UNSIGNED NOT NULL,
+            tipo_relacion varchar(50) NOT NULL,
+            descripcion text DEFAULT NULL,
+            intensidad int(11) DEFAULT 3,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY actor_origen_id (actor_origen_id),
+            KEY actor_destino_id (actor_destino_id)
+        ) $charset_collate;";
+
+        // Interacciones de actores
+        $tables[] = "CREATE TABLE {$prefix}mapa_actores_interacciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            actor_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo varchar(50) NOT NULL,
+            descripcion text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY actor_id (actor_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Saberes ancestrales
+        $tables[] = "CREATE TABLE {$prefix}saberes_ancestrales (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            tipo enum('tecnica','receta','tradicion','artesania','otro') DEFAULT 'otro',
+            origen varchar(255) DEFAULT NULL,
+            transmisor_id bigint(20) UNSIGNED DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            recursos longtext DEFAULT NULL,
+            estado varchar(20) DEFAULT 'publicado',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY categoria (categoria),
+            KEY tipo (tipo),
+            KEY transmisor_id (transmisor_id)
+        ) $charset_collate;";
+
+        // Saberes (alias)
+        $tables[] = "CREATE TABLE {$prefix}saberes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tipo varchar(50) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            creador_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY tipo (tipo),
+            KEY creador_id (creador_id)
+        ) $charset_collate;";
+
+        // Aprendices de saberes
+        $tables[] = "CREATE TABLE {$prefix}saberes_aprendices (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            saber_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            nivel varchar(20) DEFAULT 'principiante',
+            fecha_inicio datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY saber_usuario (saber_id, usuario_id)
+        ) $charset_collate;";
+
+        // Transmisiones de saberes
+        $tables[] = "CREATE TABLE {$prefix}saberes_transmisiones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            saber_id bigint(20) UNSIGNED NOT NULL,
+            maestro_id bigint(20) UNSIGNED NOT NULL,
+            aprendiz_id bigint(20) UNSIGNED NOT NULL,
+            fecha date NOT NULL,
+            duracion_horas decimal(4,2) DEFAULT NULL,
+            notas text DEFAULT NULL,
+            valoracion int(11) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY saber_id (saber_id),
+            KEY maestro_id (maestro_id),
+            KEY aprendiz_id (aprendiz_id)
+        ) $charset_collate;";
+
+        // Documentación legal
+        $tables[] = "CREATE TABLE {$prefix}documentacion_legal (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            contenido longtext NOT NULL,
+            categoria_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo varchar(50) DEFAULT 'documento',
+            archivo_url varchar(500) DEFAULT NULL,
+            version varchar(20) DEFAULT '1.0',
+            estado varchar(20) DEFAULT 'publicado',
+            autor_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_vigencia date DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY categoria_id (categoria_id),
+            KEY tipo (tipo),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Categorías de documentación legal
+        $tables[] = "CREATE TABLE {$prefix}documentacion_legal_categorias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            padre_id bigint(20) UNSIGNED DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY padre_id (padre_id)
+        ) $charset_collate;";
+
+        // Comentarios en documentación legal
+        $tables[] = "CREATE TABLE {$prefix}documentacion_legal_comentarios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            documento_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            contenido text NOT NULL,
+            estado varchar(20) DEFAULT 'pendiente',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY documento_id (documento_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Favoritos/Guardados de documentación
+        $tables[] = "CREATE TABLE {$prefix}documentacion_legal_favoritos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            documento_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY documento_usuario (documento_id, usuario_id)
+        ) $charset_collate;";
+
+        // Alias guardados
+        $tables[] = "CREATE TABLE {$prefix}documentacion_legal_guardados (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            documento_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY documento_usuario (documento_id, usuario_id)
+        ) $charset_collate;";
+
+        // Transparencia datos
+        $tables[] = "CREATE TABLE {$prefix}transparencia_datos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            categoria varchar(100) NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            valor varchar(255) DEFAULT NULL,
+            unidad varchar(50) DEFAULT NULL,
+            periodo varchar(50) DEFAULT NULL,
+            archivo_url varchar(500) DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'publicado',
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY categoria (categoria),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Documentos de transparencia
+        $tables[] = "CREATE TABLE {$prefix}transparencia_documentos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            archivo_url varchar(500) NOT NULL,
+            tipo_archivo varchar(50) DEFAULT NULL,
+            tamano_bytes bigint(20) DEFAULT NULL,
+            descargas int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'publicado',
+            fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY categoria (categoria),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Solicitudes de transparencia
+        $tables[] = "CREATE TABLE {$prefix}transparencia_solicitudes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            estado enum('pendiente','en_proceso','respondida','rechazada') DEFAULT 'pendiente',
+            respuesta text DEFAULT NULL,
+            documentos_respuesta longtext DEFAULT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_respuesta datetime DEFAULT NULL,
+            respondido_por bigint(20) UNSIGNED DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Seguimiento de denuncias
+        $tables[] = "CREATE TABLE {$prefix}seguimiento_denuncias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            codigo varchar(50) NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            denunciante_id bigint(20) UNSIGNED DEFAULT NULL,
+            anonima tinyint(1) DEFAULT 0,
+            estado enum('recibida','en_investigacion','resuelta','archivada') DEFAULT 'recibida',
+            prioridad enum('baja','media','alta','urgente') DEFAULT 'media',
+            asignado_a bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_denuncia datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_resolucion datetime DEFAULT NULL,
+            resolucion text DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY codigo (codigo),
+            KEY denunciante_id (denunciante_id),
+            KEY estado (estado),
+            KEY asignado_a (asignado_a)
+        ) $charset_collate;";
+
+        // Eventos de seguimiento
+        $tables[] = "CREATE TABLE {$prefix}seguimiento_denuncias_eventos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            denuncia_id bigint(20) UNSIGNED NOT NULL,
+            tipo varchar(50) NOT NULL,
+            descripcion text NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY denuncia_id (denuncia_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Participantes en denuncias
+        $tables[] = "CREATE TABLE {$prefix}seguimiento_denuncias_participantes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            denuncia_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            rol varchar(50) NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY denuncia_id (denuncia_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Plantillas de denuncias
+        $tables[] = "CREATE TABLE {$prefix}seguimiento_denuncias_plantillas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            campos longtext NOT NULL,
+            activa tinyint(1) DEFAULT 1,
+            PRIMARY KEY (id),
+            KEY categoria (categoria)
+        ) $charset_collate;";
+
+        // Trading IA
+        $tables[] = "CREATE TABLE {$prefix}trading_ia_trades (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('compra','venta') NOT NULL,
+            activo varchar(50) NOT NULL,
+            cantidad decimal(20,8) NOT NULL,
+            precio decimal(20,8) NOT NULL,
+            total decimal(20,8) NOT NULL,
+            estado varchar(20) DEFAULT 'ejecutado',
+            estrategia varchar(100) DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY activo (activo),
+            KEY estado (estado),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Portfolio de trading
+        $tables[] = "CREATE TABLE {$prefix}trading_ia_portfolio (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            activo varchar(50) NOT NULL,
+            cantidad decimal(20,8) NOT NULL,
+            precio_medio decimal(20,8) DEFAULT 0,
+            valor_actual decimal(20,8) DEFAULT 0,
+            ganancia_perdida decimal(20,8) DEFAULT 0,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_activo (usuario_id, activo)
+        ) $charset_collate;";
+
+        // Decisiones de IA
+        $tables[] = "CREATE TABLE {$prefix}trading_ia_decisiones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            activo varchar(50) NOT NULL,
+            accion_recomendada enum('comprar','vender','mantener') NOT NULL,
+            confianza decimal(5,2) NOT NULL,
+            razonamiento text DEFAULT NULL,
+            indicadores_usados longtext DEFAULT NULL,
+            ejecutada tinyint(1) DEFAULT 0,
+            trade_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY activo (activo),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Alertas de trading
+        $tables[] = "CREATE TABLE {$prefix}trading_ia_alertas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            activo varchar(50) NOT NULL,
+            tipo varchar(50) NOT NULL,
+            condicion varchar(255) NOT NULL,
+            valor_objetivo decimal(20,8) DEFAULT NULL,
+            activa tinyint(1) DEFAULT 1,
+            disparada tinyint(1) DEFAULT 0,
+            fecha_disparo datetime DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY activo (activo),
+            KEY activa (activa)
+        ) $charset_collate;";
+
+        // Indicadores de trading
+        $tables[] = "CREATE TABLE {$prefix}trading_ia_indicadores (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            activo varchar(50) NOT NULL,
+            indicador varchar(50) NOT NULL,
+            valor decimal(20,8) NOT NULL,
+            periodo varchar(20) DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY activo (activo),
+            KEY indicador (indicador),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Reglas de trading
+        $tables[] = "CREATE TABLE {$prefix}trading_ia_reglas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            nombre varchar(255) NOT NULL,
+            condiciones longtext NOT NULL,
+            acciones longtext NOT NULL,
+            activa tinyint(1) DEFAULT 1,
+            ejecuciones int(11) DEFAULT 0,
+            ultima_ejecucion datetime DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY activa (activa)
+        ) $charset_collate;";
+
+        // Ajustes de trading
+        $tables[] = "CREATE TABLE {$prefix}trading_ia_ajustes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            clave varchar(100) NOT NULL,
+            valor longtext DEFAULT NULL,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_clave (usuario_id, clave)
+        ) $charset_collate;";
+
+        // Empresarial proyectos
+        $tables[] = "CREATE TABLE {$prefix}empresarial_proyectos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            cliente_id bigint(20) UNSIGNED DEFAULT NULL,
+            responsable_id bigint(20) UNSIGNED DEFAULT NULL,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_inicio date DEFAULT NULL,
+            fecha_fin date DEFAULT NULL,
+            presupuesto decimal(12,2) DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY cliente_id (cliente_id),
+            KEY responsable_id (responsable_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Contactos empresariales
+        $tables[] = "CREATE TABLE {$prefix}empresarial_contactos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            email varchar(255) DEFAULT NULL,
+            telefono varchar(50) DEFAULT NULL,
+            empresa varchar(255) DEFAULT NULL,
+            cargo varchar(100) DEFAULT NULL,
+            notas text DEFAULT NULL,
+            propietario_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY propietario_id (propietario_id),
+            KEY email (email)
+        ) $charset_collate;";
+
+        // Multimedia
+        $tables[] = "CREATE TABLE {$prefix}multimedia (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tipo enum('imagen','video','audio','documento') NOT NULL,
+            url varchar(500) NOT NULL,
+            thumbnail_url varchar(500) DEFAULT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            album_id bigint(20) UNSIGNED DEFAULT NULL,
+            tamano_bytes bigint(20) DEFAULT NULL,
+            mime_type varchar(100) DEFAULT NULL,
+            vistas int(11) DEFAULT 0,
+            likes int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'publicado',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY album_id (album_id),
+            KEY tipo (tipo),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Álbumes multimedia
+        $tables[] = "CREATE TABLE {$prefix}multimedia_albumes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            portada_id bigint(20) UNSIGNED DEFAULT NULL,
+            privacidad enum('publico','privado','amigos') DEFAULT 'publico',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Categorías multimedia
+        $tables[] = "CREATE TABLE {$prefix}multimedia_categorias (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug)
+        ) $charset_collate;";
+
+        // Tags multimedia
+        $tables[] = "CREATE TABLE {$prefix}multimedia_tags (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            multimedia_id bigint(20) UNSIGNED NOT NULL,
+            tag varchar(100) NOT NULL,
+            PRIMARY KEY (id),
+            KEY multimedia_id (multimedia_id),
+            KEY tag (tag)
+        ) $charset_collate;";
+
+        // Likes multimedia
+        $tables[] = "CREATE TABLE {$prefix}multimedia_likes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            multimedia_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY multimedia_usuario (multimedia_id, usuario_id)
+        ) $charset_collate;";
+
+        // Comentarios multimedia
+        $tables[] = "CREATE TABLE {$prefix}multimedia_comentarios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            multimedia_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            contenido text NOT NULL,
+            padre_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY multimedia_id (multimedia_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Reportes multimedia
+        $tables[] = "CREATE TABLE {$prefix}multimedia_reportes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            multimedia_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            razon varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            estado varchar(20) DEFAULT 'pendiente',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY multimedia_id (multimedia_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Recetas
+        $tables[] = "CREATE TABLE {$prefix}recetas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            ingredientes longtext NOT NULL,
+            instrucciones longtext NOT NULL,
+            tiempo_preparacion int(11) DEFAULT NULL,
+            tiempo_coccion int(11) DEFAULT NULL,
+            porciones int(11) DEFAULT NULL,
+            dificultad enum('facil','media','dificil') DEFAULT 'media',
+            categoria varchar(100) DEFAULT NULL,
+            imagen_url varchar(500) DEFAULT NULL,
+            autor_id bigint(20) UNSIGNED NOT NULL,
+            valoracion_media decimal(3,2) DEFAULT 0,
+            estado varchar(20) DEFAULT 'publicada',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY autor_id (autor_id),
+            KEY categoria (categoria),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Valoraciones de recetas
+        $tables[] = "CREATE TABLE {$prefix}recetas_valoraciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            receta_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            valoracion int(11) NOT NULL,
+            comentario text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY receta_usuario (receta_id, usuario_id)
+        ) $charset_collate;";
+
+        // Socios cuotas
+        $tables[] = "CREATE TABLE {$prefix}socios_cuotas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            socio_id bigint(20) UNSIGNED NOT NULL,
+            concepto varchar(255) NOT NULL,
+            importe decimal(10,2) NOT NULL,
+            periodo_inicio date NOT NULL,
+            periodo_fin date NOT NULL,
+            estado enum('pendiente','pagada','vencida','cancelada') DEFAULT 'pendiente',
+            fecha_vencimiento date NOT NULL,
+            fecha_pago datetime DEFAULT NULL,
+            metodo_pago varchar(50) DEFAULT NULL,
+            referencia_pago varchar(100) DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY socio_id (socio_id),
+            KEY estado (estado),
+            KEY fecha_vencimiento (fecha_vencimiento)
+        ) $charset_collate;";
+
+        // Pagos de socios
+        $tables[] = "CREATE TABLE {$prefix}socios_pagos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            socio_id bigint(20) UNSIGNED NOT NULL,
+            cuota_id bigint(20) UNSIGNED DEFAULT NULL,
+            importe decimal(10,2) NOT NULL,
+            metodo varchar(50) NOT NULL,
+            referencia varchar(100) DEFAULT NULL,
+            estado varchar(20) DEFAULT 'completado',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY socio_id (socio_id),
+            KEY cuota_id (cuota_id)
+        ) $charset_collate;";
+
+        // Historial de socios
+        $tables[] = "CREATE TABLE {$prefix}socios_historial (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            socio_id bigint(20) UNSIGNED NOT NULL,
+            accion varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            datos_anteriores longtext DEFAULT NULL,
+            datos_nuevos longtext DEFAULT NULL,
+            realizado_por bigint(20) UNSIGNED DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY socio_id (socio_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Beneficios de socios
+        $tables[] = "CREATE TABLE {$prefix}socios_beneficios (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tipo_socio varchar(50) DEFAULT 'todos',
+            descuento_porcentaje decimal(5,2) DEFAULT NULL,
+            activo tinyint(1) DEFAULT 1,
+            fecha_inicio date DEFAULT NULL,
+            fecha_fin date DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY tipo_socio (tipo_socio),
+            KEY activo (activo)
+        ) $charset_collate;";
+
+        // Tipos de socios
+        $tables[] = "CREATE TABLE {$prefix}socios_tipos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text DEFAULT NULL,
+            cuota_anual decimal(10,2) DEFAULT 0,
+            beneficios longtext DEFAULT NULL,
+            activo tinyint(1) DEFAULT 1,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug)
+        ) $charset_collate;";
+
+        // Transacciones de socios
+        $tables[] = "CREATE TABLE {$prefix}socios_transacciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            socio_id bigint(20) UNSIGNED NOT NULL,
+            tipo varchar(50) NOT NULL,
+            concepto varchar(255) NOT NULL,
+            importe decimal(10,2) NOT NULL,
+            saldo_anterior decimal(10,2) DEFAULT 0,
+            saldo_posterior decimal(10,2) DEFAULT 0,
+            referencia varchar(100) DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY socio_id (socio_id),
+            KEY tipo (tipo),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Votaciones
+        $tables[] = "CREATE TABLE {$prefix}votaciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            tipo enum('simple','multiple','ranking') DEFAULT 'simple',
+            opciones longtext NOT NULL,
+            fecha_inicio datetime NOT NULL,
+            fecha_fin datetime NOT NULL,
+            estado enum('borrador','activa','cerrada','cancelada') DEFAULT 'borrador',
+            creador_id bigint(20) UNSIGNED NOT NULL,
+            requiere_autenticacion tinyint(1) DEFAULT 1,
+            permite_comentarios tinyint(1) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY creador_id (creador_id),
+            KEY estado (estado),
+            KEY fecha_inicio (fecha_inicio),
+            KEY fecha_fin (fecha_fin)
+        ) $charset_collate;";
+
+        // Votos
+        $tables[] = "CREATE TABLE {$prefix}votos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            votacion_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            opcion_index int(11) NOT NULL,
+            valor int(11) DEFAULT 1,
+            ip varchar(45) DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY votacion_id (votacion_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Propuestas (participación)
+        $tables[] = "CREATE TABLE {$prefix}propuestas (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text NOT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            estado enum('borrador','publicada','en_debate','votacion','aprobada','rechazada','archivada') DEFAULT 'borrador',
+            apoyos_count int(11) DEFAULT 0,
+            comentarios_count int(11) DEFAULT 0,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY categoria (categoria),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        // Apoyos a propuestas
+        $tables[] = "CREATE TABLE {$prefix}apoyos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            propuesta_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY propuesta_usuario (propuesta_id, usuario_id)
+        ) $charset_collate;";
+
+        // Red social posts (para módulo genérico)
+        $tables[] = "CREATE TABLE {$prefix}red_social_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            contenido text NOT NULL,
+            tipo varchar(50) DEFAULT 'texto',
+            adjuntos longtext DEFAULT NULL,
+            likes_count int(11) DEFAULT 0,
+            comentarios_count int(11) DEFAULT 0,
+            estado varchar(20) DEFAULT 'publicado',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY fecha_creacion (fecha_creacion)
+        ) $charset_collate;";
+
+        // Interacciones de red social
+        $tables[] = "CREATE TABLE {$prefix}red_social_interacciones (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('like','comentario','compartir') NOT NULL,
+            contenido text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY post_id (post_id),
+            KEY usuario_id (usuario_id),
+            KEY tipo (tipo)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA PRESUPUESTOS PARTICIPATIVOS
+        // =====================================================
+
+        // Ciclos de presupuestos participativos
+        $tables[] = "CREATE TABLE {$prefix}pp_ciclos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            presupuesto_total decimal(12,2) DEFAULT 0,
+            fecha_inicio date NOT NULL,
+            fecha_fin date NOT NULL,
+            fase_actual varchar(50) DEFAULT 'propuestas',
+            estado varchar(50) DEFAULT 'activo',
+            configuracion longtext DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY fase_actual (fase_actual),
+            KEY fecha_inicio (fecha_inicio)
+        ) $charset_collate;";
+
+        // Proyectos de presupuestos participativos
+        $tables[] = "CREATE TABLE {$prefix}pp_proyectos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            ciclo_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            presupuesto decimal(12,2) DEFAULT 0,
+            categoria varchar(100) DEFAULT 'general',
+            ubicacion varchar(255) DEFAULT NULL,
+            imagen varchar(500) DEFAULT NULL,
+            votos_count int(11) DEFAULT 0,
+            estado varchar(50) DEFAULT 'borrador',
+            motivo_rechazo text DEFAULT NULL,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY ciclo_id (ciclo_id),
+            KEY usuario_id (usuario_id),
+            KEY categoria (categoria),
+            KEY estado (estado),
+            KEY votos_count (votos_count)
+        ) $charset_collate;";
+
+        // Votos de presupuestos participativos
+        $tables[] = "CREATE TABLE {$prefix}pp_votos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            ciclo_id bigint(20) UNSIGNED NOT NULL,
+            proyecto_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            puntos int(11) DEFAULT 1,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY voto_unico (ciclo_id, proyecto_id, usuario_id),
+            KEY ciclo_id (ciclo_id),
+            KEY proyecto_id (proyecto_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
         return $tables;
     }
 

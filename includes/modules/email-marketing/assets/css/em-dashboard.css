@@ -1,0 +1,659 @@
+/**
+ * Email Marketing Dashboard Styles
+ *
+ * Estilos para los tabs de dashboard del usuario
+ */
+
+/* =========================================================================
+   Variables y Reset
+   ========================================================================= */
+
+.em-dashboard-tab {
+    --em-primary: #3b82f6;
+    --em-primary-hover: #2563eb;
+    --em-success: #10b981;
+    --em-warning: #f59e0b;
+    --em-danger: #ef4444;
+    --em-gray-50: #f9fafb;
+    --em-gray-100: #f3f4f6;
+    --em-gray-200: #e5e7eb;
+    --em-gray-300: #d1d5db;
+    --em-gray-400: #9ca3af;
+    --em-gray-500: #6b7280;
+    --em-gray-600: #4b5563;
+    --em-gray-700: #374151;
+    --em-gray-800: #1f2937;
+    --em-radius: 8px;
+    --em-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --em-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* =========================================================================
+   Header del Tab
+   ========================================================================= */
+
+.em-tab-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--em-gray-200);
+}
+
+.em-tab-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--em-gray-800);
+}
+
+.em-tab-descripcion {
+    margin: 0;
+    color: var(--em-gray-500);
+    font-size: 0.95rem;
+}
+
+/* =========================================================================
+   Estadísticas Grid
+   ========================================================================= */
+
+.em-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.em-stat-card {
+    background: var(--em-gray-50);
+    border-radius: var(--em-radius);
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px solid var(--em-gray-200);
+}
+
+.em-stat-numero {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--em-primary);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.em-stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--em-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* =========================================================================
+   Secciones
+   ========================================================================= */
+
+.em-seccion {
+    margin-bottom: 2rem;
+}
+
+.em-seccion h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--em-gray-700);
+}
+
+.em-seccion-peligro {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--em-gray-200);
+}
+
+.em-seccion-peligro h4 {
+    color: var(--em-danger);
+}
+
+/* =========================================================================
+   Listas Grid
+   ========================================================================= */
+
+.em-listas-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.em-lista-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--em-gray-200);
+    border-radius: var(--em-radius);
+    padding: 1rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.em-lista-card:hover {
+    border-color: var(--em-primary);
+    box-shadow: var(--em-shadow);
+}
+
+.em-lista-activa {
+    border-left: 3px solid var(--em-success);
+}
+
+.em-lista-disponible {
+    border-left: 3px solid var(--em-gray-300);
+}
+
+.em-lista-info {
+    flex: 1;
+}
+
+.em-lista-nombre {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--em-gray-800);
+}
+
+.em-lista-descripcion {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    color: var(--em-gray-500);
+}
+
+.em-lista-fecha,
+.em-lista-suscriptores {
+    font-size: 0.8rem;
+    color: var(--em-gray-400);
+}
+
+.em-lista-acciones {
+    margin-left: 1rem;
+}
+
+/* =========================================================================
+   Toggle Switch
+   ========================================================================= */
+
+.em-toggle {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    cursor: pointer;
+}
+
+.em-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.em-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--em-gray-300);
+    transition: 0.3s;
+    border-radius: 26px;
+}
+
+.em-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: var(--em-shadow);
+}
+
+.em-toggle input:checked + .em-toggle-slider {
+    background-color: var(--em-success);
+}
+
+.em-toggle input:checked + .em-toggle-slider:before {
+    transform: translateX(22px);
+}
+
+.em-toggle input:focus + .em-toggle-slider {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* =========================================================================
+   Formularios
+   ========================================================================= */
+
+.em-form {
+    max-width: 600px;
+}
+
+.em-form-seccion {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--em-gray-100);
+}
+
+.em-form-seccion:last-of-type {
+    border-bottom: none;
+}
+
+.em-form-seccion h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--em-gray-700);
+}
+
+.em-form-ayuda {
+    margin: 0 0 1rem 0;
+    font-size: 0.875rem;
+    color: var(--em-gray-500);
+}
+
+/* Radio Group */
+.em-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.em-radio-group.em-radio-inline {
+    flex-direction: row;
+    gap: 1.5rem;
+}
+
+.em-radio-option,
+.em-checkbox-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--em-gray-50);
+    border: 1px solid var(--em-gray-200);
+    border-radius: var(--em-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.em-radio-option:hover,
+.em-checkbox-option:hover {
+    border-color: var(--em-primary);
+    background: #fff;
+}
+
+.em-radio-option input,
+.em-checkbox-option input {
+    margin-top: 0.25rem;
+    accent-color: var(--em-primary);
+}
+
+.em-radio-label,
+.em-checkbox-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.em-radio-label strong,
+.em-checkbox-label strong {
+    font-weight: 600;
+    color: var(--em-gray-800);
+}
+
+.em-radio-label span,
+.em-checkbox-label span {
+    font-size: 0.85rem;
+    color: var(--em-gray-500);
+}
+
+.em-radio-inline .em-radio-label {
+    flex-direction: row;
+}
+
+.em-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Acciones del formulario */
+.em-form-acciones {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.em-form-mensaje {
+    font-size: 0.875rem;
+    color: var(--em-success);
+}
+
+.em-form-mensaje.em-error {
+    color: var(--em-danger);
+}
+
+/* =========================================================================
+   Botones
+   ========================================================================= */
+
+.em-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: var(--em-radius);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.em-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.em-btn-primary {
+    background: var(--em-primary);
+    color: #fff;
+    border-color: var(--em-primary);
+}
+
+.em-btn-primary:hover {
+    background: var(--em-primary-hover);
+    border-color: var(--em-primary-hover);
+}
+
+.em-btn-secundario {
+    background: #fff;
+    color: var(--em-gray-700);
+    border-color: var(--em-gray-300);
+}
+
+.em-btn-secundario:hover {
+    background: var(--em-gray-50);
+    border-color: var(--em-gray-400);
+}
+
+.em-btn-danger {
+    background: #fff;
+    color: var(--em-danger);
+    border-color: var(--em-danger);
+}
+
+.em-btn-danger:hover {
+    background: var(--em-danger);
+    color: #fff;
+}
+
+.em-btn:disabled,
+.em-btn.em-loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* =========================================================================
+   Historial de Emails
+   ========================================================================= */
+
+.em-historial-filtros {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.em-select {
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--em-gray-300);
+    border-radius: var(--em-radius);
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    cursor: pointer;
+    min-width: 180px;
+}
+
+.em-select:focus {
+    outline: none;
+    border-color: var(--em-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.em-historial-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.em-email-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid var(--em-gray-200);
+    border-radius: var(--em-radius);
+    transition: all 0.2s ease;
+}
+
+.em-email-item:hover {
+    border-color: var(--em-primary);
+    box-shadow: var(--em-shadow);
+}
+
+.em-email-item.em-no-leido {
+    background: var(--em-gray-50);
+    border-left: 3px solid var(--em-primary);
+}
+
+.em-email-item.em-leido {
+    opacity: 0.85;
+}
+
+.em-email-indicador {
+    flex-shrink: 0;
+    width: 24px;
+    color: var(--em-gray-400);
+}
+
+.em-email-item.em-no-leido .em-email-indicador {
+    color: var(--em-primary);
+}
+
+.em-email-item.em-leido .em-email-indicador {
+    color: var(--em-success);
+}
+
+.em-email-contenido {
+    flex: 1;
+    min-width: 0;
+}
+
+.em-email-asunto {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--em-gray-800);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.em-email-item.em-leido .em-email-asunto {
+    font-weight: 500;
+}
+
+.em-email-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--em-gray-500);
+}
+
+.em-email-campania {
+    background: var(--em-gray-100);
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+}
+
+.em-email-acciones {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.em-email-clicks {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--em-gray-400);
+}
+
+.em-email-clicks .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* =========================================================================
+   Paginación
+   ========================================================================= */
+
+.em-paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--em-gray-200);
+}
+
+.em-paginacion-info {
+    font-size: 0.875rem;
+    color: var(--em-gray-500);
+}
+
+/* =========================================================================
+   Estados vacíos
+   ========================================================================= */
+
+.em-empty-state,
+.em-no-suscriptor {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--em-gray-50);
+    border-radius: var(--em-radius);
+    border: 1px dashed var(--em-gray-300);
+}
+
+.em-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--em-gray-300);
+    margin-bottom: 1rem;
+}
+
+.em-empty-state p,
+.em-no-suscriptor p {
+    margin: 0 0 1rem 0;
+    color: var(--em-gray-500);
+}
+
+.em-empty-message {
+    color: var(--em-gray-500);
+    font-style: italic;
+    padding: 1rem;
+    background: var(--em-gray-50);
+    border-radius: var(--em-radius);
+    text-align: center;
+}
+
+/* =========================================================================
+   Responsive
+   ========================================================================= */
+
+@media (max-width: 768px) {
+    .em-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .em-lista-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .em-lista-acciones {
+        margin-left: 0;
+        align-self: flex-end;
+    }
+
+    .em-historial-filtros {
+        flex-direction: column;
+    }
+
+    .em-select {
+        width: 100%;
+    }
+
+    .em-email-item {
+        flex-wrap: wrap;
+    }
+
+    .em-email-contenido {
+        flex-basis: calc(100% - 40px);
+    }
+
+    .em-email-acciones {
+        flex-basis: 100%;
+        justify-content: flex-end;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px dashed var(--em-gray-200);
+    }
+
+    .em-radio-group.em-radio-inline {
+        flex-direction: column;
+    }
+
+    .em-form-acciones {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .em-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .em-tab-header h3 {
+        font-size: 1.25rem;
+    }
+
+    .em-stat-numero {
+        font-size: 1.75rem;
+    }
+
+    .em-paginacion {
+        flex-direction: column;
+    }
+}

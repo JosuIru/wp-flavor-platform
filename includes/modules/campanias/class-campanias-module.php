@@ -56,8 +56,23 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
         $this->register_shortcodes();
         $this->register_ajax_handlers();
         $this->register_rest_routes();
+        $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
+        $this->cargar_dashboard_tab();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+    }
+
+    /**
+     * Carga el Dashboard Tab para el panel de usuario
+     */
+    private function cargar_dashboard_tab() {
+        $archivo_dashboard_tab = dirname(__FILE__) . '/class-campanias-dashboard-tab.php';
+        if (file_exists($archivo_dashboard_tab)) {
+            require_once $archivo_dashboard_tab;
+            Flavor_Campanias_Dashboard_Tab::get_instance();
+        }
     }
 
     /**
@@ -1108,5 +1123,1359 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                 'respuesta' => 'Si, como organizador o coordinador puedes programar concentraciones, charlas, entregas de firmas y otras acciones.',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'campanias',
+            'title'    => __('Campañas Ciudadanas', 'flavor-chat-ia'),
+            'subtitle' => __('Coordina acciones colectivas y movilización social', 'flavor-chat-ia'),
+            'icon'     => '📣',
+            'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_campanias',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'objetivo'    => ['type' => 'textarea', 'label' => __('Objetivo', 'flavor-chat-ia')],
+                'fecha_inicio'=> ['type' => 'date', 'label' => __('Fecha inicio', 'flavor-chat-ia')],
+                'fecha_fin'   => ['type' => 'date', 'label' => __('Fecha fin', 'flavor-chat-ia')],
+                'meta_firmas' => ['type' => 'number', 'label' => __('Meta de firmas', 'flavor-chat-ia')],
+                'estado'      => ['type' => 'select', 'label' => __('Estado', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'borrador'    => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'activa'      => ['label' => __('Activa', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'pausada'     => ['label' => __('Pausada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'finalizada'  => ['label' => __('Finalizada', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✅'],
+                'cancelada'   => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+            ],
+
+            'stats' => [
+                [
+                    'key'   => 'total_campanias',
+                    'label' => __('Campañas', 'flavor-chat-ia'),
+                    'icon'  => '📣',
+                    'color' => 'rose',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_campanias",
+                ],
+                [
+                    'key'   => 'campanias_activas',
+                    'label' => __('Activas', 'flavor-chat-ia'),
+                    'icon'  => '🟢',
+                    'color' => 'green',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_campanias WHERE estado = 'activa'",
+                ],
+                [
+                    'key'   => 'total_firmas',
+                    'label' => __('Firmas', 'flavor-chat-ia'),
+                    'icon'  => '✍️',
+                    'color' => 'blue',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_campanias_firmas",
+                ],
+                [
+                    'key'   => 'total_acciones',
+                    'label' => __('Acciones', 'flavor-chat-ia'),
+                    'icon'  => '📅',
+                    'color' => 'purple',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_campanias_acciones",
+                ],
+            ],
+
+            'card' => [
+                'layout'      => 'vertical',
+                'image_field' => 'imagen',
+                'title_field' => 'titulo',
+                'meta_fields' => ['fecha_inicio', 'meta_firmas'],
+                'badge_field' => 'estado',
+                'show_author' => true,
+            ],
+
+            'tabs' => [
+                'listado' => [
+                    'label'   => __('Campañas', 'flavor-chat-ia'),
+                    'icon'    => '📣',
+                    'content' => 'template:campanias/_listado.php',
+                ],
+                'mis-campanias' => [
+                    'label'   => __('Mis campañas', 'flavor-chat-ia'),
+                    'icon'    => '👤',
+                    'content' => 'shortcode:campanias_mis_campanias',
+                ],
+                'firmar' => [
+                    'label'   => __('Firmar', 'flavor-chat-ia'),
+                    'icon'    => '✍️',
+                    'content' => 'shortcode:campanias_firmar',
+                ],
+                'acciones' => [
+                    'label'   => __('Acciones', 'flavor-chat-ia'),
+                    'icon'    => '📅',
+                    'content' => 'shortcode:campanias_acciones',
+                ],
+            ],
+
+            'archive' => [
+                'columns'       => 3,
+                'per_page'      => 12,
+                'order_by'      => 'fecha_inicio',
+                'order'         => 'DESC',
+                'filterable_by' => ['estado', 'categoria'],
+            ],
+
+            'dashboard' => [
+                'widgets' => [
+                    'mis_campanias'  => ['type' => 'list', 'title' => __('Mis campañas', 'flavor-chat-ia')],
+                    'firmas_recientes' => ['type' => 'activity', 'title' => __('Últimas firmas', 'flavor-chat-ia')],
+                ],
+                'actions' => [
+                    'nueva_campania' => [
+                        'label' => __('Nueva campaña', 'flavor-chat-ia'),
+                        'icon'  => '➕',
+                        'modal' => 'campanias-nueva',
+                    ],
+                ],
+            ],
+
+            'features' => [
+                'has_archive'    => true,
+                'has_single'     => true,
+                'has_dashboard'  => true,
+                'has_search'     => true,
+                'has_comments'   => true,
+                'has_categories' => true,
+                'has_firmas'     => true,
+                'has_acciones'   => true,
+            ],
+        ];
+    }
+
+    /**
+     * Configuracion del panel de admin para el Panel Unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'campanias',
+            'label' => __('Campanias', 'flavor-chat-ia'),
+            'icon' => 'dashicons-megaphone',
+            'capability' => 'manage_options',
+            'categoria' => 'comunidad',
+            'paginas' => [
+                [
+                    'slug' => 'campanias-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'campanias-listado',
+                    'titulo' => __('Listado', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                    'badge' => [$this, 'contar_campanias_pendientes'],
+                ],
+                [
+                    'slug' => 'campanias-firmas',
+                    'titulo' => __('Firmas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_firmas'],
+                ],
+                [
+                    'slug' => 'campanias-config',
+                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'estadisticas' => [$this, 'get_admin_estadisticas'],
+            'dashboard_widget' => [$this, 'render_admin_widget'],
+        ];
+    }
+
+    /**
+     * Cuenta campanias pendientes de aprobacion para el badge
+     *
+     * @return int
+     */
+    public function contar_campanias_pendientes() {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_campanias';
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'planificada'");
+    }
+
+    /**
+     * Estadisticas para el panel unificado
+     *
+     * @return array
+     */
+    public function get_admin_estadisticas() {
+        global $wpdb;
+        $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
+        $tabla_firmas = $wpdb->prefix . 'flavor_campanias_firmas';
+
+        $total_campanias = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_campanias");
+        $campanias_activas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'activa'");
+        $total_firmas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_firmas");
+        $campanias_exitosas = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'completada' AND firmas_actuales >= objetivo_firmas AND objetivo_firmas > 0"
+        );
+
+        return [
+            [
+                'icon' => 'dashicons-megaphone',
+                'valor' => $total_campanias,
+                'label' => __('Total campanias', 'flavor-chat-ia'),
+                'color' => 'blue',
+                'enlace' => admin_url('admin.php?page=campanias-listado'),
+            ],
+            [
+                'icon' => 'dashicons-yes-alt',
+                'valor' => $campanias_activas,
+                'label' => __('Campanias activas', 'flavor-chat-ia'),
+                'color' => 'green',
+                'enlace' => admin_url('admin.php?page=campanias-listado&estado=activa'),
+            ],
+            [
+                'icon' => 'dashicons-edit',
+                'valor' => $total_firmas,
+                'label' => __('Total firmas', 'flavor-chat-ia'),
+                'color' => 'purple',
+                'enlace' => admin_url('admin.php?page=campanias-firmas'),
+            ],
+            [
+                'icon' => 'dashicons-awards',
+                'valor' => $campanias_exitosas,
+                'label' => __('Campanias exitosas', 'flavor-chat-ia'),
+                'color' => 'gold',
+            ],
+        ];
+    }
+
+    /**
+     * Widget para el dashboard del panel unificado
+     */
+    public function render_admin_widget() {
+        global $wpdb;
+        $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
+
+        $campanias_recientes = $wpdb->get_results(
+            "SELECT id, titulo, estado, firmas_actuales, objetivo_firmas
+             FROM $tabla_campanias
+             ORDER BY created_at DESC
+             LIMIT 5"
+        );
+        ?>
+        <div class="flavor-admin-widget-campanias">
+            <?php if (empty($campanias_recientes)): ?>
+                <p class="flavor-empty-state"><?php _e('No hay campanias registradas.', 'flavor-chat-ia'); ?></p>
+            <?php else: ?>
+                <ul class="flavor-widget-list">
+                    <?php foreach ($campanias_recientes as $campania): ?>
+                        <li>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-listado&accion=editar&id=' . $campania->id)); ?>">
+                                <?php echo esc_html($campania->titulo); ?>
+                            </a>
+                            <span class="flavor-badge flavor-badge-<?php echo esc_attr($campania->estado); ?>">
+                                <?php echo esc_html(ucfirst($campania->estado)); ?>
+                            </span>
+                            <?php if ($campania->objetivo_firmas > 0): ?>
+                                <small><?php echo intval($campania->firmas_actuales); ?>/<?php echo intval($campania->objetivo_firmas); ?> firmas</small>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el dashboard de administracion de campanias
+     */
+    public function render_admin_dashboard() {
+        global $wpdb;
+        $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
+        $tabla_firmas = $wpdb->prefix . 'flavor_campanias_firmas';
+        $tabla_acciones = $wpdb->prefix . 'flavor_campanias_acciones';
+
+        // Estadisticas generales
+        $total_campanias = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_campanias");
+        $campanias_activas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'activa'");
+        $campanias_planificadas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'planificada'");
+        $campanias_completadas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'completada'");
+        $total_firmas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_firmas");
+        $firmas_hoy = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_firmas WHERE DATE(created_at) = %s",
+            current_time('Y-m-d')
+        ));
+        $firmas_semana = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_firmas WHERE created_at >= %s",
+            date('Y-m-d', strtotime('-7 days'))
+        ));
+        $campanias_exitosas = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_campanias WHERE estado = 'completada' AND firmas_actuales >= objetivo_firmas AND objetivo_firmas > 0"
+        );
+
+        // Campanias con mas firmas
+        $top_campanias = $wpdb->get_results(
+            "SELECT id, titulo, firmas_actuales, objetivo_firmas, estado
+             FROM $tabla_campanias
+             WHERE objetivo_firmas > 0
+             ORDER BY firmas_actuales DESC
+             LIMIT 5"
+        );
+
+        // Firmas recientes
+        $firmas_recientes = $wpdb->get_results(
+            "SELECT f.*, c.titulo as campania_titulo
+             FROM $tabla_firmas f
+             LEFT JOIN $tabla_campanias c ON f.campania_id = c.id
+             ORDER BY f.created_at DESC
+             LIMIT 10"
+        );
+
+        // Tendencia de firmas (ultimos 7 dias)
+        $tendencia_firmas = $wpdb->get_results(
+            "SELECT DATE(created_at) as fecha, COUNT(*) as total
+             FROM $tabla_firmas
+             WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+             GROUP BY DATE(created_at)
+             ORDER BY fecha ASC"
+        );
+
+        // Proximas acciones
+        $proximas_acciones = $wpdb->get_results($wpdb->prepare(
+            "SELECT a.*, c.titulo as campania_titulo
+             FROM $tabla_acciones a
+             LEFT JOIN $tabla_campanias c ON a.campania_id = c.id
+             WHERE a.fecha >= %s AND a.estado = 'programada'
+             ORDER BY a.fecha ASC
+             LIMIT 5",
+            current_time('mysql')
+        ));
+
+        $this->render_page_header(
+            __('Dashboard de Campanias', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nueva Campania', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=campanias-listado&accion=nueva'),
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+        ?>
+        <div class="wrap flavor-admin-dashboard">
+            <!-- Tarjetas de estadisticas -->
+            <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #2271b1; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="stat-icon" style="font-size: 32px; color: #2271b1;">
+                        <span class="dashicons dashicons-megaphone"></span>
+                    </div>
+                    <div class="stat-value" style="font-size: 36px; font-weight: 600; color: #1d2327;"><?php echo $total_campanias; ?></div>
+                    <div class="stat-label" style="color: #646970;"><?php _e('Total Campanias', 'flavor-chat-ia'); ?></div>
+                </div>
+
+                <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #00a32a; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="stat-icon" style="font-size: 32px; color: #00a32a;">
+                        <span class="dashicons dashicons-yes-alt"></span>
+                    </div>
+                    <div class="stat-value" style="font-size: 36px; font-weight: 600; color: #1d2327;"><?php echo $campanias_activas; ?></div>
+                    <div class="stat-label" style="color: #646970;"><?php _e('Campanias Activas', 'flavor-chat-ia'); ?></div>
+                </div>
+
+                <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #8c6ef8; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="stat-icon" style="font-size: 32px; color: #8c6ef8;">
+                        <span class="dashicons dashicons-edit"></span>
+                    </div>
+                    <div class="stat-value" style="font-size: 36px; font-weight: 600; color: #1d2327;"><?php echo $total_firmas; ?></div>
+                    <div class="stat-label" style="color: #646970;"><?php _e('Total Firmas', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-extra" style="font-size: 12px; color: #646970; margin-top: 5px;">
+                        +<?php echo $firmas_hoy; ?> <?php _e('hoy', 'flavor-chat-ia'); ?> /
+                        +<?php echo $firmas_semana; ?> <?php _e('esta semana', 'flavor-chat-ia'); ?>
+                    </div>
+                </div>
+
+                <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #dba617; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="stat-icon" style="font-size: 32px; color: #dba617;">
+                        <span class="dashicons dashicons-awards"></span>
+                    </div>
+                    <div class="stat-value" style="font-size: 36px; font-weight: 600; color: #1d2327;"><?php echo $campanias_exitosas; ?></div>
+                    <div class="stat-label" style="color: #646970;"><?php _e('Campanias Exitosas', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+
+            <div class="flavor-dashboard-columns" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <!-- Columna principal -->
+                <div class="flavor-main-column">
+                    <!-- Top campanias por firmas -->
+                    <div class="flavor-card" style="background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                            <span class="dashicons dashicons-chart-bar"></span>
+                            <?php _e('Campanias con mas firmas', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php if (empty($top_campanias)): ?>
+                            <p class="flavor-empty"><?php _e('No hay campanias con objetivo de firmas.', 'flavor-chat-ia'); ?></p>
+                        <?php else: ?>
+                            <table class="widefat striped" style="border: none;">
+                                <thead>
+                                    <tr>
+                                        <th><?php _e('Campania', 'flavor-chat-ia'); ?></th>
+                                        <th><?php _e('Progreso', 'flavor-chat-ia'); ?></th>
+                                        <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($top_campanias as $campania): ?>
+                                        <?php
+                                        $porcentaje = $campania->objetivo_firmas > 0
+                                            ? min(100, round(($campania->firmas_actuales / $campania->objetivo_firmas) * 100))
+                                            : 0;
+                                        $color_barra = $porcentaje >= 100 ? '#00a32a' : ($porcentaje >= 50 ? '#dba617' : '#2271b1');
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-listado&accion=editar&id=' . $campania->id)); ?>">
+                                                    <?php echo esc_html($campania->titulo); ?>
+                                                </a>
+                                            </td>
+                                            <td style="width: 40%;">
+                                                <div style="background: #f0f0f1; border-radius: 4px; height: 20px; position: relative;">
+                                                    <div style="background: <?php echo $color_barra; ?>; width: <?php echo $porcentaje; ?>%; height: 100%; border-radius: 4px;"></div>
+                                                    <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 11px; font-weight: 500;">
+                                                        <?php echo intval($campania->firmas_actuales); ?>/<?php echo intval($campania->objetivo_firmas); ?> (<?php echo $porcentaje; ?>%)
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="flavor-badge flavor-estado-<?php echo esc_attr($campania->estado); ?>" style="padding: 3px 8px; border-radius: 3px; font-size: 11px; background: <?php
+                                                    echo $campania->estado === 'activa' ? '#00a32a' : ($campania->estado === 'completada' ? '#2271b1' : '#646970');
+                                                ?>; color: #fff;">
+                                                    <?php echo esc_html(ucfirst($campania->estado)); ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Tendencia de firmas -->
+                    <div class="flavor-card" style="background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                            <span class="dashicons dashicons-chart-line"></span>
+                            <?php _e('Tendencia de firmas (ultimos 7 dias)', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php if (empty($tendencia_firmas)): ?>
+                            <p class="flavor-empty"><?php _e('No hay datos de firmas en los ultimos 7 dias.', 'flavor-chat-ia'); ?></p>
+                        <?php else: ?>
+                            <div class="flavor-chart-simple" style="display: flex; align-items: flex-end; height: 150px; gap: 10px; padding: 10px 0;">
+                                <?php
+                                $max_firmas = max(array_column($tendencia_firmas, 'total'));
+                                foreach ($tendencia_firmas as $dia):
+                                    $altura = $max_firmas > 0 ? ($dia->total / $max_firmas) * 100 : 0;
+                                ?>
+                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                        <span style="font-size: 11px; margin-bottom: 5px;"><?php echo intval($dia->total); ?></span>
+                                        <div style="background: #2271b1; width: 100%; height: <?php echo max(5, $altura); ?>%; border-radius: 4px 4px 0 0;"></div>
+                                        <span style="font-size: 10px; margin-top: 5px; color: #646970;">
+                                            <?php echo date_i18n('D', strtotime($dia->fecha)); ?>
+                                        </span>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Proximas acciones -->
+                    <div class="flavor-card" style="background: #fff; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                            <span class="dashicons dashicons-calendar-alt"></span>
+                            <?php _e('Proximas acciones programadas', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php if (empty($proximas_acciones)): ?>
+                            <p class="flavor-empty"><?php _e('No hay acciones programadas.', 'flavor-chat-ia'); ?></p>
+                        <?php else: ?>
+                            <ul class="flavor-timeline" style="list-style: none; padding: 0; margin: 0;">
+                                <?php foreach ($proximas_acciones as $accion): ?>
+                                    <li style="padding: 10px 0; border-bottom: 1px solid #f0f0f1; display: flex; gap: 15px;">
+                                        <div class="timeline-date" style="min-width: 80px; text-align: center; background: #f6f7f7; padding: 5px; border-radius: 4px;">
+                                            <div style="font-size: 20px; font-weight: 600; color: #2271b1;">
+                                                <?php echo date_i18n('d', strtotime($accion->fecha)); ?>
+                                            </div>
+                                            <div style="font-size: 11px; color: #646970;">
+                                                <?php echo date_i18n('M Y', strtotime($accion->fecha)); ?>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <strong><?php echo esc_html($accion->titulo); ?></strong>
+                                            <div style="font-size: 12px; color: #646970;">
+                                                <?php echo esc_html($accion->campania_titulo); ?>
+                                                <?php if ($accion->ubicacion): ?>
+                                                    &middot; <?php echo esc_html($accion->ubicacion); ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Columna lateral -->
+                <div class="flavor-sidebar-column">
+                    <!-- Resumen de estados -->
+                    <div class="flavor-card" style="background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                            <span class="dashicons dashicons-chart-pie"></span>
+                            <?php _e('Por estado', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
+                                <span><span class="dashicons dashicons-clock" style="color: #646970;"></span> <?php _e('Planificadas', 'flavor-chat-ia'); ?></span>
+                                <strong><?php echo $campanias_planificadas; ?></strong>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
+                                <span><span class="dashicons dashicons-yes" style="color: #00a32a;"></span> <?php _e('Activas', 'flavor-chat-ia'); ?></span>
+                                <strong><?php echo $campanias_activas; ?></strong>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                <span><span class="dashicons dashicons-flag" style="color: #2271b1;"></span> <?php _e('Completadas', 'flavor-chat-ia'); ?></span>
+                                <strong><?php echo $campanias_completadas; ?></strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Firmas recientes -->
+                    <div class="flavor-card" style="background: #fff; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                            <span class="dashicons dashicons-edit"></span>
+                            <?php _e('Firmas recientes', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php if (empty($firmas_recientes)): ?>
+                            <p class="flavor-empty"><?php _e('No hay firmas registradas.', 'flavor-chat-ia'); ?></p>
+                        <?php else: ?>
+                            <ul style="list-style: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto;">
+                                <?php foreach ($firmas_recientes as $firma): ?>
+                                    <li style="padding: 8px 0; border-bottom: 1px solid #f0f0f1; font-size: 13px;">
+                                        <strong><?php echo esc_html($firma->nombre); ?></strong>
+                                        <div style="color: #646970; font-size: 11px;">
+                                            <?php echo esc_html($firma->campania_titulo); ?>
+                                        </div>
+                                        <div style="color: #a0a0a0; font-size: 10px;">
+                                            <?php echo human_time_diff(strtotime($firma->created_at), current_time('timestamp')); ?> <?php _e('ago', 'flavor-chat-ia'); ?>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                        <p style="margin-bottom: 0; margin-top: 15px;">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-firmas')); ?>" class="button">
+                                <?php _e('Ver todas las firmas', 'flavor-chat-ia'); ?>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el listado de campanias en admin
+     */
+    public function render_admin_listado() {
+        global $wpdb;
+        $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
+
+        // Procesar acciones
+        $accion = isset($_GET['accion']) ? sanitize_text_field($_GET['accion']) : '';
+        $campania_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+        // Guardar campania
+        if (isset($_POST['guardar_campania']) && check_admin_referer('campanias_guardar', 'campanias_nonce')) {
+            $datos = [
+                'titulo' => sanitize_text_field($_POST['titulo']),
+                'descripcion' => wp_kses_post($_POST['descripcion']),
+                'tipo' => sanitize_text_field($_POST['tipo']),
+                'estado' => sanitize_text_field($_POST['estado']),
+                'objetivo_descripcion' => sanitize_textarea_field($_POST['objetivo_descripcion']),
+                'objetivo_firmas' => intval($_POST['objetivo_firmas']),
+                'fecha_inicio' => sanitize_text_field($_POST['fecha_inicio']),
+                'fecha_fin' => sanitize_text_field($_POST['fecha_fin']),
+                'ubicacion' => sanitize_text_field($_POST['ubicacion']),
+                'hashtags' => sanitize_text_field($_POST['hashtags']),
+                'visibilidad' => sanitize_text_field($_POST['visibilidad']),
+                'destacada' => isset($_POST['destacada']) ? 1 : 0,
+            ];
+
+            if ($campania_id > 0) {
+                $wpdb->update($tabla_campanias, $datos, ['id' => $campania_id]);
+                $mensaje = __('Campania actualizada correctamente.', 'flavor-chat-ia');
+            } else {
+                $datos['creador_id'] = get_current_user_id();
+                $wpdb->insert($tabla_campanias, $datos);
+                $campania_id = $wpdb->insert_id;
+                $mensaje = __('Campania creada correctamente.', 'flavor-chat-ia');
+            }
+
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html($mensaje) . '</p></div>';
+            $accion = '';
+        }
+
+        // Eliminar campania
+        if ($accion === 'eliminar' && $campania_id > 0 && check_admin_referer('eliminar_campania_' . $campania_id)) {
+            $wpdb->delete($tabla_campanias, ['id' => $campania_id]);
+            $wpdb->delete($wpdb->prefix . 'flavor_campanias_firmas', ['campania_id' => $campania_id]);
+            $wpdb->delete($wpdb->prefix . 'flavor_campanias_participantes', ['campania_id' => $campania_id]);
+            $wpdb->delete($wpdb->prefix . 'flavor_campanias_acciones', ['campania_id' => $campania_id]);
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Campania eliminada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            $accion = '';
+            $campania_id = 0;
+        }
+
+        // Mostrar formulario de edicion/creacion
+        if ($accion === 'nueva' || $accion === 'editar') {
+            $campania = null;
+            if ($accion === 'editar' && $campania_id > 0) {
+                $campania = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_campanias WHERE id = %d", $campania_id));
+            }
+
+            $this->render_page_header(
+                $campania ? __('Editar Campania', 'flavor-chat-ia') : __('Nueva Campania', 'flavor-chat-ia'),
+                [
+                    [
+                        'label' => __('Volver al listado', 'flavor-chat-ia'),
+                        'url' => admin_url('admin.php?page=campanias-listado'),
+                        'class' => '',
+                    ],
+                ]
+            );
+            ?>
+            <form method="post" class="flavor-admin-form" style="background: #fff; padding: 20px; max-width: 800px;">
+                <?php wp_nonce_field('campanias_guardar', 'campanias_nonce'); ?>
+
+                <table class="form-table">
+                    <tr>
+                        <th><label for="titulo"><?php _e('Titulo', 'flavor-chat-ia'); ?> *</label></th>
+                        <td><input type="text" name="titulo" id="titulo" class="regular-text" required value="<?php echo esc_attr($campania->titulo ?? ''); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="descripcion"><?php _e('Descripcion', 'flavor-chat-ia'); ?></label></th>
+                        <td>
+                            <?php
+                            wp_editor(
+                                $campania->descripcion ?? '',
+                                'descripcion',
+                                ['textarea_rows' => 8, 'media_buttons' => true]
+                            );
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="tipo"><?php _e('Tipo', 'flavor-chat-ia'); ?></label></th>
+                        <td>
+                            <select name="tipo" id="tipo">
+                                <?php foreach ($this->get_tipos_campania() as $valor => $etiqueta): ?>
+                                    <option value="<?php echo esc_attr($valor); ?>" <?php selected($campania->tipo ?? '', $valor); ?>>
+                                        <?php echo esc_html($etiqueta); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label></th>
+                        <td>
+                            <select name="estado" id="estado">
+                                <option value="planificada" <?php selected($campania->estado ?? '', 'planificada'); ?>><?php _e('Planificada', 'flavor-chat-ia'); ?></option>
+                                <option value="activa" <?php selected($campania->estado ?? '', 'activa'); ?>><?php _e('Activa', 'flavor-chat-ia'); ?></option>
+                                <option value="pausada" <?php selected($campania->estado ?? '', 'pausada'); ?>><?php _e('Pausada', 'flavor-chat-ia'); ?></option>
+                                <option value="completada" <?php selected($campania->estado ?? '', 'completada'); ?>><?php _e('Completada', 'flavor-chat-ia'); ?></option>
+                                <option value="cancelada" <?php selected($campania->estado ?? '', 'cancelada'); ?>><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="objetivo_descripcion"><?php _e('Objetivo', 'flavor-chat-ia'); ?></label></th>
+                        <td><textarea name="objetivo_descripcion" id="objetivo_descripcion" rows="3" class="large-text"><?php echo esc_textarea($campania->objetivo_descripcion ?? ''); ?></textarea></td>
+                    </tr>
+                    <tr>
+                        <th><label for="objetivo_firmas"><?php _e('Meta de firmas', 'flavor-chat-ia'); ?></label></th>
+                        <td><input type="number" name="objetivo_firmas" id="objetivo_firmas" min="0" value="<?php echo intval($campania->objetivo_firmas ?? 0); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="fecha_inicio"><?php _e('Fecha inicio', 'flavor-chat-ia'); ?></label></th>
+                        <td><input type="date" name="fecha_inicio" id="fecha_inicio" value="<?php echo esc_attr($campania->fecha_inicio ?? ''); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="fecha_fin"><?php _e('Fecha fin', 'flavor-chat-ia'); ?></label></th>
+                        <td><input type="date" name="fecha_fin" id="fecha_fin" value="<?php echo esc_attr($campania->fecha_fin ?? ''); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="ubicacion"><?php _e('Ubicacion', 'flavor-chat-ia'); ?></label></th>
+                        <td><input type="text" name="ubicacion" id="ubicacion" class="regular-text" value="<?php echo esc_attr($campania->ubicacion ?? ''); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="hashtags"><?php _e('Hashtags', 'flavor-chat-ia'); ?></label></th>
+                        <td><input type="text" name="hashtags" id="hashtags" class="regular-text" placeholder="#ejemplo #campania" value="<?php echo esc_attr($campania->hashtags ?? ''); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="visibilidad"><?php _e('Visibilidad', 'flavor-chat-ia'); ?></label></th>
+                        <td>
+                            <select name="visibilidad" id="visibilidad">
+                                <option value="publica" <?php selected($campania->visibilidad ?? '', 'publica'); ?>><?php _e('Publica', 'flavor-chat-ia'); ?></option>
+                                <option value="miembros" <?php selected($campania->visibilidad ?? '', 'miembros'); ?>><?php _e('Solo miembros', 'flavor-chat-ia'); ?></option>
+                                <option value="privada" <?php selected($campania->visibilidad ?? '', 'privada'); ?>><?php _e('Privada', 'flavor-chat-ia'); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="destacada"><?php _e('Destacada', 'flavor-chat-ia'); ?></label></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="destacada" id="destacada" value="1" <?php checked($campania->destacada ?? 0, 1); ?>>
+                                <?php _e('Mostrar como destacada', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+
+                <p class="submit">
+                    <button type="submit" name="guardar_campania" class="button button-primary">
+                        <?php echo $campania ? __('Actualizar Campania', 'flavor-chat-ia') : __('Crear Campania', 'flavor-chat-ia'); ?>
+                    </button>
+                </p>
+            </form>
+            <?php
+            return;
+        }
+
+        // Filtros
+        $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $filtro_tipo = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        // Construir query
+        $where = "WHERE 1=1";
+        $params = [];
+
+        if ($filtro_estado) {
+            $where .= " AND estado = %s";
+            $params[] = $filtro_estado;
+        }
+        if ($filtro_tipo) {
+            $where .= " AND tipo = %s";
+            $params[] = $filtro_tipo;
+        }
+        if ($busqueda) {
+            $where .= " AND (titulo LIKE %s OR descripcion LIKE %s)";
+            $params[] = '%' . $wpdb->esc_like($busqueda) . '%';
+            $params[] = '%' . $wpdb->esc_like($busqueda) . '%';
+        }
+
+        // Paginacion
+        $por_pagina = 20;
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $offset = ($pagina_actual - 1) * $por_pagina;
+
+        $total_items = (int) $wpdb->get_var(
+            $params
+                ? $wpdb->prepare("SELECT COUNT(*) FROM $tabla_campanias $where", $params)
+                : "SELECT COUNT(*) FROM $tabla_campanias $where"
+        );
+        $total_paginas = ceil($total_items / $por_pagina);
+
+        $query = "SELECT * FROM $tabla_campanias $where ORDER BY created_at DESC LIMIT %d OFFSET %d";
+        $params[] = $por_pagina;
+        $params[] = $offset;
+
+        $campanias = $wpdb->get_results($wpdb->prepare($query, $params));
+
+        $this->render_page_header(
+            __('Listado de Campanias', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Nueva Campania', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=campanias-listado&accion=nueva'),
+                    'class' => 'button-primary',
+                ],
+            ]
+        );
+        ?>
+        <div class="wrap">
+            <!-- Filtros -->
+            <form method="get" class="flavor-filters" style="background: #fff; padding: 15px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="hidden" name="page" value="campanias-listado">
+
+                <select name="estado">
+                    <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value="planificada" <?php selected($filtro_estado, 'planificada'); ?>><?php _e('Planificada', 'flavor-chat-ia'); ?></option>
+                    <option value="activa" <?php selected($filtro_estado, 'activa'); ?>><?php _e('Activa', 'flavor-chat-ia'); ?></option>
+                    <option value="pausada" <?php selected($filtro_estado, 'pausada'); ?>><?php _e('Pausada', 'flavor-chat-ia'); ?></option>
+                    <option value="completada" <?php selected($filtro_estado, 'completada'); ?>><?php _e('Completada', 'flavor-chat-ia'); ?></option>
+                    <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                </select>
+
+                <select name="tipo">
+                    <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <?php foreach ($this->get_tipos_campania() as $valor => $etiqueta): ?>
+                        <option value="<?php echo esc_attr($valor); ?>" <?php selected($filtro_tipo, $valor); ?>>
+                            <?php echo esc_html($etiqueta); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar...', 'flavor-chat-ia'); ?>">
+
+                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+
+                <?php if ($filtro_estado || $filtro_tipo || $busqueda): ?>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-listado')); ?>" class="button">
+                        <?php _e('Limpiar filtros', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php endif; ?>
+            </form>
+
+            <!-- Tabla de campanias -->
+            <?php if (empty($campanias)): ?>
+                <div class="notice notice-info">
+                    <p><?php _e('No se encontraron campanias.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;"><?php _e('Titulo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Firmas', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Fecha inicio', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Creador', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 15%;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($campanias as $campania): ?>
+                            <?php $creador = get_userdata($campania->creador_id); ?>
+                            <tr>
+                                <td>
+                                    <strong>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-listado&accion=editar&id=' . $campania->id)); ?>">
+                                            <?php echo esc_html($campania->titulo); ?>
+                                        </a>
+                                    </strong>
+                                    <?php if ($campania->destacada): ?>
+                                        <span class="dashicons dashicons-star-filled" style="color: #dba617; font-size: 14px;" title="<?php _e('Destacada', 'flavor-chat-ia'); ?>"></span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo esc_html($this->get_tipos_campania()[$campania->tipo] ?? $campania->tipo); ?></td>
+                                <td>
+                                    <span class="flavor-badge" style="padding: 3px 8px; border-radius: 3px; font-size: 11px; background: <?php
+                                        switch ($campania->estado) {
+                                            case 'activa': echo '#00a32a'; break;
+                                            case 'completada': echo '#2271b1'; break;
+                                            case 'planificada': echo '#646970'; break;
+                                            case 'pausada': echo '#dba617'; break;
+                                            case 'cancelada': echo '#d63638'; break;
+                                            default: echo '#646970';
+                                        }
+                                    ?>; color: #fff;">
+                                        <?php echo esc_html(ucfirst($campania->estado)); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <?php if ($campania->objetivo_firmas > 0): ?>
+                                        <?php echo intval($campania->firmas_actuales); ?>/<?php echo intval($campania->objetivo_firmas); ?>
+                                        <div style="background: #f0f0f1; height: 4px; border-radius: 2px; margin-top: 3px;">
+                                            <div style="background: #2271b1; width: <?php echo min(100, ($campania->firmas_actuales / $campania->objetivo_firmas) * 100); ?>%; height: 100%; border-radius: 2px;"></div>
+                                        </div>
+                                    <?php else: ?>
+                                        <?php echo intval($campania->firmas_actuales); ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo $campania->fecha_inicio ? date_i18n(get_option('date_format'), strtotime($campania->fecha_inicio)) : '-'; ?></td>
+                                <td><?php echo $creador ? esc_html($creador->display_name) : '-'; ?></td>
+                                <td>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-listado&accion=editar&id=' . $campania->id)); ?>" class="button button-small">
+                                        <?php _e('Editar', 'flavor-chat-ia'); ?>
+                                    </a>
+                                    <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=campanias-listado&accion=eliminar&id=' . $campania->id), 'eliminar_campania_' . $campania->id)); ?>"
+                                       class="button button-small button-link-delete"
+                                       onclick="return confirm('<?php _e('Seguro que quieres eliminar esta campania?', 'flavor-chat-ia'); ?>');">
+                                        <?php _e('Eliminar', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <!-- Paginacion -->
+                <?php if ($total_paginas > 1): ?>
+                    <div class="tablenav bottom">
+                        <div class="tablenav-pages">
+                            <span class="displaying-num"><?php printf(__('%d elementos', 'flavor-chat-ia'), $total_items); ?></span>
+                            <span class="pagination-links">
+                                <?php
+                                $base_url = admin_url('admin.php?page=campanias-listado');
+                                if ($filtro_estado) $base_url = add_query_arg('estado', $filtro_estado, $base_url);
+                                if ($filtro_tipo) $base_url = add_query_arg('tipo', $filtro_tipo, $base_url);
+                                if ($busqueda) $base_url = add_query_arg('s', $busqueda, $base_url);
+
+                                if ($pagina_actual > 1): ?>
+                                    <a class="prev-page button" href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $base_url)); ?>">
+                                        <span class="screen-reader-text"><?php _e('Anterior', 'flavor-chat-ia'); ?></span>
+                                        <span aria-hidden="true">&lsaquo;</span>
+                                    </a>
+                                <?php endif; ?>
+
+                                <span class="paging-input">
+                                    <?php echo $pagina_actual; ?> <?php _e('de', 'flavor-chat-ia'); ?> <?php echo $total_paginas; ?>
+                                </span>
+
+                                <?php if ($pagina_actual < $total_paginas): ?>
+                                    <a class="next-page button" href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $base_url)); ?>">
+                                        <span class="screen-reader-text"><?php _e('Siguiente', 'flavor-chat-ia'); ?></span>
+                                        <span aria-hidden="true">&rsaquo;</span>
+                                    </a>
+                                <?php endif; ?>
+                            </span>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pagina de firmas en admin
+     */
+    public function render_admin_firmas() {
+        global $wpdb;
+        $tabla_firmas = $wpdb->prefix . 'flavor_campanias_firmas';
+        $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
+
+        // Filtros
+        $filtro_campania = isset($_GET['campania_id']) ? intval($_GET['campania_id']) : 0;
+        $filtro_verificada = isset($_GET['verificada']) ? sanitize_text_field($_GET['verificada']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        // Eliminar firma
+        if (isset($_GET['accion']) && $_GET['accion'] === 'eliminar' && isset($_GET['id'])) {
+            $firma_id = intval($_GET['id']);
+            if (check_admin_referer('eliminar_firma_' . $firma_id)) {
+                // Obtener campania_id para actualizar contador
+                $campania_id = $wpdb->get_var($wpdb->prepare(
+                    "SELECT campania_id FROM $tabla_firmas WHERE id = %d",
+                    $firma_id
+                ));
+
+                $wpdb->delete($tabla_firmas, ['id' => $firma_id]);
+
+                if ($campania_id) {
+                    $wpdb->query($wpdb->prepare(
+                        "UPDATE $tabla_campanias SET firmas_actuales = GREATEST(0, firmas_actuales - 1) WHERE id = %d",
+                        $campania_id
+                    ));
+                }
+
+                echo '<div class="notice notice-success is-dismissible"><p>' . __('Firma eliminada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            }
+        }
+
+        // Verificar firma
+        if (isset($_GET['accion']) && $_GET['accion'] === 'verificar' && isset($_GET['id'])) {
+            $firma_id = intval($_GET['id']);
+            if (check_admin_referer('verificar_firma_' . $firma_id)) {
+                $wpdb->update($tabla_firmas, ['verificada' => 1], ['id' => $firma_id]);
+                echo '<div class="notice notice-success is-dismissible"><p>' . __('Firma verificada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            }
+        }
+
+        // Construir query
+        $where = "WHERE 1=1";
+        $params = [];
+
+        if ($filtro_campania) {
+            $where .= " AND f.campania_id = %d";
+            $params[] = $filtro_campania;
+        }
+        if ($filtro_verificada !== '') {
+            $where .= " AND f.verificada = %d";
+            $params[] = intval($filtro_verificada);
+        }
+        if ($busqueda) {
+            $where .= " AND (f.nombre LIKE %s OR f.email LIKE %s OR f.localidad LIKE %s)";
+            $params[] = '%' . $wpdb->esc_like($busqueda) . '%';
+            $params[] = '%' . $wpdb->esc_like($busqueda) . '%';
+            $params[] = '%' . $wpdb->esc_like($busqueda) . '%';
+        }
+
+        // Paginacion
+        $por_pagina = 50;
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $offset = ($pagina_actual - 1) * $por_pagina;
+
+        $count_query = "SELECT COUNT(*) FROM $tabla_firmas f $where";
+        $total_items = (int) ($params ? $wpdb->get_var($wpdb->prepare($count_query, $params)) : $wpdb->get_var($count_query));
+        $total_paginas = ceil($total_items / $por_pagina);
+
+        $query = "SELECT f.*, c.titulo as campania_titulo
+                  FROM $tabla_firmas f
+                  LEFT JOIN $tabla_campanias c ON f.campania_id = c.id
+                  $where
+                  ORDER BY f.created_at DESC
+                  LIMIT %d OFFSET %d";
+        $params[] = $por_pagina;
+        $params[] = $offset;
+
+        $firmas = $wpdb->get_results($wpdb->prepare($query, $params));
+
+        // Obtener campanias para el filtro
+        $campanias_disponibles = $wpdb->get_results("SELECT id, titulo FROM $tabla_campanias ORDER BY titulo ASC");
+
+        $this->render_page_header(
+            __('Historico de Firmas', 'flavor-chat-ia'),
+            [
+                [
+                    'label' => __('Exportar CSV', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=campanias-firmas&accion=exportar' . ($filtro_campania ? '&campania_id=' . $filtro_campania : '')),
+                    'class' => 'button-secondary',
+                ],
+            ]
+        );
+        ?>
+        <div class="wrap">
+            <!-- Estadisticas rapidas -->
+            <div class="flavor-stats-inline" style="display: flex; gap: 20px; margin-bottom: 20px; background: #fff; padding: 15px;">
+                <div>
+                    <strong><?php echo $total_items; ?></strong>
+                    <span style="color: #646970;"><?php _e('Total firmas', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div>
+                    <strong><?php echo (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_firmas WHERE verificada = 1"); ?></strong>
+                    <span style="color: #646970;"><?php _e('Verificadas', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div>
+                    <strong><?php echo (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $tabla_firmas WHERE DATE(created_at) = %s", current_time('Y-m-d'))); ?></strong>
+                    <span style="color: #646970;"><?php _e('Hoy', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <form method="get" class="flavor-filters" style="background: #fff; padding: 15px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="hidden" name="page" value="campanias-firmas">
+
+                <select name="campania_id">
+                    <option value=""><?php _e('Todas las campanias', 'flavor-chat-ia'); ?></option>
+                    <?php foreach ($campanias_disponibles as $campania): ?>
+                        <option value="<?php echo esc_attr($campania->id); ?>" <?php selected($filtro_campania, $campania->id); ?>>
+                            <?php echo esc_html($campania->titulo); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <select name="verificada">
+                    <option value=""><?php _e('Todas las firmas', 'flavor-chat-ia'); ?></option>
+                    <option value="1" <?php selected($filtro_verificada, '1'); ?>><?php _e('Verificadas', 'flavor-chat-ia'); ?></option>
+                    <option value="0" <?php selected($filtro_verificada, '0'); ?>><?php _e('No verificadas', 'flavor-chat-ia'); ?></option>
+                </select>
+
+                <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar por nombre, email...', 'flavor-chat-ia'); ?>">
+
+                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+
+                <?php if ($filtro_campania || $filtro_verificada !== '' || $busqueda): ?>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-firmas')); ?>" class="button">
+                        <?php _e('Limpiar filtros', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php endif; ?>
+            </form>
+
+            <!-- Tabla de firmas -->
+            <?php if (empty($firmas)): ?>
+                <div class="notice notice-info">
+                    <p><?php _e('No se encontraron firmas.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Email', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Localidad', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Campania', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 15%;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($firmas as $firma): ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo esc_html($firma->nombre); ?></strong>
+                                    <?php if ($firma->user_id): ?>
+                                        <span class="dashicons dashicons-admin-users" style="font-size: 14px; color: #2271b1;" title="<?php _e('Usuario registrado', 'flavor-chat-ia'); ?>"></span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo esc_html($firma->email); ?></td>
+                                <td><?php echo esc_html($firma->localidad ?: '-'); ?></td>
+                                <td>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-listado&accion=editar&id=' . $firma->campania_id)); ?>">
+                                        <?php echo esc_html($firma->campania_titulo); ?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <?php if ($firma->verificada): ?>
+                                        <span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
+                                        <?php _e('Verificada', 'flavor-chat-ia'); ?>
+                                    <?php else: ?>
+                                        <span class="dashicons dashicons-marker" style="color: #dba617;"></span>
+                                        <?php _e('Pendiente', 'flavor-chat-ia'); ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php echo date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($firma->created_at)); ?>
+                                </td>
+                                <td>
+                                    <?php if (!$firma->verificada): ?>
+                                        <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=campanias-firmas&accion=verificar&id=' . $firma->id), 'verificar_firma_' . $firma->id)); ?>"
+                                           class="button button-small" title="<?php _e('Verificar', 'flavor-chat-ia'); ?>">
+                                            <span class="dashicons dashicons-yes" style="vertical-align: middle;"></span>
+                                        </a>
+                                    <?php endif; ?>
+                                    <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=campanias-firmas&accion=eliminar&id=' . $firma->id), 'eliminar_firma_' . $firma->id)); ?>"
+                                       class="button button-small button-link-delete"
+                                       onclick="return confirm('<?php _e('Seguro que quieres eliminar esta firma?', 'flavor-chat-ia'); ?>');"
+                                       title="<?php _e('Eliminar', 'flavor-chat-ia'); ?>">
+                                        <span class="dashicons dashicons-trash" style="vertical-align: middle;"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <!-- Paginacion -->
+                <?php if ($total_paginas > 1): ?>
+                    <div class="tablenav bottom">
+                        <div class="tablenav-pages">
+                            <span class="displaying-num"><?php printf(__('%d firmas', 'flavor-chat-ia'), $total_items); ?></span>
+                            <span class="pagination-links">
+                                <?php
+                                $base_url = admin_url('admin.php?page=campanias-firmas');
+                                if ($filtro_campania) $base_url = add_query_arg('campania_id', $filtro_campania, $base_url);
+                                if ($filtro_verificada !== '') $base_url = add_query_arg('verificada', $filtro_verificada, $base_url);
+                                if ($busqueda) $base_url = add_query_arg('s', $busqueda, $base_url);
+
+                                if ($pagina_actual > 1): ?>
+                                    <a class="prev-page button" href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $base_url)); ?>">
+                                        <span aria-hidden="true">&lsaquo;</span>
+                                    </a>
+                                <?php endif; ?>
+
+                                <span class="paging-input">
+                                    <?php echo $pagina_actual; ?> <?php _e('de', 'flavor-chat-ia'); ?> <?php echo $total_paginas; ?>
+                                </span>
+
+                                <?php if ($pagina_actual < $total_paginas): ?>
+                                    <a class="next-page button" href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $base_url)); ?>">
+                                        <span aria-hidden="true">&rsaquo;</span>
+                                    </a>
+                                <?php endif; ?>
+                            </span>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pagina de configuracion del modulo
+     */
+    public function render_admin_config() {
+        // Guardar configuracion
+        if (isset($_POST['guardar_config']) && check_admin_referer('campanias_config', 'campanias_config_nonce')) {
+            $opciones = [
+                'requiere_aprobacion' => isset($_POST['requiere_aprobacion']),
+                'permitir_firmas_anonimas' => isset($_POST['permitir_firmas_anonimas']),
+                'verificar_email_firmas' => isset($_POST['verificar_email_firmas']),
+                'max_campanias_por_usuario' => intval($_POST['max_campanias_por_usuario']),
+                'notificar_nuevas_campanias' => isset($_POST['notificar_nuevas_campanias']),
+                'mostrar_mapa_acciones' => isset($_POST['mostrar_mapa_acciones']),
+                'tipos_permitidos' => isset($_POST['tipos_permitidos']) ? array_map('sanitize_text_field', $_POST['tipos_permitidos']) : [],
+                'email_notificaciones' => sanitize_email($_POST['email_notificaciones']),
+                'texto_firma_exitosa' => sanitize_textarea_field($_POST['texto_firma_exitosa']),
+                'mostrar_firmantes_publicos' => isset($_POST['mostrar_firmantes_publicos']),
+                'limite_firmas_por_ip' => intval($_POST['limite_firmas_por_ip']),
+            ];
+
+            update_option('flavor_campanias_config', $opciones);
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuracion guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        // Obtener configuracion actual
+        $config = get_option('flavor_campanias_config', $this->get_default_settings());
+        $config = wp_parse_args($config, $this->get_default_settings());
+
+        $this->render_page_header(__('Configuracion de Campanias', 'flavor-chat-ia'));
+        ?>
+        <div class="wrap">
+            <form method="post" class="flavor-admin-form" style="background: #fff; padding: 20px; max-width: 800px;">
+                <?php wp_nonce_field('campanias_config', 'campanias_config_nonce'); ?>
+
+                <h2><?php _e('Configuracion General', 'flavor-chat-ia'); ?></h2>
+                <table class="form-table">
+                    <tr>
+                        <th><?php _e('Aprobacion de campanias', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="requiere_aprobacion" value="1" <?php checked($config['requiere_aprobacion'], true); ?>>
+                                <?php _e('Las nuevas campanias requieren aprobacion de un administrador', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Campanias por usuario', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="number" name="max_campanias_por_usuario" min="1" max="100" value="<?php echo intval($config['max_campanias_por_usuario']); ?>">
+                            <p class="description"><?php _e('Numero maximo de campanias que un usuario puede crear', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Tipos de campania permitidos', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <?php foreach ($this->get_tipos_campania() as $valor => $etiqueta): ?>
+                                <label style="display: block; margin-bottom: 5px;">
+                                    <input type="checkbox" name="tipos_permitidos[]" value="<?php echo esc_attr($valor); ?>"
+                                        <?php checked(in_array($valor, $config['tipos_permitidos'] ?? [])); ?>>
+                                    <?php echo esc_html($etiqueta); ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Mostrar mapa de acciones', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="mostrar_mapa_acciones" value="1" <?php checked($config['mostrar_mapa_acciones'], true); ?>>
+                                <?php _e('Mostrar mapa interactivo con las acciones programadas', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+
+                <h2><?php _e('Configuracion de Firmas', 'flavor-chat-ia'); ?></h2>
+                <table class="form-table">
+                    <tr>
+                        <th><?php _e('Firmas anonimas', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="permitir_firmas_anonimas" value="1" <?php checked($config['permitir_firmas_anonimas'], true); ?>>
+                                <?php _e('Permitir firmar sin estar registrado', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Verificacion de email', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="verificar_email_firmas" value="1" <?php checked($config['verificar_email_firmas'], true); ?>>
+                                <?php _e('Requerir verificacion de email para validar firmas', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Mostrar firmantes', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="mostrar_firmantes_publicos" value="1" <?php checked($config['mostrar_firmantes_publicos'] ?? false, true); ?>>
+                                <?php _e('Mostrar lista de firmantes publicamente', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Limite por IP', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="number" name="limite_firmas_por_ip" min="0" max="100" value="<?php echo intval($config['limite_firmas_por_ip'] ?? 0); ?>">
+                            <p class="description"><?php _e('Numero maximo de firmas permitidas por IP (0 = sin limite)', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Mensaje post-firma', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <textarea name="texto_firma_exitosa" rows="3" class="large-text"><?php echo esc_textarea($config['texto_firma_exitosa'] ?? __('Gracias por firmar. Tu apoyo es muy importante para esta causa.', 'flavor-chat-ia')); ?></textarea>
+                            <p class="description"><?php _e('Mensaje que se muestra tras firmar exitosamente', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+
+                <h2><?php _e('Notificaciones', 'flavor-chat-ia'); ?></h2>
+                <table class="form-table">
+                    <tr>
+                        <th><?php _e('Notificar nuevas campanias', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="notificar_nuevas_campanias" value="1" <?php checked($config['notificar_nuevas_campanias'], true); ?>>
+                                <?php _e('Enviar notificacion cuando se crea una nueva campania', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Email para notificaciones', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="email" name="email_notificaciones" class="regular-text" value="<?php echo esc_attr($config['email_notificaciones'] ?? get_option('admin_email')); ?>">
+                            <p class="description"><?php _e('Email donde se enviaran las notificaciones de administracion', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+
+                <h2><?php _e('Shortcodes disponibles', 'flavor-chat-ia'); ?></h2>
+                <div style="background: #f6f7f7; padding: 15px; border-radius: 4px;">
+                    <p><code>[campanias_listar]</code> - <?php _e('Muestra el listado de campanias', 'flavor-chat-ia'); ?></p>
+                    <p><code>[campanias_detalle id="X"]</code> - <?php _e('Muestra el detalle de una campania', 'flavor-chat-ia'); ?></p>
+                    <p><code>[campanias_crear]</code> - <?php _e('Formulario para crear campania', 'flavor-chat-ia'); ?></p>
+                    <p><code>[campanias_mis_campanias]</code> - <?php _e('Campanias del usuario actual', 'flavor-chat-ia'); ?></p>
+                    <p><code>[campanias_firmar id="X"]</code> - <?php _e('Formulario para firmar una campania', 'flavor-chat-ia'); ?></p>
+                    <p><code>[campanias_mapa]</code> - <?php _e('Mapa de acciones', 'flavor-chat-ia'); ?></p>
+                    <p><code>[campanias_calendario]</code> - <?php _e('Calendario de acciones', 'flavor-chat-ia'); ?></p>
+                </div>
+
+                <p class="submit">
+                    <button type="submit" name="guardar_config" class="button button-primary">
+                        <?php _e('Guardar Configuracion', 'flavor-chat-ia'); ?>
+                    </button>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-campanias-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Campanias_Dashboard_Tab')) {
+                Flavor_Campanias_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

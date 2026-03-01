@@ -12,19 +12,21 @@ if (!defined('ABSPATH')) {
 }
 
 global $wpdb;
-$tabla_proyectos = $wpdb->prefix . 'flavor_presupuestos_proyectos';
-$tabla_votos_pp = $wpdb->prefix . 'flavor_presupuestos_votos';
+// Nombres correctos de tablas
+$tabla_proyectos = $wpdb->prefix . 'flavor_pp_propuestas';
+$tabla_votos_pp = $wpdb->prefix . 'flavor_pp_votos';
+$tabla_categorias = $wpdb->prefix . 'flavor_pp_categorias';
 
 // Presupuesto total y asignado
 $presupuesto_total = 500000; // Ejemplo: 500k euros
-$presupuesto_asignado = $wpdb->get_var("SELECT SUM(presupuesto_solicitado) FROM $tabla_proyectos WHERE estado = 'aprobado'") ?? 0;
+$presupuesto_asignado = $wpdb->get_var("SELECT SUM(presupuesto_estimado) FROM $tabla_proyectos WHERE estado = 'aprobada'") ?? 0;
 $presupuesto_disponible = $presupuesto_total - $presupuesto_asignado;
 $porcentaje_asignado = $presupuesto_total > 0 ? round(($presupuesto_asignado / $presupuesto_total) * 100, 1) : 0;
 
 // Estadísticas de proyectos
 $total_proyectos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos");
 $proyectos_votacion = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos WHERE estado = 'en_votacion'");
-$proyectos_aprobados = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos WHERE estado = 'aprobado'");
+$proyectos_aprobados = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos WHERE estado = 'aprobada'");
 
 // Participación
 $total_votos_pp = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_votos_pp");
@@ -41,7 +43,7 @@ $stats_proyectos_estado = $wpdb->get_results("
 $proyectos_mas_votados = $wpdb->get_results("
     SELECT p.*, COUNT(v.id) as total_votos
     FROM $tabla_proyectos p
-    LEFT JOIN $tabla_votos_pp v ON p.id = v.proyecto_id
+    LEFT JOIN $tabla_votos_pp v ON p.id = v.propuesta_id
     WHERE p.estado = 'en_votacion'
     GROUP BY p.id
     ORDER BY total_votos DESC
@@ -50,10 +52,11 @@ $proyectos_mas_votados = $wpdb->get_results("
 
 // Distribución presupuestaria por categoría
 $distribucion_categoria = $wpdb->get_results("
-    SELECT categoria, SUM(presupuesto_solicitado) as total_presupuesto
-    FROM $tabla_proyectos
-    WHERE estado IN ('en_votacion', 'aprobado')
-    GROUP BY categoria
+    SELECT COALESCE(c.nombre, 'Sin categoría') as categoria, SUM(p.presupuesto_estimado) as total_presupuesto
+    FROM $tabla_proyectos p
+    LEFT JOIN $tabla_categorias c ON p.categoria_id = c.id
+    WHERE p.estado IN ('en_votacion', 'aprobada')
+    GROUP BY p.categoria_id, c.nombre
     ORDER BY total_presupuesto DESC
     LIMIT 6
 ");
@@ -94,9 +97,9 @@ $tendencia_votos = $wpdb->get_results("
             <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #dba617;"></span>
             <span><?php echo esc_html__('Resultados', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=pp-configuracion'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <a href="<?php echo admin_url('admin.php?page=flavor-app-composer&module=presupuestos_participativos'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
-            <span><?php echo esc_html__('Configuracion', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
         </a>
     </div>
 
@@ -237,7 +240,7 @@ $tendencia_votos = $wpdb->get_results("
                                 <td>
                                     <strong><?php echo esc_html($proyecto->titulo); ?></strong><br>
                                     <small style="color: #00a32a; font-weight: 600;">
-                                        <?php echo number_format($proyecto->presupuesto_solicitado, 0, ',', '.'); ?> €
+                                        <?php echo number_format($proyecto->presupuesto_estimado, 0, ',', '.'); ?> €
                                     </small>
                                 </td>
                                 <td style="text-align: right;">

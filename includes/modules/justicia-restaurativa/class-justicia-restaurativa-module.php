@@ -139,6 +139,8 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
 
         // Panel Unificado Admin
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
@@ -935,9 +937,45 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si debe cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'justicia_restaurativa',
+            'solicitar_mediacion',
+            'mis_procesos',
+            'mediadores',
+            'flavor_justicia_info',
+            'flavor_justicia_solicitar',
+            'flavor_justicia_mis_procesos',
+            'flavor_justicia_mediadores',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Encola assets
      */
     public function enqueue_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
         wp_enqueue_style(
             'flavor-justicia-restaurativa',
             FLAVOR_CHAT_IA_URL . 'includes/modules/justicia-restaurativa/assets/css/justicia-restaurativa.css',
@@ -1094,5 +1132,125 @@ KNOWLEDGE;
      */
     public function get_tool_definitions() {
         return [];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'justicia-restaurativa',
+            'title'    => __('Justicia Restaurativa', 'flavor-chat-ia'),
+            'subtitle' => __('Resolución de conflictos y reparación del daño', 'flavor-chat-ia'),
+            'icon'     => '⚖️',
+            'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_justicia_restaurativa',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'tipo_proceso' => ['type' => 'select', 'label' => __('Tipo de proceso', 'flavor-chat-ia'), 'options' => ['mediacion', 'conferencia', 'circulo_paz']],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción del conflicto', 'flavor-chat-ia')],
+                'partes'       => ['type' => 'text', 'label' => __('Partes implicadas', 'flavor-chat-ia')],
+                'mediador_id'  => ['type' => 'select', 'label' => __('Mediador asignado', 'flavor-chat-ia')],
+                'fecha_sesion' => ['type' => 'datetime', 'label' => __('Fecha de sesión', 'flavor-chat-ia')],
+                'acuerdo'      => ['type' => 'textarea', 'label' => __('Acuerdo reparador', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'solicitado'  => ['label' => __('Solicitado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📋'],
+                'aceptado'    => ['label' => __('Aceptado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '✓'],
+                'en_proceso'  => ['label' => __('En proceso', 'flavor-chat-ia'), 'color' => 'indigo', 'icon' => '🔄'],
+                'acordado'    => ['label' => __('Acordado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🤝'],
+                'cumplido'    => ['label' => __('Cumplido', 'flavor-chat-ia'), 'color' => 'emerald', 'icon' => '✅'],
+                'no_acuerdo'  => ['label' => __('Sin acuerdo', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+            ],
+
+            'stats' => [
+                'procesos_activos' => ['label' => __('Procesos activos', 'flavor-chat-ia'), 'icon' => '⚖️', 'color' => 'violet'],
+                'acuerdos_logrados' => ['label' => __('Acuerdos logrados', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green'],
+                'mediadores'       => ['label' => __('Mediadores', 'flavor-chat-ia'), 'icon' => '👤', 'color' => 'blue'],
+                'tasa_exito'       => ['label' => __('Tasa de éxito', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'emerald'],
+            ],
+
+            'card' => [
+                'template'     => 'proceso-card',
+                'title_field'  => 'tipo_proceso',
+                'subtitle_field' => 'estado',
+                'meta_fields'  => ['fecha_sesion', 'mediador'],
+                'show_estado'  => true,
+                'privado'      => true,
+            ],
+
+            'tabs' => [
+                'informacion' => [
+                    'label'   => __('Información', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-info',
+                    'content' => 'shortcode:justicia_informacion',
+                    'public'  => true,
+                ],
+                'mediadores' => [
+                    'label'   => __('Mediadores', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-groups',
+                    'content' => 'shortcode:justicia_mediadores',
+                    'public'  => true,
+                ],
+                'solicitar' => [
+                    'label'      => __('Solicitar proceso', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:justicia_solicitar',
+                    'requires_login' => true,
+                ],
+                'mis-procesos' => [
+                    'label'      => __('Mis procesos', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:justicia_mis_procesos',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 2,
+                'per_page'   => 10,
+                'order_by'   => 'fecha_solicitud',
+                'order'      => 'DESC',
+                'filterable' => ['tipo_proceso', 'estado'],
+                'privado'    => true,
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'mis_procesos', 'proximas_sesiones', 'recursos'],
+                'actions' => [
+                    'solicitar' => ['label' => __('Solicitar mediación', 'flavor-chat-ia'), 'icon' => '⚖️', 'color' => 'violet'],
+                    'informar'  => ['label' => __('Más información', 'flavor-chat-ia'), 'icon' => 'ℹ️', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'confidencialidad' => true,
+                'seguimiento'      => true,
+                'calendario'       => true,
+                'documentos'       => true,
+                'chat_privado'     => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-justicia-restaurativa-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Justicia_Restaurativa_Dashboard_Tab')) {
+                Flavor_Justicia_Restaurativa_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

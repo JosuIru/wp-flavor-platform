@@ -116,8 +116,16 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         }
 
         // Cargar si tiene shortcodes del módulo
-        $shortcodes = ['fichaje_panel', 'fichaje_historial', 'fichaje_resumen', 'fichaje_boton', 'fichaje_estado'];
-        foreach ($shortcodes as $shortcode) {
+        $shortcodes_modulo = [
+            'fichaje_panel',
+            'fichaje_historial',
+            'fichaje_resumen',
+            'fichaje_boton',
+            'fichaje_estado',
+            'fichaje_solicitar_cambio',
+            'flavor_fichaje_empleados_acciones',
+        ];
+        foreach ($shortcodes_modulo as $shortcode) {
             if (has_shortcode($post->post_content, $shortcode)) {
                 return true;
             }

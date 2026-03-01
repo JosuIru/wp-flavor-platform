@@ -11,6 +11,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Evitar redeclaración si ya existe (ej: desde chat-ia-addon)
+if (class_exists('Chat_IA_Engine_Mistral')) {
+    return;
+}
+
 class Chat_IA_Engine_Mistral extends Chat_IA_Engine_Base {
 
     const API_URL = 'https://api.mistral.ai/v1/chat/completions';

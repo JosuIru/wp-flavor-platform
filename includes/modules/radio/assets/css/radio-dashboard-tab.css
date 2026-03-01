@@ -1,0 +1,933 @@
+/**
+ * Estilos para Radio Dashboard Tabs
+ *
+ * @package FlavorChatIA
+ * @subpackage Radio
+ */
+
+/* Variables CSS */
+:root {
+    --radio-primary: #8b5cf6;
+    --radio-primary-dark: #7c3aed;
+    --radio-primary-light: #a78bfa;
+    --radio-success: #10b981;
+    --radio-warning: #f59e0b;
+    --radio-danger: #ef4444;
+    --radio-info: #3b82f6;
+    --radio-gray: #6b7280;
+    --radio-gray-light: #f3f4f6;
+    --radio-border: #e5e7eb;
+}
+
+/* Container principal */
+.flavor-dashboard-tab.radio-mis-programas,
+.flavor-dashboard-tab.radio-mis-dedicatorias,
+.flavor-dashboard-tab.radio-mis-propuestas {
+    padding: 0;
+}
+
+/* Header del tab */
+.tab-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--radio-border);
+}
+
+.tab-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem;
+}
+
+.tab-title .dashicons {
+    color: var(--radio-primary);
+}
+
+.tab-description {
+    color: var(--radio-gray);
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* =========================================================================
+   Mini Player
+   ========================================================================= */
+
+.radio-mini-player {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, var(--radio-primary) 0%, var(--radio-primary-dark) 100%);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.3);
+}
+
+.mini-player-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.mini-player-logo {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.mini-player-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mini-player-logo .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.mini-player-texto {
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-player-nombre {
+    font-weight: 600;
+    font-size: 0.9375rem;
+}
+
+.mini-player-programa {
+    font-size: 0.8125rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.en-vivo-dot {
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+.mini-player-controles {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.mini-player-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: var(--radio-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.mini-player-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mini-player-btn.playing {
+    background: #ef4444;
+    color: white;
+}
+
+.mini-player-btn .dashicons {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+}
+
+.mini-player-volume {
+    width: 80px;
+    height: 4px;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    outline: none;
+}
+
+.mini-player-volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mini-player-oyentes {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+}
+
+.mini-player-oyentes .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.mini-player-offline {
+    font-size: 0.8125rem;
+    opacity: 0.8;
+}
+
+/* =========================================================================
+   Empty State
+   ========================================================================= */
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--radio-gray-light);
+    border-radius: 12px;
+}
+
+.empty-icon {
+    font-size: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+    color: var(--radio-gray);
+    margin-bottom: 1rem;
+}
+
+.empty-state h4 {
+    font-size: 1.125rem;
+    color: #374151;
+    margin: 0 0 0.5rem;
+}
+
+.empty-state p {
+    color: var(--radio-gray);
+    margin: 0 0 1.5rem;
+}
+
+/* =========================================================================
+   Botones
+   ========================================================================= */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--radio-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--radio-primary-dark);
+    color: white;
+}
+
+.btn-success {
+    background: var(--radio-success);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+    color: white;
+}
+
+.btn-small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+}
+
+.btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* =========================================================================
+   Grid de Programas Favoritos
+   ========================================================================= */
+
+.programas-favoritos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.programa-card {
+    background: white;
+    border: 1px solid var(--radio-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.programa-card:hover {
+    border-color: var(--radio-primary-light);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+}
+
+.programa-imagen {
+    position: relative;
+    height: 140px;
+    background: var(--radio-gray-light);
+}
+
+.programa-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.programa-imagen-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--radio-gray);
+}
+
+.programa-imagen-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.en-vivo-badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: #ef4444;
+    color: white;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    animation: pulse-badge 1.5s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.programa-info {
+    padding: 1rem;
+}
+
+.programa-nombre {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem;
+}
+
+.programa-locutor,
+.programa-horario {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--radio-gray);
+    margin: 0 0 0.25rem;
+}
+
+.programa-locutor .dashicons,
+.programa-horario .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.programa-categoria {
+    display: inline-block;
+    font-size: 0.75rem;
+    background: var(--radio-primary-light);
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+.programa-acciones {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--radio-border);
+    background: var(--radio-gray-light);
+}
+
+.btn-favorito {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: var(--radio-gray);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-favorito:hover,
+.btn-favorito.active {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.btn-favorito .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.btn-escuchar {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: var(--radio-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-escuchar:hover {
+    background: var(--radio-primary-dark);
+}
+
+.btn-escuchar .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Stats */
+.programas-stats,
+.propuestas-stats {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--radio-gray-light);
+    border-radius: 8px;
+}
+
+.stat-item {
+    text-align: center;
+    flex: 1;
+}
+
+.stat-numero {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--radio-primary);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--radio-gray);
+    margin-top: 0.25rem;
+}
+
+/* =========================================================================
+   Dedicatorias
+   ========================================================================= */
+
+.dedicatorias-resumen {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.resumen-item {
+    flex: 1;
+    text-align: center;
+    padding: 1rem;
+    background: white;
+    border: 1px solid var(--radio-border);
+    border-radius: 10px;
+}
+
+.resumen-numero {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--radio-primary);
+}
+
+.resumen-label {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--radio-gray);
+    margin-top: 0.25rem;
+}
+
+.nueva-dedicatoria-cta,
+.nueva-propuesta-cta {
+    margin-bottom: 1.5rem;
+}
+
+.dedicatorias-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dedicatoria-item {
+    background: white;
+    border: 1px solid var(--radio-border);
+    border-radius: 12px;
+    padding: 1rem;
+    border-left: 4px solid var(--radio-gray);
+}
+
+.dedicatoria-item.estado-pendiente {
+    border-left-color: var(--radio-warning);
+}
+
+.dedicatoria-item.estado-aprobada {
+    border-left-color: var(--radio-info);
+}
+
+.dedicatoria-item.estado-emitida {
+    border-left-color: var(--radio-success);
+}
+
+.dedicatoria-item.estado-rechazada {
+    border-left-color: var(--radio-danger);
+}
+
+.dedicatoria-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.dedicatoria-destinatarios {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.dedicatoria-destinatarios span {
+    font-size: 0.875rem;
+    color: var(--radio-gray);
+}
+
+.dedicatoria-destinatarios strong {
+    color: #1f2937;
+}
+
+.dedicatoria-estado {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dedicatoria-estado.estado-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.dedicatoria-estado.estado-aprobada {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.dedicatoria-estado.estado-emitida {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.dedicatoria-estado.estado-rechazada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.dedicatoria-mensaje p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.dedicatoria-cancion {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--radio-gray-light);
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    color: #4b5563;
+}
+
+.dedicatoria-cancion .dashicons {
+    color: var(--radio-primary);
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.dedicatoria-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--radio-border);
+}
+
+.dedicatoria-fecha,
+.dedicatoria-emision {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--radio-gray);
+}
+
+.dedicatoria-emision {
+    color: var(--radio-success);
+}
+
+.dedicatoria-rechazo {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--radio-danger);
+    width: 100%;
+}
+
+.dedicatoria-fecha .dashicons,
+.dedicatoria-emision .dashicons,
+.dedicatoria-rechazo .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* =========================================================================
+   Propuestas
+   ========================================================================= */
+
+.aviso-pendiente,
+.aviso-cerrado {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+.aviso-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.aviso-cerrado {
+    background: var(--radio-gray-light);
+    color: var(--radio-gray);
+}
+
+.aviso-pendiente .dashicons,
+.aviso-cerrado .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.propuestas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.propuesta-item {
+    background: white;
+    border: 1px solid var(--radio-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid var(--radio-gray);
+}
+
+.propuesta-item.estado-pendiente {
+    border-left-color: var(--radio-warning);
+}
+
+.propuesta-item.estado-aprobada {
+    border-left-color: var(--radio-success);
+}
+
+.propuesta-item.estado-rechazada {
+    border-left-color: var(--radio-danger);
+}
+
+.propuesta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.propuesta-nombre {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.propuesta-estado {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.propuesta-estado.estado-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.propuesta-estado.estado-aprobada {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.propuesta-estado.estado-rechazada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.propuesta-descripcion p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.propuesta-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.detalle-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--radio-gray);
+    background: var(--radio-gray-light);
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+}
+
+.detalle-item .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.propuesta-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--radio-border);
+}
+
+.propuesta-fecha {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--radio-gray);
+}
+
+.propuesta-fecha .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.propuesta-notas-admin {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--radio-danger);
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.propuesta-notas-admin .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* =========================================================================
+   Login Required
+   ========================================================================= */
+
+.login-required {
+    text-align: center;
+    padding: 3rem 1.5rem;
+}
+
+.login-required .dashicons {
+    font-size: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+    color: var(--radio-gray);
+    margin-bottom: 1rem;
+}
+
+.login-required h4 {
+    font-size: 1.125rem;
+    color: #374151;
+    margin: 0 0 0.5rem;
+}
+
+.login-required p {
+    color: var(--radio-gray);
+    margin: 0 0 1.5rem;
+}
+
+/* =========================================================================
+   Responsive
+   ========================================================================= */
+
+@media (max-width: 768px) {
+    .radio-mini-player {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .mini-player-info {
+        width: 100%;
+    }
+
+    .mini-player-controles {
+        flex: 1;
+    }
+
+    .mini-player-volume {
+        width: 60px;
+    }
+
+    .programas-favoritos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dedicatorias-resumen {
+        flex-direction: column;
+    }
+
+    .dedicatoria-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .programas-stats,
+    .propuestas-stats {
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        min-width: calc(50% - 0.5rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-title {
+        font-size: 1.125rem;
+    }
+
+    .mini-player-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .mini-player-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .programa-imagen {
+        height: 120px;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+    }
+}

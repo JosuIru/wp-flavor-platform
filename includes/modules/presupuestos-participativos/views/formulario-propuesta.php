@@ -14,8 +14,25 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$presupuesto_minimo = floatval($configuracion['presupuesto_minimo_proyecto'] ?? 1000);
-$presupuesto_maximo = floatval($configuracion['presupuesto_maximo_proyecto'] ?? 50000);
+// Valores por defecto seguros
+$configuracion = $configuracion ?? [];
+$edicion = $edicion ?? [];
+$proceso = $proceso ?? $edicion;
+$categorias = $categorias ?? [];
+$presupuesto_minimo = $presupuesto_minimo ?? 1000;
+$presupuesto_maximo = $presupuesto_maximo ?? 50000;
+$proceso_id = $proceso_id ?? 0;
+
+// Obtener presupuesto desde configuracion si no se pasó directamente
+if (isset($configuracion['presupuesto_minimo_proyecto'])) {
+    $presupuesto_minimo = floatval($configuracion['presupuesto_minimo_proyecto']);
+}
+if (isset($configuracion['presupuesto_maximo_proyecto'])) {
+    $presupuesto_maximo = floatval($configuracion['presupuesto_maximo_proyecto']);
+}
+
+// Normalizar ID del proceso/edicion
+$edicion_id = is_array($proceso) ? ($proceso['id'] ?? $proceso_id) : ($proceso->id ?? $proceso_id);
 ?>
 
 <div class="flavor-pp-formulario-contenedor">
@@ -29,7 +46,7 @@ $presupuesto_maximo = floatval($configuracion['presupuesto_maximo_proyecto'] ?? 
     <form id="flavor-pp-form-propuesta" class="flavor-pp-formulario" method="post">
         <?php wp_nonce_field('flavor_presupuestos_nonce', 'nonce'); ?>
         <input type="hidden" name="action" value="pp_proponer_proyecto">
-        <input type="hidden" name="edicion_id" value="<?php echo esc_attr($edicion->id); ?>">
+        <input type="hidden" name="edicion_id" value="<?php echo esc_attr($edicion_id); ?>">
 
         <div class="flavor-pp-campo">
             <label for="pp-titulo" class="flavor-pp-label">

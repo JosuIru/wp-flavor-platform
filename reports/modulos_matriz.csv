@@ -1,4 +1,4 @@
-# ARCHIVO HISTÓRICO - Ver docs/ESTADO-REAL-MODULOS.md para estado actual (23/02/2026)
+# ARCHIVO HISTORICO - Ver AUDITORIA-ESTADO-REAL-2026-03-01.md para estado actual
 # Esta matriz solo verificaba presencia de TODOs, no el estado real de implementación
 modulo,estado,evidencia
 advertising,Sin TODOs detectados,includes/modules/advertising/

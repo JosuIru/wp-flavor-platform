@@ -141,6 +141,8 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en panel de administracion unificado
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
     }
 
     /**
@@ -3074,5 +3076,136 @@ KNOWLEDGE;
                 'parent' => 'chat-interno',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'chat-interno',
+            'title'    => __('Mensajes', 'flavor-chat-ia'),
+            'subtitle' => __('Mensajería privada entre usuarios', 'flavor-chat-ia'),
+            'icon'     => '💬',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_chat_mensajes',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'contenido'      => ['type' => 'textarea', 'label' => __('Mensaje', 'flavor-chat-ia'), 'required' => true],
+                'destinatario_id'=> ['type' => 'user', 'label' => __('Destinatario', 'flavor-chat-ia'), 'required' => true],
+                'adjuntos'       => ['type' => 'file', 'label' => __('Adjuntos', 'flavor-chat-ia'), 'multiple' => true],
+                'conversacion_id'=> ['type' => 'hidden', 'label' => __('Conversación', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'enviado'    => ['label' => __('Enviado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '✓'],
+                'entregado'  => ['label' => __('Entregado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✓✓'],
+                'leido'      => ['label' => __('Leído', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '👁️'],
+            ],
+
+            'stats' => [
+                [
+                    'key'   => 'conversaciones_activas',
+                    'label' => __('Conversaciones', 'flavor-chat-ia'),
+                    'icon'  => '💬',
+                    'color' => 'indigo',
+                    'query' => "SELECT COUNT(DISTINCT conversacion_id) FROM {prefix}flavor_chat_mensajes WHERE remitente_id = {user_id} OR destinatario_id = {user_id}",
+                ],
+                [
+                    'key'   => 'mensajes_sin_leer',
+                    'label' => __('Sin leer', 'flavor-chat-ia'),
+                    'icon'  => '🔴',
+                    'color' => 'red',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_mensajes WHERE destinatario_id = {user_id} AND leido = 0",
+                ],
+                [
+                    'key'   => 'mensajes_hoy',
+                    'label' => __('Hoy', 'flavor-chat-ia'),
+                    'icon'  => '📨',
+                    'color' => 'green',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_mensajes WHERE (remitente_id = {user_id} OR destinatario_id = {user_id}) AND DATE(created_at) = CURDATE()",
+                ],
+            ],
+
+            'card' => [
+                'layout'         => 'conversation',
+                'avatar'         => true,
+                'show_preview'   => true,
+                'show_timestamp' => true,
+                'show_unread'    => true,
+            ],
+
+            'tabs' => [
+                'conversaciones' => [
+                    'label'   => __('Conversaciones', 'flavor-chat-ia'),
+                    'icon'    => '💬',
+                    'content' => 'shortcode:chat_interno_conversaciones',
+                ],
+                'nuevo' => [
+                    'label'   => __('Nuevo mensaje', 'flavor-chat-ia'),
+                    'icon'    => '✏️',
+                    'content' => 'shortcode:chat_interno_nuevo',
+                ],
+                'archivados' => [
+                    'label'   => __('Archivados', 'flavor-chat-ia'),
+                    'icon'    => '📁',
+                    'content' => 'shortcode:chat_interno_archivados',
+                ],
+            ],
+
+            'archive' => [
+                'columns'       => 1,
+                'per_page'      => 20,
+                'order_by'      => 'updated_at',
+                'order'         => 'DESC',
+                'conversation_view' => true,
+            ],
+
+            'dashboard' => [
+                'widgets' => [
+                    'conversaciones_recientes' => ['type' => 'list', 'title' => __('Conversaciones recientes', 'flavor-chat-ia')],
+                    'mensajes_sin_leer'        => ['type' => 'notification', 'title' => __('Sin leer', 'flavor-chat-ia')],
+                ],
+                'actions' => [
+                    'nuevo_mensaje' => [
+                        'label' => __('Nuevo mensaje', 'flavor-chat-ia'),
+                        'icon'  => '✏️',
+                        'modal' => 'chat-interno-nuevo',
+                    ],
+                ],
+            ],
+
+            'features' => [
+                'has_archive'    => false,
+                'has_single'     => true,
+                'has_dashboard'  => true,
+                'has_search'     => true,
+                'realtime'       => true,
+                'has_typing'     => true,
+                'has_read_receipts' => true,
+                'has_attachments'=> true,
+                'has_reactions'  => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-chat-interno-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Chat_Interno_Dashboard_Tab')) {
+                Flavor_Chat_Interno_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

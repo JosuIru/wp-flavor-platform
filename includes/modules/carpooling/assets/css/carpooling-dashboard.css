@@ -1,0 +1,1016 @@
+/**
+ * Carpooling Dashboard Tab Styles
+ *
+ * Estilos para los tabs del dashboard de usuario de Carpooling
+ */
+
+/* ==========================================================================
+   Variables
+   ========================================================================== */
+:root {
+    --carpooling-primary: #3b82f6;
+    --carpooling-primary-dark: #2563eb;
+    --carpooling-success: #10b981;
+    --carpooling-warning: #f59e0b;
+    --carpooling-danger: #ef4444;
+    --carpooling-eco: #22c55e;
+    --carpooling-border: #e5e7eb;
+    --carpooling-bg-light: #f9fafb;
+    --carpooling-text: #1f2937;
+    --carpooling-text-muted: #6b7280;
+    --carpooling-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --carpooling-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --carpooling-radius: 8px;
+    --carpooling-radius-lg: 12px;
+}
+
+/* ==========================================================================
+   Dashboard Tab Base
+   ========================================================================== */
+.carpooling-dashboard-tab {
+    padding: 1.5rem 0;
+}
+
+/* ==========================================================================
+   Resumen Rapido
+   ========================================================================== */
+.carpooling-resumen-rapido {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.carpooling-resumen-rapido .resumen-item {
+    background: var(--carpooling-bg-light);
+    border-radius: var(--carpooling-radius);
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px solid var(--carpooling-border);
+}
+
+.carpooling-resumen-rapido .resumen-numero {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--carpooling-primary);
+    line-height: 1.2;
+}
+
+.carpooling-resumen-rapido .resumen-item.valoracion .resumen-numero {
+    color: var(--carpooling-warning);
+}
+
+.carpooling-resumen-rapido .resumen-item.valoracion .dashicons {
+    color: var(--carpooling-warning);
+    vertical-align: middle;
+}
+
+.carpooling-resumen-rapido .resumen-item.ahorro .resumen-numero {
+    color: var(--carpooling-success);
+}
+
+.carpooling-resumen-rapido .resumen-item.eco .resumen-numero {
+    color: var(--carpooling-eco);
+}
+
+.carpooling-resumen-rapido .resumen-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--carpooling-text-muted);
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Accion Principal
+   ========================================================================== */
+.carpooling-accion-principal {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.carpooling-accion-principal .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--carpooling-radius);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.carpooling-accion-principal .btn-primary {
+    background: var(--carpooling-primary);
+    color: #fff;
+    border: none;
+}
+
+.carpooling-accion-principal .btn-primary:hover {
+    background: var(--carpooling-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--carpooling-shadow-md);
+}
+
+/* ==========================================================================
+   Secciones
+   ========================================================================== */
+.carpooling-seccion {
+    margin-bottom: 2rem;
+}
+
+.carpooling-seccion .seccion-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--carpooling-text);
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--carpooling-border);
+}
+
+.carpooling-seccion .seccion-titulo .dashicons {
+    color: var(--carpooling-primary);
+}
+
+/* ==========================================================================
+   Estado Vacio
+   ========================================================================== */
+.carpooling-vacio {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--carpooling-bg-light);
+    border-radius: var(--carpooling-radius-lg);
+    border: 2px dashed var(--carpooling-border);
+}
+
+.carpooling-vacio .dashicons {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: var(--carpooling-text-muted);
+    opacity: 0.5;
+}
+
+.carpooling-vacio p {
+    color: var(--carpooling-text-muted);
+    margin: 1rem 0;
+}
+
+.carpooling-vacio .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: 2px solid var(--carpooling-primary);
+    color: var(--carpooling-primary);
+    background: transparent;
+    border-radius: var(--carpooling-radius);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.carpooling-vacio .btn-outline:hover {
+    background: var(--carpooling-primary);
+    color: #fff;
+}
+
+/* ==========================================================================
+   Viaje Card (Conductor)
+   ========================================================================== */
+.carpooling-viajes-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.carpooling-viaje-card {
+    background: #fff;
+    border: 1px solid var(--carpooling-border);
+    border-radius: var(--carpooling-radius-lg);
+    padding: 1.25rem;
+    position: relative;
+    transition: box-shadow 0.2s ease;
+}
+
+.carpooling-viaje-card:hover {
+    box-shadow: var(--carpooling-shadow-md);
+}
+
+.carpooling-viaje-card.es-proximo {
+    border-left: 4px solid var(--carpooling-warning);
+}
+
+.carpooling-viaje-card .viaje-badge-proximo {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: var(--carpooling-warning);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.carpooling-viaje-card .viaje-badge-proximo .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* Ruta Visual */
+.viaje-ruta-visual {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.viaje-ruta-visual .punto-origen,
+.viaje-ruta-visual .punto-destino {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.viaje-ruta-visual .punto-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.viaje-ruta-visual .punto-origen .punto-marker {
+    background: var(--carpooling-success);
+}
+
+.viaje-ruta-visual .punto-destino .punto-marker {
+    background: var(--carpooling-danger);
+}
+
+.viaje-ruta-visual .punto-texto {
+    font-weight: 500;
+    color: var(--carpooling-text);
+}
+
+.viaje-ruta-visual .ruta-linea {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(
+        to right,
+        var(--carpooling-success),
+        var(--carpooling-border) 50%,
+        var(--carpooling-danger)
+    );
+    min-width: 30px;
+}
+
+/* Fecha y hora */
+.carpooling-viaje-card .viaje-fecha-hora {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--carpooling-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.carpooling-viaje-card .viaje-fecha-hora .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Detalles */
+.carpooling-viaje-card .viaje-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.carpooling-viaje-card .detalle {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    color: var(--carpooling-text-muted);
+}
+
+.carpooling-viaje-card .detalle .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--carpooling-primary);
+}
+
+/* Alerta de reservas pendientes */
+.carpooling-viaje-card .viaje-alerta-reservas {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: var(--carpooling-radius);
+    color: var(--carpooling-warning);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.carpooling-viaje-card .viaje-alerta-reservas .dashicons {
+    animation: bellShake 0.5s ease-in-out infinite;
+}
+
+@keyframes bellShake {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(10deg); }
+    75% { transform: rotate(-10deg); }
+}
+
+/* Acciones */
+.carpooling-viaje-card .viaje-acciones {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.carpooling-viaje-card .btn-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    border-radius: var(--carpooling-radius);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.carpooling-viaje-card .btn-outline {
+    background: transparent;
+    border: 1px solid var(--carpooling-border);
+    color: var(--carpooling-text);
+}
+
+.carpooling-viaje-card .btn-outline:hover {
+    border-color: var(--carpooling-primary);
+    color: var(--carpooling-primary);
+}
+
+.carpooling-viaje-card .btn-danger {
+    background: var(--carpooling-danger);
+    color: #fff;
+}
+
+.carpooling-viaje-card .btn-danger:hover {
+    background: #dc2626;
+}
+
+/* Mapa mini thumbnail */
+.viaje-mapa-mini-thumb {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    width: 80px;
+    height: 60px;
+    border-radius: var(--carpooling-radius);
+    overflow: hidden;
+    border: 2px solid var(--carpooling-border);
+    background: var(--carpooling-bg-light);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.carpooling-viaje-card:hover .viaje-mapa-mini-thumb {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   Historial Cards
+   ========================================================================== */
+.carpooling-viajes-historial,
+.carpooling-reservas-historial {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.carpooling-viaje-historial-card,
+.carpooling-reserva-historial-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    background: var(--carpooling-bg-light);
+    border-radius: var(--carpooling-radius);
+    font-size: 0.875rem;
+}
+
+.historial-fecha {
+    flex-shrink: 0;
+    width: 80px;
+    color: var(--carpooling-text-muted);
+    font-size: 0.8125rem;
+}
+
+.historial-ruta {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.historial-ruta .origen {
+    font-weight: 500;
+}
+
+.historial-ruta .flecha {
+    color: var(--carpooling-text-muted);
+}
+
+.historial-ruta .destino {
+    font-weight: 500;
+}
+
+.historial-info,
+.historial-acciones {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.historial-info .estado,
+.historial-acciones .estado {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.estado-finalizado,
+.estado-completada {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--carpooling-success);
+}
+
+.estado-cancelado,
+.estado-cancelada {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--carpooling-danger);
+}
+
+.historial-acciones .valorado {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--carpooling-warning);
+}
+
+.historial-acciones .valorado .dashicons {
+    color: var(--carpooling-warning);
+}
+
+/* ==========================================================================
+   Reserva Card
+   ========================================================================== */
+.carpooling-reservas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.carpooling-reserva-card {
+    background: #fff;
+    border: 1px solid var(--carpooling-border);
+    border-radius: var(--carpooling-radius-lg);
+    padding: 1.25rem;
+    position: relative;
+}
+
+.carpooling-reserva-card.estado-pendiente {
+    border-left: 4px solid var(--carpooling-warning);
+}
+
+.carpooling-reserva-card.estado-confirmada {
+    border-left: 4px solid var(--carpooling-success);
+}
+
+.carpooling-reserva-card .reserva-estado {
+    margin-bottom: 0.75rem;
+}
+
+.carpooling-reserva-card .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+.badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--carpooling-warning);
+}
+
+.badge-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--carpooling-success);
+}
+
+.carpooling-reserva-card .reserva-conductor {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--carpooling-text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.carpooling-reserva-card .reserva-conductor .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.carpooling-reserva-card .reserva-conductor strong {
+    color: var(--carpooling-text);
+}
+
+.carpooling-reserva-card .reserva-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.carpooling-reserva-card .reserva-acciones {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* ==========================================================================
+   Estadisticas Tab
+   ========================================================================== */
+.carpooling-estadisticas .estadisticas-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.carpooling-estadisticas .estadisticas-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    color: var(--carpooling-text);
+}
+
+.carpooling-estadisticas .estadisticas-subtitulo {
+    color: var(--carpooling-text-muted);
+    margin: 0;
+}
+
+/* KPIs Grid */
+.estadisticas-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.kpi-card {
+    background: #fff;
+    border: 1px solid var(--carpooling-border);
+    border-radius: var(--carpooling-radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.kpi-card.kpi-co2 {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(34, 197, 94, 0.15));
+    border-color: var(--carpooling-eco);
+}
+
+.kpi-card.kpi-km {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.15));
+    border-color: var(--carpooling-primary);
+}
+
+.kpi-card.kpi-ahorro {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.15));
+    border-color: var(--carpooling-success);
+}
+
+.kpi-card.kpi-combustible {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(245, 158, 11, 0.15));
+    border-color: var(--carpooling-warning);
+}
+
+.kpi-card .kpi-icono {
+    margin-bottom: 0.75rem;
+}
+
+.kpi-card .kpi-icono .dashicons {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+}
+
+.kpi-co2 .kpi-icono .dashicons { color: var(--carpooling-eco); }
+.kpi-km .kpi-icono .dashicons { color: var(--carpooling-primary); }
+.kpi-ahorro .kpi-icono .dashicons { color: var(--carpooling-success); }
+.kpi-combustible .kpi-icono .dashicons { color: var(--carpooling-warning); }
+
+.kpi-card .kpi-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.kpi-card .kpi-valor {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--carpooling-text);
+}
+
+.kpi-card .kpi-unidad {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--carpooling-text-muted);
+    margin-top: 0.25rem;
+}
+
+.kpi-card .kpi-label {
+    font-size: 0.8125rem;
+    color: var(--carpooling-text-muted);
+    margin-top: 0.5rem;
+}
+
+.kpi-card .kpi-equivalencia {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.kpi-card .kpi-equivalencia .dashicons {
+    cursor: help;
+    color: var(--carpooling-text-muted);
+    font-size: 16px;
+}
+
+.kpi-card .kpi-equivalencia .tooltip {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--carpooling-text);
+    color: #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--carpooling-radius);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.kpi-card .kpi-equivalencia:hover .tooltip {
+    display: block;
+}
+
+/* Desglose Conductor/Pasajero */
+.estadisticas-desglose {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.desglose-columna {
+    background: var(--carpooling-bg-light);
+    border-radius: var(--carpooling-radius-lg);
+    padding: 1.25rem;
+}
+
+.desglose-columna h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: var(--carpooling-text);
+}
+
+.desglose-columna h4 .dashicons {
+    color: var(--carpooling-primary);
+}
+
+.desglose-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.desglose-lista li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--carpooling-border);
+}
+
+.desglose-lista li:last-child {
+    border-bottom: none;
+}
+
+.desglose-lista .desglose-label {
+    font-size: 0.875rem;
+    color: var(--carpooling-text-muted);
+}
+
+.desglose-lista .desglose-valor {
+    font-weight: 600;
+    color: var(--carpooling-text);
+}
+
+.desglose-lista .desglose-valor.ahorro {
+    color: var(--carpooling-success);
+}
+
+.desglose-lista .desglose-valor .dashicons {
+    color: var(--carpooling-warning);
+    vertical-align: middle;
+}
+
+/* Proximo Viaje con Mapa */
+.estadisticas-proximo-viaje {
+    margin-bottom: 2rem;
+}
+
+.estadisticas-proximo-viaje h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+}
+
+.estadisticas-proximo-viaje h4 .dashicons {
+    color: var(--carpooling-primary);
+}
+
+.proximo-viaje-card {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 1.5rem;
+    background: #fff;
+    border: 1px solid var(--carpooling-border);
+    border-radius: var(--carpooling-radius-lg);
+    padding: 1.25rem;
+}
+
+.proximo-viaje-card .viaje-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.proximo-viaje-card .viaje-ruta {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.proximo-viaje-card .viaje-ruta .flecha {
+    color: var(--carpooling-text-muted);
+    margin: 0 0.5rem;
+}
+
+.proximo-viaje-card .viaje-fecha {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--carpooling-text-muted);
+    font-size: 0.875rem;
+}
+
+.proximo-viaje-card .viaje-rol .badge {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+.proximo-viaje-card .badge-conductor {
+    background: var(--carpooling-primary);
+    color: #fff;
+}
+
+.proximo-viaje-card .badge-pasajero {
+    background: var(--carpooling-success);
+    color: #fff;
+}
+
+.proximo-viaje-card .viaje-mapa-mini {
+    width: 100%;
+    height: 120px;
+    border-radius: var(--carpooling-radius);
+    overflow: hidden;
+    background: var(--carpooling-bg-light);
+}
+
+/* Logros */
+.estadisticas-logros h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+}
+
+.estadisticas-logros h4 .dashicons {
+    color: var(--carpooling-warning);
+}
+
+.logros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.logro-item {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid var(--carpooling-border);
+    border-radius: var(--carpooling-radius);
+    transition: all 0.2s ease;
+}
+
+.logro-item.conseguido {
+    background: rgba(16, 185, 129, 0.05);
+    border-color: var(--carpooling-success);
+}
+
+.logro-item.bloqueado {
+    opacity: 0.6;
+}
+
+.logro-item .logro-icono {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--carpooling-bg-light);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.logro-item.conseguido .logro-icono {
+    background: var(--carpooling-success);
+}
+
+.logro-item .logro-icono .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--carpooling-text-muted);
+}
+
+.logro-item.conseguido .logro-icono .dashicons {
+    color: #fff;
+}
+
+.logro-item .logro-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.logro-item .logro-nombre {
+    display: block;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--carpooling-text);
+    margin-bottom: 0.125rem;
+}
+
+.logro-item .logro-descripcion {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--carpooling-text-muted);
+}
+
+.logro-item .logro-progreso {
+    height: 4px;
+    background: var(--carpooling-border);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.logro-item .logro-progreso .progreso-barra {
+    height: 100%;
+    background: var(--carpooling-primary);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.logro-item .logro-check {
+    color: var(--carpooling-success);
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .carpooling-resumen-rapido {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .viaje-ruta-visual {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .viaje-ruta-visual .ruta-linea {
+        display: none;
+    }
+
+    .proximo-viaje-card {
+        grid-template-columns: 1fr;
+    }
+
+    .proximo-viaje-card .viaje-mapa-mini {
+        height: 150px;
+    }
+
+    .estadisticas-kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .estadisticas-desglose {
+        grid-template-columns: 1fr;
+    }
+
+    .historial-ruta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .historial-ruta .flecha {
+        display: none;
+    }
+
+    .carpooling-viaje-historial-card,
+    .carpooling-reserva-historial-card {
+        flex-wrap: wrap;
+    }
+
+    .viaje-mapa-mini-thumb {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .carpooling-resumen-rapido {
+        grid-template-columns: 1fr;
+    }
+
+    .carpooling-resumen-rapido .resumen-numero {
+        font-size: 1.5rem;
+    }
+
+    .estadisticas-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .logros-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .carpooling-viaje-card .viaje-acciones {
+        flex-direction: column;
+    }
+
+    .carpooling-viaje-card .viaje-acciones .btn-sm {
+        width: 100%;
+        justify-content: center;
+    }
+}

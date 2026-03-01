@@ -99,6 +99,9 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
         $this->inicializar_componentes();
 
         // Registrar en panel de administracion unificado
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         // Registrar endpoints REST API
@@ -2585,5 +2588,17 @@ KNOWLEDGE;
                 'parent' => 'dex-solana',
             ],
         ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-dex-solana-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Dex_Solana_Dashboard_Tab::get_instance();
+        }
     }
 }

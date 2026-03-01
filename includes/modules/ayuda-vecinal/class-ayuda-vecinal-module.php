@@ -45,6 +45,24 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
         // AJAX handlers para solicitudes
         add_action('wp_ajax_ayuda_vecinal_listar_solicitudes', [$this, 'ajax_listar_solicitudes']);
         add_action('wp_ajax_ayuda_vecinal_guardar_solicitud', [$this, 'ajax_guardar_solicitud']);
+
+        // Registrar shortcodes
+        add_shortcode('ayuda_vecinal_solicitudes', [$this, 'render_shortcode_solicitudes']);
+        add_shortcode('ayuda_vecinal_ofrecer', [$this, 'render_shortcode_ofrecer']);
+        add_shortcode('ayuda_vecinal_solicitar', [$this, 'render_shortcode_solicitar']);
+        add_shortcode('ayuda_vecinal_mis_ayudas', [$this, 'render_shortcode_mis_ayudas']);
+        add_shortcode('ayuda_vecinal_mapa', [$this, 'render_shortcode_mapa']);
+        add_shortcode('ayuda_vecinal_estadisticas', [$this, 'render_shortcode_estadisticas']);
+
+        // AJAX handlers para shortcodes frontend
+        add_action('wp_ajax_ayuda_vecinal_crear_solicitud', [$this, 'ajax_crear_solicitud_frontend']);
+        add_action('wp_ajax_ayuda_vecinal_crear_oferta', [$this, 'ajax_crear_oferta_frontend']);
+        add_action('wp_ajax_ayuda_vecinal_responder_solicitud', [$this, 'ajax_responder_solicitud']);
+        add_action('wp_ajax_nopriv_ayuda_vecinal_get_solicitudes_mapa', [$this, 'ajax_get_solicitudes_mapa']);
+        add_action('wp_ajax_ayuda_vecinal_get_solicitudes_mapa', [$this, 'ajax_get_solicitudes_mapa']);
+
+        // Encolar assets frontend cuando se usan shortcodes
+        add_action('wp_enqueue_scripts', [$this, 'maybe_enqueue_frontend_assets']);
     }
 
     /**
@@ -172,6 +190,8 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Widget
+        $this->inicializar_dashboard_widget();
 
         // Cargar Frontend Controller
         $this->cargar_frontend_controller();
@@ -2544,6 +2564,1434 @@ KNOWLEDGE;
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al guardar', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'ayuda-vecinal',
+            'title'    => __('Ayuda Vecinal', 'flavor-chat-ia'),
+            'subtitle' => __('Red de ayuda mutua entre vecinos', 'flavor-chat-ia'),
+            'icon'     => '🤝',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_ayuda_solicitudes',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'       => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true],
+                'categoria'    => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true],
+                'urgencia'     => ['type' => 'select', 'label' => __('Urgencia', 'flavor-chat-ia'), 'options' => ['normal', 'alta', 'critica']],
+                'fecha_necesaria' => ['type' => 'date', 'label' => __('Fecha necesaria', 'flavor-chat-ia')],
+                'ubicacion'    => ['type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'pendiente'    => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
+                'asignada'     => ['label' => __('Asignada', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '👤'],
+                'en_progreso'  => ['label' => __('En progreso', 'flavor-chat-ia'), 'color' => 'indigo', 'icon' => '🔄'],
+                'completada'   => ['label' => __('Completada', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'cancelada'    => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+            ],
+
+            'stats' => [
+                'solicitudes_activas' => ['label' => __('Solicitudes activas', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'rose'],
+                'voluntarios'         => ['label' => __('Voluntarios', 'flavor-chat-ia'), 'icon' => '🙋', 'color' => 'green'],
+                'ayudas_completadas'  => ['label' => __('Ayudas completadas', 'flavor-chat-ia'), 'icon' => '✅', 'color' => 'blue'],
+                'horas_donadas'       => ['label' => __('Horas donadas', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'purple'],
+            ],
+
+            'card' => [
+                'template'     => 'solicitud-card',
+                'title_field'  => 'titulo',
+                'subtitle_field' => 'categoria',
+                'meta_fields'  => ['urgencia', 'fecha_necesaria', 'estado'],
+                'show_author'  => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'solicitudes' => [
+                    'label'   => __('Solicitudes', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-sos',
+                    'content' => 'shortcode:ayuda_vecinal_solicitudes',
+                    'public'  => true,
+                ],
+                'ofrecer' => [
+                    'label'   => __('Ofrecer Ayuda', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-heart',
+                    'content' => 'shortcode:ayuda_vecinal_ofrecer',
+                    'public'  => true,
+                ],
+                'solicitar' => [
+                    'label'      => __('Pedir Ayuda', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:ayuda_vecinal_solicitar',
+                    'requires_login' => true,
+                ],
+                'mis-ayudas' => [
+                    'label'      => __('Mis Ayudas', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:ayuda_vecinal_mis_ayudas',
+                    'requires_login' => true,
+                ],
+                'mapa' => [
+                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-location',
+                    'content' => 'shortcode:ayuda_vecinal_mapa',
+                    'public'  => true,
+                ],
+                'estadisticas' => [
+                    'label'   => __('Estadísticas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-chart-bar',
+                    'content' => 'shortcode:ayuda_vecinal_estadisticas',
+                    'public'  => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 2,
+                'per_page'   => 12,
+                'order_by'   => 'fecha_solicitud',
+                'order'      => 'DESC',
+                'filterable' => ['categoria', 'urgencia', 'estado'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'solicitudes_urgentes', 'mis_ayudas', 'ranking_voluntarios'],
+                'actions' => [
+                    'pedir'     => ['label' => __('Pedir ayuda', 'flavor-chat-ia'), 'icon' => '🆘', 'color' => 'rose'],
+                    'ofrecer'   => ['label' => __('Ofrecer ayuda', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green'],
+                ],
+            ],
+
+            'features' => [
+                'matching'       => true,
+                'valoraciones'   => true,
+                'chat'           => true,
+                'notificaciones' => true,
+                'gamificacion'   => true,
+            ],
+        ];
+    }
+
+    // =========================================================================
+    // SHORTCODES - Métodos de renderizado frontend
+    // =========================================================================
+
+    /**
+     * Encola assets frontend solo cuando se usan shortcodes
+     */
+    public function maybe_enqueue_frontend_assets() {
+        global $post;
+
+        if (!is_a($post, 'WP_Post')) {
+            return;
+        }
+
+        $shortcodes_modulo = [
+            'ayuda_vecinal_solicitudes',
+            'ayuda_vecinal_ofrecer',
+            'ayuda_vecinal_solicitar',
+            'ayuda_vecinal_mis_ayudas',
+            'ayuda_vecinal_mapa',
+            'ayuda_vecinal_estadisticas'
+        ];
+
+        $contenido_tiene_shortcode = false;
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                $contenido_tiene_shortcode = true;
+                break;
+            }
+        }
+
+        if ($contenido_tiene_shortcode) {
+            $this->enqueue_frontend_assets();
+        }
+    }
+
+    /**
+     * Encola los assets CSS y JS para el frontend
+     */
+    private function enqueue_frontend_assets() {
+        $assets_url = FLAVOR_CHAT_IA_URL . 'includes/modules/ayuda-vecinal/assets/';
+        $version = FLAVOR_CHAT_IA_VERSION;
+
+        // CSS frontend
+        wp_enqueue_style(
+            'ayuda-vecinal-frontend',
+            $assets_url . 'css/ayuda-vecinal-frontend.css',
+            [],
+            $version
+        );
+
+        // JS frontend
+        wp_enqueue_script(
+            'ayuda-vecinal-frontend',
+            $assets_url . 'js/ayuda-vecinal-frontend.js',
+            ['jquery'],
+            $version,
+            true
+        );
+
+        // Localizar script con datos necesarios
+        wp_localize_script('ayuda-vecinal-frontend', 'ayudaVecinalData', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('ayuda_vecinal_frontend'),
+            'user_logged_in' => is_user_logged_in(),
+            'user_id' => get_current_user_id(),
+            'categorias' => $this->get_categorias_ayuda(),
+            'strings' => [
+                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'confirmar_envio' => __('¿Estás seguro de que deseas enviar esta solicitud?', 'flavor-chat-ia'),
+                'solicitud_enviada' => __('Tu solicitud ha sido enviada correctamente.', 'flavor-chat-ia'),
+                'oferta_enviada' => __('Tu oferta de ayuda ha sido registrada.', 'flavor-chat-ia'),
+                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
+            ]
+        ]);
+
+        // Leaflet para mapas
+        wp_enqueue_style('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', [], '1.9.4');
+        wp_enqueue_script('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', [], '1.9.4', true);
+    }
+
+    /**
+     * Obtiene las categorías de ayuda configuradas
+     */
+    private function get_categorias_ayuda() {
+        $settings = $this->get_settings();
+        $categorias = $settings['categorias_ayuda'] ?? [
+            'compras' => __('Compras', 'flavor-chat-ia'),
+            'cuidado_mayores' => __('Cuidado de mayores', 'flavor-chat-ia'),
+            'cuidado_ninos' => __('Cuidado de niños', 'flavor-chat-ia'),
+            'mascotas' => __('Mascotas', 'flavor-chat-ia'),
+            'transporte' => __('Transporte', 'flavor-chat-ia'),
+            'tecnologia' => __('Ayuda tecnológica', 'flavor-chat-ia'),
+            'tramites' => __('Trámites', 'flavor-chat-ia'),
+            'reparaciones' => __('Reparaciones', 'flavor-chat-ia'),
+            'compania' => __('Compañía', 'flavor-chat-ia'),
+            'otro' => __('Otro', 'flavor-chat-ia'),
+        ];
+
+        // Convertir array simple a asociativo si es necesario
+        if (isset($categorias[0])) {
+            $categorias_asociativas = [];
+            foreach ($categorias as $categoria) {
+                $categorias_asociativas[$categoria] = ucfirst(str_replace('_', ' ', $categoria));
+            }
+            return $categorias_asociativas;
+        }
+
+        return $categorias;
+    }
+
+    /**
+     * Shortcode: Lista de solicitudes de ayuda activas
+     * [ayuda_vecinal_solicitudes categoria="compras" urgencia="alta" limite="10"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_shortcode_solicitudes($atts) {
+        global $wpdb;
+
+        $atributos = shortcode_atts([
+            'categoria' => '',
+            'urgencia' => '',
+            'limite' => 10,
+            'mostrar_filtros' => 'true',
+            'columnas' => 2,
+        ], $atts);
+
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $limite_solicitudes = absint($atributos['limite']);
+        $numero_columnas = absint($atributos['columnas']);
+        $mostrar_filtros = $atributos['mostrar_filtros'] === 'true';
+
+        // Construir query
+        $condiciones_where = ['estado = %s'];
+        $valores_preparados = ['abierta'];
+
+        if (!empty($atributos['categoria'])) {
+            $condiciones_where[] = 'categoria = %s';
+            $valores_preparados[] = sanitize_text_field($atributos['categoria']);
+        }
+
+        if (!empty($atributos['urgencia'])) {
+            $condiciones_where[] = 'urgencia = %s';
+            $valores_preparados[] = sanitize_text_field($atributos['urgencia']);
+        }
+
+        $consulta_sql = $wpdb->prepare(
+            "SELECT s.*, u.display_name as nombre_solicitante
+             FROM {$tabla_solicitudes} s
+             LEFT JOIN {$wpdb->users} u ON s.solicitante_id = u.ID
+             WHERE " . implode(' AND ', $condiciones_where) . "
+             ORDER BY
+                CASE s.urgencia
+                    WHEN 'urgente' THEN 1
+                    WHEN 'alta' THEN 2
+                    WHEN 'media' THEN 3
+                    WHEN 'baja' THEN 4
+                END,
+                s.fecha_solicitud DESC
+             LIMIT %d",
+            array_merge($valores_preparados, [$limite_solicitudes])
+        );
+
+        $solicitudes = $wpdb->get_results($consulta_sql);
+        $categorias = $this->get_categorias_ayuda();
+
+        ob_start();
+        ?>
+        <div class="ayuda-vecinal-solicitudes-container">
+            <?php if ($mostrar_filtros): ?>
+            <div class="ayuda-vecinal-filtros">
+                <form class="filtros-form" method="get">
+                    <div class="filtro-grupo">
+                        <label for="filtro-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <select id="filtro-categoria" name="categoria" class="filtro-select">
+                            <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
+                                <option value="<?php echo esc_attr($clave_categoria); ?>" <?php selected($atributos['categoria'], $clave_categoria); ?>>
+                                    <?php echo esc_html($etiqueta_categoria); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="filtro-grupo">
+                        <label for="filtro-urgencia"><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?></label>
+                        <select id="filtro-urgencia" name="urgencia" class="filtro-select">
+                            <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                            <option value="urgente" <?php selected($atributos['urgencia'], 'urgente'); ?>><?php esc_html_e('Urgente', 'flavor-chat-ia'); ?></option>
+                            <option value="alta" <?php selected($atributos['urgencia'], 'alta'); ?>><?php esc_html_e('Alta', 'flavor-chat-ia'); ?></option>
+                            <option value="media" <?php selected($atributos['urgencia'], 'media'); ?>><?php esc_html_e('Media', 'flavor-chat-ia'); ?></option>
+                            <option value="baja" <?php selected($atributos['urgencia'], 'baja'); ?>><?php esc_html_e('Baja', 'flavor-chat-ia'); ?></option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-filtrar"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+                </form>
+            </div>
+            <?php endif; ?>
+
+            <?php if (empty($solicitudes)): ?>
+                <div class="ayuda-vecinal-sin-resultados">
+                    <span class="icono">🤝</span>
+                    <p><?php esc_html_e('No hay solicitudes de ayuda activas en este momento.', 'flavor-chat-ia'); ?></p>
+                    <?php if (is_user_logged_in()): ?>
+                        <p><?php esc_html_e('¿Necesitas ayuda? ¡Crea una solicitud!', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                <div class="ayuda-vecinal-grid columnas-<?php echo esc_attr($numero_columnas); ?>">
+                    <?php foreach ($solicitudes as $solicitud): ?>
+                        <?php echo $this->render_tarjeta_solicitud($solicitud, $categorias); ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza una tarjeta de solicitud individual
+     *
+     * @param object $solicitud Datos de la solicitud
+     * @param array $categorias Lista de categorías
+     * @return string HTML de la tarjeta
+     */
+    private function render_tarjeta_solicitud($solicitud, $categorias) {
+        $clase_urgencia = 'urgencia-' . esc_attr($solicitud->urgencia);
+        $etiqueta_categoria = $categorias[$solicitud->categoria] ?? ucfirst($solicitud->categoria);
+        $tiempo_transcurrido = human_time_diff(strtotime($solicitud->fecha_solicitud), current_time('timestamp'));
+
+        $iconos_urgencia = [
+            'urgente' => '🚨',
+            'alta' => '⚠️',
+            'media' => '📌',
+            'baja' => '📝'
+        ];
+        $icono_urgencia = $iconos_urgencia[$solicitud->urgencia] ?? '📝';
+
+        ob_start();
+        ?>
+        <div class="ayuda-vecinal-tarjeta <?php echo $clase_urgencia; ?>" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
+            <div class="tarjeta-header">
+                <span class="categoria-badge"><?php echo esc_html($etiqueta_categoria); ?></span>
+                <span class="urgencia-badge <?php echo $clase_urgencia; ?>">
+                    <?php echo $icono_urgencia; ?> <?php echo esc_html(ucfirst($solicitud->urgencia)); ?>
+                </span>
+            </div>
+            <h3 class="tarjeta-titulo"><?php echo esc_html($solicitud->titulo); ?></h3>
+            <p class="tarjeta-descripcion"><?php echo esc_html(wp_trim_words($solicitud->descripcion, 25)); ?></p>
+            <div class="tarjeta-meta">
+                <span class="solicitante">
+                    <span class="dashicons dashicons-admin-users"></span>
+                    <?php echo esc_html($solicitud->nombre_solicitante); ?>
+                </span>
+                <span class="tiempo">
+                    <span class="dashicons dashicons-clock"></span>
+                    <?php printf(esc_html__('Hace %s', 'flavor-chat-ia'), $tiempo_transcurrido); ?>
+                </span>
+                <?php if (!empty($solicitud->ubicacion)): ?>
+                <span class="ubicacion">
+                    <span class="dashicons dashicons-location"></span>
+                    <?php echo esc_html(wp_trim_words($solicitud->ubicacion, 3)); ?>
+                </span>
+                <?php endif; ?>
+            </div>
+            <?php if (is_user_logged_in() && get_current_user_id() !== (int)$solicitud->solicitante_id): ?>
+            <div class="tarjeta-acciones">
+                <button type="button" class="btn-ofrecer-ayuda" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
+                    🤝 <?php esc_html_e('Ofrecer ayuda', 'flavor-chat-ia'); ?>
+                </button>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Formulario para ofrecer ayuda
+     * [ayuda_vecinal_ofrecer]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_shortcode_ofrecer($atts) {
+        if (!is_user_logged_in()) {
+            return $this->render_mensaje_login(__('Inicia sesión para ofrecer tu ayuda a la comunidad.', 'flavor-chat-ia'));
+        }
+
+        $usuario_actual = wp_get_current_user();
+        $categorias = $this->get_categorias_ayuda();
+
+        // Verificar si ya tiene una oferta activa
+        global $wpdb;
+        $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+        $oferta_existente = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_ofertas} WHERE usuario_id = %d AND activa = 1",
+            get_current_user_id()
+        ));
+
+        ob_start();
+        ?>
+        <div class="ayuda-vecinal-form-container ayuda-vecinal-ofrecer">
+            <div class="form-header">
+                <h2>🤝 <?php esc_html_e('Ofrecer mi ayuda', 'flavor-chat-ia'); ?></h2>
+                <p><?php esc_html_e('Comparte tus habilidades y disponibilidad para ayudar a tus vecinos.', 'flavor-chat-ia'); ?></p>
+            </div>
+
+            <?php if ($oferta_existente): ?>
+            <div class="aviso-oferta-existente">
+                <p><?php esc_html_e('Ya tienes una oferta de ayuda activa. Puedes actualizarla a continuación.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php endif; ?>
+
+            <form id="form-ofrecer-ayuda" class="ayuda-vecinal-form" data-oferta-id="<?php echo $oferta_existente ? esc_attr($oferta_existente->id) : ''; ?>">
+                <?php wp_nonce_field('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce'); ?>
+
+                <div class="form-grupo">
+                    <label for="oferta-titulo"><?php esc_html_e('Título de tu oferta', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <input type="text" id="oferta-titulo" name="titulo" required maxlength="255"
+                           value="<?php echo $oferta_existente ? esc_attr($oferta_existente->titulo) : ''; ?>"
+                           placeholder="<?php esc_attr_e('Ej: Ayudo con compras y recados en el barrio', 'flavor-chat-ia'); ?>">
+                </div>
+
+                <div class="form-grupo">
+                    <label for="oferta-categoria"><?php esc_html_e('Categoría principal', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <select id="oferta-categoria" name="categoria" required>
+                        <option value=""><?php esc_html_e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
+                            <option value="<?php echo esc_attr($clave_categoria); ?>" <?php selected($oferta_existente->categoria ?? '', $clave_categoria); ?>>
+                                <?php echo esc_html($etiqueta_categoria); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="oferta-descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <textarea id="oferta-descripcion" name="descripcion" required rows="4"
+                              placeholder="<?php esc_attr_e('Describe qué tipo de ayuda puedes ofrecer, tu experiencia, etc.', 'flavor-chat-ia'); ?>"><?php echo $oferta_existente ? esc_textarea($oferta_existente->descripcion) : ''; ?></textarea>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="oferta-habilidades"><?php esc_html_e('Habilidades especiales', 'flavor-chat-ia'); ?></label>
+                    <input type="text" id="oferta-habilidades" name="habilidades"
+                           value="<?php echo $oferta_existente ? esc_attr($oferta_existente->habilidades) : ''; ?>"
+                           placeholder="<?php esc_attr_e('Ej: Primeros auxilios, idiomas, bricolaje...', 'flavor-chat-ia'); ?>">
+                    <span class="form-ayuda"><?php esc_html_e('Separa las habilidades con comas', 'flavor-chat-ia'); ?></span>
+                </div>
+
+                <div class="form-grupo-flex">
+                    <div class="form-grupo">
+                        <label for="oferta-radio"><?php esc_html_e('Radio de acción (km)', 'flavor-chat-ia'); ?></label>
+                        <input type="number" id="oferta-radio" name="radio_km" min="1" max="50"
+                               value="<?php echo $oferta_existente ? esc_attr($oferta_existente->radio_km) : '5'; ?>">
+                    </div>
+                    <div class="form-grupo">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="tiene_vehiculo" value="1" <?php checked($oferta_existente->tiene_vehiculo ?? false); ?>>
+                            <span><?php esc_html_e('Tengo vehículo disponible', 'flavor-chat-ia'); ?></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-grupo">
+                    <label><?php esc_html_e('Disponibilidad semanal', 'flavor-chat-ia'); ?></label>
+                    <div class="disponibilidad-grid">
+                        <?php
+                        $dias_semana = [
+                            'lunes' => __('Lunes', 'flavor-chat-ia'),
+                            'martes' => __('Martes', 'flavor-chat-ia'),
+                            'miercoles' => __('Miércoles', 'flavor-chat-ia'),
+                            'jueves' => __('Jueves', 'flavor-chat-ia'),
+                            'viernes' => __('Viernes', 'flavor-chat-ia'),
+                            'sabado' => __('Sábado', 'flavor-chat-ia'),
+                            'domingo' => __('Domingo', 'flavor-chat-ia'),
+                        ];
+                        $disponibilidad_guardada = $oferta_existente ? json_decode($oferta_existente->disponibilidad, true) : [];
+                        foreach ($dias_semana as $clave_dia => $nombre_dia):
+                        ?>
+                        <label class="dia-checkbox">
+                            <input type="checkbox" name="disponibilidad[<?php echo esc_attr($clave_dia); ?>]" value="1"
+                                   <?php checked(!empty($disponibilidad_guardada[$clave_dia])); ?>>
+                            <span><?php echo esc_html($nombre_dia); ?></span>
+                        </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <div class="form-acciones">
+                    <button type="submit" class="btn-principal">
+                        <?php echo $oferta_existente ? esc_html__('Actualizar oferta', 'flavor-chat-ia') : esc_html__('Publicar oferta de ayuda', 'flavor-chat-ia'); ?>
+                    </button>
+                    <?php if ($oferta_existente): ?>
+                    <button type="button" class="btn-secundario btn-desactivar-oferta" data-oferta-id="<?php echo esc_attr($oferta_existente->id); ?>">
+                        <?php esc_html_e('Desactivar oferta', 'flavor-chat-ia'); ?>
+                    </button>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Formulario para solicitar ayuda
+     * [ayuda_vecinal_solicitar]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_shortcode_solicitar($atts) {
+        if (!is_user_logged_in()) {
+            return $this->render_mensaje_login(__('Inicia sesión para solicitar ayuda de tus vecinos.', 'flavor-chat-ia'));
+        }
+
+        $categorias = $this->get_categorias_ayuda();
+
+        ob_start();
+        ?>
+        <div class="ayuda-vecinal-form-container ayuda-vecinal-solicitar">
+            <div class="form-header">
+                <h2>🆘 <?php esc_html_e('Solicitar ayuda', 'flavor-chat-ia'); ?></h2>
+                <p><?php esc_html_e('Describe qué necesitas y la comunidad te ayudará.', 'flavor-chat-ia'); ?></p>
+            </div>
+
+            <form id="form-solicitar-ayuda" class="ayuda-vecinal-form">
+                <?php wp_nonce_field('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce'); ?>
+
+                <div class="form-grupo">
+                    <label for="solicitud-titulo"><?php esc_html_e('¿Qué necesitas?', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <input type="text" id="solicitud-titulo" name="titulo" required maxlength="255"
+                           placeholder="<?php esc_attr_e('Ej: Necesito ayuda para hacer la compra semanal', 'flavor-chat-ia'); ?>">
+                </div>
+
+                <div class="form-grupo-flex">
+                    <div class="form-grupo">
+                        <label for="solicitud-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                        <select id="solicitud-categoria" name="categoria" required>
+                            <option value=""><?php esc_html_e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
+                                <option value="<?php echo esc_attr($clave_categoria); ?>">
+                                    <?php echo esc_html($etiqueta_categoria); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="solicitud-urgencia"><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                        <select id="solicitud-urgencia" name="urgencia" required>
+                            <option value="baja"><?php esc_html_e('Baja - Sin prisa', 'flavor-chat-ia'); ?></option>
+                            <option value="media" selected><?php esc_html_e('Media - Normal', 'flavor-chat-ia'); ?></option>
+                            <option value="alta"><?php esc_html_e('Alta - Pronto', 'flavor-chat-ia'); ?></option>
+                            <option value="urgente"><?php esc_html_e('Urgente - Lo antes posible', 'flavor-chat-ia'); ?></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="solicitud-descripcion"><?php esc_html_e('Descripción detallada', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <textarea id="solicitud-descripcion" name="descripcion" required rows="4"
+                              placeholder="<?php esc_attr_e('Explica con detalle qué necesitas, cuándo, requisitos especiales...', 'flavor-chat-ia'); ?>"></textarea>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="solicitud-ubicacion"><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></label>
+                    <input type="text" id="solicitud-ubicacion" name="ubicacion"
+                           placeholder="<?php esc_attr_e('Barrio, zona o dirección aproximada', 'flavor-chat-ia'); ?>">
+                    <input type="hidden" id="solicitud-lat" name="ubicacion_lat">
+                    <input type="hidden" id="solicitud-lng" name="ubicacion_lng">
+                </div>
+
+                <div class="form-grupo-flex">
+                    <div class="form-grupo">
+                        <label for="solicitud-fecha"><?php esc_html_e('Fecha necesaria', 'flavor-chat-ia'); ?></label>
+                        <input type="datetime-local" id="solicitud-fecha" name="fecha_necesaria">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="solicitud-duracion"><?php esc_html_e('Duración estimada (min)', 'flavor-chat-ia'); ?></label>
+                        <input type="number" id="solicitud-duracion" name="duracion_estimada_minutos" min="15" step="15"
+                               placeholder="60">
+                    </div>
+                </div>
+
+                <div class="form-grupo">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="necesita_desplazamiento" value="1">
+                        <span><?php esc_html_e('Requiere desplazamiento', 'flavor-chat-ia'); ?></span>
+                    </label>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="solicitud-compensacion"><?php esc_html_e('Compensación ofrecida', 'flavor-chat-ia'); ?></label>
+                    <input type="text" id="solicitud-compensacion" name="compensacion"
+                           placeholder="<?php esc_attr_e('Ej: Invito a café, intercambio de favores, nada (voluntario)...', 'flavor-chat-ia'); ?>">
+                </div>
+
+                <div class="form-acciones">
+                    <button type="submit" class="btn-principal">
+                        <?php esc_html_e('Publicar solicitud de ayuda', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mis ayudas (ofrecidas y recibidas)
+     * [ayuda_vecinal_mis_ayudas]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_shortcode_mis_ayudas($atts) {
+        if (!is_user_logged_in()) {
+            return $this->render_mensaje_login(__('Inicia sesión para ver tu historial de ayudas.', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $id_usuario_actual = get_current_user_id();
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_ayuda_respuestas';
+        $tabla_valoraciones = $wpdb->prefix . 'flavor_ayuda_valoraciones';
+
+        // Solicitudes que he creado
+        $mis_solicitudes = $wpdb->get_results($wpdb->prepare(
+            "SELECT s.*, u.display_name as nombre_ayudante,
+                    (SELECT COUNT(*) FROM {$tabla_respuestas} r WHERE r.solicitud_id = s.id AND r.estado = 'pendiente') as respuestas_pendientes
+             FROM {$tabla_solicitudes} s
+             LEFT JOIN {$wpdb->users} u ON s.ayudante_id = u.ID
+             WHERE s.solicitante_id = %d
+             ORDER BY s.fecha_solicitud DESC
+             LIMIT 20",
+            $id_usuario_actual
+        ));
+
+        // Ayudas que he ofrecido
+        $mis_ayudas_ofrecidas = $wpdb->get_results($wpdb->prepare(
+            "SELECT s.*, u.display_name as nombre_solicitante, r.estado as estado_respuesta, r.id as respuesta_id
+             FROM {$tabla_solicitudes} s
+             INNER JOIN {$tabla_respuestas} r ON r.solicitud_id = s.id
+             LEFT JOIN {$wpdb->users} u ON s.solicitante_id = u.ID
+             WHERE r.ayudante_id = %d
+             ORDER BY r.fecha_respuesta DESC
+             LIMIT 20",
+            $id_usuario_actual
+        ));
+
+        // Estadísticas del usuario
+        $total_solicitudes_creadas = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE solicitante_id = %d",
+            $id_usuario_actual
+        ));
+
+        $total_ayudas_completadas = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE ayudante_id = %d AND estado = 'completada'",
+            $id_usuario_actual
+        ));
+
+        $valoracion_media = $wpdb->get_var($wpdb->prepare(
+            "SELECT AVG(puntuacion) FROM {$tabla_valoraciones} WHERE valorado_id = %d",
+            $id_usuario_actual
+        ));
+
+        $puntos_solidaridad = $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(SUM(puntos_solidaridad_otorgados), 0) FROM {$tabla_valoraciones} WHERE valorado_id = %d",
+            $id_usuario_actual
+        ));
+
+        $categorias = $this->get_categorias_ayuda();
+
+        ob_start();
+        ?>
+        <div class="ayuda-vecinal-mis-ayudas">
+            <div class="mis-ayudas-header">
+                <h2><?php esc_html_e('Mi actividad de ayuda vecinal', 'flavor-chat-ia'); ?></h2>
+            </div>
+
+            <!-- Resumen estadísticas -->
+            <div class="mis-ayudas-stats">
+                <div class="stat-card">
+                    <span class="stat-numero"><?php echo esc_html($total_solicitudes_creadas); ?></span>
+                    <span class="stat-etiqueta"><?php esc_html_e('Solicitudes creadas', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-numero"><?php echo esc_html($total_ayudas_completadas); ?></span>
+                    <span class="stat-etiqueta"><?php esc_html_e('Ayudas realizadas', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-numero"><?php echo $valoracion_media ? number_format($valoracion_media, 1) : '-'; ?></span>
+                    <span class="stat-etiqueta"><?php esc_html_e('Valoración media', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="stat-card destacado">
+                    <span class="stat-numero"><?php echo esc_html($puntos_solidaridad); ?></span>
+                    <span class="stat-etiqueta"><?php esc_html_e('Puntos solidarios', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+
+            <!-- Tabs de navegación -->
+            <div class="mis-ayudas-tabs">
+                <button class="tab-btn activo" data-tab="solicitudes">
+                    <?php esc_html_e('Mis solicitudes', 'flavor-chat-ia'); ?>
+                    <span class="contador"><?php echo count($mis_solicitudes); ?></span>
+                </button>
+                <button class="tab-btn" data-tab="ofrecidas">
+                    <?php esc_html_e('Ayudas ofrecidas', 'flavor-chat-ia'); ?>
+                    <span class="contador"><?php echo count($mis_ayudas_ofrecidas); ?></span>
+                </button>
+            </div>
+
+            <!-- Tab: Mis solicitudes -->
+            <div class="tab-content activo" id="tab-solicitudes">
+                <?php if (empty($mis_solicitudes)): ?>
+                    <div class="sin-resultados">
+                        <p><?php esc_html_e('No has creado ninguna solicitud de ayuda todavía.', 'flavor-chat-ia'); ?></p>
+                    </div>
+                <?php else: ?>
+                    <div class="lista-ayudas">
+                        <?php foreach ($mis_solicitudes as $solicitud): ?>
+                            <?php echo $this->render_fila_mi_solicitud($solicitud, $categorias); ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Tab: Ayudas ofrecidas -->
+            <div class="tab-content" id="tab-ofrecidas">
+                <?php if (empty($mis_ayudas_ofrecidas)): ?>
+                    <div class="sin-resultados">
+                        <p><?php esc_html_e('No has ofrecido ayuda en ninguna solicitud todavía.', 'flavor-chat-ia'); ?></p>
+                    </div>
+                <?php else: ?>
+                    <div class="lista-ayudas">
+                        <?php foreach ($mis_ayudas_ofrecidas as $ayuda): ?>
+                            <?php echo $this->render_fila_ayuda_ofrecida($ayuda, $categorias); ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza una fila de solicitud propia
+     */
+    private function render_fila_mi_solicitud($solicitud, $categorias) {
+        $etiqueta_categoria = $categorias[$solicitud->categoria] ?? ucfirst($solicitud->categoria);
+        $clases_estado = [
+            'abierta' => 'estado-abierta',
+            'asignada' => 'estado-asignada',
+            'en_curso' => 'estado-en-curso',
+            'completada' => 'estado-completada',
+            'cancelada' => 'estado-cancelada',
+            'expirada' => 'estado-expirada',
+        ];
+        $clase_estado = $clases_estado[$solicitud->estado] ?? '';
+
+        ob_start();
+        ?>
+        <div class="fila-ayuda <?php echo esc_attr($clase_estado); ?>">
+            <div class="fila-info">
+                <h4><?php echo esc_html($solicitud->titulo); ?></h4>
+                <div class="fila-meta">
+                    <span class="categoria"><?php echo esc_html($etiqueta_categoria); ?></span>
+                    <span class="fecha"><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($solicitud->fecha_solicitud))); ?></span>
+                    <span class="estado-badge <?php echo esc_attr($clase_estado); ?>"><?php echo esc_html(ucfirst(str_replace('_', ' ', $solicitud->estado))); ?></span>
+                </div>
+                <?php if ($solicitud->respuestas_pendientes > 0): ?>
+                    <div class="aviso-respuestas">
+                        <?php printf(esc_html(_n('%d persona quiere ayudarte', '%d personas quieren ayudarte', $solicitud->respuestas_pendientes, 'flavor-chat-ia')), $solicitud->respuestas_pendientes); ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ($solicitud->nombre_ayudante): ?>
+                    <div class="ayudante-info">
+                        <?php printf(esc_html__('Ayudante: %s', 'flavor-chat-ia'), esc_html($solicitud->nombre_ayudante)); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="fila-acciones">
+                <?php if ($solicitud->estado === 'abierta'): ?>
+                    <button class="btn-ver-respuestas" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
+                        <?php esc_html_e('Ver respuestas', 'flavor-chat-ia'); ?>
+                    </button>
+                    <button class="btn-cancelar-solicitud" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
+                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    </button>
+                <?php elseif ($solicitud->estado === 'en_curso'): ?>
+                    <button class="btn-completar-solicitud" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
+                        <?php esc_html_e('Marcar completada', 'flavor-chat-ia'); ?>
+                    </button>
+                <?php elseif ($solicitud->estado === 'completada'): ?>
+                    <button class="btn-valorar" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
+                        <?php esc_html_e('Valorar', 'flavor-chat-ia'); ?>
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza una fila de ayuda ofrecida
+     */
+    private function render_fila_ayuda_ofrecida($ayuda, $categorias) {
+        $etiqueta_categoria = $categorias[$ayuda->categoria] ?? ucfirst($ayuda->categoria);
+        $estados_respuesta = [
+            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
+            'aceptada' => __('Aceptada', 'flavor-chat-ia'),
+            'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+            'retirada' => __('Retirada', 'flavor-chat-ia'),
+        ];
+        $estado_texto = $estados_respuesta[$ayuda->estado_respuesta] ?? $ayuda->estado_respuesta;
+
+        ob_start();
+        ?>
+        <div class="fila-ayuda estado-<?php echo esc_attr($ayuda->estado_respuesta); ?>">
+            <div class="fila-info">
+                <h4><?php echo esc_html($ayuda->titulo); ?></h4>
+                <div class="fila-meta">
+                    <span class="categoria"><?php echo esc_html($etiqueta_categoria); ?></span>
+                    <span class="solicitante"><?php printf(esc_html__('Para: %s', 'flavor-chat-ia'), esc_html($ayuda->nombre_solicitante)); ?></span>
+                    <span class="estado-badge estado-<?php echo esc_attr($ayuda->estado_respuesta); ?>"><?php echo esc_html($estado_texto); ?></span>
+                </div>
+            </div>
+            <div class="fila-acciones">
+                <?php if ($ayuda->estado_respuesta === 'pendiente'): ?>
+                    <button class="btn-retirar-oferta" data-respuesta-id="<?php echo esc_attr($ayuda->respuesta_id); ?>">
+                        <?php esc_html_e('Retirar oferta', 'flavor-chat-ia'); ?>
+                    </button>
+                <?php elseif ($ayuda->estado_respuesta === 'aceptada' && $ayuda->estado === 'completada'): ?>
+                    <button class="btn-valorar" data-solicitud-id="<?php echo esc_attr($ayuda->id); ?>">
+                        <?php esc_html_e('Valorar', 'flavor-chat-ia'); ?>
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mapa de solicitudes cercanas
+     * [ayuda_vecinal_mapa altura="400" zoom="14"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_shortcode_mapa($atts) {
+        $atributos = shortcode_atts([
+            'altura' => '400',
+            'zoom' => 14,
+            'lat_centro' => '',
+            'lng_centro' => '',
+            'mostrar_controles' => 'true',
+        ], $atts);
+
+        $altura_mapa = absint($atributos['altura']);
+        $nivel_zoom = absint($atributos['zoom']);
+        $mostrar_controles = $atributos['mostrar_controles'] === 'true';
+
+        // Configuración del mapa
+        $configuracion_mapa = [
+            'zoom' => $nivel_zoom,
+            'lat_centro' => $atributos['lat_centro'] ?: 40.4168, // Madrid por defecto
+            'lng_centro' => $atributos['lng_centro'] ?: -3.7038,
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('ayuda_vecinal_mapa'),
+        ];
+
+        $categorias = $this->get_categorias_ayuda();
+
+        ob_start();
+        ?>
+        <div class="ayuda-vecinal-mapa-container">
+            <?php if ($mostrar_controles): ?>
+            <div class="mapa-controles">
+                <div class="control-grupo">
+                    <label for="mapa-filtro-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                    <select id="mapa-filtro-categoria" class="mapa-filtro">
+                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
+                            <option value="<?php echo esc_attr($clave_categoria); ?>"><?php echo esc_html($etiqueta_categoria); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="control-grupo">
+                    <label for="mapa-filtro-urgencia"><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?></label>
+                    <select id="mapa-filtro-urgencia" class="mapa-filtro">
+                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value="urgente"><?php esc_html_e('Urgente', 'flavor-chat-ia'); ?></option>
+                        <option value="alta"><?php esc_html_e('Alta', 'flavor-chat-ia'); ?></option>
+                        <option value="media"><?php esc_html_e('Media', 'flavor-chat-ia'); ?></option>
+                        <option value="baja"><?php esc_html_e('Baja', 'flavor-chat-ia'); ?></option>
+                    </select>
+                </div>
+                <button type="button" id="mapa-btn-mi-ubicacion" class="btn-mi-ubicacion">
+                    📍 <?php esc_html_e('Mi ubicación', 'flavor-chat-ia'); ?>
+                </button>
+            </div>
+            <?php endif; ?>
+
+            <div id="ayuda-vecinal-mapa"
+                 class="mapa-leaflet"
+                 style="height: <?php echo esc_attr($altura_mapa); ?>px;"
+                 data-config="<?php echo esc_attr(wp_json_encode($configuracion_mapa)); ?>">
+            </div>
+
+            <div class="mapa-leyenda">
+                <span class="leyenda-item urgente">🚨 <?php esc_html_e('Urgente', 'flavor-chat-ia'); ?></span>
+                <span class="leyenda-item alta">⚠️ <?php esc_html_e('Alta', 'flavor-chat-ia'); ?></span>
+                <span class="leyenda-item media">📌 <?php esc_html_e('Media', 'flavor-chat-ia'); ?></span>
+                <span class="leyenda-item baja">📝 <?php esc_html_e('Baja', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Estadísticas de ayuda comunitaria
+     * [ayuda_vecinal_estadisticas periodo="mes"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_shortcode_estadisticas($atts) {
+        $atributos = shortcode_atts([
+            'periodo' => 'mes',
+            'mostrar_ranking' => 'true',
+            'limite_ranking' => 10,
+        ], $atts);
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $tabla_valoraciones = $wpdb->prefix . 'flavor_ayuda_valoraciones';
+
+        // Determinar rango de fechas
+        $fecha_inicio = '';
+        switch ($atributos['periodo']) {
+            case 'semana':
+                $fecha_inicio = date('Y-m-d', strtotime('-1 week'));
+                $titulo_periodo = __('Esta semana', 'flavor-chat-ia');
+                break;
+            case 'mes':
+                $fecha_inicio = date('Y-m-d', strtotime('-1 month'));
+                $titulo_periodo = __('Este mes', 'flavor-chat-ia');
+                break;
+            case 'ano':
+                $fecha_inicio = date('Y-m-d', strtotime('-1 year'));
+                $titulo_periodo = __('Este año', 'flavor-chat-ia');
+                break;
+            default:
+                $titulo_periodo = __('Total', 'flavor-chat-ia');
+        }
+
+        $condicion_fecha = $fecha_inicio ? $wpdb->prepare("AND fecha_solicitud >= %s", $fecha_inicio) : '';
+        $condicion_fecha_completada = $fecha_inicio ? $wpdb->prepare("AND fecha_completado >= %s", $fecha_inicio) : '';
+
+        // Estadísticas generales
+        $total_solicitudes = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE 1=1 {$condicion_fecha}"
+        );
+
+        $solicitudes_completadas = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE estado = 'completada' {$condicion_fecha_completada}"
+        );
+
+        $solicitudes_activas = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE estado IN ('abierta', 'asignada', 'en_curso')"
+        );
+
+        $voluntarios_activos = $wpdb->get_var(
+            "SELECT COUNT(DISTINCT ayudante_id) FROM {$tabla_solicitudes} WHERE ayudante_id IS NOT NULL {$condicion_fecha}"
+        );
+
+        $valoracion_media_global = $wpdb->get_var(
+            "SELECT AVG(puntuacion) FROM {$tabla_valoraciones}"
+        );
+
+        // Estadísticas por categoría
+        $estadisticas_categorias = $wpdb->get_results(
+            "SELECT categoria, COUNT(*) as total,
+                    SUM(CASE WHEN estado = 'completada' THEN 1 ELSE 0 END) as completadas
+             FROM {$tabla_solicitudes}
+             WHERE 1=1 {$condicion_fecha}
+             GROUP BY categoria
+             ORDER BY total DESC"
+        );
+
+        // Ranking de voluntarios (si está habilitado)
+        $ranking_voluntarios = [];
+        $mostrar_ranking = $atributos['mostrar_ranking'] === 'true';
+        $limite_ranking = absint($atributos['limite_ranking']);
+
+        if ($mostrar_ranking) {
+            $ranking_voluntarios = $wpdb->get_results($wpdb->prepare(
+                "SELECT u.ID, u.display_name,
+                        COUNT(s.id) as ayudas_realizadas,
+                        COALESCE(AVG(v.puntuacion), 0) as valoracion_media,
+                        COALESCE(SUM(v.puntos_solidaridad_otorgados), 0) as puntos_totales
+                 FROM {$wpdb->users} u
+                 INNER JOIN {$tabla_solicitudes} s ON s.ayudante_id = u.ID AND s.estado = 'completada'
+                 LEFT JOIN {$tabla_valoraciones} v ON v.valorado_id = u.ID
+                 GROUP BY u.ID
+                 ORDER BY ayudas_realizadas DESC, puntos_totales DESC
+                 LIMIT %d",
+                $limite_ranking
+            ));
+        }
+
+        $categorias = $this->get_categorias_ayuda();
+
+        // Calcular tasa de éxito
+        $tasa_exito = $total_solicitudes > 0
+            ? round(($solicitudes_completadas / $total_solicitudes) * 100, 1)
+            : 0;
+
+        ob_start();
+        ?>
+        <div class="ayuda-vecinal-estadisticas">
+            <div class="estadisticas-header">
+                <h2><?php esc_html_e('Estadísticas de ayuda comunitaria', 'flavor-chat-ia'); ?></h2>
+                <span class="periodo-badge"><?php echo esc_html($titulo_periodo); ?></span>
+            </div>
+
+            <!-- KPIs principales -->
+            <div class="estadisticas-kpis">
+                <div class="kpi-card">
+                    <div class="kpi-icono">📝</div>
+                    <div class="kpi-valor"><?php echo esc_html($total_solicitudes); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Solicitudes totales', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="kpi-card destacado">
+                    <div class="kpi-icono">✅</div>
+                    <div class="kpi-valor"><?php echo esc_html($solicitudes_completadas); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Ayudas completadas', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icono">🔄</div>
+                    <div class="kpi-valor"><?php echo esc_html($solicitudes_activas); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Solicitudes activas', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icono">🤝</div>
+                    <div class="kpi-valor"><?php echo esc_html($voluntarios_activos); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Voluntarios activos', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icono">📊</div>
+                    <div class="kpi-valor"><?php echo esc_html($tasa_exito); ?>%</div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Tasa de éxito', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icono">⭐</div>
+                    <div class="kpi-valor"><?php echo $valoracion_media_global ? number_format($valoracion_media_global, 1) : '-'; ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Valoración media', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+
+            <!-- Estadísticas por categoría -->
+            <?php if (!empty($estadisticas_categorias)): ?>
+            <div class="estadisticas-seccion">
+                <h3><?php esc_html_e('Por categoría', 'flavor-chat-ia'); ?></h3>
+                <div class="categorias-stats">
+                    <?php foreach ($estadisticas_categorias as $stats_categoria):
+                        $nombre_categoria = $categorias[$stats_categoria->categoria] ?? ucfirst($stats_categoria->categoria);
+                        $porcentaje_completadas = $stats_categoria->total > 0
+                            ? round(($stats_categoria->completadas / $stats_categoria->total) * 100)
+                            : 0;
+                    ?>
+                    <div class="categoria-stat-item">
+                        <div class="categoria-info">
+                            <span class="categoria-nombre"><?php echo esc_html($nombre_categoria); ?></span>
+                            <span class="categoria-numeros"><?php echo esc_html($stats_categoria->completadas); ?>/<?php echo esc_html($stats_categoria->total); ?></span>
+                        </div>
+                        <div class="barra-progreso">
+                            <div class="barra-relleno" style="width: <?php echo esc_attr($porcentaje_completadas); ?>%;"></div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Ranking de voluntarios -->
+            <?php if ($mostrar_ranking && !empty($ranking_voluntarios)): ?>
+            <div class="estadisticas-seccion">
+                <h3>🏆 <?php esc_html_e('Top voluntarios', 'flavor-chat-ia'); ?></h3>
+                <div class="ranking-voluntarios">
+                    <table class="ranking-tabla">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><?php esc_html_e('Voluntario', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Ayudas', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Valoración', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Puntos', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($ranking_voluntarios as $posicion => $voluntario): ?>
+                            <tr class="<?php echo $posicion < 3 ? 'top-3' : ''; ?>">
+                                <td class="posicion">
+                                    <?php
+                                    $medallas = ['🥇', '🥈', '🥉'];
+                                    echo $posicion < 3 ? $medallas[$posicion] : ($posicion + 1);
+                                    ?>
+                                </td>
+                                <td class="nombre">
+                                    <?php echo esc_html($voluntario->display_name); ?>
+                                </td>
+                                <td class="ayudas"><?php echo esc_html($voluntario->ayudas_realizadas); ?></td>
+                                <td class="valoracion">
+                                    <?php if ($voluntario->valoracion_media > 0): ?>
+                                        ⭐ <?php echo number_format($voluntario->valoracion_media, 1); ?>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td class="puntos"><?php echo esc_html($voluntario->puntos_totales); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza mensaje de login requerido
+     *
+     * @param string $mensaje Mensaje a mostrar
+     * @return string HTML del mensaje
+     */
+    private function render_mensaje_login($mensaje) {
+        ob_start();
+        ?>
+        <div class="ayuda-vecinal-login-requerido">
+            <div class="login-icono">🔐</div>
+            <p><?php echo esc_html($mensaje); ?></p>
+            <div class="login-acciones">
+                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="btn-principal">
+                    <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                </a>
+                <?php if (get_option('users_can_register')): ?>
+                <a href="<?php echo esc_url(wp_registration_url()); ?>" class="btn-secundario">
+                    <?php esc_html_e('Registrarse', 'flavor-chat-ia'); ?>
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    // =========================================================================
+    // AJAX Handlers para shortcodes frontend
+    // =========================================================================
+
+    /**
+     * AJAX: Crear solicitud desde frontend
+     */
+    public function ajax_crear_solicitud_frontend() {
+        check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+
+        $datos_solicitud = [
+            'solicitante_id' => get_current_user_id(),
+            'titulo' => sanitize_text_field($_POST['titulo'] ?? ''),
+            'categoria' => sanitize_text_field($_POST['categoria'] ?? ''),
+            'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+            'urgencia' => sanitize_text_field($_POST['urgencia'] ?? 'media'),
+            'ubicacion' => sanitize_text_field($_POST['ubicacion'] ?? ''),
+            'ubicacion_lat' => floatval($_POST['ubicacion_lat'] ?? 0) ?: null,
+            'ubicacion_lng' => floatval($_POST['ubicacion_lng'] ?? 0) ?: null,
+            'fecha_necesaria' => sanitize_text_field($_POST['fecha_necesaria'] ?? '') ?: null,
+            'duracion_estimada_minutos' => absint($_POST['duracion_estimada_minutos'] ?? 0) ?: null,
+            'necesita_desplazamiento' => isset($_POST['necesita_desplazamiento']) ? 1 : 0,
+            'compensacion' => sanitize_text_field($_POST['compensacion'] ?? ''),
+            'estado' => 'abierta',
+            'fecha_solicitud' => current_time('mysql'),
+        ];
+
+        // Validaciones
+        if (empty($datos_solicitud['titulo']) || empty($datos_solicitud['categoria']) || empty($datos_solicitud['descripcion'])) {
+            wp_send_json_error(['message' => __('Por favor, completa todos los campos obligatorios.', 'flavor-chat-ia')]);
+        }
+
+        $resultado_insercion = $wpdb->insert($tabla_solicitudes, $datos_solicitud);
+
+        if ($resultado_insercion) {
+            $id_solicitud = $wpdb->insert_id;
+            wp_send_json_success([
+                'message' => __('Tu solicitud de ayuda ha sido publicada.', 'flavor-chat-ia'),
+                'solicitud_id' => $id_solicitud,
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Error al crear la solicitud. Inténtalo de nuevo.', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Crear o actualizar oferta de ayuda
+     */
+    public function ajax_crear_oferta_frontend() {
+        check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+        $id_usuario = get_current_user_id();
+        $id_oferta_existente = absint($_POST['oferta_id'] ?? 0);
+
+        // Procesar disponibilidad
+        $disponibilidad_dias = [];
+        if (!empty($_POST['disponibilidad']) && is_array($_POST['disponibilidad'])) {
+            foreach ($_POST['disponibilidad'] as $dia => $valor) {
+                $disponibilidad_dias[sanitize_key($dia)] = true;
+            }
+        }
+
+        $datos_oferta = [
+            'usuario_id' => $id_usuario,
+            'titulo' => sanitize_text_field($_POST['titulo'] ?? ''),
+            'categoria' => sanitize_text_field($_POST['categoria'] ?? ''),
+            'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? ''),
+            'habilidades' => sanitize_text_field($_POST['habilidades'] ?? ''),
+            'disponibilidad' => wp_json_encode($disponibilidad_dias),
+            'radio_km' => absint($_POST['radio_km'] ?? 5),
+            'tiene_vehiculo' => isset($_POST['tiene_vehiculo']) ? 1 : 0,
+            'activa' => 1,
+        ];
+
+        // Validaciones
+        if (empty($datos_oferta['titulo']) || empty($datos_oferta['categoria']) || empty($datos_oferta['descripcion'])) {
+            wp_send_json_error(['message' => __('Por favor, completa todos los campos obligatorios.', 'flavor-chat-ia')]);
+        }
+
+        if ($id_oferta_existente) {
+            // Verificar que la oferta pertenece al usuario
+            $oferta_usuario = $wpdb->get_var($wpdb->prepare(
+                "SELECT usuario_id FROM {$tabla_ofertas} WHERE id = %d",
+                $id_oferta_existente
+            ));
+
+            if ((int)$oferta_usuario !== $id_usuario) {
+                wp_send_json_error(['message' => __('No tienes permisos para editar esta oferta.', 'flavor-chat-ia')]);
+            }
+
+            $datos_oferta['fecha_actualizacion'] = current_time('mysql');
+            $resultado = $wpdb->update($tabla_ofertas, $datos_oferta, ['id' => $id_oferta_existente]);
+            $mensaje_exito = __('Tu oferta ha sido actualizada.', 'flavor-chat-ia');
+        } else {
+            $datos_oferta['fecha_creacion'] = current_time('mysql');
+            $resultado = $wpdb->insert($tabla_ofertas, $datos_oferta);
+            $mensaje_exito = __('Tu oferta de ayuda ha sido publicada.', 'flavor-chat-ia');
+        }
+
+        if ($resultado !== false) {
+            wp_send_json_success(['message' => $mensaje_exito]);
+        } else {
+            wp_send_json_error(['message' => __('Error al guardar la oferta. Inténtalo de nuevo.', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Responder a una solicitud (ofrecer ayuda)
+     */
+    public function ajax_responder_solicitud() {
+        check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_ayuda_respuestas';
+        $id_usuario = get_current_user_id();
+        $id_solicitud = absint($_POST['solicitud_id'] ?? 0);
+
+        if (!$id_solicitud) {
+            wp_send_json_error(['message' => __('Solicitud no válida.', 'flavor-chat-ia')]);
+        }
+
+        // Verificar que la solicitud existe y está abierta
+        $solicitud = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_solicitudes} WHERE id = %d AND estado = 'abierta'",
+            $id_solicitud
+        ));
+
+        if (!$solicitud) {
+            wp_send_json_error(['message' => __('Esta solicitud ya no está disponible.', 'flavor-chat-ia')]);
+        }
+
+        // No puede responder a su propia solicitud
+        if ((int)$solicitud->solicitante_id === $id_usuario) {
+            wp_send_json_error(['message' => __('No puedes responder a tu propia solicitud.', 'flavor-chat-ia')]);
+        }
+
+        // Verificar si ya ha respondido
+        $respuesta_existente = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_respuestas} WHERE solicitud_id = %d AND ayudante_id = %d AND estado != 'retirada'",
+            $id_solicitud,
+            $id_usuario
+        ));
+
+        if ($respuesta_existente) {
+            wp_send_json_error(['message' => __('Ya has ofrecido ayuda para esta solicitud.', 'flavor-chat-ia')]);
+        }
+
+        $datos_respuesta = [
+            'solicitud_id' => $id_solicitud,
+            'ayudante_id' => $id_usuario,
+            'mensaje' => sanitize_textarea_field($_POST['mensaje'] ?? ''),
+            'disponibilidad_propuesta' => sanitize_text_field($_POST['disponibilidad'] ?? '') ?: null,
+            'estado' => 'pendiente',
+            'fecha_respuesta' => current_time('mysql'),
+        ];
+
+        $resultado = $wpdb->insert($tabla_respuestas, $datos_respuesta);
+
+        if ($resultado) {
+            wp_send_json_success(['message' => __('Tu oferta de ayuda ha sido enviada al solicitante.', 'flavor-chat-ia')]);
+        } else {
+            wp_send_json_error(['message' => __('Error al enviar la respuesta. Inténtalo de nuevo.', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Obtener solicitudes para el mapa
+     */
+    public function ajax_get_solicitudes_mapa() {
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+
+        $condiciones = ['estado = %s', 'ubicacion_lat IS NOT NULL', 'ubicacion_lng IS NOT NULL'];
+        $valores = ['abierta'];
+
+        if (!empty($_GET['categoria'])) {
+            $condiciones[] = 'categoria = %s';
+            $valores[] = sanitize_text_field($_GET['categoria']);
+        }
+
+        if (!empty($_GET['urgencia'])) {
+            $condiciones[] = 'urgencia = %s';
+            $valores[] = sanitize_text_field($_GET['urgencia']);
+        }
+
+        $consulta = $wpdb->prepare(
+            "SELECT id, titulo, categoria, urgencia, ubicacion, ubicacion_lat, ubicacion_lng
+             FROM {$tabla_solicitudes}
+             WHERE " . implode(' AND ', $condiciones) . "
+             ORDER BY fecha_solicitud DESC
+             LIMIT 100",
+            $valores
+        );
+
+        $solicitudes = $wpdb->get_results($consulta);
+        $categorias = $this->get_categorias_ayuda();
+
+        $marcadores = [];
+        foreach ($solicitudes as $solicitud) {
+            $marcadores[] = [
+                'id' => $solicitud->id,
+                'lat' => floatval($solicitud->ubicacion_lat),
+                'lng' => floatval($solicitud->ubicacion_lng),
+                'titulo' => $solicitud->titulo,
+                'categoria' => $categorias[$solicitud->categoria] ?? $solicitud->categoria,
+                'urgencia' => $solicitud->urgencia,
+                'ubicacion' => $solicitud->ubicacion,
+            ];
+        }
+
+        wp_send_json_success(['marcadores' => $marcadores]);
+    }
+
+
+    /**
+     * Inicializa el dashboard widget del módulo
+     */
+    private function inicializar_dashboard_widget() {
+        $archivo = dirname(__FILE__) . '/class-ayuda-vecinal-dashboard-widget.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Ayuda_Vecinal_Dashboard_Widget')) {
+                new Flavor_Ayuda_Vecinal_Dashboard_Widget();
+            }
         }
     }
 }

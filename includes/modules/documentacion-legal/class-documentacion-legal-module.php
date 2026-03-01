@@ -32,6 +32,9 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Repositorio de documentos legales: leyes, sentencias, modelos de denuncia, recursos administrativos y guias juridicas para la defensa del territorio.';
 
         parent::__construct();
+
+        // Registrar en el Panel Unificado de Administracion
+        $this->registrar_en_panel_unificado();
     }
 
     /**
@@ -910,6 +913,1137 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             [
                 'pregunta' => 'Puedo subir documentos?',
                 'respuesta' => 'Si, los usuarios registrados pueden subir documentos. Estos pasan por un proceso de verificacion antes de publicarse.',
+            ],
+        ];
+    }
+
+    // =========================================================================
+    // PANEL UNIFICADO DE ADMINISTRACION
+    // =========================================================================
+
+    /**
+     * Configuracion para el Panel Unificado de Administracion
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id'         => 'documentacion_legal',
+            'label'      => __('Documentacion Legal', 'flavor-chat-ia'),
+            'icon'       => 'dashicons-media-document',
+            'capability' => 'manage_options',
+            'categoria'  => 'recursos', // personas|economia|operaciones|recursos|comunicacion|actividades|servicios|comunidad|sostenibilidad
+            'paginas'    => [
+                [
+                    'slug'     => 'documentos-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug'     => 'documentos-listado',
+                    'titulo'   => __('Listado', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_listado'],
+                    'badge'    => [$this, 'contar_documentos_pendientes'],
+                ],
+                [
+                    'slug'     => 'documentos-categorias',
+                    'titulo'   => __('Categorias', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_categorias'],
+                ],
+                [
+                    'slug'     => 'documentos-config',
+                    'titulo'   => __('Configuracion', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+            'dashboard_widget' => [$this, 'render_dashboard_widget_admin'],
+            'estadisticas'     => [$this, 'get_estadisticas_admin'],
+        ];
+    }
+
+    /**
+     * Cuenta documentos pendientes de revision para badge
+     *
+     * @return int
+     */
+    public function contar_documentos_pendientes() {
+        global $wpdb;
+        $tabla_documentos = $wpdb->prefix . 'flavor_documentacion_legal';
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_documentos} WHERE estado IN ('borrador', 'revision')"
+        );
+    }
+
+    /**
+     * Obtiene estadisticas para el dashboard admin
+     *
+     * @return array
+     */
+    public function get_estadisticas_admin() {
+        global $wpdb;
+        $tabla_documentos = $wpdb->prefix . 'flavor_documentacion_legal';
+        $tabla_categorias = $wpdb->prefix . 'flavor_documentacion_legal_categorias';
+
+        $total_documentos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_documentos}");
+        $documentos_publicados = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_documentos} WHERE estado = 'publicado'");
+        $documentos_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_documentos} WHERE estado IN ('borrador', 'revision')");
+        $total_descargas = (int) $wpdb->get_var("SELECT COALESCE(SUM(descargas), 0) FROM {$tabla_documentos}");
+        $total_categorias = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_categorias}");
+
+        return [
+            'total_documentos'      => $total_documentos,
+            'documentos_publicados' => $documentos_publicados,
+            'documentos_pendientes' => $documentos_pendientes,
+            'total_descargas'       => $total_descargas,
+            'total_categorias'      => $total_categorias,
+        ];
+    }
+
+    /**
+     * Renderiza el Dashboard de Documentacion Legal
+     */
+    public function render_admin_dashboard() {
+        global $wpdb;
+        $tabla_documentos = $wpdb->prefix . 'flavor_documentacion_legal';
+        $tabla_categorias = $wpdb->prefix . 'flavor_documentacion_legal_categorias';
+
+        // Estadisticas generales
+        $estadisticas = $this->get_estadisticas_admin();
+
+        // Documentos recientes
+        $documentos_recientes = $wpdb->get_results(
+            "SELECT id, titulo, tipo, estado, descargas, created_at
+             FROM {$tabla_documentos}
+             ORDER BY created_at DESC
+             LIMIT 10"
+        );
+
+        // Categorias con conteo
+        $categorias_con_conteo = $wpdb->get_results(
+            "SELECT c.id, c.nombre, c.slug, c.icono, c.color,
+                    COUNT(d.id) as total_documentos
+             FROM {$tabla_categorias} c
+             LEFT JOIN {$tabla_documentos} d ON d.categoria = c.slug AND d.estado = 'publicado'
+             GROUP BY c.id
+             ORDER BY total_documentos DESC
+             LIMIT 10"
+        );
+
+        // Documentos mas descargados
+        $documentos_populares = $wpdb->get_results(
+            "SELECT id, titulo, tipo, descargas, visitas
+             FROM {$tabla_documentos}
+             WHERE estado = 'publicado'
+             ORDER BY descargas DESC
+             LIMIT 5"
+        );
+
+        // Tipos de documento disponibles
+        $tipos_documento = $this->get_tipos_documento();
+
+        ?>
+        <div class="wrap flavor-admin-dashboard">
+            <?php $this->render_page_header(__('Dashboard - Documentacion Legal', 'flavor-chat-ia'), [
+                ['label' => __('Nuevo Documento', 'flavor-chat-ia'), 'url' => '#nuevo-documento', 'class' => 'button-primary'],
+            ]); ?>
+
+            <!-- KPIs -->
+            <div class="flavor-kpis-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="dashicons dashicons-media-document" style="font-size: 40px; color: #2271b1;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html($estadisticas['total_documentos']); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Total Documentos', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="dashicons dashicons-download" style="font-size: 40px; color: #00a32a;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html(number_format($estadisticas['total_descargas'])); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Descargas Totales', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="dashicons dashicons-yes-alt" style="font-size: 40px; color: #00a32a;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html($estadisticas['documentos_publicados']); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="dashicons dashicons-clock" style="font-size: 40px; color: #dba617;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html($estadisticas['documentos_pendientes']); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="dashicons dashicons-category" style="font-size: 40px; color: #8c5cb6;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html($estadisticas['total_categorias']); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Categorias', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <!-- Documentos recientes -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                        <span class="dashicons dashicons-clock"></span>
+                        <?php esc_html_e('Documentos Recientes', 'flavor-chat-ia'); ?>
+                    </h3>
+                    <?php if (!empty($documentos_recientes)): ?>
+                        <table class="widefat striped">
+                            <thead>
+                                <tr>
+                                    <th><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($documentos_recientes as $documento): ?>
+                                    <tr>
+                                        <td>
+                                            <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-listado&action=edit&id=' . $documento->id)); ?>">
+                                                <?php echo esc_html($documento->titulo); ?>
+                                            </a>
+                                        </td>
+                                        <td><?php echo esc_html($tipos_documento[$documento->tipo] ?? $documento->tipo); ?></td>
+                                        <td>
+                                            <?php
+                                            $estado_class = [
+                                                'publicado' => 'background: #d4edda; color: #155724;',
+                                                'borrador'  => 'background: #e2e3e5; color: #383d41;',
+                                                'revision'  => 'background: #fff3cd; color: #856404;',
+                                                'archivado' => 'background: #f8d7da; color: #721c24;',
+                                            ];
+                                            $estilo_estado = $estado_class[$documento->estado] ?? '';
+                                            ?>
+                                            <span style="padding: 3px 8px; border-radius: 3px; font-size: 11px; <?php echo esc_attr($estilo_estado); ?>">
+                                                <?php echo esc_html(ucfirst($documento->estado)); ?>
+                                            </span>
+                                        </td>
+                                        <td><?php echo esc_html($documento->descargas); ?></td>
+                                        <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($documento->created_at))); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p style="color: #646970;"><?php esc_html_e('No hay documentos registrados.', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Panel lateral -->
+                <div>
+                    <!-- Categorias -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                        <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                            <span class="dashicons dashicons-category"></span>
+                            <?php esc_html_e('Categorias', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php if (!empty($categorias_con_conteo)): ?>
+                            <ul style="margin: 0; padding: 0; list-style: none;">
+                                <?php foreach ($categorias_con_conteo as $categoria): ?>
+                                    <li style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                                        <span>
+                                            <?php if ($categoria->icono): ?>
+                                                <span class="<?php echo esc_attr($categoria->icono); ?>" style="color: <?php echo esc_attr($categoria->color ?: '#2271b1'); ?>;"></span>
+                                            <?php endif; ?>
+                                            <?php echo esc_html($categoria->nombre); ?>
+                                        </span>
+                                        <span style="background: #f0f0f1; padding: 2px 8px; border-radius: 10px; font-size: 12px;">
+                                            <?php echo esc_html($categoria->total_documentos); ?>
+                                        </span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p style="color: #646970;"><?php esc_html_e('No hay categorias.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Documentos populares -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                            <span class="dashicons dashicons-star-filled"></span>
+                            <?php esc_html_e('Mas Descargados', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php if (!empty($documentos_populares)): ?>
+                            <ul style="margin: 0; padding: 0; list-style: none;">
+                                <?php foreach ($documentos_populares as $indice => $documento): ?>
+                                    <li style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <span style="background: #2271b1; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">
+                                                <?php echo esc_html($indice + 1); ?>
+                                            </span>
+                                            <div style="flex: 1;">
+                                                <div style="font-weight: 500;"><?php echo esc_html($documento->titulo); ?></div>
+                                                <div style="font-size: 12px; color: #646970;">
+                                                    <?php echo esc_html($documento->descargas); ?> <?php esc_html_e('descargas', 'flavor-chat-ia'); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p style="color: #646970;"><?php esc_html_e('No hay descargas registradas.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el listado de documentos
+     */
+    public function render_admin_listado() {
+        global $wpdb;
+        $tabla_documentos = $wpdb->prefix . 'flavor_documentacion_legal';
+        $tabla_categorias = $wpdb->prefix . 'flavor_documentacion_legal_categorias';
+
+        // Procesar acciones
+        $this->procesar_acciones_listado();
+
+        // Filtros
+        $filtro_tipo = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
+        $filtro_categoria = isset($_GET['categoria']) ? sanitize_text_field($_GET['categoria']) : '';
+        $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+        $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        // Paginacion
+        $por_pagina = 20;
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $offset = ($pagina_actual - 1) * $por_pagina;
+
+        // Construir consulta
+        $condiciones_where = ["1=1"];
+        $parametros_consulta = [];
+
+        if ($filtro_tipo) {
+            $condiciones_where[] = "tipo = %s";
+            $parametros_consulta[] = $filtro_tipo;
+        }
+        if ($filtro_categoria) {
+            $condiciones_where[] = "categoria = %s";
+            $parametros_consulta[] = $filtro_categoria;
+        }
+        if ($filtro_estado) {
+            $condiciones_where[] = "estado = %s";
+            $parametros_consulta[] = $filtro_estado;
+        }
+        if ($busqueda) {
+            $condiciones_where[] = "(titulo LIKE %s OR descripcion LIKE %s)";
+            $termino_busqueda = '%' . $wpdb->esc_like($busqueda) . '%';
+            $parametros_consulta[] = $termino_busqueda;
+            $parametros_consulta[] = $termino_busqueda;
+        }
+
+        $clausula_where = implode(' AND ', $condiciones_where);
+
+        // Contar total
+        $total_documentos = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_documentos} WHERE {$clausula_where}",
+            $parametros_consulta
+        ));
+
+        // Obtener documentos
+        $parametros_consulta[] = $por_pagina;
+        $parametros_consulta[] = $offset;
+
+        $documentos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$tabla_documentos} WHERE {$clausula_where} ORDER BY created_at DESC LIMIT %d OFFSET %d",
+            $parametros_consulta
+        ));
+
+        // Obtener categorias para filtro
+        $categorias = $wpdb->get_results("SELECT slug, nombre FROM {$tabla_categorias} ORDER BY nombre");
+
+        // Tipos de documento
+        $tipos_documento = $this->get_tipos_documento();
+
+        // Estados
+        $estados_disponibles = [
+            'publicado' => __('Publicado', 'flavor-chat-ia'),
+            'borrador'  => __('Borrador', 'flavor-chat-ia'),
+            'revision'  => __('En revision', 'flavor-chat-ia'),
+            'archivado' => __('Archivado', 'flavor-chat-ia'),
+        ];
+
+        $total_paginas = ceil($total_documentos / $por_pagina);
+
+        ?>
+        <div class="wrap">
+            <?php $this->render_page_header(__('Listado de Documentos', 'flavor-chat-ia'), [
+                ['label' => __('Nuevo Documento', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=documentos-listado&action=new'), 'class' => 'button-primary'],
+                ['label' => __('Exportar', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=documentos-listado&action=export'), 'class' => 'button'],
+            ]); ?>
+
+            <!-- Filtros -->
+            <div class="tablenav top">
+                <form method="get" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <input type="hidden" name="page" value="documentos-listado">
+
+                    <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>" style="width: 200px;">
+
+                    <select name="tipo">
+                        <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($tipos_documento as $slug_tipo => $nombre_tipo): ?>
+                            <option value="<?php echo esc_attr($slug_tipo); ?>" <?php selected($filtro_tipo, $slug_tipo); ?>>
+                                <?php echo esc_html($nombre_tipo); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <select name="categoria">
+                        <option value=""><?php esc_html_e('Todas las categorias', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($categorias as $categoria): ?>
+                            <option value="<?php echo esc_attr($categoria->slug); ?>" <?php selected($filtro_categoria, $categoria->slug); ?>>
+                                <?php echo esc_html($categoria->nombre); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <select name="estado">
+                        <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($estados_disponibles as $slug_estado => $nombre_estado): ?>
+                            <option value="<?php echo esc_attr($slug_estado); ?>" <?php selected($filtro_estado, $slug_estado); ?>>
+                                <?php echo esc_html($nombre_estado); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+
+                    <?php if ($filtro_tipo || $filtro_categoria || $filtro_estado || $busqueda): ?>
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-listado')); ?>" class="button">
+                            <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        </a>
+                    <?php endif; ?>
+                </form>
+
+                <div class="tablenav-pages">
+                    <span class="displaying-num">
+                        <?php printf(
+                            esc_html(_n('%s documento', '%s documentos', $total_documentos, 'flavor-chat-ia')),
+                            number_format_i18n($total_documentos)
+                        ); ?>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tabla de documentos -->
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <td class="manage-column column-cb check-column">
+                            <input type="checkbox" id="cb-select-all-1">
+                        </td>
+                        <th scope="col" class="manage-column column-title column-primary"><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Categoria', 'flavor-chat-ia'); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($documentos)): ?>
+                        <?php foreach ($documentos as $documento): ?>
+                            <tr>
+                                <th scope="row" class="check-column">
+                                    <input type="checkbox" name="documento[]" value="<?php echo esc_attr($documento->id); ?>">
+                                </th>
+                                <td class="column-title column-primary">
+                                    <strong>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-listado&action=edit&id=' . $documento->id)); ?>">
+                                            <?php echo esc_html($documento->titulo); ?>
+                                        </a>
+                                    </strong>
+                                    <div class="row-actions">
+                                        <span class="edit">
+                                            <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-listado&action=edit&id=' . $documento->id)); ?>">
+                                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                            </a> |
+                                        </span>
+                                        <span class="view">
+                                            <a href="<?php echo esc_url($documento->archivo_adjunto ?: '#'); ?>" target="_blank">
+                                                <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                            </a> |
+                                        </span>
+                                        <span class="trash">
+                                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=documentos-listado&action=delete&id=' . $documento->id), 'delete_documento_' . $documento->id)); ?>" onclick="return confirm('<?php esc_attr_e('Estas seguro de eliminar este documento?', 'flavor-chat-ia'); ?>');">
+                                                <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td><?php echo esc_html($tipos_documento[$documento->tipo] ?? $documento->tipo); ?></td>
+                                <td><?php echo esc_html($documento->categoria ?: '-'); ?></td>
+                                <td>
+                                    <?php
+                                    $colores_estado = [
+                                        'publicado' => '#00a32a',
+                                        'borrador'  => '#646970',
+                                        'revision'  => '#dba617',
+                                        'archivado' => '#d63638',
+                                    ];
+                                    $color_estado = $colores_estado[$documento->estado] ?? '#646970';
+                                    ?>
+                                    <span style="color: <?php echo esc_attr($color_estado); ?>; font-weight: 500;">
+                                        <?php echo esc_html(ucfirst($documento->estado)); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo esc_html($documento->descargas); ?></td>
+                                <td><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($documento->created_at))); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 20px;">
+                                <?php esc_html_e('No se encontraron documentos.', 'flavor-chat-ia'); ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+            <!-- Paginacion -->
+            <?php if ($total_paginas > 1): ?>
+                <div class="tablenav bottom">
+                    <div class="tablenav-pages">
+                        <?php
+                        $enlaces_paginacion = paginate_links([
+                            'base'      => add_query_arg('paged', '%#%'),
+                            'format'    => '',
+                            'prev_text' => '&laquo;',
+                            'next_text' => '&raquo;',
+                            'total'     => $total_paginas,
+                            'current'   => $pagina_actual,
+                        ]);
+                        echo wp_kses_post($enlaces_paginacion);
+                        ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Procesa acciones del listado (eliminar, etc.)
+     */
+    private function procesar_acciones_listado() {
+        if (!isset($_GET['action'])) {
+            return;
+        }
+
+        $accion = sanitize_text_field($_GET['action']);
+
+        if ($accion === 'delete' && isset($_GET['id'])) {
+            $documento_id = intval($_GET['id']);
+
+            if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'delete_documento_' . $documento_id)) {
+                wp_die(__('Accion no autorizada.', 'flavor-chat-ia'));
+            }
+
+            global $wpdb;
+            $tabla_documentos = $wpdb->prefix . 'flavor_documentacion_legal';
+
+            $resultado = $wpdb->delete($tabla_documentos, ['id' => $documento_id], ['%d']);
+
+            if ($resultado) {
+                add_settings_error(
+                    'flavor_documentacion_legal',
+                    'documento_eliminado',
+                    __('Documento eliminado correctamente.', 'flavor-chat-ia'),
+                    'success'
+                );
+            }
+
+            wp_safe_redirect(admin_url('admin.php?page=documentos-listado'));
+            exit;
+        }
+    }
+
+    /**
+     * Renderiza la gestion de categorias
+     */
+    public function render_admin_categorias() {
+        global $wpdb;
+        $tabla_categorias = $wpdb->prefix . 'flavor_documentacion_legal_categorias';
+
+        // Procesar formulario
+        $this->procesar_formulario_categorias();
+
+        // Obtener categorias
+        $categorias = $wpdb->get_results(
+            "SELECT * FROM {$tabla_categorias} ORDER BY orden ASC, nombre ASC"
+        );
+
+        // Categoria a editar
+        $categoria_editar = null;
+        if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
+            $categoria_editar = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_categorias} WHERE id = %d",
+                intval($_GET['id'])
+            ));
+        }
+
+        ?>
+        <div class="wrap">
+            <?php $this->render_page_header(__('Categorias de Documentos', 'flavor-chat-ia')); ?>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <!-- Formulario -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top: 0;">
+                        <?php echo $categoria_editar ? esc_html__('Editar Categoria', 'flavor-chat-ia') : esc_html__('Nueva Categoria', 'flavor-chat-ia'); ?>
+                    </h3>
+
+                    <form method="post">
+                        <?php wp_nonce_field('flavor_categoria_action', 'flavor_categoria_nonce'); ?>
+                        <?php if ($categoria_editar): ?>
+                            <input type="hidden" name="categoria_id" value="<?php echo esc_attr($categoria_editar->id); ?>">
+                        <?php endif; ?>
+
+                        <table class="form-table">
+                            <tr>
+                                <th scope="row"><label for="nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?> *</label></th>
+                                <td>
+                                    <input type="text" name="nombre" id="nombre" class="regular-text" required
+                                           value="<?php echo esc_attr($categoria_editar->nombre ?? ''); ?>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="slug"><?php esc_html_e('Slug', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <input type="text" name="slug" id="slug" class="regular-text"
+                                           value="<?php echo esc_attr($categoria_editar->slug ?? ''); ?>">
+                                    <p class="description"><?php esc_html_e('Dejar vacio para generar automaticamente.', 'flavor-chat-ia'); ?></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="descripcion"><?php esc_html_e('Descripcion', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <textarea name="descripcion" id="descripcion" rows="3" class="large-text"><?php echo esc_textarea($categoria_editar->descripcion ?? ''); ?></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="icono"><?php esc_html_e('Icono', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <input type="text" name="icono" id="icono" class="regular-text"
+                                           value="<?php echo esc_attr($categoria_editar->icono ?? ''); ?>"
+                                           placeholder="dashicons-admin-generic">
+                                    <p class="description"><?php esc_html_e('Clase de dashicon (ej: dashicons-media-document)', 'flavor-chat-ia'); ?></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="color"><?php esc_html_e('Color', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <input type="color" name="color" id="color"
+                                           value="<?php echo esc_attr($categoria_editar->color ?? '#2271b1'); ?>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="orden"><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <input type="number" name="orden" id="orden" class="small-text" min="0"
+                                           value="<?php echo esc_attr($categoria_editar->orden ?? 0); ?>">
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p class="submit">
+                            <button type="submit" name="guardar_categoria" class="button button-primary">
+                                <?php echo $categoria_editar ? esc_html__('Actualizar Categoria', 'flavor-chat-ia') : esc_html__('Crear Categoria', 'flavor-chat-ia'); ?>
+                            </button>
+                            <?php if ($categoria_editar): ?>
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-categorias')); ?>" class="button">
+                                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                </a>
+                            <?php endif; ?>
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Lista de categorias -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top: 0;"><?php esc_html_e('Categorias Existentes', 'flavor-chat-ia'); ?></h3>
+
+                    <?php if (!empty($categorias)): ?>
+                        <table class="widefat striped">
+                            <thead>
+                                <tr>
+                                    <th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Slug', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($categorias as $categoria): ?>
+                                    <tr>
+                                        <td>
+                                            <?php if ($categoria->icono): ?>
+                                                <span class="<?php echo esc_attr($categoria->icono); ?>" style="color: <?php echo esc_attr($categoria->color ?: '#2271b1'); ?>; margin-right: 5px;"></span>
+                                            <?php endif; ?>
+                                            <?php echo esc_html($categoria->nombre); ?>
+                                        </td>
+                                        <td><code><?php echo esc_html($categoria->slug); ?></code></td>
+                                        <td><?php echo esc_html($categoria->orden); ?></td>
+                                        <td>
+                                            <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-categorias&action=edit&id=' . $categoria->id)); ?>" class="button button-small">
+                                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                            </a>
+                                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=documentos-categorias&action=delete&id=' . $categoria->id), 'delete_categoria_' . $categoria->id)); ?>"
+                                               class="button button-small button-link-delete"
+                                               onclick="return confirm('<?php esc_attr_e('Eliminar esta categoria?', 'flavor-chat-ia'); ?>');">
+                                                <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p style="color: #646970;"><?php esc_html_e('No hay categorias creadas.', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Procesa el formulario de categorias
+     */
+    private function procesar_formulario_categorias() {
+        // Guardar categoria
+        if (isset($_POST['guardar_categoria']) && wp_verify_nonce($_POST['flavor_categoria_nonce'] ?? '', 'flavor_categoria_action')) {
+            global $wpdb;
+            $tabla_categorias = $wpdb->prefix . 'flavor_documentacion_legal_categorias';
+
+            $nombre = sanitize_text_field($_POST['nombre'] ?? '');
+            $slug = sanitize_title($_POST['slug'] ?? $nombre);
+            $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
+            $icono = sanitize_text_field($_POST['icono'] ?? '');
+            $color = sanitize_hex_color($_POST['color'] ?? '');
+            $orden = intval($_POST['orden'] ?? 0);
+
+            $datos_categoria = [
+                'nombre'      => $nombre,
+                'slug'        => $slug,
+                'descripcion' => $descripcion,
+                'icono'       => $icono,
+                'color'       => $color,
+                'orden'       => $orden,
+            ];
+
+            if (isset($_POST['categoria_id']) && $_POST['categoria_id']) {
+                // Actualizar
+                $wpdb->update($tabla_categorias, $datos_categoria, ['id' => intval($_POST['categoria_id'])]);
+                add_settings_error('flavor_categorias', 'actualizada', __('Categoria actualizada.', 'flavor-chat-ia'), 'success');
+            } else {
+                // Crear
+                $wpdb->insert($tabla_categorias, $datos_categoria);
+                add_settings_error('flavor_categorias', 'creada', __('Categoria creada.', 'flavor-chat-ia'), 'success');
+            }
+
+            wp_safe_redirect(admin_url('admin.php?page=documentos-categorias'));
+            exit;
+        }
+
+        // Eliminar categoria
+        if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+            if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'delete_categoria_' . intval($_GET['id']))) {
+                wp_die(__('Accion no autorizada.', 'flavor-chat-ia'));
+            }
+
+            global $wpdb;
+            $tabla_categorias = $wpdb->prefix . 'flavor_documentacion_legal_categorias';
+
+            $wpdb->delete($tabla_categorias, ['id' => intval($_GET['id'])]);
+
+            wp_safe_redirect(admin_url('admin.php?page=documentos-categorias'));
+            exit;
+        }
+    }
+
+    /**
+     * Renderiza la pagina de configuracion
+     */
+    public function render_admin_config() {
+        // Guardar configuracion
+        if (isset($_POST['guardar_config']) && wp_verify_nonce($_POST['flavor_config_nonce'] ?? '', 'flavor_config_action')) {
+            $configuracion = [
+                'requiere_verificacion'    => isset($_POST['requiere_verificacion']),
+                'permitir_comentarios'     => isset($_POST['permitir_comentarios']),
+                'permitir_descargas'       => isset($_POST['permitir_descargas']),
+                'mostrar_visitas'          => isset($_POST['mostrar_visitas']),
+                'tipos_archivo_permitidos' => array_map('sanitize_text_field', explode(',', $_POST['tipos_archivo_permitidos'] ?? '')),
+                'tamano_maximo_archivo'    => intval($_POST['tamano_maximo_archivo'] ?? 10),
+                'roles_pueden_subir'       => array_map('sanitize_text_field', $_POST['roles_pueden_subir'] ?? ['administrator']),
+            ];
+
+            update_option('flavor_documentacion_legal_config', $configuracion);
+            add_settings_error('flavor_config', 'guardada', __('Configuracion guardada.', 'flavor-chat-ia'), 'success');
+        }
+
+        // Obtener configuracion actual
+        $configuracion_actual = get_option('flavor_documentacion_legal_config', $this->get_default_settings());
+
+        // Roles de WordPress
+        $roles_wordpress = wp_roles()->get_names();
+
+        ?>
+        <div class="wrap">
+            <?php $this->render_page_header(__('Configuracion - Documentacion Legal', 'flavor-chat-ia')); ?>
+
+            <?php settings_errors('flavor_config'); ?>
+
+            <form method="post">
+                <?php wp_nonce_field('flavor_config_action', 'flavor_config_nonce'); ?>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <!-- General -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0;">
+                            <span class="dashicons dashicons-admin-generic"></span>
+                            <?php esc_html_e('Configuracion General', 'flavor-chat-ia'); ?>
+                        </h3>
+
+                        <table class="form-table">
+                            <tr>
+                                <th scope="row"><?php esc_html_e('Verificacion', 'flavor-chat-ia'); ?></th>
+                                <td>
+                                    <label>
+                                        <input type="checkbox" name="requiere_verificacion" value="1"
+                                               <?php checked($configuracion_actual['requiere_verificacion'] ?? true); ?>>
+                                        <?php esc_html_e('Los documentos requieren verificacion antes de publicarse', 'flavor-chat-ia'); ?>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></th>
+                                <td>
+                                    <label>
+                                        <input type="checkbox" name="permitir_comentarios" value="1"
+                                               <?php checked($configuracion_actual['permitir_comentarios'] ?? true); ?>>
+                                        <?php esc_html_e('Permitir comentarios en documentos', 'flavor-chat-ia'); ?>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
+                                <td>
+                                    <label>
+                                        <input type="checkbox" name="permitir_descargas" value="1"
+                                               <?php checked($configuracion_actual['permitir_descargas'] ?? true); ?>>
+                                        <?php esc_html_e('Permitir descargas de documentos', 'flavor-chat-ia'); ?>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?php esc_html_e('Estadisticas', 'flavor-chat-ia'); ?></th>
+                                <td>
+                                    <label>
+                                        <input type="checkbox" name="mostrar_visitas" value="1"
+                                               <?php checked($configuracion_actual['mostrar_visitas'] ?? true); ?>>
+                                        <?php esc_html_e('Mostrar contador de visitas', 'flavor-chat-ia'); ?>
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Archivos -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0;">
+                            <span class="dashicons dashicons-media-document"></span>
+                            <?php esc_html_e('Configuracion de Archivos', 'flavor-chat-ia'); ?>
+                        </h3>
+
+                        <table class="form-table">
+                            <tr>
+                                <th scope="row">
+                                    <label for="tipos_archivo_permitidos"><?php esc_html_e('Tipos permitidos', 'flavor-chat-ia'); ?></label>
+                                </th>
+                                <td>
+                                    <input type="text" name="tipos_archivo_permitidos" id="tipos_archivo_permitidos" class="regular-text"
+                                           value="<?php echo esc_attr(implode(',', $configuracion_actual['tipos_archivo_permitidos'] ?? ['pdf', 'doc', 'docx'])); ?>">
+                                    <p class="description"><?php esc_html_e('Extensiones separadas por coma (ej: pdf,doc,docx,odt)', 'flavor-chat-ia'); ?></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <label for="tamano_maximo_archivo"><?php esc_html_e('Tamano maximo (MB)', 'flavor-chat-ia'); ?></label>
+                                </th>
+                                <td>
+                                    <input type="number" name="tamano_maximo_archivo" id="tamano_maximo_archivo" class="small-text" min="1" max="100"
+                                           value="<?php echo esc_attr($configuracion_actual['tamano_maximo_archivo'] ?? 10); ?>">
+                                    <p class="description"><?php esc_html_e('Tamano maximo de archivo en megabytes', 'flavor-chat-ia'); ?></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Permisos -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0;">
+                            <span class="dashicons dashicons-admin-users"></span>
+                            <?php esc_html_e('Permisos de Subida', 'flavor-chat-ia'); ?>
+                        </h3>
+
+                        <table class="form-table">
+                            <tr>
+                                <th scope="row"><?php esc_html_e('Roles que pueden subir documentos', 'flavor-chat-ia'); ?></th>
+                                <td>
+                                    <?php
+                                    $roles_pueden_subir = $configuracion_actual['roles_pueden_subir'] ?? ['administrator'];
+                                    foreach ($roles_wordpress as $slug_rol => $nombre_rol):
+                                        ?>
+                                        <label style="display: block; margin-bottom: 5px;">
+                                            <input type="checkbox" name="roles_pueden_subir[]" value="<?php echo esc_attr($slug_rol); ?>"
+                                                   <?php checked(in_array($slug_rol, $roles_pueden_subir)); ?>>
+                                            <?php echo esc_html($nombre_rol); ?>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Informacion -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0;">
+                            <span class="dashicons dashicons-info-outline"></span>
+                            <?php esc_html_e('Informacion del Modulo', 'flavor-chat-ia'); ?>
+                        </h3>
+
+                        <?php
+                        $estadisticas = $this->get_estadisticas_admin();
+                        ?>
+                        <table class="widefat">
+                            <tr>
+                                <td><strong><?php esc_html_e('Total documentos', 'flavor-chat-ia'); ?></strong></td>
+                                <td><?php echo esc_html($estadisticas['total_documentos']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong><?php esc_html_e('Documentos publicados', 'flavor-chat-ia'); ?></strong></td>
+                                <td><?php echo esc_html($estadisticas['documentos_publicados']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong><?php esc_html_e('Pendientes de revision', 'flavor-chat-ia'); ?></strong></td>
+                                <td><?php echo esc_html($estadisticas['documentos_pendientes']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong><?php esc_html_e('Total descargas', 'flavor-chat-ia'); ?></strong></td>
+                                <td><?php echo esc_html(number_format($estadisticas['total_descargas'])); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong><?php esc_html_e('Categorias', 'flavor-chat-ia'); ?></strong></td>
+                                <td><?php echo esc_html($estadisticas['total_categorias']); ?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="submit" style="margin-top: 20px;">
+                    <button type="submit" name="guardar_config" class="button button-primary button-large">
+                        <?php esc_html_e('Guardar Configuracion', 'flavor-chat-ia'); ?>
+                    </button>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget para el dashboard de administracion
+     */
+    public function render_dashboard_widget_admin() {
+        $estadisticas = $this->get_estadisticas_admin();
+        ?>
+        <div class="flavor-dashboard-widget">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 24px; font-weight: 600; color: #2271b1;"><?php echo esc_html($estadisticas['total_documentos']); ?></div>
+                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Documentos', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 24px; font-weight: 600; color: #00a32a;"><?php echo esc_html(number_format($estadisticas['total_descargas'])); ?></div>
+                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 24px; font-weight: 600; color: #dba617;"><?php echo esc_html($estadisticas['documentos_pendientes']); ?></div>
+                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-dashboard')); ?>" class="button button-primary" style="width: 100%; text-align: center;">
+                <?php esc_html_e('Ver Dashboard Completo', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+        <?php
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'documentacion-legal',
+            'title'    => __('Documentación Legal', 'flavor-chat-ia'),
+            'subtitle' => __('Repositorio de documentos jurídicos y modelos', 'flavor-chat-ia'),
+            'icon'     => '⚖️',
+            'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
+
+            'database' => [
+                'table'       => 'flavor_documentacion_legal',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
+                'tipo'        => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia')],
+                'ambito'      => ['type' => 'select', 'label' => __('Ámbito', 'flavor-chat-ia')],
+                'fecha_publicacion' => ['type' => 'date', 'label' => __('Fecha publicación', 'flavor-chat-ia')],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'archivo'     => ['type' => 'file', 'label' => __('Documento', 'flavor-chat-ia')],
+                'url_oficial' => ['type' => 'url', 'label' => __('URL oficial', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'pendiente'  => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
+                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'obsoleto'   => ['label' => __('Obsoleto', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '⚠️'],
+            ],
+
+            'stats' => [
+                [
+                    'key'   => 'total_documentos',
+                    'label' => __('Documentos', 'flavor-chat-ia'),
+                    'icon'  => '📄',
+                    'color' => 'slate',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_documentacion_legal WHERE estado = 'publicado'",
+                ],
+                [
+                    'key'   => 'leyes',
+                    'label' => __('Leyes', 'flavor-chat-ia'),
+                    'icon'  => '📜',
+                    'color' => 'blue',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_documentacion_legal WHERE tipo = 'ley' AND estado = 'publicado'",
+                ],
+                [
+                    'key'   => 'modelos',
+                    'label' => __('Modelos', 'flavor-chat-ia'),
+                    'icon'  => '📋',
+                    'color' => 'green',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_documentacion_legal WHERE tipo LIKE 'modelo%' AND estado = 'publicado'",
+                ],
+                [
+                    'key'   => 'sentencias',
+                    'label' => __('Sentencias', 'flavor-chat-ia'),
+                    'icon'  => '⚖️',
+                    'color' => 'purple',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_documentacion_legal WHERE tipo = 'sentencia' AND estado = 'publicado'",
+                ],
+            ],
+
+            'card' => [
+                'layout'      => 'document',
+                'icon_field'  => 'tipo',
+                'title_field' => 'titulo',
+                'meta_fields' => ['tipo', 'ambito', 'fecha_publicacion'],
+                'badge_field' => 'tipo',
+                'show_download' => true,
+            ],
+
+            'tabs' => [
+                'listado' => [
+                    'label'   => __('Documentos', 'flavor-chat-ia'),
+                    'icon'    => '📄',
+                    'content' => 'template:documentacion-legal/_listado.php',
+                ],
+                'leyes' => [
+                    'label'   => __('Leyes', 'flavor-chat-ia'),
+                    'icon'    => '📜',
+                    'content' => 'shortcode:documentacion_legal_leyes',
+                ],
+                'modelos' => [
+                    'label'   => __('Modelos', 'flavor-chat-ia'),
+                    'icon'    => '📋',
+                    'content' => 'shortcode:documentacion_legal_modelos',
+                ],
+                'sentencias' => [
+                    'label'   => __('Sentencias', 'flavor-chat-ia'),
+                    'icon'    => '⚖️',
+                    'content' => 'shortcode:documentacion_legal_sentencias',
+                ],
+                'favoritos' => [
+                    'label'   => __('Favoritos', 'flavor-chat-ia'),
+                    'icon'    => '⭐',
+                    'content' => 'shortcode:documentacion_legal_favoritos',
+                ],
+            ],
+
+            'archive' => [
+                'columns'       => 2,
+                'per_page'      => 20,
+                'order_by'      => 'fecha_publicacion',
+                'order'         => 'DESC',
+                'filterable_by' => ['tipo', 'categoria', 'ambito'],
+            ],
+
+            'dashboard' => [
+                'widgets' => [
+                    'documentos_recientes' => ['type' => 'list', 'title' => __('Documentos recientes', 'flavor-chat-ia')],
+                    'mis_favoritos'        => ['type' => 'list', 'title' => __('Mis favoritos', 'flavor-chat-ia')],
+                ],
+                'actions' => [
+                    'subir_documento' => [
+                        'label' => __('Subir documento', 'flavor-chat-ia'),
+                        'icon'  => '📤',
+                        'modal' => 'documentacion-legal-subir',
+                    ],
+                ],
+            ],
+
+            'features' => [
+                'has_archive'    => true,
+                'has_single'     => true,
+                'has_dashboard'  => true,
+                'has_search'     => true,
+                'has_categories' => true,
+                'has_favorites'  => true,
+                'has_downloads'  => true,
+                'has_versioning' => true,
             ],
         ];
     }

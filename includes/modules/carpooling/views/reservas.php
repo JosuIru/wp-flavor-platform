@@ -19,7 +19,6 @@ if (!current_user_can('manage_options')) {
 global $wpdb;
 $tabla_reservas = $wpdb->prefix . 'flavor_carpooling_reservas';
 $tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
-$tabla_conductores = $wpdb->prefix . 'flavor_carpooling_conductores';
 
 // Obtener filtros
 $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'todos';
@@ -62,7 +61,7 @@ if (!empty($filtro_fecha_hasta)) {
 // Obtener total de registros
 $total_reservas = $wpdb->get_var(
     "SELECT COUNT(*) FROM {$tabla_reservas} r
-    INNER JOIN {$wpdb->users} u ON r.usuario_id = u.ID
+    INNER JOIN {$wpdb->users} u ON r.pasajero_id = u.ID
     {$where}"
 );
 
@@ -70,18 +69,18 @@ $total_reservas = $wpdb->get_var(
 $reservas = $wpdb->get_results(
     "SELECT
         r.*,
+        r.numero_plazas as plazas_reservadas,
         u.display_name as nombre_usuario,
         u.user_email as email_usuario,
         v.origen,
         v.destino,
-        v.fecha_viaje,
+        v.fecha_salida as fecha_viaje,
         v.precio_por_plaza,
         uc.display_name as nombre_conductor
     FROM {$tabla_reservas} r
-    INNER JOIN {$wpdb->users} u ON r.usuario_id = u.ID
+    INNER JOIN {$wpdb->users} u ON r.pasajero_id = u.ID
     INNER JOIN {$tabla_viajes} v ON r.viaje_id = v.id
-    INNER JOIN {$tabla_conductores} c ON v.conductor_id = c.id
-    INNER JOIN {$wpdb->users} uc ON c.usuario_id = uc.ID
+    INNER JOIN {$wpdb->users} uc ON v.conductor_id = uc.ID
     {$where}
     ORDER BY r.fecha_reserva DESC
     LIMIT {$elementos_por_pagina} OFFSET {$offset}"
@@ -96,7 +95,7 @@ $stats = $wpdb->get_row(
         SUM(CASE WHEN estado = 'confirmada' THEN 1 ELSE 0 END) as confirmadas,
         SUM(CASE WHEN estado = 'completada' THEN 1 ELSE 0 END) as completadas,
         SUM(CASE WHEN estado = 'cancelada' THEN 1 ELSE 0 END) as canceladas,
-        SUM(CASE WHEN estado = 'confirmada' OR estado = 'completada' THEN importe_total ELSE 0 END) as ingresos_totales
+        SUM(CASE WHEN estado = 'confirmada' OR estado = 'completada' THEN COALESCE(precio_total, 0) ELSE 0 END) as ingresos_totales
     FROM {$tabla_reservas}"
 );
 ?>

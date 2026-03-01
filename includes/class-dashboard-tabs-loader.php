@@ -64,11 +64,16 @@ class Flavor_Dashboard_Tabs_Loader {
 
         $ruta_modulos = FLAVOR_CHAT_IA_PATH . 'includes/modules/';
 
-        // Lista de archivos de dashboard tab por módulo
+        // Lista de archivos de dashboard tab por módulo (sin duplicados)
         $mapeo_dashboard_tabs = [
+            // === Módulos con Dashboard Tab dedicado ===
             'incidencias' => [
                 'archivo' => 'class-incidencias-dashboard-tab.php',
                 'clase' => 'Flavor_Incidencias_Dashboard_Tab',
+            ],
+            'encuestas' => [
+                'archivo' => 'class-encuestas-dashboard-tab.php',
+                'clase' => 'Flavor_Encuestas_Dashboard_Tab',
             ],
             'eventos' => [
                 'archivo' => 'class-eventos-dashboard-tab.php',
@@ -118,72 +123,87 @@ class Flavor_Dashboard_Tabs_Loader {
                 'archivo' => 'class-presupuestos-participativos-dashboard-tab.php',
                 'clase' => 'Flavor_Presupuestos_Participativos_Dashboard_Tab',
             ],
-            // Módulos adicionales con dashboard tabs
+            'colectivos' => [
+                'archivo' => 'class-colectivos-dashboard-tab.php',
+                'clase' => 'Flavor_Colectivos_Dashboard_Tab',
+            ],
+            'banco_tiempo' => [
+                'archivo' => 'class-banco-tiempo-dashboard-tab.php',
+                'clase' => 'Flavor_Banco_Tiempo_Dashboard_Tab',
+            ],
+            'reservas' => [
+                'archivo' => 'class-reservas-dashboard-tab.php',
+                'clase' => 'Flavor_Reservas_Dashboard_Tab',
+            ],
+            'huella_ecologica' => [
+                'archivo' => 'class-huella-ecologica-dashboard-tab.php',
+                'clase' => 'Flavor_Huella_Ecologica_Dashboard_Tab',
+            ],
+            'transparencia' => [
+                'archivo' => 'class-transparencia-dashboard-tab.php',
+                'clase' => 'Flavor_Transparencia_Dashboard_Tab',
+            ],
+            'bares' => [
+                'archivo' => 'class-bares-dashboard-tab.php',
+                'clase' => 'Flavor_Bares_Dashboard_Tab',
+            ],
+            'biblioteca' => [
+                'archivo' => 'class-biblioteca-dashboard-tab.php',
+                'clase' => 'Flavor_Biblioteca_Dashboard_Tab',
+            ],
+            'campanias' => [
+                'archivo' => 'class-campanias-dashboard-tab.php',
+                'clase' => 'Flavor_Campanias_Dashboard_Tab',
+            ],
+            'carpooling' => [
+                'archivo' => 'class-carpooling-dashboard-tab.php',
+                'clase' => 'Flavor_Carpooling_Dashboard_Tab',
+            ],
+            'compostaje' => [
+                'archivo' => 'class-compostaje-dashboard-tab.php',
+                'clase' => 'Flavor_Compostaje_Dashboard_Tab',
+            ],
+            'comunidades' => [
+                'archivo' => 'class-comunidades-dashboard-tab.php',
+                'clase' => 'Flavor_Comunidades_Dashboard_Tab',
+            ],
+            'foros' => [
+                'archivo' => 'class-foros-dashboard-tab.php',
+                'clase' => 'Flavor_Foros_Dashboard_Tab',
+            ],
+            'multimedia' => [
+                'archivo' => 'class-multimedia-dashboard-tab.php',
+                'clase' => 'Flavor_Multimedia_Dashboard_Tab',
+            ],
+            'podcast' => [
+                'archivo' => 'class-podcast-dashboard-tab.php',
+                'clase' => 'Flavor_Podcast_Dashboard_Tab',
+            ],
+            'radio' => [
+                'archivo' => 'class-radio-dashboard-tab.php',
+                'clase' => 'Flavor_Radio_Dashboard_Tab',
+            ],
+            'reciclaje' => [
+                'archivo' => 'class-reciclaje-dashboard-tab.php',
+                'clase' => 'Flavor_Reciclaje_Dashboard_Tab',
+            ],
+            'tramites' => [
+                'archivo' => 'class-tramites-dashboard-tab.php',
+                'clase' => 'Flavor_Tramites_Dashboard_Tab',
+            ],
+            'email_marketing' => [
+                'archivo' => 'class-em-dashboard-tab.php',
+                'clase' => 'Flavor_EM_Dashboard_Tab',
+            ],
+            'grupos_consumo' => [
+                'archivo' => 'class-gc-dashboard-tab.php',
+                'clase' => 'Flavor_GC_Dashboard_Tab',
+            ],
+
+            // === Módulos con Frontend Controller (tabs integrados) ===
             'ayuda_vecinal' => [
                 'archivo' => 'frontend/class-ayuda-vecinal-frontend-controller.php',
                 'clase' => 'Flavor_Ayuda_Vecinal_Frontend_Controller',
-            ],
-            'banco_tiempo' => [
-                'archivo' => 'frontend/class-banco-tiempo-frontend-controller.php',
-                'clase' => 'Flavor_Banco_Tiempo_Frontend_Controller',
-            ],
-            'carpooling' => [
-                'archivo' => 'frontend/class-carpooling-frontend-controller.php',
-                'clase' => 'Flavor_Carpooling_Frontend_Controller',
-            ],
-            'reservas' => [
-                'archivo' => 'frontend/class-reservas-frontend-controller.php',
-                'clase' => 'Flavor_Reservas_Frontend_Controller',
-            ],
-            // Frontend controllers con tabs integrados
-            'huertos_urbanos' => [
-                'archivo' => 'frontend/class-huertos-urbanos-frontend-controller.php',
-                'clase' => 'Flavor_Huertos_Urbanos_Frontend_Controller',
-            ],
-            'presupuestos_participativos' => [
-                'archivo' => 'frontend/class-presupuestos-participativos-frontend-controller.php',
-                'clase' => 'Flavor_Presupuestos_Participativos_Frontend_Controller',
-            ],
-            'espacios_comunes' => [
-                'archivo' => 'frontend/class-espacios-comunes-frontend-controller.php',
-                'clase' => 'Flavor_Espacios_Comunes_Frontend_Controller',
-            ],
-            'comunidades' => [
-                'archivo' => 'frontend/class-comunidades-frontend-controller.php',
-                'clase' => 'Flavor_Comunidades_Frontend_Controller',
-            ],
-            'socios' => [
-                'archivo' => 'frontend/class-socios-frontend-controller.php',
-                'clase' => 'Flavor_Socios_Frontend_Controller',
-            ],
-            'participacion' => [
-                'archivo' => 'frontend/class-participacion-frontend-controller.php',
-                'clase' => 'Flavor_Participacion_Frontend_Controller',
-            ],
-            // Nuevos frontend controllers
-            'foros' => [
-                'archivo' => 'frontend/class-foros-frontend-controller.php',
-                'clase' => 'Flavor_Foros_Frontend_Controller',
-            ],
-            'colectivos' => [
-                'archivo' => 'frontend/class-colectivos-frontend-controller.php',
-                'clase' => 'Flavor_Colectivos_Frontend_Controller',
-            ],
-            'biodiversidad_local' => [
-                'archivo' => 'frontend/class-biodiversidad-local-frontend-controller.php',
-                'clase' => 'Flavor_Biodiversidad_Local_Frontend_Controller',
-            ],
-            'circulos_cuidados' => [
-                'archivo' => 'frontend/class-circulos-cuidados-frontend-controller.php',
-                'clase' => 'Flavor_Circulos_Cuidados_Frontend_Controller',
-            ],
-            'economia_don' => [
-                'archivo' => 'frontend/class-economia-don-frontend-controller.php',
-                'clase' => 'Flavor_Economia_Don_Frontend_Controller',
-            ],
-            'tramites' => [
-                'archivo' => 'frontend/class-tramites-frontend-controller.php',
-                'clase' => 'Flavor_Tramites_Frontend_Controller',
             ],
             'saberes_ancestrales' => [
                 'archivo' => 'frontend/class-saberes-ancestrales-frontend-controller.php',
@@ -201,22 +221,6 @@ class Flavor_Dashboard_Tabs_Loader {
                 'archivo' => 'frontend/class-bicicletas-compartidas-frontend-controller.php',
                 'clase' => 'Flavor_Bicicletas_Compartidas_Frontend_Controller',
             ],
-            'podcast' => [
-                'archivo' => 'frontend/class-podcast-frontend-controller.php',
-                'clase' => 'Flavor_Podcast_Frontend_Controller',
-            ],
-            'radio' => [
-                'archivo' => 'frontend/class-radio-frontend-controller.php',
-                'clase' => 'Flavor_Radio_Frontend_Controller',
-            ],
-            'reciclaje' => [
-                'archivo' => 'frontend/class-reciclaje-frontend-controller.php',
-                'clase' => 'Flavor_Reciclaje_Frontend_Controller',
-            ],
-            'compostaje' => [
-                'archivo' => 'frontend/class-compostaje-frontend-controller.php',
-                'clase' => 'Flavor_Compostaje_Frontend_Controller',
-            ],
             'avisos_municipales' => [
                 'archivo' => 'frontend/class-avisos-municipales-frontend-controller.php',
                 'clase' => 'Flavor_Avisos_Municipales_Frontend_Controller',
@@ -224,14 +228,6 @@ class Flavor_Dashboard_Tabs_Loader {
             'parkings' => [
                 'archivo' => 'frontend/class-parkings-frontend-controller.php',
                 'clase' => 'Flavor_Parkings_Frontend_Controller',
-            ],
-            'huella_ecologica' => [
-                'archivo' => 'class-huella-ecologica-dashboard-tab.php',
-                'clase' => 'Flavor_Huella_Ecologica_Dashboard_Tab',
-            ],
-            'multimedia' => [
-                'archivo' => 'frontend/class-multimedia-frontend-controller.php',
-                'clase' => 'Flavor_Multimedia_Frontend_Controller',
             ],
             'recetas' => [
                 'archivo' => 'frontend/class-recetas-frontend-controller.php',
@@ -245,17 +241,63 @@ class Flavor_Dashboard_Tabs_Loader {
                 'archivo' => 'frontend/class-seguimiento-denuncias-frontend-controller.php',
                 'clase' => 'Flavor_Seguimiento_Denuncias_Frontend_Controller',
             ],
-            'transparencia' => [
-                'archivo' => 'frontend/class-transparencia-frontend-controller.php',
-                'clase' => 'Flavor_Transparencia_Frontend_Controller',
-            ],
-            'campanias' => [
-                'archivo' => 'frontend/class-campanias-frontend-controller.php',
-                'clase' => 'Flavor_Campanias_Frontend_Controller',
-            ],
             'documentacion_legal' => [
                 'archivo' => 'frontend/class-documentacion-legal-frontend-controller.php',
                 'clase' => 'Flavor_Documentacion_Legal_Frontend_Controller',
+            ],
+
+            // === Módulos que necesitan dashboard tab (nuevos) ===
+            'red_social' => [
+                'archivo' => 'class-red-social-dashboard-tab.php',
+                'clase' => 'Flavor_Red_Social_Dashboard_Tab',
+            ],
+            'chat_grupos' => [
+                'archivo' => 'class-chat-grupos-dashboard-tab.php',
+                'clase' => 'Flavor_Chat_Grupos_Dashboard_Tab',
+            ],
+            'chat_interno' => [
+                'archivo' => 'class-chat-interno-dashboard-tab.php',
+                'clase' => 'Flavor_Chat_Interno_Dashboard_Tab',
+            ],
+            'chat_estados' => [
+                'archivo' => 'class-chat-estados-dashboard-tab.php',
+                'clase' => 'Flavor_Chat_Estados_Dashboard_Tab',
+            ],
+            'empresarial' => [
+                'archivo' => 'class-empresarial-dashboard-tab.php',
+                'clase' => 'Flavor_Empresarial_Dashboard_Tab',
+            ],
+            'clientes' => [
+                'archivo' => 'class-clientes-dashboard-tab.php',
+                'clase' => 'Flavor_Clientes_Dashboard_Tab',
+            ],
+            'facturas' => [
+                'archivo' => 'class-facturas-dashboard-tab.php',
+                'clase' => 'Flavor_Facturas_Dashboard_Tab',
+            ],
+            'fichaje_empleados' => [
+                'archivo' => 'class-fichaje-empleados-dashboard-tab.php',
+                'clase' => 'Flavor_Fichaje_Empleados_Dashboard_Tab',
+            ],
+            'advertising' => [
+                'archivo' => 'class-advertising-dashboard-tab.php',
+                'clase' => 'Flavor_Advertising_Dashboard_Tab',
+            ],
+            'sello_conciencia' => [
+                'archivo' => 'class-sello-conciencia-dashboard-tab.php',
+                'clase' => 'Flavor_Sello_Conciencia_Dashboard_Tab',
+            ],
+            'dex_solana' => [
+                'archivo' => 'class-dex-solana-dashboard-tab.php',
+                'clase' => 'Flavor_Dex_Solana_Dashboard_Tab',
+            ],
+            'trading_ia' => [
+                'archivo' => 'class-trading-ia-dashboard-tab.php',
+                'clase' => 'Flavor_Trading_Ia_Dashboard_Tab',
+            ],
+            'woocommerce' => [
+                'archivo' => 'class-woocommerce-dashboard-tab.php',
+                'clase' => 'Flavor_Woocommerce_Dashboard_Tab',
             ],
         ];
 

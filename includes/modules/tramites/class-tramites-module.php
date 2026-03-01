@@ -279,6 +279,24 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
+
+        // Dashboard tabs para usuarios (frontend)
+        $this->init_dashboard_tabs();
+    }
+
+    /**
+     * Inicializa los tabs del dashboard de usuario
+     */
+    private function init_dashboard_tabs() {
+        $dashboard_tab_file = dirname(__FILE__) . '/class-tramites-dashboard-tab.php';
+        if (file_exists($dashboard_tab_file)) {
+            require_once $dashboard_tab_file;
+            if (class_exists('Flavor_Tramites_Dashboard_Tab')) {
+                Flavor_Tramites_Dashboard_Tab::get_instance();
+            }
+        }
     }
 
     /**
@@ -3081,5 +3099,126 @@ KNOWLEDGE;
                 'parent' => 'tramites',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'tramites',
+            'title'    => __('Trámites Online', 'flavor-chat-ia'),
+            'subtitle' => __('Realiza gestiones administrativas de forma rápida y sencilla', 'flavor-chat-ia'),
+            'icon'     => '📋',
+            'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
+
+            'database' => [
+                'table'       => 'flavor_tramites',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'tipo'          => ['type' => 'select', 'label' => __('Tipo de trámite', 'flavor-chat-ia'), 'required' => true],
+                'titulo'        => ['type' => 'text', 'label' => __('Asunto', 'flavor-chat-ia'), 'required' => true],
+                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'documentos'    => ['type' => 'file', 'label' => __('Documentación', 'flavor-chat-ia'), 'multiple' => true],
+                'expediente'    => ['type' => 'text', 'label' => __('Nº Expediente', 'flavor-chat-ia'), 'readonly' => true],
+                'fecha_inicio'  => ['type' => 'date', 'label' => __('Fecha inicio', 'flavor-chat-ia')],
+                'fecha_resolucion' => ['type' => 'date', 'label' => __('Fecha resolución', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'borrador'    => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'presentado'  => ['label' => __('Presentado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📤'],
+                'en_tramite'  => ['label' => __('En trámite', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
+                'pendiente_doc' => ['label' => __('Pendiente documentación', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '📎'],
+                'resuelto'    => ['label' => __('Resuelto', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'denegado'    => ['label' => __('Denegado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'archivado'   => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'slate', 'icon' => '🗄️'],
+            ],
+
+            'stats' => [
+                'total_tramites'   => ['label' => __('Total trámites', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'slate'],
+                'en_curso'         => ['label' => __('En curso', 'flavor-chat-ia'), 'icon' => '⏳', 'color' => 'yellow'],
+                'resueltos'        => ['label' => __('Resueltos', 'flavor-chat-ia'), 'icon' => '✅', 'color' => 'green'],
+                'tiempo_medio'     => ['label' => __('Tiempo medio', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'blue'],
+            ],
+
+            'card' => [
+                'template'     => 'tramite-card',
+                'title_field'  => 'titulo',
+                'subtitle_field' => 'tipo',
+                'meta_fields'  => ['expediente', 'fecha_inicio', 'estado'],
+                'show_estado'  => true,
+                'show_timeline' => true,
+            ],
+
+            'tabs' => [
+                'catalogo' => [
+                    'label'   => __('Catálogo', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-portfolio',
+                    'content' => 'shortcode:tramites_catalogo',
+                    'public'  => true,
+                ],
+                'iniciar' => [
+                    'label'      => __('Iniciar trámite', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:tramites_iniciar',
+                    'requires_login' => true,
+                ],
+                'mis-tramites' => [
+                    'label'      => __('Mis trámites', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:tramites_mis_tramites',
+                    'requires_login' => true,
+                ],
+                'seguimiento' => [
+                    'label'   => __('Seguimiento', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-search',
+                    'content' => 'shortcode:tramites_seguimiento',
+                    'public'  => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 12,
+                'order_by'   => 'fecha_inicio',
+                'order'      => 'DESC',
+                'filterable' => ['tipo', 'estado'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'mis_tramites', 'pendientes', 'historial'],
+                'actions' => [
+                    'nuevo'      => ['label' => __('Nuevo trámite', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'blue'],
+                    'seguimiento' => ['label' => __('Consultar estado', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'slate'],
+                ],
+            ],
+
+            'features' => [
+                'expedientes'    => true,
+                'documentos'     => true,
+                'notificaciones' => true,
+                'firmaelectronica' => true,
+                'timeline'       => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-tramites-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Tramites_Dashboard_Tab')) {
+                Flavor_Tramites_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

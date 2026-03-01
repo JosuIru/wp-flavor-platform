@@ -214,7 +214,7 @@ class Flavor_Colectivos_Frontend_Controller {
                 <h2><?php _e('Colectivos y Asociaciones', 'flavor-chat-ia'); ?></h2>
                 <div class="flavor-colectivos-acciones">
                     <?php if (is_user_logged_in()): ?>
-                        <a href="<?php echo esc_url(add_query_arg('accion', 'crear')); ?>"
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>"
                            class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus"></span>
                             <?php _e('Crear Colectivo', 'flavor-chat-ia'); ?>
@@ -450,7 +450,7 @@ class Flavor_Colectivos_Frontend_Controller {
                                 <?php endforeach; ?>
                             </div>
                             <?php if ($es_admin): ?>
-                                <a href="<?php echo esc_url(add_query_arg(['accion' => 'nuevo_proyecto', 'colectivo_id' => $colectivo_id])); ?>"
+                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'nuevo-proyecto', ['colectivo_id' => $colectivo_id])); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <span class="dashicons dashicons-plus"></span>
                                     <?php _e('Nuevo Proyecto', 'flavor-chat-ia'); ?>
@@ -641,7 +641,7 @@ class Flavor_Colectivos_Frontend_Controller {
                         <span class="dashicons dashicons-plus"></span>
                         <?php _e('Crear Colectivo', 'flavor-chat-ia'); ?>
                     </button>
-                    <a href="<?php echo esc_url(remove_query_arg('accion')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('colectivos')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php _e('Cancelar', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -995,7 +995,7 @@ class Flavor_Colectivos_Frontend_Controller {
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-plus-alt"></span></div>
                     <div class="flavor-kpi-contenido">
-                        <a href="<?php echo esc_url(add_query_arg('accion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                             <?php _e('Crear Colectivo', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -1092,7 +1092,7 @@ class Flavor_Colectivos_Frontend_Controller {
             wp_send_json_success([
                 'message' => __('Colectivo creado correctamente.', 'flavor-chat-ia'),
                 'colectivo_id' => $colectivo_id,
-                'redirect' => add_query_arg('colectivo_id', $colectivo_id, remove_query_arg('accion')),
+                'redirect' => Flavor_Chat_Helpers::get_item_url('colectivos', $colectivo_id),
             ]);
         } else {
             wp_send_json_error(['message' => __('Error al crear el colectivo.', 'flavor-chat-ia')]);

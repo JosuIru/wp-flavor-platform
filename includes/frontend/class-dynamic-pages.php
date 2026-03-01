@@ -198,6 +198,12 @@ class Flavor_Dynamic_Pages {
                 $action = $parts[1] ?? 'index';
                 $item_id = isset($parts[2]) ? absint($parts[2]) : 0;
 
+                // Si la acción es numérica, es un ID, no una acción
+                if (is_numeric($action)) {
+                    $item_id = absint($action);
+                    $action = 'ver';
+                }
+
                 if ($module) {
                     // Resetear estado 404 de WordPress
                     global $wp_query;
@@ -427,6 +433,12 @@ class Flavor_Dynamic_Pages {
         $this->current_action = sanitize_key(get_query_var('flavor_action', 'index'));
         $this->current_item_id = absint(get_query_var('flavor_item_id', 0));
         $section = sanitize_key(get_query_var('flavor_section', ''));
+
+        // Si la acción es numérica, es un ID, no una acción
+        if (is_numeric($this->current_action)) {
+            $this->current_item_id = absint($this->current_action);
+            $this->current_action = 'ver';
+        }
 
         // Cargar assets
         $this->enqueue_assets();
@@ -1298,8 +1310,8 @@ class Flavor_Dynamic_Pages {
             // === BANCO DE TIEMPO ===
             // Widget: Mi saldo y estadísticas | Tabs: Listados
             'banco-tiempo' => [
-                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'shortcode' => '[banco_tiempo_mi_saldo]', 'action' => 'mi-saldo'],
-                ['title' => __('Últimos Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'large', 'shortcode' => '[banco_tiempo_ultimos_intercambios limite="4"]', 'action' => 'intercambios'],
+                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'shortcode' => '[banco_tiempo_mi_balance]', 'action' => 'mi-saldo'],
+                ['title' => __('Mis Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'large', 'shortcode' => '[banco_tiempo_intercambios limite="4"]', 'action' => 'intercambios'],
             ],
 
             // === BICICLETAS COMPARTIDAS ===
@@ -1367,7 +1379,7 @@ class Flavor_Dynamic_Pages {
             // === COMUNIDADES ===
             // Widget: Mi comunidad | Tabs: Directorio y mapa
             'comunidades' => [
-                ['title' => __('Mi Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-multisite', 'size' => 'medium', 'shortcode' => '[mi_comunidad_resumen]', 'action' => 'mis-comunidades'],
+                ['title' => __('Mis Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-multisite', 'size' => 'medium', 'shortcode' => '[comunidades_mis_comunidades limite="3" compacto="true"]', 'action' => 'mis-comunidades'],
                 ['title' => __('Actividad Reciente', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'size' => 'large', 'shortcode' => '[comunidades_actividad limit="5"]', 'action' => 'tablon'],
             ],
 
@@ -1610,11 +1622,16 @@ class Flavor_Dynamic_Pages {
     /**
      * Obtiene los tabs del módulo
      *
+     * Prioridad de fuentes:
+     * 1. get_dashboard_tabs() - Método legacy del módulo
+     * 2. get_renderer_config()['tabs'] - Nuevo sistema de configuración
+     * 3. $tabs_config hardcodeado - Fallback legacy
+     *
      * @param object $module Instancia del módulo
      * @return array Tabs del módulo
      */
     private function get_module_tabs($module) {
-        // Si el módulo tiene método get_dashboard_tabs(), usarlo
+        // PRIORIDAD 1: Método get_dashboard_tabs() del módulo
         if ($module && method_exists($module, 'get_dashboard_tabs')) {
             $tabs_modulo = $module->get_dashboard_tabs();
             if (!empty($tabs_modulo)) {
@@ -1622,7 +1639,16 @@ class Flavor_Dynamic_Pages {
             }
         }
 
-        // Tabs específicos por módulo
+        // PRIORIDAD 2: Nuevo sistema - get_renderer_config()['tabs']
+        $module_class = $module ? get_class($module) : null;
+        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
+            $config = $module_class::get_renderer_config();
+            if (!empty($config['tabs'])) {
+                return $this->convert_renderer_tabs_to_legacy($config['tabs'], $config);
+            }
+        }
+
+        // PRIORIDAD 3: Tabs específicos por módulo (fallback legacy)
         $module_id = str_replace('_', '-', $this->current_module);
 
         // ============================================================
@@ -1641,13 +1667,14 @@ class Flavor_Dynamic_Pages {
                 // Integraciones
                 'foro'        => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
                 'recetas'     => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
-                'trueques'    => ['label' => __('Trueques', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'is_integration' => true],
+                'trueques'    => ['label' => __('Trueques', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'is_integration' => true, 'content' => '[gc_trueques]'],
             ],
 
             // === EVENTOS ===
             // Widgets: Inscripciones (resumen), Próximos (destacados)
-            // Tabs: Vistas alternativas del contenido
+            // Tab listado usa Archive Renderer via template genérico
             'eventos' => [
+                'listado'       => ['label' => __('Todos', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'content' => 'template:_archive.php'],
                 'proximos'      => ['label' => __('Próximos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
                 'inscripciones' => ['label' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt'],
                 'calendario'    => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
@@ -1659,9 +1686,10 @@ class Flavor_Dynamic_Pages {
 
             // === RESERVAS ===
             'reservas' => [
-                'recursos'     => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
-                'mis-reservas' => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'calendario'   => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'recursos'       => ['label' => __('Recursos Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
+                'mis-reservas'   => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'calendario'     => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'nueva-reserva'  => ['label' => __('Hacer Reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
             ],
 
             // === ESPACIOS COMUNES ===
@@ -1670,7 +1698,7 @@ class Flavor_Dynamic_Pages {
                 'mis-reservas' => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 'calendario'   => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
                 // Integraciones
-                'normas'       => ['label' => __('Normas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'is_integration' => true],
+                'normas'       => ['label' => __('Normas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'is_integration' => true, 'content' => '[ec_normas_uso]'],
                 'foro'         => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
 
@@ -1681,7 +1709,7 @@ class Flavor_Dynamic_Pages {
                 'mapa'     => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
                 'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
                 // Integraciones
-                'banco-semillas' => ['label' => __('Banco Semillas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true],
+                'banco-semillas' => ['label' => __('Banco Semillas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true, 'content' => '[huertos_banco_semillas]'],
                 'foro'           => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
                 'recetas'        => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
             ],
@@ -1693,39 +1721,41 @@ class Flavor_Dynamic_Pages {
                 'novedades'     => ['label' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
                 // Integraciones
                 'resenas'       => ['label' => __('Reseñas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
-                'clubes-lectura' => ['label' => __('Clubes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'clubes-lectura' => ['label' => __('Clubes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[biblioteca_clubes]'],
             ],
 
             // === MARKETPLACE ===
+            // Tab listado usa Archive Renderer via template genérico
             'marketplace' => [
-                'listado'      => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'listado'      => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'content' => 'template:_archive.php'],
                 'mis-anuncios' => ['label' => __('Mis Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-write-blog'],
                 'categorias'   => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
                 // Integraciones
-                'favoritos'    => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'is_integration' => true],
+                'favoritos'    => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'is_integration' => true, 'content' => '[marketplace_favoritos]'],
                 'mensajes'     => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
             ],
 
             // === INCIDENCIAS ===
             // Widgets: Mis Incidencias (resumen), Mapa (vista rápida)
-            // Tabs: Listado completo con filtros, mapa interactivo, estadísticas
+            // Tab listado usa Archive Renderer via template, los demás usan legacy por ahora
             'incidencias' => [
-                'listado'      => ['label' => __('Todas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'listado'      => ['label' => __('Todas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'content' => 'template:archive.php'],
                 'mis-reportes' => ['label' => __('Mis Reportes', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
                 'mapa'         => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
                 // Integraciones
-                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
-                'categorias'   => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category', 'is_integration' => true],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true, 'content' => '[incidencias_estadisticas]'],
+                'categorias'   => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category', 'is_integration' => true, 'content' => '[incidencias_categorias]'],
             ],
 
             // === BANCO DE TIEMPO ===
+            // Tabs principales cargan templates específicos del módulo
             'banco-tiempo' => [
-                'servicios'    => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
-                'mi-saldo'     => ['label' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
-                'intercambios' => ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
-                'ranking'      => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'servicios'    => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'content' => 'template:servicios.php'],
+                'mi-saldo'     => ['label' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'content' => 'template:mi-saldo.php'],
+                'intercambios' => ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'content' => 'template:intercambios.php'],
+                'ranking'      => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'content' => 'template:ranking-comunidad.php'],
                 // Integraciones
-                'valoraciones' => ['label' => __('Valoraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true],
+                'reputacion'   => ['label' => __('Mi Reputación', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'content' => 'template:mi-reputacion.php'],
                 'mensajes'     => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
             ],
 
@@ -1735,9 +1765,9 @@ class Flavor_Dynamic_Pages {
                 'mis-prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
                 'mapa'          => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
                 // Integraciones
-                'estaciones'    => ['label' => __('Estaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'is_integration' => true],
+                'estaciones'    => ['label' => __('Estaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'is_integration' => true, 'content' => '[bicicletas_estaciones]'],
                 'incidencias'   => ['label' => __('Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-warning', 'is_integration' => true, 'source_module' => 'incidencias'],
-                'estadisticas'  => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
+                'estadisticas'  => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true, 'content' => '[bicicletas_estadisticas]'],
             ],
 
             // === PARKINGS ===
@@ -1746,8 +1776,8 @@ class Flavor_Dynamic_Pages {
                 'mis-reservas'   => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 'mapa'           => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
                 // Integraciones
-                'tarifas'        => ['label' => __('Tarifas', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt', 'is_integration' => true],
-                'ocupacion'      => ['label' => __('Ocupación', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'is_integration' => true],
+                'tarifas'        => ['label' => __('Tarifas', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt', 'is_integration' => true, 'content' => '[parkings_tarifas]'],
+                'ocupacion'      => ['label' => __('Ocupación', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'is_integration' => true, 'content' => '[parkings_ocupacion]'],
             ],
 
             // === CARPOOLING ===
@@ -1756,8 +1786,8 @@ class Flavor_Dynamic_Pages {
                 'mis-viajes' => ['label' => __('Mis Viajes', 'flavor-chat-ia'), 'icon' => 'dashicons-car'],
                 'ofrecer'    => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
                 // Integraciones
-                'rutas'      => ['label' => __('Rutas Frecuentes', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'is_integration' => true],
-                'valoraciones' => ['label' => __('Valoraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true],
+                'rutas'      => ['label' => __('Rutas Frecuentes', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'is_integration' => true, 'content' => '[carpooling_rutas]'],
+                'valoraciones' => ['label' => __('Valoraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true, 'content' => '[carpooling_valoraciones]'],
                 'mensajes'   => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
             ],
 
@@ -1767,9 +1797,9 @@ class Flavor_Dynamic_Pages {
                 'mis-puntos'      => ['label' => __('Mi Impacto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
                 'guia'            => ['label' => __('Guía', 'flavor-chat-ia'), 'icon' => 'dashicons-info'],
                 // Integraciones
-                'ranking'         => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true],
-                'recompensas'     => ['label' => __('Recompensas', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true],
-                'calendario'      => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true],
+                'ranking'         => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true, 'content' => '[reciclaje_ranking]'],
+                'recompensas'     => ['label' => __('Recompensas', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true, 'content' => '[reciclaje_recompensas]'],
+                'calendario'      => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true, 'content' => '[reciclaje_calendario]'],
             ],
 
             // === COMPOSTAJE ===
@@ -1778,9 +1808,9 @@ class Flavor_Dynamic_Pages {
                 'mis-aportaciones' => ['label' => __('Mis Aportaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3'],
                 'estadisticas'     => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area'],
                 // Integraciones
-                'comunidad'        => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
-                'ranking'          => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true],
-                'guias'            => ['label' => __('Guías', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'is_integration' => true],
+                'comunidad'        => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[compostaje_comunidad]'],
+                'ranking'          => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true, 'content' => '[compostaje_ranking]'],
+                'guias'            => ['label' => __('Guías', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'is_integration' => true, 'content' => '[compostaje_guias]'],
             ],
 
             // === BARES / COMERCIOS ===
@@ -1789,8 +1819,8 @@ class Flavor_Dynamic_Pages {
                 'mapa'    => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
                 // Integraciones
                 'eventos'     => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
-                'opiniones'   => ['label' => __('Opiniones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true],
-                'promociones' => ['label' => __('Promociones', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'is_integration' => true],
+                'opiniones'   => ['label' => __('Opiniones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'is_integration' => true, 'content' => '[bares_opiniones]'],
+                'promociones' => ['label' => __('Promociones', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'is_integration' => true, 'content' => '[bares_promociones]'],
             ],
 
             // === CURSOS ===
@@ -1799,7 +1829,7 @@ class Flavor_Dynamic_Pages {
                 'mis-cursos' => ['label' => __('Mis Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
                 'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
                 // Integraciones
-                'materiales' => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
+                'materiales' => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true, 'content' => '[cursos_materiales]'],
                 'multimedia' => ['label' => __('Videos', 'flavor-chat-ia'), 'icon' => 'dashicons-video-alt3', 'is_integration' => true, 'source_module' => 'multimedia'],
                 'foro'       => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
@@ -1810,7 +1840,7 @@ class Flavor_Dynamic_Pages {
                 'inscripciones' => ['label' => __('Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt'],
                 'calendario'    => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 // Integraciones
-                'materiales'    => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
+                'materiales'    => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true, 'content' => '[talleres_materiales]'],
                 'multimedia'    => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
                 'foro'          => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
@@ -1820,11 +1850,11 @@ class Flavor_Dynamic_Pages {
                 'listado'        => ['label' => __('Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 'mis-colectivos' => ['label' => __('Mis Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
                 // Integraciones
-                'proyectos'      => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true],
-                'asambleas'      => ['label' => __('Asambleas', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'proyectos'      => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true, 'content' => '[colectivos_proyectos]'],
+                'asambleas'      => ['label' => __('Asambleas', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[colectivos_asambleas]'],
                 'multimedia'     => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
                 'eventos'        => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
-                'documentos'     => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
+                'documentos'     => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true, 'source_module' => 'multimedia'],
             ],
 
             // === COMUNIDADES ===
@@ -1837,27 +1867,26 @@ class Flavor_Dynamic_Pages {
                 'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
                 'eventos'    => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
                 'anuncios'   => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'is_integration' => true, 'source_module' => 'marketplace'],
-                'recursos'   => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
+                'recursos'   => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true, 'content' => '[comunidades_recursos]'],
             ],
 
             // === SOCIOS ===
             'socios' => [
                 'mi-membresia' => ['label' => __('Mi Membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
+                'cuotas'       => ['label' => __('Mis Cuotas', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
                 'directorio'   => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                // Integraciones
-                'beneficios'   => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true],
+                'beneficios'   => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'carnet'       => ['label' => __('Mi Carnet', 'flavor-chat-ia'), 'icon' => 'dashicons-id'],
+                'historial'    => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
                 'eventos'      => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
-                'historial'    => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup', 'is_integration' => true],
             ],
 
             // === FOROS ===
             'foros' => [
-                'listado'   => ['label' => __('Discusiones', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
-                'categorias'=> ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
-                'actividad' => ['label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
-                // Integraciones
-                'comunidades' => ['label' => __('Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'source_module' => 'comunidades'],
-                'colectivos'  => ['label' => __('Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'is_integration' => true, 'source_module' => 'colectivos'],
+                'temas-recientes' => ['label' => __('Temas Recientes', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
+                'mis-hilos'       => ['label' => __('Mis Hilos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'nuevo-tema'      => ['label' => __('Nuevo Tema', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'categorias'      => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
             ],
 
             // === CHAT GRUPOS ===
@@ -1872,9 +1901,9 @@ class Flavor_Dynamic_Pages {
                 'mi-perfil' => ['label' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
                 'explorar'  => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
                 // Integraciones
-                'amigos'    => ['label' => __('Amigos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'amigos'    => ['label' => __('Amigos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[red_social_amigos]'],
                 'mensajes'  => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
-                'historias' => ['label' => __('Historias', 'flavor-chat-ia'), 'icon' => 'dashicons-format-video', 'is_integration' => true],
+                'historias' => ['label' => __('Historias', 'flavor-chat-ia'), 'icon' => 'dashicons-format-video', 'is_integration' => true, 'content' => '[red_social_historias]'],
             ],
 
             // === PARTICIPACIÓN ===
@@ -1889,11 +1918,13 @@ class Flavor_Dynamic_Pages {
 
             // === PRESUPUESTOS PARTICIPATIVOS ===
             'presupuestos-participativos' => [
-                'proyectos'  => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
-                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up'],
-                'fases'      => ['label' => __('Fases', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                'proyectos'  => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'content' => '[presupuestos_listado]'],
+                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up', 'content' => '[presupuestos_votar]'],
+                'fases'      => ['label' => __('Fases', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'content' => '[presupuesto_estado_actual]'],
+                'mis-propuestas' => ['label' => __('Mis Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-edit', 'content' => '[presupuestos_mi_proyecto]'],
+                'resultados' => ['label' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'content' => '[presupuestos_resultados]'],
                 // Integraciones
-                'seguimiento' => ['label' => __('Seguimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility', 'is_integration' => true],
+                'seguimiento' => ['label' => __('Seguimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility', 'is_integration' => true, 'content' => '[presupuestos_seguimiento]'],
                 'transparencia' => ['label' => __('Transparencia', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'is_integration' => true, 'source_module' => 'transparencia'],
             ],
 
@@ -1903,18 +1934,18 @@ class Flavor_Dynamic_Pages {
                 'urgentes'  => ['label' => __('Urgentes', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
                 'historial' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
                 // Integraciones
-                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'is_integration' => true],
-                'categorias'    => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category', 'is_integration' => true],
+                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'is_integration' => true, 'content' => '[avisos_suscripciones]'],
+                'categorias'    => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category', 'is_integration' => true, 'content' => '[avisos_categorias]'],
             ],
 
             // === AYUDA VECINAL ===
             'ayuda-vecinal' => [
-                'solicitudes' => ['label' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
-                'ofrecer'     => ['label' => __('Ofrecer Ayuda', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mapa'        => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
-                // Integraciones
-                'voluntarios' => ['label' => __('Voluntarios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
-                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
+                'solicitudes'  => ['label' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-sos', 'content' => '[ayuda_vecinal_solicitudes]'],
+                'ofrecer'      => ['label' => __('Ofrecer Ayuda', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'content' => '[ayuda_vecinal_ofrecer]'],
+                'solicitar'    => ['label' => __('Pedir Ayuda', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'content' => '[ayuda_vecinal_solicitar]', 'requires_login' => true],
+                'mis-ayudas'   => ['label' => __('Mis Ayudas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'content' => '[ayuda_vecinal_mis_ayudas]', 'requires_login' => true],
+                'mapa'         => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location', 'content' => '[ayuda_vecinal_mapa]'],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'content' => '[ayuda_vecinal_estadisticas]'],
             ],
 
             // === TRÁMITES ===
@@ -1922,8 +1953,8 @@ class Flavor_Dynamic_Pages {
                 'catalogo'       => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
                 'mis-expedientes'=> ['label' => __('Mis Expedientes', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
                 // Integraciones
-                'citas'          => ['label' => __('Citas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true],
-                'documentos'     => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-default', 'is_integration' => true],
+                'citas'          => ['label' => __('Citas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true, 'content' => '[tramites_citas]'],
+                'documentos'     => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-default', 'is_integration' => true, 'content' => '[tramites_documentos]'],
             ],
 
             // === TRANSPARENCIA ===
@@ -1932,8 +1963,8 @@ class Flavor_Dynamic_Pages {
                 'presupuesto' => ['label' => __('Presupuesto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
                 'actas'       => ['label' => __('Actas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
                 // Integraciones
-                'contratos'   => ['label' => __('Contratos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true],
-                'indicadores' => ['label' => __('Indicadores', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
+                'contratos'   => ['label' => __('Contratos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true, 'content' => '[transparencia_contratos]'],
+                'indicadores' => ['label' => __('Indicadores', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true, 'content' => '[transparencia_indicadores]'],
             ],
 
             // === FICHAJE EMPLEADOS ===
@@ -1958,8 +1989,8 @@ class Flavor_Dynamic_Pages {
                 'episodios' => ['label' => __('Episodios', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
                 'series'    => ['label' => __('Series', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio'],
                 // Integraciones
-                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'is_integration' => true],
-                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true],
+                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'is_integration' => true, 'content' => '[podcast_suscripciones]'],
+                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true, 'content' => '[podcast_estadisticas]'],
             ],
 
             // === RADIO ===
@@ -1968,9 +1999,9 @@ class Flavor_Dynamic_Pages {
                 'programacion' => ['label' => __('Programación', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 'podcasts'     => ['label' => __('Podcasts', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
                 // Integraciones
-                'archivo'      => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true],
-                'chat'         => ['label' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true],
-                'colaboradores' => ['label' => __('Colaboradores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'archivo'      => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true, 'content' => '[radio_archivo]'],
+                'chat'         => ['label' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'chat-grupos'],
+                'colaboradores' => ['label' => __('Colaboradores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[radio_colaboradores]'],
             ],
 
             // === FACTURAS ===
@@ -2032,9 +2063,9 @@ class Flavor_Dynamic_Pages {
                 'mis-registros' => ['label' => __('Mis Registros', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
                 'logros'      => ['label' => __('Logros', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
                 // Integraciones
-                'proyectos'   => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true],
-                'comunidad'   => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'is_integration' => true],
-                'retos'       => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-flag', 'is_integration' => true],
+                'proyectos'   => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true, 'content' => '[huella_ecologica_proyectos]'],
+                'comunidad'   => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'is_integration' => true, 'content' => '[huella_ecologica_comunidad]'],
+                'retos'       => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-flag', 'is_integration' => true, 'content' => '[huella_ecologica_retos]'],
             ],
 
             // === SABERES ANCESTRALES ===
@@ -2043,7 +2074,7 @@ class Flavor_Dynamic_Pages {
                 'compartir' => ['label' => __('Compartir', 'flavor-chat-ia'), 'icon' => 'dashicons-share'],
                 'talleres'  => ['label' => __('Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
                 // Integraciones
-                'maestros'  => ['label' => __('Maestros', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman', 'is_integration' => true],
+                'maestros'  => ['label' => __('Maestros', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman', 'is_integration' => true, 'content' => '[saberes_ancestrales_maestros]'],
                 'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
                 'foro'      => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
                 'recetas'   => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
@@ -2055,7 +2086,7 @@ class Flavor_Dynamic_Pages {
                 'mis-dones' => ['label' => __('Mis Dones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
                 'gratitud'  => ['label' => __('Muro Gratitud', 'flavor-chat-ia'), 'icon' => 'dashicons-format-status'],
                 // Integraciones
-                'mapa'      => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'is_integration' => true],
+                'mapa'      => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'is_integration' => true, 'content' => '[economia_don_mapa]'],
                 'foro'      => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
 
@@ -2065,8 +2096,8 @@ class Flavor_Dynamic_Pages {
                 'mi-camino'    => ['label' => __('Mi Camino', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
                 'biblioteca'   => ['label' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
                 // Integraciones
-                'retos'        => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true],
-                'comunidad'    => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true],
+                'retos'        => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'is_integration' => true, 'content' => '[economia_suficiencia_retos]'],
+                'comunidad'    => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[economia_suficiencia_comunidad]'],
                 'huella'       => ['label' => __('Mi Huella', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area', 'is_integration' => true, 'source_module' => 'huella-ecologica'],
             ],
 
@@ -2076,8 +2107,8 @@ class Flavor_Dynamic_Pages {
                 'mi-perfil'  => ['label' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
                 'formacion'  => ['label' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
                 // Integraciones
-                'emprendimientos' => ['label' => __('Emprendimientos', 'flavor-chat-ia'), 'icon' => 'dashicons-store', 'is_integration' => true],
-                'alertas'    => ['label' => __('Alertas', 'flavor-chat-ia'), 'icon' => 'dashicons-bell', 'is_integration' => true],
+                'emprendimientos' => ['label' => __('Emprendimientos', 'flavor-chat-ia'), 'icon' => 'dashicons-store', 'is_integration' => true, 'content' => '[trabajo_digno_emprendimientos]'],
+                'alertas'    => ['label' => __('Alertas', 'flavor-chat-ia'), 'icon' => 'dashicons-bell', 'is_integration' => true, 'content' => '[trabajo_digno_alertas]'],
                 'cursos'     => ['label' => __('Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'is_integration' => true, 'source_module' => 'cursos'],
             ],
 
@@ -2087,8 +2118,8 @@ class Flavor_Dynamic_Pages {
                 'mis-cuidados' => ['label' => __('Mis Cuidados', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
                 'necesidades'  => ['label' => __('Necesidades', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
                 // Integraciones
-                'calendario'   => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true],
-                'recursos'     => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true],
+                'calendario'   => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true, 'content' => '[circulos_cuidados_calendario]'],
+                'recursos'     => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true, 'content' => '[circulos_cuidados_recursos]'],
                 'foro'         => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
 
@@ -2098,7 +2129,7 @@ class Flavor_Dynamic_Pages {
                 'mis-procesos' => ['label' => __('Mis Procesos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
                 'mediadores'   => ['label' => __('Mediadores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 // Integraciones
-                'recursos'     => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'is_integration' => true],
+                'recursos'     => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'is_integration' => true, 'content' => '[justicia_restaurativa_recursos]'],
                 'formacion'    => ['label' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'is_integration' => true, 'source_module' => 'cursos'],
             ],
 
@@ -2121,7 +2152,7 @@ class Flavor_Dynamic_Pages {
                 'avistamientos' => ['label' => __('Avistamientos', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
                 // Integraciones
                 'galeria'   => ['label' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
-                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true],
+                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true, 'content' => '[biodiversidad_proyectos]'],
                 'foro'      => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
 
@@ -2131,8 +2162,8 @@ class Flavor_Dynamic_Pages {
                 'mis-recetas' => ['label' => __('Mis Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-write-blog'],
                 'categorias'  => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
                 // Integraciones
-                'ingredientes' => ['label' => __('Ingredientes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'is_integration' => true],
-                'temporada'    => ['label' => __('De temporada', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true],
+                'ingredientes' => ['label' => __('Ingredientes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'is_integration' => true, 'content' => '[recetas_ingredientes]'],
+                'temporada'    => ['label' => __('De temporada', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true, 'content' => '[recetas_temporada]'],
                 'huertos'      => ['label' => __('Huertos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'is_integration' => true, 'source_module' => 'huertos-urbanos'],
                 'grupos-consumo' => ['label' => __('G. Consumo', 'flavor-chat-ia'), 'icon' => 'dashicons-store', 'is_integration' => true, 'source_module' => 'grupos-consumo'],
             ],
@@ -2145,6 +2176,180 @@ class Flavor_Dynamic_Pages {
         ];
 
         return $tabs_config[$module_id] ?? $tabs_default;
+    }
+
+    /**
+     * Convierte tabs del nuevo formato (get_renderer_config) al formato legacy
+     *
+     * Nuevo formato:
+     * [
+     *     'listado' => [
+     *         'label'   => 'Todas',
+     *         'icon'    => '📋',
+     *         'content' => 'template:archive.php',
+     *     ],
+     * ]
+     *
+     * Formato legacy:
+     * [
+     *     'listado' => [
+     *         'label'   => 'Todas',
+     *         'icon'    => 'dashicons-list-view',
+     *         'content' => 'template:archive.php',
+     *     ],
+     * ]
+     *
+     * @param array $tabs   Tabs del nuevo sistema
+     * @param array $config Configuración completa del módulo
+     * @return array Tabs en formato legacy
+     */
+    private function convert_renderer_tabs_to_legacy(array $tabs, array $config): array {
+        $legacy_tabs = [];
+        $module_id = $config['module'] ?? '';
+
+        foreach ($tabs as $tab_id => $tab_config) {
+            $legacy_tab = [
+                'label' => $tab_config['label'] ?? ucfirst($tab_id),
+            ];
+
+            // Convertir icono emoji a dashicon si es necesario
+            if (!empty($tab_config['icon'])) {
+                $icon = $tab_config['icon'];
+                // Si ya es un dashicon, usarlo directamente
+                if (strpos($icon, 'dashicons-') === 0) {
+                    $legacy_tab['icon'] = $icon;
+                } else {
+                    // Es un emoji, mapear a dashicon equivalente o usar uno por defecto
+                    $legacy_tab['icon'] = $this->map_emoji_to_dashicon($icon, $tab_id);
+                    // Guardar el emoji original para uso en templates modernos
+                    $legacy_tab['emoji'] = $icon;
+                }
+            }
+
+            // Contenido del tab
+            if (!empty($tab_config['content'])) {
+                $legacy_tab['content'] = $tab_config['content'];
+            } elseif (!empty($tab_config['shortcode'])) {
+                $legacy_tab['content'] = '[' . $tab_config['shortcode'] . ']';
+            } elseif (!empty($tab_config['template'])) {
+                $legacy_tab['content'] = 'template:' . $tab_config['template'];
+            }
+
+            // Integraciones
+            if (!empty($tab_config['is_integration'])) {
+                $legacy_tab['is_integration'] = true;
+            }
+            if (!empty($tab_config['source_module'])) {
+                $legacy_tab['source_module'] = $tab_config['source_module'];
+            }
+
+            $legacy_tabs[$tab_id] = $legacy_tab;
+        }
+
+        return $legacy_tabs;
+    }
+
+    /**
+     * Mapea un emoji a un dashicon equivalente
+     *
+     * @param string $emoji  El emoji a mapear
+     * @param string $tab_id ID del tab como fallback
+     * @return string Clase de dashicon
+     */
+    private function map_emoji_to_dashicon(string $emoji, string $tab_id = ''): string {
+        $emoji_map = [
+            // Listados y vistas
+            '📋' => 'dashicons-list-view',
+            '📝' => 'dashicons-edit',
+            '📊' => 'dashicons-chart-bar',
+            '📈' => 'dashicons-chart-line',
+            '📉' => 'dashicons-chart-area',
+
+            // Ubicación y mapas
+            '📍' => 'dashicons-location',
+            '🗺️' => 'dashicons-location-alt',
+            '🗺' => 'dashicons-location-alt',
+
+            // Personas y grupos
+            '👤' => 'dashicons-admin-users',
+            '👥' => 'dashicons-groups',
+            '🧑' => 'dashicons-businessman',
+
+            // Alertas y estados
+            '⚠️' => 'dashicons-warning',
+            '🔴' => 'dashicons-marker',
+            '🟡' => 'dashicons-flag',
+            '🟢' => 'dashicons-yes-alt',
+            '✅' => 'dashicons-yes',
+            '❌' => 'dashicons-no',
+
+            // Categorías y filtros
+            '🏷️' => 'dashicons-tag',
+            '📁' => 'dashicons-category',
+            '🔍' => 'dashicons-search',
+
+            // Tiempo y calendario
+            '📅' => 'dashicons-calendar',
+            '🕐' => 'dashicons-clock',
+            '⏰' => 'dashicons-backup',
+
+            // Comercio y dinero
+            '💰' => 'dashicons-money-alt',
+            '🛒' => 'dashicons-cart',
+            '🏪' => 'dashicons-store',
+            '📦' => 'dashicons-products',
+
+            // Comunicación
+            '💬' => 'dashicons-admin-comments',
+            '✉️' => 'dashicons-email-alt',
+            '📧' => 'dashicons-email',
+            '🔔' => 'dashicons-bell',
+
+            // Multimedia
+            '📷' => 'dashicons-camera',
+            '🖼️' => 'dashicons-format-gallery',
+            '🎬' => 'dashicons-video-alt3',
+            '🎵' => 'dashicons-format-audio',
+
+            // Naturaleza
+            '🌿' => 'dashicons-palmtree',
+            '🌱' => 'dashicons-admin-site-alt3',
+            '🌳' => 'dashicons-admin-site',
+
+            // Corazones y favoritos
+            '❤️' => 'dashicons-heart',
+            '⭐' => 'dashicons-star-filled',
+            '🏆' => 'dashicons-awards',
+
+            // Configuración
+            '⚙️' => 'dashicons-admin-settings',
+            '🔧' => 'dashicons-admin-tools',
+
+            // Documentos
+            '📄' => 'dashicons-media-document',
+            '📚' => 'dashicons-book-alt',
+
+            // Default según tab_id
+        ];
+
+        if (isset($emoji_map[$emoji])) {
+            return $emoji_map[$emoji];
+        }
+
+        // Fallback según tab_id común
+        $tab_icons = [
+            'listado'      => 'dashicons-list-view',
+            'mapa'         => 'dashicons-location-alt',
+            'estadisticas' => 'dashicons-chart-bar',
+            'categorias'   => 'dashicons-category',
+            'calendario'   => 'dashicons-calendar',
+            'configuracion'=> 'dashicons-admin-settings',
+            'actividad'    => 'dashicons-bell',
+            'favoritos'    => 'dashicons-heart',
+            'mensajes'     => 'dashicons-email-alt',
+        ];
+
+        return $tab_icons[$tab_id] ?? 'dashicons-admin-generic';
     }
 
     /**
@@ -2162,6 +2367,42 @@ class Flavor_Dynamic_Pages {
      * @param object $module    Instancia del módulo
      */
     private function render_tab_content($tab_id, $tab_info, $module) {
+        // PRIORIDAD 0: Si es una integración con source_module, usar ese módulo directamente
+        if (!empty($tab_info['is_integration']) && !empty($tab_info['source_module'])) {
+            $source_module = $tab_info['source_module'];
+            $source_module_slug = str_replace('_', '-', $source_module);
+            $source_normalized = str_replace('-', '_', $source_module);
+            ?>
+            <div class="fmd-tab-integration" data-source-module="<?php echo esc_attr($source_module_slug); ?>">
+                <?php
+                // Intentar usar el shortcode nativo del módulo fuente
+                $shortcode_candidates = [
+                    'flavor_' . $source_normalized . '_listado',
+                    'flavor_' . $source_module_slug . '_listado',
+                    'flavor_' . $source_normalized,
+                    'flavor_' . $source_module_slug,
+                    $source_normalized . '_listado',
+                ];
+
+                $shortcode_found = false;
+                foreach ($shortcode_candidates as $shortcode_name) {
+                    if (shortcode_exists($shortcode_name)) {
+                        echo do_shortcode('[' . $shortcode_name . ' cantidad="12" limit="12"]');
+                        $shortcode_found = true;
+                        break;
+                    }
+                }
+
+                if (!$shortcode_found) {
+                    // Fallback al shortcode unificado
+                    echo do_shortcode('[flavor module="' . esc_attr($source_module_slug) . '" view="listado" header="no" limit="12"]');
+                }
+                ?>
+            </div>
+            <?php
+            return;
+        }
+
         // PRIORIDAD 1: Si el tab tiene 'content' definido, usarlo
         if (!empty($tab_info['content'])) {
             $this->render_tab_content_dynamic($tab_id, $tab_info, $module);
@@ -2190,13 +2431,42 @@ class Flavor_Dynamic_Pages {
         $contenido = $tab_info['content'];
         $module_id = str_replace('_', '-', $this->current_module);
 
-        // Tipo 1: Shortcode
+        // Tipo 1: Shortcode directo con corchetes [shortcode]
         if (is_string($contenido) && strpos($contenido, '[') === 0) {
-            echo do_shortcode($contenido);
+            // Extraer nombre del shortcode
+            preg_match('/\[([a-zA-Z0-9_-]+)/', $contenido, $matches);
+            $shortcode_name = $matches[1] ?? '';
+
+            // Solo ejecutar si el shortcode existe
+            if ($shortcode_name && shortcode_exists($shortcode_name)) {
+                $output = do_shortcode($contenido);
+                if (!empty(trim($output)) && $output !== $contenido) {
+                    echo $output;
+                    return;
+                }
+            }
+            // Fallback si shortcode no existe o no produce salida
+            $this->render_tab_fallback($tab_id, $module_id);
             return;
         }
 
-        // Tipo 2: Template
+        // Tipo 2: Shortcode con prefijo shortcode:nombre
+        if (is_string($contenido) && strpos($contenido, 'shortcode:') === 0) {
+            $shortcode_name = str_replace('shortcode:', '', $contenido);
+            // Verificar si el shortcode existe
+            if (shortcode_exists($shortcode_name)) {
+                $output = do_shortcode('[' . $shortcode_name . ']');
+                if (!empty(trim($output))) {
+                    echo $output;
+                    return;
+                }
+            }
+            // Fallback: usar Archive Renderer
+            $this->render_tab_fallback($tab_id, $module_id);
+            return;
+        }
+
+        // Tipo 3: Template
         if (is_string($contenido) && strpos($contenido, 'template:') === 0) {
             $template_name = str_replace('template:', '', $contenido);
             $this->render_tab_template($template_name, $tab_id, $module_id, $module);
@@ -2237,12 +2507,23 @@ class Flavor_Dynamic_Pages {
         $module_slug = str_replace('_', '-', $module_id);
 
         // Buscar template en orden de prioridad (tema > plugin)
+        // Incluye carpeta /tabs/, raíz del módulo, y template genérico
         $paths = [
+            // Tema hijo/padre - carpeta tabs
             get_stylesheet_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
             get_template_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
+            // Plugin - carpeta tabs
             FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/tabs/{$template_name}",
             FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/tabs/{$template_name}",
             FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/tabs/{$template_name}",
+            // Plugin - carpeta views (presupuestos-participativos y otros módulos)
+            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/{$template_name}",
+            // Plugin - raíz del módulo (para archive.php y otros templates principales)
+            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/{$template_name}",
+            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/templates/{$template_name}",
+            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/{$template_name}",
+            // Template genérico (fallback para todos los módulos)
+            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$template_name}",
         ];
 
         // Variables disponibles en el template
@@ -2251,7 +2532,19 @@ class Flavor_Dynamic_Pages {
             'module_id' => $module_id,
             'module'    => $module,
             'user_id'   => get_current_user_id(),
+            'atributos' => [], // Para compatibilidad con templates de shortcode
         ];
+
+        // Cargar datos específicos del módulo si tiene método get_tab_data()
+        if ($module && method_exists($module, 'get_tab_data')) {
+            $module_data = $module->get_tab_data($tab_id, $tab_data['user_id']);
+            if (is_array($module_data)) {
+                $tab_data = array_merge($tab_data, $module_data);
+            }
+        }
+
+        // Fallback: cargar datos para módulos específicos que no tienen get_tab_data()
+        $tab_data = $this->load_module_tab_data($module_slug, $tab_id, $tab_data);
 
         foreach ($paths as $path) {
             if (file_exists($path)) {
@@ -2261,14 +2554,378 @@ class Flavor_Dynamic_Pages {
             }
         }
 
-        // Template no encontrado
-        echo '<div class="fmd-error">';
-        echo '<p>' . sprintf(
-            esc_html__('Template "%s" no encontrado para el módulo %s', 'flavor-chat-ia'),
-            esc_html($template_name),
-            esc_html($module_slug)
-        ) . '</p>';
-        echo '</div>';
+        // FALLBACK DINÁMICO: Usar Archive Renderer si no hay template físico
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+
+        $renderer = new Flavor_Archive_Renderer();
+
+        // Determinar tipo de renderizado basado en nombre del template
+        if (in_array($template_name, ['archive.php', 'listado.php', 'catalogo.php', 'grid.php'])) {
+            echo $renderer->render_auto($module_slug);
+            return;
+        }
+
+        if (in_array($template_name, ['single.php', 'detalle.php', 'ver.php'])) {
+            $item_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+            echo $renderer->render_single_auto($module_slug, $item_id);
+            return;
+        }
+
+        // Templates tipo mis-* (filtrados por usuario)
+        if (strpos($template_name, 'mis-') === 0 || strpos($template_name, 'mis_') === 0) {
+            echo $renderer->render_auto($module_slug, ['user_id' => get_current_user_id()]);
+            return;
+        }
+
+        // Intentar renderizar con Archive Renderer como último recurso
+        echo $renderer->render_auto($module_slug);
+    }
+
+    /**
+     * Renderiza contenido de fallback para tabs sin shortcode/template válido
+     *
+     * @param string $tab_id    ID del tab
+     * @param string $module_id ID del módulo
+     */
+    private function render_tab_fallback($tab_id, $module_id) {
+        $module_slug = str_replace('_', '-', $module_id);
+        $module_slug_underscore = str_replace('-', '_', $module_slug);
+        $tab_id_underscore = str_replace('-', '_', $tab_id);
+
+        // PRIMERO: Intentar método render específico de esta clase (ej: render_tab_socios_beneficios)
+        $method_name = 'render_tab_' . $module_slug_underscore . '_' . $tab_id_underscore;
+        if (method_exists($this, $method_name)) {
+            $this->$method_name();
+            return;
+        }
+
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+
+        $renderer = new Flavor_Archive_Renderer();
+
+        // Determinar configuración basada en el tab_id
+        $filter_config = [];
+
+        // Tabs tipo "mis-*" filtran por usuario actual
+        if (strpos($tab_id, 'mis-') === 0 || strpos($tab_id, 'mis_') === 0) {
+            $filter_config['user_id'] = get_current_user_id();
+        }
+
+        // Tabs de creación/formularios muestran mensaje
+        $form_tabs = ['nueva', 'nuevo', 'crear', 'registrar', 'publicar', 'subir', 'formulario'];
+        foreach ($form_tabs as $form_tab) {
+            if (strpos($tab_id, $form_tab) !== false) {
+                ?>
+                <div class="fmd-form-placeholder">
+                    <div class="fmd-placeholder-icon">
+                        <span class="dashicons dashicons-plus-alt"></span>
+                    </div>
+                    <h3><?php esc_html_e('Crear nuevo', 'flavor-chat-ia'); ?></h3>
+                    <p><?php esc_html_e('Esta funcionalidad estará disponible próximamente.', 'flavor-chat-ia'); ?></p>
+                </div>
+                <style>
+                .fmd-form-placeholder { text-align: center; padding: 3rem; background: var(--fmd-bg-secondary, #f8f9fa); border-radius: 12px; }
+                .fmd-placeholder-icon { font-size: 48px; color: var(--fmd-primary, #007bff); margin-bottom: 1rem; }
+                .fmd-placeholder-icon .dashicons { font-size: 48px; width: 48px; height: 48px; }
+                </style>
+                <?php
+                return;
+            }
+        }
+
+        // Fallback genérico: usar Archive Renderer
+        echo $renderer->render_auto($module_slug, $filter_config);
+    }
+
+    /**
+     * Carga datos específicos del módulo para templates de tabs
+     *
+     * Este método proporciona las variables necesarias para cada template
+     * cuando el módulo no tiene su propio método get_tab_data().
+     *
+     * @param string $module_slug Slug del módulo (con guiones)
+     * @param string $tab_id      ID de la pestaña
+     * @param array  $tab_data    Datos base del tab
+     * @return array Datos extendidos para el template
+     */
+    private function load_module_tab_data($module_slug, $tab_id, $tab_data) {
+        global $wpdb;
+
+        $user_id = $tab_data['user_id'] ?? get_current_user_id();
+
+        switch ($module_slug) {
+            case 'presupuestos-participativos':
+                // Nombres correctos de tablas según frontend controller
+                $tabla_procesos = $wpdb->prefix . 'flavor_pp_procesos';
+                $tabla_propuestas = $wpdb->prefix . 'flavor_pp_propuestas';
+                $tabla_votos = $wpdb->prefix . 'flavor_pp_votos';
+                $tabla_categorias = $wpdb->prefix . 'flavor_pp_categorias';
+
+                // Obtener proceso activo (en votación o propuestas)
+                $proceso = $wpdb->get_row(
+                    "SELECT * FROM {$tabla_procesos}
+                     WHERE estado IN ('votacion', 'propuestas')
+                     ORDER BY fecha_inicio DESC
+                     LIMIT 1",
+                    ARRAY_A
+                );
+
+                if (!$proceso) {
+                    // Si no hay activo, obtener el más reciente
+                    $proceso = $wpdb->get_row(
+                        "SELECT * FROM {$tabla_procesos}
+                         ORDER BY fecha_inicio DESC
+                         LIMIT 1",
+                        ARRAY_A
+                    );
+                }
+
+                $proceso_id = $proceso['id'] ?? 0;
+                $fase = $proceso['estado'] ?? 'cerrado';
+
+                // Datos comunes - usar 'edicion' como alias para compatibilidad con templates
+                $tab_data['edicion'] = $proceso;
+                $tab_data['proceso'] = $proceso;
+                $tab_data['fase'] = $fase;
+                $tab_data['identificador_usuario'] = $user_id;
+
+                // Obtener categorías de la BD
+                $categorias_bd = $wpdb->get_results(
+                    "SELECT id, nombre, slug FROM {$tabla_categorias} ORDER BY nombre",
+                    ARRAY_A
+                );
+                $categorias = [];
+                foreach ($categorias_bd as $cat) {
+                    $categorias[$cat['slug'] ?? $cat['id']] = $cat['nombre'];
+                }
+                if (empty($categorias)) {
+                    // Fallback si no hay categorías en BD
+                    $categorias = [
+                        'infraestructura' => __('Infraestructura', 'flavor-chat-ia'),
+                        'medioambiente'   => __('Medio Ambiente', 'flavor-chat-ia'),
+                        'cultura'         => __('Cultura', 'flavor-chat-ia'),
+                        'social'          => __('Social', 'flavor-chat-ia'),
+                        'otro'            => __('Otro', 'flavor-chat-ia'),
+                    ];
+                }
+                $tab_data['categorias'] = $categorias;
+
+                switch ($tab_id) {
+                    case 'votar':
+                    case 'votacion':
+                    case 'votaciones':
+                    case 'interfaz-votacion':
+                        // Propuestas en fase de votación
+                        $proyectos = [];
+                        if ($proceso_id) {
+                            $proyectos = $wpdb->get_results($wpdb->prepare(
+                                "SELECT p.*, COALESCE(p.votos_total, 0) as votos_recibidos
+                                 FROM {$tabla_propuestas} p
+                                 WHERE p.proceso_id = %d
+                                   AND p.estado = 'en_votacion'
+                                 ORDER BY votos_recibidos DESC, p.titulo ASC",
+                                $proceso_id
+                            ), ARRAY_A);
+                        }
+
+                        // Votos del usuario actual
+                        $votos_usuario_rows = [];
+                        if ($user_id && $proceso_id) {
+                            $votos_usuario_rows = $wpdb->get_col($wpdb->prepare(
+                                "SELECT propuesta_id FROM {$tabla_votos}
+                                 WHERE usuario_id = %d AND proceso_id = %d",
+                                $user_id,
+                                $proceso_id
+                            ));
+                        }
+
+                        // Configuración de votos
+                        $votos_maximos = intval($proceso['votos_por_ciudadano'] ?? 3);
+                        $votos_usados = count($votos_usuario_rows);
+
+                        $tab_data['proyectos'] = $proyectos;
+                        $tab_data['votos_usuario'] = $votos_usuario_rows;
+                        $tab_data['votos_maximos'] = $votos_maximos;
+                        $tab_data['votos_restantes'] = max(0, $votos_maximos - $votos_usados);
+                        $tab_data['edicion'] = $proceso;
+                        $tab_data['identificador_usuario'] = $user_id;
+                        break;
+
+                    case 'resultados':
+                        // Ranking de propuestas por votos
+                        $proyectos_ranking = [];
+                        if ($proceso_id) {
+                            $proyectos_ranking = $wpdb->get_results($wpdb->prepare(
+                                "SELECT p.*, COALESCE(p.votos_total, 0) as total_votos
+                                 FROM {$tabla_propuestas} p
+                                 WHERE p.proceso_id = %d
+                                   AND p.estado NOT IN ('borrador', 'rechazada')
+                                 ORDER BY total_votos DESC, p.titulo ASC",
+                                $proceso_id
+                            ), ARRAY_A);
+                        }
+
+                        // Total de votantes únicos
+                        $total_votantes = 0;
+                        if ($proceso_id) {
+                            $total_votantes = intval($wpdb->get_var($wpdb->prepare(
+                                "SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_votos}
+                                 WHERE proceso_id = %d",
+                                $proceso_id
+                            )));
+                        }
+
+                        // Total de propuestas
+                        $total_proyectos = count($proyectos_ranking);
+
+                        $tab_data['proyectos_ranking'] = $proyectos_ranking;
+                        $tab_data['total_votantes'] = $total_votantes;
+                        $tab_data['total_proyectos'] = $total_proyectos;
+                        $tab_data['edicion'] = $proceso;
+                        break;
+
+                    case 'proponer':
+                    case 'formulario-propuesta':
+                        // Datos para el formulario de propuesta
+                        $tab_data['presupuesto_minimo'] = floatval($proceso['presupuesto_minimo'] ?? 100);
+                        $tab_data['presupuesto_maximo'] = floatval($proceso['presupuesto_maximo'] ?? $proceso['presupuesto_total'] ?? 50000);
+                        $tab_data['fase_actual'] = $fase;
+                        $tab_data['puede_proponer'] = ($fase === 'propuestas');
+                        $tab_data['proceso_id'] = $proceso_id;
+                        $tab_data['proceso'] = $proceso;
+                        $tab_data['edicion'] = $proceso; // Alias para compatibilidad
+                        break;
+
+                    case 'proyectos':
+                    case 'listado':
+                    case 'listado-proyectos':
+                        // Todas las propuestas del proceso
+                        $proyectos = [];
+                        if ($proceso_id) {
+                            $proyectos = $wpdb->get_results($wpdb->prepare(
+                                "SELECT p.*, COALESCE(p.votos_total, 0) as votos_recibidos
+                                 FROM {$tabla_propuestas} p
+                                 WHERE p.proceso_id = %d
+                                   AND p.estado NOT IN ('borrador', 'rechazada')
+                                 ORDER BY p.created_at DESC",
+                                $proceso_id
+                            ), ARRAY_A);
+                        }
+                        $tab_data['proyectos'] = $proyectos;
+
+                        // Votos del usuario actual para mostrar info de votación
+                        $votos_usuario_ids = [];
+                        if ($user_id && $proceso_id) {
+                            $votos_usuario_ids = $wpdb->get_col($wpdb->prepare(
+                                "SELECT propuesta_id FROM {$tabla_votos}
+                                 WHERE usuario_id = %d AND proceso_id = %d",
+                                $user_id,
+                                $proceso_id
+                            ));
+                        }
+                        $tab_data['votos_usuario'] = $votos_usuario_ids;
+                        $tab_data['votos_maximos'] = intval($proceso['votos_por_ciudadano'] ?? 3);
+                        $tab_data['identificador_usuario'] = $user_id;
+                        break;
+
+                    case 'fases':
+                    case 'seguimiento':
+                    case 'dashboard':
+                        // Estadísticas para el dashboard
+                        $stats = [
+                            'total_proyectos' => 0,
+                            'en_votacion' => 0,
+                            'aprobadas' => 0,
+                            'en_ejecucion' => 0,
+                            'ejecutadas' => 0,
+                            'mis_propuestas' => 0,
+                        ];
+
+                        if ($proceso_id) {
+                            $stats['total_proyectos'] = intval($wpdb->get_var($wpdb->prepare(
+                                "SELECT COUNT(*) FROM {$tabla_propuestas} WHERE proceso_id = %d AND estado != 'borrador'",
+                                $proceso_id
+                            )));
+                            $stats['en_votacion'] = intval($wpdb->get_var($wpdb->prepare(
+                                "SELECT COUNT(*) FROM {$tabla_propuestas} WHERE proceso_id = %d AND estado = 'en_votacion'",
+                                $proceso_id
+                            )));
+                            $stats['aprobadas'] = intval($wpdb->get_var($wpdb->prepare(
+                                "SELECT COUNT(*) FROM {$tabla_propuestas} WHERE proceso_id = %d AND estado = 'aprobada'",
+                                $proceso_id
+                            )));
+                            $stats['en_ejecucion'] = intval($wpdb->get_var($wpdb->prepare(
+                                "SELECT COUNT(*) FROM {$tabla_propuestas} WHERE proceso_id = %d AND estado = 'en_ejecucion'",
+                                $proceso_id
+                            )));
+                            $stats['ejecutadas'] = intval($wpdb->get_var($wpdb->prepare(
+                                "SELECT COUNT(*) FROM {$tabla_propuestas} WHERE proceso_id = %d AND estado = 'ejecutada'",
+                                $proceso_id
+                            )));
+                            if ($user_id) {
+                                $stats['mis_propuestas'] = intval($wpdb->get_var($wpdb->prepare(
+                                    "SELECT COUNT(*) FROM {$tabla_propuestas} WHERE proceso_id = %d AND usuario_id = %d",
+                                    $proceso_id,
+                                    $user_id
+                                )));
+                            }
+                        }
+
+                        // Propuestas aprobadas/en ejecución para seguimiento
+                        $proyectos_seleccionados = [];
+                        if ($proceso_id) {
+                            $proyectos_seleccionados = $wpdb->get_results($wpdb->prepare(
+                                "SELECT * FROM {$tabla_propuestas}
+                                 WHERE proceso_id = %d
+                                   AND estado IN ('aprobada', 'en_ejecucion', 'ejecutada')
+                                 ORDER BY FIELD(estado, 'en_ejecucion', 'aprobada', 'ejecutada'), titulo ASC",
+                                $proceso_id
+                            ), ARRAY_A);
+                        }
+
+                        $tab_data['stats'] = $stats;
+                        $tab_data['proyectos_seleccionados'] = $proyectos_seleccionados;
+                        $tab_data['fases'] = [
+                            'propuestas' => __('Recepción de propuestas', 'flavor-chat-ia'),
+                            'evaluacion' => __('Evaluación técnica', 'flavor-chat-ia'),
+                            'votacion'   => __('Votación ciudadana', 'flavor-chat-ia'),
+                            'ejecucion'  => __('Ejecución de proyectos', 'flavor-chat-ia'),
+                            'cerrado'    => __('Proceso cerrado', 'flavor-chat-ia'),
+                        ];
+                        break;
+
+                    case 'mis-propuestas':
+                        // Propuestas del usuario actual
+                        $propuestas_usuario = [];
+                        if ($user_id && $proceso_id) {
+                            $propuestas_usuario = $wpdb->get_results($wpdb->prepare(
+                                "SELECT p.*, COALESCE(p.votos_total, 0) as votos_recibidos,
+                                        p.created_at as fecha_creacion
+                                 FROM {$tabla_propuestas} p
+                                 WHERE p.usuario_id = %d
+                                   AND p.proceso_id = %d
+                                 ORDER BY p.created_at DESC",
+                                $user_id,
+                                $proceso_id
+                            ), ARRAY_A);
+                        }
+                        $tab_data['propuestas'] = $propuestas_usuario;
+                        $tab_data['mis_propuestas'] = $propuestas_usuario; // Alias
+                        break;
+                }
+                break;
+
+            // Otros módulos pueden añadirse aquí siguiendo el mismo patrón
+            default:
+                // Para módulos sin datos específicos, intentar cargar datos genéricos
+                break;
+        }
+
+        return $tab_data;
     }
 
     /**
@@ -2279,6 +2936,20 @@ class Flavor_Dynamic_Pages {
      * @param object $module    Instancia del módulo
      */
     private function render_tab_content_legacy($tab_id, $tab_info, $module) {
+        // Si es una tab de integración con source_module, usar ese módulo
+        if (!empty($tab_info['is_integration']) && !empty($tab_info['source_module'])) {
+            $source_module = $tab_info['source_module'];
+            ?>
+            <div class="fmd-tab-integration" data-source-module="<?php echo esc_attr($source_module); ?>">
+                <?php
+                // Usar el shortcode unificado [flavor] con el módulo fuente
+                echo do_shortcode('[flavor module="' . esc_attr($source_module) . '" view="listado" header="no" limit="12"]');
+                ?>
+            </div>
+            <?php
+            return;
+        }
+
         switch ($tab_id) {
             case 'listado':
             case 'todos':
@@ -2325,62 +2996,103 @@ class Flavor_Dynamic_Pages {
                 $this->render_tab_banco_tiempo($tab_id);
                 break;
 
+            // === FICHAJE EMPLEADOS - Tabs específicos ===
+            case 'fichaje-panel':
+                $this->render_tab_fichaje_panel();
+                break;
+
+            case 'fichaje-historial':
+                $this->render_tab_fichaje_historial();
+                break;
+
+            case 'fichaje-resumen':
+                $this->render_tab_fichaje_resumen();
+                break;
+
+            // === SOCIOS - Tabs específicos ===
+            case 'mi-membresia':
+                $this->render_tab_socios_membresia();
+                break;
+
+            case 'cuotas':
+                $this->render_tab_socios_cuotas();
+                break;
+
+            case 'beneficios':
+                $this->render_tab_socios_beneficios();
+                break;
+
+            case 'carnet':
+                $this->render_tab_socios_carnet();
+                break;
+
+            case 'historial':
+                $this->render_tab_socios_historial();
+                break;
+
+            case 'directorio':
+                $this->render_tab_socios_directorio();
+                break;
+
+            // === FOROS - Tabs específicos ===
+            case 'temas-recientes':
+                $this->render_tab_foros_temas_recientes();
+                break;
+
+            case 'mis-hilos':
+                $this->render_tab_foros_mis_hilos();
+                break;
+
+            case 'nuevo-tema':
+                $this->render_tab_foros_nuevo_tema();
+                break;
+
+            case 'categorias':
+                if ($this->current_module === 'foros') {
+                    $this->render_tab_foros_categorias();
+                } else {
+                    // Fallback para otros módulos con tab de categorías
+                    echo do_shortcode('[flavor module="' . esc_attr(str_replace('_', '-', $this->current_module)) . '" view="categorias" header="no"]');
+                }
+                break;
+
+            // === BARES - Tabs específicos ===
+            case 'reservar':
+                if ($this->current_module === 'bares') {
+                    echo do_shortcode('[bares_reservar]');
+                }
+                break;
+
             default:
-                // Fallback genérico - usar module_listing con el tab como filtro
+                // Fallback genérico - usar shortcode unificado [flavor]
                 $module_id = str_replace('_', '-', $this->current_module);
                 ?>
                 <div class="fmd-tab-generic">
-                    <div class="fmd-panel-header">
-                        <h3><?php echo esc_html($tab_info['label']); ?></h3>
-                    </div>
-                    <div class="fmd-panel-content">
-                        <?php
-                        // Usar flavor_module_listing como fallback seguro
-                        $shortcode = '[flavor_module_listing module="' . esc_attr($module_id) . '" vista="' . esc_attr($tab_id) . '" limit="12"]';
-                        echo do_shortcode($shortcode);
-                        ?>
-                    </div>
+                    <?php
+                    // Usar shortcode unificado [flavor] como fallback
+                    echo do_shortcode('[flavor module="' . esc_attr($module_id) . '" view="listado" header="no" limit="12"]');
+                    ?>
                 </div>
                 <?php
         }
     }
 
     /**
-     * Renderiza tab de listado
+     * Renderiza tab de listado usando Archive Renderer dinámico
      */
     private function render_tab_listado() {
-        ?>
-        <div class="fmd-panel-header">
-            <h3><?php esc_html_e('Todos los elementos', 'flavor-chat-ia'); ?></h3>
-            <div class="fmd-filters">
-                <input type="search" placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>" class="fmd-search">
-                <select class="fmd-filter-select">
-                    <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="recientes"><?php esc_html_e('Recientes', 'flavor-chat-ia'); ?></option>
-                    <option value="antiguos"><?php esc_html_e('Más antiguos', 'flavor-chat-ia'); ?></option>
-                </select>
-            </div>
-        </div>
-        <div class="fmd-panel-content">
-            <?php
-            $module_id = str_replace('_', '-', $this->current_module);
+        $module_slug = str_replace('_', '-', $this->current_module);
 
-            if (class_exists('Flavor_Dynamic_CRUD')) {
-                $crud = Flavor_Dynamic_CRUD::get_instance();
-                echo $crud->render_list($this->current_module, [
-                    'limite' => 12,
-                    'solo_mios' => true,
-                    'mostrar_crear' => true,
-                    'mostrar_filtros' => true,
-                ]);
-            } else {
-                // Usar flavor_module_listing como fallback seguro
-                $shortcode = '[flavor_module_listing module="' . esc_attr($module_id) . '" limit="12"]';
-                echo do_shortcode($shortcode);
-            }
-            ?>
-        </div>
-        <?php
+        // Usar Archive Renderer dinámico
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+
+        $renderer = new Flavor_Archive_Renderer();
+        echo $renderer->render_auto($module_slug, [
+            'per_page' => 12,
+            'show_header' => false, // El header ya está en el dashboard
+        ]);
     }
 
     /**
@@ -2586,6 +3298,1659 @@ class Flavor_Dynamic_Pages {
                 <?php
             }
         }
+    }
+
+    /**
+     * Renderiza el panel principal de fichaje
+     */
+    private function render_tab_fichaje_panel() {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<p>' . esc_html__('Debes iniciar sesión para fichar.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        global $wpdb;
+        $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
+
+        // Obtener estado actual del empleado
+        $ultimo_fichaje = null;
+        $fichajes_hoy = [];
+        $horas_trabajadas = 0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+            // Último fichaje del usuario
+            $ultimo_fichaje = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_fichajes} WHERE user_id = %d ORDER BY fecha DESC, hora DESC LIMIT 1",
+                $user_id
+            ));
+
+            // Fichajes de hoy
+            $fichajes_hoy = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM {$tabla_fichajes} WHERE user_id = %d AND DATE(fecha) = CURDATE() ORDER BY hora ASC",
+                $user_id
+            ), ARRAY_A);
+
+            // Calcular horas trabajadas hoy
+            $entrada_actual = null;
+            foreach ($fichajes_hoy as $fichaje) {
+                if ($fichaje['tipo'] === 'entrada') {
+                    $entrada_actual = strtotime($fichaje['hora']);
+                } elseif ($fichaje['tipo'] === 'salida' && $entrada_actual) {
+                    $horas_trabajadas += (strtotime($fichaje['hora']) - $entrada_actual) / 3600;
+                    $entrada_actual = null;
+                }
+            }
+            // Si hay entrada sin salida, calcular hasta ahora
+            if ($entrada_actual) {
+                $horas_trabajadas += (current_time('timestamp') - strtotime(date('Y-m-d') . ' ' . date('H:i:s', $entrada_actual))) / 3600;
+            }
+        }
+
+        // Determinar estado actual
+        $estado_actual = 'sin_fichar';
+        if ($ultimo_fichaje) {
+            switch ($ultimo_fichaje->tipo) {
+                case 'entrada':
+                    $estado_actual = 'trabajando';
+                    break;
+                case 'salida':
+                    $estado_actual = 'fuera';
+                    break;
+                case 'pausa_inicio':
+                    $estado_actual = 'en_pausa';
+                    break;
+                case 'pausa_fin':
+                    $estado_actual = 'trabajando';
+                    break;
+            }
+        }
+
+        $estado_labels = [
+            'sin_fichar' => __('Sin fichar', 'flavor-chat-ia'),
+            'trabajando' => __('Trabajando', 'flavor-chat-ia'),
+            'en_pausa' => __('En pausa', 'flavor-chat-ia'),
+            'fuera' => __('Jornada finalizada', 'flavor-chat-ia'),
+        ];
+
+        $estado_colores = [
+            'sin_fichar' => 'neutral',
+            'trabajando' => 'success',
+            'en_pausa' => 'warning',
+            'fuera' => 'info',
+        ];
+        ?>
+        <div class="fmd-fichaje-panel">
+            <!-- Reloj y Estado -->
+            <div class="fmd-fichaje-header">
+                <div class="fmd-fichaje-reloj">
+                    <span class="fmd-reloj-hora"><?php echo esc_html(current_time('H:i')); ?></span>
+                    <span class="fmd-reloj-fecha"><?php echo esc_html(date_i18n('l, j \d\e F')); ?></span>
+                </div>
+
+                <div class="fmd-estado-badge fmd-estado-<?php echo esc_attr($estado_colores[$estado_actual]); ?>">
+                    <span class="fmd-estado-dot"></span>
+                    <span class="fmd-estado-label"><?php echo esc_html($estado_labels[$estado_actual]); ?></span>
+                </div>
+            </div>
+
+            <!-- Botones de Fichaje -->
+            <div class="fmd-fichaje-acciones">
+                <?php if ($estado_actual === 'fuera' || $estado_actual === 'sin_fichar'): ?>
+                    <button type="button" class="fmd-btn fmd-btn-lg fmd-btn-success fmd-fichaje-btn" data-action="entrada">
+                        <span class="dashicons dashicons-yes-alt"></span>
+                        <?php esc_html_e('Fichar Entrada', 'flavor-chat-ia'); ?>
+                    </button>
+                <?php elseif ($estado_actual === 'trabajando'): ?>
+                    <div class="fmd-fichaje-btns-grid">
+                        <button type="button" class="fmd-btn fmd-btn-warning fmd-fichaje-btn" data-action="pausa">
+                            <span class="dashicons dashicons-coffee"></span>
+                            <?php esc_html_e('Pausa', 'flavor-chat-ia'); ?>
+                        </button>
+                        <button type="button" class="fmd-btn fmd-btn-lg fmd-btn-danger fmd-fichaje-btn" data-action="salida">
+                            <span class="dashicons dashicons-migrate"></span>
+                            <?php esc_html_e('Fichar Salida', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                <?php elseif ($estado_actual === 'en_pausa'): ?>
+                    <button type="button" class="fmd-btn fmd-btn-lg fmd-btn-primary fmd-fichaje-btn" data-action="reanudar">
+                        <span class="dashicons dashicons-controls-play"></span>
+                        <?php esc_html_e('Reanudar', 'flavor-chat-ia'); ?>
+                    </button>
+                <?php endif; ?>
+            </div>
+
+            <!-- Resumen del día -->
+            <?php if (!empty($fichajes_hoy)): ?>
+            <div class="fmd-fichaje-resumen-dia">
+                <h4><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></h4>
+                <div class="fmd-stats-row">
+                    <div class="fmd-stat-mini">
+                        <span class="fmd-stat-valor"><?php echo count($fichajes_hoy); ?></span>
+                        <span class="fmd-stat-label"><?php esc_html_e('Fichajes', 'flavor-chat-ia'); ?></span>
+                    </div>
+                    <div class="fmd-stat-mini">
+                        <span class="fmd-stat-valor"><?php echo number_format($horas_trabajadas, 1); ?>h</span>
+                        <span class="fmd-stat-label"><?php esc_html_e('Trabajadas', 'flavor-chat-ia'); ?></span>
+                    </div>
+                </div>
+
+                <div class="fmd-fichaje-timeline">
+                    <?php
+                    $tipo_iconos = [
+                        'entrada' => 'dashicons-arrow-right-alt',
+                        'salida' => 'dashicons-arrow-left-alt',
+                        'pausa_inicio' => 'dashicons-coffee',
+                        'pausa_fin' => 'dashicons-controls-play',
+                    ];
+                    $tipo_labels = [
+                        'entrada' => __('Entrada', 'flavor-chat-ia'),
+                        'salida' => __('Salida', 'flavor-chat-ia'),
+                        'pausa_inicio' => __('Inicio pausa', 'flavor-chat-ia'),
+                        'pausa_fin' => __('Fin pausa', 'flavor-chat-ia'),
+                    ];
+                    foreach ($fichajes_hoy as $fichaje):
+                    ?>
+                    <div class="fmd-timeline-item fmd-tipo-<?php echo esc_attr($fichaje['tipo']); ?>">
+                        <span class="dashicons <?php echo esc_attr($tipo_iconos[$fichaje['tipo']] ?? 'dashicons-clock'); ?>"></span>
+                        <span class="fmd-timeline-hora"><?php echo esc_html(substr($fichaje['hora'], 0, 5)); ?></span>
+                        <span class="fmd-timeline-tipo"><?php echo esc_html($tipo_labels[$fichaje['tipo']] ?? $fichaje['tipo']); ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php else: ?>
+            <div class="fmd-fichaje-vacio">
+                <span class="dashicons dashicons-clock"></span>
+                <p><?php esc_html_e('No has fichado hoy todavía.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .fmd-fichaje-panel { max-width: 480px; margin: 0 auto; }
+        .fmd-fichaje-header { text-align: center; padding: 1.5rem; background: var(--fmd-bg-secondary, #f8f9fa); border-radius: 12px; margin-bottom: 1.5rem; }
+        .fmd-fichaje-reloj { margin-bottom: 1rem; }
+        .fmd-reloj-hora { display: block; font-size: 3rem; font-weight: 700; line-height: 1; }
+        .fmd-reloj-fecha { display: block; font-size: 0.95rem; color: var(--fmd-text-muted, #6c757d); text-transform: capitalize; margin-top: 0.25rem; }
+        .fmd-estado-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; }
+        .fmd-estado-badge.fmd-estado-success { background: #d4edda; color: #155724; }
+        .fmd-estado-badge.fmd-estado-warning { background: #fff3cd; color: #856404; }
+        .fmd-estado-badge.fmd-estado-info { background: #d1ecf1; color: #0c5460; }
+        .fmd-estado-badge.fmd-estado-neutral { background: #e9ecef; color: #495057; }
+        .fmd-estado-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .fmd-fichaje-acciones { text-align: center; margin-bottom: 1.5rem; }
+        .fmd-fichaje-btns-grid { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .fmd-btn-lg { padding: 1rem 2rem !important; font-size: 1.1rem !important; }
+        .fmd-fichaje-resumen-dia { background: var(--fmd-bg-secondary, #f8f9fa); border-radius: 12px; padding: 1rem; }
+        .fmd-fichaje-resumen-dia h4 { margin: 0 0 1rem; font-size: 1rem; }
+        .fmd-stats-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .fmd-stat-mini { flex: 1; text-align: center; background: white; padding: 0.75rem; border-radius: 8px; }
+        .fmd-stat-mini .fmd-stat-valor { display: block; font-size: 1.5rem; font-weight: 700; }
+        .fmd-stat-mini .fmd-stat-label { font-size: 0.8rem; color: var(--fmd-text-muted, #6c757d); }
+        .fmd-fichaje-timeline { display: flex; flex-direction: column; gap: 0.5rem; }
+        .fmd-timeline-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: white; border-radius: 6px; font-size: 0.9rem; }
+        .fmd-timeline-item .dashicons { font-size: 16px; width: 16px; height: 16px; }
+        .fmd-tipo-entrada .dashicons { color: #28a745; }
+        .fmd-tipo-salida .dashicons { color: #dc3545; }
+        .fmd-tipo-pausa_inicio .dashicons, .fmd-tipo-pausa_fin .dashicons { color: #ffc107; }
+        .fmd-timeline-hora { font-weight: 600; }
+        .fmd-timeline-tipo { color: var(--fmd-text-muted, #6c757d); }
+        .fmd-fichaje-vacio { text-align: center; padding: 2rem; color: var(--fmd-text-muted, #6c757d); }
+        .fmd-fichaje-vacio .dashicons { font-size: 48px; width: 48px; height: 48px; opacity: 0.5; }
+        </style>
+        <?php
+    }
+
+    /**
+     * Renderiza el historial de fichajes
+     */
+    private function render_tab_fichaje_historial() {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver tu historial.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        global $wpdb;
+        $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
+
+        $fichajes = [];
+        $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : 'semana';
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+            $where_fecha = '';
+            switch ($periodo) {
+                case 'hoy':
+                    $where_fecha = "AND DATE(fecha) = CURDATE()";
+                    break;
+                case 'semana':
+                    $where_fecha = "AND YEARWEEK(fecha) = YEARWEEK(NOW())";
+                    break;
+                case 'mes':
+                default:
+                    $where_fecha = "AND MONTH(fecha) = MONTH(NOW()) AND YEAR(fecha) = YEAR(NOW())";
+                    break;
+            }
+
+            $fichajes = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM {$tabla_fichajes} WHERE user_id = %d {$where_fecha} ORDER BY fecha DESC, hora DESC",
+                $user_id
+            ), ARRAY_A);
+        }
+
+        $periodo_labels = [
+            'hoy' => __('Hoy', 'flavor-chat-ia'),
+            'semana' => __('Esta semana', 'flavor-chat-ia'),
+            'mes' => __('Este mes', 'flavor-chat-ia'),
+        ];
+
+        $tipo_labels = [
+            'entrada' => __('Entrada', 'flavor-chat-ia'),
+            'salida' => __('Salida', 'flavor-chat-ia'),
+            'pausa_inicio' => __('Inicio pausa', 'flavor-chat-ia'),
+            'pausa_fin' => __('Fin pausa', 'flavor-chat-ia'),
+        ];
+        ?>
+        <div class="fmd-fichaje-historial">
+            <div class="fmd-historial-header">
+                <h3><?php esc_html_e('Mis Fichajes', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-filtros">
+                    <select id="fmd-filtro-periodo" class="fmd-select" onchange="location.href='?periodo=' + this.value">
+                        <?php foreach ($periodo_labels as $key => $label): ?>
+                        <option value="<?php echo esc_attr($key); ?>" <?php selected($periodo, $key); ?>>
+                            <?php echo esc_html($label); ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+
+            <?php if (empty($fichajes)): ?>
+            <div class="fmd-empty-state">
+                <span class="dashicons dashicons-clock"></span>
+                <p><?php esc_html_e('No hay fichajes en este periodo.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php else: ?>
+            <div class="fmd-fichajes-lista">
+                <?php
+                // Agrupar por fecha
+                $fichajes_agrupados = [];
+                foreach ($fichajes as $fichaje) {
+                    $fecha = $fichaje['fecha'];
+                    if (!isset($fichajes_agrupados[$fecha])) {
+                        $fichajes_agrupados[$fecha] = [];
+                    }
+                    $fichajes_agrupados[$fecha][] = $fichaje;
+                }
+
+                foreach ($fichajes_agrupados as $fecha => $fichajes_dia):
+                ?>
+                <div class="fmd-dia-card">
+                    <div class="fmd-dia-header">
+                        <span class="fmd-dia-fecha"><?php echo esc_html(date_i18n('l, j F', strtotime($fecha))); ?></span>
+                    </div>
+                    <div class="fmd-dia-registros">
+                        <?php foreach ($fichajes_dia as $fichaje): ?>
+                        <div class="fmd-registro fmd-tipo-<?php echo esc_attr($fichaje['tipo']); ?>">
+                            <span class="fmd-registro-hora"><?php echo esc_html(substr($fichaje['hora'], 0, 5)); ?></span>
+                            <span class="fmd-registro-tipo"><?php echo esc_html($tipo_labels[$fichaje['tipo']] ?? $fichaje['tipo']); ?></span>
+                            <?php if (!empty($fichaje['notas'])): ?>
+                            <span class="fmd-registro-notas"><?php echo esc_html($fichaje['notas']); ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .fmd-fichaje-historial { max-width: 600px; margin: 0 auto; }
+        .fmd-historial-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .fmd-historial-header h3 { margin: 0; }
+        .fmd-dia-card { background: var(--fmd-bg-secondary, #f8f9fa); border-radius: 12px; margin-bottom: 1rem; overflow: hidden; }
+        .fmd-dia-header { background: var(--fmd-primary, #007bff); color: white; padding: 0.75rem 1rem; font-weight: 500; text-transform: capitalize; }
+        .fmd-dia-registros { padding: 0.5rem; }
+        .fmd-registro { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.25rem; }
+        .fmd-registro:last-child { margin-bottom: 0; }
+        .fmd-registro-hora { font-weight: 600; font-size: 1.1rem; min-width: 50px; }
+        .fmd-registro-tipo { flex: 1; }
+        .fmd-registro-notas { color: var(--fmd-text-muted, #6c757d); font-size: 0.85rem; }
+        .fmd-tipo-entrada { border-left: 3px solid #28a745; }
+        .fmd-tipo-salida { border-left: 3px solid #dc3545; }
+        .fmd-tipo-pausa_inicio, .fmd-tipo-pausa_fin { border-left: 3px solid #ffc107; }
+        </style>
+        <?php
+    }
+
+    /**
+     * Renderiza el resumen mensual de fichajes
+     */
+    private function render_tab_fichaje_resumen() {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver tu resumen.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        global $wpdb;
+        $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
+
+        $mes = isset($_GET['mes']) ? intval($_GET['mes']) : intval(date('m'));
+        $anio = isset($_GET['anio']) ? intval($_GET['anio']) : intval(date('Y'));
+
+        $resumen = [
+            'total_horas' => 0,
+            'dias_trabajados' => 0,
+            'promedio_horas_diarias' => 0,
+            'detalle_dias' => [],
+        ];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
+            // Obtener fichajes del mes
+            $fichajes = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM {$tabla_fichajes}
+                 WHERE user_id = %d AND MONTH(fecha) = %d AND YEAR(fecha) = %d
+                 ORDER BY fecha ASC, hora ASC",
+                $user_id, $mes, $anio
+            ), ARRAY_A);
+
+            // Calcular horas por día
+            $horas_por_dia = [];
+            $entrada_actual = null;
+
+            foreach ($fichajes as $fichaje) {
+                $fecha = $fichaje['fecha'];
+                if (!isset($horas_por_dia[$fecha])) {
+                    $horas_por_dia[$fecha] = ['horas' => 0, 'fichajes' => 0];
+                }
+                $horas_por_dia[$fecha]['fichajes']++;
+
+                if ($fichaje['tipo'] === 'entrada') {
+                    $entrada_actual = strtotime($fichaje['fecha'] . ' ' . $fichaje['hora']);
+                } elseif ($fichaje['tipo'] === 'salida' && $entrada_actual) {
+                    $salida = strtotime($fichaje['fecha'] . ' ' . $fichaje['hora']);
+                    $horas_por_dia[$fecha]['horas'] += ($salida - $entrada_actual) / 3600;
+                    $entrada_actual = null;
+                }
+            }
+
+            foreach ($horas_por_dia as $fecha => $datos) {
+                $resumen['detalle_dias'][] = [
+                    'fecha' => $fecha,
+                    'horas' => round($datos['horas'], 2),
+                    'fichajes' => $datos['fichajes'],
+                ];
+                $resumen['total_horas'] += $datos['horas'];
+            }
+
+            $resumen['dias_trabajados'] = count($horas_por_dia);
+            $resumen['promedio_horas_diarias'] = $resumen['dias_trabajados'] > 0
+                ? $resumen['total_horas'] / $resumen['dias_trabajados']
+                : 0;
+        }
+
+        $meses = [
+            1 => __('Enero', 'flavor-chat-ia'), 2 => __('Febrero', 'flavor-chat-ia'),
+            3 => __('Marzo', 'flavor-chat-ia'), 4 => __('Abril', 'flavor-chat-ia'),
+            5 => __('Mayo', 'flavor-chat-ia'), 6 => __('Junio', 'flavor-chat-ia'),
+            7 => __('Julio', 'flavor-chat-ia'), 8 => __('Agosto', 'flavor-chat-ia'),
+            9 => __('Septiembre', 'flavor-chat-ia'), 10 => __('Octubre', 'flavor-chat-ia'),
+            11 => __('Noviembre', 'flavor-chat-ia'), 12 => __('Diciembre', 'flavor-chat-ia'),
+        ];
+        ?>
+        <div class="fmd-fichaje-resumen">
+            <div class="fmd-resumen-header">
+                <h3><?php esc_html_e('Resumen de Horas', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-periodo-selector">
+                    <select id="fmd-mes" class="fmd-select" onchange="location.href='?mes=' + this.value + '&anio=' + document.getElementById('fmd-anio').value">
+                        <?php foreach ($meses as $num => $nombre): ?>
+                        <option value="<?php echo esc_attr($num); ?>" <?php selected($mes, $num); ?>>
+                            <?php echo esc_html($nombre); ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <select id="fmd-anio" class="fmd-select" onchange="location.href='?mes=' + document.getElementById('fmd-mes').value + '&anio=' + this.value">
+                        <?php for ($a = date('Y'); $a >= date('Y') - 2; $a--): ?>
+                        <option value="<?php echo esc_attr($a); ?>" <?php selected($anio, $a); ?>>
+                            <?php echo esc_html($a); ?>
+                        </option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Cards de estadísticas -->
+            <div class="fmd-resumen-stats">
+                <div class="fmd-stat-card">
+                    <div class="fmd-stat-valor"><?php echo esc_html(number_format($resumen['total_horas'], 1)); ?></div>
+                    <div class="fmd-stat-label"><?php esc_html_e('Horas totales', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="fmd-stat-card">
+                    <div class="fmd-stat-valor"><?php echo esc_html($resumen['dias_trabajados']); ?></div>
+                    <div class="fmd-stat-label"><?php esc_html_e('Días trabajados', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="fmd-stat-card">
+                    <div class="fmd-stat-valor"><?php echo esc_html(number_format($resumen['promedio_horas_diarias'], 1)); ?></div>
+                    <div class="fmd-stat-label"><?php esc_html_e('Promedio diario', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+
+            <?php if (!empty($resumen['detalle_dias'])): ?>
+            <!-- Gráfico de barras -->
+            <div class="fmd-grafico">
+                <h4><?php esc_html_e('Horas por día', 'flavor-chat-ia'); ?></h4>
+                <div class="fmd-grafico-barras">
+                    <?php
+                    $max_horas = max(array_column($resumen['detalle_dias'], 'horas'));
+                    $max_horas = max($max_horas, 8);
+                    foreach ($resumen['detalle_dias'] as $dia):
+                        $porcentaje = ($dia['horas'] / $max_horas) * 100;
+                        $color = $dia['horas'] >= 8 ? '#28a745' : ($dia['horas'] >= 4 ? '#ffc107' : '#dc3545');
+                    ?>
+                    <div class="fmd-barra-container" title="<?php echo esc_attr(date_i18n('l, j F', strtotime($dia['fecha'])) . ': ' . $dia['horas'] . 'h'); ?>">
+                        <div class="fmd-barra" style="height: <?php echo esc_attr($porcentaje); ?>%; background: <?php echo esc_attr($color); ?>;">
+                            <span class="fmd-barra-valor"><?php echo esc_html(number_format($dia['horas'], 1)); ?></span>
+                        </div>
+                        <span class="fmd-barra-label"><?php echo esc_html(date('d', strtotime($dia['fecha']))); ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Detalle por día -->
+            <div class="fmd-detalle-dias">
+                <h4><?php esc_html_e('Detalle por día', 'flavor-chat-ia'); ?></h4>
+                <div class="fmd-table-responsive">
+                    <table class="fmd-tabla">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Fichajes', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($resumen['detalle_dias'] as $dia): ?>
+                            <tr>
+                                <td><?php echo esc_html(date_i18n('l, j F', strtotime($dia['fecha']))); ?></td>
+                                <td>
+                                    <span class="fmd-horas-badge <?php echo $dia['horas'] >= 8 ? 'fmd-horas-completas' : 'fmd-horas-parciales'; ?>">
+                                        <?php echo esc_html(number_format($dia['horas'], 2)); ?>h
+                                    </span>
+                                </td>
+                                <td><?php echo esc_html($dia['fichajes']); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php else: ?>
+            <div class="fmd-empty-state">
+                <span class="dashicons dashicons-calendar-alt"></span>
+                <p><?php esc_html_e('No hay registros para este periodo.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .fmd-fichaje-resumen { max-width: 800px; margin: 0 auto; }
+        .fmd-resumen-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .fmd-resumen-header h3 { margin: 0; }
+        .fmd-periodo-selector { display: flex; gap: 0.5rem; }
+        .fmd-resumen-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .fmd-stat-card { background: var(--fmd-bg-secondary, #f8f9fa); border-radius: 12px; padding: 1.5rem; text-align: center; }
+        .fmd-stat-card .fmd-stat-valor { font-size: 2.5rem; font-weight: 700; color: var(--fmd-primary, #007bff); }
+        .fmd-stat-card .fmd-stat-label { font-size: 0.9rem; color: var(--fmd-text-muted, #6c757d); margin-top: 0.25rem; }
+        .fmd-grafico { background: var(--fmd-bg-secondary, #f8f9fa); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+        .fmd-grafico h4 { margin: 0 0 1rem; }
+        .fmd-grafico-barras { display: flex; align-items: flex-end; gap: 4px; height: 150px; overflow-x: auto; padding-bottom: 1.5rem; }
+        .fmd-barra-container { flex: 1; min-width: 24px; max-width: 40px; display: flex; flex-direction: column; align-items: center; height: 100%; }
+        .fmd-barra { width: 100%; border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; min-height: 2px; transition: height 0.3s ease; }
+        .fmd-barra-valor { font-size: 0.7rem; font-weight: 600; color: white; padding-top: 2px; white-space: nowrap; }
+        .fmd-barra-label { font-size: 0.75rem; color: var(--fmd-text-muted, #6c757d); margin-top: auto; }
+        .fmd-detalle-dias h4 { margin: 0 0 1rem; }
+        .fmd-horas-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; }
+        .fmd-horas-completas { background: #d4edda; color: #155724; }
+        .fmd-horas-parciales { background: #fff3cd; color: #856404; }
+        </style>
+        <?php
+    }
+
+    /**
+     * Renderiza el tab de membresía de socios
+     */
+    private function render_tab_socios_membresia() {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver tu membresía.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        $wp_user = get_userdata($user_id);
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $tabla_tipos = $wpdb->prefix . 'flavor_socios_tipos';
+
+        $socio = null;
+        $tipo_socio = null;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+            $socio = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
+                $user_id
+            ));
+
+            // Completar datos del usuario de WordPress si no están en la tabla
+            if ($socio) {
+                if (empty($socio->nombre)) {
+                    $socio->nombre = $wp_user->first_name ?: $wp_user->display_name;
+                }
+                if (empty($socio->apellidos)) {
+                    $socio->apellidos = $wp_user->last_name ?: '';
+                }
+                if (empty($socio->email)) {
+                    $socio->email = $wp_user->user_email;
+                }
+            }
+
+            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+                $tipo_socio = $wpdb->get_row($wpdb->prepare(
+                    "SELECT * FROM {$tabla_tipos} WHERE slug = %s",
+                    $socio->tipo_socio
+                ));
+            }
+        }
+
+        ?>
+        <div class="fmd-panel-content">
+            <?php if (!$socio): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-id"></span>
+                    <h3><?php esc_html_e('¡Únete como socio!', 'flavor-chat-ia'); ?></h3>
+                    <p><?php esc_html_e('Accede a beneficios exclusivos, descuentos y participa activamente.', 'flavor-chat-ia'); ?></p>
+                    <a href="<?php echo esc_url(home_url('/socios/inscripcion/')); ?>" class="fmd-btn fmd-btn-primary">
+                        <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="fmd-membresia-card" style="background: linear-gradient(135deg, <?php echo esc_attr($tipo_socio->color ?? '#7c3aed'); ?> 0%, <?php echo esc_attr($tipo_socio->color ?? '#7c3aed'); ?>dd 100%);">
+                    <div class="fmd-membresia-header">
+                        <span class="dashicons dashicons-<?php echo esc_attr($tipo_socio->icono ?? 'id'); ?>"></span>
+                        <span class="fmd-membresia-tipo"><?php echo esc_html($tipo_socio->nombre ?? ucfirst($socio->tipo_socio)); ?></span>
+                    </div>
+                    <div class="fmd-membresia-numero">
+                        <?php esc_html_e('Socio Nº', 'flavor-chat-ia'); ?> <?php echo esc_html($socio->numero_socio); ?>
+                    </div>
+                </div>
+
+                <div class="fmd-info-grid">
+                    <div class="fmd-info-item">
+                        <span class="fmd-info-label"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></span>
+                        <span class="fmd-info-value"><?php echo esc_html(trim($socio->nombre . ' ' . ($socio->apellidos ?? ''))); ?></span>
+                    </div>
+                    <div class="fmd-info-item">
+                        <span class="fmd-info-label"><?php esc_html_e('Email', 'flavor-chat-ia'); ?></span>
+                        <span class="fmd-info-value"><?php echo esc_html($socio->email); ?></span>
+                    </div>
+                    <div class="fmd-info-item">
+                        <span class="fmd-info-label"><?php esc_html_e('Fecha de Alta', 'flavor-chat-ia'); ?></span>
+                        <span class="fmd-info-value"><?php echo esc_html(date_i18n('d/m/Y', strtotime($socio->fecha_alta))); ?></span>
+                    </div>
+                    <div class="fmd-info-item">
+                        <span class="fmd-info-label"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></span>
+                        <span class="fmd-badge fmd-badge-<?php echo $socio->estado === 'activo' ? 'success' : 'warning'; ?>">
+                            <?php echo esc_html(ucfirst($socio->estado)); ?>
+                        </span>
+                    </div>
+                    <div class="fmd-info-item">
+                        <span class="fmd-info-label"><?php esc_html_e('Cuota', 'flavor-chat-ia'); ?></span>
+                        <span class="fmd-info-value">
+                            <?php
+                            $cuota = $socio->cuota_importe ?? $socio->cuota_mensual ?? 0;
+                            if ($cuota > 0) {
+                                echo esc_html(number_format_i18n($cuota, 2) . ' €/' . ($socio->cuota_tipo ?? 'mensual'));
+                            } else {
+                                esc_html_e('Gratuita', 'flavor-chat-ia');
+                            }
+                            ?>
+                        </span>
+                    </div>
+                </div>
+
+                <?php if (!empty($tipo_socio->beneficios)): ?>
+                    <div class="fmd-beneficios">
+                        <h4><?php esc_html_e('Tus beneficios', 'flavor-chat-ia'); ?></h4>
+                        <ul>
+                            <?php foreach (explode(',', $tipo_socio->beneficios) as $beneficio): ?>
+                                <li><span class="dashicons dashicons-yes-alt"></span> <?php echo esc_html(trim($beneficio)); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el tab de cuotas de socios
+     */
+    private function render_tab_socios_cuotas() {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver tus cuotas.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+
+        $socio = null;
+        $cuotas = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+            $socio = $wpdb->get_row($wpdb->prepare(
+                "SELECT id FROM {$tabla_socios} WHERE usuario_id = %d",
+                $user_id
+            ));
+
+            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+                $cuotas = $wpdb->get_results($wpdb->prepare(
+                    "SELECT * FROM {$tabla_cuotas} WHERE socio_id = %d ORDER BY fecha_vencimiento DESC LIMIT 24",
+                    $socio->id
+                ));
+            }
+        }
+
+        $estados_colores = [
+            'pendiente' => 'warning',
+            'pagada'    => 'success',
+            'vencida'   => 'danger',
+            'cancelada' => 'secondary',
+        ];
+
+        ?>
+        <div class="fmd-panel-content">
+            <?php if (!$socio): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-id"></span>
+                    <p><?php esc_html_e('No eres socio todavía.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php elseif (empty($cuotas)): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-money-alt"></span>
+                    <p><?php esc_html_e('No tienes cuotas registradas.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="fmd-table-responsive">
+                    <table class="fmd-table">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e('Concepto', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Período', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Vencimiento', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($cuotas as $cuota): ?>
+                                <tr>
+                                    <td><?php echo esc_html($cuota->concepto ?? 'Cuota'); ?></td>
+                                    <td><?php echo esc_html($cuota->periodo); ?></td>
+                                    <td><strong><?php echo esc_html(number_format_i18n($cuota->importe, 2)); ?> €</strong></td>
+                                    <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($cuota->fecha_vencimiento ?? $cuota->fecha_cargo ?? ''))); ?></td>
+                                    <td>
+                                        <span class="fmd-badge fmd-badge-<?php echo esc_attr($estados_colores[$cuota->estado] ?? 'secondary'); ?>">
+                                            <?php echo esc_html(ucfirst($cuota->estado)); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <?php if ($cuota->estado === 'pendiente' || $cuota->estado === 'vencida'): ?>
+                                            <a href="<?php echo esc_url(home_url('/mi-portal/socios/pagar/' . $cuota->id)); ?>" class="fmd-btn fmd-btn-sm fmd-btn-primary">
+                                                <?php esc_html_e('Pagar', 'flavor-chat-ia'); ?>
+                                            </a>
+                                        <?php elseif (!empty($cuota->factura_url)): ?>
+                                            <a href="<?php echo esc_url($cuota->factura_url); ?>" class="fmd-btn fmd-btn-sm fmd-btn-outline" target="_blank">
+                                                <?php esc_html_e('Factura', 'flavor-chat-ia'); ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="fmd-text-muted">—</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el tab de directorio de socios
+     */
+    private function render_tab_socios_directorio() {
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+            echo '<div class="fmd-empty-state">';
+            echo '<p>' . esc_html__('El directorio de socios no está disponible.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        // Obtener socios con datos del usuario de WordPress
+        $socios = $wpdb->get_results(
+            "SELECT s.numero_socio, s.tipo_socio, s.fecha_alta, s.usuario_id,
+                    u.ID as user_id, u.display_name, u.user_email
+             FROM {$tabla_socios} s
+             LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
+             WHERE s.estado = 'activo'
+             ORDER BY u.display_name ASC
+             LIMIT 50"
+        );
+
+        // Completar datos
+        foreach ($socios as $socio) {
+            $socio->nombre = $socio->display_name ?: 'Socio';
+            $socio->apellidos = '';
+        }
+
+        ?>
+        <div class="fmd-panel-content">
+            <?php if (empty($socios)): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-groups"></span>
+                    <p><?php esc_html_e('No hay socios registrados.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="fmd-directorio-grid">
+                    <?php foreach ($socios as $socio):
+                        $avatar_url = $socio->user_id ? get_avatar_url($socio->user_id, ['size' => 64]) : '';
+                    ?>
+                        <div class="fmd-socio-card">
+                            <div class="fmd-socio-avatar">
+                                <?php if ($avatar_url): ?>
+                                    <img src="<?php echo esc_url($avatar_url); ?>" alt="">
+                                <?php else: ?>
+                                    <span class="dashicons dashicons-admin-users"></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="fmd-socio-info">
+                                <span class="fmd-socio-nombre"><?php echo esc_html(trim($socio->nombre . ' ' . ($socio->apellidos ?? ''))); ?></span>
+                                <span class="fmd-socio-numero"><?php echo esc_html($socio->numero_socio); ?></span>
+                                <span class="fmd-socio-tipo"><?php echo esc_html(ucfirst($socio->tipo_socio)); ?></span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el tab de beneficios de socio
+     */
+    private function render_tab_socios_beneficios() {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver los beneficios.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $tabla_tipos = $wpdb->prefix . 'flavor_socios_tipos';
+
+        $socio = null;
+        $tipo_socio = null;
+        $todos_tipos = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+            $socio = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
+                $user_id
+            ));
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+            if ($socio) {
+                $tipo_socio = $wpdb->get_row($wpdb->prepare(
+                    "SELECT * FROM {$tabla_tipos} WHERE slug = %s",
+                    $socio->tipo_socio
+                ));
+            }
+            $todos_tipos = $wpdb->get_results("SELECT * FROM {$tabla_tipos} WHERE activo = 1 ORDER BY orden ASC");
+        }
+
+        ?>
+        <div class="fmd-panel-content">
+            <?php if ($socio && $tipo_socio): ?>
+                <div class="fmd-beneficios-header" style="background: <?php echo esc_attr($tipo_socio->color ?? '#7c3aed'); ?>; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: white;">
+                        <span class="dashicons dashicons-<?php echo esc_attr($tipo_socio->icono ?? 'awards'); ?>"></span>
+                        <?php echo esc_html($tipo_socio->nombre); ?>
+                    </h3>
+                    <p style="margin: 10px 0 0; opacity: 0.9;"><?php echo esc_html($tipo_socio->descripcion ?? ''); ?></p>
+                </div>
+
+                <h4><?php esc_html_e('Tus beneficios incluidos', 'flavor-chat-ia'); ?></h4>
+                <?php if (!empty($tipo_socio->beneficios)): ?>
+                    <ul class="fmd-beneficios-lista">
+                        <?php foreach (explode(',', $tipo_socio->beneficios) as $beneficio): ?>
+                            <li>
+                                <span class="dashicons dashicons-yes-alt" style="color: #10b981;"></span>
+                                <?php echo esc_html(trim($beneficio)); ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p><?php esc_html_e('Contacta con administración para conocer tus beneficios.', 'flavor-chat-ia'); ?></p>
+                <?php endif; ?>
+
+            <?php else: ?>
+                <h3><?php esc_html_e('Tipos de membresía disponibles', 'flavor-chat-ia'); ?></h3>
+                <?php if (empty($todos_tipos)): ?>
+                    <p><?php esc_html_e('No hay tipos de membresía configurados.', 'flavor-chat-ia'); ?></p>
+                <?php else: ?>
+                    <div class="fmd-tipos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                        <?php foreach ($todos_tipos as $tipo): ?>
+                            <div class="fmd-tipo-card" style="border: 2px solid <?php echo esc_attr($tipo->color ?? '#e5e7eb'); ?>; border-radius: 12px; padding: 20px;">
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                    <span class="dashicons dashicons-<?php echo esc_attr($tipo->icono ?? 'id'); ?>" style="color: <?php echo esc_attr($tipo->color ?? '#7c3aed'); ?>; font-size: 24px;"></span>
+                                    <h4 style="margin: 0;"><?php echo esc_html($tipo->nombre); ?></h4>
+                                </div>
+                                <p style="color: #6b7280; font-size: 14px;"><?php echo esc_html($tipo->descripcion ?? ''); ?></p>
+                                <div style="margin: 15px 0; padding: 15px; background: #f9fafb; border-radius: 8px;">
+                                    <?php if ($tipo->es_gratuito): ?>
+                                        <span style="font-size: 24px; font-weight: bold; color: #10b981;"><?php esc_html_e('Gratuito', 'flavor-chat-ia'); ?></span>
+                                    <?php else: ?>
+                                        <span style="font-size: 24px; font-weight: bold;"><?php echo esc_html(number_format_i18n($tipo->cuota_mensual ?? 0, 2)); ?> €</span>
+                                        <span style="color: #6b7280;">/<?php esc_html_e('mes', 'flavor-chat-ia'); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if (!empty($tipo->beneficios)): ?>
+                                    <ul style="list-style: none; padding: 0; margin: 0;">
+                                        <?php foreach (explode(',', $tipo->beneficios) as $beneficio): ?>
+                                            <li style="padding: 5px 0; display: flex; align-items: center; gap: 8px;">
+                                                <span class="dashicons dashicons-yes" style="color: #10b981;"></span>
+                                                <?php echo esc_html(trim($beneficio)); ?>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/socios/inscripcion/')); ?>" class="fmd-btn fmd-btn-primary">
+                            <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el carnet digital de socio
+     */
+    private function render_tab_socios_carnet() {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver tu carnet.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        $wp_user = get_userdata($user_id);
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $tabla_tipos = $wpdb->prefix . 'flavor_socios_tipos';
+
+        $socio = null;
+        $tipo_socio = null;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+            $socio = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
+                $user_id
+            ));
+            if ($socio) {
+                if (empty($socio->nombre)) {
+                    $socio->nombre = $wp_user->first_name ?: $wp_user->display_name;
+                }
+                if (empty($socio->apellidos)) {
+                    $socio->apellidos = $wp_user->last_name ?: '';
+                }
+            }
+            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_tipos)) {
+                $tipo_socio = $wpdb->get_row($wpdb->prepare(
+                    "SELECT * FROM {$tabla_tipos} WHERE slug = %s",
+                    $socio->tipo_socio
+                ));
+            }
+        }
+
+        ?>
+        <div class="fmd-panel-content">
+            <?php if (!$socio): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-id"></span>
+                    <h3><?php esc_html_e('No tienes carnet de socio', 'flavor-chat-ia'); ?></h3>
+                    <p><?php esc_html_e('Hazte socio para obtener tu carnet digital.', 'flavor-chat-ia'); ?></p>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/socios/inscripcion/')); ?>" class="fmd-btn fmd-btn-primary">
+                        <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+            <?php elseif ($socio->estado !== 'activo'): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-warning"></span>
+                    <h3><?php esc_html_e('Carnet no disponible', 'flavor-chat-ia'); ?></h3>
+                    <p><?php esc_html_e('Tu membresía no está activa. Contacta con administración.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else:
+                $color = $tipo_socio->color ?? '#7c3aed';
+                $avatar_url = get_avatar_url($user_id, ['size' => 120]);
+            ?>
+                <div class="fmd-carnet-container" style="max-width: 400px; margin: 0 auto;">
+                    <div class="fmd-carnet" style="background: linear-gradient(135deg, <?php echo esc_attr($color); ?> 0%, <?php echo esc_attr($color); ?>cc 100%); color: white; border-radius: 16px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                            <div>
+                                <div style="font-size: 12px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;"><?php esc_html_e('Carnet de Socio', 'flavor-chat-ia'); ?></div>
+                                <div style="font-size: 24px; font-weight: bold; margin-top: 5px;"><?php echo esc_html($tipo_socio->nombre ?? ucfirst($socio->tipo_socio)); ?></div>
+                            </div>
+                            <span class="dashicons dashicons-<?php echo esc_attr($tipo_socio->icono ?? 'id'); ?>" style="font-size: 32px; width: 32px; height: 32px;"></span>
+                        </div>
+
+                        <div style="display: flex; gap: 20px; align-items: center; margin: 25px 0;">
+                            <?php if ($avatar_url): ?>
+                                <img src="<?php echo esc_url($avatar_url); ?>" alt="" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.5);">
+                            <?php endif; ?>
+                            <div>
+                                <div style="font-size: 20px; font-weight: bold;"><?php echo esc_html(trim($socio->nombre . ' ' . ($socio->apellidos ?? ''))); ?></div>
+                                <div style="font-size: 28px; font-weight: bold; opacity: 0.9; margin-top: 5px;"><?php echo esc_html($socio->numero_socio); ?></div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 12px;">
+                            <div>
+                                <div style="opacity: 0.7;"><?php esc_html_e('Miembro desde', 'flavor-chat-ia'); ?></div>
+                                <div style="font-weight: bold;"><?php echo esc_html(date_i18n('M Y', strtotime($socio->fecha_alta))); ?></div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="opacity: 0.7;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></div>
+                                <div style="font-weight: bold;"><?php esc_html_e('ACTIVO', 'flavor-chat-ia'); ?></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="window.print();" class="fmd-btn fmd-btn-outline">
+                            <span class="dashicons dashicons-printer"></span>
+                            <?php esc_html_e('Imprimir carnet', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza el historial de membresía
+     */
+    private function render_tab_socios_historial() {
+        if (!is_user_logged_in()) {
+            echo '<div class="fmd-login-required">';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver tu historial.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        global $wpdb;
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+
+        $socio = null;
+        $historial = [];
+        $estadisticas = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
+            $socio = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_socios} WHERE usuario_id = %d",
+                $user_id
+            ));
+
+            if ($socio && Flavor_Chat_Helpers::tabla_existe($tabla_cuotas)) {
+                // Obtener todas las cuotas pagadas
+                $cuotas_pagadas = $wpdb->get_results($wpdb->prepare(
+                    "SELECT * FROM {$tabla_cuotas} WHERE socio_id = %d AND estado = 'pagada' ORDER BY fecha_pago DESC",
+                    $socio->id
+                ));
+
+                foreach ($cuotas_pagadas as $cuota) {
+                    $historial[] = [
+                        'fecha' => $cuota->fecha_pago,
+                        'tipo' => 'pago',
+                        'descripcion' => sprintf(__('Pago de %s', 'flavor-chat-ia'), $cuota->concepto),
+                        'importe' => $cuota->importe,
+                        'icono' => 'money-alt',
+                        'color' => '#10b981'
+                    ];
+                }
+
+                // Estadísticas
+                $total_pagado = $wpdb->get_var($wpdb->prepare(
+                    "SELECT SUM(importe) FROM {$tabla_cuotas} WHERE socio_id = %d AND estado = 'pagada'",
+                    $socio->id
+                ));
+                $cuotas_count = count($cuotas_pagadas);
+                $antiguedad_dias = floor((time() - strtotime($socio->fecha_alta)) / 86400);
+                $antiguedad_meses = floor($antiguedad_dias / 30);
+
+                $estadisticas = [
+                    ['label' => __('Total aportado', 'flavor-chat-ia'), 'value' => number_format_i18n($total_pagado ?? 0, 2) . ' €', 'icon' => 'money-alt'],
+                    ['label' => __('Cuotas pagadas', 'flavor-chat-ia'), 'value' => $cuotas_count, 'icon' => 'yes-alt'],
+                    ['label' => __('Antigüedad', 'flavor-chat-ia'), 'value' => sprintf(_n('%d mes', '%d meses', $antiguedad_meses, 'flavor-chat-ia'), $antiguedad_meses), 'icon' => 'calendar-alt'],
+                ];
+            }
+        }
+
+        // Ordenar historial por fecha
+        usort($historial, function($a, $b) {
+            return strtotime($b['fecha']) - strtotime($a['fecha']);
+        });
+
+        ?>
+        <div class="fmd-panel-content">
+            <?php if (!$socio): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-backup"></span>
+                    <p><?php esc_html_e('No eres socio todavía.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <?php if (!empty($estadisticas)): ?>
+                    <div class="fmd-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                        <?php foreach ($estadisticas as $stat): ?>
+                            <div style="background: #f9fafb; padding: 20px; border-radius: 12px; text-align: center;">
+                                <span class="dashicons dashicons-<?php echo esc_attr($stat['icon']); ?>" style="font-size: 24px; color: #7c3aed;"></span>
+                                <div style="font-size: 24px; font-weight: bold; margin: 10px 0;"><?php echo esc_html($stat['value']); ?></div>
+                                <div style="color: #6b7280; font-size: 14px;"><?php echo esc_html($stat['label']); ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <h4><?php esc_html_e('Historial de pagos', 'flavor-chat-ia'); ?></h4>
+                <?php if (empty($historial)): ?>
+                    <p style="color: #6b7280;"><?php esc_html_e('No hay movimientos registrados.', 'flavor-chat-ia'); ?></p>
+                <?php else: ?>
+                    <div class="fmd-historial-timeline">
+                        <?php foreach (array_slice($historial, 0, 20) as $item): ?>
+                            <div style="display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #e5e7eb;">
+                                <div style="width: 40px; height: 40px; background: <?php echo esc_attr($item['color']); ?>20; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <span class="dashicons dashicons-<?php echo esc_attr($item['icono']); ?>" style="color: <?php echo esc_attr($item['color']); ?>;"></span>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 500;"><?php echo esc_html($item['descripcion']); ?></div>
+                                    <div style="color: #6b7280; font-size: 13px;"><?php echo esc_html(date_i18n('d M Y, H:i', strtotime($item['fecha']))); ?></div>
+                                </div>
+                                <?php if (!empty($item['importe'])): ?>
+                                    <div style="font-weight: bold; color: #10b981;">+<?php echo esc_html(number_format_i18n($item['importe'], 2)); ?> €</div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    // =========================================================
+    // FOROS - Renderizado de tabs
+    // =========================================================
+
+    /**
+     * Renderiza tab de temas recientes del foro
+     */
+    private function render_tab_foros_temas_recientes() {
+        global $wpdb;
+
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+
+        // Verificar si la tabla existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_hilos)) {
+            ?>
+            <div class="fmd-empty-state">
+                <span class="dashicons dashicons-format-chat"></span>
+                <p><?php esc_html_e('El módulo de foros no está configurado correctamente.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
+            return;
+        }
+
+        // Obtener hilos recientes
+        $hilos_recientes = $wpdb->get_results(
+            "SELECT h.*, f.nombre AS nombre_foro, f.icono AS icono_foro,
+                    u.display_name AS nombre_autor,
+                    (SELECT COUNT(*) FROM {$tabla_respuestas} r WHERE r.hilo_id = h.id AND r.estado = 'visible') AS total_respuestas
+             FROM {$tabla_hilos} h
+             LEFT JOIN {$tabla_foros} f ON f.id = h.foro_id
+             LEFT JOIN {$wpdb->users} u ON u.ID = h.autor_id
+             WHERE h.estado != 'eliminado'
+             ORDER BY h.es_fijado DESC, h.ultima_actividad DESC
+             LIMIT 20"
+        );
+        ?>
+        <div class="fmd-panel-content">
+            <?php if (empty($hilos_recientes)): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-format-chat"></span>
+                    <p><?php esc_html_e('No hay temas de discusión aún.', 'flavor-chat-ia'); ?></p>
+                    <p class="fmd-empty-cta"><?php esc_html_e('¡Sé el primero en iniciar una conversación!', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="fmd-hilos-lista">
+                    <?php foreach ($hilos_recientes as $hilo): ?>
+                        <?php
+                        $url_hilo = home_url('/mi-portal/foros/tema/' . $hilo->id . '/');
+                        $tiempo_transcurrido = human_time_diff(strtotime($hilo->ultima_actividad), current_time('timestamp'));
+                        $clases_hilo = 'fmd-hilo-item';
+                        if ($hilo->es_fijado) {
+                            $clases_hilo .= ' fmd-hilo-fijado';
+                        }
+                        if ($hilo->estado === 'cerrado') {
+                            $clases_hilo .= ' fmd-hilo-cerrado';
+                        }
+                        ?>
+                        <article class="<?php echo esc_attr($clases_hilo); ?>">
+                            <div class="fmd-hilo-avatar">
+                                <?php echo get_avatar($hilo->autor_id, 48); ?>
+                            </div>
+                            <div class="fmd-hilo-contenido">
+                                <h4 class="fmd-hilo-titulo">
+                                    <?php if ($hilo->es_fijado): ?>
+                                        <span class="dashicons dashicons-admin-post" title="<?php esc_attr_e('Fijado', 'flavor-chat-ia'); ?>" style="color: var(--module-color);"></span>
+                                    <?php endif; ?>
+                                    <?php if ($hilo->estado === 'cerrado'): ?>
+                                        <span class="dashicons dashicons-lock" title="<?php esc_attr_e('Cerrado', 'flavor-chat-ia'); ?>" style="color: #ef4444;"></span>
+                                    <?php endif; ?>
+                                    <a href="<?php echo esc_url($url_hilo); ?>"><?php echo esc_html($hilo->titulo); ?></a>
+                                </h4>
+                                <div class="fmd-hilo-meta">
+                                    <span class="fmd-hilo-autor">
+                                        <?php echo esc_html($hilo->nombre_autor ?: __('Anónimo', 'flavor-chat-ia')); ?>
+                                    </span>
+                                    <span class="fmd-hilo-separador">·</span>
+                                    <span class="fmd-hilo-categoria" title="<?php esc_attr_e('Categoría', 'flavor-chat-ia'); ?>">
+                                        <?php echo esc_html($hilo->icono_foro ?: '💬'); ?>
+                                        <?php echo esc_html($hilo->nombre_foro ?: __('General', 'flavor-chat-ia')); ?>
+                                    </span>
+                                    <span class="fmd-hilo-separador">·</span>
+                                    <span class="fmd-hilo-tiempo" title="<?php echo esc_attr(date_i18n('d/m/Y H:i', strtotime($hilo->ultima_actividad))); ?>">
+                                        <?php echo sprintf(__('hace %s', 'flavor-chat-ia'), esc_html($tiempo_transcurrido)); ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="fmd-hilo-stats">
+                                <div class="fmd-hilo-stat" title="<?php esc_attr_e('Respuestas', 'flavor-chat-ia'); ?>">
+                                    <span class="dashicons dashicons-admin-comments"></span>
+                                    <span><?php echo intval($hilo->total_respuestas); ?></span>
+                                </div>
+                                <div class="fmd-hilo-stat" title="<?php esc_attr_e('Vistas', 'flavor-chat-ia'); ?>">
+                                    <span class="dashicons dashicons-visibility"></span>
+                                    <span><?php echo intval($hilo->vistas); ?></span>
+                                </div>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .fmd-hilos-lista { display: flex; flex-direction: column; gap: 1px; background: #e5e7eb; border-radius: 12px; overflow: hidden; }
+        .fmd-hilo-item { display: flex; gap: 16px; padding: 16px; background: #fff; align-items: flex-start; transition: background 0.2s; }
+        .fmd-hilo-item:hover { background: #f9fafb; }
+        .fmd-hilo-fijado { background: #fef3c7; border-left: 3px solid #f59e0b; }
+        .fmd-hilo-fijado:hover { background: #fef9c3; }
+        .fmd-hilo-cerrado { opacity: 0.7; }
+        .fmd-hilo-avatar img { border-radius: 50%; width: 48px; height: 48px; }
+        .fmd-hilo-contenido { flex: 1; min-width: 0; }
+        .fmd-hilo-titulo { margin: 0 0 6px; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .fmd-hilo-titulo a { color: inherit; text-decoration: none; }
+        .fmd-hilo-titulo a:hover { color: var(--module-color, #3b82f6); }
+        .fmd-hilo-titulo .dashicons { font-size: 16px; width: 16px; height: 16px; }
+        .fmd-hilo-meta { display: flex; flex-wrap: wrap; gap: 4px; font-size: 0.8125rem; color: #6b7280; }
+        .fmd-hilo-separador { color: #d1d5db; }
+        .fmd-hilo-categoria { display: inline-flex; align-items: center; gap: 4px; }
+        .fmd-hilo-stats { display: flex; gap: 16px; }
+        .fmd-hilo-stat { display: flex; align-items: center; gap: 4px; font-size: 0.875rem; color: #6b7280; }
+        .fmd-hilo-stat .dashicons { font-size: 16px; width: 16px; height: 16px; }
+        @media (max-width: 640px) {
+            .fmd-hilo-item { flex-wrap: wrap; }
+            .fmd-hilo-avatar { display: none; }
+            .fmd-hilo-stats { width: 100%; justify-content: flex-start; margin-top: 8px; }
+        }
+        </style>
+        <?php
+    }
+
+    /**
+     * Renderiza tab de hilos del usuario actual
+     */
+    private function render_tab_foros_mis_hilos() {
+        if (!is_user_logged_in()) {
+            ?>
+            <div class="fmd-login-required">
+                <span class="dashicons dashicons-lock"></span>
+                <p><?php esc_html_e('Debes iniciar sesión para ver tus hilos.', 'flavor-chat-ia'); ?></p>
+                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fmd-btn fmd-btn-primary">
+                    <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php
+            return;
+        }
+
+        global $wpdb;
+        $usuario_id_actual = get_current_user_id();
+
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+
+        // Obtener hilos del usuario
+        $mis_hilos = $wpdb->get_results($wpdb->prepare(
+            "SELECT h.*, f.nombre AS nombre_foro, f.icono AS icono_foro,
+                    (SELECT COUNT(*) FROM {$tabla_respuestas} r WHERE r.hilo_id = h.id AND r.estado = 'visible') AS total_respuestas
+             FROM {$tabla_hilos} h
+             LEFT JOIN {$tabla_foros} f ON f.id = h.foro_id
+             WHERE h.autor_id = %d AND h.estado != 'eliminado'
+             ORDER BY h.ultima_actividad DESC
+             LIMIT 50",
+            $usuario_id_actual
+        ));
+
+        // Estadísticas del usuario
+        $total_hilos_usuario = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_hilos} WHERE autor_id = %d AND estado != 'eliminado'",
+            $usuario_id_actual
+        ));
+        $total_respuestas_usuario = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_respuestas} WHERE autor_id = %d AND estado = 'visible'",
+            $usuario_id_actual
+        ));
+        ?>
+        <div class="fmd-panel-content">
+            <!-- Estadísticas del usuario -->
+            <div class="fmd-user-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                <div class="fmd-stat-card">
+                    <span class="dashicons dashicons-format-chat" style="color: var(--module-color);"></span>
+                    <span class="fmd-stat-value"><?php echo intval($total_hilos_usuario); ?></span>
+                    <span class="fmd-stat-label"><?php esc_html_e('Temas creados', 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="fmd-stat-card">
+                    <span class="dashicons dashicons-admin-comments" style="color: #10b981;"></span>
+                    <span class="fmd-stat-value"><?php echo intval($total_respuestas_usuario); ?></span>
+                    <span class="fmd-stat-label"><?php esc_html_e('Respuestas', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+
+            <?php if (empty($mis_hilos)): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-admin-comments"></span>
+                    <p><?php esc_html_e('No has creado ningún tema todavía.', 'flavor-chat-ia'); ?></p>
+                    <p class="fmd-empty-cta"><?php esc_html_e('¡Empieza una nueva discusión!', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <h4 style="margin: 0 0 16px; font-size: 1rem;"><?php esc_html_e('Tus temas', 'flavor-chat-ia'); ?></h4>
+                <div class="fmd-hilos-lista">
+                    <?php foreach ($mis_hilos as $hilo): ?>
+                        <?php
+                        $url_hilo = home_url('/mi-portal/foros/tema/' . $hilo->id . '/');
+                        $tiempo_transcurrido = human_time_diff(strtotime($hilo->ultima_actividad), current_time('timestamp'));
+                        $estado_badge = '';
+                        switch ($hilo->estado) {
+                            case 'abierto':
+                                $estado_badge = '<span class="fmd-badge fmd-badge-success">' . __('Abierto', 'flavor-chat-ia') . '</span>';
+                                break;
+                            case 'cerrado':
+                                $estado_badge = '<span class="fmd-badge fmd-badge-warning">' . __('Cerrado', 'flavor-chat-ia') . '</span>';
+                                break;
+                            case 'fijado':
+                                $estado_badge = '<span class="fmd-badge fmd-badge-info">' . __('Fijado', 'flavor-chat-ia') . '</span>';
+                                break;
+                        }
+                        ?>
+                        <article class="fmd-hilo-item">
+                            <div class="fmd-hilo-contenido" style="flex: 1;">
+                                <h4 class="fmd-hilo-titulo">
+                                    <a href="<?php echo esc_url($url_hilo); ?>"><?php echo esc_html($hilo->titulo); ?></a>
+                                    <?php echo $estado_badge; ?>
+                                </h4>
+                                <div class="fmd-hilo-meta">
+                                    <span class="fmd-hilo-categoria">
+                                        <?php echo esc_html($hilo->icono_foro ?: '💬'); ?>
+                                        <?php echo esc_html($hilo->nombre_foro ?: __('General', 'flavor-chat-ia')); ?>
+                                    </span>
+                                    <span class="fmd-hilo-separador">·</span>
+                                    <span class="fmd-hilo-tiempo">
+                                        <?php echo sprintf(__('Última actividad hace %s', 'flavor-chat-ia'), esc_html($tiempo_transcurrido)); ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="fmd-hilo-stats">
+                                <div class="fmd-hilo-stat" title="<?php esc_attr_e('Respuestas', 'flavor-chat-ia'); ?>">
+                                    <span class="dashicons dashicons-admin-comments"></span>
+                                    <span><?php echo intval($hilo->total_respuestas); ?></span>
+                                </div>
+                                <div class="fmd-hilo-stat" title="<?php esc_attr_e('Vistas', 'flavor-chat-ia'); ?>">
+                                    <span class="dashicons dashicons-visibility"></span>
+                                    <span><?php echo intval($hilo->vistas); ?></span>
+                                </div>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .fmd-stat-card { background: #f9fafb; padding: 16px; border-radius: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .fmd-stat-card .dashicons { font-size: 24px; width: 24px; height: 24px; }
+        .fmd-stat-value { font-size: 1.5rem; font-weight: bold; }
+        .fmd-stat-label { font-size: 0.75rem; color: #6b7280; }
+        .fmd-badge { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 0.6875rem; font-weight: 500; }
+        .fmd-badge-success { background: #d1fae5; color: #065f46; }
+        .fmd-badge-warning { background: #fef3c7; color: #92400e; }
+        .fmd-badge-info { background: #dbeafe; color: #1e40af; }
+        </style>
+        <?php
+    }
+
+    /**
+     * Renderiza formulario para crear nuevo tema
+     */
+    private function render_tab_foros_nuevo_tema() {
+        if (!is_user_logged_in()) {
+            ?>
+            <div class="fmd-login-required">
+                <span class="dashicons dashicons-lock"></span>
+                <p><?php esc_html_e('Debes iniciar sesión para crear un tema.', 'flavor-chat-ia'); ?></p>
+                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fmd-btn fmd-btn-primary">
+                    <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php
+            return;
+        }
+
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+
+        // Obtener categorías de foros
+        $categorias_foro = $wpdb->get_results(
+            "SELECT id, nombre, icono, descripcion FROM {$tabla_foros} WHERE estado = 'activo' ORDER BY orden ASC, nombre ASC"
+        );
+        ?>
+        <div class="fmd-panel-content">
+            <div class="fmd-form-container" style="max-width: 700px;">
+                <h3 style="margin: 0 0 8px;">
+                    <span class="dashicons dashicons-plus-alt" style="color: var(--module-color);"></span>
+                    <?php esc_html_e('Crear nuevo tema', 'flavor-chat-ia'); ?>
+                </h3>
+                <p style="color: #6b7280; margin: 0 0 24px;">
+                    <?php esc_html_e('Inicia una nueva discusión con la comunidad.', 'flavor-chat-ia'); ?>
+                </p>
+
+                <form id="form-nuevo-tema" class="fmd-form">
+                    <?php wp_nonce_field('flavor_foros_nonce', 'nonce'); ?>
+
+                    <div class="fmd-form-group">
+                        <label for="foro-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <select id="foro-categoria" name="foro_id" required>
+                            <option value=""><?php esc_html_e('Selecciona una categoría...', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($categorias_foro as $categoria): ?>
+                                <option value="<?php echo esc_attr($categoria->id); ?>">
+                                    <?php echo esc_html($categoria->icono . ' ' . $categoria->nombre); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="fmd-form-group">
+                        <label for="foro-titulo"><?php esc_html_e('Título del tema', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <input type="text" id="foro-titulo" name="titulo" required
+                               placeholder="<?php esc_attr_e('Escribe un título descriptivo...', 'flavor-chat-ia'); ?>"
+                               maxlength="255">
+                        <span class="fmd-form-hint"><?php esc_html_e('Máximo 255 caracteres', 'flavor-chat-ia'); ?></span>
+                    </div>
+
+                    <div class="fmd-form-group">
+                        <label for="foro-contenido"><?php esc_html_e('Contenido', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <textarea id="foro-contenido" name="contenido" rows="8" required
+                                  placeholder="<?php esc_attr_e('Describe tu tema o pregunta con detalle...', 'flavor-chat-ia'); ?>"
+                                  minlength="10"></textarea>
+                        <span class="fmd-form-hint"><?php esc_html_e('Mínimo 10 caracteres. Sé claro y descriptivo.', 'flavor-chat-ia'); ?></span>
+                    </div>
+
+                    <div class="fmd-form-actions">
+                        <button type="submit" class="fmd-btn fmd-btn-primary fmd-btn-lg">
+                            <span class="dashicons dashicons-yes"></span>
+                            <?php esc_html_e('Publicar tema', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="form-nuevo-tema-mensaje" style="display: none; margin-top: 16px;"></div>
+            </div>
+        </div>
+
+        <style>
+        .fmd-form-container { background: #fff; padding: 24px; border-radius: 12px; border: 1px solid #e5e7eb; }
+        .fmd-form-group { margin-bottom: 20px; }
+        .fmd-form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9375rem; }
+        .fmd-form-group label .required { color: #ef4444; }
+        .fmd-form-group input, .fmd-form-group select, .fmd-form-group textarea {
+            width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 8px;
+            font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .fmd-form-group input:focus, .fmd-form-group select:focus, .fmd-form-group textarea:focus {
+            outline: none; border-color: var(--module-color, #3b82f6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .fmd-form-group textarea { resize: vertical; min-height: 150px; }
+        .fmd-form-hint { display: block; margin-top: 4px; font-size: 0.8125rem; color: #6b7280; }
+        .fmd-form-actions { margin-top: 24px; }
+        .fmd-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9375rem; font-weight: 500; transition: all 0.2s; }
+        .fmd-btn-primary { background: var(--module-color, #3b82f6); color: #fff; }
+        .fmd-btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .fmd-btn-lg { padding: 14px 28px; font-size: 1rem; }
+        .fmd-btn .dashicons { font-size: 18px; width: 18px; height: 18px; }
+        </style>
+
+        <script>
+        (function() {
+            const form = document.getElementById('form-nuevo-tema');
+            const mensajeDiv = document.getElementById('form-nuevo-tema-mensaje');
+
+            if (!form) return;
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const textoOriginal = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="dashicons dashicons-update spin"></span> <?php esc_html_e('Publicando...', 'flavor-chat-ia'); ?>';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(form);
+                formData.append('action', 'flavor_foros_crear_tema');
+
+                try {
+                    const response = await fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        mensajeDiv.innerHTML = '<div class="fmd-alert fmd-alert-success"><span class="dashicons dashicons-yes-alt"></span> ' + (data.data.mensaje || '<?php esc_html_e('Tema creado correctamente.', 'flavor-chat-ia'); ?>') + '</div>';
+                        mensajeDiv.style.display = 'block';
+                        form.reset();
+
+                        // Redirigir al tema creado después de un momento
+                        if (data.data.tema_id) {
+                            setTimeout(() => {
+                                window.location.href = '<?php echo home_url('/mi-portal/foros/tema/'); ?>' + data.data.tema_id + '/';
+                            }, 1500);
+                        }
+                    } else {
+                        mensajeDiv.innerHTML = '<div class="fmd-alert fmd-alert-error"><span class="dashicons dashicons-warning"></span> ' + (data.data || '<?php esc_html_e('Error al crear el tema.', 'flavor-chat-ia'); ?>') + '</div>';
+                        mensajeDiv.style.display = 'block';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    mensajeDiv.innerHTML = '<div class="fmd-alert fmd-alert-error"><span class="dashicons dashicons-warning"></span> <?php esc_html_e('Error de conexión.', 'flavor-chat-ia'); ?></div>';
+                    mensajeDiv.style.display = 'block';
+                }
+
+                submitBtn.innerHTML = textoOriginal;
+                submitBtn.disabled = false;
+            });
+        })();
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderiza tab de categorías del foro
+     */
+    private function render_tab_foros_categorias() {
+        global $wpdb;
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+
+        // Verificar si la tabla existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+            ?>
+            <div class="fmd-empty-state">
+                <span class="dashicons dashicons-category"></span>
+                <p><?php esc_html_e('No hay categorías de foros configuradas.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
+            return;
+        }
+
+        // Obtener categorías con estadísticas
+        $categorias_foro = $wpdb->get_results(
+            "SELECT f.*,
+                    COALESCE((SELECT COUNT(*) FROM {$tabla_hilos} h WHERE h.foro_id = f.id AND h.estado != 'eliminado'), 0) AS total_hilos,
+                    COALESCE((SELECT MAX(h.ultima_actividad) FROM {$tabla_hilos} h WHERE h.foro_id = f.id AND h.estado != 'eliminado'), f.created_at) AS ultima_actividad
+             FROM {$tabla_foros} f
+             WHERE f.estado = 'activo'
+             ORDER BY f.orden ASC, f.nombre ASC"
+        );
+        ?>
+        <div class="fmd-panel-content">
+            <?php if (empty($categorias_foro)): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-category"></span>
+                    <p><?php esc_html_e('No hay categorías de foros disponibles.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="fmd-categorias-grid">
+                    <?php foreach ($categorias_foro as $categoria): ?>
+                        <?php
+                        $url_categoria = home_url('/mi-portal/foros/categoria/' . $categoria->id . '/');
+                        $tiempo_actividad = $categoria->ultima_actividad
+                            ? human_time_diff(strtotime($categoria->ultima_actividad), current_time('timestamp'))
+                            : null;
+                        ?>
+                        <a href="<?php echo esc_url($url_categoria); ?>" class="fmd-categoria-card">
+                            <div class="fmd-categoria-icono">
+                                <?php echo esc_html($categoria->icono ?: '💬'); ?>
+                            </div>
+                            <div class="fmd-categoria-info">
+                                <h4 class="fmd-categoria-nombre"><?php echo esc_html($categoria->nombre); ?></h4>
+                                <?php if ($categoria->descripcion): ?>
+                                    <p class="fmd-categoria-desc"><?php echo esc_html(wp_trim_words($categoria->descripcion, 15)); ?></p>
+                                <?php endif; ?>
+                                <div class="fmd-categoria-stats">
+                                    <span>
+                                        <span class="dashicons dashicons-format-chat"></span>
+                                        <?php echo sprintf(_n('%d tema', '%d temas', $categoria->total_hilos, 'flavor-chat-ia'), $categoria->total_hilos); ?>
+                                    </span>
+                                    <?php if ($tiempo_actividad): ?>
+                                        <span class="fmd-categoria-actividad">
+                                            <?php echo sprintf(__('Última actividad hace %s', 'flavor-chat-ia'), esc_html($tiempo_actividad)); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <span class="dashicons dashicons-arrow-right-alt2"></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .fmd-categorias-grid { display: flex; flex-direction: column; gap: 12px; }
+        .fmd-categoria-card {
+            display: flex; align-items: center; gap: 16px; padding: 20px;
+            background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+            text-decoration: none; color: inherit; transition: all 0.2s;
+        }
+        .fmd-categoria-card:hover { border-color: var(--module-color, #3b82f6); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .fmd-categoria-icono { font-size: 2rem; width: 56px; height: 56px; background: #f3f4f6; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .fmd-categoria-info { flex: 1; min-width: 0; }
+        .fmd-categoria-nombre { margin: 0 0 4px; font-size: 1.0625rem; font-weight: 600; }
+        .fmd-categoria-desc { margin: 0 0 8px; font-size: 0.875rem; color: #6b7280; }
+        .fmd-categoria-stats { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.8125rem; color: #6b7280; }
+        .fmd-categoria-stats span { display: inline-flex; align-items: center; gap: 4px; }
+        .fmd-categoria-stats .dashicons { font-size: 14px; width: 14px; height: 14px; }
+        .fmd-categoria-actividad { color: #9ca3af; }
+        .fmd-categoria-card > .dashicons { color: #d1d5db; font-size: 20px; transition: color 0.2s; }
+        .fmd-categoria-card:hover > .dashicons { color: var(--module-color, #3b82f6); }
+        @media (max-width: 640px) {
+            .fmd-categoria-card { flex-wrap: wrap; }
+            .fmd-categoria-icono { width: 48px; height: 48px; font-size: 1.5rem; }
+        }
+        </style>
+        <?php
     }
 
     /**
@@ -2996,30 +5361,18 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
-     * Renderiza detalle de un elemento
+     * Renderiza detalle de un elemento usando Single Renderer dinámico
      */
     private function render_module_item_detail() {
-        ?>
-        <div class="fmd-item-detail">
-            <div class="fmd-item-header">
-                <h2><?php printf(esc_html__('Detalle #%d', 'flavor-chat-ia'), $this->current_item_id); ?></h2>
-                <div class="fmd-item-actions">
-                    <button class="fmd-btn-secondary">
-                        <span class="dashicons dashicons-edit"></span>
-                        <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
-                    </button>
-                    <button class="fmd-btn-danger">
-                        <span class="dashicons dashicons-trash"></span>
-                        <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
-                    </button>
-                </div>
-            </div>
+        $module_slug = str_replace('_', '-', $this->current_module);
 
-            <div class="fmd-item-body">
-                <p><?php esc_html_e('Contenido del elemento...', 'flavor-chat-ia'); ?></p>
-            </div>
-        </div>
-        <?php
+        // Usar Single Renderer dinámico
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+
+        $renderer = new Flavor_Archive_Renderer();
+        echo $renderer->render_single_auto($module_slug, $this->current_item_id);
     }
 
     /**
@@ -3030,297 +5383,160 @@ class Flavor_Dynamic_Pages {
         $module = $this->current_module;
         $module_normalizado = str_replace('_', '-', $module);
 
-        // Acciones que son vistas (listados, mapas, calendarios) - NO formularios
-        $acciones_vista = ['mapa', 'listado', 'calendario', 'catalogo', 'grid', 'lista', 'buscar', 'productos', 'productores'];
+        // ============================================================
+        // PRIORIDAD 0: Verificar si es un tab de integración
+        // Consultamos DIRECTAMENTE get_renderer_config()['tabs'] porque
+        // las integraciones se definen ahí, no en get_dashboard_tabs()
+        // ============================================================
+        $module_instance = $this->get_module_instance($module);
+        $integration_tabs = [];
 
-        // Acciones que son páginas personalizadas del módulo
-        $acciones_personalizadas = [
-            'mis-reservas', 'mis-prestamos', 'mis-inscripciones', 'mis-anuncios',
-            'mis-cursos', 'mis-viajes', 'mis-incidencias', 'mis-pedidos', 'historial',
-            'mi-pedido', 'mi-cesta', 'ciclos', 'suscripciones', 'cestas'
-        ];
+        if ($module_instance) {
+            $module_class = get_class($module_instance);
+            if (method_exists($module_class, 'get_renderer_config')) {
+                $config = $module_class::get_renderer_config();
+                $integration_tabs = $config['tabs'] ?? [];
+            }
+        }
 
-        // Shortcodes específicos por módulo y acción
-        $shortcodes_especificos = [
-            'grupos-consumo' => [
-                'productos'     => '[gc_productos]',
-                'mi-pedido'     => '[gc_mi_pedido]',
-                'mi-cesta'      => '[gc_mi_cesta]',
-                'mis-pedidos'   => '[gc_historial]',
-                'productores'   => '[gc_productores_cercanos]',
-                'ciclos'        => '[gc_ciclo_actual]',
-                'suscripciones' => '[gc_suscripciones]',
-                'cestas'        => '[gc_suscripciones]',
-                'unirme'        => '[gc_grupos_lista]',
-                'panel'         => '[gc_panel]',
-            ],
-            'banco-tiempo' => [
-                'mi-saldo'        => '[banco_tiempo_mi_saldo]',
-                'mis-intercambios' => '[banco_tiempo_mis_intercambios]',
-                'servicios'       => '[banco_tiempo_servicios]',
-                'mi-reputacion'   => '[banco_tiempo_ranking]',
-                'ofrecer'         => '[banco_tiempo_ofrecer]',
-            ],
-            'eventos' => [
-                'listado'          => '[eventos_listado]',
-                'mis-inscripciones' => '[eventos_mis_inscripciones]',
-                'calendario'       => '[eventos_calendario]',
-            ],
-            'reservas' => [
-                'mis-reservas' => '[reservas_mis_reservas]',
-                'recursos'     => '[reservas_recursos]',
-                'calendario'   => '[reservas_calendario]',
-                'nueva'        => '[reservas_formulario]',
-            ],
-            'espacios-comunes' => [
-                'listado'      => '[espacios_listado]',
-                'mis-reservas' => '[espacios_mis_reservas]',
-                'calendario'   => '[espacios_calendario]',
-                'reservar'     => '[espacios_reservar]',
-            ],
-            'huertos-urbanos' => [
-                'mi-parcela'   => '[mi_parcela]',
-                'calendario'   => '[calendario_cultivos]',
-                'listado'      => '[lista_huertos]',
-                'mapa'         => '[mapa_huertos]',
-                'intercambios' => '[intercambios_huertos]',
-            ],
-            'biblioteca' => [
-                'mis-prestamos' => '[biblioteca_mis_prestamos]',
-                'catalogo'      => '[biblioteca_catalogo]',
-                'mis-libros'    => '[biblioteca_mis_libros]',
-            ],
-            'marketplace' => [
-                'listado'      => '[marketplace_listado]',
-                'mis-anuncios' => '[marketplace_mis_anuncios]',
-                'publicar'     => '[marketplace_formulario]',
-            ],
-            'incidencias' => [
-                'mis-reportes' => '[incidencias_mis_reportes]',
-                'listado'      => '[incidencias_listado]',
-                'mapa'         => '[incidencias_mapa]',
-                'reportar'     => '[incidencias_reportar]',
-            ],
-            'talleres' => [
-                'catalogo'         => '[talleres_catalogo]',
-                'mis-inscripciones' => '[talleres_mis_inscripciones]',
-                'calendario'       => '[talleres_calendario]',
-                'proponer'         => '[talleres_proponer]',
-            ],
-            'cursos' => [
-                'mis-cursos' => '[cursos_mis_inscripciones]',
-                'catalogo'   => '[cursos_catalogo]',
-                'aula'       => '[cursos_aula]',
-            ],
-            'carpooling' => [
-                'mis-viajes'   => '[carpooling_mis_viajes]',
-                'buscar'       => '[carpooling_buscar]',
-                'publicar'     => '[carpooling_publicar]',
-                'mis-reservas' => '[carpooling_mis_reservas]',
-            ],
-            'reciclaje' => [
-                'mis-puntos'      => '[reciclaje_mis_puntos]',
-                'puntos-cercanos' => '[reciclaje_puntos_cercanos]',
-                'ranking'         => '[reciclaje_ranking]',
-                'guia'            => '[reciclaje_guia]',
-                'recompensas'     => '[reciclaje_recompensas]',
-            ],
-            'compostaje' => [
-                'mis-aportaciones' => '[mis_aportaciones]',
-                'estadisticas'     => '[estadisticas_compostaje]',
-                'mapa'             => '[mapa_composteras]',
-                'registrar'        => '[registrar_aportacion]',
-                'ranking'          => '[ranking_compostaje]',
-            ],
-            'bicicletas-compartidas' => [
-                'mis-prestamos' => '[bicicletas-compartidas_mis-prestamos]',
-                'disponibles'   => '[flavor_module_listing module="bicicletas-compartidas"]',
-                'acciones'      => '[flavor_bicicletas_compartidas_acciones]',
-            ],
-            'parkings' => [
-                'disponibilidad' => '[flavor_disponibilidad_parking]',
-                'mis-reservas'   => '[flavor_mis_reservas_parking]',
-                'mapa'           => '[flavor_mapa_parkings]',
-                'ocupacion'      => '[flavor_ocupacion_tiempo_real]',
-                'solicitar'      => '[flavor_solicitar_plaza]',
-            ],
-            'bares' => [
-                'listado' => '[flavor_module_listing module="bares" limit="12"]',
-            ],
-            'colectivos' => [
-                'mis-colectivos' => '[flavor_module_listing module="colectivos" vista="mis"]',
-                'listado'        => '[flavor_module_listing module="colectivos" limit="12"]',
-            ],
-            'comunidades' => [
-                'directorio' => '[flavor_network_directory]',
-                'mapa'       => '[flavor_network_map]',
-                'tablon'     => '[flavor_network_board]',
-            ],
-            'socios' => [
-                'mi-membresia' => '[flavor_module_listing module="socios" vista="mi"]',
-                'directorio'   => '[flavor_module_listing module="socios"]',
-            ],
-            'foros' => [
-                'listado' => '[flavor_module_listing module="foros" limit="10"]',
-            ],
-            'chat-grupos' => [
-                'mis-grupos' => '[flavor_grupos_lista]',
-                'explorar'   => '[flavor_grupos_explorar]',
-                'crear'      => '[flavor_grupos_crear]',
-            ],
-            'chat-interno' => [
-                'bandeja' => '[flavor_chat_inbox]',
-                'nuevo'   => '[flavor_iniciar_chat]',
-            ],
-            'red-social' => [
-                'perfil'    => '[rs_perfil]',
-                'feed'      => '[rs_feed]',
-                'explorar'  => '[rs_explorar]',
-                'historias' => '[rs_historias]',
-            ],
-            'participacion' => [
-                'propuestas'  => '[propuestas_activas]',
-                'votaciones'  => '[votacion_activa]',
-                'crear'       => '[crear_propuesta]',
-                'resultados'  => '[resultados_participacion]',
-            ],
-            'presupuestos-participativos' => [
-                'presupuesto' => '[presupuesto_participativo]',
-                'fases'       => '[fases_participacion]',
-            ],
-            'avisos-municipales' => [
-                'activos'     => '[avisos_activos]',
-                'urgentes'    => '[avisos_urgentes]',
-                'suscribirse' => '[suscribirse_avisos]',
-                'historial'   => '[historial_avisos]',
-            ],
-            'ayuda-vecinal' => [
-                'solicitudes' => '[flavor_module_listing module="ayuda-vecinal"]',
-            ],
-            'tramites' => [
-                'mis-expedientes' => '[mis_expedientes]',
-                'catalogo'        => '[catalogo_tramites]',
-                'iniciar'         => '[iniciar_tramite]',
-            ],
-            'transparencia' => [
-                'portal'      => '[transparencia_portal]',
-                'presupuesto' => '[transparencia_presupuesto_actual]',
-                'gastos'      => '[transparencia_ultimos_gastos]',
-                'actas'       => '[transparencia_actas]',
-                'indicadores' => '[transparencia_indicadores]',
-            ],
-            'fichaje-empleados' => [
-                'panel' => '[flavor_fichaje_empleados_acciones]',
-            ],
-            'multimedia' => [
-                'mi-galeria' => '[flavor_mi_galeria]',
-                'galeria'    => '[flavor_galeria]',
-                'albumes'    => '[flavor_albumes]',
-                'subir'      => '[flavor_subir_multimedia]',
-            ],
-            'podcast' => [
-                'episodios'   => '[podcast_lista_episodios]',
-                'reproductor' => '[podcast_player]',
-                'series'      => '[podcast_series]',
-                'suscribirse' => '[podcast_suscribirse]',
-            ],
-            'radio' => [
-                'directo'      => '[flavor_radio_player]',
-                'programacion' => '[flavor_radio_programacion]',
-                'chat'         => '[flavor_radio_chat]',
-                'dedicatorias' => '[flavor_radio_dedicatorias]',
-            ],
-            'facturas' => [
-                'mis-facturas' => '[flavor_mis_facturas]',
-                'historial'    => '[flavor_historial_pagos]',
-            ],
-            'trading-ia' => [
-                'dashboard'  => '[trading_ia_dashboard]',
-                'portfolio'  => '[trading_ia_portfolio]',
-                'mercado'    => '[trading_ia_mercado]',
-                'historial'  => '[trading_ia_historial]',
-            ],
-            'advertising' => [
-                'dashboard' => '[flavor_ads_dashboard]',
-                'crear'     => '[flavor_ads_crear]',
-                'ingresos'  => '[flavor_ads_ingresos]',
-            ],
-            'email-marketing' => [
-                'suscripcion'  => '[flavor_suscripcion_newsletter]',
-                'preferencias' => '[flavor_preferencias_email]',
-                'archivo'      => '[flavor_archivo_newsletters]',
-            ],
-            'woocommerce' => [
-                'mis-pedidos' => '[woocommerce_my_account]',
-                'productos'   => '[products limit="12" columns="4"]',
-            ],
-            'dex-solana' => [
-                'dashboard'  => '[flavor_module_listing module="dex-solana" vista="dashboard"]',
-                'portfolio'  => '[flavor_module_listing module="dex-solana" vista="portfolio"]',
-                'pools'      => '[flavor_module_listing module="dex-solana" vista="pools"]',
-                'swap'       => '[flavor_module_listing module="dex-solana" vista="swap"]',
-                'historial'  => '[flavor_module_listing module="dex-solana" vista="historial"]',
-            ],
-            'empresarial' => [
-                'directorio'  => '[flavor_module_listing module="empresarial" limit="12"]',
-                'servicios'   => '[flavor_module_listing module="empresarial" vista="servicios"]',
-                'categorias'  => '[flavor_module_listing module="empresarial" vista="categorias"]',
-                'buscar'      => '[flavor_module_listing module="empresarial" vista="buscar"]',
-            ],
-            'clientes' => [
-                'listado'      => '[flavor_module_listing module="clientes" limit="12"]',
-                'fichas'       => '[flavor_module_listing module="clientes" vista="fichas"]',
-                'estadisticas' => '[flavor_module_listing module="clientes" vista="estadisticas"]',
-                'nuevo'        => '[flavor_module_form module="clientes" action="crear"]',
-            ],
-            'huella-ecologica' => [
-                'calculadora'   => '[flavor_huella_calculadora]',
-                'mis-registros' => '[flavor_huella_mis_registros]',
-                'logros'        => '[flavor_huella_logros]',
-                'comunidad'     => '[flavor_huella_comunidad]',
-                'proyectos'     => '[flavor_huella_proyectos]',
-            ],
-            'saberes-ancestrales' => [
-                'catalogo'  => '[flavor_saberes_catalogo]',
-                'compartir' => '[flavor_saberes_compartir]',
-                'talleres'  => '[flavor_saberes_talleres]',
-            ],
-            'economia-don' => [
-                'listado'   => '[flavor_don_listado]',
-                'mis-dones' => '[flavor_don_mis_dones]',
-                'muro'      => '[flavor_don_muro_gratitud]',
-                'ofrecer'   => '[flavor_don_ofrecer]',
-            ],
-            'economia-suficiencia' => [
-                'intro'       => '[flavor_suficiencia_intro]',
-                'mi-camino'   => '[flavor_suficiencia_mi_camino]',
-                'evaluacion'  => '[flavor_suficiencia_evaluacion]',
-                'compromisos' => '[flavor_suficiencia_compromisos]',
-                'biblioteca'  => '[flavor_suficiencia_biblioteca]',
-            ],
-            'trabajo-digno' => [
-                'ofertas'        => '[flavor_trabajo_ofertas]',
-                'mi-perfil'      => '[flavor_trabajo_mi_perfil]',
-                'formacion'      => '[flavor_trabajo_formacion]',
-                'emprendimientos' => '[flavor_trabajo_emprendimientos]',
-                'publicar'       => '[flavor_trabajo_publicar]',
-            ],
-            'circulos-cuidados' => [
-                'listado'      => '[flavor_circulos_listado]',
-                'mis-cuidados' => '[flavor_circulos_mis_cuidados]',
-                'necesidades'  => '[flavor_circulos_necesidades]',
-            ],
-            'justicia-restaurativa' => [
-                'info'         => '[flavor_justicia_info]',
-                'mis-procesos' => '[flavor_justicia_mis_procesos]',
-                'mediadores'   => '[flavor_justicia_mediadores]',
-                'solicitar'    => '[flavor_justicia_solicitar]',
-            ],
-            'sello-conciencia' => [
-                'badge'    => '[flavor_sello_badge]',
-                'premisas' => '[flavor_sello_premisas]',
-            ],
-        ];
+        // ============================================================
+        // PRIORIDAD 0.5: Verificar si la acción tiene content definido en tabs
+        // Esto permite que cualquier tab con content se renderice correctamente
+        // ============================================================
+        if (!empty($integration_tabs[$action]) && !empty($integration_tabs[$action]['content'])) {
+            $tab_info = $integration_tabs[$action];
+            $contenido = $tab_info['content'];
+
+            // Verificar requires_login
+            if (!empty($tab_info['requires_login']) && !is_user_logged_in()) {
+                echo '<div class="fmd-login-required">';
+                echo '<p>' . esc_html__('Debes iniciar sesión para acceder a esta sección.', 'flavor-chat-ia') . '</p>';
+                echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+                echo '</div>';
+                return;
+            }
+
+            ?>
+            <div class="fmd-action-header">
+                <h2>
+                    <span class="dashicons <?php echo esc_attr($tab_info['icon'] ?? 'dashicons-admin-generic'); ?>"></span>
+                    <?php echo esc_html($tab_info['label'] ?? ucfirst($action)); ?>
+                </h2>
+            </div>
+            <div class="fmd-action-body">
+                <?php
+                // Tipo 1: Shortcode
+                if (is_string($contenido) && strpos($contenido, '[') === 0) {
+                    echo do_shortcode($contenido);
+                }
+                // Tipo 2: Template
+                elseif (is_string($contenido) && strpos($contenido, 'template:') === 0) {
+                    $template_name = str_replace('template:', '', $contenido);
+                    $this->render_tab_template($template_name, $action, $module_normalizado, $module_instance);
+                }
+                // Tipo 3: Callable
+                elseif (is_callable($contenido)) {
+                    call_user_func($contenido, $action, $module_instance, $this);
+                }
+                // Tipo 4: Método del módulo
+                elseif (is_string($contenido) && $module_instance && method_exists($module_instance, $contenido)) {
+                    $module_instance->{$contenido}(get_current_user_id());
+                }
+                // Tipo 5: HTML directo
+                elseif (is_string($contenido)) {
+                    echo wp_kses_post($contenido);
+                }
+                ?>
+            </div>
+            <?php
+            return;
+        }
+
+        // Verificar si la acción es una integración
+        if (!empty($integration_tabs[$action]) && !empty($integration_tabs[$action]['is_integration']) && !empty($integration_tabs[$action]['source_module'])) {
+                $source_module = $integration_tabs[$action]['source_module'];
+                $tab_info = $integration_tabs[$action];
+                $source_module_slug = str_replace('_', '-', $source_module);
+                ?>
+                <div class="fmd-action-header">
+                    <h2>
+                        <span class="dashicons <?php echo esc_attr($tab_info['icon'] ?? 'dashicons-admin-generic'); ?>"></span>
+                        <?php echo esc_html($tab_info['label'] ?? ucfirst($action)); ?>
+                    </h2>
+                    <p class="fmd-action-description">
+                        <?php echo esc_html($tab_info['description'] ?? ''); ?>
+                    </p>
+                </div>
+                <div class="fmd-action-body fmd-integration-content" data-source-module="<?php echo esc_attr($source_module_slug); ?>">
+                    <?php
+                    // Intentar usar el shortcode nativo del módulo fuente
+                    // Probamos múltiples variantes porque cada módulo usa diferentes convenciones
+                    $source_normalized = str_replace('-', '_', $source_module_slug);
+
+                    $shortcode_candidates = [
+                        'flavor_' . $source_normalized . '_listado',  // flavor_foros_listado
+                        'flavor_' . $source_module_slug . '_listado', // flavor_foros_listado (con guiones)
+                        'flavor_' . $source_normalized,               // flavor_recetas
+                        'flavor_' . $source_module_slug,              // flavor_recetas (con guiones)
+                        $source_normalized . '_listado',              // foros_listado
+                        $source_module_slug . '_listado',             // foros-listado
+                    ];
+
+                    $shortcode_found = false;
+                    foreach ($shortcode_candidates as $shortcode_name) {
+                        if (shortcode_exists($shortcode_name)) {
+                            echo do_shortcode('[' . $shortcode_name . ' cantidad="12" limit="12"]');
+                            $shortcode_found = true;
+                            break;
+                        }
+                    }
+
+                    if (!$shortcode_found) {
+                        // Fallback al shortcode unificado
+                        echo do_shortcode('[flavor module="' . esc_attr($source_module_slug) . '" view="listado" header="no" limit="12"]');
+                    }
+                    ?>
+                </div>
+                <?php
+                return; // Terminamos aquí, no continuamos al flujo normal
+        }
+
+        // ============================================================
+        // MANEJO ESPECÍFICO: Módulo Socios
+        // ============================================================
+        if ($module === 'socios' || $module_normalizado === 'socios') {
+            switch ($action) {
+                case 'mi-membresia':
+                    $this->render_tab_socios_membresia();
+                    return;
+                case 'cuotas':
+                case 'pagar-cuota':
+                    $this->render_tab_socios_cuotas();
+                    return;
+                case 'directorio':
+                    $this->render_tab_socios_directorio();
+                    return;
+                case 'beneficios':
+                    $this->render_tab_socios_beneficios();
+                    return;
+                case 'carnet':
+                    $this->render_tab_socios_carnet();
+                    return;
+                case 'historial':
+                    $this->render_tab_socios_historial();
+                    return;
+            }
+        }
+
+        // ============================================================
+        // FALLBACK: Usar shortcode genérico
+        // Si llegamos aquí, la acción no está definida en get_renderer_config()
+        // Intentamos usar un shortcode genérico que siga la convención
+        // ============================================================
+
+        // Determinar tipo de acción
+        $acciones_vista = ['mapa', 'listado', 'calendario', 'catalogo', 'grid', 'lista', 'buscar'];
+        $acciones_crear = ['crear', 'nuevo', 'publicar', 'registrar', 'agregar', 'añadir', 'nueva', 'reportar', 'ofrecer', 'solicitar', 'proponer', 'iniciar'];
 
         ?>
         <div class="fmd-action-header">
@@ -3329,29 +5545,26 @@ class Flavor_Dynamic_Pages {
 
         <div class="fmd-action-body">
             <?php
-            // Primero verificar si hay un shortcode específico para este módulo y acción
-            if (isset($shortcodes_especificos[$module_normalizado][$action])) {
-                echo do_shortcode($shortcodes_especificos[$module_normalizado][$action]);
-            } elseif (in_array($action, $acciones_vista)) {
-                // Usar shortcode de listado/vista
-                $shortcode = sprintf('[flavor_module_listing module="%s" vista="%s"]', esc_attr($module_normalizado), esc_attr($action));
-                echo do_shortcode($shortcode);
-            } elseif (in_array($action, $acciones_personalizadas)) {
-                // Usar shortcode específico del módulo (ej: bicicletas-compartidas_mis-prestamos)
-                $shortcode_especifico = sprintf('[%s_%s]', $module_normalizado, $action);
-                $output = do_shortcode($shortcode_especifico);
-
-                // Si el shortcode no existe, intentar con el genérico
-                if (strpos($output, $shortcode_especifico) !== false) {
-                    $shortcode = sprintf('[flavor_module_listing module="%s" vista="%s"]', esc_attr($module_normalizado), esc_attr($action));
-                    echo do_shortcode($shortcode);
-                } else {
-                    echo $output;
-                }
-            } else {
-                // Asumir que es un formulario
-                $shortcode = sprintf('[flavor_module_form module="%s" action="%s"]', esc_attr($module_normalizado), esc_attr($action));
-                echo do_shortcode($shortcode);
+            // Intentar shortcode específico del módulo: [modulo_accion]
+            $shortcode_name = str_replace('-', '_', $module_normalizado) . '_' . str_replace('-', '_', $action);
+            if (shortcode_exists($shortcode_name)) {
+                echo do_shortcode('[' . $shortcode_name . ']');
+            }
+            // Intentar con prefijo flavor_: [flavor_modulo_accion]
+            elseif (shortcode_exists('flavor_' . $shortcode_name)) {
+                echo do_shortcode('[flavor_' . $shortcode_name . ']');
+            }
+            // Si es acción de vista, usar listing genérico
+            elseif (in_array($action, $acciones_vista)) {
+                echo do_shortcode('[flavor_module_listing module="' . esc_attr($module_normalizado) . '" vista="' . esc_attr($action) . '"]');
+            }
+            // Si es acción de crear, usar formulario
+            elseif (in_array($action, $acciones_crear)) {
+                echo do_shortcode('[flavor_module_form module="' . esc_attr($module_normalizado) . '" action="' . esc_attr($action) . '"]');
+            }
+            // Fallback final: listing genérico con la acción como vista
+            else {
+                echo do_shortcode('[flavor_module_listing module="' . esc_attr($module_normalizado) . '" vista="' . esc_attr($action) . '"]');
             }
             ?>
         </div>

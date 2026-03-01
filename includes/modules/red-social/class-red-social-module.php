@@ -512,6 +512,9 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en panel de administración unificado
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         add_action('init', [$this, 'maybe_create_tables']);
@@ -5215,6 +5218,18 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Moderación de Contenido', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-red-social-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Red_Social_Dashboard_Tab::get_instance();
         }
     }
 }

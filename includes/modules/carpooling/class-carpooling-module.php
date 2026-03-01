@@ -227,6 +227,8 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // AJAX handlers publicos
         add_action('wp_ajax_carpooling_buscar_viajes', [$this, 'ajax_buscar_viajes']);
@@ -269,6 +271,12 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             require_once $archivo_controller;
             Flavor_Carpooling_Frontend_Controller::get_instance();
         }
+
+        // Cargar Dashboard Tab
+        $archivo_dashboard_tab = dirname(__FILE__) . '/class-carpooling-dashboard-tab.php';
+        if (file_exists($archivo_dashboard_tab)) {
+            require_once $archivo_dashboard_tab;
+        }
     }
 
     /**
@@ -282,9 +290,41 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'carpooling_buscar_viaje',
+            'carpooling_publicar_viaje',
+            'carpooling_mis_viajes',
+            'carpooling_mis_reservas',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Encolar assets
      */
     public function enqueue_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
         $modulo_url = plugin_dir_url(__FILE__);
 
         wp_register_style(
@@ -904,7 +944,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
              FROM {$this->tabla_valoraciones} v
              JOIN {$wpdb->users} u ON v.valorador_id = u.ID
              WHERE v.valorado_id = %d AND v.visible = 1 {$where_tipo}
-             ORDER BY v.fecha_creacion DESC
+             ORDER BY v.fecha_valoracion DESC
              LIMIT 50",
             $usuario_id
         ));
@@ -1173,37 +1213,37 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $estadisticas = [
             'viajes_publicados' => $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_viajes} WHERE fecha_creacion >= %s",
+                "SELECT COUNT(*) FROM {$this->tabla_viajes} WHERE created_at >= %s",
                 $fecha_inicio
             )),
             'viajes_completados' => $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_viajes} WHERE estado = 'finalizado' AND fecha_creacion >= %s",
+                "SELECT COUNT(*) FROM {$this->tabla_viajes} WHERE estado = 'finalizado' AND created_at >= %s",
                 $fecha_inicio
             )),
             'reservas_totales' => $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE fecha_solicitud >= %s",
+                "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE fecha_reserva >= %s",
                 $fecha_inicio
             )),
             'reservas_confirmadas' => $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE estado = 'confirmada' AND fecha_solicitud >= %s",
+                "SELECT COUNT(*) FROM {$this->tabla_reservas} WHERE estado = 'confirmada' AND fecha_reserva >= %s",
                 $fecha_inicio
             )),
             'conductores_activos' => $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(DISTINCT conductor_id) FROM {$this->tabla_viajes} WHERE fecha_creacion >= %s",
+                "SELECT COUNT(DISTINCT conductor_id) FROM {$this->tabla_viajes} WHERE created_at >= %s",
                 $fecha_inicio
             )),
             'pasajeros_activos' => $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(DISTINCT pasajero_id) FROM {$this->tabla_reservas} WHERE fecha_solicitud >= %s",
+                "SELECT COUNT(DISTINCT pasajero_id) FROM {$this->tabla_reservas} WHERE fecha_reserva >= %s",
                 $fecha_inicio
             )),
             'valoracion_promedio' => $wpdb->get_var($wpdb->prepare(
-                "SELECT AVG(puntuacion) FROM {$this->tabla_valoraciones} WHERE fecha_creacion >= %s",
+                "SELECT AVG(puntuacion) FROM {$this->tabla_valoraciones} WHERE fecha_valoracion >= %s",
                 $fecha_inicio
             )),
             'rutas_populares' => $wpdb->get_results($wpdb->prepare(
                 "SELECT origen, destino, COUNT(*) as total
                  FROM {$this->tabla_viajes}
-                 WHERE fecha_creacion >= %s
+                 WHERE created_at >= %s
                  GROUP BY origen, destino
                  ORDER BY total DESC
                  LIMIT 10",
@@ -1382,7 +1422,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         }
 
         $vehiculos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_vehiculos} WHERE usuario_id = %d AND activo = 1 ORDER BY es_predeterminado DESC, fecha_creacion DESC",
+            "SELECT * FROM {$this->tabla_vehiculos} WHERE propietario_id = %d AND activo = 1 ORDER BY created_at DESC",
             $usuario_id
         ));
 
@@ -2508,6 +2548,17 @@ KNOWLEDGE;
         $configuracion_actual = $this->get_settings();
 
         echo '<div class="wrap flavor-modulo-page">';
+
+        // Migas de pan
+        echo '<nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">';
+        echo '<a href="' . esc_url(admin_url('admin.php?page=carpooling-dashboard')) . '" style="color: #2271b1; text-decoration: none;">';
+        echo '<span class="dashicons dashicons-car" style="font-size: 14px; vertical-align: middle;"></span> ';
+        echo esc_html__('Carpooling', 'flavor-chat-ia');
+        echo '</a>';
+        echo '<span style="color: #646970; margin: 0 5px;">›</span>';
+        echo '<span style="color: #1d2327;">' . esc_html__('Configuración', 'flavor-chat-ia') . '</span>';
+        echo '</nav>';
+
         echo '<h1>' . esc_html__('Configuración de Carpooling', 'flavor-chat-ia') . '</h1>';
 
         echo '<form method="post" action="">';
@@ -2687,5 +2738,131 @@ KNOWLEDGE;
                 'parent' => 'carpooling',
             ],
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'carpooling',
+            'title'    => __('Carpooling Comunitario', 'flavor-chat-ia'),
+            'subtitle' => __('Comparte coche y reduce tu huella de carbono', 'flavor-chat-ia'),
+            'icon'     => '🚗',
+            'color'    => 'success', // Usa variable CSS --flavor-success del tema
+
+            'database' => [
+                'table'       => 'flavor_carpooling_viajes',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'origen'        => ['type' => 'text', 'label' => __('Origen', 'flavor-chat-ia'), 'required' => true],
+                'destino'       => ['type' => 'text', 'label' => __('Destino', 'flavor-chat-ia'), 'required' => true],
+                'fecha'         => ['type' => 'date', 'label' => __('Fecha', 'flavor-chat-ia'), 'required' => true],
+                'hora'          => ['type' => 'time', 'label' => __('Hora', 'flavor-chat-ia'), 'required' => true],
+                'plazas'        => ['type' => 'number', 'label' => __('Plazas disponibles', 'flavor-chat-ia'), 'min' => 1, 'max' => 8],
+                'precio'        => ['type' => 'number', 'label' => __('Precio por plaza', 'flavor-chat-ia'), 'step' => '0.5'],
+                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'recurrente'    => ['type' => 'checkbox', 'label' => __('Viaje recurrente', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'completo'   => ['label' => __('Completo', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🔵'],
+                'en_curso'   => ['label' => __('En curso', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🚗'],
+                'completado' => ['label' => __('Completado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '✔️'],
+                'cancelado'  => ['label' => __('Cancelado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+            ],
+
+            'stats' => [
+                'viajes_activos'    => ['label' => __('Viajes activos', 'flavor-chat-ia'), 'icon' => '🚗', 'color' => 'green'],
+                'plazas_disponibles' => ['label' => __('Plazas libres', 'flavor-chat-ia'), 'icon' => '💺', 'color' => 'blue'],
+                'km_compartidos'    => ['label' => __('km compartidos', 'flavor-chat-ia'), 'icon' => '🛤️', 'color' => 'purple'],
+                'co2_ahorrado'      => ['label' => __('kg CO₂ ahorrados', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'emerald'],
+            ],
+
+            'card' => [
+                'template'     => 'viaje-card',
+                'title_field'  => 'origen',
+                'subtitle_field' => 'destino',
+                'meta_fields'  => ['fecha', 'hora', 'plazas', 'precio'],
+                'show_author'  => true,
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'viajes' => [
+                    'label'   => __('Viajes', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-car',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'buscar' => [
+                    'label'   => __('Buscar viaje', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-search',
+                    'content' => 'shortcode:carpooling_buscar',
+                    'public'  => true,
+                ],
+                'publicar' => [
+                    'label'      => __('Publicar viaje', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:carpooling_publicar',
+                    'requires_login' => true,
+                ],
+                'mis-viajes' => [
+                    'label'      => __('Mis viajes', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:carpooling_mis_viajes',
+                    'requires_login' => true,
+                ],
+                'reservas' => [
+                    'label'      => __('Mis reservas', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-calendar-alt',
+                    'content'    => 'shortcode:carpooling_mis_reservas',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 2,
+                'per_page'   => 12,
+                'order_by'   => 'fecha',
+                'order'      => 'ASC',
+                'filterable' => ['origen', 'destino', 'fecha'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'mis_viajes', 'mis_reservas', 'impacto_ambiental'],
+                'actions' => [
+                    'publicar' => ['label' => __('Publicar viaje', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'green'],
+                    'buscar'   => ['label' => __('Buscar viaje', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                ],
+            ],
+
+            'features' => [
+                'reservas'      => true,
+                'valoraciones'  => true,
+                'chat'          => true,
+                'notificaciones' => true,
+                'recurrencia'   => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-carpooling-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Carpooling_Dashboard_Tab')) {
+                Flavor_Carpooling_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

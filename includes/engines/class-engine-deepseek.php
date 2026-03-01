@@ -11,6 +11,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Evitar redeclaración si ya existe (ej: desde chat-ia-addon)
+if (class_exists('Chat_IA_Engine_DeepSeek')) {
+    return;
+}
+
 class Chat_IA_Engine_DeepSeek extends Chat_IA_Engine_Base {
 
     const API_URL = 'https://api.deepseek.com/chat/completions';

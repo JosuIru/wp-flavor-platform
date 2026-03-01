@@ -14,6 +14,7 @@ if (!defined('ABSPATH')) {
  */
 class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
 
+    use Flavor_Module_Admin_Pages_Trait;
     use Flavor_Module_Notifications_Trait;
     use Flavor_Module_Integration_Provider;
 
@@ -88,6 +89,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         // Registrar como proveedor de integración
         $this->register_as_integration_provider();
 
+        // Registrar páginas de admin en el panel unificado
+        $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
@@ -120,6 +126,12 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
 
         // Cargar Frontend Controller
         $this->cargar_frontend_controller();
+
+        // Cargar Dashboard Tab
+        $this->cargar_dashboard_tab();
+
+        // Enqueue assets frontend
+        add_action('wp_enqueue_scripts', [$this, 'maybe_enqueue_frontend_assets']);
     }
 
     /**
@@ -134,6 +146,17 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Carga el Dashboard Tab para el panel de usuario
+     */
+    private function cargar_dashboard_tab() {
+        $archivo_dashboard_tab = dirname(__FILE__) . '/class-biblioteca-dashboard-tab.php';
+        if (file_exists($archivo_dashboard_tab)) {
+            require_once $archivo_dashboard_tab;
+            Flavor_Biblioteca_Dashboard_Tab::get_instance();
+        }
+    }
+
+    /**
      * Registra los shortcodes del módulo
      */
     public function register_shortcodes() {
@@ -142,6 +165,76 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         add_shortcode('biblioteca_mis_libros', [$this, 'shortcode_mis_libros']);
         add_shortcode('biblioteca_mis_prestamos', [$this, 'shortcode_mis_prestamos']);
         add_shortcode('biblioteca_agregar', [$this, 'shortcode_agregar']);
+    }
+
+    /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'biblioteca_catalogo',
+            'biblioteca_detalle',
+            'biblioteca_mis_libros',
+            'biblioteca_mis_prestamos',
+            'biblioteca_agregar',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Encola assets frontend solo cuando se usan shortcodes
+     */
+    public function maybe_enqueue_frontend_assets() {
+        if (!$this->should_load_assets()) {
+            return;
+        }
+
+        $assets_url = plugin_dir_url(__FILE__) . 'assets/';
+        $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
+
+        wp_enqueue_style(
+            'biblioteca-frontend',
+            $assets_url . 'css/biblioteca-frontend.css',
+            [],
+            $version
+        );
+
+        wp_enqueue_script(
+            'biblioteca-frontend',
+            $assets_url . 'js/biblioteca-frontend.js',
+            ['jquery'],
+            $version,
+            true
+        );
+
+        wp_localize_script('biblioteca-frontend', 'bibliotecaData', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('biblioteca_frontend'),
+            'user_logged_in' => is_user_logged_in(),
+            'user_id' => get_current_user_id(),
+            'strings' => [
+                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'confirmar_prestamo' => __('¿Deseas solicitar el préstamo de este libro?', 'flavor-chat-ia'),
+                'prestamo_solicitado' => __('Tu solicitud de préstamo ha sido enviada.', 'flavor-chat-ia'),
+                'libro_devuelto' => __('El libro ha sido devuelto correctamente.', 'flavor-chat-ia'),
+                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
+            ]
+        ]);
     }
 
     /**
@@ -2631,4 +2724,1145 @@ KNOWLEDGE;
         ];
     }
 
+    /**
+     * Configuración para el Module Renderer
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'biblioteca',
+            'title'    => __('Biblioteca Comunitaria', 'flavor-chat-ia'),
+            'subtitle' => __('Comparte y descubre libros con tus vecinos', 'flavor-chat-ia'),
+            'icon'     => '📚',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'          => 'flavor_biblioteca',
+                'status_field'   => 'estado',
+                'exclude_status' => 'eliminado',
+                'order_by'       => 'titulo ASC',
+                'filter_fields'  => ['estado', 'categoria', 'genero'],
+            ],
+
+            'fields' => [
+                'titulo'      => 'titulo',
+                'descripcion' => 'sinopsis',
+                'imagen'      => 'portada',
+                'estado'      => 'estado',
+                'autor'       => 'autor',
+                'categoria'   => 'genero',
+                'isbn'        => 'isbn',
+                'user_id'     => 'propietario_id',
+            ],
+
+            'estados' => [
+                'disponible' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'prestado'   => ['label' => __('Prestado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
+                'reservado'  => ['label' => __('Reservado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🔵'],
+            ],
+
+            'stats' => [
+                ['label' => __('Libros', 'flavor-chat-ia'), 'icon' => '📚', 'color' => 'sky', 'count_where' => "1=1"],
+                ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'green', 'count_where' => "estado = 'disponible'"],
+                ['label' => __('Prestados', 'flavor-chat-ia'), 'icon' => '📖', 'color' => 'yellow', 'count_where' => "estado = 'prestado'"],
+                ['label' => __('Lectores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COUNT(DISTINCT usuario_id) FROM {table}_prestamos"],
+            ],
+
+            'card' => [
+                'color' => 'sky', 'icon' => '📚',
+                'meta' => [['icon' => '✍️', 'field' => 'autor'], ['icon' => '📁', 'field' => 'categoria']],
+            ],
+
+            'tabs' => [
+                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'content' => 'template:_archive.php'],
+                'mis-prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'content' => 'template:mis-prestamos.php'],
+                'novedades' => ['label' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
+                'resenas' => ['label' => __('Reseñas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'clubes' => ['label' => __('Clubes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[biblioteca_clubes]'],
+            ],
+
+            'archive' => [
+                'columns' => 4, 'per_page' => 16,
+                'cta_text' => __('Añadir libro', 'flavor-chat-ia'), 'cta_icon' => '➕',
+                'empty_state' => ['icon' => '📚', 'title' => __('No hay libros', 'flavor-chat-ia')],
+            ],
+
+            'dashboard' => [
+                'show_header' => true,
+                'quick_actions' => [
+                    ['title' => __('Catálogo', 'flavor-chat-ia'), 'icon' => '📚', 'color' => 'sky', 'url' => home_url('/mi-portal/biblioteca/')],
+                    ['title' => __('Préstamos', 'flavor-chat-ia'), 'icon' => '📖', 'color' => 'blue', 'url' => home_url('/mi-portal/biblioteca/?tab=mis-prestamos')],
+                    ['title' => __('Añadir', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'green', 'url' => home_url('/mi-portal/biblioteca/anadir/')],
+                    ['title' => __('Clubes', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'purple', 'url' => home_url('/mi-portal/biblioteca/?tab=clubes')],
+                ],
+            ],
+        ];
+    }
+
+    // =========================================================================
+    // ADMINISTRACIÓN - PANEL UNIFICADO
+    // =========================================================================
+
+    /**
+     * Configuración de páginas de administración para el Panel Unificado
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id'         => 'biblioteca',
+            'label'      => __('Biblioteca', 'flavor-chat-ia'),
+            'icon'       => 'dashicons-book',
+            'capability' => 'manage_options',
+            'categoria'  => 'comunidad',
+            'paginas'    => [
+                [
+                    'slug'     => 'biblioteca-dashboard',
+                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug'     => 'biblioteca-catalogo',
+                    'titulo'   => __('Catálogo', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_catalogo'],
+                ],
+                [
+                    'slug'     => 'biblioteca-prestamos',
+                    'titulo'   => __('Préstamos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_prestamos'],
+                    'badge'    => [$this, 'contar_prestamos_pendientes'],
+                ],
+                [
+                    'slug'     => 'biblioteca-usuarios',
+                    'titulo'   => __('Usuarios', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_usuarios'],
+                ],
+                [
+                    'slug'     => 'biblioteca-config',
+                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_config'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Contar préstamos pendientes de aprobación
+     *
+     * @return int
+     */
+    public function contar_prestamos_pendientes() {
+        global $wpdb;
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_prestamos} WHERE estado = 'pendiente'"
+        );
+    }
+
+    /**
+     * Renderiza el Dashboard de administración
+     */
+    public function render_admin_dashboard() {
+        global $wpdb;
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+        $tabla_reservas = $wpdb->prefix . 'flavor_biblioteca_reservas';
+
+        // Obtener KPIs
+        $total_libros = 0;
+        $libros_disponibles = 0;
+        $prestamos_activos = 0;
+        $prestamos_pendientes = 0;
+        $reservas_pendientes = 0;
+        $usuarios_activos = 0;
+        $prestamos_retrasados = 0;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+            $total_libros = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_libros}");
+            $libros_disponibles = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_libros} WHERE disponibilidad = 'disponible'"
+            );
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+            $prestamos_activos = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_prestamos} WHERE estado = 'activo'"
+            );
+            $prestamos_pendientes = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_prestamos} WHERE estado = 'pendiente'"
+            );
+            $prestamos_retrasados = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_prestamos} WHERE estado = 'retrasado'"
+            );
+            $usuarios_activos = (int) $wpdb->get_var(
+                "SELECT COUNT(DISTINCT prestatario_id) FROM {$tabla_prestamos}
+                 WHERE fecha_solicitud >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
+            );
+        }
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
+            $reservas_pendientes = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'pendiente'"
+            );
+        }
+
+        // Últimos préstamos
+        $ultimos_prestamos = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_prestamos)) {
+            $ultimos_prestamos = $wpdb->get_results(
+                "SELECT p.*, l.titulo, l.autor,
+                        prestatario.display_name as prestatario_nombre,
+                        prestamista.display_name as prestamista_nombre
+                 FROM {$tabla_prestamos} p
+                 LEFT JOIN {$tabla_libros} l ON p.libro_id = l.id
+                 LEFT JOIN {$wpdb->users} prestatario ON p.prestatario_id = prestatario.ID
+                 LEFT JOIN {$wpdb->users} prestamista ON p.prestamista_id = prestamista.ID
+                 ORDER BY p.fecha_solicitud DESC
+                 LIMIT 10"
+            );
+        }
+
+        // Libros más prestados
+        $libros_populares = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+            $libros_populares = $wpdb->get_results(
+                "SELECT titulo, autor, veces_prestado, valoracion_media
+                 FROM {$tabla_libros}
+                 WHERE veces_prestado > 0
+                 ORDER BY veces_prestado DESC
+                 LIMIT 5"
+            );
+        }
+
+        // Géneros más populares
+        $generos_populares = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+            $generos_populares = $wpdb->get_results(
+                "SELECT genero, COUNT(*) as cantidad
+                 FROM {$tabla_libros}
+                 WHERE genero IS NOT NULL AND genero != ''
+                 GROUP BY genero
+                 ORDER BY cantidad DESC
+                 LIMIT 5"
+            );
+        }
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Biblioteca - Dashboard', 'flavor-chat-ia'), [
+                ['label' => __('Añadir Libro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=nuevo'), 'class' => 'button-primary'],
+            ]); ?>
+
+            <!-- KPIs -->
+            <div class="flavor-kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
+                    <span class="dashicons dashicons-book" style="font-size: 32px; color: #2271b1;"></span>
+                    <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($total_libros); ?></div>
+                    <div style="color: #646970;"><?php _e('Total Libros', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
+                    <span class="dashicons dashicons-yes-alt" style="font-size: 32px; color: #00a32a;"></span>
+                    <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($libros_disponibles); ?></div>
+                    <div style="color: #646970;"><?php _e('Disponibles', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
+                    <span class="dashicons dashicons-book-alt" style="font-size: 32px; color: #dba617;"></span>
+                    <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($prestamos_activos); ?></div>
+                    <div style="color: #646970;"><?php _e('Préstamos Activos', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
+                    <span class="dashicons dashicons-clock" style="font-size: 32px; color: #d63638;"></span>
+                    <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($prestamos_pendientes); ?></div>
+                    <div style="color: #646970;"><?php _e('Pendientes Aprobar', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
+                    <span class="dashicons dashicons-calendar" style="font-size: 32px; color: #8c6c10;"></span>
+                    <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($reservas_pendientes); ?></div>
+                    <div style="color: #646970;"><?php _e('Reservas', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
+                    <span class="dashicons dashicons-groups" style="font-size: 32px; color: #3858e9;"></span>
+                    <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($usuarios_activos); ?></div>
+                    <div style="color: #646970;"><?php _e('Usuarios Activos', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+
+            <?php if ($prestamos_retrasados > 0): ?>
+            <div class="notice notice-warning" style="margin: 20px 0;">
+                <p>
+                    <strong><?php _e('Atención:', 'flavor-chat-ia'); ?></strong>
+                    <?php printf(
+                        _n(
+                            'Hay %d préstamo retrasado que requiere seguimiento.',
+                            'Hay %d préstamos retrasados que requieren seguimiento.',
+                            $prestamos_retrasados,
+                            'flavor-chat-ia'
+                        ),
+                        $prestamos_retrasados
+                    ); ?>
+                    <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=retrasado'); ?>"><?php _e('Ver préstamos retrasados', 'flavor-chat-ia'); ?></a>
+                </p>
+            </div>
+            <?php endif; ?>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px;">
+                <!-- Últimos préstamos -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top: 0;">
+                        <span class="dashicons dashicons-list-view"></span>
+                        <?php _e('Últimos Préstamos', 'flavor-chat-ia'); ?>
+                    </h3>
+                    <?php if (!empty($ultimos_prestamos)): ?>
+                    <table class="widefat striped" style="border: none;">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Libro', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Prestatario', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($ultimos_prestamos as $prestamo): ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo esc_html($prestamo->titulo); ?></strong>
+                                    <br><small><?php echo esc_html($prestamo->autor); ?></small>
+                                </td>
+                                <td><?php echo esc_html($prestamo->prestatario_nombre ?: __('Usuario', 'flavor-chat-ia')); ?></td>
+                                <td>
+                                    <?php
+                                    $estados_colores = [
+                                        'pendiente' => '#dba617',
+                                        'activo' => '#00a32a',
+                                        'devuelto' => '#646970',
+                                        'retrasado' => '#d63638',
+                                        'rechazado' => '#8c8f94',
+                                    ];
+                                    $color_estado = $estados_colores[$prestamo->estado] ?? '#646970';
+                                    ?>
+                                    <span style="display: inline-block; padding: 2px 8px; border-radius: 3px; background: <?php echo $color_estado; ?>; color: #fff; font-size: 12px;">
+                                        <?php echo esc_html(ucfirst($prestamo->estado)); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo date_i18n(get_option('date_format'), strtotime($prestamo->fecha_solicitud)); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <p style="margin-bottom: 0; text-align: right;">
+                        <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos'); ?>" class="button">
+                            <?php _e('Ver todos los préstamos', 'flavor-chat-ia'); ?>
+                        </a>
+                    </p>
+                    <?php else: ?>
+                    <p style="color: #646970;"><?php _e('No hay préstamos registrados aún.', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Sidebar -->
+                <div>
+                    <!-- Libros populares -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                        <h3 style="margin-top: 0;">
+                            <span class="dashicons dashicons-star-filled"></span>
+                            <?php _e('Libros Populares', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php if (!empty($libros_populares)): ?>
+                        <ul style="margin: 0; padding: 0; list-style: none;">
+                            <?php foreach ($libros_populares as $libro): ?>
+                            <li style="padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
+                                <strong><?php echo esc_html($libro->titulo); ?></strong>
+                                <br><small style="color: #646970;">
+                                    <?php echo esc_html($libro->autor); ?> |
+                                    <?php printf(__('%d préstamos', 'flavor-chat-ia'), $libro->veces_prestado); ?>
+                                    <?php if ($libro->valoracion_media > 0): ?>
+                                    | <span style="color: #dba617;">★</span> <?php echo number_format($libro->valoracion_media, 1); ?>
+                                    <?php endif; ?>
+                                </small>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php else: ?>
+                        <p style="color: #646970;"><?php _e('Aún no hay datos suficientes.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Géneros -->
+                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0;">
+                            <span class="dashicons dashicons-category"></span>
+                            <?php _e('Géneros Populares', 'flavor-chat-ia'); ?>
+                        </h3>
+                        <?php if (!empty($generos_populares)): ?>
+                        <ul style="margin: 0; padding: 0; list-style: none;">
+                            <?php foreach ($generos_populares as $genero): ?>
+                            <li style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f1;">
+                                <span><?php echo esc_html($genero->genero); ?></span>
+                                <span class="count" style="background: #f0f0f1; padding: 2px 8px; border-radius: 10px; font-size: 12px;">
+                                    <?php echo number_format_i18n($genero->cantidad); ?>
+                                </span>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php else: ?>
+                        <p style="color: #646970;"><?php _e('No hay géneros definidos.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de Catálogo de libros
+     */
+    public function render_admin_catalogo() {
+        global $wpdb;
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+
+        // Paginación
+        $items_per_page = 20;
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $offset = ($pagina_actual - 1) * $items_per_page;
+
+        // Filtros
+        $filtro_busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+        $filtro_disponibilidad = isset($_GET['disponibilidad']) ? sanitize_text_field($_GET['disponibilidad']) : '';
+        $filtro_genero = isset($_GET['genero']) ? sanitize_text_field($_GET['genero']) : '';
+
+        $where_clauses = ['1=1'];
+        $prepare_values = [];
+
+        if (!empty($filtro_busqueda)) {
+            $where_clauses[] = "(titulo LIKE %s OR autor LIKE %s OR isbn LIKE %s)";
+            $like_busqueda = '%' . $wpdb->esc_like($filtro_busqueda) . '%';
+            $prepare_values[] = $like_busqueda;
+            $prepare_values[] = $like_busqueda;
+            $prepare_values[] = $like_busqueda;
+        }
+
+        if (!empty($filtro_disponibilidad)) {
+            $where_clauses[] = "disponibilidad = %s";
+            $prepare_values[] = $filtro_disponibilidad;
+        }
+
+        if (!empty($filtro_genero)) {
+            $where_clauses[] = "genero = %s";
+            $prepare_values[] = $filtro_genero;
+        }
+
+        $where_sql = implode(' AND ', $where_clauses);
+
+        // Contar total
+        $total_query = "SELECT COUNT(*) FROM {$tabla_libros} WHERE {$where_sql}";
+        if (!empty($prepare_values)) {
+            $total_items = (int) $wpdb->get_var($wpdb->prepare($total_query, ...$prepare_values));
+        } else {
+            $total_items = (int) $wpdb->get_var($total_query);
+        }
+        $total_paginas = ceil($total_items / $items_per_page);
+
+        // Obtener libros
+        $query = "SELECT l.*, u.display_name as propietario_nombre
+                  FROM {$tabla_libros} l
+                  LEFT JOIN {$wpdb->users} u ON l.propietario_id = u.ID
+                  WHERE {$where_sql}
+                  ORDER BY l.fecha_agregado DESC
+                  LIMIT {$items_per_page} OFFSET {$offset}";
+
+        if (!empty($prepare_values)) {
+            $libros = $wpdb->get_results($wpdb->prepare($query, ...$prepare_values));
+        } else {
+            $libros = $wpdb->get_results($query);
+        }
+
+        // Obtener géneros para filtro
+        $generos = $wpdb->get_col(
+            "SELECT DISTINCT genero FROM {$tabla_libros} WHERE genero IS NOT NULL AND genero != '' ORDER BY genero"
+        );
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Catálogo de Libros', 'flavor-chat-ia'), [
+                ['label' => __('Añadir Libro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=nuevo'), 'class' => 'button-primary'],
+                ['label' => __('Exportar CSV', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=exportar'), 'class' => ''],
+            ]); ?>
+
+            <!-- Filtros -->
+            <form method="get" style="margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <input type="hidden" name="page" value="biblioteca-catalogo">
+                <input type="search" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>"
+                       placeholder="<?php esc_attr_e('Buscar por título, autor o ISBN...', 'flavor-chat-ia'); ?>"
+                       style="min-width: 250px;">
+                <select name="disponibilidad">
+                    <option value=""><?php _e('Todas las disponibilidades', 'flavor-chat-ia'); ?></option>
+                    <option value="disponible" <?php selected($filtro_disponibilidad, 'disponible'); ?>><?php _e('Disponible', 'flavor-chat-ia'); ?></option>
+                    <option value="prestado" <?php selected($filtro_disponibilidad, 'prestado'); ?>><?php _e('Prestado', 'flavor-chat-ia'); ?></option>
+                    <option value="reservado" <?php selected($filtro_disponibilidad, 'reservado'); ?>><?php _e('Reservado', 'flavor-chat-ia'); ?></option>
+                    <option value="no_disponible" <?php selected($filtro_disponibilidad, 'no_disponible'); ?>><?php _e('No disponible', 'flavor-chat-ia'); ?></option>
+                </select>
+                <select name="genero">
+                    <option value=""><?php _e('Todos los géneros', 'flavor-chat-ia'); ?></option>
+                    <?php foreach ($generos as $genero): ?>
+                    <option value="<?php echo esc_attr($genero); ?>" <?php selected($filtro_genero, $genero); ?>><?php echo esc_html($genero); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <?php if ($filtro_busqueda || $filtro_disponibilidad || $filtro_genero): ?>
+                <a href="<?php echo admin_url('admin.php?page=biblioteca-catalogo'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <?php endif; ?>
+            </form>
+
+            <p class="description">
+                <?php printf(__('Mostrando %d de %d libros', 'flavor-chat-ia'), count($libros), $total_items); ?>
+            </p>
+
+            <!-- Tabla de libros -->
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;"><?php _e('Portada', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Título / Autor', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('ISBN', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Género', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Propietario', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Disponibilidad', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Préstamos', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($libros)): ?>
+                        <?php foreach ($libros as $libro): ?>
+                        <tr>
+                            <td>
+                                <?php if ($libro->portada_url): ?>
+                                <img src="<?php echo esc_url($libro->portada_url); ?>" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px;">
+                                <?php else: ?>
+                                <span class="dashicons dashicons-book" style="font-size: 40px; color: #8c8f94;"></span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <strong><?php echo esc_html($libro->titulo); ?></strong>
+                                <br><span style="color: #646970;"><?php echo esc_html($libro->autor); ?></span>
+                            </td>
+                            <td><?php echo esc_html($libro->isbn ?: '—'); ?></td>
+                            <td><?php echo esc_html($libro->genero ?: '—'); ?></td>
+                            <td><?php echo esc_html($libro->propietario_nombre ?: __('Desconocido', 'flavor-chat-ia')); ?></td>
+                            <td>
+                                <?php
+                                $disponibilidad_colores = [
+                                    'disponible' => '#00a32a',
+                                    'prestado' => '#dba617',
+                                    'reservado' => '#2271b1',
+                                    'no_disponible' => '#8c8f94',
+                                ];
+                                $color_disp = $disponibilidad_colores[$libro->disponibilidad] ?? '#646970';
+                                ?>
+                                <span style="display: inline-block; padding: 2px 8px; border-radius: 3px; background: <?php echo $color_disp; ?>; color: #fff; font-size: 12px;">
+                                    <?php echo esc_html(ucfirst(str_replace('_', ' ', $libro->disponibilidad))); ?>
+                                </span>
+                            </td>
+                            <td>
+                                <?php echo number_format_i18n($libro->veces_prestado); ?>
+                                <?php if ($libro->valoracion_media > 0): ?>
+                                <br><small style="color: #dba617;">★ <?php echo number_format($libro->valoracion_media, 1); ?></small>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <a href="<?php echo admin_url('admin.php?page=biblioteca-catalogo&action=editar&libro_id=' . $libro->id); ?>" class="button button-small">
+                                    <?php _e('Editar', 'flavor-chat-ia'); ?>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px;">
+                                <?php _e('No se encontraron libros con los filtros seleccionados.', 'flavor-chat-ia'); ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+            <!-- Paginación -->
+            <?php if ($total_paginas > 1): ?>
+            <div class="tablenav bottom">
+                <div class="tablenav-pages">
+                    <span class="displaying-num"><?php printf(__('%d elementos', 'flavor-chat-ia'), $total_items); ?></span>
+                    <span class="pagination-links">
+                        <?php
+                        $paginas_enlaces = paginate_links([
+                            'base' => add_query_arg('paged', '%#%'),
+                            'format' => '',
+                            'prev_text' => '&laquo;',
+                            'next_text' => '&raquo;',
+                            'total' => $total_paginas,
+                            'current' => $pagina_actual,
+                        ]);
+                        echo $paginas_enlaces;
+                        ?>
+                    </span>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de Préstamos
+     */
+    public function render_admin_prestamos() {
+        global $wpdb;
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+
+        // Procesar acciones
+        if (isset($_POST['accion_prestamo']) && wp_verify_nonce($_POST['_wpnonce'], 'biblioteca_admin_prestamo')) {
+            $accion = sanitize_text_field($_POST['accion_prestamo']);
+            $prestamo_id = intval($_POST['prestamo_id']);
+
+            if ($accion === 'aprobar' && $prestamo_id > 0) {
+                $prestamo = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$tabla_prestamos} WHERE id = %d", $prestamo_id));
+                if ($prestamo && $prestamo->estado === 'pendiente') {
+                    $settings = $this->get_settings();
+                    $dias_prestamo = $settings['duracion_prestamo_dias'] ?? 30;
+                    $fecha_devolucion = date('Y-m-d H:i:s', strtotime("+{$dias_prestamo} days"));
+
+                    $wpdb->update($tabla_prestamos, [
+                        'estado' => 'activo',
+                        'fecha_prestamo' => current_time('mysql'),
+                        'fecha_devolucion_prevista' => $fecha_devolucion,
+                    ], ['id' => $prestamo_id]);
+
+                    $wpdb->update($tabla_libros, ['disponibilidad' => 'prestado'], ['id' => $prestamo->libro_id]);
+                    $wpdb->query($wpdb->prepare("UPDATE {$tabla_libros} SET veces_prestado = veces_prestado + 1 WHERE id = %d", $prestamo->libro_id));
+
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Préstamo aprobado correctamente.', 'flavor-chat-ia') . '</p></div>';
+                }
+            } elseif ($accion === 'rechazar' && $prestamo_id > 0) {
+                $wpdb->update($tabla_prestamos, ['estado' => 'rechazado'], ['id' => $prestamo_id]);
+                echo '<div class="notice notice-success is-dismissible"><p>' . __('Préstamo rechazado.', 'flavor-chat-ia') . '</p></div>';
+            } elseif ($accion === 'devolver' && $prestamo_id > 0) {
+                $prestamo = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$tabla_prestamos} WHERE id = %d", $prestamo_id));
+                if ($prestamo) {
+                    $wpdb->update($tabla_prestamos, [
+                        'estado' => 'devuelto',
+                        'fecha_devolucion_real' => current_time('mysql'),
+                    ], ['id' => $prestamo_id]);
+                    $wpdb->update($tabla_libros, ['disponibilidad' => 'disponible'], ['id' => $prestamo->libro_id]);
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Libro marcado como devuelto.', 'flavor-chat-ia') . '</p></div>';
+                }
+            }
+        }
+
+        // Filtros
+        $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
+
+        $where_estado = '';
+        if (!empty($filtro_estado)) {
+            $where_estado = $wpdb->prepare(" AND p.estado = %s", $filtro_estado);
+        }
+
+        // Obtener préstamos
+        $prestamos = $wpdb->get_results(
+            "SELECT p.*, l.titulo, l.autor, l.portada_url,
+                    prestatario.display_name as prestatario_nombre, prestatario.user_email as prestatario_email,
+                    prestamista.display_name as prestamista_nombre
+             FROM {$tabla_prestamos} p
+             LEFT JOIN {$tabla_libros} l ON p.libro_id = l.id
+             LEFT JOIN {$wpdb->users} prestatario ON p.prestatario_id = prestatario.ID
+             LEFT JOIN {$wpdb->users} prestamista ON p.prestamista_id = prestamista.ID
+             WHERE 1=1 {$where_estado}
+             ORDER BY
+                CASE p.estado
+                    WHEN 'pendiente' THEN 1
+                    WHEN 'retrasado' THEN 2
+                    WHEN 'activo' THEN 3
+                    ELSE 4
+                END,
+                p.fecha_solicitud DESC
+             LIMIT 100"
+        );
+
+        // Contadores por estado
+        $conteos = $wpdb->get_results(
+            "SELECT estado, COUNT(*) as cantidad FROM {$tabla_prestamos} GROUP BY estado",
+            OBJECT_K
+        );
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Gestión de Préstamos', 'flavor-chat-ia')); ?>
+
+            <!-- Tabs de estados -->
+            <ul class="subsubsub" style="margin: 15px 0;">
+                <li>
+                    <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos'); ?>" class="<?php echo empty($filtro_estado) ? 'current' : ''; ?>">
+                        <?php _e('Todos', 'flavor-chat-ia'); ?>
+                    </a> |
+                </li>
+                <li>
+                    <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=pendiente'); ?>" class="<?php echo $filtro_estado === 'pendiente' ? 'current' : ''; ?>">
+                        <?php _e('Pendientes', 'flavor-chat-ia'); ?>
+                        <?php if (!empty($conteos['pendiente'])): ?>
+                        <span class="count">(<?php echo $conteos['pendiente']->cantidad; ?>)</span>
+                        <?php endif; ?>
+                    </a> |
+                </li>
+                <li>
+                    <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=activo'); ?>" class="<?php echo $filtro_estado === 'activo' ? 'current' : ''; ?>">
+                        <?php _e('Activos', 'flavor-chat-ia'); ?>
+                        <?php if (!empty($conteos['activo'])): ?>
+                        <span class="count">(<?php echo $conteos['activo']->cantidad; ?>)</span>
+                        <?php endif; ?>
+                    </a> |
+                </li>
+                <li>
+                    <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=retrasado'); ?>" class="<?php echo $filtro_estado === 'retrasado' ? 'current' : ''; ?>">
+                        <?php _e('Retrasados', 'flavor-chat-ia'); ?>
+                        <?php if (!empty($conteos['retrasado'])): ?>
+                        <span class="count">(<?php echo $conteos['retrasado']->cantidad; ?>)</span>
+                        <?php endif; ?>
+                    </a> |
+                </li>
+                <li>
+                    <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=devuelto'); ?>" class="<?php echo $filtro_estado === 'devuelto' ? 'current' : ''; ?>">
+                        <?php _e('Devueltos', 'flavor-chat-ia'); ?>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Tabla de préstamos -->
+            <table class="wp-list-table widefat fixed striped" style="margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;"><?php _e('Libro', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Título / Autor', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Prestatario', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Propietario', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Fechas', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($prestamos)): ?>
+                        <?php foreach ($prestamos as $prestamo): ?>
+                        <tr>
+                            <td>
+                                <?php if ($prestamo->portada_url): ?>
+                                <img src="<?php echo esc_url($prestamo->portada_url); ?>" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px;">
+                                <?php else: ?>
+                                <span class="dashicons dashicons-book" style="font-size: 40px; color: #8c8f94;"></span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <strong><?php echo esc_html($prestamo->titulo); ?></strong>
+                                <br><span style="color: #646970;"><?php echo esc_html($prestamo->autor); ?></span>
+                            </td>
+                            <td>
+                                <?php echo esc_html($prestamo->prestatario_nombre ?: __('Usuario', 'flavor-chat-ia')); ?>
+                                <br><small style="color: #646970;"><?php echo esc_html($prestamo->prestatario_email); ?></small>
+                            </td>
+                            <td><?php echo esc_html($prestamo->prestamista_nombre ?: __('Desconocido', 'flavor-chat-ia')); ?></td>
+                            <td>
+                                <?php
+                                $estados_colores = [
+                                    'pendiente' => '#dba617',
+                                    'activo' => '#00a32a',
+                                    'devuelto' => '#646970',
+                                    'retrasado' => '#d63638',
+                                    'rechazado' => '#8c8f94',
+                                ];
+                                $color_estado = $estados_colores[$prestamo->estado] ?? '#646970';
+                                ?>
+                                <span style="display: inline-block; padding: 2px 8px; border-radius: 3px; background: <?php echo $color_estado; ?>; color: #fff; font-size: 12px;">
+                                    <?php echo esc_html(ucfirst($prestamo->estado)); ?>
+                                </span>
+                                <?php if ($prestamo->renovaciones > 0): ?>
+                                <br><small><?php printf(__('%d renovaciones', 'flavor-chat-ia'), $prestamo->renovaciones); ?></small>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <small>
+                                    <?php _e('Solicitado:', 'flavor-chat-ia'); ?> <?php echo date_i18n(get_option('date_format'), strtotime($prestamo->fecha_solicitud)); ?>
+                                    <?php if ($prestamo->fecha_devolucion_prevista): ?>
+                                    <br><?php _e('Devolver:', 'flavor-chat-ia'); ?> <?php echo date_i18n(get_option('date_format'), strtotime($prestamo->fecha_devolucion_prevista)); ?>
+                                    <?php endif; ?>
+                                </small>
+                            </td>
+                            <td>
+                                <form method="post" style="display: inline;">
+                                    <?php wp_nonce_field('biblioteca_admin_prestamo'); ?>
+                                    <input type="hidden" name="prestamo_id" value="<?php echo $prestamo->id; ?>">
+
+                                    <?php if ($prestamo->estado === 'pendiente'): ?>
+                                    <button type="submit" name="accion_prestamo" value="aprobar" class="button button-small button-primary">
+                                        <?php _e('Aprobar', 'flavor-chat-ia'); ?>
+                                    </button>
+                                    <button type="submit" name="accion_prestamo" value="rechazar" class="button button-small" onclick="return confirm('<?php esc_attr_e('¿Rechazar este préstamo?', 'flavor-chat-ia'); ?>')">
+                                        <?php _e('Rechazar', 'flavor-chat-ia'); ?>
+                                    </button>
+                                    <?php elseif ($prestamo->estado === 'activo' || $prestamo->estado === 'retrasado'): ?>
+                                    <button type="submit" name="accion_prestamo" value="devolver" class="button button-small">
+                                        <?php _e('Marcar Devuelto', 'flavor-chat-ia'); ?>
+                                    </button>
+                                    <?php endif; ?>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px;">
+                                <?php _e('No hay préstamos que mostrar.', 'flavor-chat-ia'); ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de Usuarios
+     */
+    public function render_admin_usuarios() {
+        global $wpdb;
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+
+        // Obtener usuarios con actividad en biblioteca
+        $usuarios = $wpdb->get_results(
+            "SELECT
+                u.ID,
+                u.display_name,
+                u.user_email,
+                (SELECT COUNT(*) FROM {$tabla_libros} WHERE propietario_id = u.ID) as libros_aportados,
+                (SELECT COUNT(*) FROM {$tabla_prestamos} WHERE prestatario_id = u.ID) as prestamos_solicitados,
+                (SELECT COUNT(*) FROM {$tabla_prestamos} WHERE prestatario_id = u.ID AND estado = 'activo') as prestamos_activos,
+                (SELECT COUNT(*) FROM {$tabla_prestamos} WHERE prestatario_id = u.ID AND estado = 'retrasado') as prestamos_retrasados,
+                (SELECT MAX(fecha_solicitud) FROM {$tabla_prestamos} WHERE prestatario_id = u.ID) as ultima_actividad
+             FROM {$wpdb->users} u
+             WHERE u.ID IN (
+                SELECT propietario_id FROM {$tabla_libros}
+                UNION
+                SELECT prestatario_id FROM {$tabla_prestamos}
+             )
+             ORDER BY ultima_actividad DESC
+             LIMIT 100"
+        );
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Usuarios de la Biblioteca', 'flavor-chat-ia')); ?>
+
+            <table class="wp-list-table widefat fixed striped" style="margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Libros Aportados', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Préstamos Solicitados', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Activos Ahora', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Retrasados', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Última Actividad', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($usuarios)): ?>
+                        <?php foreach ($usuarios as $usuario): ?>
+                        <tr>
+                            <td>
+                                <?php echo get_avatar($usuario->ID, 32); ?>
+                                <strong style="margin-left: 8px;"><?php echo esc_html($usuario->display_name); ?></strong>
+                                <br><small style="color: #646970; margin-left: 40px;"><?php echo esc_html($usuario->user_email); ?></small>
+                            </td>
+                            <td>
+                                <span style="font-size: 18px; font-weight: 600;"><?php echo number_format_i18n($usuario->libros_aportados); ?></span>
+                            </td>
+                            <td><?php echo number_format_i18n($usuario->prestamos_solicitados); ?></td>
+                            <td>
+                                <?php if ($usuario->prestamos_activos > 0): ?>
+                                <span style="color: #00a32a; font-weight: 600;"><?php echo number_format_i18n($usuario->prestamos_activos); ?></span>
+                                <?php else: ?>
+                                <span style="color: #646970;">0</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if ($usuario->prestamos_retrasados > 0): ?>
+                                <span style="color: #d63638; font-weight: 600;"><?php echo number_format_i18n($usuario->prestamos_retrasados); ?></span>
+                                <?php else: ?>
+                                <span style="color: #646970;">0</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php
+                                if ($usuario->ultima_actividad) {
+                                    echo date_i18n(get_option('date_format'), strtotime($usuario->ultima_actividad));
+                                } else {
+                                    echo '—';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px;">
+                                <?php _e('No hay usuarios con actividad en la biblioteca.', 'flavor-chat-ia'); ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la página de Configuración
+     */
+    public function render_admin_config() {
+        // Guardar configuración
+        if (isset($_POST['guardar_config']) && wp_verify_nonce($_POST['_wpnonce'], 'biblioteca_guardar_config')) {
+            $opciones = [
+                'duracion_prestamo_dias' => intval($_POST['duracion_prestamo_dias']),
+                'renovaciones_maximas' => intval($_POST['renovaciones_maximas']),
+                'permite_reservas' => isset($_POST['permite_reservas']) ? true : false,
+                'sistema_puntos' => isset($_POST['sistema_puntos']) ? true : false,
+                'puntos_por_prestamo' => intval($_POST['puntos_por_prestamo']),
+                'puntos_por_devolucion' => intval($_POST['puntos_por_devolucion']),
+                'notificar_vencimientos' => isset($_POST['notificar_vencimientos']) ? true : false,
+                'dias_antes_notificar' => intval($_POST['dias_antes_notificar']),
+                'permite_donaciones' => isset($_POST['permite_donaciones']) ? true : false,
+                'permite_intercambios' => isset($_POST['permite_intercambios']) ? true : false,
+                'requiere_verificacion_isbn' => isset($_POST['requiere_verificacion_isbn']) ? true : false,
+            ];
+
+            // Guardar cada opción
+            foreach ($opciones as $clave => $valor) {
+                update_option('flavor_biblioteca_' . $clave, $valor);
+            }
+
+            // También actualizar las settings del módulo (opción centralizada)
+            $current_settings = $this->get_settings();
+            $new_settings = array_merge($current_settings, $opciones);
+            update_option('flavor_chat_ia_module_' . $this->id, $new_settings);
+
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        // Obtener configuración actual
+        $settings = $this->get_settings();
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Configuración de Biblioteca', 'flavor-chat-ia')); ?>
+
+            <form method="post" style="max-width: 800px;">
+                <?php wp_nonce_field('biblioteca_guardar_config'); ?>
+
+                <!-- Sección: Préstamos -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
+                        <span class="dashicons dashicons-book-alt"></span>
+                        <?php _e('Configuración de Préstamos', 'flavor-chat-ia'); ?>
+                    </h3>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="duracion_prestamo_dias"><?php _e('Duración del préstamo', 'flavor-chat-ia'); ?></label>
+                            </th>
+                            <td>
+                                <input type="number" name="duracion_prestamo_dias" id="duracion_prestamo_dias"
+                                       value="<?php echo esc_attr($settings['duracion_prestamo_dias'] ?? 30); ?>"
+                                       min="1" max="365" class="small-text">
+                                <span><?php _e('días', 'flavor-chat-ia'); ?></span>
+                                <p class="description"><?php _e('Tiempo predeterminado que un usuario puede tener un libro.', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="renovaciones_maximas"><?php _e('Renovaciones máximas', 'flavor-chat-ia'); ?></label>
+                            </th>
+                            <td>
+                                <input type="number" name="renovaciones_maximas" id="renovaciones_maximas"
+                                       value="<?php echo esc_attr($settings['renovaciones_maximas'] ?? 2); ?>"
+                                       min="0" max="10" class="small-text">
+                                <p class="description"><?php _e('Número de veces que se puede renovar un préstamo.', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Permitir reservas', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="permite_reservas" value="1"
+                                           <?php checked($settings['permite_reservas'] ?? true); ?>>
+                                    <?php _e('Los usuarios pueden reservar libros que están prestados.', 'flavor-chat-ia'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Sección: Tipos de transacción -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
+                        <span class="dashicons dashicons-update"></span>
+                        <?php _e('Tipos de Transacción', 'flavor-chat-ia'); ?>
+                    </h3>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Permitir donaciones', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="permite_donaciones" value="1"
+                                           <?php checked($settings['permite_donaciones'] ?? true); ?>>
+                                    <?php _e('Los usuarios pueden donar libros a la comunidad.', 'flavor-chat-ia'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Permitir intercambios', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="permite_intercambios" value="1"
+                                           <?php checked($settings['permite_intercambios'] ?? true); ?>>
+                                    <?php _e('Los usuarios pueden intercambiar libros entre sí.', 'flavor-chat-ia'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Sección: Gamificación -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
+                        <span class="dashicons dashicons-awards"></span>
+                        <?php _e('Gamificación', 'flavor-chat-ia'); ?>
+                    </h3>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Sistema de puntos', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="sistema_puntos" value="1"
+                                           <?php checked($settings['sistema_puntos'] ?? true); ?>>
+                                    <?php _e('Activar sistema de puntos por actividad en la biblioteca.', 'flavor-chat-ia'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="puntos_por_prestamo"><?php _e('Puntos por aportar libro', 'flavor-chat-ia'); ?></label>
+                            </th>
+                            <td>
+                                <input type="number" name="puntos_por_prestamo" id="puntos_por_prestamo"
+                                       value="<?php echo esc_attr($settings['puntos_por_prestamo'] ?? 1); ?>"
+                                       min="0" max="100" class="small-text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="puntos_por_devolucion"><?php _e('Puntos por devolución', 'flavor-chat-ia'); ?></label>
+                            </th>
+                            <td>
+                                <input type="number" name="puntos_por_devolucion" id="puntos_por_devolucion"
+                                       value="<?php echo esc_attr($settings['puntos_por_devolucion'] ?? 2); ?>"
+                                       min="0" max="100" class="small-text">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Sección: Notificaciones -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
+                        <span class="dashicons dashicons-bell"></span>
+                        <?php _e('Notificaciones', 'flavor-chat-ia'); ?>
+                    </h3>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Notificar vencimientos', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="notificar_vencimientos" value="1"
+                                           <?php checked($settings['notificar_vencimientos'] ?? true); ?>>
+                                    <?php _e('Enviar recordatorios antes de la fecha de devolución.', 'flavor-chat-ia'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="dias_antes_notificar"><?php _e('Días de anticipación', 'flavor-chat-ia'); ?></label>
+                            </th>
+                            <td>
+                                <input type="number" name="dias_antes_notificar" id="dias_antes_notificar"
+                                       value="<?php echo esc_attr($settings['dias_antes_notificar'] ?? 3); ?>"
+                                       min="1" max="14" class="small-text">
+                                <span><?php _e('días antes', 'flavor-chat-ia'); ?></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Sección: Verificación -->
+                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
+                        <span class="dashicons dashicons-yes-alt"></span>
+                        <?php _e('Verificación', 'flavor-chat-ia'); ?>
+                    </h3>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Verificar ISBN', 'flavor-chat-ia'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="requiere_verificacion_isbn" value="1"
+                                           <?php checked($settings['requiere_verificacion_isbn'] ?? false); ?>>
+                                    <?php _e('Requerir ISBN válido al agregar libros.', 'flavor-chat-ia'); ?>
+                                </label>
+                                <p class="description"><?php _e('Si está activo, se validará el ISBN contra la base de datos de Open Library.', 'flavor-chat-ia'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p class="submit">
+                    <button type="submit" name="guardar_config" class="button button-primary button-large">
+                        <?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                    </button>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-biblioteca-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Biblioteca_Dashboard_Tab')) {
+                Flavor_Biblioteca_Dashboard_Tab::get_instance();
+            }
+        }
+    }
 }

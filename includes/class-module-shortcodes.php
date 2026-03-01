@@ -36,15 +36,339 @@ class Flavor_Module_Shortcodes {
      * Constructor privado
      */
     private function __construct() {
+        // SHORTCODE UNIVERSAL - Usa este para todo
+        add_shortcode('flavor', [$this, 'render_unified']);
+        add_shortcode('flavor_view', [$this, 'render_unified']); // Alias
+
+        // Legacy: mantener compatibilidad con shortcodes antiguos
         add_action('init', [$this, 'register_module_shortcodes'], 20);
         add_action('init', [$this, 'register_specific_shortcodes'], 21);
-        // Registrar shortcode de formularios
+
+        // Shortcodes adicionales
         add_shortcode('flavor_module_form', [$this, 'render_module_form']);
-        // Registrar shortcode de listados de módulos
         add_shortcode('flavor_module_listing', [$this, 'render_module_listing']);
-        // Registrar handler AJAX para formularios
+
+        // === WIDGETS GENÉRICOS ===
+        add_shortcode('flavor_ultimos', [$this, 'render_widget_ultimos']);
+        add_shortcode('flavor_destacados', [$this, 'render_widget_destacados']);
+        add_shortcode('flavor_proximo', [$this, 'render_widget_proximo']);
+        add_shortcode('flavor_mi_resumen', [$this, 'render_widget_mi_resumen']);
+
+        // Handler AJAX para formularios
         add_action('wp_ajax_flavor_module_action', [$this, 'handle_form_submission']);
         add_action('wp_ajax_nopriv_flavor_module_action', [$this, 'handle_form_submission']);
+    }
+
+    /**
+     * SHORTCODE UNIVERSAL
+     *
+     * Uso: [flavor module="incidencias" view="listado"]
+     *      [flavor module="eventos" view="calendario"]
+     *      [flavor module="marketplace" view="mis"]
+     *      [flavor module="banco-tiempo" view="single" id="123"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_unified($atts) {
+        $atts = shortcode_atts([
+            'module'   => '',
+            'view'     => 'listado',  // listado, single, mis, calendario, mapa, form, stats
+            'id'       => '',
+            'limit'    => 12,
+            'columns'  => 3,
+            'color'    => '',         // Color del tema o hex
+            'title'    => '',         // Título personalizado
+            'filters'  => 'yes',      // Mostrar filtros
+            'header'   => 'yes',      // Mostrar header
+            'user'     => '',         // ID de usuario (para filtrar)
+        ], $atts);
+
+        $module_slug = sanitize_title($atts['module']);
+        $view = sanitize_title($atts['view']);
+
+        if (empty($module_slug)) {
+            return '<div class="flavor-error">' . __('Error: Especifica un módulo [flavor module="X"]', 'flavor-chat-ia') . '</div>';
+        }
+
+        // Verificar login para vistas personales
+        if (in_array($view, ['mis', 'mis-items', 'personal', 'user']) && !is_user_logged_in()) {
+            return $this->render_login_required_message();
+        }
+
+        // Cargar Archive Renderer
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+        $renderer = new Flavor_Archive_Renderer();
+
+        // Configuración base
+        $config = [
+            'per_page'     => intval($atts['limit']),
+            'columns'      => intval($atts['columns']),
+            'show_header'  => ($atts['header'] === 'yes'),
+            'show_filters' => ($atts['filters'] === 'yes'),
+        ];
+
+        if (!empty($atts['color'])) {
+            $config['color'] = $atts['color'];
+        }
+        if (!empty($atts['title'])) {
+            $config['title'] = $atts['title'];
+        }
+
+        // Renderizar según el tipo de vista
+        switch ($view) {
+            // === LISTADOS ===
+            case 'listado':
+            case 'archive':
+            case 'catalogo':
+            case 'lista':
+            case 'grid':
+            case 'explorar':
+                return $renderer->render_auto($module_slug, $config);
+
+            // === SINGLE/DETALLE ===
+            case 'single':
+            case 'detalle':
+            case 'ver':
+            case 'ficha':
+                $item_id = !empty($atts['id']) ? intval($atts['id']) : (isset($_GET['id']) ? intval($_GET['id']) : 0);
+                return $renderer->render_single_auto($module_slug, $item_id);
+
+            // === VISTAS PERSONALES ===
+            case 'mis':
+            case 'mis-items':
+            case 'personal':
+            case 'user':
+                $config['user_id'] = !empty($atts['user']) ? intval($atts['user']) : get_current_user_id();
+                $config['show_header'] = false;
+                $config['empty_title'] = __('No tienes registros aún', 'flavor-chat-ia');
+                return $renderer->render_auto($module_slug, $config);
+
+            // === CALENDARIO ===
+            case 'calendario':
+            case 'calendar':
+                return $this->render_universal_calendar($module_slug, $atts);
+
+            // === MAPA ===
+            case 'mapa':
+            case 'map':
+                return $this->render_universal_map($module_slug, $atts);
+
+            // === FORMULARIO ===
+            case 'form':
+            case 'formulario':
+            case 'crear':
+            case 'nuevo':
+                return $this->render_module_form_auto($module_slug, $view, $atts);
+
+            // === ESTADÍSTICAS ===
+            case 'stats':
+            case 'estadisticas':
+            case 'resumen':
+                return $this->render_universal_stats($module_slug, $atts);
+
+            // === WIDGETS ===
+            case 'ultimos':
+            case 'recientes':
+            case 'novedades':
+                return $this->render_widget_ultimos(['module' => $module_slug, 'limit' => $atts['limit'], 'color' => $atts['color'], 'title' => $atts['title']]);
+
+            case 'destacados':
+            case 'featured':
+            case 'populares':
+                return $this->render_widget_destacados(['module' => $module_slug, 'limit' => $atts['limit'], 'columns' => $atts['columns'], 'color' => $atts['color'], 'title' => $atts['title']]);
+
+            case 'proximo':
+            case 'next':
+            case 'siguiente':
+                return $this->render_widget_proximo(['module' => $module_slug, 'color' => $atts['color'], 'title' => $atts['title']]);
+
+            case 'mi-resumen':
+            case 'user-stats':
+            case 'mi-saldo':
+                return $this->render_widget_mi_resumen(['module' => $module_slug, 'color' => $atts['color'], 'title' => $atts['title']]);
+
+            // === DEFAULT: intentar Archive Renderer ===
+            default:
+                return $renderer->render_auto($module_slug, $config);
+        }
+    }
+
+    /**
+     * Calendario universal para cualquier módulo
+     */
+    private function render_universal_calendar($module_slug, $atts) {
+        // Obtener configuración del módulo
+        $module_class = $this->get_module_class($module_slug);
+        $config = [];
+        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
+            $config = $module_class::get_renderer_config();
+        }
+
+        $color = $atts['color'] ?: ($config['color'] ?? 'primary');
+        $gradient = function_exists('flavor_get_gradient_classes')
+            ? flavor_get_gradient_classes($color)
+            : ['from' => 'from-blue-500', 'to' => 'to-blue-600'];
+        $gradient_classes = "bg-gradient-to-r {$gradient['from']} {$gradient['to']}";
+
+        $title = $atts['title'] ?: ($config['title'] ?? ucfirst(str_replace('-', ' ', $module_slug)));
+        $icon = $config['icon'] ?? '📅';
+
+        ob_start();
+        ?>
+        <div class="flavor-calendar-wrapper" data-module="<?php echo esc_attr($module_slug); ?>">
+            <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-xl p-4 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl"><?php echo esc_html($icon); ?></span>
+                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Calendario', 'flavor-chat-ia'); ?></h3>
+                </div>
+            </div>
+            <div class="bg-white rounded-b-xl shadow-lg p-4">
+                <div id="flavor-calendar-<?php echo esc_attr($module_slug); ?>" class="flavor-fullcalendar"></div>
+            </div>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof FullCalendar !== 'undefined') {
+                var calendarEl = document.getElementById('flavor-calendar-<?php echo esc_js($module_slug); ?>');
+                if (calendarEl) {
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        locale: 'es',
+                        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' },
+                        events: flavorAjax.url + '?action=flavor_get_calendar_events&module=<?php echo esc_js($module_slug); ?>&_wpnonce=' + flavorAjax.nonce
+                    });
+                    calendar.render();
+                }
+            }
+        });
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Mapa universal para cualquier módulo
+     */
+    private function render_universal_map($module_slug, $atts) {
+        $module_class = $this->get_module_class($module_slug);
+        $config = [];
+        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
+            $config = $module_class::get_renderer_config();
+        }
+
+        $color = $atts['color'] ?: ($config['color'] ?? 'primary');
+        $gradient = function_exists('flavor_get_gradient_classes')
+            ? flavor_get_gradient_classes($color)
+            : ['from' => 'from-blue-500', 'to' => 'to-blue-600'];
+        $gradient_classes = "bg-gradient-to-r {$gradient['from']} {$gradient['to']}";
+
+        $title = $atts['title'] ?: ($config['title'] ?? ucfirst(str_replace('-', ' ', $module_slug)));
+        $icon = $config['icon'] ?? '🗺️';
+
+        ob_start();
+        ?>
+        <div class="flavor-map-wrapper" data-module="<?php echo esc_attr($module_slug); ?>">
+            <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-xl p-4 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl"><?php echo esc_html($icon); ?></span>
+                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Mapa', 'flavor-chat-ia'); ?></h3>
+                </div>
+            </div>
+            <div class="bg-white rounded-b-xl shadow-lg">
+                <div id="flavor-map-<?php echo esc_attr($module_slug); ?>" class="flavor-leaflet-map" style="height: 400px;"></div>
+            </div>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof L !== 'undefined') {
+                var mapEl = document.getElementById('flavor-map-<?php echo esc_js($module_slug); ?>');
+                if (mapEl && !mapEl._leaflet_id) {
+                    var map = L.map(mapEl).setView([40.4168, -3.7038], 12);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    fetch(flavorAjax.url + '?action=flavor_get_map_markers&module=<?php echo esc_js($module_slug); ?>&_wpnonce=' + flavorAjax.nonce)
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success && data.data.markers) {
+                                data.data.markers.forEach(m => {
+                                    L.marker([m.lat, m.lng]).addTo(map).bindPopup(m.popup || m.title);
+                                });
+                            }
+                        });
+                }
+            }
+        });
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Estadísticas universales para cualquier módulo
+     */
+    private function render_universal_stats($module_slug, $atts) {
+        $module_class = $this->get_module_class($module_slug);
+        $config = [];
+        $stats = [];
+
+        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
+            $config = $module_class::get_renderer_config();
+        }
+        if ($module_class && method_exists($module_class, 'get_stats')) {
+            $stats = $module_class::get_stats();
+        }
+
+        $color = $atts['color'] ?: ($config['color'] ?? 'primary');
+        $gradient = function_exists('flavor_get_gradient_classes')
+            ? flavor_get_gradient_classes($color)
+            : ['from' => 'from-blue-500', 'to' => 'to-blue-600'];
+        $gradient_classes = "bg-gradient-to-r {$gradient['from']} {$gradient['to']}";
+
+        $title = $atts['title'] ?: ($config['title'] ?? ucfirst(str_replace('-', ' ', $module_slug)));
+        $icon = $config['icon'] ?? '📊';
+
+        ob_start();
+        ?>
+        <div class="flavor-stats-wrapper">
+            <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-xl p-4 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl"><?php echo esc_html($icon); ?></span>
+                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?></h3>
+                </div>
+            </div>
+            <div class="bg-white rounded-b-xl shadow-lg p-6">
+                <?php if (!empty($stats)): ?>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <?php foreach ($stats as $stat): ?>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-gray-800"><?php echo esc_html($stat['value'] ?? 0); ?></div>
+                        <div class="text-sm text-gray-500"><?php echo esc_html($stat['label'] ?? ''); ?></div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php else: ?>
+                <p class="text-center text-gray-500"><?php esc_html_e('No hay estadísticas disponibles', 'flavor-chat-ia'); ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene la clase del módulo
+     */
+    private function get_module_class($module_slug) {
+        $class_name = 'Flavor_' . str_replace('-', '_', ucwords($module_slug, '-')) . '_Module';
+        if (class_exists($class_name)) {
+            return $class_name;
+        }
+        return null;
     }
 
     /**
@@ -121,6 +445,13 @@ class Flavor_Module_Shortcodes {
         // === PRESUPUESTOS PARTICIPATIVOS ===
         $this->register_fallback_shortcode('presupuesto_participativo', 'presupuestos-participativos', 'dashboard');
         $this->register_fallback_shortcode('fases_participacion', 'presupuestos-participativos', 'fases');
+        $this->register_fallback_shortcode('presupuesto_estado_actual', 'presupuestos-participativos', 'fases');
+        $this->register_fallback_shortcode('presupuestos_listado', 'presupuestos-participativos', 'listado');
+        $this->register_fallback_shortcode('presupuestos_votar', 'presupuestos-participativos', 'votar');
+        $this->register_fallback_shortcode('presupuestos_mi_proyecto', 'presupuestos-participativos', 'mis-propuestas');
+        $this->register_fallback_shortcode('presupuestos_resultados', 'presupuestos-participativos', 'resultados');
+        $this->register_fallback_shortcode('presupuestos_seguimiento', 'presupuestos-participativos', 'seguimiento');
+        $this->register_fallback_shortcode('presupuestos_proponer', 'presupuestos-participativos', 'proponer');
 
         // === RECICLAJE ===
         $this->register_fallback_shortcode('reciclaje_mis_puntos', 'reciclaje', 'mis-puntos');
@@ -359,8 +690,13 @@ class Flavor_Module_Shortcodes {
         // Eventos
         $this->register_fallback_shortcode('eventos_proximo', 'eventos', 'proximo');
 
-        // Fichaje
+        // Fichaje Empleados
         $this->register_fallback_shortcode('fichaje_boton', 'fichaje-empleados', 'boton');
+        $this->register_fallback_shortcode('fichaje_fichar', 'fichaje-empleados', 'fichar');
+        $this->register_fallback_shortcode('fichaje_calendario', 'fichaje-empleados', 'calendario');
+        $this->register_fallback_shortcode('fichaje_informe', 'fichaje-empleados', 'informe');
+        $this->register_fallback_shortcode('fichaje_mis_fichajes', 'fichaje-empleados', 'mis-fichajes');
+        $this->register_fallback_shortcode('fichaje_resumen', 'fichaje-empleados', 'resumen');
 
         // Grupos Consumo
         $this->register_fallback_shortcode('gc_calendario', 'grupos-consumo', 'calendario');
@@ -441,77 +777,1462 @@ class Flavor_Module_Shortcodes {
         // Otros
         $this->register_fallback_shortcode('votaciones_activas', 'participacion', 'votaciones-activas');
         $this->register_fallback_shortcode('mis_propuestas_resumen', 'participacion', 'mis-propuestas-resumen');
+
+        // === SHORTCODES ADICIONALES (Fase 5 - Plan Refactorización) ===
+
+        // Advertising
+        $this->register_fallback_shortcode('ads_rendimiento', 'advertising', 'rendimiento');
+        $this->register_fallback_shortcode('ads_mis_campanas', 'advertising', 'mis-campanas');
+
+        // DEX Solana
+        $this->register_fallback_shortcode('dex_balance', 'dex-solana', 'balance');
+        $this->register_fallback_shortcode('dex_operaciones', 'dex-solana', 'operaciones');
+        $this->register_fallback_shortcode('dex_trading', 'dex-solana', 'trading');
+
+        // Empresarial
+        $this->register_fallback_shortcode('empresa_mi_ficha', 'empresarial', 'mi-ficha');
+        $this->register_fallback_shortcode('empresa_dashboard', 'empresarial', 'dashboard');
+        $this->register_fallback_shortcode('empresa_servicios', 'empresarial', 'servicios');
+
+        // Comunidades
+        $this->register_fallback_shortcode('mi_comunidad_resumen', 'comunidades', 'mi-comunidad-resumen');
+        $this->register_fallback_shortcode('comunidades_mi_actividad', 'comunidades', 'mi-actividad');
+
+        // Huertos Urbanos
+        $this->register_fallback_shortcode('mi_parcela_resumen', 'huertos-urbanos', 'mi-parcela-resumen');
+        $this->register_fallback_shortcode('huertos_mi_cultivo', 'huertos-urbanos', 'mi-cultivo');
+
+        // Email Marketing / Newsletter
+        $this->register_fallback_shortcode('newsletter_mi_estado', 'email-marketing', 'mi-estado');
+        $this->register_fallback_shortcode('newsletter_historial', 'email-marketing', 'historial');
+
+        // Socios
+        $this->register_fallback_shortcode('ultimo_pago', 'socios', 'ultimo-pago');
+        $this->register_fallback_shortcode('socios_estado_cuota', 'socios', 'estado-cuota');
+        $this->register_fallback_shortcode('socios_historial_pagos', 'socios', 'historial-pagos');
+        $this->register_fallback_shortcode('socios_beneficios', 'socios', 'beneficios');
+        $this->register_fallback_shortcode('socios_historial', 'socios', 'historial');
+        $this->register_fallback_shortcode('socios_carnet', 'socios', 'carnet');
+
+        // WooCommerce
+        $this->register_fallback_shortcode('woo_ultimo_pedido', 'woocommerce', 'ultimo-pedido');
+        $this->register_fallback_shortcode('woo_resumen_compras', 'woocommerce', 'resumen-compras');
+
+        // Campañas
+        $this->register_fallback_shortcode('campanias_activas', 'campanias', 'activas');
+        $this->register_fallback_shortcode('campanias_firmar', 'campanias', 'firmar');
+        $this->register_fallback_shortcode('mis_campanias', 'campanias', 'mis-campanias');
+
+        // Chat Estados
+        $this->register_fallback_shortcode('chat_estados_ver', 'chat-estados', 'ver-estados');
+        $this->register_fallback_shortcode('chat_estados_crear', 'chat-estados', 'crear');
+        $this->register_fallback_shortcode('chat_estados_mis_estados', 'chat-estados', 'mis-estados');
+
+        // Chat Interno
+        $this->register_fallback_shortcode('chat_interno_conversaciones', 'chat-interno', 'conversaciones');
+        $this->register_fallback_shortcode('chat_interno_nuevo', 'chat-interno', 'nuevo');
+        $this->register_fallback_shortcode('chat_interno_archivados', 'chat-interno', 'archivados');
+
+        // Documentación Legal
+        $this->register_fallback_shortcode('documentacion_legal_buscar', 'documentacion-legal', 'buscar');
+        $this->register_fallback_shortcode('documentacion_legal_leyes', 'documentacion-legal', 'leyes');
+        $this->register_fallback_shortcode('documentacion_legal_modelos', 'documentacion-legal', 'modelos');
+        $this->register_fallback_shortcode('documentacion_legal_sentencias', 'documentacion-legal', 'sentencias');
+        $this->register_fallback_shortcode('documentacion_legal_favoritos', 'documentacion-legal', 'favoritos');
+
+        // Mapa de Actores
+        $this->register_fallback_shortcode('mapa_actores_listado', 'mapa-actores', 'listado');
+        $this->register_fallback_shortcode('mapa_actores_grafo', 'mapa-actores', 'grafo');
+        $this->register_fallback_shortcode('mapa_actores_tipos', 'mapa-actores', 'tipos');
+        $this->register_fallback_shortcode('mapa_actores_relaciones', 'mapa-actores', 'relaciones');
+
+        // Recetas
+        $this->register_fallback_shortcode('recetas_listado', 'recetas', 'listado');
+        $this->register_fallback_shortcode('recetas_mis_recetas', 'recetas', 'mis-recetas');
+        $this->register_fallback_shortcode('recetas_favoritas', 'recetas', 'favoritas');
+        $this->register_fallback_shortcode('recetas_formulario', 'recetas', 'formulario');
+
+        // Seguimiento de Denuncias
+        $this->register_fallback_shortcode('denuncias_listado', 'seguimiento-denuncias', 'listado');
+        $this->register_fallback_shortcode('denuncias_formulario', 'seguimiento-denuncias', 'formulario');
+        $this->register_fallback_shortcode('denuncias_alertas', 'seguimiento-denuncias', 'alertas');
+        $this->register_fallback_shortcode('denuncias_archivadas', 'seguimiento-denuncias', 'archivadas');
+
+        // Themacle
+        $this->register_fallback_shortcode('themacle_listado', 'themacle', 'listado');
+        $this->register_fallback_shortcode('themacle_mis_temas', 'themacle', 'mis-temas');
+        $this->register_fallback_shortcode('themacle_formulario', 'themacle', 'formulario');
+
+        // Biodiversidad
+        $this->register_fallback_shortcode('biodiversidad_mapa', 'biodiversidad-local', 'mapa');
+        $this->register_fallback_shortcode('biodiversidad_avistamientos', 'biodiversidad-local', 'avistamientos');
+        $this->register_fallback_shortcode('biodiversidad_mis_registros', 'biodiversidad-local', 'mis-registros');
+
+        // Clientes
+        $this->register_fallback_shortcode('clientes_listado', 'clientes', 'listado');
+        $this->register_fallback_shortcode('clientes_mis_leads', 'clientes', 'mis-leads');
+        $this->register_fallback_shortcode('clientes_pipeline', 'clientes', 'pipeline');
+
+        // Facturas
+        $this->register_fallback_shortcode('facturas_listado', 'facturas', 'listado');
+        $this->register_fallback_shortcode('facturas_mis_facturas', 'facturas', 'mis-facturas');
+        $this->register_fallback_shortcode('facturas_crear', 'facturas', 'crear');
+
+        // Bares
+        $this->register_fallback_shortcode('bares_listado', 'bares', 'listado');
+        $this->register_fallback_shortcode('bares_mapa', 'bares', 'mapa');
+        $this->register_fallback_shortcode('bares_mi_bar', 'bares', 'mi-bar');
+        $this->register_fallback_shortcode('bares_opiniones', 'bares', 'opiniones');
+        $this->register_fallback_shortcode('bares_promociones', 'bares', 'promociones');
+        $this->register_fallback_shortcode('bares_reservar', 'bares', 'reservar');
+
+        // === SHORTCODES ADICIONALES (Fase 6 - Completar cobertura) ===
+
+        // Avisos - adicionales
+        $this->register_fallback_shortcode('avisos_categorias', 'avisos-municipales', 'categorias');
+        $this->register_fallback_shortcode('avisos_suscripciones', 'avisos-municipales', 'suscripciones');
+
+        // Banco Tiempo - adicionales
+        $this->register_fallback_shortcode('banco_tiempo_mi_balance', 'banco-tiempo', 'mi-saldo');
+
+        // Biblioteca - adicionales
+        $this->register_fallback_shortcode('biblioteca_clubes', 'biblioteca', 'clubes-lectura');
+        $this->register_fallback_shortcode('biblioteca_prestamos_activos', 'biblioteca', 'prestamos-activos');
+
+        // Carpooling - adicionales
+        $this->register_fallback_shortcode('carpooling_rutas', 'carpooling', 'rutas');
+        $this->register_fallback_shortcode('carpooling_valoraciones', 'carpooling', 'valoraciones');
+
+        // Círculos de Cuidados - adicionales
+        $this->register_fallback_shortcode('circulos_cuidados_calendario', 'circulos-cuidados', 'calendario');
+        $this->register_fallback_shortcode('circulos_cuidados_recursos', 'circulos-cuidados', 'recursos');
+
+        // Compostaje - adicionales
+        $this->register_fallback_shortcode('compostaje_comunidad', 'compostaje', 'comunidad');
+        $this->register_fallback_shortcode('compostaje_guias', 'compostaje', 'guias');
+        $this->register_fallback_shortcode('compostaje_ranking', 'compostaje', 'ranking');
+
+        // Comunidades - adicionales
+        $this->register_fallback_shortcode('comunidades_recursos', 'comunidades', 'recursos');
+
+        // CRM / Clientes
+        $this->register_fallback_shortcode('crm_resumen', 'clientes', 'resumen');
+
+        // Cursos - adicionales
+        $this->register_fallback_shortcode('cursos_materiales', 'cursos', 'materiales');
+
+        // Espacios Comunes - adicionales
+        $this->register_fallback_shortcode('ec_normas_uso', 'espacios-comunes', 'normas-uso');
+
+        // Economía del Don - adicionales
+        $this->register_fallback_shortcode('economia_don_mapa', 'economia-don', 'mapa');
+
+        // Economía de Suficiencia - adicionales
+        $this->register_fallback_shortcode('economia_suficiencia_comunidad', 'economia-suficiencia', 'comunidad');
+        $this->register_fallback_shortcode('economia_suficiencia_retos', 'economia-suficiencia', 'retos');
+
+        // Facturas - adicionales
+        $this->register_fallback_shortcode('facturas_pendientes', 'facturas', 'pendientes');
+
+        // Saberes - aliases
+        $this->register_fallback_shortcode('flavor_mis_saberes', 'saberes-ancestrales', 'mis-aprendizajes');
+        $this->register_fallback_shortcode('saberes_ancestrales_maestros', 'saberes-ancestrales', 'portadores');
+
+        // Grupos de Consumo - adicionales
+        $this->register_fallback_shortcode('gc_trueques', 'grupos-consumo', 'trueques');
+
+        // Huella Ecológica - adicionales
+        $this->register_fallback_shortcode('huella_ecologica_retos', 'huella-ecologica', 'retos');
+
+        // Huertos - adicionales
+        $this->register_fallback_shortcode('huertos_banco_semillas', 'huertos-urbanos', 'banco-semillas');
+
+        // Incidencias - adicionales
+        $this->register_fallback_shortcode('incidencias_categorias', 'incidencias', 'categorias');
+        $this->register_fallback_shortcode('incidencias_estadisticas', 'incidencias', 'estadisticas');
+
+        // Justicia Restaurativa - adicionales
+        $this->register_fallback_shortcode('justicia_restaurativa_recursos', 'justicia-restaurativa', 'recursos');
+
+        // Parkings - adicionales
+        $this->register_fallback_shortcode('parkings_ocupacion', 'parkings', 'ocupacion');
+        $this->register_fallback_shortcode('parkings_tarifas', 'parkings', 'tarifas');
+
+        // Podcast - adicionales
+        $this->register_fallback_shortcode('podcast_suscripciones', 'podcast', 'suscripciones');
+        $this->register_fallback_shortcode('podcast_estadisticas', 'podcast', 'estadisticas');
+
+        // Radio - adicionales
+        $this->register_fallback_shortcode('radio_archivo', 'radio', 'archivo');
+        $this->register_fallback_shortcode('radio_colaboradores', 'radio', 'colaboradores');
+
+        // Recetas - adicionales
+        $this->register_fallback_shortcode('recetas_ingredientes', 'recetas', 'ingredientes');
+        $this->register_fallback_shortcode('recetas_temporada', 'recetas', 'temporada');
+
+        // Red Social - adicionales
+        $this->register_fallback_shortcode('red_social_amigos', 'red-social', 'amigos');
+        $this->register_fallback_shortcode('red_social_historias', 'red-social', 'historias');
+
+        // Socios - adicionales
+        $this->register_fallback_shortcode('socios_mi_membresia', 'socios', 'mi-membresia');
+        $this->register_fallback_shortcode('socios_directorio', 'socios', 'directorio');
+
+        // Talleres - adicionales
+        $this->register_fallback_shortcode('talleres_materiales', 'talleres', 'materiales');
+
+        // Trabajo Digno - adicionales
+        $this->register_fallback_shortcode('trabajo_digno_alertas', 'trabajo-digno', 'alertas');
+
+        // Trámites - adicionales
+        $this->register_fallback_shortcode('tramites_citas', 'tramites', 'citas');
+        $this->register_fallback_shortcode('tramites_documentos', 'tramites', 'documentos');
+
+        // Transparencia - adicionales
+        $this->register_fallback_shortcode('transparencia_contratos', 'transparencia', 'contratos');
+
+        // === SHORTCODES ADICIONALES (Fase 7 - Cobertura completa) ===
+
+        // Ayuda Vecinal - faltantes
+        $this->register_fallback_shortcode('ayuda_vecinal_estadisticas', 'ayuda-vecinal', 'estadisticas');
+        $this->register_fallback_shortcode('ayuda_vecinal_mapa', 'ayuda-vecinal', 'mapa');
+        $this->register_fallback_shortcode('ayuda_vecinal_mis_ayudas', 'ayuda-vecinal', 'mis-ayudas');
+        $this->register_fallback_shortcode('ayuda_vecinal_ofrecer', 'ayuda-vecinal', 'ofrecer');
+        $this->register_fallback_shortcode('ayuda_vecinal_solicitar', 'ayuda-vecinal', 'solicitar');
+        $this->register_fallback_shortcode('ayuda_vecinal_solicitudes', 'ayuda-vecinal', 'solicitudes');
+
+        // Bicicletas - faltantes
+        $this->register_fallback_shortcode('bicicletas_estaciones', 'bicicletas-compartidas', 'estaciones');
+        $this->register_fallback_shortcode('bicicletas_estadisticas', 'bicicletas-compartidas', 'estadisticas');
+        $this->register_fallback_shortcode('bicicletas_mis_viajes', 'bicicletas-compartidas', 'mis-viajes');
+
+        // Biodiversidad - faltantes
+        $this->register_fallback_shortcode('biodiversidad_proyectos', 'biodiversidad-local', 'proyectos');
+
+        // Colectivos - faltantes
+        $this->register_fallback_shortcode('colectivos_asambleas', 'colectivos', 'asambleas');
+        $this->register_fallback_shortcode('colectivos_proyectos', 'colectivos', 'proyectos');
+
+        // Grupos - faltantes
+        $this->register_fallback_shortcode('flavor_grupos_explorar', 'chat-grupos', 'explorar');
+
+        // Huella Ecológica - faltantes
+        $this->register_fallback_shortcode('huella_ecologica_comunidad', 'huella-ecologica', 'comunidad');
+        $this->register_fallback_shortcode('huella_ecologica_proyectos', 'huella-ecologica', 'proyectos');
+        $this->register_fallback_shortcode('huella_ecologica_calculadora', 'huella-ecologica', 'calculadora');
+        $this->register_fallback_shortcode('huella_ecologica_mis_registros', 'huella-ecologica', 'mis-registros');
+        $this->register_fallback_shortcode('huella_ecologica_logros', 'huella-ecologica', 'logros');
+
+        // Marketplace - faltantes
+        $this->register_fallback_shortcode('marketplace_favoritos', 'marketplace', 'favoritos');
+
+        // Trabajo Digno - faltantes
+        $this->register_fallback_shortcode('trabajo_digno_emprendimientos', 'trabajo-digno', 'emprendimientos');
     }
 
     /**
      * Renderiza un template de shortcode de módulo
+     * PRIORIDAD: 1. Template específico del módulo, 2. Sistema unificado
      */
     private function render_template_shortcode($module_slug, $template_name, $atts) {
-        $atts = shortcode_atts([
-            'limit' => '12',
-            'columnas' => '3',
-            'id' => '',
-        ], $atts);
-
-        // Verificar login para vistas personales
-        if (strpos($template_name, 'mis-') === 0 && !is_user_logged_in()) {
-            return $this->render_login_required_message();
+        // PRIORIDAD 1: Intentar cargar template específico del módulo
+        $template_result = $this->try_render_module_template($module_slug, $template_name, $atts);
+        if ($template_result !== null) {
+            return $template_result;
         }
 
-        // Buscar template en varias ubicaciones
-        $template_paths = [
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/templates/{$template_name}.php",
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/{$template_name}.php",
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/{$template_name}.php",
+        // PRIORIDAD 2: Mapear nombre de template a view del sistema unificado
+        $view_map = [
+            // Listados
+            'listado' => 'listado', 'archive' => 'listado', 'catalogo' => 'listado',
+            'lista' => 'listado', 'grid' => 'listado', 'explorar' => 'listado',
+            // Singles
+            'detalle' => 'single', 'single' => 'single', 'ver' => 'single', 'ficha' => 'single',
+            // Calendario
+            'calendario' => 'calendario', 'calendario-mini' => 'calendario', 'calendar' => 'calendario',
+            // Mapa
+            'mapa' => 'mapa', 'map' => 'mapa', 'puntos-cercanos' => 'mapa',
+            // Formularios
+            'formulario' => 'form', 'crear' => 'form', 'registrar' => 'form',
+            'proponer' => 'form', 'reportar' => 'form', 'fichar' => 'form',
+            // Stats
+            'informe' => 'stats', 'resumen' => 'stats', 'estadisticas' => 'stats',
+            'ranking' => 'stats', 'dashboard' => 'stats',
         ];
 
-        foreach ($template_paths as $path) {
-            if (file_exists($path)) {
-                ob_start();
-                // Variables disponibles en el template
-                $usuario_id = get_current_user_id();
-                $espacio_id = !empty($atts['id']) ? intval($atts['id']) : (isset($_GET['espacio_id']) ? intval($_GET['espacio_id']) : 0);
-                $evento_id = !empty($atts['id']) ? intval($atts['id']) : (isset($_GET['evento_id']) ? intval($_GET['evento_id']) : 0);
-                $item_id = !empty($atts['id']) ? intval($atts['id']) : 0;
-                $limit = intval($atts['limit']);
-                $columnas = intval($atts['columnas']);
-                include $path;
-                return '<div class="flavor-shortcode-wrapper flavor-' . esc_attr($module_slug) . '-' . esc_attr($template_name) . '">' . ob_get_clean() . '</div>';
-            }
+        // Determinar la vista
+        $view = 'listado'; // Default
+        if (strpos($template_name, 'mis-') === 0 || strpos($template_name, 'mis_') === 0) {
+            $view = 'mis';
+        } elseif (isset($view_map[$template_name])) {
+            $view = $view_map[$template_name];
         }
 
-        // Si no existe template, mostrar mensaje de próximamente
-        return $this->render_coming_soon_message($module_slug, $template_name);
+        // Construir atributos para render_unified
+        $unified_atts = [
+            'module'  => $module_slug,
+            'view'    => $view,
+            'limit'   => $atts['limit'] ?? 12,
+            'columns' => $atts['columnas'] ?? $atts['columns'] ?? 3,
+            'id'      => $atts['id'] ?? '',
+        ];
+
+        return $this->render_unified($unified_atts);
     }
 
     /**
-     * Renderiza mensaje de próximamente
+     * Intenta renderizar un template específico del módulo
+     *
+     * @param string $module_slug Slug del módulo
+     * @param string $template_name Nombre del template
+     * @param array $atts Atributos del shortcode
+     * @return string|null HTML renderizado o null si no existe
+     */
+    private function try_render_module_template($module_slug, $template_name, $atts) {
+        // Mapeo de nombres de template a archivos específicos
+        $template_files_map = [
+            'presupuestos-participativos' => [
+                'votar' => 'interfaz-votacion.php',
+                'votaciones' => 'interfaz-votacion.php',
+                'resultados' => 'resultados.php',
+                'mis-propuestas' => 'mis-propuestas.php',
+                'listado' => 'listado-proyectos.php',
+                'proyectos' => 'listado-proyectos.php',
+                'proponer' => 'formulario-propuesta.php',
+                'fases' => 'dashboard.php',
+                'seguimiento' => 'dashboard.php',
+            ],
+        ];
+
+        // Verificar si hay mapeo para este módulo y template
+        if (!isset($template_files_map[$module_slug][$template_name])) {
+            return null;
+        }
+
+        $template_file = $template_files_map[$module_slug][$template_name];
+        $template_path = FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/{$template_file}";
+
+        if (!file_exists($template_path)) {
+            return null;
+        }
+
+        // Obtener datos necesarios para el template
+        $data = $this->get_template_data($module_slug, $template_name, $atts);
+
+        // Extraer variables para el template
+        extract($data);
+        $atributos = $atts;
+
+        ob_start();
+        include $template_path;
+        $content = ob_get_clean();
+
+        return '<div class="flavor-shortcode-wrapper flavor-' . esc_attr($module_slug) . '-' . esc_attr($template_name) . '">' . $content . '</div>';
+    }
+
+    /**
+     * Obtiene los datos necesarios para un template específico
+     */
+    private function get_template_data($module_slug, $template_name, $atts) {
+        global $wpdb;
+        $data = [];
+
+        switch ($module_slug) {
+            case 'presupuestos-participativos':
+                $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+                $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+
+                // Obtener edición activa
+                $edicion = $wpdb->get_row(
+                    "SELECT * FROM {$tabla_ediciones} WHERE estado = 'activa' ORDER BY anio DESC LIMIT 1",
+                    ARRAY_A
+                );
+
+                if (!$edicion) {
+                    $edicion = [
+                        'id' => 0,
+                        'anio' => date('Y'),
+                        'presupuesto_total' => 100000,
+                        'fase_actual' => 'cerrada',
+                    ];
+                }
+
+                $data['edicion'] = $edicion;
+                $edicion_id = $edicion['id'] ?? 0;
+
+                switch ($template_name) {
+                    case 'votar':
+                    case 'votaciones':
+                        // Proyectos en fase de votación
+                        $data['proyectos'] = $wpdb->get_results(
+                            "SELECT * FROM {$tabla_proyectos}
+                             WHERE estado IN ('validado', 'en_votacion')
+                             ORDER BY votos_recibidos DESC, fecha_creacion DESC",
+                            ARRAY_A
+                        ) ?: [];
+                        $data['fase_actual'] = $edicion['fase_actual'] ?? 'cerrada';
+
+                        // Datos de votación del usuario
+                        $user_id = get_current_user_id();
+                        $data['votos_maximos'] = 3; // Por defecto
+                        $data['votos_usuario'] = [];
+                        $data['votos_restantes'] = $data['votos_maximos'];
+
+                        if ($user_id) {
+                            $tabla_votos = $wpdb->prefix . 'flavor_pp_votos';
+                            $votos = $wpdb->get_col($wpdb->prepare(
+                                "SELECT proyecto_id FROM {$tabla_votos} WHERE user_id = %d",
+                                $user_id
+                            ));
+                            $data['votos_usuario'] = $votos ?: [];
+                            $data['votos_restantes'] = max(0, $data['votos_maximos'] - count($data['votos_usuario']));
+                        }
+
+                        // Categorías
+                        $data['categorias'] = [
+                            'infraestructura' => __('Infraestructura', 'flavor-chat-ia'),
+                            'medio_ambiente' => __('Medio Ambiente', 'flavor-chat-ia'),
+                            'cultura' => __('Cultura y Ocio', 'flavor-chat-ia'),
+                            'deporte' => __('Deporte', 'flavor-chat-ia'),
+                            'social' => __('Social', 'flavor-chat-ia'),
+                            'educacion' => __('Educación', 'flavor-chat-ia'),
+                            'accesibilidad' => __('Accesibilidad', 'flavor-chat-ia'),
+                        ];
+                        break;
+
+                    case 'resultados':
+                        // Ranking de proyectos
+                        $data['proyectos_ranking'] = $wpdb->get_results(
+                            "SELECT * FROM {$tabla_proyectos}
+                             WHERE estado NOT IN ('borrador', 'rechazado')
+                             ORDER BY votos_recibidos DESC, fecha_creacion ASC",
+                            ARRAY_A
+                        ) ?: [];
+                        $data['total_votantes'] = $wpdb->get_var(
+                            "SELECT COUNT(DISTINCT user_id) FROM {$wpdb->prefix}flavor_pp_votos"
+                        ) ?: 0;
+                        $data['total_proyectos'] = count($data['proyectos_ranking']);
+                        break;
+
+                    case 'mis-propuestas':
+                        $user_id = get_current_user_id();
+                        $data['propuestas'] = $wpdb->get_results(
+                            $wpdb->prepare(
+                                "SELECT * FROM {$tabla_proyectos}
+                                 WHERE proponente_id = %d
+                                 ORDER BY fecha_creacion DESC",
+                                $user_id
+                            ),
+                            ARRAY_A
+                        ) ?: [];
+                        break;
+
+                    case 'listado':
+                    case 'proyectos':
+                        $data['proyectos'] = $wpdb->get_results(
+                            "SELECT * FROM {$tabla_proyectos}
+                             WHERE estado NOT IN ('borrador', 'rechazado')
+                             ORDER BY votos_recibidos DESC, fecha_creacion DESC",
+                            ARRAY_A
+                        ) ?: [];
+                        break;
+
+                    case 'fases':
+                    case 'seguimiento':
+                        // Para dashboard/fases, pasar datos generales
+                        $data['proyectos'] = $wpdb->get_results(
+                            "SELECT * FROM {$tabla_proyectos} ORDER BY votos_recibidos DESC",
+                            ARRAY_A
+                        ) ?: [];
+                        $data['stats'] = [
+                            'total' => count($data['proyectos']),
+                            'validados' => 0,
+                            'en_votacion' => 0,
+                            'seleccionados' => 0,
+                        ];
+                        foreach ($data['proyectos'] as $proyecto) {
+                            $estado = $proyecto['estado'] ?? '';
+                            if ($estado === 'validado') $data['stats']['validados']++;
+                            if ($estado === 'en_votacion') $data['stats']['en_votacion']++;
+                            if (in_array($estado, ['seleccionado', 'en_ejecucion', 'ejecutado'])) $data['stats']['seleccionados']++;
+                        }
+                        break;
+                }
+                break;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Renderiza usando Archive Renderer
+     */
+    private function render_with_archive_renderer($module_slug, $type, $atts) {
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+
+        $renderer = new Flavor_Archive_Renderer();
+        $config = [
+            'per_page' => intval($atts['limit'] ?? 12),
+            'columns' => intval($atts['columnas'] ?? 3),
+        ];
+
+        // Añadir filtro de usuario para vistas personales
+        if ($type === 'user_items' && !empty($atts['user_filter'])) {
+            $config['user_id'] = get_current_user_id();
+            $config['show_header'] = false; // Sin header grande para vistas personales
+            $config['empty_title'] = __('No tienes registros aún', 'flavor-chat-ia');
+            $config['empty_text'] = __('Cuando tengas actividad, aparecerá aquí.', 'flavor-chat-ia');
+        }
+
+        if ($type === 'single' && !empty($atts['id'])) {
+            return '<div class="flavor-shortcode-wrapper flavor-' . esc_attr($module_slug) . '-single">'
+                . $renderer->render_single_auto($module_slug, intval($atts['id']), $config)
+                . '</div>';
+        }
+
+        return '<div class="flavor-shortcode-wrapper flavor-' . esc_attr($module_slug) . '-archive">'
+            . $renderer->render_auto($module_slug, $config)
+            . '</div>';
+    }
+
+    /**
+     * Renderiza un formulario de módulo automáticamente
+     */
+    private function render_module_form_auto($module_slug, $template_name, $atts) {
+        // Verificar login
+        if (!is_user_logged_in()) {
+            return $this->render_login_required_message();
+        }
+
+        // Obtener configuración de formulario del módulo
+        $form_config = $this->get_module_form_config($module_slug, $template_name);
+
+        if (empty($form_config) || empty($form_config['fields'])) {
+            // Si no hay configuración, intentar generar una básica
+            $form_config = $this->generate_basic_form_config($module_slug, $template_name);
+        }
+
+        ob_start();
+        $args = $form_config;
+        $args['module'] = $module_slug;
+        $args['action'] = $template_name;
+        include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/form-builder.php';
+        return '<div class="flavor-shortcode-wrapper flavor-' . esc_attr($module_slug) . '-form">' . ob_get_clean() . '</div>';
+    }
+
+    /**
+     * Obtiene la configuración de formulario de un módulo
+     */
+    private function get_module_form_config($module_slug, $action) {
+        $configs = $this->get_all_form_configs();
+        return $configs[$module_slug][$action] ?? [];
+    }
+
+    /**
+     * Genera configuración básica de formulario
+     */
+    private function generate_basic_form_config($module_slug, $action) {
+        $module_name = ucwords(str_replace('-', ' ', $module_slug));
+        $action_labels = [
+            'crear' => __('Crear nuevo', 'flavor-chat-ia'),
+            'formulario' => __('Nuevo registro', 'flavor-chat-ia'),
+            'registrar' => __('Registrar', 'flavor-chat-ia'),
+            'proponer' => __('Nueva propuesta', 'flavor-chat-ia'),
+            'reportar' => __('Reportar', 'flavor-chat-ia'),
+            'crear-tema' => __('Nuevo tema', 'flavor-chat-ia'),
+            'formulario-suscripcion' => __('Suscribirse', 'flavor-chat-ia'),
+        ];
+
+        $icons = [
+            'incidencias' => '⚠️',
+            'marketplace' => '🛒',
+            'eventos' => '📅',
+            'participacion' => '🗳️',
+            'talleres' => '🎓',
+            'compostaje' => '🌱',
+            'foros' => '💬',
+            'encuestas' => '📊',
+            'comunidades' => '👥',
+            'recetas' => '🍳',
+            'facturas' => '📄',
+        ];
+
+        return [
+            'title' => $action_labels[$action] ?? __('Nuevo registro', 'flavor-chat-ia'),
+            'subtitle' => $module_name,
+            'icon' => $icons[$module_slug] ?? '📝',
+            'color' => 'primary',
+            'fields' => [
+                [
+                    'name' => 'titulo',
+                    'type' => 'text',
+                    'label' => __('Título', 'flavor-chat-ia'),
+                    'placeholder' => __('Escribe un título descriptivo', 'flavor-chat-ia'),
+                    'required' => true,
+                ],
+                [
+                    'name' => 'descripcion',
+                    'type' => 'textarea',
+                    'label' => __('Descripción', 'flavor-chat-ia'),
+                    'placeholder' => __('Describe con detalle...', 'flavor-chat-ia'),
+                    'required' => true,
+                    'rows' => 5,
+                ],
+            ],
+            'submit_text' => __('Enviar', 'flavor-chat-ia'),
+            'cancel_url' => home_url('/' . $module_slug . '/'),
+        ];
+    }
+
+    /**
+     * Configuraciones de formularios por módulo
+     */
+    private function get_all_form_configs() {
+        return [
+            'incidencias' => [
+                'reportar' => [
+                    'title' => __('Reportar Incidencia', 'flavor-chat-ia'),
+                    'subtitle' => __('Informa de un problema en tu barrio', 'flavor-chat-ia'),
+                    'icon' => '⚠️',
+                    'color' => 'error',
+                    'fields' => [
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true, 'placeholder' => __('Ej: Farola rota en Calle Mayor', 'flavor-chat-ia')],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                            'alumbrado' => __('Alumbrado', 'flavor-chat-ia'),
+                            'limpieza' => __('Limpieza', 'flavor-chat-ia'),
+                            'vias' => __('Vías y aceras', 'flavor-chat-ia'),
+                            'mobiliario' => __('Mobiliario urbano', 'flavor-chat-ia'),
+                            'zonas_verdes' => __('Zonas verdes', 'flavor-chat-ia'),
+                            'otro' => __('Otro', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
+                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia'), 'required' => true, 'placeholder' => __('Calle, número, referencias...', 'flavor-chat-ia')],
+                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Foto (opcional)', 'flavor-chat-ia'), 'accept' => 'image/*'],
+                        ['name' => 'urgencia', 'type' => 'select', 'label' => __('Urgencia', 'flavor-chat-ia'), 'options' => [
+                            'baja' => __('Baja', 'flavor-chat-ia'),
+                            'media' => __('Media', 'flavor-chat-ia'),
+                            'alta' => __('Alta', 'flavor-chat-ia'),
+                        ]],
+                    ],
+                    'submit_text' => __('Enviar reporte', 'flavor-chat-ia'),
+                ],
+            ],
+            'marketplace' => [
+                'formulario' => [
+                    'title' => __('Publicar Anuncio', 'flavor-chat-ia'),
+                    'subtitle' => __('Vende o intercambia productos localmente', 'flavor-chat-ia'),
+                    'icon' => '🛒',
+                    'color' => 'success',
+                    'fields' => [
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título del anuncio', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                            'electronica' => __('Electrónica', 'flavor-chat-ia'),
+                            'hogar' => __('Hogar y jardín', 'flavor-chat-ia'),
+                            'moda' => __('Moda y accesorios', 'flavor-chat-ia'),
+                            'deportes' => __('Deportes', 'flavor-chat-ia'),
+                            'libros' => __('Libros y cultura', 'flavor-chat-ia'),
+                            'infantil' => __('Infantil', 'flavor-chat-ia'),
+                            'servicios' => __('Servicios', 'flavor-chat-ia'),
+                            'otro' => __('Otros', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
+                        ['name' => 'precio', 'type' => 'number', 'label' => __('Precio (€)', 'flavor-chat-ia'), 'min' => '0', 'step' => '0.01', 'placeholder' => '0 = Gratis'],
+                        ['name' => 'condicion', 'type' => 'select', 'label' => __('Estado', 'flavor-chat-ia'), 'options' => [
+                            'nuevo' => __('Nuevo', 'flavor-chat-ia'),
+                            'como_nuevo' => __('Como nuevo', 'flavor-chat-ia'),
+                            'buen_estado' => __('Buen estado', 'flavor-chat-ia'),
+                            'usado' => __('Usado', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'imagenes', 'type' => 'file', 'label' => __('Fotos', 'flavor-chat-ia'), 'accept' => 'image/*'],
+                        ['name' => 'contacto', 'type' => 'text', 'label' => __('Forma de contacto', 'flavor-chat-ia'), 'placeholder' => __('Teléfono, email, etc.', 'flavor-chat-ia')],
+                    ],
+                    'submit_text' => __('Publicar anuncio', 'flavor-chat-ia'),
+                ],
+            ],
+            'participacion' => [
+                'crear' => [
+                    'title' => __('Nueva Propuesta', 'flavor-chat-ia'),
+                    'subtitle' => __('Propón mejoras para tu comunidad', 'flavor-chat-ia'),
+                    'icon' => '🗳️',
+                    'color' => 'primary',
+                    'fields' => [
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título de la propuesta', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Área', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                            'urbanismo' => __('Urbanismo', 'flavor-chat-ia'),
+                            'medio_ambiente' => __('Medio ambiente', 'flavor-chat-ia'),
+                            'cultura' => __('Cultura y ocio', 'flavor-chat-ia'),
+                            'servicios' => __('Servicios públicos', 'flavor-chat-ia'),
+                            'movilidad' => __('Movilidad', 'flavor-chat-ia'),
+                            'social' => __('Bienestar social', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción detallada', 'flavor-chat-ia'), 'required' => true, 'rows' => 6],
+                        ['name' => 'beneficios', 'type' => 'textarea', 'label' => __('Beneficios esperados', 'flavor-chat-ia'), 'rows' => 3],
+                        ['name' => 'presupuesto_estimado', 'type' => 'number', 'label' => __('Presupuesto estimado (€)', 'flavor-chat-ia'), 'min' => '0'],
+                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación (si aplica)', 'flavor-chat-ia')],
+                    ],
+                    'submit_text' => __('Enviar propuesta', 'flavor-chat-ia'),
+                ],
+            ],
+            'talleres' => [
+                'proponer' => [
+                    'title' => __('Proponer Taller', 'flavor-chat-ia'),
+                    'subtitle' => __('Comparte tus conocimientos', 'flavor-chat-ia'),
+                    'icon' => '🎓',
+                    'color' => 'primary',
+                    'fields' => [
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Nombre del taller', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                            'manualidades' => __('Manualidades', 'flavor-chat-ia'),
+                            'cocina' => __('Cocina', 'flavor-chat-ia'),
+                            'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
+                            'idiomas' => __('Idiomas', 'flavor-chat-ia'),
+                            'arte' => __('Arte', 'flavor-chat-ia'),
+                            'bienestar' => __('Bienestar', 'flavor-chat-ia'),
+                            'otro' => __('Otro', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
+                        ['name' => 'duracion', 'type' => 'text', 'label' => __('Duración estimada', 'flavor-chat-ia'), 'placeholder' => __('Ej: 2 horas', 'flavor-chat-ia')],
+                        ['name' => 'materiales', 'type' => 'textarea', 'label' => __('Materiales necesarios', 'flavor-chat-ia'), 'rows' => 2],
+                        ['name' => 'nivel', 'type' => 'select', 'label' => __('Nivel', 'flavor-chat-ia'), 'options' => [
+                            'principiante' => __('Principiante', 'flavor-chat-ia'),
+                            'intermedio' => __('Intermedio', 'flavor-chat-ia'),
+                            'avanzado' => __('Avanzado', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'plazas', 'type' => 'number', 'label' => __('Plazas máximas', 'flavor-chat-ia'), 'min' => '1', 'max' => '50'],
+                    ],
+                    'submit_text' => __('Proponer taller', 'flavor-chat-ia'),
+                ],
+            ],
+            'compostaje' => [
+                'registrar' => [
+                    'title' => __('Registrar Aportación', 'flavor-chat-ia'),
+                    'subtitle' => __('Suma tu contribución al compostaje comunitario', 'flavor-chat-ia'),
+                    'icon' => '🌱',
+                    'color' => 'success',
+                    'fields' => [
+                        ['name' => 'compostera_id', 'type' => 'select', 'label' => __('Compostera', 'flavor-chat-ia'), 'required' => true, 'options' => []],
+                        ['name' => 'tipo_residuo', 'type' => 'select', 'label' => __('Tipo de residuo', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                            'verde' => __('Verde (restos vegetales frescos)', 'flavor-chat-ia'),
+                            'marron' => __('Marrón (hojas secas, cartón)', 'flavor-chat-ia'),
+                            'mixto' => __('Mixto', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'cantidad', 'type' => 'number', 'label' => __('Cantidad (kg aprox)', 'flavor-chat-ia'), 'required' => true, 'min' => '0.1', 'step' => '0.1'],
+                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas (opcional)', 'flavor-chat-ia'), 'rows' => 2],
+                    ],
+                    'submit_text' => __('Registrar', 'flavor-chat-ia'),
+                ],
+            ],
+            'foros' => [
+                'crear-tema' => [
+                    'title' => __('Nuevo Tema', 'flavor-chat-ia'),
+                    'subtitle' => __('Inicia una conversación', 'flavor-chat-ia'),
+                    'icon' => '💬',
+                    'color' => 'primary',
+                    'fields' => [
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título del tema', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                            'general' => __('General', 'flavor-chat-ia'),
+                            'anuncios' => __('Anuncios', 'flavor-chat-ia'),
+                            'ayuda' => __('Ayuda', 'flavor-chat-ia'),
+                            'propuestas' => __('Propuestas', 'flavor-chat-ia'),
+                            'off_topic' => __('Off-topic', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'contenido', 'type' => 'textarea', 'label' => __('Mensaje', 'flavor-chat-ia'), 'required' => true, 'rows' => 8],
+                        ['name' => 'etiquetas', 'type' => 'text', 'label' => __('Etiquetas', 'flavor-chat-ia'), 'placeholder' => __('Separadas por comas', 'flavor-chat-ia')],
+                    ],
+                    'submit_text' => __('Publicar tema', 'flavor-chat-ia'),
+                ],
+            ],
+            'encuestas' => [
+                'crear' => [
+                    'title' => __('Crear Encuesta', 'flavor-chat-ia'),
+                    'subtitle' => __('Pregunta a tu comunidad', 'flavor-chat-ia'),
+                    'icon' => '📊',
+                    'color' => 'accent',
+                    'fields' => [
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Pregunta principal', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción (opcional)', 'flavor-chat-ia'), 'rows' => 2],
+                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de respuesta', 'flavor-chat-ia'), 'options' => [
+                            'simple' => __('Opción única', 'flavor-chat-ia'),
+                            'multiple' => __('Opción múltiple', 'flavor-chat-ia'),
+                            'escala' => __('Escala 1-5', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'opciones', 'type' => 'textarea', 'label' => __('Opciones (una por línea)', 'flavor-chat-ia'), 'required' => true, 'rows' => 4, 'placeholder' => __("Opción 1\nOpción 2\nOpción 3", 'flavor-chat-ia')],
+                        ['name' => 'fecha_fin', 'type' => 'date', 'label' => __('Fecha límite', 'flavor-chat-ia'), 'min' => date('Y-m-d')],
+                        ['name' => 'anonima', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Respuestas anónimas', 'flavor-chat-ia')],
+                    ],
+                    'submit_text' => __('Crear encuesta', 'flavor-chat-ia'),
+                ],
+            ],
+            'email-marketing' => [
+                'formulario-suscripcion' => [
+                    'title' => __('Suscríbete', 'flavor-chat-ia'),
+                    'subtitle' => __('Recibe las últimas novedades', 'flavor-chat-ia'),
+                    'icon' => '📧',
+                    'color' => 'primary',
+                    'require_login' => false,
+                    'fields' => [
+                        ['name' => 'email', 'type' => 'email', 'label' => __('Email', 'flavor-chat-ia'), 'required' => true, 'placeholder' => __('tu@email.com', 'flavor-chat-ia')],
+                        ['name' => 'nombre', 'type' => 'text', 'label' => __('Nombre', 'flavor-chat-ia'), 'placeholder' => __('Tu nombre', 'flavor-chat-ia')],
+                        ['name' => 'acepto', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Acepto recibir comunicaciones', 'flavor-chat-ia'), 'required' => true],
+                    ],
+                    'submit_text' => __('Suscribirme', 'flavor-chat-ia'),
+                ],
+            ],
+            'recetas' => [
+                'formulario' => [
+                    'title' => __('Compartir Receta', 'flavor-chat-ia'),
+                    'subtitle' => __('Comparte tus recetas favoritas', 'flavor-chat-ia'),
+                    'icon' => '🍳',
+                    'color' => 'warning',
+                    'fields' => [
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Nombre de la receta', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => [
+                            'entrantes' => __('Entrantes', 'flavor-chat-ia'),
+                            'principales' => __('Platos principales', 'flavor-chat-ia'),
+                            'postres' => __('Postres', 'flavor-chat-ia'),
+                            'bebidas' => __('Bebidas', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'ingredientes', 'type' => 'textarea', 'label' => __('Ingredientes', 'flavor-chat-ia'), 'required' => true, 'rows' => 4, 'placeholder' => __('Un ingrediente por línea', 'flavor-chat-ia')],
+                        ['name' => 'preparacion', 'type' => 'textarea', 'label' => __('Preparación', 'flavor-chat-ia'), 'required' => true, 'rows' => 6],
+                        ['name' => 'tiempo', 'type' => 'text', 'label' => __('Tiempo de preparación', 'flavor-chat-ia'), 'placeholder' => __('Ej: 30 minutos', 'flavor-chat-ia')],
+                        ['name' => 'porciones', 'type' => 'number', 'label' => __('Porciones', 'flavor-chat-ia'), 'min' => '1'],
+                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Foto', 'flavor-chat-ia'), 'accept' => 'image/*'],
+                    ],
+                    'submit_text' => __('Publicar receta', 'flavor-chat-ia'),
+                ],
+            ],
+            'comunidades' => [
+                'crear' => [
+                    'title' => __('Crear Comunidad', 'flavor-chat-ia'),
+                    'subtitle' => __('Crea un espacio para tu grupo', 'flavor-chat-ia'),
+                    'icon' => '👥',
+                    'color' => 'primary',
+                    'fields' => [
+                        ['name' => 'nombre', 'type' => 'text', 'label' => __('Nombre de la comunidad', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
+                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => [
+                            'publica' => __('Pública', 'flavor-chat-ia'),
+                            'privada' => __('Privada', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Imagen de portada', 'flavor-chat-ia'), 'accept' => 'image/*'],
+                    ],
+                    'submit_text' => __('Crear comunidad', 'flavor-chat-ia'),
+                ],
+            ],
+            'facturas' => [
+                'crear' => [
+                    'title' => __('Nueva Factura', 'flavor-chat-ia'),
+                    'subtitle' => __('Genera una factura', 'flavor-chat-ia'),
+                    'icon' => '📄',
+                    'color' => 'secondary',
+                    'fields' => [
+                        ['name' => 'cliente', 'type' => 'text', 'label' => __('Cliente', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'concepto', 'type' => 'text', 'label' => __('Concepto', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'cantidad', 'type' => 'number', 'label' => __('Importe (€)', 'flavor-chat-ia'), 'required' => true, 'min' => '0', 'step' => '0.01'],
+                        ['name' => 'fecha', 'type' => 'date', 'label' => __('Fecha', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas', 'flavor-chat-ia'), 'rows' => 2],
+                    ],
+                    'submit_text' => __('Generar factura', 'flavor-chat-ia'),
+                ],
+            ],
+            'seguimiento-denuncias' => [
+                'formulario' => [
+                    'title' => __('Nueva Denuncia', 'flavor-chat-ia'),
+                    'subtitle' => __('Reporta una situación', 'flavor-chat-ia'),
+                    'icon' => '🚨',
+                    'color' => 'error',
+                    'fields' => [
+                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de denuncia', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                            'ruido' => __('Ruido', 'flavor-chat-ia'),
+                            'suciedad' => __('Suciedad', 'flavor-chat-ia'),
+                            'vandalismo' => __('Vandalismo', 'flavor-chat-ia'),
+                            'otro' => __('Otro', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
+                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'fecha_incidente', 'type' => 'datetime', 'label' => __('Fecha y hora del incidente', 'flavor-chat-ia')],
+                        ['name' => 'evidencia', 'type' => 'file', 'label' => __('Evidencia (foto/video)', 'flavor-chat-ia'), 'accept' => 'image/*,video/*'],
+                        ['name' => 'anonimo', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Denuncia anónima', 'flavor-chat-ia')],
+                    ],
+                    'submit_text' => __('Enviar denuncia', 'flavor-chat-ia'),
+                ],
+            ],
+            'chat-estados' => [
+                'crear' => [
+                    'title' => __('Crear Estado', 'flavor-chat-ia'),
+                    'subtitle' => __('Comparte un momento', 'flavor-chat-ia'),
+                    'icon' => '📷',
+                    'color' => 'accent',
+                    'fields' => [
+                        ['name' => 'media', 'type' => 'file', 'label' => __('Foto o video', 'flavor-chat-ia'), 'required' => true, 'accept' => 'image/*,video/*'],
+                        ['name' => 'texto', 'type' => 'textarea', 'label' => __('Texto (opcional)', 'flavor-chat-ia'), 'rows' => 2, 'placeholder' => __('Añade un mensaje...', 'flavor-chat-ia')],
+                        ['name' => 'privacidad', 'type' => 'select', 'label' => __('Quién puede ver', 'flavor-chat-ia'), 'options' => [
+                            'todos' => __('Todos', 'flavor-chat-ia'),
+                            'contactos' => __('Solo contactos', 'flavor-chat-ia'),
+                        ]],
+                    ],
+                    'submit_text' => __('Publicar estado', 'flavor-chat-ia'),
+                ],
+            ],
+            'fichaje-empleados' => [
+                'fichar' => [
+                    'title' => __('Fichar', 'flavor-chat-ia'),
+                    'subtitle' => __('Registra tu entrada o salida', 'flavor-chat-ia'),
+                    'icon' => '⏱️',
+                    'color' => 'primary',
+                    'fields' => [
+                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de fichaje', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                            'entrada' => __('Entrada', 'flavor-chat-ia'),
+                            'salida' => __('Salida', 'flavor-chat-ia'),
+                            'pausa_inicio' => __('Inicio de pausa', 'flavor-chat-ia'),
+                            'pausa_fin' => __('Fin de pausa', 'flavor-chat-ia'),
+                        ]],
+                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas (opcional)', 'flavor-chat-ia'), 'rows' => 2, 'placeholder' => __('Comentarios adicionales...', 'flavor-chat-ia')],
+                    ],
+                    'submit_text' => __('Registrar fichaje', 'flavor-chat-ia'),
+                ],
+                'boton' => [
+                    'title' => __('Fichar ahora', 'flavor-chat-ia'),
+                    'subtitle' => '',
+                    'icon' => '⏱️',
+                    'color' => 'primary',
+                    'fields' => [],
+                    'submit_text' => __('Fichar', 'flavor-chat-ia'),
+                ],
+            ],
+            'themacle' => [
+                'formulario' => [
+                    'title' => __('Configurar Tema', 'flavor-chat-ia'),
+                    'subtitle' => __('Personaliza la apariencia', 'flavor-chat-ia'),
+                    'icon' => '🎨',
+                    'color' => 'primary',
+                    'fields' => [
+                        ['name' => 'primary_color', 'type' => 'text', 'label' => __('Color primario', 'flavor-chat-ia'), 'placeholder' => '#3B82F6'],
+                        ['name' => 'secondary_color', 'type' => 'text', 'label' => __('Color secundario', 'flavor-chat-ia'), 'placeholder' => '#6366F1'],
+                        ['name' => 'font_family', 'type' => 'select', 'label' => __('Tipografía', 'flavor-chat-ia'), 'options' => [
+                            'inter' => 'Inter',
+                            'roboto' => 'Roboto',
+                            'poppins' => 'Poppins',
+                            'montserrat' => 'Montserrat',
+                        ]],
+                    ],
+                    'submit_text' => __('Guardar tema', 'flavor-chat-ia'),
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza un calendario de módulo
+     */
+    private function render_module_calendar($module_slug, $template_name, $atts) {
+        $is_mini = strpos($template_name, 'mini') !== false;
+
+        // Obtener eventos/items del módulo
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+        $renderer = new Flavor_Archive_Renderer();
+        $data = $renderer->get_module_data($module_slug, ['per_page' => 100]);
+
+        // Configuración del módulo
+        $module_config = $renderer->get_renderer_config_for_module($module_slug);
+
+        $title = $module_config['title'] ?? ucwords(str_replace('-', ' ', $module_slug));
+        $icon = $module_config['icon'] ?? '📅';
+        $color = $module_config['color'] ?? 'primary';
+
+        // Obtener clases de gradiente
+        $gradient = function_exists('flavor_get_gradient_classes') ? flavor_get_gradient_classes($color) : ['from' => 'from-blue-500', 'to' => 'to-blue-600'];
+        $gradient_classes = "bg-gradient-to-r {$gradient['from']} {$gradient['to']}";
+
+        ob_start();
+        ?>
+        <div class="flavor-calendar-wrapper flavor-<?php echo esc_attr($module_slug); ?>-calendario <?php echo $is_mini ? 'flavor-calendar-mini' : ''; ?>">
+            <?php if (!$is_mini): ?>
+            <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-2xl p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl"><?php echo esc_html($icon); ?></span>
+                        <h2 class="text-2xl font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Calendario', 'flavor-chat-ia'); ?></h2>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flavor-cal-prev px-3 py-1 bg-white/20 rounded-lg hover:bg-white/30 transition-colors">&larr;</button>
+                        <button class="flavor-cal-today px-3 py-1 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></button>
+                        <button class="flavor-cal-next px-3 py-1 bg-white/20 rounded-lg hover:bg-white/30 transition-colors">&rarr;</button>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="bg-white <?php echo $is_mini ? 'rounded-xl' : 'rounded-b-2xl'; ?> shadow-lg p-4">
+                <div class="flavor-calendar-header flex items-center justify-between mb-4">
+                    <h3 class="flavor-cal-month text-xl font-semibold"><?php echo esc_html(date_i18n('F Y')); ?></h3>
+                    <?php if ($is_mini): ?>
+                    <div class="flex gap-1">
+                        <button class="flavor-cal-prev p-1 hover:bg-gray-100 rounded">&larr;</button>
+                        <button class="flavor-cal-next p-1 hover:bg-gray-100 rounded">&rarr;</button>
+                    </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="flavor-calendar-grid">
+                    <!-- Días de la semana -->
+                    <div class="grid grid-cols-7 gap-1 mb-2 text-center text-sm text-gray-500 font-medium">
+                        <span><?php esc_html_e('Lun', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Mar', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Mié', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Jue', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Vie', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Sáb', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Dom', 'flavor-chat-ia'); ?></span>
+                    </div>
+
+                    <!-- Grid de días -->
+                    <div class="flavor-cal-days grid grid-cols-7 gap-1">
+                        <?php
+                        $today = new DateTime();
+                        $first_day = new DateTime('first day of this month');
+                        $last_day = new DateTime('last day of this month');
+
+                        // Días vacíos al inicio
+                        $start_weekday = (int)$first_day->format('N') - 1;
+                        for ($i = 0; $i < $start_weekday; $i++):
+                        ?>
+                            <div class="flavor-cal-day flavor-cal-empty p-2"></div>
+                        <?php endfor;
+
+                        // Días del mes
+                        $current = clone $first_day;
+                        while ($current <= $last_day):
+                            $is_today = $current->format('Y-m-d') === $today->format('Y-m-d');
+                            $day_class = $is_today ? 'bg-blue-600 text-white' : 'hover:bg-gray-100';
+
+                            // Buscar eventos para este día
+                            $day_events = [];
+                            foreach ($data['items'] as $item) {
+                                $item_date = $item['fecha'] ?? $item['date'] ?? $item['created_at'] ?? '';
+                                if ($item_date && strpos($item_date, $current->format('Y-m-d')) === 0) {
+                                    $day_events[] = $item;
+                                }
+                            }
+                        ?>
+                            <div class="flavor-cal-day <?php echo esc_attr($day_class); ?> p-2 text-center rounded-lg cursor-pointer relative transition-colors"
+                                 data-date="<?php echo esc_attr($current->format('Y-m-d')); ?>">
+                                <span class="<?php echo $is_mini ? 'text-sm' : ''; ?>"><?php echo $current->format('j'); ?></span>
+                                <?php if (!empty($day_events)): ?>
+                                    <span class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                                <?php endif; ?>
+                            </div>
+                        <?php
+                            $current->modify('+1 day');
+                        endwhile;
+                        ?>
+                    </div>
+                </div>
+
+                <?php if (!$is_mini && !empty($data['items'])): ?>
+                <!-- Lista de próximos eventos -->
+                <div class="mt-6 border-t pt-4">
+                    <h4 class="font-semibold mb-3"><?php esc_html_e('Próximos eventos', 'flavor-chat-ia'); ?></h4>
+                    <div class="space-y-2 max-h-48 overflow-y-auto">
+                        <?php
+                        $upcoming = array_slice($data['items'], 0, 5);
+                        foreach ($upcoming as $event):
+                            $event_date = $event['fecha'] ?? $event['date'] ?? '';
+                            $event_title = $event['titulo'] ?? $event['title'] ?? $event['nombre'] ?? '';
+                        ?>
+                        <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg">
+                            <div class="w-12 text-center">
+                                <div class="text-xs text-gray-500"><?php echo $event_date ? date_i18n('M', strtotime($event_date)) : ''; ?></div>
+                                <div class="text-lg font-bold"><?php echo $event_date ? date('d', strtotime($event_date)) : ''; ?></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium"><?php echo esc_html($event_title); ?></div>
+                                <?php if (!empty($event['hora'])): ?>
+                                <div class="text-sm text-gray-500"><?php echo esc_html($event['hora']); ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <style>
+        .flavor-calendar-mini { max-width: 280px; }
+        .flavor-calendar-mini .flavor-cal-day { padding: 0.25rem; font-size: 0.75rem; }
+        </style>
+        <?php
+        return '<div class="flavor-shortcode-wrapper">' . ob_get_clean() . '</div>';
+    }
+
+    /**
+     * Renderiza un mapa de módulo
+     */
+    private function render_module_map($module_slug, $template_name, $atts) {
+        // Obtener items con ubicación
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+        $renderer = new Flavor_Archive_Renderer();
+        $data = $renderer->get_module_data($module_slug, ['per_page' => 100]);
+
+        // Configuración del módulo
+        $module_config = $renderer->get_renderer_config_for_module($module_slug);
+
+        $title = $module_config['title'] ?? ucwords(str_replace('-', ' ', $module_slug));
+        $icon = $module_config['icon'] ?? '📍';
+        $color = $module_config['color'] ?? 'primary';
+
+        // Filtrar items con coordenadas
+        $markers = [];
+        foreach ($data['items'] as $item) {
+            $lat = $item['lat'] ?? $item['latitud'] ?? $item['latitude'] ?? null;
+            $lng = $item['lng'] ?? $item['longitud'] ?? $item['longitude'] ?? null;
+
+            if ($lat && $lng) {
+                $markers[] = [
+                    'id' => $item['id'] ?? 0,
+                    'lat' => floatval($lat),
+                    'lng' => floatval($lng),
+                    'title' => $item['titulo'] ?? $item['title'] ?? $item['nombre'] ?? '',
+                    'description' => $item['descripcion'] ?? $item['description'] ?? '',
+                    'status' => $item['estado'] ?? $item['status'] ?? '',
+                    'url' => $item['url'] ?? '',
+                ];
+            }
+        }
+
+        // Coordenadas por defecto (España)
+        $default_lat = 40.4168;
+        $default_lng = -3.7038;
+        $default_zoom = 6;
+
+        if (!empty($markers)) {
+            // Centrar en el primer marcador
+            $default_lat = $markers[0]['lat'];
+            $default_lng = $markers[0]['lng'];
+            $default_zoom = 13;
+        }
+
+        $map_id = 'flavor-map-' . $module_slug . '-' . wp_rand(1000, 9999);
+
+        // Obtener clases de gradiente
+        $gradient = function_exists('flavor_get_gradient_classes') ? flavor_get_gradient_classes($color) : ['from' => 'from-blue-500', 'to' => 'to-blue-600'];
+        $gradient_classes = "bg-gradient-to-r {$gradient['from']} {$gradient['to']}";
+
+        ob_start();
+        ?>
+        <div class="flavor-map-wrapper flavor-<?php echo esc_attr($module_slug); ?>-mapa">
+            <!-- Header -->
+            <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-2xl p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl"><?php echo esc_html($icon); ?></span>
+                        <div>
+                            <h2 class="text-2xl font-bold"><?php echo esc_html($title); ?></h2>
+                            <p class="text-white/80"><?php echo sprintf(__('%d ubicaciones', 'flavor-chat-ia'), count($markers)); ?></p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="flavorMapLocateMe('<?php echo esc_js($map_id); ?>')"
+                                class="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2">
+                            <span>📍</span>
+                            <span><?php esc_html_e('Mi ubicación', 'flavor-chat-ia'); ?></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa -->
+            <div class="bg-white rounded-b-2xl shadow-lg overflow-hidden">
+                <div id="<?php echo esc_attr($map_id); ?>" class="h-96 w-full"></div>
+
+                <?php if (!empty($markers)): ?>
+                <!-- Lista de ubicaciones -->
+                <div class="p-4 border-t max-h-64 overflow-y-auto">
+                    <h4 class="font-semibold mb-3"><?php esc_html_e('Ubicaciones', 'flavor-chat-ia'); ?></h4>
+                    <div class="space-y-2">
+                        <?php foreach (array_slice($markers, 0, 10) as $marker): ?>
+                        <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
+                             onclick="flavorMapGoTo('<?php echo esc_js($map_id); ?>', <?php echo esc_attr($marker['lat']); ?>, <?php echo esc_attr($marker['lng']); ?>)">
+                            <span class="text-2xl">📍</span>
+                            <div class="flex-1">
+                                <div class="font-medium"><?php echo esc_html($marker['title']); ?></div>
+                                <?php if ($marker['status']): ?>
+                                <span class="text-xs px-2 py-0.5 bg-gray-100 rounded-full"><?php echo esc_html($marker['status']); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($marker['url']): ?>
+                            <a href="<?php echo esc_url($marker['url']); ?>" class="text-blue-600 hover:underline text-sm">
+                                <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            </a>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+        (function() {
+            const mapId = '<?php echo esc_js($map_id); ?>';
+            const markers = <?php echo json_encode($markers); ?>;
+            const defaultLat = <?php echo esc_js($default_lat); ?>;
+            const defaultLng = <?php echo esc_js($default_lng); ?>;
+            const defaultZoom = <?php echo esc_js($default_zoom); ?>;
+
+            // Inicializar mapa
+            const map = L.map(mapId).setView([defaultLat, defaultLng], defaultZoom);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Añadir marcadores
+            const markerLayer = L.layerGroup().addTo(map);
+            markers.forEach(m => {
+                const marker = L.marker([m.lat, m.lng]).addTo(markerLayer);
+                let popupContent = '<strong>' + m.title + '</strong>';
+                if (m.description) popupContent += '<br>' + m.description;
+                if (m.url) popupContent += '<br><a href="' + m.url + '">Ver detalles</a>';
+                marker.bindPopup(popupContent);
+            });
+
+            // Ajustar vista a todos los marcadores
+            if (markers.length > 1) {
+                const bounds = L.latLngBounds(markers.map(m => [m.lat, m.lng]));
+                map.fitBounds(bounds, { padding: [20, 20] });
+            }
+
+            // Funciones globales
+            window.flavorMapLocateMe = function(id) {
+                if (id !== mapId) return;
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        map.setView([pos.coords.latitude, pos.coords.longitude], 15);
+                        L.marker([pos.coords.latitude, pos.coords.longitude])
+                            .addTo(map)
+                            .bindPopup('<?php echo esc_js(__('Tu ubicación', 'flavor-chat-ia')); ?>')
+                            .openPopup();
+                    });
+                }
+            };
+
+            window.flavorMapGoTo = function(id, lat, lng) {
+                if (id !== mapId) return;
+                map.setView([lat, lng], 16);
+            };
+        })();
+        </script>
+        <?php
+        return '<div class="flavor-shortcode-wrapper">' . ob_get_clean() . '</div>';
+    }
+
+    /**
+     * Renderiza un informe/resumen de módulo
+     */
+    private function render_module_report($module_slug, $template_name, $atts) {
+        // Verificar login
+        if (!is_user_logged_in()) {
+            return $this->render_login_required_message();
+        }
+
+        // Obtener datos del módulo
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+        $renderer = new Flavor_Archive_Renderer();
+        $user_id = get_current_user_id();
+        $data = $renderer->get_module_data($module_slug, ['user_id' => $user_id, 'per_page' => 50]);
+
+        // Configuración del módulo
+        $module_config = $renderer->get_renderer_config_for_module($module_slug);
+
+        $title = $module_config['title'] ?? ucwords(str_replace('-', ' ', $module_slug));
+        $icon = $module_config['icon'] ?? '📊';
+        $color = $module_config['color'] ?? 'primary';
+
+        // Configuraciones específicas por tipo de reporte
+        $report_titles = [
+            'informe' => __('Informe', 'flavor-chat-ia'),
+            'resumen' => __('Resumen', 'flavor-chat-ia'),
+            'estadisticas' => __('Estadísticas', 'flavor-chat-ia'),
+            'ranking' => __('Ranking', 'flavor-chat-ia'),
+            'dashboard' => __('Panel', 'flavor-chat-ia'),
+        ];
+
+        $report_title = ($report_titles[$template_name] ?? __('Informe', 'flavor-chat-ia')) . ' - ' . $title;
+
+        // Obtener clases de gradiente
+        $gradient = function_exists('flavor_get_gradient_classes') ? flavor_get_gradient_classes($color) : ['from' => 'from-blue-500', 'to' => 'to-blue-600'];
+        $gradient_classes = "bg-gradient-to-r {$gradient['from']} {$gradient['to']}";
+
+        ob_start();
+        ?>
+        <div class="flavor-report-wrapper flavor-<?php echo esc_attr($module_slug); ?>-<?php echo esc_attr($template_name); ?>">
+            <!-- Header -->
+            <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-2xl p-6 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl"><?php echo esc_html($icon); ?></span>
+                    <div>
+                        <h2 class="text-2xl font-bold"><?php echo esc_html($report_title); ?></h2>
+                        <p class="text-white/80"><?php echo sprintf(__('Datos actualizados al %s', 'flavor-chat-ia'), date_i18n(get_option('date_format'))); ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-b-2xl shadow-lg p-6">
+                <!-- Stats Grid -->
+                <?php if (!empty($data['stats'])): ?>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <?php foreach ($data['stats'] as $stat): ?>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-gray-800"><?php echo esc_html($stat['value'] ?? 0); ?></div>
+                        <div class="text-sm text-gray-500 mt-1"><?php echo esc_html($stat['label'] ?? ''); ?></div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($template_name === 'ranking' && !empty($data['items'])): ?>
+                <!-- Ranking List -->
+                <div class="space-y-2">
+                    <?php
+                    $position = 1;
+                    foreach (array_slice($data['items'], 0, 10) as $item):
+                        $medals = ['🥇', '🥈', '🥉'];
+                        $medal = $position <= 3 ? $medals[$position - 1] : $position . 'º';
+                    ?>
+                    <div class="flex items-center gap-4 p-3 <?php echo $position <= 3 ? 'bg-yellow-50' : 'bg-gray-50'; ?> rounded-lg">
+                        <span class="text-2xl w-10 text-center"><?php echo $medal; ?></span>
+                        <div class="flex-1">
+                            <div class="font-medium"><?php echo esc_html($item['nombre'] ?? $item['titulo'] ?? $item['title'] ?? ''); ?></div>
+                        </div>
+                        <div class="text-xl font-bold text-gray-800"><?php echo esc_html($item['puntos'] ?? $item['total'] ?? $item['value'] ?? 0); ?></div>
+                    </div>
+                    <?php
+                        $position++;
+                    endforeach;
+                    ?>
+                </div>
+
+                <?php elseif (!empty($data['items'])): ?>
+                <!-- Items Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <?php foreach (array_slice($data['items'], 0, 20) as $item): ?>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-sm text-gray-600">
+                                    <?php
+                                    $date = $item['fecha'] ?? $item['date'] ?? $item['created_at'] ?? '';
+                                    echo $date ? date_i18n(get_option('date_format') . ' H:i', strtotime($date)) : '-';
+                                    ?>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="font-medium"><?php echo esc_html($item['titulo'] ?? $item['title'] ?? $item['descripcion'] ?? ''); ?></div>
+                                    <?php if (!empty($item['tipo'])): ?>
+                                    <span class="text-xs text-gray-500"><?php echo esc_html($item['tipo']); ?></span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <?php
+                                    $status = $item['estado'] ?? $item['status'] ?? '';
+                                    $status_colors = [
+                                        'entrada' => 'bg-green-100 text-green-700',
+                                        'salida' => 'bg-red-100 text-red-700',
+                                        'pendiente' => 'bg-yellow-100 text-yellow-700',
+                                        'completado' => 'bg-green-100 text-green-700',
+                                        'activo' => 'bg-blue-100 text-blue-700',
+                                    ];
+                                    $color_class = $status_colors[$status] ?? 'bg-gray-100 text-gray-700';
+                                    ?>
+                                    <span class="px-2 py-1 rounded-full text-xs <?php echo esc_attr($color_class); ?>">
+                                        <?php echo esc_html(ucfirst($status)); ?>
+                                    </span>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <?php else: ?>
+                <!-- Empty State -->
+                <div class="text-center py-12">
+                    <span class="text-6xl block mb-4">📭</span>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></h3>
+                    <p class="text-gray-500"><?php esc_html_e('No hay registros para mostrar en este período.', 'flavor-chat-ia'); ?></p>
+                </div>
+                <?php endif; ?>
+
+                <!-- Export buttons -->
+                <div class="mt-6 pt-4 border-t flex justify-end gap-2">
+                    <button onclick="window.print()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
+                        <span>🖨️</span>
+                        <?php esc_html_e('Imprimir', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <?php
+        return '<div class="flavor-shortcode-wrapper">' . ob_get_clean() . '</div>';
+    }
+
+    /**
+     * Renderiza contenido dinámico usando Archive Renderer
+     * Antes mostraba "próximamente", ahora usa el sistema dinámico
      */
     private function render_coming_soon_message($module_slug, $template_name) {
-        $module_name = ucwords(str_replace('-', ' ', $module_slug));
-        $view_name = ucwords(str_replace('-', ' ', $template_name));
+        // Usar Archive Renderer dinámicamente en lugar de mostrar "próximamente"
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
 
-        return sprintf(
-            '<div class="flavor-coming-soon">
-                <span class="dashicons dashicons-clock"></span>
-                <h4>%s - %s</h4>
-                <p>%s</p>
-            </div>
-            <style>
-            .flavor-coming-soon { text-align: center; padding: 2rem; background: linear-gradient(135deg, #f0f9ff 0%%, #e0f2fe 100%%); border-radius: 12px; border: 1px dashed #0ea5e9; }
-            .flavor-coming-soon .dashicons { font-size: 36px; width: 36px; height: 36px; color: #0ea5e9; margin-bottom: 0.5rem; }
-            .flavor-coming-soon h4 { margin: 0.5rem 0; color: #0369a1; }
-            .flavor-coming-soon p { margin: 0; color: #64748b; font-size: 0.875rem; }
-            </style>',
-            esc_html($module_name),
-            esc_html($view_name),
-            __('Esta funcionalidad estará disponible próximamente', 'flavor-chat-ia')
-        );
+        $renderer = new Flavor_Archive_Renderer();
+
+        // Determinar tipo de vista según el nombre del template
+        $template_lower = strtolower($template_name);
+
+        // Si es un single/detalle
+        if (strpos($template_lower, 'single') !== false ||
+            strpos($template_lower, 'detalle') !== false ||
+            strpos($template_lower, 'ver') !== false) {
+            $item_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+            return $renderer->render_single_auto($module_slug, $item_id);
+        }
+
+        // Si es mis-* (filtrado por usuario)
+        if (strpos($template_lower, 'mis-') === 0 || strpos($template_lower, 'mis_') === 0) {
+            return $renderer->render_auto($module_slug, ['user_id' => get_current_user_id()]);
+        }
+
+        // Por defecto: listado/archive
+        return $renderer->render_auto($module_slug);
     }
 
     /**
      * Renderiza un listado de módulo
-     * Uso: [flavor_module_listing module="participacion" action="listar_propuestas" columnas="2" limite="12"]
+     * UNIFICADO: Delega al sistema unificado [flavor]
+     * Uso: [flavor_module_listing module="participacion" columnas="2" limite="12"]
      */
     public function render_module_listing($atts) {
         $atts = shortcode_atts([
@@ -521,40 +2242,22 @@ class Flavor_Module_Shortcodes {
             'limite' => '12',
             'columnas' => '3',
             'mostrar_filtros' => 'no',
-            'mostrar_fecha' => 'yes',
-            'mostrar_precio' => 'no',
-            'tipo' => '',
-            'color' => '#4f46e5',
+            'color' => '',
         ], $atts);
 
         if (empty($atts['module'])) {
-            return '<div class="flavor-error">' . __('Error: Debes especificar el módulo', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Error: Especifica el módulo', 'flavor-chat-ia') . '</div>';
         }
 
-        // Normalizar nombre del módulo
-        $modulo_id = str_replace('-', '_', sanitize_key($atts['module']));
-
-        // Obtener instancia del módulo
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
-            return '<div class="flavor-error">' . __('Error: Module Loader no disponible', 'flavor-chat-ia') . '</div>';
-        }
-
-        $loader = Flavor_Chat_Module_Loader::get_instance();
-        $instance = $loader->get_module($modulo_id);
-
-        if (!$instance) {
-            // Intentar con guiones
-            $modulo_id_alt = str_replace('_', '-', $modulo_id);
-            $instance = $loader->get_module($modulo_id_alt);
-
-            if (!$instance) {
-                return '<div class="flavor-error">' . sprintf(__('Módulo "%s" no encontrado o no activo', 'flavor-chat-ia'), esc_html($atts['module'])) . '</div>';
-            }
-            $modulo_id = $modulo_id_alt;
-        }
-
-        // Usar el mismo sistema de renderizado que los shortcodes automáticos
-        return $this->render_module_shortcode($modulo_id, $instance, $atts);
+        // Delegar al sistema unificado
+        return $this->render_unified([
+            'module'  => $atts['module'],
+            'view'    => 'listado',
+            'limit'   => $atts['limite'],
+            'columns' => $atts['columnas'],
+            'filters' => $atts['mostrar_filtros'],
+            'color'   => $atts['color'],
+        ]);
     }
 
     /**
@@ -854,77 +2557,28 @@ class Flavor_Module_Shortcodes {
 
     /**
      * Renderiza un formulario de módulo
-     * Uso: [flavor_module_form module="eventos" action="inscribirse_evento"]
+     * UNIFICADO: Delega al sistema unificado [flavor]
+     * Uso: [flavor_module_form module="eventos" action="inscribirse"]
      */
     public function render_module_form($atts) {
         $atts = shortcode_atts([
             'module' => '',
-            'action' => '',
+            'action' => 'crear',
             'titulo' => '',
             'descripcion' => '',
             'mostrar_titulo' => 'yes',
         ], $atts);
 
-        if (empty($atts['module']) || empty($atts['action'])) {
-            return '<div class="flavor-error">' . __('Error: Debes especificar module y action', 'flavor-chat-ia') . '</div>';
+        if (empty($atts['module'])) {
+            return '<div class="flavor-error">' . __('Error: Especifica el módulo', 'flavor-chat-ia') . '</div>';
         }
 
-        // Obtener instancia del módulo
-        if (!class_exists('Flavor_Chat_Module_Loader')) {
-            return '<div class="flavor-error">' . __('Error: Module Loader no disponible', 'flavor-chat-ia') . '</div>';
-        }
-
-        $loader = Flavor_Chat_Module_Loader::get_instance();
-        $module_name = $atts['module'];
-        $instance = $loader->get_module($module_name);
-
-        // Si no encuentra el módulo, intentar variaciones (singular/plural)
-        if (!$instance) {
-            $variaciones = [
-                $module_name . 's',           // foro -> foros
-                rtrim($module_name, 's'),     // foros -> foro
-                $module_name . 'es',          // taller -> talleres
-                preg_replace('/es$/', '', $module_name), // talleres -> taller
-            ];
-            foreach ($variaciones as $var) {
-                $instance = $loader->get_module($var);
-                if ($instance) {
-                    break;
-                }
-            }
-        }
-
-        if (!$instance) {
-            return '<div class="flavor-error">' . sprintf(__('Error: Módulo "%s" no encontrado', 'flavor-chat-ia'), $atts['module']) . '</div>';
-        }
-
-        // Verificar que el módulo tenga el método get_form_config
-        if (!method_exists($instance, 'get_form_config')) {
-            return '<div class="flavor-error">' . __('Error: Este módulo no soporta formularios', 'flavor-chat-ia') . '</div>';
-        }
-
-        // Obtener configuración del formulario
-        $form_config = $instance->get_form_config($atts['action']);
-
-        if (!$form_config) {
-            return '<div class="flavor-error">' . sprintf(__('Error: Acción "%s" no tiene configuración de formulario', 'flavor-chat-ia'), $atts['action']) . '</div>';
-        }
-
-        // Preparar datos del formulario
-        $form_data = [
-            'module_id' => $atts['module'],
-            'action' => $atts['action'],
-            'title' => $atts['titulo'] ?: ($form_config['title'] ?? ucfirst($atts['action'])),
-            'description' => $atts['descripcion'] ?: ($form_config['description'] ?? ''),
-            'fields' => $form_config['fields'] ?? [],
-            'submit_text' => $form_config['submit_text'] ?? __('Enviar', 'flavor-chat-ia'),
-            'ajax' => $form_config['ajax'] ?? true,
-        ];
-
-        // Renderizar el formulario
-        ob_start();
-        $this->render_form_html($form_data, $atts);
-        return ob_get_clean();
+        // Delegar al sistema unificado
+        return $this->render_unified([
+            'module' => $atts['module'],
+            'view'   => 'form',
+            'title'  => $atts['titulo'],
+        ]);
     }
 
     /**
@@ -1618,98 +3272,20 @@ class Flavor_Module_Shortcodes {
 
     /**
      * Renderiza fallback cuando no hay template
+     * UNIFICADO: Delega al sistema render_unified
      */
     private function render_fallback($modulo_id, $instance, $atts) {
-        $nombre = is_object($instance) ? ($instance->name ?? ucfirst(str_replace(['_', '-'], ' ', $modulo_id))) : ucfirst(str_replace(['_', '-'], ' ', $modulo_id));
-        $descripcion = is_object($instance) ? ($instance->description ?? '') : '';
-        $color = $atts['color'] ?? '#4f46e5';
+        // Normalizar el ID del módulo
+        $module_slug = str_replace('_', '-', $modulo_id);
 
-        ob_start();
-        ?>
-        <div class="flavor-module-fallback" style="--fmf-color: <?php echo esc_attr($color); ?>;">
-            <div class="fmf-icon">
-                <span class="dashicons dashicons-grid-view"></span>
-            </div>
-            <h3 class="fmf-title"><?php echo esc_html($nombre); ?></h3>
-            <?php if (!empty($descripcion)) : ?>
-                <p class="fmf-desc"><?php echo esc_html($descripcion); ?></p>
-            <?php else : ?>
-                <p class="fmf-desc"><?php esc_html_e('Este módulo está disponible pero aún no tiene contenido.', 'flavor-chat-ia'); ?></p>
-            <?php endif; ?>
-            <div class="fmf-actions">
-                <a href="<?php echo esc_url(home_url('/' . str_replace('_', '-', $modulo_id) . '/')); ?>" class="fmf-btn">
-                    <?php esc_html_e('Ver módulo', 'flavor-chat-ia'); ?>
-                    <span class="dashicons dashicons-arrow-right-alt2"></span>
-                </a>
-            </div>
-        </div>
-        <style>
-        .flavor-module-fallback {
-            padding: 60px 20px;
-            text-align: center;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-        }
-        .fmf-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 64px;
-            height: 64px;
-            background: var(--fmf-color, #4f46e5);
-            border-radius: 16px;
-            margin-bottom: 20px;
-        }
-        .fmf-icon .dashicons {
-            font-size: 32px;
-            width: 32px;
-            height: 32px;
-            color: white;
-        }
-        .fmf-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #111827;
-            margin: 0 0 12px;
-        }
-        .fmf-desc {
-            font-size: 1rem;
-            color: #6b7280;
-            margin: 0 0 24px;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .fmf-actions {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-        }
-        .fmf-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            background: var(--fmf-color, #4f46e5);
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .fmf-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .fmf-btn .dashicons {
-            font-size: 18px;
-            width: 18px;
-            height: 18px;
-        }
-        </style>
-        <?php
-        return ob_get_clean();
+        // Usar el sistema unificado
+        return $this->render_unified([
+            'module'  => $module_slug,
+            'view'    => 'listado',
+            'limit'   => $atts['limite'] ?? $atts['limit'] ?? 12,
+            'columns' => $atts['columnas'] ?? $atts['columns'] ?? 3,
+            'color'   => $atts['color'] ?? '',
+        ]);
     }
 
     /**
@@ -1748,5 +3324,434 @@ class Flavor_Module_Shortcodes {
 
         $modulo_id_normalizado = str_replace('_', '-', $modulo_id);
         return $iconos[$modulo_id_normalizado] ?? 'dashicons-admin-generic';
+    }
+
+    // =========================================================================
+    // WIDGETS GENÉRICOS
+    // =========================================================================
+
+    /**
+     * Widget: Últimos items de un módulo
+     *
+     * Uso: [flavor_ultimos module="eventos" limit="5" title="Últimos eventos"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_widget_ultimos($atts) {
+        $atts = shortcode_atts([
+            'module' => '',
+            'limit'  => 5,
+            'title'  => '',
+            'color'  => '',
+            'show_date' => 'yes',
+            'link'   => '',  // URL para "Ver todos"
+        ], $atts);
+
+        $module_slug = sanitize_title($atts['module']);
+        if (empty($module_slug)) {
+            return '';
+        }
+
+        // Obtener configuración del módulo
+        $module_class = $this->get_module_class($module_slug);
+        $config = [];
+        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
+            $config = $module_class::get_renderer_config();
+        }
+
+        $color = $atts['color'] ?: ($config['color'] ?? 'primary');
+        $title = $atts['title'] ?: sprintf(__('Últimos %s', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));
+        $icon = $config['icon'] ?? '📋';
+
+        // Obtener datos
+        $items = $this->get_module_recent_items($module_slug, intval($atts['limit']));
+
+        // Formatear items para quick-list
+        $list_items = [];
+        foreach ($items as $item) {
+            $list_items[] = [
+                'title'    => $item['title'] ?? $item['titulo'] ?? '',
+                'subtitle' => $atts['show_date'] === 'yes' && !empty($item['date'])
+                    ? date_i18n('j M Y', strtotime($item['date']))
+                    : ($item['subtitle'] ?? ''),
+                'icon'     => $item['icon'] ?? $icon,
+                'url'      => $item['url'] ?? '',
+                'status'   => $item['status'] ?? '',
+            ];
+        }
+
+        // Acciones
+        $actions = [];
+        if (!empty($atts['link'])) {
+            $actions[] = ['label' => __('Ver todos', 'flavor-chat-ia'), 'url' => $atts['link']];
+        }
+
+        ob_start();
+        $items = $list_items;
+        $empty_text = __('No hay registros recientes', 'flavor-chat-ia');
+        include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/quick-list.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Widget: Items destacados de un módulo
+     *
+     * Uso: [flavor_destacados module="cursos" limit="3" title="Cursos destacados"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_widget_destacados($atts) {
+        $atts = shortcode_atts([
+            'module'  => '',
+            'limit'   => 3,
+            'title'   => '',
+            'color'   => '',
+            'columns' => 3,
+        ], $atts);
+
+        $module_slug = sanitize_title($atts['module']);
+        if (empty($module_slug)) {
+            return '';
+        }
+
+        // Obtener configuración del módulo
+        $module_class = $this->get_module_class($module_slug);
+        $config = [];
+        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
+            $config = $module_class::get_renderer_config();
+        }
+
+        $color = $atts['color'] ?: ($config['color'] ?? 'primary');
+        $title = $atts['title'] ?: sprintf(__('%s destacados', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));
+
+        // Obtener datos destacados
+        $items = $this->get_module_featured_items($module_slug, intval($atts['limit']));
+
+        if (empty($items)) {
+            return '';
+        }
+
+        // Usar Archive Renderer con configuración mínima
+        if (!class_exists('Flavor_Archive_Renderer')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
+        }
+        $renderer = new Flavor_Archive_Renderer();
+
+        return '<div class="flavor-widget-destacados">' .
+            $renderer->render_auto($module_slug, [
+                'items'       => $items,
+                'per_page'    => intval($atts['limit']),
+                'columns'     => intval($atts['columns']),
+                'show_header' => false,
+                'show_filters'=> false,
+                'color'       => $color,
+                'title'       => $title,
+            ]) .
+            '</div>';
+    }
+
+    /**
+     * Widget: Próximo item de un módulo
+     *
+     * Uso: [flavor_proximo module="eventos" title="Próximo evento"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_widget_proximo($atts) {
+        $atts = shortcode_atts([
+            'module' => '',
+            'title'  => '',
+            'color'  => '',
+            'show_countdown' => 'yes',
+        ], $atts);
+
+        $module_slug = sanitize_title($atts['module']);
+        if (empty($module_slug)) {
+            return '';
+        }
+
+        // Obtener configuración del módulo
+        $module_class = $this->get_module_class($module_slug);
+        $config = [];
+        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
+            $config = $module_class::get_renderer_config();
+        }
+
+        $color = $atts['color'] ?: ($config['color'] ?? 'primary');
+        $title = $atts['title'] ?: sprintf(__('Próximo %s', 'flavor-chat-ia'), $config['title_singular'] ?? $config['title'] ?? ucfirst($module_slug));
+        $icon = $config['icon'] ?? '📅';
+
+        // Obtener próximo item
+        $item = $this->get_module_next_item($module_slug);
+
+        if (empty($item)) {
+            // Mostrar widget CTA para crear
+            $cta = [
+                'icon' => $icon,
+                'title' => $title,
+                'description' => __('No hay próximos eventos programados', 'flavor-chat-ia'),
+                'label' => __('Ver calendario', 'flavor-chat-ia'),
+                'url' => home_url('/' . $module_slug . '/'),
+            ];
+
+            ob_start();
+            $type = 'cta';
+            include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/sidebar-widget.php';
+            return ob_get_clean();
+        }
+
+        // Preparar datos del item
+        $items = [
+            ['icon' => '📅', 'label' => __('Fecha', 'flavor-chat-ia'), 'value' => date_i18n('j M Y, H:i', strtotime($item['date'] ?? ''))],
+            ['icon' => '📍', 'label' => __('Lugar', 'flavor-chat-ia'), 'value' => $item['location'] ?? $item['ubicacion'] ?? '-'],
+        ];
+
+        $cta = [
+            'label' => __('Ver detalles', 'flavor-chat-ia'),
+            'url' => $item['url'] ?? '#',
+        ];
+
+        ob_start();
+        $type = 'info';
+        include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/sidebar-widget.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Widget: Mi resumen personal de un módulo
+     *
+     * Uso: [flavor_mi_resumen module="banco-tiempo" title="Mi saldo"]
+     *
+     * @param array $atts Atributos del shortcode
+     * @return string HTML renderizado
+     */
+    public function render_widget_mi_resumen($atts) {
+        $atts = shortcode_atts([
+            'module' => '',
+            'title'  => '',
+            'color'  => '',
+        ], $atts);
+
+        if (!is_user_logged_in()) {
+            return $this->render_login_required_message();
+        }
+
+        $module_slug = sanitize_title($atts['module']);
+        if (empty($module_slug)) {
+            return '';
+        }
+
+        // Obtener configuración del módulo
+        $module_class = $this->get_module_class($module_slug);
+        $config = [];
+        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
+            $config = $module_class::get_renderer_config();
+        }
+
+        $color = $atts['color'] ?: ($config['color'] ?? 'primary');
+        $title = $atts['title'] ?: sprintf(__('Mi %s', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));
+        $icon = $config['icon'] ?? '👤';
+
+        // Obtener stats del usuario para este módulo
+        $user_stats = $this->get_user_module_stats($module_slug, get_current_user_id());
+
+        if (empty($user_stats)) {
+            // Stats genéricos
+            $user_stats = [
+                ['icon' => '📊', 'label' => __('Total', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '⏳', 'label' => __('Pendientes', 'flavor-chat-ia'), 'value' => 0],
+            ];
+        }
+
+        $cta = [
+            'label' => __('Ver todo', 'flavor-chat-ia'),
+            'url' => home_url('/mi-portal/' . $module_slug . '/'),
+        ];
+
+        ob_start();
+        $items = $user_stats;
+        $type = 'stats';
+        include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/sidebar-widget.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene los items recientes de un módulo
+     */
+    private function get_module_recent_items($module_slug, $limit = 5) {
+        $module_class = $this->get_module_class($module_slug);
+
+        // Si el módulo tiene método específico, usarlo
+        if ($module_class && method_exists($module_class, 'get_recent_items')) {
+            return $module_class::get_recent_items($limit);
+        }
+
+        // Fallback: buscar post type
+        $post_types = [
+            'eventos' => 'flavor_evento',
+            'cursos' => 'flavor_curso',
+            'talleres' => 'flavor_taller',
+            'marketplace' => 'flavor_anuncio',
+            'incidencias' => 'flavor_incidencia',
+            'biblioteca' => 'flavor_libro',
+            'podcast' => 'flavor_podcast',
+        ];
+
+        $post_type = $post_types[$module_slug] ?? '';
+        if (empty($post_type) || !post_type_exists($post_type)) {
+            return [];
+        }
+
+        $posts = get_posts([
+            'post_type'      => $post_type,
+            'posts_per_page' => $limit,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+            'post_status'    => 'publish',
+        ]);
+
+        $items = [];
+        foreach ($posts as $post) {
+            $items[] = [
+                'title' => $post->post_title,
+                'date'  => $post->post_date,
+                'url'   => get_permalink($post->ID),
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
+     * Obtiene los items destacados de un módulo
+     */
+    private function get_module_featured_items($module_slug, $limit = 3) {
+        $module_class = $this->get_module_class($module_slug);
+
+        // Si el módulo tiene método específico, usarlo
+        if ($module_class && method_exists($module_class, 'get_featured_items')) {
+            return $module_class::get_featured_items($limit);
+        }
+
+        // Fallback: buscar posts con meta _featured o sticky
+        $post_types = [
+            'eventos' => 'flavor_evento',
+            'cursos' => 'flavor_curso',
+            'talleres' => 'flavor_taller',
+        ];
+
+        $post_type = $post_types[$module_slug] ?? '';
+        if (empty($post_type) || !post_type_exists($post_type)) {
+            return [];
+        }
+
+        $posts = get_posts([
+            'post_type'      => $post_type,
+            'posts_per_page' => $limit,
+            'meta_key'       => '_featured',
+            'meta_value'     => '1',
+            'post_status'    => 'publish',
+        ]);
+
+        // Si no hay destacados, devolver los más recientes
+        if (empty($posts)) {
+            return $this->get_module_recent_items($module_slug, $limit);
+        }
+
+        return $posts;
+    }
+
+    /**
+     * Obtiene el próximo item de un módulo (basado en fecha)
+     */
+    private function get_module_next_item($module_slug) {
+        $module_class = $this->get_module_class($module_slug);
+
+        // Si el módulo tiene método específico, usarlo
+        if ($module_class && method_exists($module_class, 'get_next_item')) {
+            return $module_class::get_next_item();
+        }
+
+        // Módulos con fechas
+        $date_fields = [
+            'eventos'   => 'fecha_inicio',
+            'talleres'  => 'fecha_inicio',
+            'cursos'    => 'fecha_inicio',
+            'reservas'  => 'fecha',
+        ];
+
+        $post_types = [
+            'eventos'  => 'flavor_evento',
+            'talleres' => 'flavor_taller',
+            'cursos'   => 'flavor_curso',
+        ];
+
+        $post_type = $post_types[$module_slug] ?? '';
+        $date_field = $date_fields[$module_slug] ?? '';
+
+        if (empty($post_type) || empty($date_field) || !post_type_exists($post_type)) {
+            return null;
+        }
+
+        $posts = get_posts([
+            'post_type'      => $post_type,
+            'posts_per_page' => 1,
+            'meta_key'       => $date_field,
+            'meta_value'     => date('Y-m-d'),
+            'meta_compare'   => '>=',
+            'orderby'        => 'meta_value',
+            'order'          => 'ASC',
+            'post_status'    => 'publish',
+        ]);
+
+        if (empty($posts)) {
+            return null;
+        }
+
+        $post = $posts[0];
+        return [
+            'title'    => $post->post_title,
+            'date'     => get_post_meta($post->ID, $date_field, true),
+            'location' => get_post_meta($post->ID, 'ubicacion', true),
+            'url'      => get_permalink($post->ID),
+        ];
+    }
+
+    /**
+     * Obtiene estadísticas del usuario para un módulo
+     */
+    private function get_user_module_stats($module_slug, $user_id) {
+        $module_class = $this->get_module_class($module_slug);
+
+        // Si el módulo tiene método específico, usarlo
+        if ($module_class && method_exists($module_class, 'get_user_stats')) {
+            return $module_class::get_user_stats($user_id);
+        }
+
+        // Stats genéricos basados en tipo de módulo
+        $stats_config = [
+            'banco-tiempo' => [
+                ['icon' => '⏰', 'label' => __('Horas ofrecidas', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '🤝', 'label' => __('Intercambios', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '💰', 'label' => __('Saldo', 'flavor-chat-ia'), 'value' => '0h'],
+            ],
+            'marketplace' => [
+                ['icon' => '📦', 'label' => __('Anuncios activos', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '💬', 'label' => __('Mensajes', 'flavor-chat-ia'), 'value' => 0],
+            ],
+            'eventos' => [
+                ['icon' => '🎫', 'label' => __('Inscritos', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '📅', 'label' => __('Próximos', 'flavor-chat-ia'), 'value' => 0],
+            ],
+            'incidencias' => [
+                ['icon' => '📝', 'label' => __('Reportadas', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '✅', 'label' => __('Resueltas', 'flavor-chat-ia'), 'value' => 0],
+            ],
+        ];
+
+        return $stats_config[$module_slug] ?? [];
     }
 }

@@ -121,6 +121,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     public function init() {
         // Registrar en el panel de administración unificado
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         // Registrar como consumidor de integraciones
@@ -2548,6 +2551,18 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Gestión de Matrículas', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-cursos-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Cursos_Dashboard_Tab::get_instance();
         }
     }
 }

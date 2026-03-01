@@ -51,6 +51,16 @@ $config = get_option('flavor_gc_settings', [
 ?>
 
 <div class="wrap gc-admin-settings">
+    <!-- Migas de pan -->
+    <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
+        <a href="<?php echo admin_url('admin.php?page=grupos-consumo'); ?>" style="color: #2271b1; text-decoration: none;">
+            <span class="dashicons dashicons-store" style="font-size: 14px; vertical-align: middle;"></span>
+            <?php _e('Grupos de Consumo', 'flavor-chat-ia'); ?>
+        </a>
+        <span style="color: #646970; margin: 0 5px;">›</span>
+        <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-chat-ia'); ?></span>
+    </nav>
+
     <h1><?php _e('Configuración de Grupos de Consumo', 'flavor-chat-ia'); ?></h1>
 
     <form method="post" action="">

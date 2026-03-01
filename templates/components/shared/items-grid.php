@@ -2,15 +2,16 @@
 /**
  * Componente: Items Grid
  *
- * Grid de items/cards reutilizable con soporte para templates personalizados
- * y estado vacío integrado.
+ * Grid de items/cards reutilizable con soporte para templates personalizados,
+ * card genérica configurable y estado vacío integrado.
  *
  * @package FlavorChatIA
  * @since 5.0.0
  *
  * @param array    $items          Array de items a mostrar
  * @param int      $columns        Número de columnas (1, 2, 3 o 4)
- * @param string   $card_template  Nombre del template de card a usar (sin .php)
+ * @param array    $card_config    Configuración para la card genérica (preferido)
+ * @param string   $card_template  Nombre del template de card a usar (sin .php) - fallback
  * @param callable $card_callback  Callback para renderizar cada card (alternativa a card_template)
  * @param string   $layout         Layout: 'grid' o 'list'
  * @param string   $gap            Espacio entre items: 'sm', 'md', 'lg'
@@ -30,6 +31,7 @@ if (!function_exists('flavor_render_component')) {
 // Valores por defecto
 $items = $items ?? [];
 $columns = $columns ?? 3;
+$card_config = $card_config ?? null;
 $card_template = $card_template ?? '';
 $card_callback = $card_callback ?? null;
 $layout = $layout ?? 'grid';
@@ -98,11 +100,18 @@ $grid_id = flavor_unique_id('items-grid');
             <?php endif; ?>
 
             <?php
-            // Renderizar usando callback personalizado
-            if (is_callable($card_callback)) {
+            // Prioridad 1: Card genérica con configuración dinámica (PREFERIDO)
+            if (!empty($card_config)) {
+                flavor_render_component('generic-card', [
+                    'item'   => $item,
+                    'config' => $card_config,
+                ]);
+            }
+            // Prioridad 2: Callback personalizado
+            elseif (is_callable($card_callback)) {
                 call_user_func($card_callback, $item, $index);
             }
-            // Renderizar usando template de card
+            // Prioridad 3: Template de card específico (legacy)
             elseif ($card_template) {
                 // Buscar primero en shared, luego en la carpeta del módulo
                 $template_paths = [
@@ -126,11 +135,19 @@ $grid_id = flavor_unique_id('items-grid');
                     echo "<!-- Template no encontrado: {$card_template} -->";
                 }
             }
-            // Renderizar card genérica por defecto
+            // Fallback: Card genérica con configuración mínima
             else {
-                flavor_render_component('item-card', [
-                    'item'  => $item,
-                    'index' => $index,
+                flavor_render_component('generic-card', [
+                    'item'   => $item,
+                    'config' => [
+                        'fields' => [
+                            'id'       => 'id',
+                            'title'    => 'titulo',
+                            'subtitle' => 'descripcion',
+                            'image'    => 'imagen',
+                            'url'      => 'url',
+                        ],
+                    ],
                 ]);
             }
             ?>

@@ -56,7 +56,7 @@ $populares = $datos_vista['populares'] ?? [];
             <h2 class="mi-red-explorar__section-title"><?php esc_html_e('Usuarios Populares', 'flavor-chat-ia'); ?></h2>
             <div class="mi-red-users-grid">
                 <?php foreach ($populares as $user) : ?>
-                    <a href="<?php echo esc_url($base_url . 'perfil/?id=' . $user['usuario_id']); ?>" class="mi-red-user-card">
+                    <a href="<?php echo esc_url($base_url . 'perfil/' . $user['usuario_id'] . '/'); ?>" class="mi-red-user-card">
                         <img src="<?php echo esc_url(get_avatar_url($user['usuario_id'], ['size' => 80])); ?>"
                              alt="<?php echo esc_attr($user['display_name']); ?>"
                              class="mi-red-user-card__avatar">

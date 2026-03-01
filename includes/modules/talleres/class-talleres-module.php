@@ -171,6 +171,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         add_action('talleres_confirmar_automatico', [$this, 'confirmar_talleres_automatico']);
 
         // Registrar en Panel Unificado de Gestion
+        
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
 
         // Cargar Frontend Controller
@@ -3356,6 +3359,18 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Gestión de Materiales', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo_tab = dirname(__FILE__) . '/class-talleres-dashboard-tab.php';
+        if (file_exists($archivo_tab)) {
+            require_once $archivo_tab;
+            Flavor_Talleres_Dashboard_Tab::get_instance();
         }
     }
 }

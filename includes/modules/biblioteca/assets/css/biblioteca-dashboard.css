@@ -1,0 +1,911 @@
+/**
+ * Estilos para Biblioteca Dashboard Tab
+ *
+ * @package FlavorChatIA
+ * @subpackage Biblioteca
+ */
+
+/* =========================================================================
+   VARIABLES Y BASE
+   ========================================================================= */
+
+.biblioteca-dashboard-tab {
+    --biblioteca-primary: #3b82f6;
+    --biblioteca-primary-dark: #2563eb;
+    --biblioteca-success: #10b981;
+    --biblioteca-warning: #f59e0b;
+    --biblioteca-danger: #ef4444;
+    --biblioteca-gray-50: #f9fafb;
+    --biblioteca-gray-100: #f3f4f6;
+    --biblioteca-gray-200: #e5e7eb;
+    --biblioteca-gray-300: #d1d5db;
+    --biblioteca-gray-500: #6b7280;
+    --biblioteca-gray-700: #374151;
+    --biblioteca-gray-900: #111827;
+    --biblioteca-radius: 12px;
+    --biblioteca-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --biblioteca-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    padding: 1.5rem;
+}
+
+/* =========================================================================
+   TAB HEADER
+   ========================================================================= */
+
+.biblioteca-dashboard-tab .tab-header {
+    margin-bottom: 2rem;
+}
+
+.biblioteca-dashboard-tab .tab-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--biblioteca-gray-900);
+    margin: 0 0 0.5rem;
+}
+
+.biblioteca-dashboard-tab .tab-header h2 .dashicons {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--biblioteca-primary);
+}
+
+.biblioteca-dashboard-tab .tab-description {
+    color: var(--biblioteca-gray-500);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* =========================================================================
+   ALERTAS DE VENCIMIENTO
+   ========================================================================= */
+
+.alertas-vencimiento {
+    margin-bottom: 1.5rem;
+}
+
+.alerta-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: var(--biblioteca-radius);
+    margin-bottom: 0.75rem;
+}
+
+.alerta-item.alerta-vencido {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border-left: 4px solid var(--biblioteca-danger);
+}
+
+.alerta-item.alerta-proximo {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border-left: 4px solid var(--biblioteca-warning);
+}
+
+.alerta-icono {
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.alerta-vencido .alerta-icono {
+    color: var(--biblioteca-danger);
+}
+
+.alerta-proximo .alerta-icono {
+    color: var(--biblioteca-warning);
+}
+
+.alerta-contenido {
+    flex: 1;
+}
+
+.alerta-contenido strong {
+    display: block;
+    color: var(--biblioteca-gray-900);
+    margin-bottom: 0.25rem;
+}
+
+.alerta-texto {
+    font-size: 0.875rem;
+    color: var(--biblioteca-gray-700);
+}
+
+/* =========================================================================
+   EMPTY STATE
+   ========================================================================= */
+
+.biblioteca-dashboard-tab .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--biblioteca-gray-50);
+    border-radius: var(--biblioteca-radius);
+    border: 2px dashed var(--biblioteca-gray-200);
+}
+
+.biblioteca-dashboard-tab .empty-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: var(--biblioteca-gray-300);
+    margin-bottom: 1rem;
+}
+
+.biblioteca-dashboard-tab .empty-state h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--biblioteca-gray-700);
+    margin: 0 0 0.5rem;
+}
+
+.biblioteca-dashboard-tab .empty-state p {
+    color: var(--biblioteca-gray-500);
+    margin: 0 0 1.5rem;
+}
+
+/* =========================================================================
+   BOTONES
+   ========================================================================= */
+
+.biblioteca-dashboard-tab .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.biblioteca-dashboard-tab .btn-primary {
+    background: var(--biblioteca-primary);
+    color: white;
+}
+
+.biblioteca-dashboard-tab .btn-primary:hover {
+    background: var(--biblioteca-primary-dark);
+    transform: translateY(-1px);
+}
+
+.biblioteca-dashboard-tab .btn-secondary {
+    background: var(--biblioteca-gray-100);
+    color: var(--biblioteca-gray-700);
+}
+
+.biblioteca-dashboard-tab .btn-secondary:hover {
+    background: var(--biblioteca-gray-200);
+}
+
+.biblioteca-dashboard-tab .btn-outline {
+    background: transparent;
+    color: var(--biblioteca-primary);
+    border: 1px solid var(--biblioteca-primary);
+}
+
+.biblioteca-dashboard-tab .btn-outline:hover {
+    background: var(--biblioteca-primary);
+    color: white;
+}
+
+.biblioteca-dashboard-tab .btn-danger {
+    background: var(--biblioteca-danger);
+    color: white;
+}
+
+.biblioteca-dashboard-tab .btn-danger:hover {
+    background: #dc2626;
+}
+
+.biblioteca-dashboard-tab .btn-icon {
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+}
+
+.biblioteca-dashboard-tab .btn-icon:hover {
+    background: var(--biblioteca-gray-100);
+}
+
+.biblioteca-dashboard-tab .btn .dashicons {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+}
+
+/* =========================================================================
+   GRIDS
+   ========================================================================= */
+
+.prestamos-grid,
+.favoritos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+/* =========================================================================
+   TARJETAS DE PRÉSTAMO
+   ========================================================================= */
+
+.prestamo-card {
+    background: white;
+    border-radius: var(--biblioteca-radius);
+    box-shadow: var(--biblioteca-shadow);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prestamo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--biblioteca-shadow-lg);
+}
+
+.prestamo-card.estado-vencido {
+    border: 2px solid var(--biblioteca-danger);
+}
+
+.prestamo-card.estado-proximo-vencer {
+    border: 2px solid var(--biblioteca-warning);
+}
+
+.prestamo-portada {
+    position: relative;
+    height: 180px;
+    background: var(--biblioteca-gray-100);
+    overflow: hidden;
+}
+
+.prestamo-portada img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.prestamo-portada .sin-portada {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: linear-gradient(135deg, var(--biblioteca-gray-100) 0%, var(--biblioteca-gray-200) 100%);
+}
+
+.prestamo-portada .sin-portada .dashicons {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: var(--biblioteca-gray-400);
+}
+
+.badge-estado {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-transform: uppercase;
+}
+
+.badge-vencido {
+    background: var(--biblioteca-danger);
+    color: white;
+}
+
+.badge-proximo {
+    background: var(--biblioteca-warning);
+    color: white;
+}
+
+.prestamo-info {
+    padding: 1.25rem;
+}
+
+.prestamo-info .libro-titulo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--biblioteca-gray-900);
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+}
+
+.prestamo-info .libro-autor {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--biblioteca-gray-500);
+    font-size: 0.875rem;
+    margin: 0 0 0.75rem;
+}
+
+.prestamo-info .libro-autor .dashicons {
+    font-size: 0.875rem;
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.prestamo-fechas {
+    margin-bottom: 0.75rem;
+}
+
+.prestamo-fechas p {
+    font-size: 0.875rem;
+    color: var(--biblioteca-gray-600);
+    margin: 0 0 0.25rem;
+}
+
+.prestamo-fechas .fecha-vencida {
+    color: var(--biblioteca-danger);
+    font-weight: 600;
+}
+
+.prestamo-fechas .dias-restantes {
+    color: var(--biblioteca-gray-400);
+    font-size: 0.8rem;
+}
+
+.prestamo-info .prestamista,
+.prestamo-info .renovaciones {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--biblioteca-gray-500);
+    margin: 0 0 0.25rem;
+}
+
+.prestamo-info .dashicons {
+    font-size: 0.875rem;
+    width: 0.875rem;
+    height: 0.875rem;
+    color: var(--biblioteca-gray-400);
+}
+
+.prestamo-acciones {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--biblioteca-gray-100);
+    background: var(--biblioteca-gray-50);
+}
+
+/* =========================================================================
+   LISTA DE RESERVAS
+   ========================================================================= */
+
+.reservas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reserva-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto auto;
+    gap: 1.25rem;
+    align-items: center;
+    padding: 1.25rem;
+    background: white;
+    border-radius: var(--biblioteca-radius);
+    box-shadow: var(--biblioteca-shadow);
+}
+
+.reserva-portada {
+    width: 80px;
+    height: 110px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--biblioteca-gray-100);
+}
+
+.reserva-portada img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.reserva-portada .sin-portada {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.reserva-portada .sin-portada .dashicons {
+    font-size: 2rem;
+    color: var(--biblioteca-gray-400);
+}
+
+.reserva-info .libro-titulo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--biblioteca-gray-900);
+    margin: 0 0 0.25rem;
+}
+
+.reserva-info .libro-autor {
+    color: var(--biblioteca-gray-500);
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+}
+
+.reserva-detalles p {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--biblioteca-gray-600);
+    margin: 0 0 0.25rem;
+}
+
+.reserva-detalles .dashicons {
+    font-size: 0.875rem;
+    width: 0.875rem;
+    height: 0.875rem;
+    color: var(--biblioteca-gray-400);
+}
+
+.estado-badge {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-transform: uppercase;
+}
+
+.estado-badge.estado-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.estado-badge.estado-confirmada {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.estado-badge.estado-cancelada {
+    background: var(--biblioteca-gray-100);
+    color: var(--biblioteca-gray-500);
+}
+
+/* =========================================================================
+   ESTADÍSTICAS DE LECTURA
+   ========================================================================= */
+
+.estadisticas-lectura {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, var(--biblioteca-primary) 0%, var(--biblioteca-primary-dark) 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--biblioteca-radius);
+    text-align: center;
+}
+
+.stat-card .stat-valor {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .stat-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+/* =========================================================================
+   HISTORIAL TIMELINE
+   ========================================================================= */
+
+.historial-timeline {
+    position: relative;
+}
+
+.timeline-mes {
+    margin: 1.5rem 0 1rem;
+}
+
+.timeline-mes h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--biblioteca-gray-700);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--biblioteca-primary);
+    display: inline-block;
+}
+
+.historial-item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--biblioteca-radius);
+    box-shadow: var(--biblioteca-shadow);
+    margin-bottom: 0.75rem;
+}
+
+.historial-portada {
+    width: 60px;
+    height: 85px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--biblioteca-gray-100);
+}
+
+.historial-portada img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.historial-portada .sin-portada {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.historial-info .libro-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--biblioteca-gray-900);
+    margin: 0 0 0.25rem;
+}
+
+.historial-info .libro-autor {
+    color: var(--biblioteca-gray-500);
+    font-size: 0.875rem;
+    margin: 0 0 0.5rem;
+}
+
+.historial-fechas {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--biblioteca-gray-500);
+}
+
+.historial-info .genero-badge {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    background: var(--biblioteca-gray-100);
+    color: var(--biblioteca-gray-600);
+    border-radius: 4px;
+}
+
+.historial-acciones {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.valoracion-dada,
+.valoracion {
+    display: flex;
+    gap: 0.125rem;
+}
+
+.estrella {
+    font-size: 0.875rem;
+    color: var(--biblioteca-gray-300);
+}
+
+.estrella.llena {
+    color: #fbbf24;
+}
+
+/* =========================================================================
+   TARJETAS DE FAVORITOS
+   ========================================================================= */
+
+.favorito-card {
+    background: white;
+    border-radius: var(--biblioteca-radius);
+    box-shadow: var(--biblioteca-shadow);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.favorito-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--biblioteca-shadow-lg);
+}
+
+.favorito-portada {
+    position: relative;
+    height: 200px;
+    background: var(--biblioteca-gray-100);
+    overflow: hidden;
+}
+
+.favorito-portada img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.favorito-portada .sin-portada {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: linear-gradient(135deg, var(--biblioteca-gray-100) 0%, var(--biblioteca-gray-200) 100%);
+}
+
+.favorito-portada .sin-portada .dashicons {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: var(--biblioteca-gray-400);
+}
+
+.disponibilidad-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+}
+
+.disponibilidad-badge.disponible {
+    background: var(--biblioteca-success);
+    color: white;
+}
+
+.disponibilidad-badge.no-disponible {
+    background: var(--biblioteca-gray-400);
+    color: white;
+}
+
+.btn-quitar-favorito {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--biblioteca-shadow);
+    transition: all 0.2s ease;
+}
+
+.btn-quitar-favorito:hover {
+    background: var(--biblioteca-danger);
+    transform: scale(1.1);
+}
+
+.btn-quitar-favorito .dashicons {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--biblioteca-danger);
+}
+
+.btn-quitar-favorito:hover .dashicons {
+    color: white;
+}
+
+.favorito-info {
+    padding: 1.25rem;
+}
+
+.favorito-info .libro-titulo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+}
+
+.favorito-info .libro-titulo a {
+    color: var(--biblioteca-gray-900);
+    text-decoration: none;
+}
+
+.favorito-info .libro-titulo a:hover {
+    color: var(--biblioteca-primary);
+}
+
+.favorito-info .libro-autor {
+    color: var(--biblioteca-gray-500);
+    font-size: 0.875rem;
+    margin: 0 0 0.75rem;
+}
+
+.favorito-info .valoracion {
+    margin-bottom: 0.5rem;
+}
+
+.favorito-info .valoracion-numero {
+    margin-left: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--biblioteca-gray-500);
+}
+
+.favorito-info .genero-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    background: var(--biblioteca-gray-100);
+    color: var(--biblioteca-gray-600);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.favorito-info .fecha-agregado {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8rem;
+    color: var(--biblioteca-gray-400);
+    margin: 0.5rem 0;
+}
+
+.favorito-info .fecha-agregado .dashicons {
+    font-size: 0.8rem;
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.favorito-info .notas-favorito {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--biblioteca-gray-600);
+    font-style: italic;
+    margin: 0.5rem 0 0;
+    padding: 0.5rem;
+    background: var(--biblioteca-gray-50);
+    border-radius: 6px;
+}
+
+.favorito-acciones {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--biblioteca-gray-100);
+    background: var(--biblioteca-gray-50);
+}
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+@media (max-width: 768px) {
+    .biblioteca-dashboard-tab {
+        padding: 1rem;
+    }
+
+    .prestamos-grid,
+    .favoritos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reserva-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .reserva-portada {
+        display: none;
+    }
+
+    .historial-item {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .historial-portada {
+        display: none;
+    }
+
+    .historial-acciones {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    .estadisticas-lectura {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-card .stat-valor {
+        font-size: 2rem;
+    }
+}
+
+/* =========================================================================
+   ANIMACIONES
+   ========================================================================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.prestamo-card,
+.reserva-item,
+.historial-item,
+.favorito-card {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.alerta-item {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+/* =========================================================================
+   ESTADOS DE CARGA
+   ========================================================================= */
+
+.biblioteca-dashboard-tab .cargando {
+    position: relative;
+    pointer-events: none;
+}
+
+.biblioteca-dashboard-tab .cargando::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.biblioteca-dashboard-tab .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--biblioteca-gray-200);
+    border-top-color: var(--biblioteca-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

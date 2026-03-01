@@ -67,8 +67,8 @@ class Flavor_Carpooling_Frontend_Controller {
         // Template overrides
         add_filter('template_include', [$this, 'cargar_templates']);
 
-        // Registrar tabs en Mi Portal
-        add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_tabs_dashboard']);
+        // Nota: Los tabs del dashboard se registran en class-carpooling-dashboard-tab.php
+        // para mejor organizacion y funcionalidad completa
     }
 
     /**

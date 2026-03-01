@@ -170,8 +170,10 @@ function flavor_grupos_consumo_install() {
         producto_id bigint(20) unsigned NOT NULL,
         cantidad decimal(10,2) DEFAULT 1.00,
         fecha_agregado datetime DEFAULT NULL,
+        fecha_modificado datetime DEFAULT NULL,
         notas varchar(255) DEFAULT NULL,
         PRIMARY KEY (id),
+        UNIQUE KEY usuario_producto (usuario_id, producto_id),
         KEY usuario_id (usuario_id),
         KEY producto_id (producto_id),
         KEY fecha_agregado (fecha_agregado)

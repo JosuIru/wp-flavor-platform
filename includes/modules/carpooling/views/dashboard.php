@@ -20,15 +20,15 @@ if (!current_user_can('manage_options')) {
 global $wpdb;
 $tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
 $tabla_reservas = $wpdb->prefix . 'flavor_carpooling_reservas';
-$tabla_conductores = $wpdb->prefix . 'flavor_carpooling_conductores';
+$tabla_vehiculos = $wpdb->prefix . 'flavor_carpooling_vehiculos';
 
 $fecha_inicio_mes = date('Y-m-01 00:00:00');
 $fecha_actual = current_time('mysql');
 
-// Viajes activos
-$viajes_activos = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_viajes} WHERE estado = 'activo' AND fecha_viaje >= NOW()");
+// Viajes activos (usando fecha_salida que es la columna correcta)
+$viajes_activos = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_viajes} WHERE estado = 'activo' AND fecha_salida >= NOW()");
 $viajes_completados_mes = $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_viajes} WHERE estado = 'completado' AND fecha_viaje >= %s AND fecha_viaje <= %s",
+    "SELECT COUNT(*) FROM {$tabla_viajes} WHERE estado = 'finalizado' AND fecha_salida >= %s AND fecha_salida <= %s",
     $fecha_inicio_mes,
     $fecha_actual
 ));
@@ -40,29 +40,31 @@ $reservas_confirmadas_mes = $wpdb->get_var($wpdb->prepare(
     $fecha_inicio_mes
 ));
 
-// Conductores
-$conductores_activos = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_conductores} WHERE estado = 'activo' AND verificado = 1");
-$conductores_pendientes_verificacion = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_conductores} WHERE verificado = 0");
+// Conductores activos (contamos usuarios únicos con viajes)
+$conductores_activos = $wpdb->get_var("SELECT COUNT(DISTINCT conductor_id) FROM {$tabla_viajes} WHERE estado = 'activo'");
+$conductores_pendientes_verificacion = 0; // Sin tabla de conductores separada
 
 // Total de usuarios participantes este mes
 $usuarios_participantes = $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(DISTINCT r.usuario_id)
+    "SELECT COUNT(DISTINCT r.pasajero_id)
     FROM {$tabla_reservas} r
     WHERE r.fecha_reserva >= %s",
     $fecha_inicio_mes
 ));
 
 // Calcular CO2 ahorrado (estimación: 120g CO2/km por persona)
-$kilometros_compartidos = $wpdb->get_var($wpdb->prepare(
-    "SELECT SUM(v.distancia_km * r.plazas_reservadas)
+// Nota: No hay columna distancia_km, usamos estimación de plazas ocupadas
+$plazas_compartidas = $wpdb->get_var($wpdb->prepare(
+    "SELECT SUM(r.numero_plazas)
     FROM {$tabla_viajes} v
     INNER JOIN {$tabla_reservas} r ON v.id = r.viaje_id
-    WHERE v.estado = 'completado' AND v.fecha_viaje >= %s AND v.fecha_viaje <= %s",
+    WHERE v.estado = 'finalizado' AND r.estado = 'completada' AND v.fecha_salida >= %s AND v.fecha_salida <= %s",
     $fecha_inicio_mes,
     $fecha_actual
 )) ?? 0;
 
-$co2_ahorrado_kg = ($kilometros_compartidos * 0.12); // 120g = 0.12kg por km
+// Estimación: 20km promedio por viaje, 120g CO2/km
+$co2_ahorrado_kg = ($plazas_compartidas * 20 * 0.12);
 
 // Rutas más populares
 $rutas_populares = $wpdb->get_results(
@@ -72,39 +74,36 @@ $rutas_populares = $wpdb->get_results(
         COUNT(*) as total_viajes,
         SUM(plazas_disponibles) as total_plazas
     FROM {$tabla_viajes}
-    WHERE fecha_viaje >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    WHERE fecha_salida >= DATE_SUB(NOW(), INTERVAL 30 DAY)
     GROUP BY origen, destino
     ORDER BY total_viajes DESC
     LIMIT 5"
 );
 
-// Top conductores
+// Top conductores (basado en viajes completados)
 $top_conductores = $wpdb->get_results(
     "SELECT
-        c.id,
+        v.conductor_id as id,
         u.display_name,
-        c.valoracion_promedio,
         COUNT(v.id) as total_viajes,
-        SUM(CASE WHEN v.estado = 'completado' THEN 1 ELSE 0 END) as viajes_completados
-    FROM {$tabla_conductores} c
-    INNER JOIN {$wpdb->users} u ON c.usuario_id = u.ID
-    LEFT JOIN {$tabla_viajes} v ON c.id = v.conductor_id
-    WHERE c.estado = 'activo'
-    GROUP BY c.id
-    ORDER BY viajes_completados DESC, valoracion_promedio DESC
+        SUM(CASE WHEN v.estado = 'finalizado' THEN 1 ELSE 0 END) as viajes_completados
+    FROM {$tabla_viajes} v
+    INNER JOIN {$wpdb->users} u ON v.conductor_id = u.ID
+    GROUP BY v.conductor_id
+    ORDER BY viajes_completados DESC
     LIMIT 5"
 );
 
 // Datos para gráfica de viajes (últimos 30 días)
 $datos_grafica_viajes = $wpdb->get_results(
     "SELECT
-        DATE(fecha_viaje) as fecha,
+        DATE(fecha_salida) as fecha,
         COUNT(*) as total_viajes,
         SUM(plazas_disponibles) as plazas_ofertadas,
         SUM(plazas_disponibles - plazas_ocupadas) as plazas_disponibles
     FROM {$tabla_viajes}
-    WHERE fecha_viaje >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-    GROUP BY DATE(fecha_viaje)
+    WHERE fecha_salida >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    GROUP BY DATE(fecha_salida)
     ORDER BY fecha ASC"
 );
 

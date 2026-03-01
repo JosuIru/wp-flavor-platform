@@ -23,7 +23,7 @@ $items_carrito = $args['items_carrito'] ?? [];
 $total_carrito = $args['total_carrito'] ?? 0;
 $total_items = $args['total_items'] ?? 0;
 $ciclo_activo = $args['ciclo_activo'] ?? null;
-$url_carrito = $args['url_carrito'] ?? home_url('/mi-cuenta/?tab=gc-lista-compra');
+$url_carrito = $args['url_carrito'] ?? Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-cesta');
 $porcentaje_gestion = $args['porcentaje_gestion'] ?? 0;
 $gastos_gestion = $total_carrito * ($porcentaje_gestion / 100);
 $total_final = $total_carrito + $gastos_gestion;

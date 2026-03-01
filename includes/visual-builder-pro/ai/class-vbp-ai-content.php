@@ -481,7 +481,7 @@ class Flavor_VBP_AI_Content {
         }
 
         // Para tipos de texto simple, limpiar comillas si las hay
-        $response = trim( $response, '"\'""''' );
+        $response = trim( $response, '"\'' );
 
         return $response;
     }

@@ -11,6 +11,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Evitar redeclaración si ya existe (ej: desde chat-ia-addon)
+if (interface_exists('Chat_IA_Engine_Interface') && class_exists('Chat_IA_Engine_Base')) {
+    return;
+}
+
 interface Chat_IA_Engine_Interface {
 
     /**

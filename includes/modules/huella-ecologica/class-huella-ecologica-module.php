@@ -199,6 +199,8 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
 
         // Panel Unificado Admin
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
@@ -1110,18 +1112,30 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
      */
     public function get_admin_config(): array {
         return [
+            'id' => 'huella_ecologica',
+            'label' => __('Huella Ecológica', 'flavor-chat-ia'),
+            'icon' => 'dashicons-palmtree',
+            'capability' => 'manage_options',
+            'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'huella-ecologica',
-                    'titulo' => __('Huella Ecológica', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_dashboard'],
+                ],
+                [
+                    'slug' => 'he-usuarios',
+                    'titulo' => __('Usuarios', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_usuarios'],
                 ],
                 [
                     'slug' => 'he-proyectos',
                     'titulo' => __('Proyectos', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_proyectos'],
+                    'badge' => [$this, 'contar_proyectos_pendientes'],
                 ],
             ],
+            'estadisticas' => [$this, 'get_admin_estadisticas'],
             'settings' => [
                 'he_meta_reduccion_anual' => [
                     'label' => __('Meta de reducción anual (kg CO2)', 'flavor-chat-ia'),
@@ -1135,6 +1149,531 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
                 ],
             ],
         ];
+    }
+
+    /**
+     * Obtiene estadísticas para el panel de admin
+     *
+     * @return array
+     */
+    public function get_admin_estadisticas(): array {
+        $stats = $this->get_estadisticas_comunidad();
+        return [
+            'usuarios_activos' => $stats['usuarios_activos'],
+            'huella_total' => $stats['huella_comunidad'] . ' kg CO2',
+            'reduccion_total' => $stats['reduccion_comunidad'] . ' kg CO2',
+            'proyectos_activos' => $stats['proyectos_activos'],
+        ];
+    }
+
+    /**
+     * Cuenta proyectos pendientes de aprobación
+     *
+     * @return int
+     */
+    public function contar_proyectos_pendientes(): int {
+        global $wpdb;
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*)
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'he_proyecto'
+               AND pm.meta_key = '_he_estado'
+               AND pm.meta_value = 'propuesto'"
+        );
+    }
+
+    /**
+     * Renderiza el dashboard de administración del módulo
+     */
+    public function render_admin_dashboard(): void {
+        global $wpdb;
+
+        $stats = $this->get_estadisticas_comunidad();
+        $meta_anual = get_option('he_meta_reduccion_anual', 10000);
+        $porcentaje_meta = $meta_anual > 0 ? min(100, round(($stats['reduccion_comunidad'] / $meta_anual) * 100, 1)) : 0;
+
+        // Datos de las últimas semanas
+        $datos_semanas = $wpdb->get_results(
+            "SELECT
+                YEARWEEK(pm2.meta_value, 1) as semana,
+                SUM(CASE WHEN p.post_type = 'he_registro' THEN pm.meta_value ELSE 0 END) as huella,
+                SUM(CASE WHEN p.post_type = 'he_accion' THEN pm.meta_value ELSE 0 END) as reduccion
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key IN ('_he_valor', '_he_reduccion')
+             INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_he_fecha'
+             WHERE p.post_type IN ('he_registro', 'he_accion')
+               AND p.post_status = 'publish'
+               AND pm2.meta_value >= DATE_SUB(CURDATE(), INTERVAL 8 WEEK)
+             GROUP BY YEARWEEK(pm2.meta_value, 1)
+             ORDER BY semana DESC
+             LIMIT 8",
+            ARRAY_A
+        );
+
+        // Categorías más impactantes
+        $huella_categorias = $wpdb->get_results(
+            "SELECT pm_cat.meta_value as categoria, SUM(pm_val.meta_value) as total
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm_cat ON p.ID = pm_cat.post_id AND pm_cat.meta_key = '_he_categoria'
+             INNER JOIN {$wpdb->postmeta} pm_val ON p.ID = pm_val.post_id AND pm_val.meta_key = '_he_valor'
+             WHERE p.post_type = 'he_registro' AND p.post_status = 'publish'
+             GROUP BY pm_cat.meta_value
+             ORDER BY total DESC",
+            ARRAY_A
+        );
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Huella Ecológica - Dashboard', 'flavor-chat-ia'), [
+                ['label' => __('Exportar Informe', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button'],
+            ]); ?>
+
+            <!-- KPIs principales -->
+            <div class="flavor-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="dashicons dashicons-groups" style="font-size: 32px; color: #3498db;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo esc_html($stats['usuarios_activos']); ?></div>
+                            <div style="color: #646970; font-size: 13px;"><?php _e('Usuarios participando', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="dashicons dashicons-chart-area" style="font-size: 32px; color: #e74c3c;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo esc_html(number_format($stats['huella_comunidad'], 1)); ?></div>
+                            <div style="color: #646970; font-size: 13px;"><?php _e('Huella total (kg CO2)', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="dashicons dashicons-yes-alt" style="font-size: 32px; color: #27ae60;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: bold; color: #27ae60;"><?php echo esc_html(number_format($stats['reduccion_comunidad'], 1)); ?></div>
+                            <div style="color: #646970; font-size: 13px;"><?php _e('Reducción lograda (kg CO2)', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="dashicons dashicons-portfolio" style="font-size: 32px; color: #9b59b6;"></span>
+                        <div>
+                            <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo esc_html($stats['proyectos_activos']); ?></div>
+                            <div style="color: #646970; font-size: 13px;"><?php _e('Proyectos activos', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progreso hacia meta anual -->
+            <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                <h3 style="margin-top: 0;"><?php _e('Progreso hacia la meta anual', 'flavor-chat-ia'); ?></h3>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="flex: 1;">
+                        <div style="background: #f0f0f0; border-radius: 10px; height: 20px; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, #27ae60, #2ecc71); height: 100%; width: <?php echo esc_attr($porcentaje_meta); ?>%; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                    <div style="min-width: 150px; text-align: right;">
+                        <strong><?php echo esc_html($porcentaje_meta); ?>%</strong>
+                        <span style="color: #646970;"> (<?php echo esc_html(number_format($stats['reduccion_comunidad'], 0)); ?> / <?php echo esc_html(number_format($meta_anual, 0)); ?> kg CO2)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <!-- Tabla de categorías -->
+                <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top: 0;"><?php _e('Huella por categoría', 'flavor-chat-ia'); ?></h3>
+                    <table class="widefat striped">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Categoría', 'flavor-chat-ia'); ?></th>
+                                <th style="text-align: right;"><?php _e('Total (kg CO2)', 'flavor-chat-ia'); ?></th>
+                                <th style="text-align: right;"><?php _e('% del total', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $total_huella = array_sum(array_column($huella_categorias, 'total'));
+                            foreach ($huella_categorias as $categoria_data):
+                                $categoria_info = self::CATEGORIAS_HUELLA[$categoria_data['categoria']] ?? ['nombre' => $categoria_data['categoria'], 'color' => '#666', 'icono' => 'dashicons-marker'];
+                                $porcentaje_categoria = $total_huella > 0 ? round(($categoria_data['total'] / $total_huella) * 100, 1) : 0;
+                            ?>
+                            <tr>
+                                <td>
+                                    <span class="dashicons <?php echo esc_attr($categoria_info['icono']); ?>" style="color: <?php echo esc_attr($categoria_info['color']); ?>;"></span>
+                                    <?php echo esc_html($categoria_info['nombre']); ?>
+                                </td>
+                                <td style="text-align: right;"><?php echo esc_html(number_format($categoria_data['total'], 1)); ?></td>
+                                <td style="text-align: right;">
+                                    <span style="display: inline-block; width: 50px; background: #f0f0f0; border-radius: 3px; margin-right: 5px;">
+                                        <span style="display: block; width: <?php echo esc_attr($porcentaje_categoria); ?>%; background: <?php echo esc_attr($categoria_info['color']); ?>; height: 8px; border-radius: 3px;"></span>
+                                    </span>
+                                    <?php echo esc_html($porcentaje_categoria); ?>%
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                            <?php if (empty($huella_categorias)): ?>
+                            <tr>
+                                <td colspan="3" style="text-align: center; color: #646970; padding: 20px;">
+                                    <?php _e('No hay datos de huella registrados aún', 'flavor-chat-ia'); ?>
+                                </td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Top contribuyentes -->
+                <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top: 0;"><?php _e('Top contribuyentes', 'flavor-chat-ia'); ?></h3>
+                    <?php if (!empty($stats['top_contribuyentes'])): ?>
+                    <ol style="margin: 0; padding-left: 20px;">
+                        <?php foreach ($stats['top_contribuyentes'] as $index => $contribuyente):
+                            $usuario = get_userdata($contribuyente->post_author);
+                            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
+                            $medallas = ['🥇', '🥈', '🥉', '4.', '5.'];
+                        ?>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                            <span>
+                                <span style="font-size: 18px;"><?php echo $medallas[$index] ?? ($index + 1) . '.'; ?></span>
+                                <?php echo esc_html($nombre_usuario); ?>
+                            </span>
+                            <strong style="color: #27ae60;"><?php echo esc_html(number_format($contribuyente->reduccion_total, 1)); ?> kg</strong>
+                        </li>
+                        <?php endforeach; ?>
+                    </ol>
+                    <?php else: ?>
+                    <p style="color: #646970; text-align: center; padding: 20px;"><?php _e('No hay contribuyentes aún', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la vista de usuarios con sus métricas
+     */
+    public function render_admin_usuarios(): void {
+        global $wpdb;
+
+        $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $por_pagina = 20;
+        $offset = ($pagina_actual - 1) * $por_pagina;
+
+        // Usuarios con actividad
+        $usuarios_query = $wpdb->get_results($wpdb->prepare(
+            "SELECT
+                p.post_author as usuario_id,
+                COUNT(DISTINCT CASE WHEN p.post_type = 'he_registro' THEN p.ID END) as total_registros,
+                COUNT(DISTINCT CASE WHEN p.post_type = 'he_accion' THEN p.ID END) as total_acciones,
+                COALESCE(SUM(CASE WHEN p.post_type = 'he_registro' THEN pm.meta_value ELSE 0 END), 0) as huella_total,
+                COALESCE(SUM(CASE WHEN p.post_type = 'he_accion' THEN pm.meta_value ELSE 0 END), 0) as reduccion_total,
+                MAX(pm2.meta_value) as ultima_actividad
+             FROM {$wpdb->posts} p
+             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key IN ('_he_valor', '_he_reduccion')
+             LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_he_fecha'
+             WHERE p.post_type IN ('he_registro', 'he_accion')
+               AND p.post_status = 'publish'
+             GROUP BY p.post_author
+             ORDER BY reduccion_total DESC
+             LIMIT %d OFFSET %d",
+            $por_pagina,
+            $offset
+        ), ARRAY_A);
+
+        $total_usuarios = $wpdb->get_var(
+            "SELECT COUNT(DISTINCT post_author)
+             FROM {$wpdb->posts}
+             WHERE post_type IN ('he_registro', 'he_accion') AND post_status = 'publish'"
+        );
+        $total_paginas = ceil($total_usuarios / $por_pagina);
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Usuarios - Huella Ecológica', 'flavor-chat-ia'), [
+                ['label' => __('Exportar CSV', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button'],
+            ]); ?>
+
+            <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <table class="widefat striped">
+                    <thead>
+                        <tr>
+                            <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: center;"><?php _e('Registros', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: center;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: right;"><?php _e('Huella (kg CO2)', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: right;"><?php _e('Reducción (kg CO2)', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: right;"><?php _e('Balance neto', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Última actividad', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Logros', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($usuarios_query as $usuario_data):
+                            $usuario = get_userdata($usuario_data['usuario_id']);
+                            $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario #', 'flavor-chat-ia') . $usuario_data['usuario_id'];
+                            $email_usuario = $usuario ? $usuario->user_email : '';
+                            $balance = floatval($usuario_data['huella_total']) - floatval($usuario_data['reduccion_total']);
+                            $logros_usuario = $this->get_logros_usuario($usuario_data['usuario_id']);
+                            $logros_obtenidos = array_filter($logros_usuario, function($logro) { return $logro['obtenido']; });
+                        ?>
+                        <tr>
+                            <td>
+                                <?php echo get_avatar($usuario_data['usuario_id'], 32, '', '', ['style' => 'vertical-align: middle; margin-right: 8px; border-radius: 50%;']); ?>
+                                <strong><?php echo esc_html($nombre_usuario); ?></strong>
+                                <?php if ($email_usuario): ?>
+                                <br><small style="color: #646970;"><?php echo esc_html($email_usuario); ?></small>
+                                <?php endif; ?>
+                            </td>
+                            <td style="text-align: center;"><?php echo esc_html($usuario_data['total_registros']); ?></td>
+                            <td style="text-align: center;"><?php echo esc_html($usuario_data['total_acciones']); ?></td>
+                            <td style="text-align: right; color: #e74c3c;"><?php echo esc_html(number_format($usuario_data['huella_total'], 1)); ?></td>
+                            <td style="text-align: right; color: #27ae60;"><?php echo esc_html(number_format($usuario_data['reduccion_total'], 1)); ?></td>
+                            <td style="text-align: right;">
+                                <span style="color: <?php echo $balance > 0 ? '#e74c3c' : '#27ae60'; ?>; font-weight: bold;">
+                                    <?php echo $balance > 0 ? '+' : ''; ?><?php echo esc_html(number_format($balance, 1)); ?>
+                                </span>
+                            </td>
+                            <td>
+                                <?php if ($usuario_data['ultima_actividad']): ?>
+                                    <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($usuario_data['ultima_actividad']))); ?>
+                                <?php else: ?>
+                                    <span style="color: #646970;">-</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php
+                                $total_logros_obtenidos = count($logros_obtenidos);
+                                foreach (array_slice($logros_obtenidos, 0, 3) as $logro): ?>
+                                    <span title="<?php echo esc_attr($logro['nombre']); ?>" style="font-size: 16px;"><?php echo esc_html($logro['icono']); ?></span>
+                                <?php endforeach; ?>
+                                <?php if ($total_logros_obtenidos > 3): ?>
+                                    <span style="color: #646970; font-size: 12px;">+<?php echo $total_logros_obtenidos - 3; ?></span>
+                                <?php endif; ?>
+                                <?php if ($total_logros_obtenidos === 0): ?>
+                                    <span style="color: #646970;">-</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($usuarios_query)): ?>
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: #646970; padding: 40px;">
+                                <?php _e('No hay usuarios con actividad registrada', 'flavor-chat-ia'); ?>
+                            </td>
+                        </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+
+                <?php if ($total_paginas > 1): ?>
+                <div class="tablenav bottom">
+                    <div class="tablenav-pages">
+                        <span class="displaying-num"><?php printf(__('%d usuarios', 'flavor-chat-ia'), $total_usuarios); ?></span>
+                        <span class="pagination-links">
+                            <?php
+                            echo paginate_links([
+                                'base' => add_query_arg('paged', '%#%'),
+                                'format' => '',
+                                'current' => $pagina_actual,
+                                'total' => $total_paginas,
+                                'prev_text' => '&laquo;',
+                                'next_text' => '&raquo;',
+                            ]);
+                            ?>
+                        </span>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la vista de proyectos de compensación
+     */
+    public function render_admin_proyectos(): void {
+        global $wpdb;
+
+        // Procesar cambio de estado si se envió
+        if (isset($_POST['he_proyecto_action']) && isset($_POST['he_proyecto_nonce'])) {
+            if (wp_verify_nonce($_POST['he_proyecto_nonce'], 'he_proyecto_action')) {
+                $proyecto_id = intval($_POST['proyecto_id']);
+                $nuevo_estado = sanitize_key($_POST['nuevo_estado']);
+                if (isset(self::ESTADOS_PROYECTO[$nuevo_estado])) {
+                    update_post_meta($proyecto_id, '_he_estado', $nuevo_estado);
+                    if ($nuevo_estado === 'aprobado') {
+                        wp_update_post(['ID' => $proyecto_id, 'post_status' => 'publish']);
+                    }
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Estado del proyecto actualizado.', 'flavor-chat-ia') . '</p></div>';
+                }
+            }
+        }
+
+        // Filtro por estado
+        $filtro_estado = isset($_GET['estado']) ? sanitize_key($_GET['estado']) : '';
+
+        // Obtener proyectos
+        $args_query = [
+            'post_type' => 'he_proyecto',
+            'post_status' => ['publish', 'private'],
+            'posts_per_page' => 20,
+            'paged' => isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1,
+        ];
+
+        if ($filtro_estado && isset(self::ESTADOS_PROYECTO[$filtro_estado])) {
+            $args_query['meta_query'] = [
+                ['key' => '_he_estado', 'value' => $filtro_estado],
+            ];
+        }
+
+        $proyectos_query = new WP_Query($args_query);
+
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php $this->render_page_header(__('Proyectos de Compensación', 'flavor-chat-ia'), [
+                ['label' => __('Añadir proyecto', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=he_proyecto'), 'class' => 'button button-primary'],
+            ]); ?>
+
+            <!-- Filtros -->
+            <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="<?php echo esc_url(remove_query_arg('estado')); ?>"
+                   class="button <?php echo empty($filtro_estado) ? 'button-primary' : ''; ?>">
+                    <?php _e('Todos', 'flavor-chat-ia'); ?>
+                </a>
+                <?php foreach (self::ESTADOS_PROYECTO as $estado_key => $estado_info):
+                    $count_estado = $wpdb->get_var($wpdb->prepare(
+                        "SELECT COUNT(*) FROM {$wpdb->posts} p
+                         INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+                         WHERE p.post_type = 'he_proyecto' AND pm.meta_key = '_he_estado' AND pm.meta_value = %s",
+                        $estado_key
+                    ));
+                ?>
+                    <a href="<?php echo esc_url(add_query_arg('estado', $estado_key)); ?>"
+                       class="button <?php echo $filtro_estado === $estado_key ? 'button-primary' : ''; ?>"
+                       style="border-left: 3px solid <?php echo esc_attr($estado_info['color']); ?>;">
+                        <?php echo esc_html($estado_info['nombre']); ?> (<?php echo $count_estado; ?>)
+                    </a>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="flavor-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <table class="widefat striped">
+                    <thead>
+                        <tr>
+                            <th><?php _e('Proyecto', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Proponente', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: center;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: right;"><?php _e('Meta CO2', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: right;"><?php _e('Logrado', 'flavor-chat-ia'); ?></th>
+                            <th style="text-align: center;"><?php _e('Participantes', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($proyectos_query->have_posts()): $proyectos_query->the_post();
+                            $proyecto_id = get_the_ID();
+                            $estado_actual = get_post_meta($proyecto_id, '_he_estado', true) ?: 'propuesto';
+                            $estado_info = self::ESTADOS_PROYECTO[$estado_actual] ?? self::ESTADOS_PROYECTO['propuesto'];
+                            $meta_co2 = get_post_meta($proyecto_id, '_he_meta_co2', true) ?: 0;
+                            $co2_logrado = get_post_meta($proyecto_id, '_he_co2_actual', true) ?: 0;
+                            $participantes = get_post_meta($proyecto_id, '_he_participantes', true) ?: [];
+                            $ubicacion = get_post_meta($proyecto_id, '_he_ubicacion', true);
+                            $tipo_proyecto = get_post_meta($proyecto_id, '_he_tipo_proyecto', true);
+                            $progreso = $meta_co2 > 0 ? min(100, round(($co2_logrado / $meta_co2) * 100, 1)) : 0;
+                            $autor = get_userdata(get_the_author_meta('ID'));
+                        ?>
+                        <tr>
+                            <td>
+                                <strong><?php the_title(); ?></strong>
+                                <?php if ($ubicacion): ?>
+                                <br><small style="color: #646970;"><span class="dashicons dashicons-location" style="font-size: 14px;"></span> <?php echo esc_html($ubicacion); ?></small>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php echo get_avatar(get_the_author_meta('ID'), 24, '', '', ['style' => 'vertical-align: middle; margin-right: 5px; border-radius: 50%;']); ?>
+                                <?php echo esc_html($autor ? $autor->display_name : __('Usuario', 'flavor-chat-ia')); ?>
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: <?php echo esc_attr($estado_info['color']); ?>; color: #fff; font-size: 12px;">
+                                    <?php echo esc_html($estado_info['nombre']); ?>
+                                </span>
+                            </td>
+                            <td style="text-align: right;"><?php echo esc_html(number_format($meta_co2, 0)); ?> kg</td>
+                            <td style="text-align: right;">
+                                <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                                    <div style="width: 60px; background: #f0f0f0; border-radius: 3px; height: 8px;">
+                                        <div style="width: <?php echo esc_attr($progreso); ?>%; background: #27ae60; height: 100%; border-radius: 3px;"></div>
+                                    </div>
+                                    <span><?php echo esc_html(number_format($co2_logrado, 0)); ?> kg</span>
+                                </div>
+                            </td>
+                            <td style="text-align: center;"><?php echo count($participantes); ?></td>
+                            <td><?php echo get_the_date(); ?></td>
+                            <td>
+                                <form method="post" style="display: inline-flex; gap: 5px; align-items: center;">
+                                    <?php wp_nonce_field('he_proyecto_action', 'he_proyecto_nonce'); ?>
+                                    <input type="hidden" name="he_proyecto_action" value="1">
+                                    <input type="hidden" name="proyecto_id" value="<?php echo esc_attr($proyecto_id); ?>">
+                                    <select name="nuevo_estado" style="min-width: 100px;">
+                                        <?php foreach (self::ESTADOS_PROYECTO as $key_estado => $info_estado): ?>
+                                            <option value="<?php echo esc_attr($key_estado); ?>" <?php selected($estado_actual, $key_estado); ?>>
+                                                <?php echo esc_html($info_estado['nombre']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <button type="submit" class="button button-small"><?php _e('Cambiar', 'flavor-chat-ia'); ?></button>
+                                </form>
+                                <a href="<?php echo get_edit_post_link($proyecto_id); ?>" class="button button-small" title="<?php _e('Editar', 'flavor-chat-ia'); ?>">
+                                    <span class="dashicons dashicons-edit" style="line-height: 1.3;"></span>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endwhile; wp_reset_postdata(); ?>
+                        <?php if (!$proyectos_query->have_posts()): ?>
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: #646970; padding: 40px;">
+                                <?php _e('No hay proyectos que coincidan con los filtros', 'flavor-chat-ia'); ?>
+                            </td>
+                        </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+
+                <?php if ($proyectos_query->max_num_pages > 1): ?>
+                <div class="tablenav bottom">
+                    <div class="tablenav-pages">
+                        <span class="displaying-num"><?php printf(__('%d proyectos', 'flavor-chat-ia'), $proyectos_query->found_posts); ?></span>
+                        <span class="pagination-links">
+                            <?php
+                            echo paginate_links([
+                                'base' => add_query_arg('paged', '%#%'),
+                                'format' => '',
+                                'current' => max(1, get_query_var('paged')),
+                                'total' => $proyectos_query->max_num_pages,
+                                'prev_text' => '&laquo;',
+                                'next_text' => '&raquo;',
+                            ]);
+                            ?>
+                        </span>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
     }
 
     /**
@@ -1211,5 +1750,125 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
      */
     public function get_knowledge_base() {
         return __('La Huella Ecológica mide el impacto ambiental personal y comunitario, permitiendo calcular, registrar y compensar emisiones de CO2.', 'flavor-chat-ia');
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'huella-ecologica',
+            'title'    => __('Huella Ecológica', 'flavor-chat-ia'),
+            'subtitle' => __('Mide y reduce tu impacto ambiental', 'flavor-chat-ia'),
+            'icon'     => '🌍',
+            'color'    => 'info', // Usa variable CSS --flavor-info del tema
+
+            'database' => [
+                'table'       => 'flavor_huella_ecologica',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['transporte', 'energia', 'alimentacion', 'consumo', 'residuos']],
+                'tipo'        => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['emision', 'compensacion']],
+                'cantidad'    => ['type' => 'number', 'label' => __('Cantidad CO₂ (kg)', 'flavor-chat-ia'), 'step' => '0.1'],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'fecha'       => ['type' => 'date', 'label' => __('Fecha', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'registrado' => ['label' => __('Registrado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📝'],
+                'verificado' => ['label' => __('Verificado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'compensado' => ['label' => __('Compensado', 'flavor-chat-ia'), 'color' => 'teal', 'icon' => '🌱'],
+            ],
+
+            'stats' => [
+                'huella_total'    => ['label' => __('Mi huella (kg CO₂)', 'flavor-chat-ia'), 'icon' => '🌍', 'color' => 'teal'],
+                'compensado'      => ['label' => __('Compensado', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'green'],
+                'balance'         => ['label' => __('Balance neto', 'flavor-chat-ia'), 'icon' => '⚖️', 'color' => 'blue'],
+                'ranking_comunidad' => ['label' => __('Posición ranking', 'flavor-chat-ia'), 'icon' => '🏆', 'color' => 'amber'],
+            ],
+
+            'card' => [
+                'template'     => 'huella-card',
+                'title_field'  => 'categoria',
+                'subtitle_field' => 'tipo',
+                'meta_fields'  => ['cantidad', 'fecha'],
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'calculadora' => [
+                    'label'   => __('Calculadora', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-calculator',
+                    'content' => 'shortcode:huella_calculadora',
+                    'public'  => true,
+                ],
+                'mi-huella' => [
+                    'label'      => __('Mi huella', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-chart-pie',
+                    'content'    => 'shortcode:huella_mi_huella',
+                    'requires_login' => true,
+                ],
+                'registrar' => [
+                    'label'      => __('Registrar', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:huella_registrar',
+                    'requires_login' => true,
+                ],
+                'compensar' => [
+                    'label'      => __('Compensar', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-palmtree',
+                    'content'    => 'shortcode:huella_compensar',
+                    'requires_login' => true,
+                ],
+                'ranking' => [
+                    'label'   => __('Ranking', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-awards',
+                    'content' => 'shortcode:huella_ranking',
+                    'public'  => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 2,
+                'per_page'   => 20,
+                'order_by'   => 'fecha',
+                'order'      => 'DESC',
+                'filterable' => ['categoria', 'tipo'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['grafico_huella', 'balance_mensual', 'consejos', 'comparativa_comunidad'],
+                'actions' => [
+                    'calcular'  => ['label' => __('Calcular huella', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'teal'],
+                    'compensar' => ['label' => __('Compensar', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'green'],
+                ],
+            ],
+
+            'features' => [
+                'calculadora'    => true,
+                'graficos'       => true,
+                'gamificacion'   => true,
+                'consejos'       => true,
+                'comparativas'   => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-huella-ecologica-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Huella_Ecologica_Dashboard_Tab')) {
+                Flavor_Huella_Ecologica_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

@@ -3,12 +3,13 @@
  * Vista: Listado de Proyectos de Presupuestos Participativos
  *
  * Variables disponibles:
- * - $proyectos: array de proyectos
- * - $edicion: objeto con datos de la edicion actual
- * - $fase: string con la fase actual (propuestas, votacion, implementacion, cerrada)
+ * - $proyectos: array de proyectos/propuestas
+ * - $edicion/$proceso: objeto con datos del proceso actual
+ * - $fase: string con la fase actual (propuestas, votacion, cerrado)
  * - $categorias: array de categorias disponibles
  * - $identificador_usuario: int ID del usuario actual
  * - $votos_usuario: array de IDs de proyectos votados por el usuario
+ * - $votos_maximos: int numero máximo de votos permitidos
  * - $atributos: array con configuracion del shortcode
  *
  * @package FlavorChatIA
@@ -17,6 +18,15 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// Valores por defecto seguros
+$proyectos = $proyectos ?? [];
+$fase = $fase ?? 'cerrado';
+$categorias = $categorias ?? [];
+$identificador_usuario = $identificador_usuario ?? get_current_user_id();
+$votos_usuario = $votos_usuario ?? [];
+$votos_maximos = $votos_maximos ?? 3;
+$atributos = $atributos ?? [];
 
 $columnas = intval($atributos['columnas'] ?? 3);
 $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
@@ -55,7 +65,10 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
     <div class="flavor-pp-info-votacion">
         <span class="dashicons dashicons-info"></span>
         <?php
-        $votos_restantes = max(0, intval($this->settings['votos_maximos_por_persona'] ?? 3) - count($votos_usuario));
+        // Usar variable $votos_maximos si está disponible, o valor por defecto
+        $max_votos = $votos_maximos ?? 3;
+        $votos_usados = is_array($votos_usuario) ? count($votos_usuario) : 0;
+        $votos_restantes = max(0, intval($max_votos) - $votos_usados);
         printf(
             esc_html__('Te quedan %d votos disponibles.', 'flavor-chat-ia'),
             $votos_restantes
@@ -77,48 +90,60 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
     <?php else: ?>
         <div class="flavor-pp-grid flavor-pp-columnas-<?php echo esc_attr($columnas); ?>">
             <?php foreach ($proyectos as $proyecto):
-                $votado = in_array($proyecto->id, $votos_usuario);
-                $es_mio = ($identificador_usuario && $proyecto->proponente_id == $identificador_usuario);
-                $categoria_nombre = $categorias[$proyecto->categoria] ?? ucfirst($proyecto->categoria);
-            ?>
-            <article class="flavor-pp-proyecto <?php echo $votado ? 'votado' : ''; ?>" data-id="<?php echo esc_attr($proyecto->id); ?>" data-categoria="<?php echo esc_attr($proyecto->categoria); ?>">
+                // Normalizar: soporta tanto arrays como objetos
+                $proyecto_id = is_array($proyecto) ? ($proyecto['id'] ?? 0) : ($proyecto->id ?? 0);
+                $proyecto_proponente = is_array($proyecto) ? ($proyecto['proponente_id'] ?? 0) : ($proyecto->proponente_id ?? 0);
+                $proyecto_categoria = is_array($proyecto) ? ($proyecto['categoria'] ?? '') : ($proyecto->categoria ?? '');
+                $proyecto_imagen = is_array($proyecto) ? ($proyecto['imagen'] ?? $proyecto['imagen_url'] ?? '') : ($proyecto->imagen ?? $proyecto->imagen_url ?? '');
+                $proyecto_titulo = is_array($proyecto) ? ($proyecto['titulo'] ?? '') : ($proyecto->titulo ?? '');
+                $proyecto_descripcion = is_array($proyecto) ? ($proyecto['descripcion'] ?? '') : ($proyecto->descripcion ?? '');
+                $proyecto_presupuesto = is_array($proyecto) ? ($proyecto['presupuesto_solicitado'] ?? $proyecto['presupuesto_estimado'] ?? 0) : ($proyecto->presupuesto_solicitado ?? $proyecto->presupuesto_estimado ?? 0);
+                $proyecto_votos = is_array($proyecto) ? ($proyecto['votos_recibidos'] ?? 0) : ($proyecto->votos_recibidos ?? 0);
+                $proyecto_ubicacion = is_array($proyecto) ? ($proyecto['ubicacion'] ?? '') : ($proyecto->ubicacion ?? '');
+                $proyecto_estado = is_array($proyecto) ? ($proyecto['estado'] ?? '') : ($proyecto->estado ?? '');
 
-                <?php if (!empty($proyecto->imagen_url)): ?>
+                $votado = in_array($proyecto_id, $votos_usuario);
+                $es_mio = ($identificador_usuario && $proyecto_proponente == $identificador_usuario);
+                $categoria_nombre = $categorias[$proyecto_categoria] ?? ucfirst($proyecto_categoria);
+            ?>
+            <article class="flavor-pp-proyecto <?php echo $votado ? 'votado' : ''; ?>" data-id="<?php echo esc_attr($proyecto_id); ?>" data-categoria="<?php echo esc_attr($proyecto_categoria); ?>">
+
+                <?php if (!empty($proyecto_imagen)): ?>
                 <div class="flavor-pp-proyecto-imagen">
-                    <img src="<?php echo esc_url($proyecto->imagen_url); ?>" alt="<?php echo esc_attr($proyecto->titulo); ?>" loading="lazy">
+                    <img src="<?php echo esc_url($proyecto_imagen); ?>" alt="<?php echo esc_attr($proyecto_titulo); ?>" loading="lazy">
                 </div>
                 <?php endif; ?>
 
                 <div class="flavor-pp-proyecto-contenido">
-                    <span class="flavor-pp-categoria flavor-pp-categoria-<?php echo esc_attr($proyecto->categoria); ?>">
+                    <span class="flavor-pp-categoria flavor-pp-categoria-<?php echo esc_attr($proyecto_categoria); ?>">
                         <?php echo esc_html($categoria_nombre); ?>
                     </span>
 
                     <h3 class="flavor-pp-proyecto-titulo">
-                        <a href="<?php echo esc_url(add_query_arg('proyecto', $proyecto->id, home_url('/proyectos-participativos/'))); ?>">
-                            <?php echo esc_html($proyecto->titulo); ?>
+                        <a href="<?php echo esc_url(add_query_arg('proyecto', $proyecto_id, home_url('/proyectos-participativos/'))); ?>">
+                            <?php echo esc_html($proyecto_titulo); ?>
                         </a>
                     </h3>
 
                     <p class="flavor-pp-proyecto-descripcion">
-                        <?php echo esc_html(wp_trim_words($proyecto->descripcion, 25, '...')); ?>
+                        <?php echo esc_html(wp_trim_words($proyecto_descripcion, 25, '...')); ?>
                     </p>
 
                     <div class="flavor-pp-proyecto-meta">
                         <span class="flavor-pp-meta-item" title="<?php esc_attr_e('Presupuesto estimado', 'flavor-chat-ia'); ?>">
                             <span class="dashicons dashicons-money-alt"></span>
-                            <?php echo esc_html(number_format($proyecto->presupuesto_estimado, 0, ',', '.')); ?> EUR
+                            <?php echo esc_html(number_format($proyecto_presupuesto, 0, ',', '.')); ?> EUR
                         </span>
 
                         <span class="flavor-pp-meta-item" title="<?php esc_attr_e('Votos recibidos', 'flavor-chat-ia'); ?>">
                             <span class="dashicons dashicons-heart"></span>
-                            <?php echo esc_html($proyecto->votos_recibidos ?? 0); ?>
+                            <?php echo esc_html($proyecto_votos); ?>
                         </span>
 
-                        <?php if (!empty($proyecto->ubicacion)): ?>
+                        <?php if (!empty($proyecto_ubicacion)): ?>
                         <span class="flavor-pp-meta-item" title="<?php esc_attr_e('Ubicacion', 'flavor-chat-ia'); ?>">
                             <span class="dashicons dashicons-location"></span>
-                            <?php echo esc_html($proyecto->ubicacion); ?>
+                            <?php echo esc_html($proyecto_ubicacion); ?>
                         </span>
                         <?php endif; ?>
                     </div>
@@ -126,12 +151,12 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
                     <?php if ($fase === 'votacion' && $identificador_usuario && !$es_mio): ?>
                     <div class="flavor-pp-proyecto-acciones">
                         <?php if ($votado): ?>
-                            <button type="button" class="flavor-pp-boton flavor-pp-boton-secundario flavor-pp-btn-quitar-voto" data-proyecto-id="<?php echo esc_attr($proyecto->id); ?>">
+                            <button type="button" class="flavor-pp-boton flavor-pp-boton-secundario flavor-pp-btn-quitar-voto" data-proyecto-id="<?php echo esc_attr($proyecto_id); ?>">
                                 <span class="dashicons dashicons-heart"></span>
                                 <?php esc_html_e('Quitar voto', 'flavor-chat-ia'); ?>
                             </button>
                         <?php else: ?>
-                            <button type="button" class="flavor-pp-boton flavor-pp-boton-primario flavor-pp-btn-votar" data-proyecto-id="<?php echo esc_attr($proyecto->id); ?>">
+                            <button type="button" class="flavor-pp-boton flavor-pp-boton-primario flavor-pp-btn-votar" data-proyecto-id="<?php echo esc_attr($proyecto_id); ?>">
                                 <span class="dashicons dashicons-heart"></span>
                                 <?php esc_html_e('Votar', 'flavor-chat-ia'); ?>
                             </button>
@@ -147,7 +172,7 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
                     <?php endif; ?>
                 </div>
 
-                <div class="flavor-pp-proyecto-estado flavor-pp-estado-<?php echo esc_attr($proyecto->estado); ?>">
+                <div class="flavor-pp-proyecto-estado flavor-pp-estado-<?php echo esc_attr($proyecto_estado); ?>">
                     <?php
                     $estados = [
                         'pendiente' => __('Pendiente de revision', 'flavor-chat-ia'),
@@ -158,7 +183,7 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
                         'ejecutado' => __('Ejecutado', 'flavor-chat-ia'),
                         'rechazado' => __('Rechazado', 'flavor-chat-ia'),
                     ];
-                    echo esc_html($estados[$proyecto->estado] ?? ucfirst($proyecto->estado));
+                    echo esc_html($estados[$proyecto_estado] ?? ucfirst($proyecto_estado));
                     ?>
                 </div>
             </article>

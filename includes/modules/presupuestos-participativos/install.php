@@ -20,7 +20,52 @@ function flavor_presupuestos_participativos_install_tables() {
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-    // Tabla de procesos de presupuestos participativos
+    // Tabla de ediciones/ciclos de presupuestos participativos (usado por el módulo)
+    $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
+    $sql_ediciones = "CREATE TABLE {$tabla_ediciones} (
+        id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        nombre varchar(255) NOT NULL,
+        anio int(4) NOT NULL,
+        descripcion longtext,
+        presupuesto_total decimal(15,2) NOT NULL DEFAULT 50000,
+        fase varchar(50) DEFAULT 'propuestas',
+        estado varchar(50) DEFAULT 'activo',
+        fecha_inicio date NOT NULL,
+        fecha_fin date NOT NULL,
+        fecha_inicio_propuestas date,
+        fecha_fin_propuestas date,
+        fecha_inicio_votacion date,
+        fecha_fin_votacion date,
+        votos_por_ciudadano int(11) DEFAULT 3,
+        created_at datetime DEFAULT CURRENT_TIMESTAMP,
+        updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        KEY anio (anio),
+        KEY estado (estado),
+        KEY fase (fase)
+    ) {$charset_collate};";
+    dbDelta($sql_ediciones);
+
+    // Tabla de ciclos (alias más corto usado en algunos lugares)
+    $tabla_ciclos = $wpdb->prefix . 'flavor_pp_ciclos';
+    $sql_ciclos = "CREATE TABLE {$tabla_ciclos} (
+        id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        nombre varchar(255) NOT NULL,
+        descripcion text DEFAULT NULL,
+        presupuesto_total decimal(12,2) DEFAULT 0,
+        fecha_inicio date NOT NULL,
+        fecha_fin date NOT NULL,
+        fase_actual varchar(50) DEFAULT 'propuestas',
+        estado varchar(50) DEFAULT 'activo',
+        created_at datetime DEFAULT CURRENT_TIMESTAMP,
+        updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        KEY estado (estado),
+        KEY fase_actual (fase_actual)
+    ) {$charset_collate};";
+    dbDelta($sql_ciclos);
+
+    // Tabla de procesos de presupuestos participativos (alternativa)
     $tabla_procesos = $wpdb->prefix . 'flavor_pp_procesos';
     $sql_procesos = "CREATE TABLE {$tabla_procesos} (
         id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -73,7 +118,36 @@ function flavor_presupuestos_participativos_install_tables() {
     ) {$charset_collate};";
     dbDelta($sql_categorias);
 
-    // Tabla de propuestas/proyectos
+    // Tabla de proyectos (nombre principal usado por el módulo)
+    $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+    $sql_proyectos = "CREATE TABLE {$tabla_proyectos} (
+        id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        edicion_id bigint(20) UNSIGNED DEFAULT NULL,
+        proponente_id bigint(20) UNSIGNED NOT NULL,
+        titulo varchar(255) NOT NULL,
+        descripcion longtext NOT NULL,
+        categoria varchar(100) DEFAULT 'social',
+        presupuesto_solicitado decimal(15,2) NOT NULL DEFAULT 0,
+        presupuesto_aprobado decimal(15,2) DEFAULT NULL,
+        ubicacion varchar(500),
+        latitud decimal(10,8) DEFAULT NULL,
+        longitud decimal(11,8) DEFAULT NULL,
+        imagen varchar(500),
+        estado enum('borrador','pendiente_validacion','validado','en_votacion','seleccionado','en_ejecucion','ejecutado','rechazado') DEFAULT 'pendiente_validacion',
+        votos_recibidos int(11) DEFAULT 0,
+        ranking int(11) DEFAULT 0,
+        fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+        fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        KEY edicion_id (edicion_id),
+        KEY proponente_id (proponente_id),
+        KEY estado (estado),
+        KEY categoria (categoria),
+        KEY votos_recibidos (votos_recibidos)
+    ) {$charset_collate};";
+    dbDelta($sql_proyectos);
+
+    // Tabla de propuestas/proyectos (alternativa para compatibilidad)
     $tabla_propuestas = $wpdb->prefix . 'flavor_pp_propuestas';
     $sql_propuestas = "CREATE TABLE {$tabla_propuestas} (
         id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -116,19 +190,23 @@ function flavor_presupuestos_participativos_install_tables() {
     ) {$charset_collate};";
     dbDelta($sql_propuestas);
 
-    // Tabla de votos
+    // Tabla de votos (compatible con el módulo que usa edicion_id y proyecto_id)
     $tabla_votos = $wpdb->prefix . 'flavor_pp_votos';
     $sql_votos = "CREATE TABLE {$tabla_votos} (
         id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-        proceso_id bigint(20) UNSIGNED NOT NULL,
-        propuesta_id bigint(20) UNSIGNED NOT NULL,
+        edicion_id bigint(20) UNSIGNED DEFAULT NULL,
+        proceso_id bigint(20) UNSIGNED DEFAULT NULL,
+        proyecto_id bigint(20) UNSIGNED DEFAULT NULL,
+        propuesta_id bigint(20) UNSIGNED DEFAULT NULL,
         usuario_id bigint(20) UNSIGNED NOT NULL,
+        prioridad int(11) DEFAULT 1,
         peso int(11) DEFAULT 1,
         fecha_voto datetime DEFAULT CURRENT_TIMESTAMP,
         ip_address varchar(45),
         user_agent varchar(500),
         PRIMARY KEY (id),
-        UNIQUE KEY voto_unico (proceso_id, propuesta_id, usuario_id),
+        KEY edicion_id (edicion_id),
+        KEY proyecto_id (proyecto_id),
         KEY propuesta_id (propuesta_id),
         KEY usuario_id (usuario_id)
     ) {$charset_collate};";
@@ -216,7 +294,7 @@ function flavor_presupuestos_participativos_install_tables() {
     flavor_pp_insertar_categorias_defecto();
 
     // Guardar versión
-    update_option('flavor_presupuestos_participativos_db_version', '1.0.0');
+    update_option('flavor_presupuestos_participativos_db_version', '1.2.0');
 }
 
 /**

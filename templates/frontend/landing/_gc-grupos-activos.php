@@ -98,7 +98,7 @@ if (!function_exists('gc_contar_miembros')) {
                             <a href="<?php echo get_permalink($grupo->ID); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm">
                                 <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
                             </a>
-                            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/unirme/?grupo=' . $grupo->ID)); ?>" class="flavor-btn flavor-btn--primary flavor-btn--sm">
+                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('grupos-consumo', $grupo->ID, 'unirme')); ?>" class="flavor-btn flavor-btn--primary flavor-btn--sm">
                                 <?php _e('Unirme', 'flavor-chat-ia'); ?>
                             </a>
                         </div>

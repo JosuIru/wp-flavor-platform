@@ -166,6 +166,8 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
         // Panel Unificado Admin
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
@@ -1008,11 +1010,43 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica si se deben cargar los assets del módulo
+     *
+     * @return bool
+     */
+    private function should_load_assets() {
+        if (is_singular(['cc_circulo', 'cc_necesidad'])) {
+            return true;
+        }
+
+        global $post;
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes_modulo = [
+            'circulos_cuidados',
+            'mis_cuidados',
+            'necesidades_cuidados',
+            'flavor_circulos_listado',
+            'flavor_circulos_mis_cuidados',
+            'flavor_circulos_necesidades',
+        ];
+
+        foreach ($shortcodes_modulo as $shortcode) {
+            if (has_shortcode($post->post_content, $shortcode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Enqueue assets
      */
     public function enqueue_assets() {
-        if (!is_singular(['cc_circulo', 'cc_necesidad']) &&
-            !has_shortcode(get_post()->post_content ?? '', 'circulos_cuidados')) {
+        if (!$this->should_load_assets()) {
             return;
         }
 
@@ -1169,5 +1203,125 @@ KNOWLEDGE;
             'success' => false,
             'message' => __('Acción no implementada', 'flavor-chat-ia'),
         ];
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'circulos-cuidados',
+            'title'    => __('Círculos de Cuidados', 'flavor-chat-ia'),
+            'subtitle' => __('Redes de apoyo mutuo para el cuidado colectivo', 'flavor-chat-ia'),
+            'icon'     => '💜',
+            'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_circulos_cuidados',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'       => ['type' => 'text', 'label' => __('Nombre del círculo', 'flavor-chat-ia'), 'required' => true],
+                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['mayores', 'infancia', 'enfermedad', 'duelo', 'maternidad', 'diversidad_funcional']],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'zona'         => ['type' => 'text', 'label' => __('Zona', 'flavor-chat-ia')],
+                'max_miembros' => ['type' => 'number', 'label' => __('Máximo miembros', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'activo'   => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+                'pausado'  => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'cerrado'  => ['label' => __('Cerrado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🔒'],
+            ],
+
+            'stats' => [
+                'circulos_activos' => ['label' => __('Círculos activos', 'flavor-chat-ia'), 'icon' => '💜', 'color' => 'fuchsia'],
+                'cuidadores'       => ['label' => __('Cuidadores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+                'horas_cuidado'    => ['label' => __('Horas de cuidado', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'purple'],
+                'necesidades_mes'  => ['label' => __('Necesidades/mes', 'flavor-chat-ia'), 'icon' => '❤️', 'color' => 'rose'],
+            ],
+
+            'card' => [
+                'template'     => 'circulo-card',
+                'title_field'  => 'nombre',
+                'subtitle_field' => 'tipo',
+                'meta_fields'  => ['zona', 'miembros_count'],
+                'show_estado'  => true,
+            ],
+
+            'tabs' => [
+                'circulos' => [
+                    'label'   => __('Círculos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-heart',
+                    'content' => 'template:_archive.php',
+                    'public'  => true,
+                ],
+                'necesidades' => [
+                    'label'   => __('Necesidades', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-sos',
+                    'content' => 'shortcode:circulos_necesidades',
+                    'public'  => true,
+                ],
+                'unirse' => [
+                    'label'      => __('Unirse', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-plus-alt',
+                    'content'    => 'shortcode:circulos_unirse',
+                    'requires_login' => true,
+                ],
+                'mis-circulos' => [
+                    'label'      => __('Mis círculos', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-users',
+                    'content'    => 'shortcode:circulos_mis_circulos',
+                    'requires_login' => true,
+                ],
+                'registrar-cuidado' => [
+                    'label'      => __('Registrar cuidado', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-edit',
+                    'content'    => 'shortcode:circulos_registrar_cuidado',
+                    'requires_login' => true,
+                ],
+            ],
+
+            'archive' => [
+                'columns'    => 3,
+                'per_page'   => 9,
+                'order_by'   => 'nombre',
+                'order'      => 'ASC',
+                'filterable' => ['tipo', 'zona'],
+            ],
+
+            'dashboard' => [
+                'widgets' => ['stats', 'necesidades_urgentes', 'mis_compromisos', 'calendario_cuidados'],
+                'actions' => [
+                    'necesidad' => ['label' => __('Publicar necesidad', 'flavor-chat-ia'), 'icon' => '❤️', 'color' => 'fuchsia'],
+                    'ofrecer'   => ['label' => __('Ofrecer cuidado', 'flavor-chat-ia'), 'icon' => '🤗', 'color' => 'purple'],
+                ],
+            ],
+
+            'features' => [
+                'matching'      => true,
+                'calendario'    => true,
+                'chat_circulo'  => true,
+                'banco_horas'   => true,
+                'notificaciones' => true,
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-circulos-cuidados-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Circulos_Cuidados_Dashboard_Tab')) {
+                Flavor_Circulos_Cuidados_Dashboard_Tab::get_instance();
+            }
+        }
     }
 }

@@ -1140,4 +1140,123 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
         ];
     }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'themacle',
+            'title'    => __('Themacle', 'flavor-chat-ia'),
+            'subtitle' => __('Gestión de contenido temático', 'flavor-chat-ia'),
+            'icon'     => '🎨',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_themacle',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia')],
+                'imagen'      => ['type' => 'file', 'label' => __('Imagen', 'flavor-chat-ia')],
+                'contenido'   => ['type' => 'editor', 'label' => __('Contenido', 'flavor-chat-ia')],
+                'etiquetas'   => ['type' => 'tags', 'label' => __('Etiquetas', 'flavor-chat-ia')],
+            ],
+
+            'estados' => [
+                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
+                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'destacado'  => ['label' => __('Destacado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⭐'],
+                'archivado'  => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📁'],
+            ],
+
+            'stats' => [
+                [
+                    'key'   => 'total_temas',
+                    'label' => __('Temas', 'flavor-chat-ia'),
+                    'icon'  => '🎨',
+                    'color' => 'purple',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_themacle WHERE estado = 'publicado'",
+                ],
+                [
+                    'key'   => 'mis_temas',
+                    'label' => __('Mis temas', 'flavor-chat-ia'),
+                    'icon'  => '👤',
+                    'color' => 'blue',
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_themacle WHERE user_id = {user_id}",
+                ],
+                [
+                    'key'   => 'vistas',
+                    'label' => __('Vistas', 'flavor-chat-ia'),
+                    'icon'  => '👁️',
+                    'color' => 'green',
+                    'query' => "SELECT SUM(vistas) FROM {prefix}flavor_themacle WHERE user_id = {user_id}",
+                ],
+            ],
+
+            'card' => [
+                'layout'      => 'vertical',
+                'image_field' => 'imagen',
+                'title_field' => 'titulo',
+                'meta_fields' => ['categoria', 'created_at'],
+                'badge_field' => 'categoria',
+                'show_author' => true,
+            ],
+
+            'tabs' => [
+                'listado' => [
+                    'label'   => __('Temas', 'flavor-chat-ia'),
+                    'icon'    => '🎨',
+                    'content' => 'template:themacle/_listado.php',
+                ],
+                'mis-temas' => [
+                    'label'   => __('Mis temas', 'flavor-chat-ia'),
+                    'icon'    => '👤',
+                    'content' => 'shortcode:themacle_mis_temas',
+                ],
+                'crear' => [
+                    'label'   => __('Crear', 'flavor-chat-ia'),
+                    'icon'    => '➕',
+                    'content' => 'shortcode:themacle_formulario',
+                ],
+            ],
+
+            'archive' => [
+                'columns'       => 3,
+                'per_page'      => 12,
+                'order_by'      => 'created_at',
+                'order'         => 'DESC',
+                'filterable_by' => ['categoria', 'etiquetas'],
+            ],
+
+            'dashboard' => [
+                'widgets' => [
+                    'temas_recientes'  => ['type' => 'list', 'title' => __('Temas recientes', 'flavor-chat-ia')],
+                    'mis_temas'        => ['type' => 'list', 'title' => __('Mis temas', 'flavor-chat-ia')],
+                ],
+                'actions' => [
+                    'nuevo_tema' => [
+                        'label' => __('Crear tema', 'flavor-chat-ia'),
+                        'icon'  => '➕',
+                        'modal' => 'themacle-nuevo',
+                    ],
+                ],
+            ],
+
+            'features' => [
+                'has_archive'    => true,
+                'has_single'     => true,
+                'has_dashboard'  => true,
+                'has_search'     => true,
+                'has_categories' => true,
+                'has_tags'       => true,
+                'has_comments'   => true,
+            ],
+        ];
+    }
 }
