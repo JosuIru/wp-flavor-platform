@@ -79,6 +79,14 @@ class Flavor_GC_Ajax_Handlers {
 
         // Handlers para usuarios no autenticados (solo lectura)
         add_action('wp_ajax_nopriv_gc_cargar_mas_productos', [$this, 'handle_cargar_mas_productos']);
+
+        // Aliases de acciones para compatibilidad con frontend JS
+        // gc_agregar_lista -> gc_agregar_producto
+        add_action('wp_ajax_gc_agregar_lista', [$this, 'handle_agregar_producto']);
+        // gc_quitar_lista -> gc_quitar_producto
+        add_action('wp_ajax_gc_quitar_lista', [$this, 'handle_quitar_producto']);
+        // gc_convertir_pedido -> gc_confirmar_pedido
+        add_action('wp_ajax_gc_convertir_pedido', [$this, 'handle_confirmar_pedido']);
     }
 
     /**
@@ -562,7 +570,7 @@ class Flavor_GC_Ajax_Handlers {
             'pedido_id' => $pedido_id,
             'total' => $total_final,
             'total_formateado' => number_format($total_final, 2, ',', '.') . ' EUR',
-            'redirect_url' => home_url('/mi-cuenta/?tab=gc-mis-pedidos'),
+            'redirect_url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos'),
         ]);
     }
 

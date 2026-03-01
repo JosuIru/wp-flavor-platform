@@ -260,7 +260,7 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
 
         wp_enqueue_style(
             'flavor-biodiversidad-dashboard',
-            plugins_url('assets/css/biodiversidad-dashboard.css', dirname(__FILE__) . '/biodiversidad-local.php'),
+            plugins_url('assets/css/biodiversidad-frontend.css', __FILE__),
             [],
             '1.0.0'
         );

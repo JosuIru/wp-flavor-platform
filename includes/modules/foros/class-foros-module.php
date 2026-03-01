@@ -242,6 +242,8 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         $this->registrar_en_panel_unificado();
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
 
         // REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -251,8 +253,34 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_flavor_foros_guardar_categoria', [$this, 'ajax_guardar_categoria']);
         add_action('wp_ajax_flavor_foros_eliminar_categoria', [$this, 'ajax_eliminar_categoria']);
 
+        // Admin: Moderación de hilos y respuestas
+        add_action('wp_ajax_flavor_foros_moderar_hilo', [$this, 'ajax_moderar_hilo']);
+        add_action('wp_ajax_flavor_foros_moderar_respuesta', [$this, 'ajax_moderar_respuesta']);
+
         // Integrar funcionalidades de encuestas
         $this->init_encuestas_features('foro');
+
+        // Cargar controladores frontend
+        $this->load_frontend_controllers();
+    }
+
+    /**
+     * Carga los controladores frontend del módulo
+     */
+    private function load_frontend_controllers() {
+        $ruta_modulo = dirname(__FILE__);
+
+        // Frontend Controller principal
+        $archivo_frontend_controller = $ruta_modulo . '/frontend/class-foros-frontend-controller.php';
+        if (file_exists($archivo_frontend_controller)) {
+            require_once $archivo_frontend_controller;
+        }
+
+        // Dashboard Tab para el cliente
+        $archivo_dashboard_tab = $ruta_modulo . '/class-foros-dashboard-tab.php';
+        if (file_exists($archivo_dashboard_tab)) {
+            require_once $archivo_dashboard_tab;
+        }
     }
 
     /**
@@ -485,8 +513,15 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             $where .= $wpdb->prepare(" AND categoria = %s", $categoria);
         }
 
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
         $foros = $wpdb->get_results(
-            "SELECT * FROM {$tabla_foros} {$where} ORDER BY ultima_actividad DESC LIMIT {$limite}"
+            "SELECT f.*,
+                    (SELECT COUNT(*) FROM {$tabla_hilos} h WHERE h.foro_id = f.id AND h.estado != 'eliminado') as total_temas,
+                    (SELECT MAX(h.ultima_actividad) FROM {$tabla_hilos} h WHERE h.foro_id = f.id) as ultima_actividad
+             FROM {$tabla_foros} f
+             {$where}
+             ORDER BY f.orden ASC, f.created_at DESC
+             LIMIT {$limite}"
         );
 
         ob_start();
@@ -1831,6 +1866,54 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             'dashboard_widget' => [$this, 'render_dashboard_widget'],
             'estadisticas' => [$this, 'get_estadisticas_admin'],
         ];
+    }
+
+    /**
+     * Helper: Renderiza el encabezado de pagina admin
+     *
+     * @param string $titulo Titulo de la pagina
+     * @param array  $acciones Botones de accion opcionales
+     */
+    protected function render_page_header($titulo, $acciones = []) {
+        ?>
+        <h1 class="wp-heading-inline">
+            <span class="dashicons dashicons-format-chat"></span>
+            <?php echo esc_html($titulo); ?>
+        </h1>
+        <?php if (!empty($acciones)) : ?>
+            <?php foreach ($acciones as $accion) : ?>
+                <a href="<?php echo esc_url($accion['url']); ?>" class="page-title-action <?php echo esc_attr($accion['class'] ?? ''); ?>">
+                    <?php echo esc_html($accion['label']); ?>
+                </a>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        <hr class="wp-header-end">
+        <?php
+    }
+
+    /**
+     * Helper: Renderiza tabs de navegacion
+     *
+     * @param array  $tabs Lista de tabs
+     * @param string $tab_actual Tab activo actualmente
+     */
+    protected function render_page_tabs($tabs, $tab_actual) {
+        $pagina_base = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        ?>
+        <nav class="nav-tab-wrapper">
+            <?php foreach ($tabs as $tab) : ?>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=' . $pagina_base . '&tab=' . $tab['slug'])); ?>"
+                   class="nav-tab <?php echo $tab_actual === $tab['slug'] ? 'nav-tab-active' : ''; ?>">
+                    <?php echo esc_html($tab['label']); ?>
+                    <?php if (!empty($tab['badge'])) : ?>
+                        <span class="badge" style="background: #d63638; color: #fff; padding: 2px 6px; border-radius: 10px; font-size: 11px; margin-left: 5px;">
+                            <?php echo intval($tab['badge']); ?>
+                        </span>
+                    <?php endif; ?>
+                </a>
+            <?php endforeach; ?>
+        </nav>
+        <?php
     }
 
     /**
@@ -3298,6 +3381,146 @@ KNOWLEDGE;
     }
 
     /**
+     * AJAX: Moderar un hilo (aprobar, cerrar, fijar, eliminar)
+     */
+    public function ajax_moderar_hilo() {
+        check_ajax_referer('flavor_foros_admin', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para esta accion.', 'flavor-chat-ia'));
+        }
+
+        $hilo_id = absint($_POST['hilo_id'] ?? 0);
+        $accion_moderacion = sanitize_key($_POST['accion_moderacion'] ?? '');
+
+        if (!$hilo_id) {
+            wp_send_json_error(__('ID de hilo no valido.', 'flavor-chat-ia'));
+        }
+
+        $acciones_permitidas = ['abrir', 'cerrar', 'fijar', 'desfijar', 'eliminar'];
+        if (!in_array($accion_moderacion, $acciones_permitidas, true)) {
+            wp_send_json_error(__('Accion no permitida.', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+
+        $datos_actualizar = [];
+        $mensaje_exito = '';
+
+        switch ($accion_moderacion) {
+            case 'abrir':
+                $datos_actualizar = ['estado' => 'abierto', 'es_fijado' => 0];
+                $mensaje_exito = __('Hilo abierto correctamente.', 'flavor-chat-ia');
+                break;
+            case 'cerrar':
+                $datos_actualizar = ['estado' => 'cerrado'];
+                $mensaje_exito = __('Hilo cerrado correctamente.', 'flavor-chat-ia');
+                break;
+            case 'fijar':
+                $datos_actualizar = ['es_fijado' => 1, 'estado' => 'fijado'];
+                $mensaje_exito = __('Hilo fijado correctamente.', 'flavor-chat-ia');
+                break;
+            case 'desfijar':
+                $datos_actualizar = ['es_fijado' => 0, 'estado' => 'abierto'];
+                $mensaje_exito = __('Hilo desfijado correctamente.', 'flavor-chat-ia');
+                break;
+            case 'eliminar':
+                $datos_actualizar = ['estado' => 'eliminado'];
+                $mensaje_exito = __('Hilo eliminado correctamente.', 'flavor-chat-ia');
+                break;
+        }
+
+        $datos_actualizar['updated_at'] = current_time('mysql');
+
+        $resultado = $wpdb->update(
+            $tabla_hilos,
+            $datos_actualizar,
+            ['id' => $hilo_id]
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al actualizar el hilo.', 'flavor-chat-ia'));
+        }
+
+        wp_send_json_success(['mensaje' => $mensaje_exito]);
+    }
+
+    /**
+     * AJAX: Moderar una respuesta (mostrar, ocultar, eliminar)
+     */
+    public function ajax_moderar_respuesta() {
+        check_ajax_referer('flavor_foros_admin', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para esta accion.', 'flavor-chat-ia'));
+        }
+
+        $respuesta_id = absint($_POST['respuesta_id'] ?? 0);
+        $accion_moderacion = sanitize_key($_POST['accion_moderacion'] ?? '');
+
+        if (!$respuesta_id) {
+            wp_send_json_error(__('ID de respuesta no valido.', 'flavor-chat-ia'));
+        }
+
+        $acciones_permitidas = ['mostrar', 'ocultar', 'eliminar'];
+        if (!in_array($accion_moderacion, $acciones_permitidas, true)) {
+            wp_send_json_error(__('Accion no permitida.', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+
+        $datos_actualizar = [];
+        $mensaje_exito = '';
+
+        switch ($accion_moderacion) {
+            case 'mostrar':
+                $datos_actualizar = ['estado' => 'visible'];
+                $mensaje_exito = __('Respuesta visible nuevamente.', 'flavor-chat-ia');
+                break;
+            case 'ocultar':
+                $datos_actualizar = ['estado' => 'oculto'];
+                $mensaje_exito = __('Respuesta ocultada correctamente.', 'flavor-chat-ia');
+                break;
+            case 'eliminar':
+                $datos_actualizar = ['estado' => 'eliminado'];
+                $mensaje_exito = __('Respuesta eliminada correctamente.', 'flavor-chat-ia');
+                break;
+        }
+
+        $datos_actualizar['updated_at'] = current_time('mysql');
+
+        $resultado = $wpdb->update(
+            $tabla_respuestas,
+            $datos_actualizar,
+            ['id' => $respuesta_id]
+        );
+
+        if ($resultado === false) {
+            wp_send_json_error(__('Error al actualizar la respuesta.', 'flavor-chat-ia'));
+        }
+
+        // Si se elimina respuesta, actualizar contador del hilo
+        if ($accion_moderacion === 'eliminar') {
+            $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+            $hilo_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT hilo_id FROM $tabla_respuestas WHERE id = %d",
+                $respuesta_id
+            ));
+
+            if ($hilo_id) {
+                $wpdb->query($wpdb->prepare(
+                    "UPDATE $tabla_hilos SET respuestas_count = GREATEST(0, respuestas_count - 1) WHERE id = %d",
+                    $hilo_id
+                ));
+            }
+        }
+
+        wp_send_json_success(['mensaje' => $mensaje_exito]);
+    }
+
+    /**
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
@@ -3390,6 +3613,107 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Moderación de Foros', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Configuración para el Module Renderer
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'foros',
+            'title'    => __('Foros de la Comunidad', 'flavor-chat-ia'),
+            'subtitle' => __('Participa en debates y comparte ideas', 'flavor-chat-ia'),
+            'icon'     => '💬',
+            'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
+
+            'database' => [
+                'table'       => 'flavor_foros',
+                'primary_key' => 'id',
+            ],
+
+            'fields' => [
+                'nombre'      => ['label' => __('Nombre', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
+                'descripcion' => ['label' => __('Descripción', 'flavor-chat-ia'), 'type' => 'textarea'],
+                'icono'       => ['label' => __('Icono', 'flavor-chat-ia'), 'type' => 'emoji', 'default' => '💬'],
+                'estado'      => ['label' => __('Estado', 'flavor-chat-ia'), 'type' => 'select'],
+            ],
+
+            'estados' => [
+                'activo'    => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
+                'cerrado'   => ['label' => __('Cerrado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🔒'],
+                'archivado' => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '📦'],
+            ],
+
+            'stats' => [
+                'total_foros'     => ['label' => __('Foros', 'flavor-chat-ia'), 'icon' => '💬', 'color' => 'blue'],
+                'total_hilos'     => ['label' => __('Hilos', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'indigo'],
+                'total_respuestas'=> ['label' => __('Respuestas', 'flavor-chat-ia'), 'icon' => '💭', 'color' => 'purple'],
+                'usuarios_activos'=> ['label' => __('Usuarios activos', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
+            ],
+
+            'card' => [
+                'title_field'    => 'nombre',
+                'subtitle_field' => 'descripcion',
+                'badge_field'    => 'estado',
+                'icon_field'     => 'icono',
+                'meta_fields'    => ['total_hilos', 'ultima_actividad'],
+            ],
+
+            'tabs' => [
+                'categorias' => [
+                    'label'   => __('Categorías', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-category',
+                    'content' => 'template:_archive.php',
+                ],
+                'hilos' => [
+                    'label'   => __('Hilos recientes', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-format-chat',
+                    'content' => 'template:hilos.php',
+                ],
+                'mis-hilos' => [
+                    'label'   => __('Mis hilos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-admin-comments',
+                    'content' => 'template:mis-hilos.php',
+                ],
+                'nuevo-hilo' => [
+                    'label'   => __('Nuevo hilo', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-plus-alt',
+                    'content' => 'template:nuevo-hilo.php',
+                ],
+            ],
+
+            'archive' => [
+                'columns'      => 2,
+                'per_page'     => 10,
+                'show_filters' => true,
+                'show_search'  => true,
+            ],
+
+            'dashboard' => [
+                'show_stats'   => true,
+                'show_actions' => true,
+                'actions'      => [
+                    'nuevo_hilo' => ['label' => __('Nuevo hilo', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'blue'],
+                    'ver_foros'  => ['label' => __('Ver foros', 'flavor-chat-ia'), 'icon' => '💬', 'color' => 'indigo'],
+                ],
+            ],
+        ];
+    }
+
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-foros-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Foros_Dashboard_Tab')) {
+                Flavor_Foros_Dashboard_Tab::get_instance();
+            }
         }
     }
 }

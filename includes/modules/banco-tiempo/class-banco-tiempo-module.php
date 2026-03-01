@@ -92,6 +92,22 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
 
         // Cargar funcionalidades del Sello de Conciencia (+3 pts)
         $this->cargar_funcionalidades_conciencia();
+
+        // Cargar Dashboard Tab
+        $this->inicializar_dashboard_tab();
+    }
+
+    /**
+     * Inicializa el dashboard tab del módulo
+     */
+    private function inicializar_dashboard_tab() {
+        $archivo = dirname(__FILE__) . '/class-banco-tiempo-dashboard-tab.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Banco_Tiempo_Dashboard_Tab')) {
+                Flavor_Banco_Tiempo_Dashboard_Tab::get_instance();
+            }
+        }
     }
 
     /**
@@ -1595,17 +1611,17 @@ function banco_tiempo_ajax_ver_intercambio() {
     }
 
     global $wpdb;
-    $tabla_intercambios = $wpdb->prefix . 'flavor_banco_tiempo_intercambios';
+    $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
     $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
     $intercambio = $wpdb->get_row($wpdb->prepare(
-        "SELECT i.*, s.titulo as servicio_nombre,
+        "SELECT t.*, s.titulo as servicio_nombre,
                 u1.display_name as ofertante, u2.display_name as solicitante
-         FROM {$tabla_intercambios} i
-         LEFT JOIN {$tabla_servicios} s ON i.servicio_id = s.id
-         LEFT JOIN {$wpdb->users} u1 ON i.ofertante_id = u1.ID
-         LEFT JOIN {$wpdb->users} u2 ON i.solicitante_id = u2.ID
-         WHERE i.id = %d",
+         FROM {$tabla_transacciones} t
+         LEFT JOIN {$tabla_servicios} s ON t.servicio_id = s.id
+         LEFT JOIN {$wpdb->users} u1 ON t.usuario_receptor_id = u1.ID
+         LEFT JOIN {$wpdb->users} u2 ON t.usuario_solicitante_id = u2.ID
+         WHERE t.id = %d",
         $intercambio_id
     ));
 
@@ -1680,45 +1696,45 @@ function banco_tiempo_ajax_historial_usuario() {
     }
 
     global $wpdb;
-    $tabla_intercambios = $wpdb->prefix . 'flavor_banco_tiempo_intercambios';
+    $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
     $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
     // Calcular estadísticas
     $horas_ganadas = $wpdb->get_var($wpdb->prepare(
-        "SELECT COALESCE(SUM(horas), 0) FROM {$tabla_intercambios}
-         WHERE ofertante_id = %d AND estado = 'completado'",
+        "SELECT COALESCE(SUM(horas), 0) FROM {$tabla_transacciones}
+         WHERE usuario_receptor_id = %d AND estado = 'completado'",
         $usuario_id
     ));
 
     $horas_gastadas = $wpdb->get_var($wpdb->prepare(
-        "SELECT COALESCE(SUM(horas), 0) FROM {$tabla_intercambios}
-         WHERE solicitante_id = %d AND estado = 'completado'",
+        "SELECT COALESCE(SUM(horas), 0) FROM {$tabla_transacciones}
+         WHERE usuario_solicitante_id = %d AND estado = 'completado'",
         $usuario_id
     ));
 
     $total_intercambios = $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) FROM {$tabla_intercambios}
-         WHERE (ofertante_id = %d OR solicitante_id = %d) AND estado = 'completado'",
+        "SELECT COUNT(*) FROM {$tabla_transacciones}
+         WHERE (usuario_receptor_id = %d OR usuario_solicitante_id = %d) AND estado = 'completado'",
         $usuario_id, $usuario_id
     ));
 
     // Obtener historial
     $historial = $wpdb->get_results($wpdb->prepare(
-        "SELECT i.*, s.titulo as servicio,
+        "SELECT t.*, s.titulo as servicio,
                 u1.display_name as ofertante, u2.display_name as solicitante
-         FROM {$tabla_intercambios} i
-         LEFT JOIN {$tabla_servicios} s ON i.servicio_id = s.id
-         LEFT JOIN {$wpdb->users} u1 ON i.ofertante_id = u1.ID
-         LEFT JOIN {$wpdb->users} u2 ON i.solicitante_id = u2.ID
-         WHERE i.ofertante_id = %d OR i.solicitante_id = %d
-         ORDER BY i.fecha_creacion DESC
+         FROM {$tabla_transacciones} t
+         LEFT JOIN {$tabla_servicios} s ON t.servicio_id = s.id
+         LEFT JOIN {$wpdb->users} u1 ON t.usuario_receptor_id = u1.ID
+         LEFT JOIN {$wpdb->users} u2 ON t.usuario_solicitante_id = u2.ID
+         WHERE t.usuario_receptor_id = %d OR t.usuario_solicitante_id = %d
+         ORDER BY t.fecha_solicitud DESC
          LIMIT 50",
         $usuario_id, $usuario_id
     ));
 
     $historial_formateado = [];
     foreach ($historial as $item) {
-        $es_ofertante = $item->ofertante_id == $usuario_id;
+        $es_ofertante = $item->usuario_receptor_id == $usuario_id;
         $historial_formateado[] = [
             'fecha' => date_i18n('d/m/Y', strtotime($item->fecha_creacion)),
             'tipo' => $es_ofertante ? __('Ofrecido', 'flavor-chat-ia') : __('Solicitado', 'flavor-chat-ia'),

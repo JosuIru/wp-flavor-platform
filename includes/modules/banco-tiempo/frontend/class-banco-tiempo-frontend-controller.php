@@ -138,19 +138,19 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ], $atts);
 
         global $wpdb;
-        $tabla_intercambios = $wpdb->prefix . 'flavor_banco_tiempo_intercambios';
+        $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
         $intercambios = $wpdb->get_results($wpdb->prepare(
-            "SELECT i.*, s.titulo, s.categoria,
-                    u_of.display_name as oferente_nombre,
-                    u_so.display_name as solicitante_nombre
-             FROM {$tabla_intercambios} i
-             LEFT JOIN {$tabla_servicios} s ON i.servicio_id = s.id
-             LEFT JOIN {$wpdb->users} u_of ON i.oferente_id = u_of.ID
-             LEFT JOIN {$wpdb->users} u_so ON i.solicitante_id = u_so.ID
-             WHERE i.estado = 'completado'
-             ORDER BY i.fecha_completado DESC
+            "SELECT t.*, s.titulo, s.categoria,
+                    u_rec.display_name as oferente_nombre,
+                    u_sol.display_name as solicitante_nombre
+             FROM {$tabla_transacciones} t
+             LEFT JOIN {$tabla_servicios} s ON t.servicio_id = s.id
+             LEFT JOIN {$wpdb->users} u_rec ON t.usuario_receptor_id = u_rec.ID
+             LEFT JOIN {$wpdb->users} u_sol ON t.usuario_solicitante_id = u_sol.ID
+             WHERE t.estado = 'completado'
+             ORDER BY t.fecha_completado DESC
              LIMIT %d",
             absint($atts['limite'])
         ));

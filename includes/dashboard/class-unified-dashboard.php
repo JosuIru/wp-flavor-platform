@@ -109,6 +109,7 @@ class Flavor_Unified_Dashboard {
             'interface-dashboard-widget.php',
             'class-widget-registry.php',
             'class-widget-renderer.php',
+            'class-widgets-loader.php',
         ];
 
         foreach ($archivos_requeridos as $archivo) {
@@ -765,26 +766,65 @@ class Flavor_Unified_Dashboard {
         if (is_admin()) {
             // Mapeo de modulo_id a slug de pagina de admin
             $admin_pages_mapping = [
-                'banco_tiempo'      => 'banco-tiempo',
-                'comunidades'       => 'comunidades',
-                'colectivos'        => 'colectivos',
-                'eventos'           => 'eventos',
-                'cursos'            => 'cursos',
-                'marketplace'       => 'marketplace',
-                'talleres'          => 'talleres',
-                'reservas'          => 'reservas',
-                'socios'            => 'socios',
-                'incidencias'       => 'incidencias',
-                'foros'             => 'foros',
-                'podcast'           => 'podcast',
-                'multimedia'        => 'multimedia',
-                'red_social'        => 'red-social',
-                'ayuda_vecinal'     => 'ayuda-vecinal',
-                'espacios_comunes'  => 'espacios-comunes',
-                'huertos_urbanos'   => 'huertos-urbanos',
-                'participacion'     => 'participacion',
-                'presupuestos_participativos' => 'presupuestos-participativos',
-                'grupos_consumo'    => 'grupos-consumo',
+                'advertising'        => 'advertising-dashboard',
+                'avisos_municipales' => 'avisos-dashboard',
+                'ayuda_vecinal'      => 'ayuda-vecinal-dashboard',
+                'banco_tiempo'       => 'banco-tiempo-dashboard',
+                'bares'              => 'bares-dashboard',
+                'biblioteca'         => 'biblioteca-dashboard',
+                'bicicletas_compartidas' => 'flavor-bicicletas-dashboard',
+                'biodiversidad_local' => 'biodiversidad',
+                'carpooling'         => 'carpooling-dashboard',
+                'chat_estados'       => 'estados-dashboard',
+                'chat_grupos'        => 'flavor-chat-grupos-dashboard',
+                'chat_interno'       => 'flavor-chat-interno-dashboard',
+                'circulos_cuidados'  => 'circulos-cuidados',
+                'clientes'           => 'clientes-dashboard',
+                'colectivos'         => 'colectivos',
+                'compostaje'         => 'flavor-compostaje-dashboard',
+                'comunidades'        => 'comunidades-dashboard',
+                'campanias'          => 'campanias-dashboard',
+                'cursos'             => 'cursos-dashboard',
+                'dex_solana'         => 'dex-solana-dashboard',
+                'documentacion_legal' => 'documentacion-legal-dashboard',
+                'economia_don'       => 'economia-don-dashboard',
+                'economia_suficiencia' => 'economia-suficiencia-dashboard',
+                'email_marketing'    => 'flavor-em-dashboard',
+                'encuestas'          => 'encuestas-dashboard',
+                'empresarial'        => 'flavor-empresarial-dashboard',
+                'espacios_comunes'   => 'espacios-dashboard',
+                'eventos'            => 'eventos-dashboard',
+                'facturas'           => 'facturas-dashboard',
+                'fichaje_empleados'  => 'fichaje-dashboard',
+                'foros'              => 'flavor-foros-dashboard',
+                'grupos_consumo'     => 'gc-dashboard',
+                'huella_ecologica'   => 'huella-ecologica',
+                'huertos_urbanos'    => 'huertos-dashboard',
+                'incidencias'        => 'incidencias-dashboard',
+                'justicia_restaurativa' => 'justicia-restaurativa',
+                'mapa_actores'       => 'actores-dashboard',
+                'marketplace'        => 'marketplace-dashboard',
+                'multimedia'         => 'flavor-multimedia-dashboard',
+                'parkings'           => 'flavor-parkings-dashboard',
+                'participacion'      => 'participacion-dashboard',
+                'podcast'            => 'podcast',
+                'presupuestos_participativos' => 'pp-dashboard',
+                'radio'              => 'flavor-radio-dashboard',
+                'recetas'            => 'recetas-dashboard',
+                'reciclaje'          => 'reciclaje-dashboard',
+                'red_social'         => 'flavor-red-social-dashboard',
+                'reservas'           => 'reservas-calendario',
+                'saberes_ancestrales' => 'saberes-dashboard',
+                'seguimiento_denuncias' => 'seguimiento-denuncias-dashboard',
+                'sello_conciencia'   => 'sello-conciencia',
+                'socios'             => 'socios-dashboard',
+                'talleres'           => 'talleres-dashboard',
+                'themacle'           => 'themacle-dashboard',
+                'trabajo_digno'      => 'trabajo-digno',
+                'trading_ia'         => 'trading-ia-dashboard',
+                'tramites'           => 'tramites-dashboard',
+                'transparencia'      => 'transparencia-dashboard',
+                'woocommerce'        => 'flavor-woocommerce-dashboard',
             ];
 
             // Usar el mapeo si existe
@@ -1864,11 +1904,22 @@ class Flavor_Unified_Dashboard {
                     $stats[] = ['value' => $servicios_activos, 'label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'];
                 }
 
+                // Primero intentar tabla transacciones (nueva estructura)
+                $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
                 $tabla_intercambios = $wpdb->prefix . 'flavor_banco_tiempo_intercambios';
-                if ($this->table_exists($tabla_intercambios)) {
+
+                if ($this->table_exists($tabla_transacciones)) {
+                    $intercambios = (int) $wpdb->get_var($wpdb->prepare(
+                        "SELECT COUNT(*) FROM {$tabla_transacciones}
+                         WHERE (usuario_solicitante_id = %d OR usuario_receptor_id = %d) AND estado = 'completado'",
+                        $user_id, $user_id
+                    ));
+                    $stats[] = ['value' => $intercambios, 'label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'];
+                } elseif ($this->table_exists($tabla_intercambios)) {
+                    // Fallback a tabla intercambios (estructura antigua)
                     $intercambios = (int) $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM {$tabla_intercambios}
-                         WHERE (solicitante_id = %d OR proveedor_id = %d) AND estado = 'completado'",
+                         WHERE (solicitante_id = %d OR oferente_id = %d) AND estado = 'completado'",
                         $user_id, $user_id
                     ));
                     $stats[] = ['value' => $intercambios, 'label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'];

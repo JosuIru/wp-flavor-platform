@@ -433,7 +433,7 @@ class Flavor_Mobile_API_Extensions {
         $activities = [];
 
         global $wpdb;
-        $table = $wpdb->prefix . 'bt_intercambios';
+        $table = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             return $activities;
@@ -441,7 +441,7 @@ class Flavor_Mobile_API_Extensions {
 
         $intercambios = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM $table
-            WHERE (proveedor_id = %d OR solicitante_id = %d)
+            WHERE (usuario_receptor_id = %d OR usuario_solicitante_id = %d)
             AND estado = 'completado'
             ORDER BY fecha_creacion DESC
             LIMIT %d",
@@ -457,7 +457,7 @@ class Flavor_Mobile_API_Extensions {
                 'type' => 'banco_tiempo',
                 'title' => 'Servicio intercambiado',
                 'message' => sprintf('Has %s %d horas',
-                    $intercambio->proveedor_id == $user_id ? 'ganado' : 'gastado',
+                    $intercambio->usuario_receptor_id == $user_id ? 'ganado' : 'gastado',
                     $horas
                 ),
                 'date' => $intercambio->fecha_creacion,
