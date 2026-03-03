@@ -127,6 +127,15 @@ document.addEventListener('alpine:init', function() {
             { id: 'goto-bookmark-2', label: 'Ir a marcador 2', category: 'marcadores', icon: '📍', action: 'goToBookmark', value: '2', shortcut: 'Ctrl+Shift+2' },
             { id: 'goto-bookmark-3', label: 'Ir a marcador 3', category: 'marcadores', icon: '📍', action: 'goToBookmark', value: '3', shortcut: 'Ctrl+Shift+3' },
 
+            // Herramientas avanzadas
+            { id: 'aspect-ratio-lock', label: 'Bloquear proporción', category: 'herramientas', icon: '🔒', action: 'toggleAspectRatioLock', shortcut: 'Ctrl+Shift+P' },
+            { id: 'smart-guides', label: 'Smart Guides on/off', category: 'herramientas', icon: '📐', action: 'toggleSmartGuides', shortcut: 'Ctrl+Alt+G' },
+            { id: 'measure-tool', label: 'Herramienta de medición', category: 'herramientas', icon: '📏', action: 'toggleMeasureTool', shortcut: 'M' },
+            { id: 'save-favorite', label: 'Guardar como favorito', category: 'herramientas', icon: '⭐', action: 'saveAsFavorite', shortcut: 'Ctrl+Alt+F' },
+            { id: 'open-favorites', label: 'Abrir favoritos', category: 'herramientas', icon: '⭐', action: 'openFavorites', shortcut: 'Ctrl+Shift+F' },
+            { id: 'css-variables', label: 'Editor de variables CSS', category: 'herramientas', icon: '🎨', action: 'openCSSVariables', shortcut: 'Ctrl+Alt+C' },
+            { id: 'version-compare', label: 'Comparar versiones', category: 'herramientas', icon: '📜', action: 'openVersionCompare', shortcut: 'Ctrl+Alt+D' },
+
             // Responsive
             { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'device', value: 'desktop' },
             { id: 'device-tablet', label: 'Vista Tablet', category: 'responsive', icon: '📱', action: 'device', value: 'tablet' },
@@ -540,6 +549,48 @@ document.addEventListener('alpine:init', function() {
                     }));
                     break;
 
+                case 'toggleAspectRatioLock':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleAspectRatioLock' }
+                    }));
+                    break;
+
+                case 'toggleSmartGuides':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleSmartGuides' }
+                    }));
+                    break;
+
+                case 'toggleMeasureTool':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleMeasureTool' }
+                    }));
+                    break;
+
+                case 'saveAsFavorite':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'saveAsFavorite' }
+                    }));
+                    break;
+
+                case 'openFavorites':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openFavorites' }
+                    }));
+                    break;
+
+                case 'openCSSVariables':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openCSSVariables' }
+                    }));
+                    break;
+
+                case 'openVersionCompare':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openVersionCompare' }
+                    }));
+                    break;
+
                 case 'togglePanel':
                     this.togglePanel(cmd.value);
                     break;
@@ -662,6 +713,7 @@ document.addEventListener('alpine:init', function() {
                 'spacing': 'Spacing Rápido',
                 'transformaciones': 'Transformaciones',
                 'marcadores': 'Marcadores',
+                'herramientas': 'Herramientas Avanzadas',
                 'vista': 'Vista',
                 'exportar': 'Exportar',
                 'responsive': 'Responsive'

@@ -95,6 +95,25 @@ document.addEventListener('alpine:init', function() {
                 // Quick rename
                 'ctrl+alt+r': 'quickRename',
 
+                // Aspect ratio lock
+                'ctrl+shift+p': 'toggleAspectRatioLock',
+
+                // Smart guides
+                'ctrl+alt+g': 'toggleSmartGuides',
+
+                // Measure tool
+                'm': 'toggleMeasureTool',
+
+                // Favoritos/presets
+                'ctrl+alt+f': 'saveAsFavorite',
+                'ctrl+shift+f': 'openFavorites',
+
+                // CSS Variables
+                'ctrl+alt+c': 'openCSSVariables',
+
+                // Version compare
+                'ctrl+alt+d': 'openVersionCompare',
+
                 // Zoom
                 'ctrl++': 'zoomIn',
                 'ctrl+=': 'zoomIn',
@@ -458,6 +477,40 @@ document.addEventListener('alpine:init', function() {
                     // === QUICK RENAME ===
                     case 'quickRename':
                         this.quickRename();
+                        break;
+
+                    // === ASPECT RATIO ===
+                    case 'toggleAspectRatioLock':
+                        this.toggleAspectRatioLock();
+                        break;
+
+                    // === SMART GUIDES ===
+                    case 'toggleSmartGuides':
+                        this.toggleSmartGuides();
+                        break;
+
+                    // === MEASURE TOOL ===
+                    case 'toggleMeasureTool':
+                        this.toggleMeasureTool();
+                        break;
+
+                    // === FAVORITOS ===
+                    case 'saveAsFavorite':
+                        this.saveAsFavorite();
+                        break;
+
+                    case 'openFavorites':
+                        this.openFavoritesPanel();
+                        break;
+
+                    // === CSS VARIABLES ===
+                    case 'openCSSVariables':
+                        this.openCSSVariablesEditor();
+                        break;
+
+                    // === VERSION COMPARE ===
+                    case 'openVersionCompare':
+                        this.openVersionCompare();
                         break;
 
                     // === ZOOM ===
@@ -2598,6 +2651,838 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Toggle bloqueo de aspect ratio
+             */
+            toggleAspectRatioLock: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+                var count = 0;
+                var allLocked = true;
+
+                // Verificar si todos tienen aspect ratio bloqueado
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element && !element.aspectRatioLocked) {
+                        allLocked = false;
+                    }
+                });
+
+                var newLockState = !allLocked;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    // Calcular y guardar aspect ratio actual si se está bloqueando
+                    if (newLockState) {
+                        var bounds = document.querySelector('[data-element-id="' + id + '"]');
+                        if (bounds) {
+                            var rect = bounds.getBoundingClientRect();
+                            var aspectRatio = rect.width / rect.height;
+                            store.updateElement(id, {
+                                aspectRatioLocked: true,
+                                aspectRatio: aspectRatio
+                            });
+                        }
+                    } else {
+                        store.updateElement(id, { aspectRatioLocked: false });
+                    }
+                    count++;
+                });
+
+                store.isDirty = true;
+                if (newLockState) {
+                    this.showNotification('🔒 Proporción bloqueada (' + count + ')');
+                } else {
+                    this.showNotification('🔓 Proporción desbloqueada (' + count + ')');
+                }
+            },
+
+            /**
+             * Estado de smart guides
+             */
+            smartGuidesEnabled: true,
+
+            /**
+             * Toggle smart guides
+             */
+            toggleSmartGuides: function() {
+                this.smartGuidesEnabled = !this.smartGuidesEnabled;
+                localStorage.setItem('vbp_smart_guides', this.smartGuidesEnabled);
+
+                // Actualizar UI
+                var canvas = document.querySelector('.vbp-canvas');
+                if (canvas) {
+                    if (this.smartGuidesEnabled) {
+                        canvas.classList.add('vbp-smart-guides-enabled');
+                    } else {
+                        canvas.classList.remove('vbp-smart-guides-enabled');
+                        // Limpiar guías existentes
+                        this.clearSmartGuides();
+                    }
+                }
+
+                this.showNotification(this.smartGuidesEnabled ? '📐 Smart Guides activadas' : '📐 Smart Guides desactivadas');
+            },
+
+            /**
+             * Mostrar smart guides durante el arrastre
+             */
+            showSmartGuides: function(draggedElement, allElements) {
+                if (!this.smartGuidesEnabled) return;
+
+                this.clearSmartGuides();
+
+                var draggedRect = draggedElement.getBoundingClientRect();
+                var canvas = document.querySelector('.vbp-canvas');
+                if (!canvas) return;
+
+                var canvasRect = canvas.getBoundingClientRect();
+                var guides = [];
+                var snapThreshold = 5;
+
+                allElements.forEach(function(el) {
+                    if (el === draggedElement) return;
+
+                    var rect = el.getBoundingClientRect();
+
+                    // Comparar bordes
+                    // Left edge
+                    if (Math.abs(draggedRect.left - rect.left) < snapThreshold) {
+                        guides.push({ type: 'vertical', position: rect.left - canvasRect.left });
+                    }
+                    if (Math.abs(draggedRect.left - rect.right) < snapThreshold) {
+                        guides.push({ type: 'vertical', position: rect.right - canvasRect.left });
+                    }
+
+                    // Right edge
+                    if (Math.abs(draggedRect.right - rect.left) < snapThreshold) {
+                        guides.push({ type: 'vertical', position: rect.left - canvasRect.left });
+                    }
+                    if (Math.abs(draggedRect.right - rect.right) < snapThreshold) {
+                        guides.push({ type: 'vertical', position: rect.right - canvasRect.left });
+                    }
+
+                    // Center horizontal
+                    var draggedCenterX = draggedRect.left + draggedRect.width / 2;
+                    var elCenterX = rect.left + rect.width / 2;
+                    if (Math.abs(draggedCenterX - elCenterX) < snapThreshold) {
+                        guides.push({ type: 'vertical', position: elCenterX - canvasRect.left });
+                    }
+
+                    // Top edge
+                    if (Math.abs(draggedRect.top - rect.top) < snapThreshold) {
+                        guides.push({ type: 'horizontal', position: rect.top - canvasRect.top });
+                    }
+                    if (Math.abs(draggedRect.top - rect.bottom) < snapThreshold) {
+                        guides.push({ type: 'horizontal', position: rect.bottom - canvasRect.top });
+                    }
+
+                    // Bottom edge
+                    if (Math.abs(draggedRect.bottom - rect.top) < snapThreshold) {
+                        guides.push({ type: 'horizontal', position: rect.top - canvasRect.top });
+                    }
+                    if (Math.abs(draggedRect.bottom - rect.bottom) < snapThreshold) {
+                        guides.push({ type: 'horizontal', position: rect.bottom - canvasRect.top });
+                    }
+
+                    // Center vertical
+                    var draggedCenterY = draggedRect.top + draggedRect.height / 2;
+                    var elCenterY = rect.top + rect.height / 2;
+                    if (Math.abs(draggedCenterY - elCenterY) < snapThreshold) {
+                        guides.push({ type: 'horizontal', position: elCenterY - canvasRect.top });
+                    }
+                });
+
+                // Renderizar guías
+                guides.forEach(function(guide) {
+                    var line = document.createElement('div');
+                    line.className = 'vbp-smart-guide vbp-smart-guide-' + guide.type;
+
+                    if (guide.type === 'vertical') {
+                        line.style.cssText = 'position: absolute; left: ' + guide.position + 'px; top: 0; width: 1px; height: 100%; background: #f43f5e; z-index: 9999; pointer-events: none;';
+                    } else {
+                        line.style.cssText = 'position: absolute; top: ' + guide.position + 'px; left: 0; height: 1px; width: 100%; background: #f43f5e; z-index: 9999; pointer-events: none;';
+                    }
+
+                    canvas.appendChild(line);
+                });
+            },
+
+            /**
+             * Limpiar smart guides
+             */
+            clearSmartGuides: function() {
+                var guides = document.querySelectorAll('.vbp-smart-guide');
+                guides.forEach(function(guide) {
+                    guide.remove();
+                });
+            },
+
+            /**
+             * Estado de la herramienta de medición
+             */
+            measureToolActive: false,
+            measureStartPoint: null,
+
+            /**
+             * Toggle herramienta de medición
+             */
+            toggleMeasureTool: function() {
+                this.measureToolActive = !this.measureToolActive;
+                var canvas = document.querySelector('.vbp-canvas');
+
+                if (this.measureToolActive) {
+                    canvas.classList.add('vbp-measure-mode');
+                    canvas.style.cursor = 'crosshair';
+                    this.initMeasureTool();
+                    this.showNotification('📏 Herramienta de medición activada - Click para medir');
+                } else {
+                    canvas.classList.remove('vbp-measure-mode');
+                    canvas.style.cursor = '';
+                    this.removeMeasureTool();
+                    this.showNotification('📏 Herramienta de medición desactivada');
+                }
+            },
+
+            /**
+             * Inicializar herramienta de medición
+             */
+            initMeasureTool: function() {
+                var self = this;
+                var canvas = document.querySelector('.vbp-canvas');
+                if (!canvas) return;
+
+                this.measureHandler = function(e) {
+                    if (!self.measureToolActive) return;
+
+                    var canvasRect = canvas.getBoundingClientRect();
+                    var x = e.clientX - canvasRect.left;
+                    var y = e.clientY - canvasRect.top;
+
+                    if (!self.measureStartPoint) {
+                        // Primer click - establecer punto inicial
+                        self.measureStartPoint = { x: x, y: y };
+                        self.showMeasurePoint(x, y, 'start');
+                    } else {
+                        // Segundo click - calcular y mostrar medida
+                        var dx = x - self.measureStartPoint.x;
+                        var dy = y - self.measureStartPoint.y;
+                        var distance = Math.sqrt(dx * dx + dy * dy);
+
+                        self.showMeasureLine(self.measureStartPoint.x, self.measureStartPoint.y, x, y, distance);
+                        self.measureStartPoint = null;
+                    }
+                };
+
+                canvas.addEventListener('click', this.measureHandler);
+            },
+
+            /**
+             * Mostrar punto de medición
+             */
+            showMeasurePoint: function(x, y, type) {
+                var canvas = document.querySelector('.vbp-canvas');
+                if (!canvas) return;
+
+                var point = document.createElement('div');
+                point.className = 'vbp-measure-point vbp-measure-' + type;
+                point.style.cssText = 'position: absolute; left: ' + (x - 4) + 'px; top: ' + (y - 4) + 'px; width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; z-index: 9999; pointer-events: none;';
+                canvas.appendChild(point);
+            },
+
+            /**
+             * Mostrar línea de medición
+             */
+            showMeasureLine: function(x1, y1, x2, y2, distance) {
+                var canvas = document.querySelector('.vbp-canvas');
+                if (!canvas) return;
+
+                // Limpiar mediciones anteriores
+                this.clearMeasurements();
+
+                // Crear línea
+                var length = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+                var angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+
+                var line = document.createElement('div');
+                line.className = 'vbp-measure-line';
+                line.style.cssText = 'position: absolute; left: ' + x1 + 'px; top: ' + y1 + 'px; width: ' + length + 'px; height: 2px; background: #3b82f6; transform-origin: 0 0; transform: rotate(' + angle + 'deg); z-index: 9999; pointer-events: none;';
+                canvas.appendChild(line);
+
+                // Crear etiqueta con la distancia
+                var midX = (x1 + x2) / 2;
+                var midY = (y1 + y2) / 2;
+                var label = document.createElement('div');
+                label.className = 'vbp-measure-label';
+                label.innerHTML = Math.round(distance) + 'px<br><small>Δx: ' + Math.round(Math.abs(x2 - x1)) + ' Δy: ' + Math.round(Math.abs(y2 - y1)) + '</small>';
+                label.style.cssText = 'position: absolute; left: ' + midX + 'px; top: ' + (midY - 30) + 'px; background: rgba(59, 130, 246, 0.95); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; z-index: 9999; pointer-events: none; text-align: center; transform: translateX(-50%);';
+                canvas.appendChild(label);
+
+                // Puntos en los extremos
+                this.showMeasurePoint(x1, y1, 'start');
+                this.showMeasurePoint(x2, y2, 'end');
+
+                // Auto-limpiar después de 5 segundos
+                var self = this;
+                setTimeout(function() {
+                    self.clearMeasurements();
+                }, 5000);
+            },
+
+            /**
+             * Limpiar mediciones
+             */
+            clearMeasurements: function() {
+                var elements = document.querySelectorAll('.vbp-measure-point, .vbp-measure-line, .vbp-measure-label');
+                elements.forEach(function(el) {
+                    el.remove();
+                });
+            },
+
+            /**
+             * Remover herramienta de medición
+             */
+            removeMeasureTool: function() {
+                var canvas = document.querySelector('.vbp-canvas');
+                if (canvas && this.measureHandler) {
+                    canvas.removeEventListener('click', this.measureHandler);
+                }
+                this.clearMeasurements();
+                this.measureStartPoint = null;
+            },
+
+            /**
+             * Favoritos de elementos
+             */
+            favorites: [],
+
+            /**
+             * Guardar elemento como favorito
+             */
+            saveAsFavorite: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento para guardar', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+
+                if (!element) return;
+
+                var favoriteName = prompt('Nombre para el favorito:', element.name || element.type);
+                if (!favoriteName) return;
+
+                // Clonar elemento sin ID
+                var favorite = JSON.parse(JSON.stringify(element));
+                delete favorite.id;
+                favorite.favoriteName = favoriteName;
+                favorite.savedAt = new Date().toISOString();
+
+                // Cargar favoritos existentes
+                this.loadFavorites();
+
+                // Añadir nuevo favorito
+                this.favorites.push(favorite);
+
+                // Guardar
+                localStorage.setItem('vbp_favorites', JSON.stringify(this.favorites));
+
+                this.showNotification('⭐ Guardado como favorito: ' + favoriteName);
+            },
+
+            /**
+             * Cargar favoritos
+             */
+            loadFavorites: function() {
+                var saved = localStorage.getItem('vbp_favorites');
+                if (saved) {
+                    try {
+                        this.favorites = JSON.parse(saved);
+                    } catch (e) {
+                        this.favorites = [];
+                    }
+                }
+            },
+
+            /**
+             * Abrir panel de favoritos
+             */
+            openFavoritesPanel: function() {
+                this.loadFavorites();
+
+                if (this.favorites.length === 0) {
+                    this.showNotification('No hay favoritos guardados', 'info');
+                    return;
+                }
+
+                var self = this;
+                var modalId = 'vbp-favorites-modal';
+
+                // Eliminar modal existente
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                // Crear modal
+                var modalHtml = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                modalHtml += '<div class="vbp-modal vbp-favorites-modal">';
+                modalHtml += '<div class="vbp-modal-header">';
+                modalHtml += '<h2>⭐ Favoritos</h2>';
+                modalHtml += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-body">';
+                modalHtml += '<div class="vbp-favorites-grid">';
+
+                this.favorites.forEach(function(fav, index) {
+                    modalHtml += '<div class="vbp-favorite-item" data-index="' + index + '">';
+                    modalHtml += '<div class="vbp-favorite-icon">' + (fav.type === 'text' ? 'T' : fav.type === 'image' ? '🖼' : '▢') + '</div>';
+                    modalHtml += '<div class="vbp-favorite-name">' + (fav.favoriteName || fav.type) + '</div>';
+                    modalHtml += '<div class="vbp-favorite-actions">';
+                    modalHtml += '<button class="vbp-btn-insert" data-index="' + index + '">Insertar</button>';
+                    modalHtml += '<button class="vbp-btn-delete" data-index="' + index + '">🗑</button>';
+                    modalHtml += '</div>';
+                    modalHtml += '</div>';
+                });
+
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                // Event handlers
+                var modal = document.getElementById(modalId);
+
+                modal.querySelectorAll('.vbp-btn-insert').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var index = parseInt(this.dataset.index);
+                        self.insertFavorite(index);
+                        modal.remove();
+                    });
+                });
+
+                modal.querySelectorAll('.vbp-btn-delete').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var index = parseInt(this.dataset.index);
+                        self.deleteFavorite(index);
+                        this.closest('.vbp-favorite-item').remove();
+                    });
+                });
+
+                // Cerrar con click fuera
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) modal.remove();
+                });
+            },
+
+            /**
+             * Insertar favorito en el canvas
+             */
+            insertFavorite: function(index) {
+                var store = Alpine.store('vbp');
+                var favorite = this.favorites[index];
+
+                if (!favorite) return;
+
+                store.saveToHistory();
+
+                // Crear nuevo elemento con nuevo ID
+                var newElement = JSON.parse(JSON.stringify(favorite));
+                newElement.id = 'el_' + Math.random().toString(36).substr(2, 9);
+                newElement.name = favorite.favoriteName || favorite.type;
+
+                store.elements.push(newElement);
+                store.setSelection([newElement.id]);
+                store.isDirty = true;
+
+                this.showNotification('⭐ Insertado: ' + newElement.name);
+            },
+
+            /**
+             * Eliminar favorito
+             */
+            deleteFavorite: function(index) {
+                this.favorites.splice(index, 1);
+                localStorage.setItem('vbp_favorites', JSON.stringify(this.favorites));
+                this.showNotification('🗑 Favorito eliminado');
+            },
+
+            /**
+             * Abrir editor de variables CSS
+             */
+            openCSSVariablesEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+                var modalId = 'vbp-css-vars-modal';
+
+                // Obtener variables CSS actuales
+                var cssVars = store.cssVariables || {
+                    '--vbp-primary': '#3b82f6',
+                    '--vbp-secondary': '#6366f1',
+                    '--vbp-accent': '#f43f5e',
+                    '--vbp-background': '#ffffff',
+                    '--vbp-text': '#1f2937',
+                    '--vbp-text-muted': '#6b7280',
+                    '--vbp-border': '#e5e7eb',
+                    '--vbp-spacing-xs': '4px',
+                    '--vbp-spacing-sm': '8px',
+                    '--vbp-spacing-md': '16px',
+                    '--vbp-spacing-lg': '24px',
+                    '--vbp-spacing-xl': '32px',
+                    '--vbp-radius-sm': '4px',
+                    '--vbp-radius-md': '8px',
+                    '--vbp-radius-lg': '12px',
+                    '--vbp-font-family': 'Inter, system-ui, sans-serif',
+                    '--vbp-font-size-sm': '14px',
+                    '--vbp-font-size-md': '16px',
+                    '--vbp-font-size-lg': '20px',
+                    '--vbp-font-size-xl': '24px'
+                };
+
+                // Eliminar modal existente
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                // Crear modal
+                var modalHtml = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                modalHtml += '<div class="vbp-modal vbp-css-vars-modal" style="max-width: 600px;">';
+                modalHtml += '<div class="vbp-modal-header">';
+                modalHtml += '<h2>🎨 Variables CSS</h2>';
+                modalHtml += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-body" style="max-height: 60vh; overflow-y: auto;">';
+
+                // Colores
+                modalHtml += '<div class="vbp-css-section"><h3>Colores</h3>';
+                ['--vbp-primary', '--vbp-secondary', '--vbp-accent', '--vbp-background', '--vbp-text', '--vbp-text-muted', '--vbp-border'].forEach(function(varName) {
+                    var label = varName.replace('--vbp-', '').replace(/-/g, ' ');
+                    modalHtml += '<div class="vbp-css-var-row">';
+                    modalHtml += '<label>' + label + '</label>';
+                    modalHtml += '<input type="color" data-var="' + varName + '" value="' + (cssVars[varName] || '#000000') + '">';
+                    modalHtml += '<input type="text" data-var="' + varName + '" value="' + (cssVars[varName] || '') + '" style="width: 100px;">';
+                    modalHtml += '</div>';
+                });
+                modalHtml += '</div>';
+
+                // Espaciado
+                modalHtml += '<div class="vbp-css-section"><h3>Espaciado</h3>';
+                ['--vbp-spacing-xs', '--vbp-spacing-sm', '--vbp-spacing-md', '--vbp-spacing-lg', '--vbp-spacing-xl'].forEach(function(varName) {
+                    var label = varName.replace('--vbp-spacing-', '');
+                    modalHtml += '<div class="vbp-css-var-row">';
+                    modalHtml += '<label>' + label.toUpperCase() + '</label>';
+                    modalHtml += '<input type="text" data-var="' + varName + '" value="' + (cssVars[varName] || '') + '" placeholder="8px">';
+                    modalHtml += '</div>';
+                });
+                modalHtml += '</div>';
+
+                // Border radius
+                modalHtml += '<div class="vbp-css-section"><h3>Border Radius</h3>';
+                ['--vbp-radius-sm', '--vbp-radius-md', '--vbp-radius-lg'].forEach(function(varName) {
+                    var label = varName.replace('--vbp-radius-', '');
+                    modalHtml += '<div class="vbp-css-var-row">';
+                    modalHtml += '<label>' + label.toUpperCase() + '</label>';
+                    modalHtml += '<input type="text" data-var="' + varName + '" value="' + (cssVars[varName] || '') + '" placeholder="8px">';
+                    modalHtml += '</div>';
+                });
+                modalHtml += '</div>';
+
+                // Tipografía
+                modalHtml += '<div class="vbp-css-section"><h3>Tipografía</h3>';
+                modalHtml += '<div class="vbp-css-var-row">';
+                modalHtml += '<label>Font Family</label>';
+                modalHtml += '<input type="text" data-var="--vbp-font-family" value="' + (cssVars['--vbp-font-family'] || '') + '" style="width: 200px;">';
+                modalHtml += '</div>';
+                ['--vbp-font-size-sm', '--vbp-font-size-md', '--vbp-font-size-lg', '--vbp-font-size-xl'].forEach(function(varName) {
+                    var label = varName.replace('--vbp-font-size-', '');
+                    modalHtml += '<div class="vbp-css-var-row">';
+                    modalHtml += '<label>Size ' + label.toUpperCase() + '</label>';
+                    modalHtml += '<input type="text" data-var="' + varName + '" value="' + (cssVars[varName] || '') + '" placeholder="16px">';
+                    modalHtml += '</div>';
+                });
+                modalHtml += '</div>';
+
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-footer">';
+                modalHtml += '<button class="vbp-btn vbp-btn-secondary" onclick="document.getElementById(\'' + modalId + '\').remove()">Cancelar</button>';
+                modalHtml += '<button class="vbp-btn vbp-btn-primary" id="vbp-save-css-vars">Aplicar Variables</button>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                // Sincronizar color picker con input text
+                var modal = document.getElementById(modalId);
+                modal.querySelectorAll('input[type="color"]').forEach(function(colorInput) {
+                    var varName = colorInput.dataset.var;
+                    var textInput = modal.querySelector('input[type="text"][data-var="' + varName + '"]');
+
+                    colorInput.addEventListener('input', function() {
+                        if (textInput) textInput.value = this.value;
+                    });
+
+                    if (textInput) {
+                        textInput.addEventListener('input', function() {
+                            if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+                                colorInput.value = this.value;
+                            }
+                        });
+                    }
+                });
+
+                // Guardar variables
+                document.getElementById('vbp-save-css-vars').addEventListener('click', function() {
+                    var newVars = {};
+                    modal.querySelectorAll('input[data-var]').forEach(function(input) {
+                        if (input.type !== 'color' && input.value) {
+                            newVars[input.dataset.var] = input.value;
+                        } else if (input.type === 'color') {
+                            var textInput = modal.querySelector('input[type="text"][data-var="' + input.dataset.var + '"]');
+                            if (!textInput || !textInput.value) {
+                                newVars[input.dataset.var] = input.value;
+                            }
+                        }
+                    });
+
+                    // Aplicar al store
+                    store.cssVariables = newVars;
+                    store.isDirty = true;
+
+                    // Aplicar al documento
+                    self.applyCSSVariables(newVars);
+
+                    modal.remove();
+                    self.showNotification('🎨 Variables CSS aplicadas');
+                });
+
+                // Cerrar con click fuera
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) modal.remove();
+                });
+            },
+
+            /**
+             * Aplicar variables CSS al documento
+             */
+            applyCSSVariables: function(vars) {
+                var root = document.documentElement;
+                Object.keys(vars).forEach(function(varName) {
+                    root.style.setProperty(varName, vars[varName]);
+                });
+            },
+
+            /**
+             * Historial de versiones
+             */
+            versionHistory: [],
+
+            /**
+             * Abrir comparador de versiones
+             */
+            openVersionCompare: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+                var modalId = 'vbp-version-modal';
+
+                // Cargar historial
+                this.loadVersionHistory();
+
+                if (this.versionHistory.length === 0) {
+                    this.showNotification('No hay versiones guardadas', 'info');
+                    return;
+                }
+
+                // Eliminar modal existente
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                // Crear modal
+                var modalHtml = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                modalHtml += '<div class="vbp-modal vbp-version-modal" style="max-width: 800px;">';
+                modalHtml += '<div class="vbp-modal-header">';
+                modalHtml += '<h2>📜 Historial de Versiones</h2>';
+                modalHtml += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-body">';
+
+                modalHtml += '<div class="vbp-version-list">';
+                this.versionHistory.forEach(function(version, index) {
+                    var date = new Date(version.timestamp);
+                    var dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                    var elemCount = version.elements ? version.elements.length : 0;
+
+                    modalHtml += '<div class="vbp-version-item" data-index="' + index + '">';
+                    modalHtml += '<div class="vbp-version-info">';
+                    modalHtml += '<div class="vbp-version-date">' + dateStr + '</div>';
+                    modalHtml += '<div class="vbp-version-meta">' + elemCount + ' elementos</div>';
+                    if (version.name) {
+                        modalHtml += '<div class="vbp-version-name">' + version.name + '</div>';
+                    }
+                    modalHtml += '</div>';
+                    modalHtml += '<div class="vbp-version-actions">';
+                    modalHtml += '<button class="vbp-btn vbp-btn-preview" data-index="' + index + '">Vista previa</button>';
+                    modalHtml += '<button class="vbp-btn vbp-btn-restore" data-index="' + index + '">Restaurar</button>';
+                    modalHtml += '</div>';
+                    modalHtml += '</div>';
+                });
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-version-preview" id="vbp-version-preview-area" style="display: none;">';
+                modalHtml += '<h4>Vista previa</h4>';
+                modalHtml += '<div class="vbp-version-preview-content"></div>';
+                modalHtml += '</div>';
+
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-footer">';
+                modalHtml += '<button class="vbp-btn vbp-btn-secondary" id="vbp-save-version">💾 Guardar versión actual</button>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                var modal = document.getElementById(modalId);
+
+                // Preview handlers
+                modal.querySelectorAll('.vbp-btn-preview').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var index = parseInt(this.dataset.index);
+                        self.previewVersion(index);
+                    });
+                });
+
+                // Restore handlers
+                modal.querySelectorAll('.vbp-btn-restore').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var index = parseInt(this.dataset.index);
+                        if (confirm('¿Restaurar esta versión? Los cambios actuales se perderán.')) {
+                            self.restoreVersion(index);
+                            modal.remove();
+                        }
+                    });
+                });
+
+                // Save current version
+                document.getElementById('vbp-save-version').addEventListener('click', function() {
+                    var name = prompt('Nombre para esta versión (opcional):');
+                    self.saveCurrentVersion(name);
+                });
+
+                // Cerrar con click fuera
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) modal.remove();
+                });
+            },
+
+            /**
+             * Cargar historial de versiones
+             */
+            loadVersionHistory: function() {
+                var saved = localStorage.getItem('vbp_version_history');
+                if (saved) {
+                    try {
+                        this.versionHistory = JSON.parse(saved);
+                    } catch (e) {
+                        this.versionHistory = [];
+                    }
+                }
+            },
+
+            /**
+             * Guardar versión actual
+             */
+            saveCurrentVersion: function(name) {
+                var store = Alpine.store('vbp');
+
+                this.loadVersionHistory();
+
+                var version = {
+                    timestamp: new Date().toISOString(),
+                    name: name || '',
+                    elements: JSON.parse(JSON.stringify(store.elements)),
+                    settings: JSON.parse(JSON.stringify(store.settings || {})),
+                    cssVariables: JSON.parse(JSON.stringify(store.cssVariables || {}))
+                };
+
+                this.versionHistory.unshift(version);
+
+                // Limitar a 20 versiones
+                if (this.versionHistory.length > 20) {
+                    this.versionHistory = this.versionHistory.slice(0, 20);
+                }
+
+                localStorage.setItem('vbp_version_history', JSON.stringify(this.versionHistory));
+
+                this.showNotification('💾 Versión guardada' + (name ? ': ' + name : ''));
+            },
+
+            /**
+             * Vista previa de versión
+             */
+            previewVersion: function(index) {
+                var version = this.versionHistory[index];
+                if (!version) return;
+
+                var previewArea = document.getElementById('vbp-version-preview-area');
+                var previewContent = previewArea.querySelector('.vbp-version-preview-content');
+
+                previewArea.style.display = 'block';
+
+                // Mostrar resumen de elementos
+                var html = '<ul style="list-style: none; padding: 0; margin: 0;">';
+                version.elements.forEach(function(el) {
+                    html += '<li style="padding: 4px 0; border-bottom: 1px solid #e5e7eb;">';
+                    html += '<strong>' + (el.name || el.type) + '</strong>';
+                    html += ' <span style="color: #6b7280;">(' + el.type + ')</span>';
+                    if (el.children && el.children.length > 0) {
+                        html += ' <span style="color: #3b82f6;">[' + el.children.length + ' hijos]</span>';
+                    }
+                    html += '</li>';
+                });
+                html += '</ul>';
+
+                previewContent.innerHTML = html;
+            },
+
+            /**
+             * Restaurar versión
+             */
+            restoreVersion: function(index) {
+                var version = this.versionHistory[index];
+                if (!version) return;
+
+                var store = Alpine.store('vbp');
+
+                // Guardar versión actual antes de restaurar
+                this.saveCurrentVersion('Auto-guardado antes de restaurar');
+
+                // Restaurar
+                store.elements = JSON.parse(JSON.stringify(version.elements));
+                if (version.settings) {
+                    store.settings = JSON.parse(JSON.stringify(version.settings));
+                }
+                if (version.cssVariables) {
+                    store.cssVariables = JSON.parse(JSON.stringify(version.cssVariables));
+                    this.applyCSSVariables(store.cssVariables);
+                }
+
+                store.isDirty = true;
+                store.clearSelection();
+
+                this.showNotification('✅ Versión restaurada');
+            },
+
+            /**
              * Obtener bounds combinados de la selección
              */
             getSelectionBounds: function(store) {
@@ -2819,6 +3704,15 @@ window.vbpKeyboard = {
             { category: 'Marcadores', shortcuts: [
                 { keys: 'Ctrl + Alt + 1/2/3', action: 'Guardar marcador' },
                 { keys: 'Ctrl + Shift + 1/2/3', action: 'Ir a marcador' }
+            ]},
+            { category: 'Herramientas Avanzadas', shortcuts: [
+                { keys: 'Ctrl + Shift + P', action: 'Bloquear proporción' },
+                { keys: 'Ctrl + Alt + G', action: 'Smart Guides on/off' },
+                { keys: 'M', action: 'Herramienta de medición' },
+                { keys: 'Ctrl + Alt + F', action: 'Guardar como favorito' },
+                { keys: 'Ctrl + Shift + F', action: 'Abrir favoritos' },
+                { keys: 'Ctrl + Alt + C', action: 'Editor variables CSS' },
+                { keys: 'Ctrl + Alt + D', action: 'Comparar versiones' }
             ]},
             { category: 'Zoom', shortcuts: [
                 { keys: 'Ctrl + +', action: 'Acercar' },
