@@ -55,6 +55,16 @@ document.addEventListener('alpine:init', function() {
             { id: 'ungroup', label: 'Desagrupar elementos', category: 'acciones', icon: '📤', action: 'ungroup', shortcut: 'Ctrl+Shift+U' },
             { id: 'edit-inline', label: 'Editar texto', category: 'acciones', icon: '✏️', action: 'editInline', shortcut: 'Enter' },
 
+            // Alineación y distribución
+            { id: 'align-left', label: 'Alinear a la izquierda', category: 'alineacion', icon: '⬅', action: 'alignElements', value: 'left', shortcut: 'Alt+L' },
+            { id: 'align-center-h', label: 'Centrar horizontalmente', category: 'alineacion', icon: '↔', action: 'alignElements', value: 'centerH', shortcut: 'Alt+C' },
+            { id: 'align-right', label: 'Alinear a la derecha', category: 'alineacion', icon: '➡', action: 'alignElements', value: 'right', shortcut: 'Alt+R' },
+            { id: 'align-top', label: 'Alinear arriba', category: 'alineacion', icon: '⬆', action: 'alignElements', value: 'top', shortcut: 'Alt+T' },
+            { id: 'align-center-v', label: 'Centrar verticalmente', category: 'alineacion', icon: '↕', action: 'alignElements', value: 'centerV', shortcut: 'Alt+M' },
+            { id: 'align-bottom', label: 'Alinear abajo', category: 'alineacion', icon: '⬇', action: 'alignElements', value: 'bottom', shortcut: 'Alt+B' },
+            { id: 'distribute-h', label: 'Distribuir horizontalmente', category: 'alineacion', icon: '⇔', action: 'distributeElements', value: 'horizontal', shortcut: 'Ctrl+Alt+H' },
+            { id: 'distribute-v', label: 'Distribuir verticalmente', category: 'alineacion', icon: '⇕', action: 'distributeElements', value: 'vertical', shortcut: 'Ctrl+Alt+V' },
+
             // Vista
             { id: 'toggle-layers', label: 'Mostrar/Ocultar Capas', category: 'vista', icon: '📑', action: 'togglePanel', value: 'layers' },
             { id: 'toggle-inspector', label: 'Mostrar/Ocultar Inspector', category: 'vista', icon: '⚙', action: 'togglePanel', value: 'inspector' },
@@ -240,6 +250,35 @@ document.addEventListener('alpine:init', function() {
                     }));
                     break;
 
+                case 'alignElements':
+                    // Disparar el evento de alineación con el valor correcto
+                    var alignActions = {
+                        'left': 'alignLeft',
+                        'centerH': 'alignCenterH',
+                        'right': 'alignRight',
+                        'top': 'alignTop',
+                        'centerV': 'alignCenterV',
+                        'bottom': 'alignBottom'
+                    };
+                    if (alignActions[cmd.value]) {
+                        document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                            detail: { action: alignActions[cmd.value] }
+                        }));
+                    }
+                    break;
+
+                case 'distributeElements':
+                    var distributeActions = {
+                        'horizontal': 'distributeH',
+                        'vertical': 'distributeV'
+                    };
+                    if (distributeActions[cmd.value]) {
+                        document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                            detail: { action: distributeActions[cmd.value] }
+                        }));
+                    }
+                    break;
+
                 case 'togglePanel':
                     this.togglePanel(cmd.value);
                     break;
@@ -321,6 +360,7 @@ document.addEventListener('alpine:init', function() {
                 'secciones': 'Secciones',
                 'layout': 'Layout',
                 'acciones': 'Acciones',
+                'alineacion': 'Alineación',
                 'vista': 'Vista',
                 'responsive': 'Responsive'
             };

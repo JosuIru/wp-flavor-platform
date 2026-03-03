@@ -69,6 +69,18 @@ document.addEventListener('alpine:init', function() {
                 'f1': 'help',
                 'ctrl+,': 'settings',
 
+                // Alineación (Alt + tecla)
+                'alt+l': 'alignLeft',
+                'alt+c': 'alignCenterH',
+                'alt+r': 'alignRight',
+                'alt+t': 'alignTop',
+                'alt+m': 'alignCenterV',
+                'alt+b': 'alignBottom',
+
+                // Distribución
+                'ctrl+alt+h': 'distributeH',
+                'ctrl+alt+v': 'distributeV',
+
                 // Extras
                 'ctrl+u': 'unsplash',
                 'ctrl+shift+g': 'saveAsGlobal',
@@ -92,6 +104,13 @@ document.addEventListener('alpine:init', function() {
                 var self = this;
                 document.addEventListener('keydown', function(e) {
                     self.handleKeydown(e);
+                });
+
+                // Listener para ejecutar acciones desde command palette
+                document.addEventListener('vbp:executeAction', function(e) {
+                    if (e.detail && e.detail.action) {
+                        self.executeAction(e.detail.action);
+                    }
                 });
             },
 
@@ -297,6 +316,40 @@ document.addEventListener('alpine:init', function() {
                             detail: { modal: 'settings' }
                         }));
                         this.showNotification('Configuración...');
+                        break;
+
+                    // === ALINEACIÓN ===
+                    case 'alignLeft':
+                        this.alignElements('left');
+                        break;
+
+                    case 'alignCenterH':
+                        this.alignElements('centerH');
+                        break;
+
+                    case 'alignRight':
+                        this.alignElements('right');
+                        break;
+
+                    case 'alignTop':
+                        this.alignElements('top');
+                        break;
+
+                    case 'alignCenterV':
+                        this.alignElements('centerV');
+                        break;
+
+                    case 'alignBottom':
+                        this.alignElements('bottom');
+                        break;
+
+                    // === DISTRIBUCIÓN ===
+                    case 'distributeH':
+                        this.distributeElements('horizontal');
+                        break;
+
+                    case 'distributeV':
+                        this.distributeElements('vertical');
                         break;
                 }
             },
@@ -796,6 +849,204 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Alinear elementos seleccionados
+             * @param {string} alignment - left, centerH, right, top, centerV, bottom
+             */
+            alignElements: function(alignment) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length < 2) {
+                    this.showNotification('Selecciona al menos 2 elementos para alinear', 'warning');
+                    return;
+                }
+
+                // Guardar en historial
+                store.saveToHistory();
+
+                // Obtener bounds de todos los elementos seleccionados
+                var bounds = this.getSelectionBounds(store);
+                if (!bounds) return;
+
+                var self = this;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || !element.styles) return;
+
+                    var estilos = JSON.parse(JSON.stringify(element.styles));
+                    if (!estilos.position) estilos.position = {};
+
+                    var elementBounds = self.getElementBounds(element);
+                    if (!elementBounds) return;
+
+                    switch (alignment) {
+                        case 'left':
+                            estilos.position.left = bounds.left + 'px';
+                            break;
+                        case 'centerH':
+                            var centerX = bounds.left + (bounds.width / 2) - (elementBounds.width / 2);
+                            estilos.position.left = centerX + 'px';
+                            break;
+                        case 'right':
+                            var rightPos = bounds.left + bounds.width - elementBounds.width;
+                            estilos.position.left = rightPos + 'px';
+                            break;
+                        case 'top':
+                            estilos.position.top = bounds.top + 'px';
+                            break;
+                        case 'centerV':
+                            var centerY = bounds.top + (bounds.height / 2) - (elementBounds.height / 2);
+                            estilos.position.top = centerY + 'px';
+                            break;
+                        case 'bottom':
+                            var bottomPos = bounds.top + bounds.height - elementBounds.height;
+                            estilos.position.top = bottomPos + 'px';
+                            break;
+                    }
+
+                    store.updateElement(id, { styles: estilos });
+                });
+
+                store.isDirty = true;
+                var labels = {
+                    'left': 'Alineado a la izquierda',
+                    'centerH': 'Centrado horizontalmente',
+                    'right': 'Alineado a la derecha',
+                    'top': 'Alineado arriba',
+                    'centerV': 'Centrado verticalmente',
+                    'bottom': 'Alineado abajo'
+                };
+                this.showNotification(labels[alignment] || 'Alineado');
+            },
+
+            /**
+             * Distribuir elementos seleccionados
+             * @param {string} direction - horizontal, vertical
+             */
+            distributeElements: function(direction) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length < 3) {
+                    this.showNotification('Selecciona al menos 3 elementos para distribuir', 'warning');
+                    return;
+                }
+
+                // Guardar en historial
+                store.saveToHistory();
+
+                var self = this;
+                var elementos = [];
+
+                // Obtener elementos con sus bounds
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var bounds = self.getElementBounds(element);
+                        if (bounds) {
+                            elementos.push({
+                                id: id,
+                                element: element,
+                                bounds: bounds
+                            });
+                        }
+                    }
+                });
+
+                if (elementos.length < 3) return;
+
+                // Ordenar por posición
+                if (direction === 'horizontal') {
+                    elementos.sort(function(a, b) { return a.bounds.left - b.bounds.left; });
+                } else {
+                    elementos.sort(function(a, b) { return a.bounds.top - b.bounds.top; });
+                }
+
+                // Calcular espaciado uniforme
+                var primero = elementos[0];
+                var ultimo = elementos[elementos.length - 1];
+
+                if (direction === 'horizontal') {
+                    var totalWidth = ultimo.bounds.left + ultimo.bounds.width - primero.bounds.left;
+                    var elementosWidth = elementos.reduce(function(sum, el) { return sum + el.bounds.width; }, 0);
+                    var espacioTotal = totalWidth - elementosWidth;
+                    var espacioEntre = espacioTotal / (elementos.length - 1);
+
+                    var posActual = primero.bounds.left;
+                    elementos.forEach(function(el) {
+                        var estilos = JSON.parse(JSON.stringify(el.element.styles || {}));
+                        if (!estilos.position) estilos.position = {};
+                        estilos.position.left = posActual + 'px';
+                        store.updateElement(el.id, { styles: estilos });
+                        posActual += el.bounds.width + espacioEntre;
+                    });
+                } else {
+                    var totalHeight = ultimo.bounds.top + ultimo.bounds.height - primero.bounds.top;
+                    var elementosHeight = elementos.reduce(function(sum, el) { return sum + el.bounds.height; }, 0);
+                    var espacioTotalV = totalHeight - elementosHeight;
+                    var espacioEntreV = espacioTotalV / (elementos.length - 1);
+
+                    var posActualV = primero.bounds.top;
+                    elementos.forEach(function(el) {
+                        var estilos = JSON.parse(JSON.stringify(el.element.styles || {}));
+                        if (!estilos.position) estilos.position = {};
+                        estilos.position.top = posActualV + 'px';
+                        store.updateElement(el.id, { styles: estilos });
+                        posActualV += el.bounds.height + espacioEntreV;
+                    });
+                }
+
+                store.isDirty = true;
+                this.showNotification('Distribuido ' + (direction === 'horizontal' ? 'horizontalmente' : 'verticalmente'));
+            },
+
+            /**
+             * Obtener bounds de un elemento
+             */
+            getElementBounds: function(element) {
+                if (!element || !element.styles) return null;
+
+                var pos = element.styles.position || {};
+                var size = element.styles.size || {};
+
+                return {
+                    left: parseFloat(pos.left) || 0,
+                    top: parseFloat(pos.top) || 0,
+                    width: parseFloat(size.width) || 100,
+                    height: parseFloat(size.height) || 100
+                };
+            },
+
+            /**
+             * Obtener bounds combinados de la selección
+             */
+            getSelectionBounds: function(store) {
+                var self = this;
+                var minX = Infinity, minY = Infinity;
+                var maxX = -Infinity, maxY = -Infinity;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element) return;
+
+                    var bounds = self.getElementBounds(element);
+                    if (!bounds) return;
+
+                    minX = Math.min(minX, bounds.left);
+                    minY = Math.min(minY, bounds.top);
+                    maxX = Math.max(maxX, bounds.left + bounds.width);
+                    maxY = Math.max(maxY, bounds.top + bounds.height);
+                });
+
+                if (minX === Infinity) return null;
+
+                return {
+                    left: minX,
+                    top: minY,
+                    width: maxX - minX,
+                    height: maxY - minY
+                };
+            },
+
+            /**
              * Mostrar notificación
              */
             showNotification: function(message, type) {
@@ -940,6 +1191,16 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + \\', action: 'Toggle todos los paneles' },
                 { keys: 'Ctrl + B', action: 'Panel de bloques' },
                 { keys: 'Ctrl + L', action: 'Capas' }
+            ]},
+            { category: 'Alineación', shortcuts: [
+                { keys: 'Alt + L', action: 'Alinear a la izquierda' },
+                { keys: 'Alt + C', action: 'Centrar horizontalmente' },
+                { keys: 'Alt + R', action: 'Alinear a la derecha' },
+                { keys: 'Alt + T', action: 'Alinear arriba' },
+                { keys: 'Alt + M', action: 'Centrar verticalmente' },
+                { keys: 'Alt + B', action: 'Alinear abajo' },
+                { keys: 'Ctrl + Alt + H', action: 'Distribuir horizontalmente' },
+                { keys: 'Ctrl + Alt + V', action: 'Distribuir verticalmente' }
             ]},
             { category: 'Productividad', shortcuts: [
                 { keys: 'Ctrl + /', action: 'Paleta de comandos' },
