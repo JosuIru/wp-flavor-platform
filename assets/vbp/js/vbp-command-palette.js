@@ -50,6 +50,10 @@ document.addEventListener('alpine:init', function() {
             { id: 'delete', label: 'Eliminar elemento', category: 'acciones', icon: '🗑', action: 'delete', shortcut: 'Del' },
             { id: 'copy-styles', label: 'Copiar estilos', category: 'acciones', icon: '📋', action: 'copyStyles', shortcut: 'Ctrl+Shift+C' },
             { id: 'paste-styles', label: 'Pegar estilos', category: 'acciones', icon: '📥', action: 'pasteStyles', shortcut: 'Ctrl+Shift+V' },
+            { id: 'reset-styles', label: 'Resetear estilos', category: 'acciones', icon: '🔄', action: 'resetStyles', shortcut: 'Ctrl+Shift+R' },
+            { id: 'group', label: 'Agrupar elementos', category: 'acciones', icon: '📦', action: 'group', shortcut: 'Ctrl+G' },
+            { id: 'ungroup', label: 'Desagrupar elementos', category: 'acciones', icon: '📤', action: 'ungroup', shortcut: 'Ctrl+Shift+U' },
+            { id: 'edit-inline', label: 'Editar texto', category: 'acciones', icon: '✏️', action: 'editInline', shortcut: 'Enter' },
 
             // Vista
             { id: 'toggle-layers', label: 'Mostrar/Ocultar Capas', category: 'vista', icon: '📑', action: 'togglePanel', value: 'layers' },
@@ -200,6 +204,40 @@ document.addEventListener('alpine:init', function() {
 
                 case 'pasteStyles':
                     Alpine.store('vbpClipboard').pasteStyles();
+                    break;
+
+                case 'resetStyles':
+                    // Disparar evento para que vbpKeyboard lo maneje
+                    document.dispatchEvent(new KeyboardEvent('keydown', {
+                        key: 'r',
+                        ctrlKey: true,
+                        shiftKey: true,
+                        bubbles: true
+                    }));
+                    break;
+
+                case 'group':
+                    document.dispatchEvent(new KeyboardEvent('keydown', {
+                        key: 'g',
+                        ctrlKey: true,
+                        bubbles: true
+                    }));
+                    break;
+
+                case 'ungroup':
+                    document.dispatchEvent(new KeyboardEvent('keydown', {
+                        key: 'u',
+                        ctrlKey: true,
+                        shiftKey: true,
+                        bubbles: true
+                    }));
+                    break;
+
+                case 'editInline':
+                    document.dispatchEvent(new KeyboardEvent('keydown', {
+                        key: 'Enter',
+                        bubbles: true
+                    }));
                     break;
 
                 case 'togglePanel':
