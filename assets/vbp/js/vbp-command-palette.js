@@ -182,6 +182,9 @@ document.addEventListener('alpine:init', function() {
             // Design System
             { id: 'design-tokens', label: 'Editor de design tokens', category: 'design', icon: '🎨', action: 'openDesignTokens', shortcut: 'Ctrl+Alt+Shift+T' },
             { id: 'export-options', label: 'Opciones de exportación', category: 'design', icon: '📤', action: 'openExportOptions', shortcut: 'Ctrl+Alt+E' },
+
+            // Figma
+            { id: 'figma-import', label: 'Importar desde Figma', category: 'figma', icon: '🎨', action: 'openFigmaImporter', shortcut: 'Ctrl+Alt+Shift+F' },
         ],
 
         get filteredCommands() {

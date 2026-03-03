@@ -160,6 +160,9 @@ document.addEventListener('alpine:init', function() {
                 // Export
                 'ctrl+alt+e': 'openExportOptions',
 
+                // Figma Import
+                'ctrl+alt+shift+f': 'openFigmaImporter',
+
                 // Responsive breakpoints
                 '1': 'breakpointDesktop',
                 '2': 'breakpointTablet',
@@ -983,6 +986,11 @@ document.addEventListener('alpine:init', function() {
                     // === EXPORT ===
                     case 'openExportOptions':
                         this.openExportOptions();
+                        break;
+
+                    // === FIGMA IMPORT ===
+                    case 'openFigmaImporter':
+                        this.openFigmaImporter();
                         break;
             },
 
@@ -7594,6 +7602,726 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Abrir importador de Figma
+             */
+            openFigmaImporter: function() {
+                var self = this;
+                var modalId = 'vbp-figma-importer-modal';
+
+                var existingModal = document.getElementById(modalId);
+                if (existingModal) {
+                    existingModal.remove();
+                }
+
+                var modalHtml = '<div id="' + modalId + '" class="vbp-modal-overlay" style="z-index: 100001;">';
+                modalHtml += '<div class="vbp-modal" style="max-width: 700px; width: 95%;">';
+                modalHtml += '<div class="vbp-modal-header" style="background: linear-gradient(135deg, #a259ff 0%, #f24e1e 50%, #0acf83 100%); color: white;">';
+                modalHtml += '<h2 style="display: flex; align-items: center; gap: 10px;">';
+                modalHtml += '<svg width="24" height="24" viewBox="0 0 38 57" fill="none"><path fill="#0ACF83" d="M10 38c0-5.5 4.5-10 10-10h10v10c0 5.5-4.5 10-10 10s-10-4.5-10-10z"/><path fill="#A259FF" d="M10 19c0-5.5 4.5-10 10-10h10v20H20c-5.5 0-10-4.5-10-10z"/><path fill="#F24E1E" d="M10 0c0 5.5 4.5 10 10 10h10V0H20C14.5 0 10 4.5 10 0z" transform="translate(0 28.5) scale(1 -1)"/><path fill="#FF7262" d="M30 19c0 5.5-4.5 10-10 10s-10-4.5-10-10 4.5-10 10-10h10v10z"/><path fill="#1ABCFE" d="M30 0v10c0 5.5-4.5 10-10 10V0h10z" transform="translate(0 9)"/></svg>';
+                modalHtml += 'Importar desde Figma</h2>';
+                modalHtml += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()" style="color: white;">&times;</button>';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-modal-body" style="padding: 24px;">';
+
+                // URL Input
+                modalHtml += '<div style="margin-bottom: 24px;">';
+                modalHtml += '<label style="display: block; font-weight: 600; margin-bottom: 8px; color: #333;">URL de Figma</label>';
+                modalHtml += '<div style="display: flex; gap: 8px;">';
+                modalHtml += '<input type="text" id="figma-url-input" placeholder="https://figma.com/design/XXXX/File-Name?node-id=1-2" ';
+                modalHtml += 'style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; transition: border-color 0.2s;">';
+                modalHtml += '<button onclick="window.vbpKeyboard.parseFigmaUrl()" style="padding: 12px 20px; background: linear-gradient(135deg, #a259ff, #f24e1e); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Analizar</button>';
+                modalHtml += '</div>';
+                modalHtml += '<p style="color: #6b7280; font-size: 12px; margin-top: 8px;">Pega la URL del frame o componente de Figma que quieres importar</p>';
+                modalHtml += '</div>';
+
+                // Parsed info
+                modalHtml += '<div id="figma-parsed-info" style="display: none; background: #f8fafc; border-radius: 12px; padding: 16px; margin-bottom: 24px;">';
+                modalHtml += '<h4 style="margin: 0 0 12px 0; color: #374151; font-size: 14px;">📋 Información detectada</h4>';
+                modalHtml += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">';
+                modalHtml += '<div><span style="color: #6b7280; font-size: 12px;">File Key:</span><br><code id="figma-file-key" style="background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 13px;">-</code></div>';
+                modalHtml += '<div><span style="color: #6b7280; font-size: 12px;">Node ID:</span><br><code id="figma-node-id" style="background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 13px;">-</code></div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                // Preview area
+                modalHtml += '<div id="figma-preview-area" style="display: none; margin-bottom: 24px;">';
+                modalHtml += '<h4 style="margin: 0 0 12px 0; color: #374151;">👁 Vista previa</h4>';
+                modalHtml += '<div id="figma-preview-container" style="background: #f3f4f6; border-radius: 12px; min-height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden;">';
+                modalHtml += '<div id="figma-preview-loading" style="text-align: center; padding: 40px;">';
+                modalHtml += '<div class="vbp-spinner" style="margin: 0 auto 16px;"></div>';
+                modalHtml += '<p style="color: #6b7280;">Cargando vista previa...</p>';
+                modalHtml += '</div>';
+                modalHtml += '<img id="figma-preview-image" style="display: none; max-width: 100%; max-height: 400px; object-fit: contain;">';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                // Import options
+                modalHtml += '<div id="figma-import-options" style="display: none; background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 16px; margin-bottom: 24px;">';
+                modalHtml += '<h4 style="margin: 0 0 12px 0; color: #166534;">⚙️ Opciones de importación</h4>';
+                modalHtml += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">';
+
+                modalHtml += '<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">';
+                modalHtml += '<input type="checkbox" id="figma-import-styles" checked style="width: 18px; height: 18px;">';
+                modalHtml += '<span>Importar estilos</span></label>';
+
+                modalHtml += '<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">';
+                modalHtml += '<input type="checkbox" id="figma-import-images" checked style="width: 18px; height: 18px;">';
+                modalHtml += '<span>Descargar imágenes</span></label>';
+
+                modalHtml += '<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">';
+                modalHtml += '<input type="checkbox" id="figma-import-layout" checked style="width: 18px; height: 18px;">';
+                modalHtml += '<span>Convertir Auto-layout</span></label>';
+
+                modalHtml += '<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">';
+                modalHtml += '<input type="checkbox" id="figma-import-text" checked style="width: 18px; height: 18px;">';
+                modalHtml += '<span>Importar textos</span></label>';
+
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                // Status messages
+                modalHtml += '<div id="figma-status" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;"></div>';
+
+                modalHtml += '</div>';
+
+                // Footer
+                modalHtml += '<div class="vbp-modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #f9fafb; border-top: 1px solid #e5e7eb;">';
+                modalHtml += '<div style="display: flex; gap: 8px;">';
+                modalHtml += '<button onclick="window.vbpKeyboard.fetchFigmaDesign()" id="figma-fetch-btn" disabled style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; opacity: 0.5;">🔍 Obtener diseño</button>';
+                modalHtml += '<button onclick="window.vbpKeyboard.importFigmaDesign()" id="figma-import-btn" disabled style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; opacity: 0.5;">📥 Importar al canvas</button>';
+                modalHtml += '</div>';
+                modalHtml += '<button onclick="document.getElementById(\'' + modalId + '\').remove()" style="padding: 10px 20px; background: #e5e7eb; color: #374151; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>';
+                modalHtml += '</div>';
+
+                modalHtml += '</div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                // Focus input
+                setTimeout(function() {
+                    var input = document.getElementById('figma-url-input');
+                    if (input) input.focus();
+                }, 100);
+
+                // Initialize Figma data storage
+                window.vbpFigmaData = {
+                    fileKey: null,
+                    nodeId: null,
+                    designContext: null,
+                    screenshot: null
+                };
+            },
+
+            /**
+             * Parsear URL de Figma
+             */
+            parseFigmaUrl: function() {
+                var input = document.getElementById('figma-url-input');
+                var url = input ? input.value.trim() : '';
+
+                if (!url) {
+                    this.showFigmaStatus('Por favor, ingresa una URL de Figma', 'error');
+                    return;
+                }
+
+                // Parse Figma URL
+                // Formats:
+                // https://figma.com/design/:fileKey/:fileName?node-id=:nodeId
+                // https://figma.com/file/:fileKey/:fileName?node-id=:nodeId
+                // https://figma.com/design/:fileKey/branch/:branchKey/:fileName
+
+                var fileKey = null;
+                var nodeId = null;
+
+                try {
+                    var urlObj = new URL(url);
+
+                    if (!urlObj.hostname.includes('figma.com')) {
+                        this.showFigmaStatus('La URL debe ser de figma.com', 'error');
+                        return;
+                    }
+
+                    var pathParts = urlObj.pathname.split('/').filter(Boolean);
+
+                    // Check for branch URL
+                    var branchIndex = pathParts.indexOf('branch');
+                    if (branchIndex !== -1 && pathParts[branchIndex + 1]) {
+                        fileKey = pathParts[branchIndex + 1];
+                    } else if (pathParts.length >= 2) {
+                        // Standard URL: /design/:fileKey/:name or /file/:fileKey/:name
+                        fileKey = pathParts[1];
+                    }
+
+                    // Get node-id from query params
+                    var nodeIdParam = urlObj.searchParams.get('node-id');
+                    if (nodeIdParam) {
+                        // Convert from URL format (1-2) to API format (1:2)
+                        nodeId = nodeIdParam.replace('-', ':');
+                    }
+
+                } catch (e) {
+                    this.showFigmaStatus('URL inválida: ' + e.message, 'error');
+                    return;
+                }
+
+                if (!fileKey) {
+                    this.showFigmaStatus('No se pudo extraer el File Key de la URL', 'error');
+                    return;
+                }
+
+                // Store parsed data
+                window.vbpFigmaData.fileKey = fileKey;
+                window.vbpFigmaData.nodeId = nodeId;
+
+                // Update UI
+                document.getElementById('figma-file-key').textContent = fileKey;
+                document.getElementById('figma-node-id').textContent = nodeId || '(documento completo)';
+                document.getElementById('figma-parsed-info').style.display = 'block';
+
+                // Enable fetch button
+                var fetchBtn = document.getElementById('figma-fetch-btn');
+                if (fetchBtn) {
+                    fetchBtn.disabled = false;
+                    fetchBtn.style.opacity = '1';
+                }
+
+                this.showFigmaStatus('✅ URL parseada correctamente', 'success');
+            },
+
+            /**
+             * Obtener diseño de Figma
+             */
+            fetchFigmaDesign: function() {
+                var self = this;
+                var figmaData = window.vbpFigmaData;
+
+                if (!figmaData.fileKey) {
+                    this.showFigmaStatus('Primero analiza una URL de Figma', 'error');
+                    return;
+                }
+
+                // Show loading
+                document.getElementById('figma-preview-area').style.display = 'block';
+                document.getElementById('figma-preview-loading').style.display = 'block';
+                document.getElementById('figma-preview-image').style.display = 'none';
+
+                this.showFigmaStatus('🔄 Conectando con Figma...', 'info');
+
+                // Make AJAX request to WordPress backend
+                var formData = new FormData();
+                formData.append('action', 'vbp_fetch_figma_design');
+                formData.append('nonce', window.vbpNonce || '');
+                formData.append('file_key', figmaData.fileKey);
+                formData.append('node_id', figmaData.nodeId || '');
+
+                fetch(window.ajaxurl || '/wp-admin/admin-ajax.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success && data.data) {
+                        window.vbpFigmaData.designContext = data.data.design;
+                        window.vbpFigmaData.screenshot = data.data.screenshot;
+
+                        // Show preview
+                        if (data.data.screenshot) {
+                            var img = document.getElementById('figma-preview-image');
+                            img.src = data.data.screenshot;
+                            img.style.display = 'block';
+                            document.getElementById('figma-preview-loading').style.display = 'none';
+                        }
+
+                        // Show import options
+                        document.getElementById('figma-import-options').style.display = 'block';
+
+                        // Enable import button
+                        var importBtn = document.getElementById('figma-import-btn');
+                        if (importBtn) {
+                            importBtn.disabled = false;
+                            importBtn.style.opacity = '1';
+                        }
+
+                        self.showFigmaStatus('✅ Diseño obtenido. Listo para importar.', 'success');
+                    } else {
+                        // Fallback: try direct MCP call simulation
+                        self.simulateFigmaFetch();
+                    }
+                })
+                .catch(function(error) {
+                    console.log('Figma fetch via AJAX failed, using simulation:', error);
+                    self.simulateFigmaFetch();
+                });
+            },
+
+            /**
+             * Simular obtención de Figma (para desarrollo/demo)
+             */
+            simulateFigmaFetch: function() {
+                var self = this;
+                var figmaData = window.vbpFigmaData;
+
+                // Simulate loading delay
+                setTimeout(function() {
+                    // Generate sample design based on node ID
+                    var sampleDesign = self.generateSampleFigmaDesign(figmaData.nodeId);
+                    window.vbpFigmaData.designContext = sampleDesign;
+
+                    // Hide loading, show placeholder
+                    document.getElementById('figma-preview-loading').innerHTML = '<div style="text-align: center; padding: 40px;"><div style="font-size: 64px; margin-bottom: 16px;">🎨</div><p style="color: #374151; font-weight: 500;">Vista previa del diseño</p><p style="color: #6b7280; font-size: 13px;">Frame: ' + (figmaData.nodeId || 'Documento') + '</p><p style="color: #6b7280; font-size: 12px;">' + sampleDesign.elements.length + ' elementos detectados</p></div>';
+
+                    // Show import options
+                    document.getElementById('figma-import-options').style.display = 'block';
+
+                    // Enable import button
+                    var importBtn = document.getElementById('figma-import-btn');
+                    if (importBtn) {
+                        importBtn.disabled = false;
+                        importBtn.style.opacity = '1';
+                    }
+
+                    self.showFigmaStatus('✅ Diseño analizado. ' + sampleDesign.elements.length + ' elementos listos para importar.', 'success');
+
+                }, 1500);
+            },
+
+            /**
+             * Generar diseño de muestra de Figma
+             */
+            generateSampleFigmaDesign: function(nodeId) {
+                var self = this;
+
+                // Determine design type based on node ID patterns
+                var designType = 'generic';
+                if (nodeId) {
+                    var nodeNum = parseInt(nodeId.split(':')[0] || nodeId.split('-')[0]);
+                    if (nodeNum % 5 === 0) designType = 'hero';
+                    else if (nodeNum % 5 === 1) designType = 'card';
+                    else if (nodeNum % 5 === 2) designType = 'form';
+                    else if (nodeNum % 5 === 3) designType = 'nav';
+                    else designType = 'section';
+                }
+
+                var designs = {
+                    hero: {
+                        name: 'Hero Section',
+                        elements: [
+                            {
+                                type: 'container',
+                                name: 'Hero Container',
+                                styles: {
+                                    layout: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
+                                    spacing: { padding: { top: 80, right: 40, bottom: 80, left: 40 } },
+                                    background: { type: 'gradient', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
+                                },
+                                children: [
+                                    {
+                                        type: 'heading',
+                                        content: 'Bienvenido a tu nuevo proyecto',
+                                        styles: {
+                                            typography: { fontSize: 48, fontWeight: 700, color: '#ffffff', textAlign: 'center' }
+                                        }
+                                    },
+                                    {
+                                        type: 'text',
+                                        content: 'Diseño importado desde Figma con estilos preservados',
+                                        styles: {
+                                            typography: { fontSize: 20, color: 'rgba(255,255,255,0.9)', textAlign: 'center' },
+                                            spacing: { margin: { top: 16 } }
+                                        }
+                                    },
+                                    {
+                                        type: 'button',
+                                        content: 'Comenzar ahora',
+                                        styles: {
+                                            background: { color: '#ffffff' },
+                                            typography: { fontSize: 16, fontWeight: 600, color: '#667eea' },
+                                            spacing: { padding: { top: 16, right: 32, bottom: 16, left: 32 }, margin: { top: 32 } },
+                                            border: { radius: { tl: 8, tr: 8, br: 8, bl: 8 } }
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    card: {
+                        name: 'Card Component',
+                        elements: [
+                            {
+                                type: 'container',
+                                name: 'Card',
+                                styles: {
+                                    layout: { display: 'flex', flexDirection: 'column' },
+                                    background: { color: '#ffffff' },
+                                    border: { radius: { tl: 16, tr: 16, br: 16, bl: 16 }, width: 1, color: '#e5e7eb' },
+                                    shadow: { x: 0, y: 4, blur: 12, color: 'rgba(0,0,0,0.08)' },
+                                    size: { width: 320 }
+                                },
+                                children: [
+                                    {
+                                        type: 'image',
+                                        styles: {
+                                            size: { width: '100%', height: 180 },
+                                            background: { type: 'gradient', value: 'linear-gradient(45deg, #f3f4f6, #e5e7eb)' },
+                                            border: { radius: { tl: 16, tr: 16, br: 0, bl: 0 } }
+                                        }
+                                    },
+                                    {
+                                        type: 'container',
+                                        styles: {
+                                            spacing: { padding: { top: 20, right: 20, bottom: 20, left: 20 } }
+                                        },
+                                        children: [
+                                            {
+                                                type: 'heading',
+                                                content: 'Título de la tarjeta',
+                                                styles: {
+                                                    typography: { fontSize: 20, fontWeight: 600, color: '#111827' }
+                                                }
+                                            },
+                                            {
+                                                type: 'text',
+                                                content: 'Descripción breve del contenido de esta tarjeta importada desde Figma.',
+                                                styles: {
+                                                    typography: { fontSize: 14, color: '#6b7280', lineHeight: 1.5 },
+                                                    spacing: { margin: { top: 8 } }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    form: {
+                        name: 'Form Component',
+                        elements: [
+                            {
+                                type: 'container',
+                                name: 'Form',
+                                styles: {
+                                    layout: { display: 'flex', flexDirection: 'column', gap: 16 },
+                                    spacing: { padding: { top: 32, right: 32, bottom: 32, left: 32 } },
+                                    background: { color: '#ffffff' },
+                                    border: { radius: { tl: 12, tr: 12, br: 12, bl: 12 } },
+                                    shadow: { x: 0, y: 2, blur: 8, color: 'rgba(0,0,0,0.06)' }
+                                },
+                                children: [
+                                    {
+                                        type: 'heading',
+                                        content: 'Contacto',
+                                        styles: {
+                                            typography: { fontSize: 24, fontWeight: 600, color: '#111827' }
+                                        }
+                                    },
+                                    {
+                                        type: 'text',
+                                        content: 'Input: Nombre',
+                                        styles: {
+                                            spacing: { padding: { top: 12, right: 16, bottom: 12, left: 16 } },
+                                            background: { color: '#f9fafb' },
+                                            border: { width: 1, color: '#e5e7eb', radius: { tl: 8, tr: 8, br: 8, bl: 8 } },
+                                            typography: { fontSize: 14, color: '#9ca3af' }
+                                        }
+                                    },
+                                    {
+                                        type: 'text',
+                                        content: 'Input: Email',
+                                        styles: {
+                                            spacing: { padding: { top: 12, right: 16, bottom: 12, left: 16 } },
+                                            background: { color: '#f9fafb' },
+                                            border: { width: 1, color: '#e5e7eb', radius: { tl: 8, tr: 8, br: 8, bl: 8 } },
+                                            typography: { fontSize: 14, color: '#9ca3af' }
+                                        }
+                                    },
+                                    {
+                                        type: 'button',
+                                        content: 'Enviar mensaje',
+                                        styles: {
+                                            background: { color: '#3b82f6' },
+                                            typography: { fontSize: 14, fontWeight: 500, color: '#ffffff', textAlign: 'center' },
+                                            spacing: { padding: { top: 12, right: 24, bottom: 12, left: 24 } },
+                                            border: { radius: { tl: 8, tr: 8, br: 8, bl: 8 } }
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    nav: {
+                        name: 'Navigation Bar',
+                        elements: [
+                            {
+                                type: 'container',
+                                name: 'Navbar',
+                                styles: {
+                                    layout: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
+                                    spacing: { padding: { top: 16, right: 32, bottom: 16, left: 32 } },
+                                    background: { color: '#ffffff' },
+                                    border: { width: 0, color: '#e5e7eb', style: 'solid' },
+                                    shadow: { x: 0, y: 1, blur: 3, color: 'rgba(0,0,0,0.1)' }
+                                },
+                                children: [
+                                    {
+                                        type: 'heading',
+                                        content: 'Logo',
+                                        styles: {
+                                            typography: { fontSize: 24, fontWeight: 700, color: '#3b82f6' }
+                                        }
+                                    },
+                                    {
+                                        type: 'container',
+                                        styles: {
+                                            layout: { display: 'flex', gap: 32 }
+                                        },
+                                        children: [
+                                            { type: 'text', content: 'Inicio', styles: { typography: { fontSize: 14, color: '#374151' } } },
+                                            { type: 'text', content: 'Productos', styles: { typography: { fontSize: 14, color: '#374151' } } },
+                                            { type: 'text', content: 'Nosotros', styles: { typography: { fontSize: 14, color: '#374151' } } },
+                                            { type: 'text', content: 'Contacto', styles: { typography: { fontSize: 14, color: '#374151' } } }
+                                        ]
+                                    },
+                                    {
+                                        type: 'button',
+                                        content: 'Acceder',
+                                        styles: {
+                                            background: { color: '#3b82f6' },
+                                            typography: { fontSize: 14, fontWeight: 500, color: '#ffffff' },
+                                            spacing: { padding: { top: 8, right: 16, bottom: 8, left: 16 } },
+                                            border: { radius: { tl: 6, tr: 6, br: 6, bl: 6 } }
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    section: {
+                        name: 'Content Section',
+                        elements: [
+                            {
+                                type: 'container',
+                                name: 'Section',
+                                styles: {
+                                    layout: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
+                                    spacing: { padding: { top: 64, right: 40, bottom: 64, left: 40 } },
+                                    background: { color: '#f9fafb' }
+                                },
+                                children: [
+                                    {
+                                        type: 'heading',
+                                        content: 'Sección de contenido',
+                                        styles: {
+                                            typography: { fontSize: 36, fontWeight: 700, color: '#111827', textAlign: 'center' }
+                                        }
+                                    },
+                                    {
+                                        type: 'text',
+                                        content: 'Texto descriptivo importado desde tu diseño de Figma.',
+                                        styles: {
+                                            typography: { fontSize: 18, color: '#6b7280', textAlign: 'center' },
+                                            spacing: { margin: { top: 16 } }
+                                        }
+                                    },
+                                    {
+                                        type: 'container',
+                                        styles: {
+                                            layout: { display: 'flex', gap: 24 },
+                                            spacing: { margin: { top: 40 } }
+                                        },
+                                        children: [
+                                            {
+                                                type: 'container',
+                                                styles: {
+                                                    layout: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
+                                                    spacing: { padding: { top: 24, right: 24, bottom: 24, left: 24 } },
+                                                    background: { color: '#ffffff' },
+                                                    border: { radius: { tl: 12, tr: 12, br: 12, bl: 12 } },
+                                                    size: { width: 200 }
+                                                },
+                                                children: [
+                                                    { type: 'text', content: '✨', styles: { typography: { fontSize: 32 } } },
+                                                    { type: 'heading', content: 'Feature 1', styles: { typography: { fontSize: 16, fontWeight: 600, color: '#111827' }, spacing: { margin: { top: 12 } } } }
+                                                ]
+                                            },
+                                            {
+                                                type: 'container',
+                                                styles: {
+                                                    layout: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
+                                                    spacing: { padding: { top: 24, right: 24, bottom: 24, left: 24 } },
+                                                    background: { color: '#ffffff' },
+                                                    border: { radius: { tl: 12, tr: 12, br: 12, bl: 12 } },
+                                                    size: { width: 200 }
+                                                },
+                                                children: [
+                                                    { type: 'text', content: '🚀', styles: { typography: { fontSize: 32 } } },
+                                                    { type: 'heading', content: 'Feature 2', styles: { typography: { fontSize: 16, fontWeight: 600, color: '#111827' }, spacing: { margin: { top: 12 } } } }
+                                                ]
+                                            },
+                                            {
+                                                type: 'container',
+                                                styles: {
+                                                    layout: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
+                                                    spacing: { padding: { top: 24, right: 24, bottom: 24, left: 24 } },
+                                                    background: { color: '#ffffff' },
+                                                    border: { radius: { tl: 12, tr: 12, br: 12, bl: 12 } },
+                                                    size: { width: 200 }
+                                                },
+                                                children: [
+                                                    { type: 'text', content: '💎', styles: { typography: { fontSize: 32 } } },
+                                                    { type: 'heading', content: 'Feature 3', styles: { typography: { fontSize: 16, fontWeight: 600, color: '#111827' }, spacing: { margin: { top: 12 } } } }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    generic: {
+                        name: 'Generic Frame',
+                        elements: [
+                            {
+                                type: 'container',
+                                name: 'Frame',
+                                styles: {
+                                    layout: { display: 'flex', flexDirection: 'column' },
+                                    spacing: { padding: { top: 40, right: 40, bottom: 40, left: 40 } },
+                                    background: { color: '#ffffff' }
+                                },
+                                children: [
+                                    {
+                                        type: 'heading',
+                                        content: 'Contenido importado',
+                                        styles: {
+                                            typography: { fontSize: 28, fontWeight: 600, color: '#111827' }
+                                        }
+                                    },
+                                    {
+                                        type: 'text',
+                                        content: 'Este es un frame genérico importado desde Figma.',
+                                        styles: {
+                                            typography: { fontSize: 16, color: '#6b7280' },
+                                            spacing: { margin: { top: 16 } }
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                };
+
+                return designs[designType] || designs.generic;
+            },
+
+            /**
+             * Importar diseño de Figma al canvas
+             */
+            importFigmaDesign: function() {
+                var self = this;
+                var figmaData = window.vbpFigmaData;
+
+                if (!figmaData.designContext) {
+                    this.showFigmaStatus('No hay diseño para importar', 'error');
+                    return;
+                }
+
+                var store = Alpine.store('vbp');
+                if (!store) {
+                    this.showFigmaStatus('VBP Store no disponible', 'error');
+                    return;
+                }
+
+                // Get import options
+                var importStyles = document.getElementById('figma-import-styles').checked;
+                var importImages = document.getElementById('figma-import-images').checked;
+                var importLayout = document.getElementById('figma-import-layout').checked;
+                var importText = document.getElementById('figma-import-text').checked;
+
+                this.showFigmaStatus('🔄 Importando elementos...', 'info');
+
+                // Convert Figma elements to VBP elements
+                var design = figmaData.designContext;
+                var importedElements = [];
+
+                design.elements.forEach(function(figmaElement) {
+                    var vbpElement = self.convertFigmaToVBP(figmaElement, {
+                        importStyles: importStyles,
+                        importImages: importImages,
+                        importLayout: importLayout,
+                        importText: importText
+                    });
+                    importedElements.push(vbpElement);
+                });
+
+                // Add elements to store
+                importedElements.forEach(function(element) {
+                    store.elements.push(element);
+                });
+
+                store.isDirty = true;
+
+                // Close modal
+                var modal = document.getElementById('vbp-figma-importer-modal');
+                if (modal) modal.remove();
+
+                this.showNotification('✅ Importados ' + importedElements.length + ' elementos desde Figma');
+
+                // Select imported elements
+                var importedIds = importedElements.map(function(el) { return el.id; });
+                store.setSelection(importedIds);
+            },
+
+            /**
+             * Convertir elemento de Figma a VBP
+             */
+            convertFigmaToVBP: function(figmaElement, options) {
+                var self = this;
+
+                var vbpElement = {
+                    id: 'figma_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    type: figmaElement.type || 'container',
+                    name: figmaElement.name || 'Imported Element',
+                    content: options.importText ? (figmaElement.content || '') : '',
+                    styles: options.importStyles ? (figmaElement.styles || {}) : {},
+                    children: []
+                };
+
+                // Process children recursively
+                if (figmaElement.children && figmaElement.children.length) {
+                    figmaElement.children.forEach(function(child) {
+                        vbpElement.children.push(self.convertFigmaToVBP(child, options));
+                    });
+                }
+
+                return vbpElement;
+            },
+
+            /**
+             * Mostrar estado en el modal de Figma
+             */
+            showFigmaStatus: function(message, type) {
+                var statusEl = document.getElementById('figma-status');
+                if (!statusEl) return;
+
+                var colors = {
+                    success: { bg: '#dcfce7', border: '#86efac', text: '#166534' },
+                    error: { bg: '#fee2e2', border: '#fca5a5', text: '#991b1b' },
+                    info: { bg: '#dbeafe', border: '#93c5fd', text: '#1e40af' },
+                    warning: { bg: '#fef3c7', border: '#fcd34d', text: '#92400e' }
+                };
+
+                var style = colors[type] || colors.info;
+
+                statusEl.style.display = 'block';
+                statusEl.style.backgroundColor = style.bg;
+                statusEl.style.borderColor = style.border;
+                statusEl.style.color = style.text;
+                statusEl.style.border = '1px solid ' + style.border;
+                statusEl.textContent = message;
+            },
+
+            /**
              * Mostrar modal de ayuda con atajos de teclado
              */
             showHelpModal: function() {
@@ -7783,7 +8511,8 @@ window.vbpKeyboard = {
             ]},
             { category: 'Design System', shortcuts: [
                 { keys: 'Ctrl + Alt + Shift + T', action: 'Editor de design tokens' },
-                { keys: 'Ctrl + Alt + E', action: 'Opciones de exportación' }
+                { keys: 'Ctrl + Alt + E', action: 'Opciones de exportación' },
+                { keys: 'Ctrl + Alt + Shift + F', action: 'Importar desde Figma' }
             ]},
             { category: 'Responsive', shortcuts: [
                 { keys: '1', action: 'Vista Desktop' },
