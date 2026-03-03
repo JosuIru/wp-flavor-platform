@@ -69,6 +69,8 @@ document.addEventListener('alpine:init', function() {
             { id: 'align-bottom', label: 'Alinear abajo', category: 'alineacion', icon: '⬇', action: 'alignElements', value: 'bottom', shortcut: 'Alt+B' },
             { id: 'distribute-h', label: 'Distribuir horizontalmente', category: 'alineacion', icon: '⇔', action: 'distributeElements', value: 'horizontal', shortcut: 'Ctrl+Alt+H' },
             { id: 'distribute-v', label: 'Distribuir verticalmente', category: 'alineacion', icon: '⇕', action: 'distributeElements', value: 'vertical', shortcut: 'Ctrl+Alt+V' },
+            { id: 'stack-h', label: 'Apilar horizontalmente', category: 'alineacion', icon: '📚', action: 'stackElements', value: 'horizontal', shortcut: 'Ctrl+Shift+→' },
+            { id: 'stack-v', label: 'Apilar verticalmente', category: 'alineacion', icon: '📚', action: 'stackElements', value: 'vertical', shortcut: 'Ctrl+Shift+↓' },
 
             // Vista
             { id: 'toggle-grid', label: 'Mostrar/Ocultar Cuadrícula', category: 'vista', icon: '⊞', action: 'toggleGrid', shortcut: 'Ctrl+\'' },
@@ -369,6 +371,18 @@ document.addEventListener('alpine:init', function() {
                     if (distributeActions[cmd.value]) {
                         document.dispatchEvent(new CustomEvent('vbp:executeAction', {
                             detail: { action: distributeActions[cmd.value] }
+                        }));
+                    }
+                    break;
+
+                case 'stackElements':
+                    var stackActions = {
+                        'horizontal': 'stackHorizontal',
+                        'vertical': 'stackVertical'
+                    };
+                    if (stackActions[cmd.value]) {
+                        document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                            detail: { action: stackActions[cmd.value] }
                         }));
                     }
                     break;

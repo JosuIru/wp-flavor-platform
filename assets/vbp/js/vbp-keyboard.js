@@ -93,6 +93,10 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+alt+h': 'distributeH',
                 'ctrl+alt+v': 'distributeV',
 
+                // Stack (apilar)
+                'ctrl+shift+arrowright': 'stackHorizontal',
+                'ctrl+shift+arrowdown': 'stackVertical',
+
                 // Bloqueo
                 'ctrl+shift+l': 'toggleLock',
 
@@ -440,6 +444,15 @@ document.addEventListener('alpine:init', function() {
 
                     case 'distributeV':
                         this.distributeElements('vertical');
+                        break;
+
+                    // === STACK ===
+                    case 'stackHorizontal':
+                        this.stackElements('horizontal');
+                        break;
+
+                    case 'stackVertical':
+                        this.stackElements('vertical');
                         break;
 
                     // === BLOQUEO ===
@@ -1168,6 +1181,74 @@ document.addEventListener('alpine:init', function() {
                     'bottom': 'Alineado abajo'
                 };
                 this.showNotification(labels[alignment] || 'Alineado');
+            },
+
+            /**
+             * Apilar elementos seleccionados (horizontal o vertical)
+             * @param {string} direction - horizontal, vertical
+             */
+            stackElements: function(direction) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length < 2) {
+                    this.showNotification('Selecciona al menos 2 elementos para apilar', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var self = this;
+                var elementos = [];
+                var gap = 16; // Espacio entre elementos
+
+                // Obtener elementos con sus bounds actuales
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element && !element.locked) {
+                        var bounds = self.getElementBounds(element);
+                        if (bounds) {
+                            elementos.push({
+                                id: id,
+                                element: element,
+                                bounds: bounds
+                            });
+                        }
+                    }
+                });
+
+                if (elementos.length < 2) return;
+
+                // Ordenar por posición actual
+                if (direction === 'horizontal') {
+                    elementos.sort(function(a, b) { return a.bounds.left - b.bounds.left; });
+                } else {
+                    elementos.sort(function(a, b) { return a.bounds.top - b.bounds.top; });
+                }
+
+                // Posición inicial del primer elemento
+                var posActual = direction === 'horizontal'
+                    ? elementos[0].bounds.left
+                    : elementos[0].bounds.top;
+
+                // Apilar elementos uno tras otro
+                elementos.forEach(function(el) {
+                    var estilos = JSON.parse(JSON.stringify(el.element.styles || {}));
+                    if (!estilos.position) estilos.position = {};
+
+                    if (direction === 'horizontal') {
+                        estilos.position.left = posActual + 'px';
+                        posActual += el.bounds.width + gap;
+                    } else {
+                        estilos.position.top = posActual + 'px';
+                        posActual += el.bounds.height + gap;
+                    }
+
+                    store.updateElement(el.id, { styles: estilos });
+                });
+
+                store.isDirty = true;
+                var label = direction === 'horizontal' ? 'horizontalmente' : 'verticalmente';
+                this.showNotification('📚 Apilados ' + label + ' (' + elementos.length + ')');
             },
 
             /**
@@ -1988,7 +2069,9 @@ window.vbpKeyboard = {
                 { keys: 'Alt + M', action: 'Centrar verticalmente' },
                 { keys: 'Alt + B', action: 'Alinear abajo' },
                 { keys: 'Ctrl + Alt + H', action: 'Distribuir horizontalmente' },
-                { keys: 'Ctrl + Alt + V', action: 'Distribuir verticalmente' }
+                { keys: 'Ctrl + Alt + V', action: 'Distribuir verticalmente' },
+                { keys: 'Ctrl + Shift + →', action: 'Apilar horizontal' },
+                { keys: 'Ctrl + Shift + ↓', action: 'Apilar vertical' }
             ]},
             { category: 'Productividad', shortcuts: [
                 { keys: 'Ctrl + /', action: 'Paleta de comandos' },
