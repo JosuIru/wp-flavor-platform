@@ -658,7 +658,10 @@ class Flavor_VBP_Editor {
         // Verificar si hay un proveedor de IA configurado
         if ( class_exists( 'Flavor_Engine_Manager' ) ) {
             $engine_manager = Flavor_Engine_Manager::get_instance();
-            return $engine_manager->tiene_proveedor_configurado();
+            $engine = $engine_manager->get_backend_engine();
+            if ( $engine && method_exists( $engine, 'is_configured' ) ) {
+                return $engine->is_configured();
+            }
         }
 
         // Fallback: verificar si hay API key configurada

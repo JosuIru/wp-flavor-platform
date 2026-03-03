@@ -81,29 +81,11 @@ class Flavor_Landing_Editor {
 
     /**
      * Redirige la edición de flavor_landing al Landing Editor dedicado
+     * NOTA: Deshabilitado - VBP (Visual Builder Pro) es ahora el editor principal
      */
     public function redirect_landing_edit() {
-        global $pagenow;
-
-        // Solo actuar en post.php (página de edición)
-        if ($pagenow !== 'post.php') {
-            return;
-        }
-
-        // Verificar que tenemos un post_id y es flavor_landing
-        $post_id = isset($_GET['post']) ? absint($_GET['post']) : 0;
-        if (!$post_id) {
-            return;
-        }
-
-        $post = get_post($post_id);
-        if (!$post || $post->post_type !== 'flavor_landing') {
-            return;
-        }
-
-        // Redirigir al Landing Editor dedicado
-        wp_redirect(admin_url('admin.php?page=flavor-landing-editor&post_id=' . $post_id));
-        exit;
+        // VBP maneja la redirección ahora
+        return;
     }
 
     /**

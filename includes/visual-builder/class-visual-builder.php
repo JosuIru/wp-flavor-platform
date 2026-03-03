@@ -158,8 +158,8 @@ class Flavor_Visual_Builder {
      * ya que ese addon proporciona un editor más avanzado.
      */
     public function add_meta_boxes() {
-        // No registrar si Page Builder Pro está activo (evitar duplicados)
-        if (class_exists('Flavor_Page_Builder') || class_exists('Flavor_VBP_Page_Builder')) {
+        // No registrar si VBP (Visual Builder Pro) está activo
+        if (class_exists('Flavor_VBP_Editor') || class_exists('Flavor_Page_Builder') || class_exists('Flavor_VBP_Page_Builder')) {
             return;
         }
 
