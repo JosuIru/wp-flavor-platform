@@ -71,6 +71,298 @@ class Flavor_VBP_Block_Library {
     }
 
     /**
+     * Campos de estilo comunes para todos los bloques de módulos
+     *
+     * @return array
+     */
+    private function get_campos_estilo_comunes() {
+        return array(
+            '_separator_estilo' => array(
+                'type'  => 'separator',
+                'label' => __( '🎨 Estilo Visual', 'flavor-chat-ia' ),
+            ),
+            'esquema_color' => array(
+                'type'    => 'select',
+                'label'   => __( 'Esquema de color', 'flavor-chat-ia' ),
+                'options' => array(
+                    'default'   => __( 'Por defecto', 'flavor-chat-ia' ),
+                    'primary'   => __( 'Primario (azul)', 'flavor-chat-ia' ),
+                    'success'   => __( 'Éxito (verde)', 'flavor-chat-ia' ),
+                    'warning'   => __( 'Advertencia (amarillo)', 'flavor-chat-ia' ),
+                    'danger'    => __( 'Peligro (rojo)', 'flavor-chat-ia' ),
+                    'purple'    => __( 'Púrpura', 'flavor-chat-ia' ),
+                    'pink'      => __( 'Rosa', 'flavor-chat-ia' ),
+                    'dark'      => __( 'Oscuro', 'flavor-chat-ia' ),
+                    'custom'    => __( 'Personalizado', 'flavor-chat-ia' ),
+                ),
+                'default' => 'default',
+            ),
+            'color_primario' => array(
+                'type'      => 'color',
+                'label'     => __( 'Color primario', 'flavor-chat-ia' ),
+                'default'   => '#3b82f6',
+                'condition' => array( 'esquema_color' => 'custom' ),
+            ),
+            'color_secundario' => array(
+                'type'      => 'color',
+                'label'     => __( 'Color secundario', 'flavor-chat-ia' ),
+                'default'   => '#64748b',
+                'condition' => array( 'esquema_color' => 'custom' ),
+            ),
+            'radio_bordes' => array(
+                'type'    => 'select',
+                'label'   => __( 'Bordes redondeados', 'flavor-chat-ia' ),
+                'options' => array(
+                    'none'   => __( 'Sin redondear', 'flavor-chat-ia' ),
+                    'sm'     => __( 'Pequeño (4px)', 'flavor-chat-ia' ),
+                    'md'     => __( 'Mediano (8px)', 'flavor-chat-ia' ),
+                    'lg'     => __( 'Grande (12px)', 'flavor-chat-ia' ),
+                    'xl'     => __( 'Extra grande (16px)', 'flavor-chat-ia' ),
+                    'full'   => __( 'Completo (circular)', 'flavor-chat-ia' ),
+                ),
+                'default' => 'lg',
+            ),
+            'sombra' => array(
+                'type'    => 'select',
+                'label'   => __( 'Sombra', 'flavor-chat-ia' ),
+                'options' => array(
+                    'none' => __( 'Sin sombra', 'flavor-chat-ia' ),
+                    'sm'   => __( 'Sutil', 'flavor-chat-ia' ),
+                    'md'   => __( 'Media', 'flavor-chat-ia' ),
+                    'lg'   => __( 'Pronunciada', 'flavor-chat-ia' ),
+                    'xl'   => __( 'Muy pronunciada', 'flavor-chat-ia' ),
+                ),
+                'default' => 'md',
+            ),
+            'animacion_entrada' => array(
+                'type'    => 'select',
+                'label'   => __( 'Animación de entrada', 'flavor-chat-ia' ),
+                'options' => array(
+                    'none'      => __( 'Sin animación', 'flavor-chat-ia' ),
+                    'fade'      => __( 'Aparecer', 'flavor-chat-ia' ),
+                    'slide-up'  => __( 'Deslizar arriba', 'flavor-chat-ia' ),
+                    'slide-down'=> __( 'Deslizar abajo', 'flavor-chat-ia' ),
+                    'zoom'      => __( 'Zoom', 'flavor-chat-ia' ),
+                    'bounce'    => __( 'Rebote', 'flavor-chat-ia' ),
+                ),
+                'default' => 'fade',
+            ),
+        );
+    }
+
+    /**
+     * Campos para bloques tipo listado/grid
+     *
+     * @return array
+     */
+    private function get_campos_listado() {
+        return array(
+            '_separator_layout' => array(
+                'type'  => 'separator',
+                'label' => __( '📐 Disposición', 'flavor-chat-ia' ),
+            ),
+            'columnas' => array(
+                'type'    => 'select',
+                'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                'options' => array(
+                    '1' => '1 columna',
+                    '2' => '2 columnas',
+                    '3' => '3 columnas',
+                    '4' => '4 columnas',
+                    'auto' => __( 'Automático', 'flavor-chat-ia' ),
+                ),
+                'default' => '3',
+            ),
+            'columnas_tablet' => array(
+                'type'    => 'select',
+                'label'   => __( 'Columnas (tablet)', 'flavor-chat-ia' ),
+                'options' => array(
+                    '1' => '1 columna',
+                    '2' => '2 columnas',
+                    '3' => '3 columnas',
+                ),
+                'default' => '2',
+            ),
+            'columnas_movil' => array(
+                'type'    => 'select',
+                'label'   => __( 'Columnas (móvil)', 'flavor-chat-ia' ),
+                'options' => array(
+                    '1' => '1 columna',
+                    '2' => '2 columnas',
+                ),
+                'default' => '1',
+            ),
+            'espacio_items' => array(
+                'type'    => 'select',
+                'label'   => __( 'Espacio entre items', 'flavor-chat-ia' ),
+                'options' => array(
+                    'xs'  => __( 'Muy pequeño (8px)', 'flavor-chat-ia' ),
+                    'sm'  => __( 'Pequeño (12px)', 'flavor-chat-ia' ),
+                    'md'  => __( 'Mediano (16px)', 'flavor-chat-ia' ),
+                    'lg'  => __( 'Grande (24px)', 'flavor-chat-ia' ),
+                    'xl'  => __( 'Extra grande (32px)', 'flavor-chat-ia' ),
+                ),
+                'default' => 'md',
+            ),
+        );
+    }
+
+    /**
+     * Campos para bloques tipo tarjeta
+     *
+     * @return array
+     */
+    private function get_campos_tarjeta() {
+        return array(
+            '_separator_tarjeta' => array(
+                'type'  => 'separator',
+                'label' => __( '🃏 Estilo de Tarjeta', 'flavor-chat-ia' ),
+            ),
+            'estilo_tarjeta' => array(
+                'type'    => 'select',
+                'label'   => __( 'Estilo de tarjeta', 'flavor-chat-ia' ),
+                'options' => array(
+                    'default'    => __( 'Por defecto', 'flavor-chat-ia' ),
+                    'elevated'   => __( 'Elevada', 'flavor-chat-ia' ),
+                    'outlined'   => __( 'Con borde', 'flavor-chat-ia' ),
+                    'filled'     => __( 'Rellena', 'flavor-chat-ia' ),
+                    'glass'      => __( 'Cristal (glassmorphism)', 'flavor-chat-ia' ),
+                    'gradient'   => __( 'Gradiente', 'flavor-chat-ia' ),
+                    'minimal'    => __( 'Minimalista', 'flavor-chat-ia' ),
+                ),
+                'default' => 'elevated',
+            ),
+            'mostrar_imagen' => array(
+                'type'    => 'toggle',
+                'label'   => __( 'Mostrar imagen destacada', 'flavor-chat-ia' ),
+                'default' => true,
+            ),
+            'ratio_imagen' => array(
+                'type'      => 'select',
+                'label'     => __( 'Proporción imagen', 'flavor-chat-ia' ),
+                'options'   => array(
+                    '1:1'   => __( 'Cuadrada (1:1)', 'flavor-chat-ia' ),
+                    '4:3'   => __( 'Estándar (4:3)', 'flavor-chat-ia' ),
+                    '16:9'  => __( 'Panorámica (16:9)', 'flavor-chat-ia' ),
+                    '3:2'   => __( 'Fotografía (3:2)', 'flavor-chat-ia' ),
+                    '21:9'  => __( 'Cine (21:9)', 'flavor-chat-ia' ),
+                ),
+                'default'   => '16:9',
+                'condition' => array( 'mostrar_imagen' => true ),
+            ),
+            'hover_effect' => array(
+                'type'    => 'select',
+                'label'   => __( 'Efecto hover', 'flavor-chat-ia' ),
+                'options' => array(
+                    'none'      => __( 'Ninguno', 'flavor-chat-ia' ),
+                    'lift'      => __( 'Elevar', 'flavor-chat-ia' ),
+                    'grow'      => __( 'Crecer', 'flavor-chat-ia' ),
+                    'glow'      => __( 'Resplandor', 'flavor-chat-ia' ),
+                    'border'    => __( 'Borde color', 'flavor-chat-ia' ),
+                    'overlay'   => __( 'Superposición', 'flavor-chat-ia' ),
+                ),
+                'default' => 'lift',
+            ),
+            'mostrar_badges' => array(
+                'type'    => 'toggle',
+                'label'   => __( 'Mostrar badges/etiquetas', 'flavor-chat-ia' ),
+                'default' => true,
+            ),
+            'mostrar_meta' => array(
+                'type'    => 'toggle',
+                'label'   => __( 'Mostrar meta info (fecha, autor)', 'flavor-chat-ia' ),
+                'default' => true,
+            ),
+        );
+    }
+
+    /**
+     * Campos para bloques con cabecera
+     *
+     * @return array
+     */
+    private function get_campos_cabecera() {
+        return array(
+            '_separator_cabecera' => array(
+                'type'  => 'separator',
+                'label' => __( '📝 Cabecera', 'flavor-chat-ia' ),
+            ),
+            'mostrar_titulo' => array(
+                'type'    => 'toggle',
+                'label'   => __( 'Mostrar título', 'flavor-chat-ia' ),
+                'default' => true,
+            ),
+            'titulo_personalizado' => array(
+                'type'      => 'text',
+                'label'     => __( 'Título personalizado', 'flavor-chat-ia' ),
+                'default'   => '',
+                'placeholder' => __( 'Dejar vacío para usar título por defecto', 'flavor-chat-ia' ),
+                'condition' => array( 'mostrar_titulo' => true ),
+            ),
+            'mostrar_descripcion' => array(
+                'type'    => 'toggle',
+                'label'   => __( 'Mostrar descripción', 'flavor-chat-ia' ),
+                'default' => false,
+            ),
+            'descripcion' => array(
+                'type'      => 'textarea',
+                'label'     => __( 'Descripción', 'flavor-chat-ia' ),
+                'default'   => '',
+                'rows'      => 2,
+                'condition' => array( 'mostrar_descripcion' => true ),
+            ),
+            'mostrar_icono' => array(
+                'type'    => 'toggle',
+                'label'   => __( 'Mostrar icono', 'flavor-chat-ia' ),
+                'default' => true,
+            ),
+            'alineacion_cabecera' => array(
+                'type'    => 'select',
+                'label'   => __( 'Alineación cabecera', 'flavor-chat-ia' ),
+                'options' => array(
+                    'left'   => __( 'Izquierda', 'flavor-chat-ia' ),
+                    'center' => __( 'Centro', 'flavor-chat-ia' ),
+                    'right'  => __( 'Derecha', 'flavor-chat-ia' ),
+                ),
+                'default' => 'left',
+            ),
+        );
+    }
+
+    /**
+     * Campos para paginación y carga
+     *
+     * @return array
+     */
+    private function get_campos_paginacion() {
+        return array(
+            '_separator_paginacion' => array(
+                'type'  => 'separator',
+                'label' => __( '📄 Paginación', 'flavor-chat-ia' ),
+            ),
+            'paginacion' => array(
+                'type'    => 'select',
+                'label'   => __( 'Tipo de paginación', 'flavor-chat-ia' ),
+                'options' => array(
+                    'none'     => __( 'Sin paginación', 'flavor-chat-ia' ),
+                    'numbers'  => __( 'Números de página', 'flavor-chat-ia' ),
+                    'loadmore' => __( 'Botón cargar más', 'flavor-chat-ia' ),
+                    'infinite' => __( 'Scroll infinito', 'flavor-chat-ia' ),
+                ),
+                'default' => 'loadmore',
+            ),
+            'items_pagina' => array(
+                'type'      => 'number',
+                'label'     => __( 'Items por página', 'flavor-chat-ia' ),
+                'default'   => 12,
+                'min'       => 3,
+                'max'       => 48,
+                'condition' => array( 'paginacion' => array( 'numbers', 'loadmore', 'infinite' ) ),
+            ),
+        );
+    }
+
+    /**
      * Registra las categorías de bloques
      */
     private function registrar_categorias() {
@@ -3243,6 +3535,24 @@ class Flavor_VBP_Block_Library {
 
         $bloque = wp_parse_args( $args, $defaults );
 
+        // Añadir campos de estilo para bloques de módulos
+        if ( ! empty( $bloque['module'] ) ) {
+            $bloque['fields'] = array_merge(
+                $bloque['fields'],
+                $this->get_campos_estilo_comunes()
+            );
+
+            // Añadir campos de tarjeta/listado según la categoría
+            $categorias_con_listado = array( 'economy', 'community', 'modules' );
+            if ( in_array( $bloque['category'], $categorias_con_listado, true ) ) {
+                $bloque['fields'] = array_merge(
+                    $bloque['fields'],
+                    $this->get_campos_tarjeta(),
+                    $this->get_campos_cabecera()
+                );
+            }
+        }
+
         // Añadir campos comunes automáticamente
         $bloque['fields'] = array_merge( $bloque['fields'], $this->get_campos_comunes() );
 
@@ -3485,12 +3795,27 @@ class Flavor_VBP_Block_Library {
         $block_id = isset( $bloque['id'] ) ? $bloque['id'] : $elemento['type'];
         $nombre_modulo = isset( $bloque['module'] ) ? $bloque['module'] : 'desconocido';
         $nombre_bloque = isset( $bloque['name'] ) ? $bloque['name'] : $elemento['type'];
+        $data = isset( $elemento['data'] ) ? $elemento['data'] : array();
+
+        // Generar estilos dinámicos basados en las opciones
+        $estilos_css = $this->generar_estilos_preview( $data );
 
         // Intentar obtener preview con datos de ejemplo
         $preview_html = $this->get_module_preview( $block_id, $bloque, $elemento );
 
         if ( ! empty( $preview_html ) ) {
-            return '<div class="vbp-module-preview" data-module="' . esc_attr( $nombre_modulo ) . '" data-block="' . esc_attr( $block_id ) . '">' .
+            $clases_preview = 'vbp-module-preview';
+            if ( ! empty( $data['estilo_tarjeta'] ) ) {
+                $clases_preview .= ' vbp-card-style-' . esc_attr( $data['estilo_tarjeta'] );
+            }
+            if ( ! empty( $data['hover_effect'] ) ) {
+                $clases_preview .= ' vbp-hover-' . esc_attr( $data['hover_effect'] );
+            }
+            if ( ! empty( $data['animacion_entrada'] ) && 'none' !== $data['animacion_entrada'] ) {
+                $clases_preview .= ' vbp-animate-' . esc_attr( $data['animacion_entrada'] );
+            }
+
+            return '<div class="' . esc_attr( $clases_preview ) . '" data-module="' . esc_attr( $nombre_modulo ) . '" data-block="' . esc_attr( $block_id ) . '" style="' . esc_attr( $estilos_css ) . '">' .
                    '<div class="vbp-module-preview-badge">' . esc_html__( 'Preview', 'flavor-chat-ia' ) . ' - ' . esc_html( $nombre_bloque ) . '</div>' .
                    $preview_html .
                    '</div>';
@@ -3498,6 +3823,67 @@ class Flavor_VBP_Block_Library {
 
         // Fallback a placeholder básico
         return $this->render_basic_placeholder( $bloque, $elemento );
+    }
+
+    /**
+     * Genera CSS inline para la preview basado en las opciones
+     *
+     * @param array $data Opciones del elemento.
+     * @return string CSS inline.
+     */
+    private function generar_estilos_preview( $data ) {
+        $estilos = array();
+
+        // Esquema de colores
+        $colores = array(
+            'primary' => array( '#3b82f6', '#1d4ed8' ),
+            'success' => array( '#22c55e', '#16a34a' ),
+            'warning' => array( '#f59e0b', '#d97706' ),
+            'danger'  => array( '#ef4444', '#dc2626' ),
+            'purple'  => array( '#8b5cf6', '#7c3aed' ),
+            'pink'    => array( '#ec4899', '#db2777' ),
+            'dark'    => array( '#1e293b', '#0f172a' ),
+        );
+
+        $esquema = isset( $data['esquema_color'] ) ? $data['esquema_color'] : 'default';
+        if ( isset( $colores[ $esquema ] ) ) {
+            $estilos[] = '--vbp-color-primary: ' . $colores[ $esquema ][0];
+            $estilos[] = '--vbp-color-primary-dark: ' . $colores[ $esquema ][1];
+        } elseif ( 'custom' === $esquema ) {
+            if ( ! empty( $data['color_primario'] ) ) {
+                $estilos[] = '--vbp-color-primary: ' . $data['color_primario'];
+            }
+            if ( ! empty( $data['color_secundario'] ) ) {
+                $estilos[] = '--vbp-color-secondary: ' . $data['color_secundario'];
+            }
+        }
+
+        // Radio de bordes
+        $radios = array(
+            'none' => '0',
+            'sm'   => '4px',
+            'md'   => '8px',
+            'lg'   => '12px',
+            'xl'   => '16px',
+            'full' => '9999px',
+        );
+        if ( ! empty( $data['radio_bordes'] ) && isset( $radios[ $data['radio_bordes'] ] ) ) {
+            $estilos[] = '--vbp-radius: ' . $radios[ $data['radio_bordes'] ];
+        }
+
+        // Sombras
+        $sombras = array(
+            'none' => 'none',
+            'sm'   => '0 1px 2px rgba(0,0,0,0.05)',
+            'md'   => '0 4px 6px rgba(0,0,0,0.1)',
+            'lg'   => '0 10px 15px rgba(0,0,0,0.1)',
+            'xl'   => '0 20px 25px rgba(0,0,0,0.15)',
+        );
+        if ( ! empty( $data['sombra'] ) && isset( $sombras[ $data['sombra'] ] ) ) {
+            $estilos[] = '--vbp-shadow: ' . $sombras[ $data['sombra'] ];
+        }
+
+        return implode( '; ', $estilos );
     }
 
     /**
