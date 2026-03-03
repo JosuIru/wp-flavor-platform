@@ -992,6 +992,7 @@ document.addEventListener('alpine:init', function() {
                     case 'openFigmaImporter':
                         this.openFigmaImporter();
                         break;
+                }
             },
 
             /**
