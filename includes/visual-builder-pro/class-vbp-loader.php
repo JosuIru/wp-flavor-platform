@@ -93,6 +93,7 @@ class Flavor_VBP_Loader {
             'class-vbp-popup-builder.php',
             'class-vbp-ab-testing.php',
             'class-vbp-version-history.php',
+            'ai/class-vbp-ai-content.php',
         );
 
         foreach ( $archivos as $archivo ) {
