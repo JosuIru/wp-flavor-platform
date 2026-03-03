@@ -81,6 +81,9 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+alt+h': 'distributeH',
                 'ctrl+alt+v': 'distributeV',
 
+                // Bloqueo
+                'ctrl+shift+l': 'toggleLock',
+
                 // Extras
                 'ctrl+u': 'unsplash',
                 'ctrl+shift+g': 'saveAsGlobal',
@@ -350,6 +353,11 @@ document.addEventListener('alpine:init', function() {
 
                     case 'distributeV':
                         this.distributeElements('vertical');
+                        break;
+
+                    // === BLOQUEO ===
+                    case 'toggleLock':
+                        this.toggleLock();
                         break;
                 }
             },
@@ -1016,6 +1024,55 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Bloquear/desbloquear elementos seleccionados
+             */
+            toggleLock: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para bloquear/desbloquear', 'warning');
+                    return;
+                }
+
+                // Guardar en historial
+                store.saveToHistory();
+
+                var allLocked = true;
+                var countLocked = 0;
+
+                // Verificar si todos están bloqueados
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element && !element.locked) {
+                        allLocked = false;
+                    }
+                    if (element && element.locked) {
+                        countLocked++;
+                    }
+                });
+
+                // Toggle: si todos bloqueados, desbloquear; si no, bloquear
+                var newLockState = !allLocked;
+                var count = 0;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        store.updateElement(id, { locked: newLockState });
+                        count++;
+                    }
+                });
+
+                store.isDirty = true;
+
+                if (newLockState) {
+                    this.showNotification('🔒 ' + count + ' elemento(s) bloqueado(s)');
+                } else {
+                    this.showNotification('🔓 ' + count + ' elemento(s) desbloqueado(s)');
+                }
+            },
+
+            /**
              * Obtener bounds combinados de la selección
              */
             getSelectionBounds: function(store) {
@@ -1174,6 +1231,7 @@ window.vbpKeyboard = {
                 { keys: 'Enter / F2', action: 'Editar texto inline' },
                 { keys: 'Ctrl + G', action: 'Agrupar elementos' },
                 { keys: 'Ctrl + Shift + U', action: 'Desagrupar' },
+                { keys: 'Ctrl + Shift + L', action: 'Bloquear/Desbloquear' },
                 { keys: 'Alt + Click', action: 'Duplicar elemento' },
                 { keys: 'Shift + Click', action: 'Multi-selección' }
             ]},

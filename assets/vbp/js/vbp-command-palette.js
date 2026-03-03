@@ -54,6 +54,7 @@ document.addEventListener('alpine:init', function() {
             { id: 'group', label: 'Agrupar elementos', category: 'acciones', icon: '📦', action: 'group', shortcut: 'Ctrl+G' },
             { id: 'ungroup', label: 'Desagrupar elementos', category: 'acciones', icon: '📤', action: 'ungroup', shortcut: 'Ctrl+Shift+U' },
             { id: 'edit-inline', label: 'Editar texto', category: 'acciones', icon: '✏️', action: 'editInline', shortcut: 'Enter' },
+            { id: 'toggle-lock', label: 'Bloquear/Desbloquear elemento', category: 'acciones', icon: '🔒', action: 'toggleLock', shortcut: 'Ctrl+Shift+L' },
 
             // Alineación y distribución
             { id: 'align-left', label: 'Alinear a la izquierda', category: 'alineacion', icon: '⬅', action: 'alignElements', value: 'left', shortcut: 'Alt+L' },
@@ -247,6 +248,12 @@ document.addEventListener('alpine:init', function() {
                     document.dispatchEvent(new KeyboardEvent('keydown', {
                         key: 'Enter',
                         bubbles: true
+                    }));
+                    break;
+
+                case 'toggleLock':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleLock' }
                     }));
                     break;
 
