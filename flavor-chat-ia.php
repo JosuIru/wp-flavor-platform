@@ -413,6 +413,7 @@ final class Flavor_Chat_IA {
 
         // Visual Builder Pro (v2.0+) - Editor fullscreen tipo Photoshop/Figma
         require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
+        Flavor_VBP_Loader::get_instance();
 
         // Sistema de Animaciones
         require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
