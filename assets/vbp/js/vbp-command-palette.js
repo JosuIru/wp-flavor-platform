@@ -78,6 +78,7 @@ document.addEventListener('alpine:init', function() {
             { id: 'hide-others', label: 'Ocultar otros elementos', category: 'vista', icon: '👁‍🗨', action: 'hideOthers', shortcut: 'Ctrl+Alt+H' },
             { id: 'copy-html', label: 'Copiar como HTML', category: 'exportar', icon: '📄', action: 'copyAsHTML', shortcut: 'Ctrl+Shift+E' },
             { id: 'copy-json', label: 'Copiar como JSON', category: 'exportar', icon: '{ }', action: 'copyAsJSON', shortcut: 'Ctrl+Alt+E' },
+            { id: 'paste-json', label: 'Pegar desde JSON', category: 'exportar', icon: '📥', action: 'pasteFromJSON', shortcut: 'Ctrl+Alt+V' },
             { id: 'toggle-layers', label: 'Mostrar/Ocultar Capas', category: 'vista', icon: '📑', action: 'togglePanel', value: 'layers' },
             { id: 'toggle-inspector', label: 'Mostrar/Ocultar Inspector', category: 'vista', icon: '⚙', action: 'togglePanel', value: 'inspector' },
             { id: 'toggle-blocks', label: 'Mostrar/Ocultar Bloques', category: 'vista', icon: '🧱', action: 'togglePanel', value: 'blocks' },
@@ -334,6 +335,12 @@ document.addEventListener('alpine:init', function() {
                 case 'copyAsJSON':
                     document.dispatchEvent(new CustomEvent('vbp:executeAction', {
                         detail: { action: 'copyAsJSON' }
+                    }));
+                    break;
+
+                case 'pasteFromJSON':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'pasteFromJSON' }
                     }));
                     break;
 

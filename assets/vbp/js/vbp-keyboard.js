@@ -111,9 +111,11 @@ document.addEventListener('alpine:init', function() {
                 // Búsqueda
                 'ctrl+f': 'findElements',
 
-                // Exportar
+                // Exportar/Importar
                 'ctrl+shift+e': 'copyAsHTML',
                 'ctrl+alt+e': 'copyAsJSON',
+                'ctrl+shift+v': 'pasteStyles',
+                'ctrl+alt+v': 'pasteFromJSON',
 
                 // Extras
                 'ctrl+u': 'unsplash',
@@ -477,13 +479,17 @@ document.addEventListener('alpine:init', function() {
                         this.openFindDialog();
                         break;
 
-                    // === EXPORTAR ===
+                    // === EXPORTAR/IMPORTAR ===
                     case 'copyAsHTML':
                         this.copyAsHTML();
                         break;
 
                     case 'copyAsJSON':
                         this.copyAsJSON();
+                        break;
+
+                    case 'pasteFromJSON':
+                        this.pasteFromJSON();
                         break;
                 }
             },
@@ -1487,6 +1493,53 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Pegar elemento desde JSON del portapapeles
+             */
+            pasteFromJSON: function() {
+                var store = Alpine.store('vbp');
+                var self = this;
+
+                navigator.clipboard.readText().then(function(text) {
+                    try {
+                        var data = JSON.parse(text);
+                        var elements = Array.isArray(data) ? data : [data];
+
+                        // Validar que sean elementos válidos
+                        var validElements = elements.filter(function(el) {
+                            return el && el.type;
+                        });
+
+                        if (validElements.length === 0) {
+                            self.showNotification('El JSON no contiene elementos válidos', 'error');
+                            return;
+                        }
+
+                        store.saveToHistory();
+
+                        var newIds = [];
+                        validElements.forEach(function(elementData) {
+                            // Generar nuevo ID
+                            var newElement = JSON.parse(JSON.stringify(elementData));
+                            newElement.id = 'el_' + Math.random().toString(36).substr(2, 9);
+                            newElement.name = newElement.name || newElement.type;
+
+                            store.elements.push(newElement);
+                            newIds.push(newElement.id);
+                        });
+
+                        store.isDirty = true;
+                        store.setSelection(newIds);
+
+                        self.showNotification('📥 ' + newIds.length + ' elemento(s) importado(s)');
+                    } catch (e) {
+                        self.showNotification('El contenido no es JSON válido', 'error');
+                    }
+                }).catch(function() {
+                    self.showNotification('No se pudo acceder al portapapeles', 'error');
+                });
+            },
+
+            /**
              * Copiar elemento seleccionado como JSON
              */
             copyAsJSON: function() {
@@ -1945,6 +1998,7 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + ,', action: 'Configuración' },
                 { keys: 'Ctrl + Shift + E', action: 'Copiar como HTML' },
                 { keys: 'Ctrl + Alt + E', action: 'Copiar como JSON' },
+                { keys: 'Ctrl + Alt + V', action: 'Pegar desde JSON' },
                 { keys: '? / F1', action: 'Ayuda (esta ventana)' }
             ]}
         ];
