@@ -77,6 +77,24 @@ document.addEventListener('alpine:init', function() {
                 'alt+3': 'setSpacing24',
                 'alt+4': 'setSpacing32',
 
+                // Flip/transformaciones visuales
+                'alt+shift+h': 'flipHorizontal',
+                'alt+shift+v': 'flipVertical',
+
+                // Reset
+                'ctrl+shift+0': 'resetPosition',
+
+                // Bookmarks de canvas
+                'ctrl+shift+1': 'goToBookmark1',
+                'ctrl+shift+2': 'goToBookmark2',
+                'ctrl+shift+3': 'goToBookmark3',
+                'ctrl+alt+1': 'setBookmark1',
+                'ctrl+alt+2': 'setBookmark2',
+                'ctrl+alt+3': 'setBookmark3',
+
+                // Quick rename
+                'ctrl+alt+r': 'quickRename',
+
                 // Zoom
                 'ctrl++': 'zoomIn',
                 'ctrl+=': 'zoomIn',
@@ -396,6 +414,50 @@ document.addEventListener('alpine:init', function() {
 
                     case 'setSpacing32':
                         this.setSpacingPreset(32);
+                        break;
+
+                    // === FLIP/TRANSFORMACIONES ===
+                    case 'flipHorizontal':
+                        this.flipElement('horizontal');
+                        break;
+
+                    case 'flipVertical':
+                        this.flipElement('vertical');
+                        break;
+
+                    // === RESET ===
+                    case 'resetPosition':
+                        this.resetPosition();
+                        break;
+
+                    // === BOOKMARKS ===
+                    case 'setBookmark1':
+                        this.setBookmark(1);
+                        break;
+
+                    case 'setBookmark2':
+                        this.setBookmark(2);
+                        break;
+
+                    case 'setBookmark3':
+                        this.setBookmark(3);
+                        break;
+
+                    case 'goToBookmark1':
+                        this.goToBookmark(1);
+                        break;
+
+                    case 'goToBookmark2':
+                        this.goToBookmark(2);
+                        break;
+
+                    case 'goToBookmark3':
+                        this.goToBookmark(3);
+                        break;
+
+                    // === QUICK RENAME ===
+                    case 'quickRename':
+                        this.quickRename();
                         break;
 
                     // === ZOOM ===
@@ -2364,6 +2426,178 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Voltear elemento horizontal o verticalmente
+             */
+            flipElement: function(direction) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para voltear', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.transform) estilos.transform = {};
+
+                    if (direction === 'horizontal') {
+                        var currentScaleX = estilos.transform.scaleX || 1;
+                        estilos.transform.scaleX = currentScaleX === 1 ? -1 : 1;
+                    } else {
+                        var currentScaleY = estilos.transform.scaleY || 1;
+                        estilos.transform.scaleY = currentScaleY === 1 ? -1 : 1;
+                    }
+
+                    store.updateElement(id, { styles: estilos });
+                });
+
+                store.isDirty = true;
+                var dirLabel = direction === 'horizontal' ? '↔️ Horizontal' : '↕️ Vertical';
+                this.showNotification('Flip ' + dirLabel);
+            },
+
+            /**
+             * Resetear posición de elementos
+             */
+            resetPosition: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.position) estilos.position = {};
+
+                    estilos.position.top = '0';
+                    estilos.position.left = '0';
+                    estilos.position.right = 'auto';
+                    estilos.position.bottom = 'auto';
+
+                    // También resetear transformaciones de posición
+                    if (estilos.transform) {
+                        estilos.transform.translateX = 0;
+                        estilos.transform.translateY = 0;
+                    }
+
+                    store.updateElement(id, { styles: estilos });
+                });
+
+                store.isDirty = true;
+                this.showNotification('🔄 Posición reseteada');
+            },
+
+            /**
+             * Bookmarks de canvas
+             */
+            canvasBookmarks: {},
+
+            /**
+             * Guardar bookmark de posición del canvas
+             */
+            setBookmark: function(index) {
+                var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+                if (!canvasWrapper) return;
+
+                var store = Alpine.store('vbp');
+
+                this.canvasBookmarks[index] = {
+                    scrollTop: canvasWrapper.scrollTop,
+                    scrollLeft: canvasWrapper.scrollLeft,
+                    zoom: store.zoom || 100,
+                    selection: store.selection.elementIds.slice()
+                };
+
+                // Guardar en localStorage
+                localStorage.setItem('vbp_bookmarks', JSON.stringify(this.canvasBookmarks));
+
+                this.showNotification('🔖 Marcador ' + index + ' guardado');
+            },
+
+            /**
+             * Ir a un bookmark
+             */
+            goToBookmark: function(index) {
+                // Cargar bookmarks si no están cargados
+                if (Object.keys(this.canvasBookmarks).length === 0) {
+                    var saved = localStorage.getItem('vbp_bookmarks');
+                    if (saved) {
+                        try {
+                            this.canvasBookmarks = JSON.parse(saved);
+                        } catch (e) {
+                            this.canvasBookmarks = {};
+                        }
+                    }
+                }
+
+                var bookmark = this.canvasBookmarks[index];
+                if (!bookmark) {
+                    this.showNotification('Marcador ' + index + ' no existe', 'warning');
+                    return;
+                }
+
+                var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+                var store = Alpine.store('vbp');
+
+                if (canvasWrapper) {
+                    canvasWrapper.scrollTo({
+                        top: bookmark.scrollTop,
+                        left: bookmark.scrollLeft,
+                        behavior: 'smooth'
+                    });
+                }
+
+                if (bookmark.zoom) {
+                    store.zoom = bookmark.zoom;
+                }
+
+                if (bookmark.selection && bookmark.selection.length > 0) {
+                    store.setSelection(bookmark.selection);
+                }
+
+                this.showNotification('🔖 Ir a marcador ' + index);
+            },
+
+            /**
+             * Renombrar elemento rápidamente
+             */
+            quickRename: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+
+                if (!element) return;
+
+                var currentName = element.name || element.type || 'Elemento';
+                var newName = prompt('Nuevo nombre:', currentName);
+
+                if (newName && newName !== currentName) {
+                    store.saveToHistory();
+                    store.updateElement(elementId, { name: newName });
+                    store.isDirty = true;
+                    this.showNotification('✏️ Renombrado: ' + newName);
+                }
+            },
+
+            /**
              * Obtener bounds combinados de la selección
              */
             getSelectionBounds: function(store) {
@@ -2575,6 +2809,16 @@ window.vbpKeyboard = {
                 { keys: 'Alt + 2', action: 'Spacing 16px' },
                 { keys: 'Alt + 3', action: 'Spacing 24px' },
                 { keys: 'Alt + 4', action: 'Spacing 32px' }
+            ]},
+            { category: 'Transformaciones', shortcuts: [
+                { keys: 'Alt + Shift + H', action: 'Flip horizontal' },
+                { keys: 'Alt + Shift + V', action: 'Flip vertical' },
+                { keys: 'Ctrl + Shift + 0', action: 'Resetear posición' },
+                { keys: 'Ctrl + Alt + R', action: 'Renombrar rápido' }
+            ]},
+            { category: 'Marcadores', shortcuts: [
+                { keys: 'Ctrl + Alt + 1/2/3', action: 'Guardar marcador' },
+                { keys: 'Ctrl + Shift + 1/2/3', action: 'Ir a marcador' }
             ]},
             { category: 'Zoom', shortcuts: [
                 { keys: 'Ctrl + +', action: 'Acercar' },

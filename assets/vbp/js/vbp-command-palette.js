@@ -113,6 +113,20 @@ document.addEventListener('alpine:init', function() {
             { id: 'spacing-24', label: 'Spacing 24px', category: 'spacing', icon: '📏', action: 'setSpacing', value: '24' },
             { id: 'spacing-32', label: 'Spacing 32px', category: 'spacing', icon: '📏', action: 'setSpacing', value: '32' },
 
+            // Transformaciones visuales
+            { id: 'flip-h', label: 'Flip horizontal', category: 'transformaciones', icon: '↔️', action: 'flipHorizontal', shortcut: 'Alt+Shift+H' },
+            { id: 'flip-v', label: 'Flip vertical', category: 'transformaciones', icon: '↕️', action: 'flipVertical', shortcut: 'Alt+Shift+V' },
+            { id: 'reset-pos', label: 'Resetear posición', category: 'transformaciones', icon: '🔄', action: 'resetPosition', shortcut: 'Ctrl+Shift+0' },
+            { id: 'quick-rename', label: 'Renombrar elemento', category: 'acciones', icon: '✏️', action: 'quickRename', shortcut: 'Ctrl+Alt+R' },
+
+            // Marcadores
+            { id: 'set-bookmark-1', label: 'Guardar marcador 1', category: 'marcadores', icon: '🔖', action: 'setBookmark', value: '1', shortcut: 'Ctrl+Alt+1' },
+            { id: 'set-bookmark-2', label: 'Guardar marcador 2', category: 'marcadores', icon: '🔖', action: 'setBookmark', value: '2', shortcut: 'Ctrl+Alt+2' },
+            { id: 'set-bookmark-3', label: 'Guardar marcador 3', category: 'marcadores', icon: '🔖', action: 'setBookmark', value: '3', shortcut: 'Ctrl+Alt+3' },
+            { id: 'goto-bookmark-1', label: 'Ir a marcador 1', category: 'marcadores', icon: '📍', action: 'goToBookmark', value: '1', shortcut: 'Ctrl+Shift+1' },
+            { id: 'goto-bookmark-2', label: 'Ir a marcador 2', category: 'marcadores', icon: '📍', action: 'goToBookmark', value: '2', shortcut: 'Ctrl+Shift+2' },
+            { id: 'goto-bookmark-3', label: 'Ir a marcador 3', category: 'marcadores', icon: '📍', action: 'goToBookmark', value: '3', shortcut: 'Ctrl+Shift+3' },
+
             // Responsive
             { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'device', value: 'desktop' },
             { id: 'device-tablet', label: 'Vista Tablet', category: 'responsive', icon: '📱', action: 'device', value: 'tablet' },
@@ -488,6 +502,44 @@ document.addEventListener('alpine:init', function() {
                     }));
                     break;
 
+                case 'flipHorizontal':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'flipHorizontal' }
+                    }));
+                    break;
+
+                case 'flipVertical':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'flipVertical' }
+                    }));
+                    break;
+
+                case 'resetPosition':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'resetPosition' }
+                    }));
+                    break;
+
+                case 'quickRename':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'quickRename' }
+                    }));
+                    break;
+
+                case 'setBookmark':
+                    var bookmarkIndex = parseInt(cmd.value, 10);
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'setBookmark' + bookmarkIndex }
+                    }));
+                    break;
+
+                case 'goToBookmark':
+                    var gotoIndex = parseInt(cmd.value, 10);
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'goToBookmark' + gotoIndex }
+                    }));
+                    break;
+
                 case 'togglePanel':
                     this.togglePanel(cmd.value);
                     break;
@@ -608,6 +660,8 @@ document.addEventListener('alpine:init', function() {
                 'orden': 'Orden y Transformación',
                 'navegacion': 'Navegación Jerárquica',
                 'spacing': 'Spacing Rápido',
+                'transformaciones': 'Transformaciones',
+                'marcadores': 'Marcadores',
                 'vista': 'Vista',
                 'exportar': 'Exportar',
                 'responsive': 'Responsive'
