@@ -41,6 +41,8 @@ document.addEventListener('alpine:init', function() {
                 'backspace': 'delete',
                 'escape': 'deselect',
                 'ctrl+a': 'selectAll',
+                'ctrl+shift+a': 'invertSelection',
+                'ctrl+alt+a': 'selectSimilar',
                 'enter': 'editInline',
                 'f2': 'editInline',
                 'tab': 'selectNext',
@@ -243,6 +245,14 @@ document.addEventListener('alpine:init', function() {
                             return el.id;
                         }));
                         this.showNotification('Todos seleccionados');
+                        break;
+
+                    case 'invertSelection':
+                        this.invertSelection();
+                        break;
+
+                    case 'selectSimilar':
+                        this.selectSimilar();
                         break;
 
                     case 'selectNext':
@@ -882,6 +892,52 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Invertir selección (seleccionar no seleccionados)
+             */
+            invertSelection: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.elements.length === 0) return;
+
+                var currentIds = store.selection.elementIds;
+                var newIds = store.elements
+                    .map(function(el) { return el.id; })
+                    .filter(function(id) { return currentIds.indexOf(id) === -1; });
+
+                store.setSelection(newIds);
+                this.showNotification('Selección invertida (' + newIds.length + ')');
+            },
+
+            /**
+             * Seleccionar elementos del mismo tipo
+             */
+            selectSimilar: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento primero', 'warning');
+                    return;
+                }
+
+                // Obtener tipos de elementos seleccionados
+                var tipos = [];
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element && tipos.indexOf(element.type) === -1) {
+                        tipos.push(element.type);
+                    }
+                });
+
+                // Seleccionar todos los elementos de esos tipos
+                var newIds = store.elements
+                    .filter(function(el) { return tipos.indexOf(el.type) !== -1; })
+                    .map(function(el) { return el.id; });
+
+                store.setSelection(newIds);
+                this.showNotification('Seleccionados similares (' + newIds.length + ')');
+            },
+
+            /**
              * Seleccionar elemento adyacente (navegación con Tab)
              * @param {number} direction - 1 para siguiente, -1 para anterior
              */
@@ -1433,6 +1489,8 @@ window.vbpKeyboard = {
             ]},
             { category: 'Selección y Grupos', shortcuts: [
                 { keys: 'Ctrl + A', action: 'Seleccionar todo' },
+                { keys: 'Ctrl + Shift + A', action: 'Invertir selección' },
+                { keys: 'Ctrl + Alt + A', action: 'Seleccionar similares' },
                 { keys: 'Tab', action: 'Siguiente elemento' },
                 { keys: 'Shift + Tab', action: 'Elemento anterior' },
                 { keys: 'Escape', action: 'Deseleccionar' },
